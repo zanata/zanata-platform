@@ -21,6 +21,7 @@
 
 package org.zanata.rest.service;
 
+import static org.zanata.rest.service.SourceDocResource.DOCID_RESOURCE_PATH;
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 
 import java.util.Set;
@@ -68,8 +69,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 })
 public interface TranslatedDocResource extends RestResource {
     @SuppressWarnings("deprecation")
-    public static final String SERVICE_PATH =
-            ProjectIterationResource.SERVICE_PATH + "/r";
+    public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH;
 
     /**
      * Retrieves a set of translations for a given locale.
@@ -91,6 +91,7 @@ public interface TranslatedDocResource extends RestResource {
      *            An Entity tag identifier. Based on this identifier (if
      *            provided), the server will decide if it needs to send a
      *            response to the client or not (See return section).
+     * Deprecated. Use {@link #getTranslationsWithDocId}
      */
     @GET
     @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
@@ -106,11 +107,49 @@ public interface TranslatedDocResource extends RestResource {
                     " stored ETag, indicating that the last received response is still valid" +
                     " and should be reused."),
     })
+    @Deprecated
     public
     Response getTranslations(@PathParam("id") String idNoSlash,
             @PathParam("locale") LocaleId locale,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("skeletons") boolean skeletons,
+            @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
+
+    /**
+     * Retrieves a set of translations for a given locale.
+     *
+     * @param docId
+     *            The document identifier.
+     * @param locale
+     *            The locale for which to get translations.
+     * @param extensions
+     *            The translation extensions to retrieve (e.g. "comment"). This
+     *            parameter allows multiple values.
+     * @param createSkeletons
+     *            Indicates whether to generate untranslated entries or not.
+     * @param eTag
+     *            An Entity tag identifier. Based on this identifier (if
+     *            provided), the server will decide if it needs to send a
+     *            response to the client or not (See return section).
+     */
+    @GET
+    @Path(DOCID_RESOURCE_PATH + "/translations/{locale}")
+    @TypeHint(TranslationsResource.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Successfully retrieved translations. " +
+                    "The translation data will be contained in the response."),
+            @ResponseCode(code = 404, condition = "The project, version, or document could" +
+                    " not be found with the given parameters. Also, if no translations are" +
+                    " found for the given document and locale."),
+            @ResponseCode(code = 304, condition = "If the provided ETag matches the server's" +
+                    " stored ETag, indicating that the last received response is still valid" +
+                    " and should be reused."),
+    })
+    public Response getTranslationsWithDocId(
+            @PathParam("locale") LocaleId locale,
+            @QueryParam("docId") @DefaultValue("") String docId,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("skeletons") boolean createSkeletons,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**
@@ -126,7 +165,9 @@ public interface TranslatedDocResource extends RestResource {
      *            (',').
      * @param locale
      *            The locale for which to get translations.
+     * Deprecated. Use {@link #deleteTranslationsWithDocId}
      */
+    @Deprecated
     @DELETE
     @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
     @TypeHint(TypeHint.NO_CONTENT.class)
@@ -141,6 +182,30 @@ public interface TranslatedDocResource extends RestResource {
     public
     Response deleteTranslations(@PathParam("id") String idNoSlash,
             @PathParam("locale") LocaleId locale);
+
+    /**
+     * Deletes a set of translations for a given locale. Also deletes any
+     * extensions recorded for the translations in question. The system will
+     * keep history of the translations.
+     *
+     * @param docId
+     *            The document identifier.
+     * @param locale
+     *            The locale for which to get translations.
+     */
+    @DELETE
+    @Path(DOCID_RESOURCE_PATH + "/translations/{locale}")
+    @TypeHint(TypeHint.NO_CONTENT.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Successfully deleted the translations."),
+            @ResponseCode(code = 404, condition = "If a project, project iteration or document" +
+                    " could not be found with the given parameters."),
+            @ResponseCode(code = 401, condition = "If the user does not have the proper" +
+                    " permissions to perform this operation."),
+    })
+    public Response deleteTranslationsWithDocId(
+            @PathParam("locale") LocaleId locale,
+            @QueryParam("docId") @DefaultValue("")  String docId);
 
     /**
      * Updates the translations for a document and a locale.
@@ -165,7 +230,9 @@ public interface TranslatedDocResource extends RestResource {
      *            Auto will check the history of your translations and will not
      *            overwrite any translations for which it detects a previous
      *            value is being pushed.
+     * Deprecated. Use {@link #putTranslationsWithDocId}
      */
+    @Deprecated
     @PUT
     @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
     @StatusCodes({
@@ -184,6 +251,46 @@ public interface TranslatedDocResource extends RestResource {
     Response putTranslations(@PathParam("id") String idNoSlash,
             @PathParam("locale") LocaleId locale,
             TranslationsResource messageBody,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("merge") @DefaultValue("auto") String merge);
+
+    /**
+     * Updates the translations for a document and a locale.
+     *
+     * @param docId
+     *            The document identifier.
+     * @param locale
+     *            The locale for which to get translations.
+     * @param messageBody
+     *            The translations to modify.
+     * @param extensions
+     *            The translation extension types to modify (e.g. "comment").
+     *            This parameter allows multiple values.
+     * @param merge
+     *            Indicates how to deal with existing translations (valid
+     *            options: 'auto', 'import'). Import will overwrite all current
+     *            values with the values being pushed (even empty ones), while
+     *            Auto will check the history of your translations and will not
+     *            overwrite any translations for which it detects a previous
+     *            value is being pushed.
+     */
+    @PUT
+    @Path(DOCID_RESOURCE_PATH + "/translations/{locale}")
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Translations were successfully updated."),
+            @ResponseCode(code = 404, condition = "If a project, project iteration or document" +
+                    " could not be found with the given parameters."),
+            @ResponseCode(code = 401, condition = "If the user does not have the proper" +
+                    " permissions to perform this operation."),
+            @ResponseCode(code = 400, condition = "If there are problems with the passed parameters." +
+                    " e.g. Merge type is not one of the accepted types. This response should have a" +
+                    " content message indicating a reason.",
+                    type = @TypeHint(String.class))
+    })
+    public Response putTranslationsWithDocId(
+            @PathParam("locale") LocaleId locale,
+            TranslationsResource messageBody,
+            @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("merge") @DefaultValue("auto") String merge);
 

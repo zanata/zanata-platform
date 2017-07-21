@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -26,7 +25,6 @@ import org.zanata.client.etag.ETagCacheEntry;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
 import org.zanata.common.io.FileDetails;
-import org.zanata.rest.RestUtil;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -225,12 +223,9 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             try {
                 Resource doc = null;
                 String localDocName = unqualifiedDocName(qualifiedDocName);
-                // TODO follow a Link instead of generating the URI
-                String docUri =
-                        RestUtil.convertToDocumentURIId(qualifiedDocName);
                 boolean createSkeletons = getOpts().getCreateSkeletons();
                 if (strat.needsDocToWriteTrans() || pullSrc || createSkeletons) {
-                    doc = sourceDocResourceClient.getResource(docUri,
+                    doc = sourceDocResourceClient.getResource(qualifiedDocName,
                             strat.getExtensions());
                     doc.setName(localDocName);
                 }
@@ -247,7 +242,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                         locMapping);
 
                         if (shouldPullThisLocale(optionalStats, localDocName, locale)) {
-                            pullDocForLocale(strat, doc, localDocName, docUri,
+                            pullDocForLocale(strat, doc, localDocName, qualifiedDocName,
                                     createSkeletons, locMapping, transFile);
                         } else {
                             skippedLocales.add(locale);
@@ -290,7 +285,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
     @VisibleForTesting
     protected void pullDocForLocale(PullStrategy strat, Resource doc,
-            String localDocName, String docUri, boolean createSkeletons,
+            String localDocName, String docId, boolean createSkeletons,
             LocaleMapping locMapping,
             File transFile) throws IOException {
         LocaleId locale = new LocaleId(locMapping.getLocale());
@@ -313,7 +308,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
         Response transResponse;
         try {
-            transResponse = transDocResourceClient.getTranslations(docUri,
+            transResponse = transDocResourceClient.getTranslations(docId,
                     locale, strat.getExtensions(),
                     createSkeletons, eTag);
         } catch (ResponseProcessingException e) {
@@ -352,7 +347,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     .getLocalFileMD5())) {
                 transResponse =
                         transDocResourceClient.getTranslations(
-                                docUri, locale,
+                                docId, locale,
                                 strat.getExtensions(),
                                 createSkeletons, null);
                 // rewrite the target document

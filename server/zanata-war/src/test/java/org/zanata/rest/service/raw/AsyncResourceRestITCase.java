@@ -71,7 +71,8 @@ public class AsyncResourceRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void testPutGetResourceWithExtension() throws Exception {
+    @Deprecated
+    public void testPutGetResourceWithExtensionDeprecate() throws Exception {
         final Resource resource = resourceTestFactory.getTextFlowTest();
         final AtomicReference<String> processId = new AtomicReference<>(null);
         new ResourceRequest(
@@ -141,7 +142,78 @@ public class AsyncResourceRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void testPutGetTranslationWithExtension() throws Exception {
+    public void testPutGetResourceWithExtension() throws Exception {
+        final Resource resource = resourceTestFactory.getTextFlowTest();
+        final AtomicReference<String> processId = new AtomicReference<>(null);
+        new ResourceRequest(
+                getRestEndpointUrl(
+                        "async/projects/p/sample-project/iterations/i/1.0/resource"),
+                "PUT", getAuthorizedEnvironment()) {
+
+            @Override
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("docId", resource.getName()).
+                        queryParam("ext", "gettext").
+                        queryParam("ext", "comment").
+                        queryParam("copyTrans", false).request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus(), is(200));
+                String entityString = response.readEntity(String.class);
+
+                assertJaxbUnmarshal(entityString, ProcessStatus.class);
+                ProcessStatus status =
+                        jaxbUnmarshal(entityString, ProcessStatus.class);
+                assertThat(status.getUrl(), is(notNullValue()));
+                processId.set(status.getUrl());
+            }
+        }.run();
+        waitAtMost(Duration.TEN_SECONDS).catchUncaughtExceptions()
+                .pollInterval(Duration.ONE_SECOND)
+                .until(asyncPushFinishCallable(processId.get()));
+        new ResourceRequest(
+                getRestEndpointUrl(
+                        "projects/p/sample-project/iterations/i/1.0/r/"
+                                + resource.getName()),
+                "GET", getAuthorizedEnvironment()) {
+
+            @Override
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", "gettext").
+                        queryParam("ext", "comment").request();
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus(), is(200));
+                String entityString = response.readEntity(String.class);
+                Resource get = jaxbUnmarshal(entityString, Resource.class);
+                Resource base = resourceTestFactory.getTextFlowTest();
+                ResourceTestUtil.clearRevs(base);
+                ResourceTestUtil.clearRevs(get);
+                log.debug("expect:" + base.toString());
+                log.debug("actual:" + get.toString());
+                assertThat(get.toString(), is(base.toString()));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    @Deprecated
+    public void testPutGetTranslationWithExtensionDeprecate() throws Exception {
         final TranslationsResource resource =
                 translationTestFactory.getTextFlowTargetCommentTest();
         final AtomicReference<String> processId = new AtomicReference<>(null);
@@ -154,6 +226,51 @@ public class AsyncResourceRestITCase extends RestTest {
             protected Invocation.Builder prepareRequest(
                     ResteasyWebTarget webTarget) {
                 return webTarget.queryParam("ext", "gettext").
+                        queryParam("ext", "comment").
+                        queryParam("merge", "auto").request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(resource),
+                                MediaType.APPLICATION_XML_TYPE);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus(), is(200));
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, ProcessStatus.class);
+                ProcessStatus status =
+                        jaxbUnmarshal(entityString, ProcessStatus.class);
+                assertThat(status.getUrl(), is(notNullValue()));
+                processId.set(status.getUrl());
+            }
+        }.run();
+        waitAtMost(Duration.TEN_SECONDS).catchUncaughtExceptions()
+                .pollInterval(Duration.ONE_SECOND)
+                .until(asyncPushFinishCallable(processId.get()));
+    }
+
+    @Test
+    @RunAsClient
+    public void testPutGetTranslationWithExtension() throws Exception {
+        final TranslationsResource resource =
+                translationTestFactory.getTextFlowTargetCommentTest();
+        final AtomicReference<String> processId = new AtomicReference<>(null);
+        new ResourceRequest(
+                getRestEndpointUrl(
+                        "async/projects/p/sample-project/iterations/i/1.0/resource/translations/en"),
+                "PUT", getAuthorizedEnvironment()) {
+
+            @Override
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("docId", "my/path/document.txt").
+                        queryParam("ext", "gettext").
                         queryParam("ext", "comment").
                         queryParam("merge", "auto").request();
             }
