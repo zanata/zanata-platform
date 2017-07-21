@@ -2,7 +2,9 @@
 jest.disableAutomock()
 
 import React from 'react'
+import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
+import TestUtils from 'react-dom/test-utils'
 import TriCheckbox from '.'
 
 describe('TriCheckbox', () => {
@@ -54,5 +56,21 @@ describe('TriCheckbox', () => {
       </div>
     )
     expect(actual).toEqual(expected)
+  })
+  it('can handle click from checked && !indeterminate state', () => {
+    const clickFun = function (e) {}
+    const slothCheckbox = TestUtils.renderIntoDocument(
+      <TriCheckbox
+        checked
+        indeterminate={false}
+        onChange={clickFun} />
+    )
+    try {
+      TestUtils.Simulate.click(ReactDOM.findDOMNode(slothCheckbox))
+    } catch (e) {
+      // swallow on purpose, valid for code to not bind onClick
+    }
+    expect(slothCheckbox.props.checked).toEqual(true)
+    expect(slothCheckbox.props.indeterminate).toEqual(false)
   })
 })
