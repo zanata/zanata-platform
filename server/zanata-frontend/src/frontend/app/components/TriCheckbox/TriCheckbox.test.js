@@ -2,50 +2,57 @@
 jest.disableAutomock()
 
 import React from 'react'
-import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-addons-test-utils'
 import TriCheckbox from '.'
 
-describe('TriCheckbox Test', () => {
-  it('can render markup', () => {
+describe('TriCheckbox', () => {
+  // Markup tests should match truth table in storybook
+  it('can render !checked && !indeterminate markup', () => {
     const clickFun = function (e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <TriCheckbox
-        fancy={false}
-        onClick={clickFun} />)
+      <TriCheckbox checked={false} indeterminate={false} onChange={clickFun} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>TODO write a test for markup.</div>
+      <div>
+        <input type="checkbox" className="tri-checkbox"
+          checked={false} indeterminate={false} onChange={clickFun} />
+      </div>
     )
     expect(actual).toEqual(expected)
   })
-
-  it('can render fancy markup', () => {
+  it('can render !checked && indeterminate markup', () => {
     const clickFun = function (e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <TriCheckbox
-        fancy
-        onClick={clickFun} />)
+      <TriCheckbox checked={false} indeterminate onChange={clickFun} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>TODO write a test for markup.</div>
+      <div>
+        <input type="checkbox" className="tri-checkbox"
+          checked={false} indeterminate onChange={clickFun} />
+      </div>
     )
     expect(actual).toEqual(expected)
   })
-
-  it('can be clicked', () => {
-    let clickEvent = 'not called'
-    const clickFun = function (e) {
-      clickEvent = e.value
-    }
-
-    const component = TestUtils.renderIntoDocument(
-      <TriCheckbox fancy onClick={clickFun} />
+  it('can render checked && !indeterminate markup', () => {
+    const clickFun = function (e) {}
+    const actual = ReactDOMServer.renderToStaticMarkup(
+      <TriCheckbox checked indeterminate={false} onChange={clickFun} />)
+    const expected = ReactDOMServer.renderToStaticMarkup(
+      <div>
+        <input type="checkbox" className="tri-checkbox"
+          checked indeterminate={false} onChange={clickFun} />
+      </div>
     )
-    // simulate click event
-    TestUtils.Simulate.click(
-      ReactDOM.findDOMNode(component).querySelector('button'),
-      {value: 'clicked'})
-    expect(clickEvent).toEqual('clicked',
-      'TriCheckbox click event should be fired')
+    expect(actual).toEqual(expected)
+  })
+  it('can render checked && indeterminate markup', () => {
+    const clickFun = function (e) {}
+    const actual = ReactDOMServer.renderToStaticMarkup(
+      <TriCheckbox checked indeterminate onChange={clickFun} />)
+    const expected = ReactDOMServer.renderToStaticMarkup(
+      <div>
+        <input type="checkbox" className="tri-checkbox"
+          checked indeterminate onChange={clickFun} />
+      </div>
+    )
+    expect(actual).toEqual(expected)
   })
 })
