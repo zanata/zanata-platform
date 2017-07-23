@@ -28,7 +28,7 @@ const getPhrasesDetail = state => state.phrases.detail
 // TODO move docId elsewhere in state
 const getDocId = state => state.context.docId
 
-const getPageIndex = state => state.phrases.paging.pageIndex
+export const getPageIndex = state => state.phrases.paging.pageIndex
 const getCountPerPage = state => state.phrases.paging.countPerPage
 
 const getFilter = state => state.phrases.filter
@@ -48,8 +48,7 @@ const getCurrentDocPhrases = createSelector(
   }
 )
 
-// FIXME same as filter-paging-util filterPhrases(), replace that
-const getFilteredPhrases = createSelector(
+export const getFilteredPhrases = createSelector(
   getCurrentDocPhrases, getFilter,
   (phrases, { status }) => {
     if (status.all) {
@@ -61,7 +60,6 @@ const getFilteredPhrases = createSelector(
   }
 )
 
-// FIXME same as filter-paging-util getCurrentPhrasesFromState(), replace that
 const getCurrentPagePhrases = createSelector(
   getFilteredPhrases, getPageIndex, getCountPerPage,
   (phrases, pageIndex, countPerPage) => {
@@ -120,7 +118,7 @@ export const getCurrentPagePhraseDetail = createSelector(
 // )
 
 // may be undefined
-const getLocation = state => state.routing.locationBeforeTransitions
+export const getLocation = state => state.routing.locationBeforeTransitions
 // may be undefined
 const getLocationPage = createSelector(
   getLocation, location => location ? location.query.page : undefined)
@@ -132,3 +130,13 @@ export const getLocationPageNumber = createSelector(getLocationPage,
     const pageIndex = pageNum - 1
     return isNaN(pageIndex) ? 0 : max([pageIndex, 0])
   })
+
+// -1 when there are no pages (i.e. no phrases)
+export const getMaxPageIndex = createSelector(
+  getFilteredPhrases, getCountPerPage,
+  (phrases, countPerPage) => {
+    const maxPageNumber = Math.ceil(phrases.length / countPerPage)
+    // from number to 0-based index
+    return maxPageNumber - 1
+  }
+)
