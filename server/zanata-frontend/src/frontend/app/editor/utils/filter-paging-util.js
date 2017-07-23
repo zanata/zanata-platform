@@ -2,14 +2,6 @@
  * Utility functions for filtering and paging text flows
  */
 
-export function getCurrentPagePhrasesFromState (state) {
-  const { pageIndex, countPerPage } = state.phrases.paging
-  const filtered = getFilteredPhrasesFromState(state)
-  const startIndex = pageIndex * countPerPage
-  const stopIndex = startIndex + countPerPage
-  return filtered.slice(startIndex, stopIndex)
-}
-
 export function getFilteredPhrasesFromState (state) {
   return filterPhrases(state.phrases.filter,
                        getSelectedDocPhrasesFromState(state))
