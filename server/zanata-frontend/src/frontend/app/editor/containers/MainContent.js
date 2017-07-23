@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Icon } from '../../components'
 import TransUnit from '../components/TransUnit'
 import { connect } from 'react-redux'
-import { getCurrentPagePhrasesFromState } from '../utils/filter-paging-util'
+import { getCurrentPagePhraseDetail } from '../selectors'
 
 /**
  * The main content section showing the current page of TransUnit source,
@@ -38,6 +38,7 @@ class MainContent extends React.Component {
 
       // phrase is passed as a prop to avoid complexity of trying to get at
       // the phrase from state in mapDispatchToProps
+      // TODO can just use a selector to get the phrase object, easy.
       return (
         <li key={phrase.id}>
           <TransUnit index={phrase.id} phrase={phrase} />
@@ -65,16 +66,12 @@ class MainContent extends React.Component {
 }
 
 function mapStateToProps (state, ownProps) {
-  const minimalPhrases = getCurrentPagePhrasesFromState(state)
-  const detailPhrases = minimalPhrases.map(phrase => {
-    const detail = state.phrases.detail[phrase.id]
-    return detail || phrase
-  })
+  // TODO replace with selector
   const maximised = !state.ui.panels.navHeader.visible
+
   return {
-    context: state.context,
     maximised,
-    phrases: detailPhrases
+    phrases: getCurrentPagePhraseDetail(state)
   }
 }
 
