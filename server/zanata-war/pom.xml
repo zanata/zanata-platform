@@ -858,11 +858,6 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
-      <artifactId>zanata-assets</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.zanata</groupId>
       <artifactId>zanata-frontend</artifactId>
     </dependency>
 
