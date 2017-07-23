@@ -4,12 +4,16 @@
  * e.g. to fetch phrase data when a new document or locale is selected.
  */
 
+import { watchQueryStringPageNumber } from './page-number'
+import { watchVisiblePhrasesInStore } from './phrase-detail'
 import {
   watchRequiredPhraseList,
   watchAdvancedFilterList
-} from './filtered-phrases'
+} from './phrase-list'
 
 export default function addWatchers (store) {
   watchRequiredPhraseList(store)
   watchAdvancedFilterList(store)
+  watchVisiblePhrasesInStore(store)
+  watchQueryStringPageNumber(store)
 }

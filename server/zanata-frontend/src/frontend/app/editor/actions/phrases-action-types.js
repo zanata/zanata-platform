@@ -1,9 +1,4 @@
 
-// FIXME replace these completely with the new ones
-export const FETCHING_PHRASE_LIST = Symbol('FETCHING_PHRASE_LIST')
-export const PHRASE_LIST_FETCHED = Symbol('PHRASE_LIST_FETCHED')
-export const PHRASE_LIST_FETCH_FAILED = Symbol('PHRASE_LIST_FETCH_FAILED')
-// the new ones
 export const PHRASE_LIST_REQUEST = 'PHRASE_LIST_REQUEST'
 export const PHRASE_LIST_SUCCESS = 'PHRASE_LIST_SUCCESS'
 export const PHRASE_LIST_FAILED = 'PHRASE_LIST_FAILED'
