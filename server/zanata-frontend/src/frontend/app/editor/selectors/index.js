@@ -5,22 +5,47 @@
  *
  *  - in mapStateToProps to get the required state
  *  - with redux-watch to select the part of state to observe
+ *
+ * Memoization:
+ *
+ * Selectors will cache their results and only recompute when the input values
+ * change. The default comparison for createSelector is ===. You can make a new
+ * version of createSelector with:
+ *
+ *   createSelectorCreator(memoizer, comparer)
+ *
+ * You can use reselect.defaultMemoize as the memoizer and swap in any
+ * comparison function.
  */
 
-import { createSelector } from 'reselect'
+import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
+import { every, isEmpty, isEqual, isNaN, max, negate } from 'lodash'
 
 export const getLang = state => state.context.lang
 // FIXME move detail to detail[lang] and add timestamps
 const getPhrasesDetail = state => state.phrases.detail
 
+// TODO move docId elsewhere in state
+const getDocId = state => state.context.docId
+
 const getPageIndex = state => state.phrases.paging.pageIndex
 const getCountPerPage = state => state.phrases.paging.countPerPage
 
 const getFilter = state => state.phrases.filter
+const getAdvancedFilter = state => state.phrases.filter.advanced
 
-// TODO move docId elsewhere in state
-// TODO can have a selector that decides whether to use plain or server-filtered
-const getCurrentDocPhrases = state => state.phrases.inDoc[state.context.docId]
+const getPhrasesInDoc = state => state.phrases.inDoc
+const getPhrasesInDocFiltered = state => state.phrases.inDocFiltered
+
+/* always returns an array, may be empty */
+const getCurrentDocPhrases = createSelector(
+  getDocId, getPhrasesInDoc, getPhrasesInDocFiltered, getAdvancedFilter,
+  (docId, inDoc, inDocFiltered, advancedFilter) => {
+    const useFiltered = every(advancedFilter, negate(isEmpty))
+    const phrases = useFiltered ? inDocFiltered[docId] : inDoc[docId]
+    return phrases || []
+  }
+)
 
 // FIXME same as filter-paging-util filterPhrases(), replace that
 const getFilteredPhrases = createSelector(
@@ -29,10 +54,9 @@ const getFilteredPhrases = createSelector(
     if (status.all) {
       return phrases
     }
-    const filtered = phrases.filter(phrase => {
+    return phrases.filter(phrase => {
       return status[phrase.status]
     })
-    return filtered
   }
 )
 
@@ -46,10 +70,22 @@ const getCurrentPagePhrases = createSelector(
   }
 )
 
-export const getCurrentPagePhrasesAndLang = createSelector(
-  getCurrentPagePhrases, getLang,
-  (phrases, lang) => ({ phrases, lang })
+const getLocales = state => state.headerData.context.projectVersion.locales
+
+const getLocale = createSelector(
+  getLang, getLocales,
+  (lang, locales) => locales[lang]
 )
+
+/* Phrases and locale object, needed for phrase detail.
+ * Locale may be undefined
+ */
+export const getCurrentPagePhrasesAndLocale =
+  // deep equal since filtered phrases can be a new array with the same contents
+  createSelectorCreator(defaultMemoize, isEqual)(
+    getCurrentPagePhrases, getLocale,
+    (phrases, locale) => ({ phrases, locale })
+  )
 
 /* Detail for the current page, falling back on flyweight. */
 export const getCurrentPagePhraseDetail = createSelector(
@@ -81,3 +117,17 @@ export const getCurrentPagePhraseDetail = createSelector(
 //       .filter(id => !detail.hasOwnProperty(id))
 //   }
 // )
+
+// may be undefined
+const getLocation = state => state.routing.locationBeforeTransitions
+// may be undefined
+const getLocationPage = createSelector(
+  getLocation, location => location ? location.query.page : undefined)
+
+// page number according to query string, adjusted to be valid
+export const getLocationPageNumber = createSelector(getLocationPage,
+  (pageString) => {
+    const pageNum = parseInt(pageString, 10)
+    const pageIndex = pageNum - 1
+    return isNaN(pageIndex) ? 0 : max([pageIndex, 0])
+  })
