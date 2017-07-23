@@ -20,7 +20,7 @@ import {
   lastPage
 } from '../actions/controls-header-actions'
 import { toggleSuggestions } from '../actions/suggestions-actions'
-import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
+import { getMaxPageIndex } from '../selectors'
 import { GLOSSARY_TAB } from '../reducers/ui-reducer'
 
 const { bool, func, number, shape } = PropTypes
@@ -172,7 +172,7 @@ class ControlsHeader extends React.Component {
 
 function mapStateToProps (state) {
   const { actions, phrases, ui } = state
-  const pageCount = calculateMaxPageIndexFromState(state) + 1
+  const pageCount = getMaxPageIndex(state) + 1
   const pageNumber = Math.min(pageCount, phrases.paging.pageIndex + 1)
 
   return {

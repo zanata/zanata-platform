@@ -1,4 +1,5 @@
 import updateObject from 'immutability-helper'
+import { some, negate, isEmpty } from 'lodash'
 import phraseFilterReducer from './phrase-filter-reducer'
 import { composeReducers, subReducer } from 'redux-sac'
 import {
@@ -26,11 +27,7 @@ import {
   UNDO_EDIT
 } from '../../actions/phrases-action-types'
 import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
-import {
-  calculateMaxPageIndex,
-  calculateMaxPageIndexFromState,
-  getFilteredPhrasesFromState
-} from '../../utils/filter-paging-util'
+import { getFilteredPhrases, getMaxPageIndex } from '../../selectors'
 import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
@@ -73,7 +70,7 @@ export const phraseReducer = (state = defaultState, action) => {
       return update({
         paging: {
           pageIndex: {$set: clamp(state.paging.pageIndex, 0,
-            calculateMaxPageIndexFromState(action.getState()))}
+            getMaxPageIndex(action.getState()))}
         }
       })
 
@@ -295,9 +292,10 @@ export const phraseReducer = (state = defaultState, action) => {
   */
   function changeSelectedIndex (indexUpdateCallback) {
     const { docId } = action.getState().context
-    const { inDoc, selectedPhraseId } = state
-    // FIXME looks like this may not work properly for filtered phrase list.
-    const phrases = inDoc[docId]
+    const { inDoc, inDocFiltered, filter, selectedPhraseId } = state
+    const hasAdvancedFilter = some(filter.advanced, negate(isEmpty))
+    const phrases = hasAdvancedFilter ? inDocFiltered[docId] : inDoc[docId]
+
     const currentIndex = phrases.findIndex(x => x.id === selectedPhraseId)
 
     const newIndex = indexUpdateCallback(currentIndex)
@@ -312,17 +310,20 @@ export const phraseReducer = (state = defaultState, action) => {
 
   /**
   * Select a given phrase and ensure the correct page is showing.
+  *
+  * CAUTION: this calculates max page index from the previous state,
+  *   so do not use this after updating page index.
   */
   function selectPhrase (state, phraseId) {
     const { countPerPage, pageIndex } = state.paging
-    const phrases = getFilteredPhrasesFromState(action.getState())
+    const phrases = getFilteredPhrases(action.getState())
 
     const phraseIndex = phrases.findIndex(x => x.id === phraseId)
     const desiredPageIndex = phraseIndex === -1
       // Just go to valid page nearest current page when selected phrase is
       // invisible. Ideal would be page that shows the phrase nearest the
       // selected one in the unfiltered document, but that is complicated.
-      ? clamp(pageIndex, 0, calculateMaxPageIndex(phrases, countPerPage))
+      ? clamp(pageIndex, 0, getMaxPageIndex(action.getState()))
       : Math.floor(phraseIndex / countPerPage)
 
     return updateObject(state, {

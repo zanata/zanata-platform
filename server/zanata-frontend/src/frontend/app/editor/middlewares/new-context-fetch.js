@@ -78,8 +78,6 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
       //   pageIndex: newPageIndex
       // }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
-      // FIXME no more docStatus, use inDoc or inDocFiltered instead
-      // dispatch(fetchPhraseDetails(phraseState.docStatus, lang, paging))
     }
   },
   // Fetch new header data only when the full workspace is first known
