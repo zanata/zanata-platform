@@ -19,7 +19,7 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { every, isEmpty, isEqual, isNaN, max, negate } from 'lodash'
+import { any, isEmpty, isEqual, isNaN, max, negate } from 'lodash'
 
 export const getLang = state => state.context.lang
 // FIXME move detail to detail[lang] and add timestamps
@@ -33,16 +33,17 @@ const getCountPerPage = state => state.phrases.paging.countPerPage
 
 const getFilter = state => state.phrases.filter
 const getAdvancedFilter = state => state.phrases.filter.advanced
+const getHasAdvancedFilter = createSelector(getAdvancedFilter,
+  advancedFilter => any(advancedFilter, negate(isEmpty)))
 
 const getPhrasesInDoc = state => state.phrases.inDoc
 const getPhrasesInDocFiltered = state => state.phrases.inDocFiltered
 
 /* always returns an array, may be empty */
 const getCurrentDocPhrases = createSelector(
-  getDocId, getPhrasesInDoc, getPhrasesInDocFiltered, getAdvancedFilter,
-  (docId, inDoc, inDocFiltered, advancedFilter) => {
-    const useFiltered = every(advancedFilter, negate(isEmpty))
-    const phrases = useFiltered ? inDocFiltered[docId] : inDoc[docId]
+  getDocId, getPhrasesInDoc, getPhrasesInDocFiltered, getHasAdvancedFilter,
+  (docId, inDoc, inDocFiltered, hasAdvancedFilter) => {
+    const phrases = hasAdvancedFilter ? inDocFiltered[docId] : inDoc[docId]
     return phrases || []
   }
 )
