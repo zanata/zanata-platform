@@ -1,8 +1,6 @@
-/* React to changes that could change filtered phrases (list) and visible
- * filtered phrases.
+/* React to changes that require a new flyweight list of phrases to be fetched.
  *
- * This should expand to handle all phrase fetching. It does not yet because
- * new-context-fetch is handling some of it.
+ * Includes filtered and unfiltered phrases lists.
  */
 
 import { createSelector } from 'reselect'
@@ -14,7 +12,7 @@ import { CALL_API, getJSON } from 'redux-api-middleware'
 import { getJsonWithCredentials } from '../utils/api-util'
 import { encode } from '../utils/doc-id-util'
 import { baseRestUrl, filterQueryString } from '../api'
-import { transUnitStatusToPhraseStatus } from '../actions/phrases-actions'
+import { transUnitStatusToPhraseStatus } from '../utils/status-util'
 import {
   PHRASE_LIST_REQUEST,
   PHRASE_LIST_SUCCESS,
@@ -112,14 +110,10 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
   const url =
     `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}?${queryString}` // eslint-disable-line max-len
 
-  // TODO also handle filter: false when filter is not specified
-
   return {
     [CALL_API]: getJsonWithCredentials({
       endpoint: url,
       types: [
-        // TODO use these types for both filter and non-filter,
-        //      use meta.filter to distinguish in reducer
         {
           type: PHRASE_LIST_REQUEST,
           meta: { filter: hasFilter }
@@ -127,9 +121,9 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
         {
           type: PHRASE_LIST_SUCCESS,
           payload: (action, state, res) =>
-            getJSON(res).then(statusList => ({
+            getJSON(res).then(phraseList => ({
               docId,
-              statusList: statusList.map(phrase => ({
+              phraseList: phraseList.map(phrase => ({
                 ...phrase,
                 status: transUnitStatusToPhraseStatus(phrase.status)
               }))

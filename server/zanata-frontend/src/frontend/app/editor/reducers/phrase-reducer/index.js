@@ -11,9 +11,10 @@ import {
   COPY_FROM_ALIGNED_SOURCE,
   COPY_FROM_SOURCE,
   FETCHING_PHRASE_DETAIL,
-  FETCHING_PHRASE_LIST,
+  PHRASE_LIST_REQUEST,
+  PHRASE_LIST_SUCCESS,
+  PHRASE_LIST_FAILED,
   PENDING_SAVE_INITIATED,
-  PHRASE_LIST_FETCHED,
   PHRASE_DETAIL_FETCHED,
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
@@ -45,10 +46,12 @@ function clamp (number, lower, upper) {
 
 const defaultState = {
   fetchingList: false,
+  fetchingFilteredList: false,
   fetchingDetail: false,
   saveAsMode: false,
   // expected shape: { [docId1]: [{ id, resId, status }, ...], [docId2]: [...] }
   inDoc: {},
+  inDocFiltered: {},
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
   selectedPhraseId: undefined,
@@ -117,27 +120,59 @@ export const phraseReducer = (state = defaultState, action) => {
         fetchingDetail: {$set: true}
       })
 
-    case FETCHING_PHRASE_LIST:
-      return update({
-        fetchingList: {$set: true}
-      })
+    case PHRASE_LIST_REQUEST:
+      if (action.meta.filter) {
+        return update({
+          fetchingFilteredList: {$set: true}
+        })
+      } else {
+        return update({
+          fetchingList: {$set: true}
+        })
+      }
 
     case PENDING_SAVE_INITIATED:
       return updatePhrase(action.phraseId, {
         pendingSave: {$set: undefined}
       })
 
-    case PHRASE_LIST_FETCHED:
-    // select the first phrase if there is one
-      const selectedPhraseId = action.phraseList.length &&
-        action.phraseList[0].id
-      return update({
-        fetchingList: {$set: false},
-        inDoc: {[action.docId]: {$set: action.phraseList}},
-        selectedPhraseId: {$set: selectedPhraseId},
-        docStatus: {$set: action.statusList}
+    case PHRASE_LIST_SUCCESS:
+    // TODO only select phrase if this is the visible list. Based on checking
+    //      if state.filter.advanced is empty (with a transform selector) and
+    //      action.meta.filter.
 
-      })
+      if (action.meta.filter) {
+        // select the first phrase if there is one
+        const selectedPhraseId = action.payload.phraseList.length &&
+        action.payload.phraseList[0].id
+        return update({
+          fetchingFilteredList: {$set: false},
+          inDocFiltered: {
+            [action.payload.docId]: {$set: action.payload.phraseList}
+          },
+          selectedPhraseId: {$set: selectedPhraseId}
+        })
+      } else {
+        // select the first phrase if there is one
+        const selectedPhraseId = action.payload.phraseList.length &&
+        action.payload.phraseList[0].id
+        return update({
+          fetchingList: {$set: false},
+          inDoc: {[action.payload.docId]: {$set: action.payload.phraseList}},
+          selectedPhraseId: {$set: selectedPhraseId}
+        })
+      }
+
+    case PHRASE_LIST_FAILED:
+      if (action.meta.filter) {
+        return update({
+          fetchingFilteredList: {$set: false}
+        })
+      } else {
+        return update({
+          fetchingList: {$set: false}
+        })
+      }
 
     case PHRASE_DETAIL_FETCHED:
       // TODO this shallow merge will lose data from other locales
@@ -145,7 +180,7 @@ export const phraseReducer = (state = defaultState, action) => {
       //      others unchanged (depending on caching policy)
       return update({
         fetchingDetail: {$set: false},
-        detail: {$merge: action.phrases}
+        detail: {$merge: action.payload}
       })
 
     case PHRASE_TEXT_SELECTION_RANGE:
@@ -245,17 +280,9 @@ export const phraseReducer = (state = defaultState, action) => {
 
   function updatePageIndex (newPageIndex) {
     const oldPageIndex = state.paging.pageIndex
-
-    if (oldPageIndex !== newPageIndex) {
-      return update({
-        paging: {
-          pageIndex: {
-            $set: newPageIndex
-          }
-        }
-      })
-    }
-    return state
+    return oldPageIndex === newPageIndex
+      ? state
+      : update({ paging: { pageIndex: {$set: newPageIndex} } })
   }
 
   /**

@@ -15,9 +15,9 @@ import {
   COPY_FROM_ALIGNED_SOURCE,
   COPY_FROM_SOURCE,
   FETCHING_PHRASE_DETAIL,
-  FETCHING_PHRASE_LIST,
+  PHRASE_LIST_REQUEST,
   PENDING_SAVE_INITIATED,
-  PHRASE_LIST_FETCHED,
+  PHRASE_LIST_SUCCESS,
   PHRASE_DETAIL_FETCHED,
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
@@ -71,10 +71,12 @@ describe('phrase-reducer test', () => {
     phraseList[0] = { id: 'p01' }
 
     const withPhrases = phraseReducer(initialState, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'doc1',
-      phraseList: phraseList,
-      statusList: new Array(50)
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'doc1',
+        phraseList: phraseList
+      },
+      meta: { filter: false }
     })
     const pageTooHigh = phraseReducer(withPhrases, {
       type: UPDATE_PAGE,
@@ -105,13 +107,15 @@ describe('phrase-reducer test', () => {
 
   it('can cancel editing', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      },
+      meta: { filter: false }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -135,13 +139,14 @@ describe('phrase-reducer test', () => {
 
   it('can copy glossary term', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -180,13 +185,14 @@ describe('phrase-reducer test', () => {
 
   it('can copy from aligned source', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -208,13 +214,14 @@ describe('phrase-reducer test', () => {
 
   it('can copy from source', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -265,17 +272,21 @@ describe('phrase-reducer test', () => {
   it('can record fetched phrases', () => {
     const initialState = phraseReducer(undefined, { type: 'any' })
     const fetching = phraseReducer(initialState, {
-      type: FETCHING_PHRASE_LIST
+      type: PHRASE_LIST_REQUEST,
+      meta: {
+        filter: false
+      }
     })
     const withPhrases = phraseReducer(fetching, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' },
-        { id: 'p03' }
-      ],
-      statusList: ['translated', 'untranslated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' },
+          { id: 'p03' }
+        ]
+      }
     })
     expect(fetching.fetchingList).toEqual(true)
     expect(withPhrases.fetchingList).toEqual(false)
@@ -288,15 +299,47 @@ describe('phrase-reducer test', () => {
     expect(withPhrases.docStatus).toEqual(['translated', 'untranslated'])
   })
 
+  it('can track fetching filtered phrases', () => {
+    const initialState = phraseReducer(undefined, { type: 'any' })
+    const fetching = phraseReducer(initialState, {
+      type: PHRASE_LIST_REQUEST,
+      meta: {
+        filter: true
+      }
+    })
+    const withPhrases = phraseReducer(fetching, {
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' },
+          { id: 'p03' }
+        ]
+      }
+    })
+    expect(fetching.fetchingFilteredList).toEqual(true)
+    expect(withPhrases.fetchingFilteredList).toEqual(false)
+    // FIXME change to filtered phrases for doc
+    expect(withPhrases.inDoc['mydoc']).toEqual([
+      { id: 'p01' },
+      { id: 'p02' },
+      { id: 'p03' }
+    ])
+    expect(withPhrases.selectedPhraseId).toEqual('p01')
+    expect(withPhrases.docStatus).toEqual(['translated', 'untranslated'])
+  })
+
   it('can queue and clear a save', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -331,13 +374,14 @@ describe('phrase-reducer test', () => {
 
   it('can record finished save', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -372,13 +416,14 @@ describe('phrase-reducer test', () => {
 
   it('can record save info', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -408,10 +453,11 @@ describe('phrase-reducer test', () => {
   it('can select phrase', () => {
     const phraseList = [ { id: 'p01' }, { id: 'p02' } ]
     const initialState = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: phraseList,
-      statusList: ['translated', 'untranslated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: phraseList
+      }
     })
     const selected = phraseReducer(initialState, {
       type: SELECT_PHRASE,
@@ -442,10 +488,11 @@ describe('phrase-reducer test', () => {
   it('can select a specific plural', () => {
     const phraseList = [ { id: 'p01' }, { id: 'p02' } ]
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: phraseList,
-      statusList: ['translated', 'untranslated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: phraseList
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -577,13 +624,14 @@ describe('phrase-reducer test', () => {
     // fetch phrase list so it sets the selected index
     // should select phrase '123'
     const withPhrases = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: '1' },
-        { id: '2' }
-      ],
-      statusList: ['fuzzy', 'untranslated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: '1' },
+          { id: '2' }
+        ]
+      }
     })
     const withDetail = phraseReducer(withPhrases, {
       type: PHRASE_DETAIL_FETCHED,
@@ -621,13 +669,14 @@ describe('phrase-reducer test', () => {
 
   it('can copy suggestions', () => {
     const withPhraseList = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: [
-        { id: 'p01' },
-        { id: 'p02' }
-      ],
-      statusList: ['translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: [
+          { id: 'p01' },
+          { id: 'p02' }
+        ]
+      }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
@@ -683,10 +732,11 @@ describe('phrase-reducer test', () => {
     }
     const getState = () => mockState
     const withPhrases = phraseReducer(undefined, {
-      type: PHRASE_LIST_FETCHED,
-      docId: 'mydoc',
-      phraseList: phraseList,
-      statusList: ['translated', 'translated', 'translated']
+      type: PHRASE_LIST_SUCCESS,
+      payload: {
+        docId: 'mydoc',
+        phraseList: phraseList
+      }
     })
     const second = phraseReducer(withPhrases, { type: MOVE_NEXT, getState })
     const third = phraseReducer(second, { type: MOVE_NEXT, getState })
