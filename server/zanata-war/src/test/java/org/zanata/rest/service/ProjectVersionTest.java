@@ -184,6 +184,9 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String projectSlug = "sample-project";
         String versionSlug = "readonly";
 
+        HLocale fr = getEm().find(HLocale.class, 6L);
+        when(localeService.getByLocaleId(LocaleId.FR)).thenReturn(fr);
+
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);

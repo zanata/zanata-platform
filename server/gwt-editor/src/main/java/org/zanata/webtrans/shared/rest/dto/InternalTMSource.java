@@ -21,6 +21,7 @@
 package org.zanata.webtrans.shared.rest.dto;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -48,7 +49,7 @@ public class InternalTMSource implements Serializable, IsSerializable {
     private InternalTMChoice choice;
     private List<ProjectIterationId> projectIterationIds;
     @JsonIgnore
-    private List<Long> filteredProjectVersionIds;
+    private List<Long> filteredProjectVersionIds = Collections.emptyList();
 
     public InternalTMSource(InternalTMChoice choice,
             List<ProjectIterationId> projectIterationIds) {

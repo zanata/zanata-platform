@@ -526,8 +526,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 // sort match type
                 return result;
             }
-            // if TM is from TMX, getFromVersionId is null
-            // if fromVersionIds is empty, we have no restriction on source version
+            // if TM is from TMX, getFromVersionId is null.
+            // if internal TM source is SelectSome,
+            // we have a list of version ids to prioritise results
             if (m2.getFromVersionId() != null &&
                     m1.getFromVersionId() != null &&
                     internalTMSource.getChoice() == SelectSome) {
