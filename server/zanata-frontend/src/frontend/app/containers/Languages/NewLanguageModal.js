@@ -67,21 +67,21 @@ class NewLanguageModal extends Component {
   }
 
   updateField = (field, e) => {
-    this.setState({
+    this.setState(prevState => ({
       details: {
-        ...this.state.details,
+        ...prevState.details,
         [field]: e.target.value
       }
-    })
+    }))
   }
 
   updateCheckbox = (field) => {
-    this.setState({
+    this.setState(prevState => ({
       details: {
-        ...this.state.details,
-        [field]: !this.state.details[field]
+        ...prevState.details,
+        [field]: !prevState.details[field]
       }
-    })
+    }))
   }
 
   validateDetails = () => {
