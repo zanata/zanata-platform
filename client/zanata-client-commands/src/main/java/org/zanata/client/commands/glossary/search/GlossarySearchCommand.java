@@ -1,3 +1,23 @@
+/*
+ * Copyright 2017, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.zanata.client.commands.glossary.search;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,17 +32,18 @@ import org.zanata.client.commands.OptionsUtil;
 import org.zanata.rest.client.GlossaryClient;
 import org.zanata.rest.client.RestClientFactory;
 
-import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.zanata.client.util.GlossaryCommandUtil.getQualifiedProjectName;
+
 /**
  *
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  *
- **/
+ */
 public class GlossarySearchCommand extends ConfigurableCommand<GlossarySearchOptions> {
 
     private static final Logger log = LoggerFactory
@@ -49,19 +70,8 @@ public class GlossarySearchCommand extends ConfigurableCommand<GlossarySearchOpt
         }
 
         String project = getOpts().getProject();
-        String qualifiedName;
-        try {
-            qualifiedName = StringUtils.isBlank(project)
-                    ? client.getGlobalQualifiedName()
-                    : client.getProjectQualifiedName(project);
-        } catch (ResponseProcessingException rpe) {
-            if (rpe.getResponse().getStatus() == 404) {
-                log.error("Project {} not found", project);
-                return;
-            } else {
-                throw rpe;
-            }
-        }
+        String qualifiedName = getQualifiedProjectName(project, client);
+        if (qualifiedName == null) return;
         if (StringUtils.isBlank(getOpts().getFilter())) {
             log.error("Filter query parameter required");
             return;
