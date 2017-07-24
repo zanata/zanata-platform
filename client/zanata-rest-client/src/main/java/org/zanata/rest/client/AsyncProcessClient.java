@@ -146,7 +146,7 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
                 .path("resource")
                 .path("translations").path(locale.toString());
         Response response = webResource
-                .queryParam("docid", docId)
+                .queryParam("docId", docId)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("merge", merge)
                 .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
