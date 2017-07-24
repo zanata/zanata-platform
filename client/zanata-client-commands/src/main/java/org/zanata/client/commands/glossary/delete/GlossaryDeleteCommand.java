@@ -34,6 +34,7 @@ import org.zanata.rest.client.RestClientFactory;
 import javax.ws.rs.client.ResponseProcessingException;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
+import static org.zanata.client.util.GlossaryCommandUtil.getQualifiedProjectName;
 
 /**
  *
@@ -73,19 +74,8 @@ public class GlossaryDeleteCommand extends
         }
 
         String project = getOpts().getProject();
-        String qualifiedName;
-        try {
-            qualifiedName = StringUtils.isBlank(project)
-                    ? client.getGlobalQualifiedName()
-                    : client.getProjectQualifiedName(project);
-        } catch (ResponseProcessingException rpe) {
-            if (rpe.getResponse().getStatus() == 404) {
-                log.error("Project {} not found", project);
-                return;
-            } else {
-                throw rpe;
-            }
-        }
+        String qualifiedName = getQualifiedProjectName(project, client);
+        if (qualifiedName == null) return;
         if (getOpts().getAllGlossary()) {
             if (getOpts().isInteractiveMode()) {
                 ConsoleInteractor console = new ConsoleInteractorImpl(getOpts());
