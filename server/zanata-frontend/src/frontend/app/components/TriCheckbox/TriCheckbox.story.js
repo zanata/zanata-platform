@@ -218,19 +218,19 @@ class FancyTriCheckbox extends Component {
           checked
           indeterminate={false}
           onChange={this.onClick}
-          className={'tri-checkbox'}
+          className={'tri-checkbox-story'}
         />
         <RealTriCheckbox
           checked={false}
           indeterminate
           onChange={this.onClick}
-          className={'tri-checkbox'}
+          className={'tri-checkbox-story'}
         />
         <RealTriCheckbox
           checked={false}
           indeterminate={false}
           onChange={this.onClick}
-          className={'tri-checkbox'}
+          className={'tri-checkbox-story'}
         />
       </div>
     )
