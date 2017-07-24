@@ -1,13 +1,14 @@
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import { composeReducers, subReducer } from 'redux-sac'
-import filterStatusReducer from './filter-status-reducer'
+import filterStatusReducer, { defaultState as statusDefaultState }
+  from './filter-status-reducer'
 import {
   TOGGLE_ADVANCED_PHRASE_FILTERS,
   UPDATE_PHRASE_FILTER
 } from '../../actions/phrases-action-types'
 
-const defaultState = {
+export const defaultState = {
   showAdvanced: false,
   advanced: {
     text: '',
@@ -18,8 +19,8 @@ const defaultState = {
     sourceComment: '',
     translationComment: '',
     msgctxt: ''
-  }
-  // status: supplied by filterStatusReducer
+  },
+  status: statusDefaultState
 }
 
 export const phraseFilterReducer = handleActions({

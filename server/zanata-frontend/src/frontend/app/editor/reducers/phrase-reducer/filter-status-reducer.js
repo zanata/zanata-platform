@@ -5,7 +5,7 @@ import {
   UPDATE_STATUS_FILTER
 } from '../../actions/phrases-action-types'
 
-const defaultState = {
+export const defaultState = {
   all: true,
   approved: false,
   rejected: false,

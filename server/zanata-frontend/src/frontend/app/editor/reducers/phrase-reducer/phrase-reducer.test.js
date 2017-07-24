@@ -4,7 +4,7 @@ jest.disableAutomock()
 // Testing the combined phrase reducers since filter states are used in several
 // of the standard paging operations.
 import phraseReducer from '.'
-import phraseFilterReducer from './phrase-filter-reducer'
+import { defaultState as defaultFilterState } from './phrase-filter-reducer'
 import {
   CLAMP_PAGE,
   UPDATE_PAGE
@@ -15,9 +15,10 @@ import {
   COPY_FROM_ALIGNED_SOURCE,
   COPY_FROM_SOURCE,
   FETCHING_PHRASE_DETAIL,
-  PHRASE_LIST_REQUEST,
   PENDING_SAVE_INITIATED,
+  PHRASE_LIST_REQUEST,
   PHRASE_LIST_SUCCESS,
+  PHRASE_LIST_FAILED,
   PHRASE_DETAIL_FETCHED,
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
@@ -38,11 +39,13 @@ describe('phrase-reducer test', () => {
     const initialState = phraseReducer(undefined, { type: 'any' })
     expect(initialState).toEqual({
       fetchingList: false,
+      fetchingFilteredList: false,
       fetchingDetail: false,
       saveAsMode: false,
       inDoc: {},
+      inDocFiltered: {},
       detail: {},
-      filter: phraseFilterReducer(undefined, { type: 'any' }),
+      filter: defaultFilterState,
       selectedPhraseId: undefined,
       selectedTextRange: {
         start: 0,
@@ -119,7 +122,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           selectedPluralIndex: 2,
           sources: [ 'singular source', 'plural source' ],
@@ -140,6 +143,7 @@ describe('phrase-reducer test', () => {
   it('can copy glossary term', () => {
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -150,7 +154,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           newTranslations: [ 'copy something here', 'translations' ]
         },
@@ -186,6 +190,7 @@ describe('phrase-reducer test', () => {
   it('can copy from aligned source', () => {
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -196,7 +201,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           selectedPluralIndex: 2,
           sources: [ 'singular source', 'plural source' ],
@@ -215,6 +220,7 @@ describe('phrase-reducer test', () => {
   it('can copy from source', () => {
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -225,7 +231,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           selectedPluralIndex: 2,
           sources: [ 'singular source', 'plural source' ],
@@ -279,6 +285,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhrases = phraseReducer(fetching, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -296,7 +303,39 @@ describe('phrase-reducer test', () => {
       { id: 'p03' }
     ])
     expect(withPhrases.selectedPhraseId).toEqual('p01')
-    expect(withPhrases.docStatus).toEqual(['translated', 'untranslated'])
+  })
+
+  it('can can handle failed phrase fetch', () => {
+    const initialState = phraseReducer(undefined, { type: 'any' })
+    const fetching = phraseReducer(initialState, {
+      type: PHRASE_LIST_REQUEST,
+      meta: {
+        filter: false
+      }
+    })
+    const withFailure = phraseReducer(fetching, {
+      type: PHRASE_LIST_FAILED,
+      meta: { filter: false }
+    })
+    expect(fetching.fetchingList).toEqual(true)
+    expect(withFailure.fetchingList).toEqual(false)
+  })
+
+  // say this one 3 times fast
+  it('can can handle failed filtered phrase fetch', () => {
+    const initialState = phraseReducer(undefined, { type: 'any' })
+    const fetching = phraseReducer(initialState, {
+      type: PHRASE_LIST_REQUEST,
+      meta: {
+        filter: true
+      }
+    })
+    const withFailure = phraseReducer(fetching, {
+      type: PHRASE_LIST_FAILED,
+      meta: { filter: true }
+    })
+    expect(fetching.fetchingFilteredList).toEqual(true)
+    expect(withFailure.fetchingFilteredList).toEqual(false)
   })
 
   it('can track fetching filtered phrases', () => {
@@ -309,6 +348,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhrases = phraseReducer(fetching, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: true },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -321,18 +361,19 @@ describe('phrase-reducer test', () => {
     expect(fetching.fetchingFilteredList).toEqual(true)
     expect(withPhrases.fetchingFilteredList).toEqual(false)
     // FIXME change to filtered phrases for doc
-    expect(withPhrases.inDoc['mydoc']).toEqual([
+    expect(withPhrases.inDocFiltered['mydoc']).toEqual([
       { id: 'p01' },
       { id: 'p02' },
       { id: 'p03' }
     ])
-    expect(withPhrases.selectedPhraseId).toEqual('p01')
-    expect(withPhrases.docStatus).toEqual(['translated', 'untranslated'])
+    // should not auto-select phrase while filtering
+    expect(withPhrases.selectedPhraseId).toEqual(undefined)
   })
 
   it('can queue and clear a save', () => {
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -343,7 +384,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           sources: [ 'translation', 'translations' ],
           translations: ['', ''],
@@ -375,6 +416,7 @@ describe('phrase-reducer test', () => {
   it('can record finished save', () => {
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -385,7 +427,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           sources: [ 'translation', 'translations' ],
           translations: ['', ''],
@@ -417,6 +459,7 @@ describe('phrase-reducer test', () => {
   it('can record save info', () => {
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -427,7 +470,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           sources: [ 'translation', 'translations' ],
           translations: ['', '']
@@ -454,6 +497,7 @@ describe('phrase-reducer test', () => {
     const phraseList = [ { id: 'p01' }, { id: 'p02' } ]
     const initialState = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: phraseList
@@ -489,6 +533,7 @@ describe('phrase-reducer test', () => {
     const phraseList = [ { id: 'p01' }, { id: 'p02' } ]
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: phraseList
@@ -496,7 +541,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           newTranslations: [ 'translation', 'translations' ]
         },
@@ -535,7 +580,7 @@ describe('phrase-reducer test', () => {
     const initialState = phraseReducer(undefined, {})
     const withPhrases = phraseReducer(initialState, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         '123': {
           newTranslations: [ '', '' ]
         },
@@ -625,6 +670,7 @@ describe('phrase-reducer test', () => {
     // should select phrase '123'
     const withPhrases = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -635,7 +681,7 @@ describe('phrase-reducer test', () => {
     })
     const withDetail = phraseReducer(withPhrases, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         '1': {
           translations: [ 'original', 'originals' ],
           newTranslations: [ 'original', 'originals' ]
@@ -670,6 +716,7 @@ describe('phrase-reducer test', () => {
   it('can copy suggestions', () => {
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: [
@@ -680,7 +727,7 @@ describe('phrase-reducer test', () => {
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
       type: PHRASE_DETAIL_FETCHED,
-      phrases: {
+      payload: {
         'p01': {
           newTranslations: [ 'translation', 'SUGGESTIONS' ],
           selectedPluralIndex: 1
@@ -733,6 +780,7 @@ describe('phrase-reducer test', () => {
     const getState = () => mockState
     const withPhrases = phraseReducer(undefined, {
       type: PHRASE_LIST_SUCCESS,
+      meta: { filter: false },
       payload: {
         docId: 'mydoc',
         phraseList: phraseList
