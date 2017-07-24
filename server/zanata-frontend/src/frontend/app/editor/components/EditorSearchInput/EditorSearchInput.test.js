@@ -9,12 +9,13 @@ import { Icon } from '../../../components'
 import IconButton from '../IconButton'
 import { Panel, Button } from 'react-bootstrap'
 
+const callback = () => {}
+
 describe('EditorSearchInputTest', () => {
   it('renders input markup with show advanced but not focused', () => {
-    const doStuff = () => {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <EditorSearchInput
-        advanced
+        showAdvanced
         search={{
           text: 'it was the worst of',
           resourceId: 'para-0001',
@@ -25,8 +26,8 @@ describe('EditorSearchInputTest', () => {
           translationComment: 'blurst of times?! You stupid monkey!',
           msgctxt: 'chapter01.txt'
         }}
-        updateSearch={doStuff}
-        toggleAdvanced={doStuff}
+        updateSearch={callback}
+        toggleAdvanced={callback}
       />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
@@ -39,13 +40,13 @@ describe('EditorSearchInputTest', () => {
             placeholder="Search source and target text"
             maxLength="1000"
             value="it was the worst of"
-            onChange={doStuff}
+            onChange={callback}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
           <span className="InputGroup-addon">
             <IconButton icon="cross"
               title="Clear search"
               iconSize="n1"
-              onClick={doStuff} />
+              onClick={callback} />
           </span>
           <span className="InputGroup-addon btn-xs advsearch btn-link"
             >Hide advanced</span>
@@ -58,7 +59,7 @@ describe('EditorSearchInputTest', () => {
               <div className="InputGroup--outlined InputGroup--wide
                 InputGroup--rounded">
                 <input type="text"
-                  onChange={doStuff}
+                  onChange={callback}
                   placeholder="exact Resource ID for a string"
                   className="InputGroup-input"
                   value="para-0001" />
@@ -69,7 +70,7 @@ describe('EditorSearchInputTest', () => {
               <div className="InputGroup--outlined InputGroup--wide
                 InputGroup--rounded">
                 <input type="text"
-                  onChange={doStuff}
+                  onChange={callback}
                   placeholder="username"
                   className="InputGroup-input"
                   value="cdickens" />
@@ -81,7 +82,7 @@ describe('EditorSearchInputTest', () => {
               <div className="InputGroup--outlined InputGroup--wide
                 InputGroup--rounded">
                 <input type="text"
-                  onChange={doStuff}
+                  onChange={callback}
                   placeholder="date in format yyyy/mm/dd"
                   className="InputGroup-input"
                   value="1859-12-31" />
@@ -93,7 +94,7 @@ describe('EditorSearchInputTest', () => {
               <div className="InputGroup--outlined InputGroup--wide
                 InputGroup--rounded">
                 <input type="text"
-                  onChange={doStuff}
+                  onChange={callback}
                   placeholder="date in format yyyy/mm/dd"
                   className="InputGroup-input"
                   value="1859-01-01" />
@@ -104,7 +105,7 @@ describe('EditorSearchInputTest', () => {
               <div className="InputGroup--outlined InputGroup--wide
                 InputGroup--rounded">
                 <input type="text"
-                  onChange={doStuff}
+                  onChange={callback}
                   placeholder="source comment text"
                   className="InputGroup-input"
                   value="England and France" />
@@ -115,7 +116,7 @@ describe('EditorSearchInputTest', () => {
               <div className="InputGroup--outlined InputGroup--wide
                 InputGroup--rounded">
                 <input type="text"
-                  onChange={doStuff}
+                  onChange={callback}
                   placeholder="translation comment text"
                   className="InputGroup-input"
                   value="blurst of times?! You stupid monkey!" />
@@ -127,7 +128,7 @@ describe('EditorSearchInputTest', () => {
               <div className="InputGroup--outlined InputGroup--wide
                 InputGroup--rounded">
                 <input type="text"
-                  onChange={doStuff}
+                  onChange={callback}
                   placeholder="exact Message Context for a string"
                   className="InputGroup-input"
                   value="chapter01.txt" />
@@ -135,7 +136,7 @@ describe('EditorSearchInputTest', () => {
             </li>
           </ul>
           <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
-            onClick={doStuff}>
+            onClick={callback}>
             Clear all
           </Button>
         </Panel>
@@ -145,8 +146,6 @@ describe('EditorSearchInputTest', () => {
   })
 
   it('Clears search text when X is clicked', () => {
-    const doStuff = () => {}
-
     let updateSearchPayload
     const updateSearch = (payload) => {
       updateSearchPayload = payload
@@ -154,7 +153,7 @@ describe('EditorSearchInputTest', () => {
 
     const inputWithText = TestUtils.renderIntoDocument(
       <EditorSearchInput
-        advanced
+        showAdvanced
         search={{
           text: 'it was the worst of',
           resourceId: 'para-0001',
@@ -166,7 +165,7 @@ describe('EditorSearchInputTest', () => {
           msgctxt: 'chapter01.txt'
         }}
         updateSearch={updateSearch}
-        toggleAdvanced={doStuff}
+        toggleAdvanced={callback}
       />
     )
 

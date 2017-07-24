@@ -1,6 +1,7 @@
 import updateObject from 'immutability-helper'
 import { some, negate, isEmpty } from 'lodash'
-import phraseFilterReducer from './phrase-filter-reducer'
+import phraseFilterReducer, { defaultState as defaultFilterState }
+  from './phrase-filter-reducer'
 import { composeReducers, subReducer } from 'redux-sac'
 import {
   CLAMP_PAGE,
@@ -65,7 +66,8 @@ const defaultState = {
   paging: {
     countPerPage: 20,
     pageIndex: 0
-  }
+  },
+  filter: defaultFilterState
 }
 
 export const phraseReducer = (state = defaultState, action) => {

@@ -6,6 +6,7 @@ import {
   UPDATE_PHRASE_FILTER
 } from '../../actions/phrases-action-types'
 import { phraseFilterReducer } from './phrase-filter-reducer'
+import { defaultState as statusDefaultState } from './filter-status-reducer'
 
 describe('filter-status-reducer test', () => {
   it('can set default state', () => {
@@ -21,7 +22,8 @@ describe('filter-status-reducer test', () => {
         sourceComment: '',
         translationComment: '',
         msgctxt: ''
-      }
+      },
+      status: statusDefaultState
     })
   })
 
