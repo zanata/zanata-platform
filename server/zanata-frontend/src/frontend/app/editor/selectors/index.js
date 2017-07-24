@@ -39,7 +39,7 @@ const getCountPerPage = state => state.phrases.paging.countPerPage
 
 const getFilter = state => state.phrases.filter
 const getAdvancedFilter = state => state.phrases.filter.advanced
-const getHasAdvancedFilter = createSelector(getAdvancedFilter,
+export const getHasAdvancedFilter = createSelector(getAdvancedFilter,
   advancedFilter => some(advancedFilter, negate(isEmpty)))
 
 const getPhrasesInDoc = state => state.phrases.inDoc
