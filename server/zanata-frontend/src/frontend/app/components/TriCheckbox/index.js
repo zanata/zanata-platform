@@ -18,18 +18,17 @@ class TriCheckbox extends Component {
   render () {
     const className = cx('tri-checkbox', this.props.className)
     const { indeterminate, ...otherProps } = this.props
+    const hasIndeterminate = (nativeComponent) => {
+      if (nativeComponent) {
+        nativeComponent.indeterminate = indeterminate
+      }
+    }
     return (
       <div>
         <input
           className={className}
           type="checkbox"
-          ref={(nativeComponent) => {
-            if (nativeComponent) {
-              /* eslint-disable no-param-reassign */
-              nativeComponent.indeterminate = indeterminate
-              /* eslint-enable no-param-reassign */
-            }
-          }}
+          ref={hasIndeterminate}
           {...otherProps}
         />
       </div>
