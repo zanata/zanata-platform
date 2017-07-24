@@ -160,9 +160,9 @@ public class ZanataRestCaller {
     }
 
     public void postTargetDocResource(String projectSlug, String iterationSlug,
-            String idNoSlash, LocaleId localeId,
+            String docId, LocaleId localeId,
             TranslationsResource translationsResource, String mergeType) {
-        asyncPushTarget(projectSlug, iterationSlug, idNoSlash, localeId,
+        asyncPushTarget(projectSlug, iterationSlug, docId, localeId,
                 translationsResource, mergeType, false);
     }
 
