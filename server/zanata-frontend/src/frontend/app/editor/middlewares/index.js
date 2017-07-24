@@ -1,10 +1,8 @@
 import { createStore, applyMiddleware } from 'redux'
 import { apiMiddleware } from 'redux-api-middleware'
-import newContextFetchMiddleware from './middlewares/new-context-fetch'
-import searchSelectedPhraseMiddleware
-  from './middlewares/selected-phrase-searches'
-import getStateInActions from './middlewares/getstate-in-actions'
-import titleUpdateMiddleware from './middlewares/title-update'
+import newContextFetchMiddleware from './new-context-fetch'
+import getStateInActions from './getstate-in-actions'
+import titleUpdateMiddleware from './title-update'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 
@@ -23,9 +21,9 @@ const loggerMiddleware = createLogger({
 
 const createStoreWithMiddleware =
   applyMiddleware(
+    // TODO check if react helmet works here instead
     titleUpdateMiddleware,
     newContextFetchMiddleware,
-    searchSelectedPhraseMiddleware,
     // reduxRouterMiddleware,
     thunk,
     apiMiddleware,

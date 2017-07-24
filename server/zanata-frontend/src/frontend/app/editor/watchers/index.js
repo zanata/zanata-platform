@@ -10,10 +10,12 @@ import {
   watchRequiredPhraseList,
   watchAdvancedFilterList
 } from './phrase-list'
+import { watchSelectedPhraseSearches } from './selected-phrase-searches'
 
 export default function addWatchers (store) {
   watchRequiredPhraseList(store)
   watchAdvancedFilterList(store)
   watchVisiblePhrasesInStore(store)
   watchQueryStringPageNumber(store)
+  watchSelectedPhraseSearches(store)
 }
