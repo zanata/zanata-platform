@@ -28,17 +28,11 @@ public class GlossarySearchOptionsImpl extends ConfigurableGlossaryOptionsImpl
         implements GlossarySearchOptions {
 
     private String filter;
-    private String project;
     private boolean raw;
 
     @Override
     public String getFilter() {
         return filter;
-    }
-
-    @Override
-    public String getProject() {
-        return this.project;
     }
 
     @Override
@@ -50,12 +44,6 @@ public class GlossarySearchOptionsImpl extends ConfigurableGlossaryOptionsImpl
             usage = "Search term for glossary entries.")
     public void setFilter(String filter) {
         this.filter = filter;
-    }
-
-    @Option(name = "--project-glossary", metaVar = "PROJECT",
-            usage = "Project Glossary ID to restrict search.")
-    public void setProject(String project) {
-        this.project = project;
     }
 
     @Option(name = "--raw", metaVar = "RAW",
