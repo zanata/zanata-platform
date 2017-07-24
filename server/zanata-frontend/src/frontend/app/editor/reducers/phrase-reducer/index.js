@@ -27,7 +27,11 @@ import {
   UNDO_EDIT
 } from '../../actions/phrases-action-types'
 import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
-import { getFilteredPhrases, getMaxPageIndex } from '../../selectors'
+import {
+  getFilteredPhrases,
+  getHasAdvancedFilter,
+  getMaxPageIndex
+} from '../../selectors'
 import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
@@ -134,25 +138,20 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case PHRASE_LIST_SUCCESS:
-    // TODO only select phrase if this is the visible list. Based on checking
-    //      if state.filter.advanced is empty (with a transform selector) and
-    //      action.meta.filter.
-
       if (action.meta.filter) {
-        // select the first phrase if there is one
-        const selectedPhraseId = action.payload.phraseList.length &&
-        action.payload.phraseList[0].id
         return update({
           fetchingFilteredList: {$set: false},
           inDocFiltered: {
             [action.payload.docId]: {$set: action.payload.phraseList}
-          },
-          selectedPhraseId: {$set: selectedPhraseId}
+          }
         })
       } else {
-        // select the first phrase if there is one
-        const selectedPhraseId = action.payload.phraseList.length &&
-        action.payload.phraseList[0].id
+        // select the first phrase if unfiltered list is showing
+        const showingFiltered = getHasAdvancedFilter({ phrases: state })
+        const selectedPhraseId = showingFiltered
+          // this list not visible, keep same value
+          ? state.selectedPhraseId
+          : action.payload.phraseList.length && action.payload.phraseList[0].id
         return update({
           fetchingList: {$set: false},
           inDoc: {[action.payload.docId]: {$set: action.payload.phraseList}},
