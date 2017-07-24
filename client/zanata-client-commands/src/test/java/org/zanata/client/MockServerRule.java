@@ -175,17 +175,17 @@ public class MockServerRule extends ExternalResource {
                 Collections.<ResourceMeta>emptyList());
         // this assumes async push is always success
         when(
-                asyncClient.startSourceDocCreationOrUpdate(
-                        anyString(),
-                        eq(pushOpts.getProj()), eq(pushOpts.getProjectVersion()),
+                asyncClient.startSourceDocCreationOrUpdateWithDocId(
+                        eq(pushOpts.getProj()),
+                        eq(pushOpts.getProjectVersion()),
                         any(Resource.class), anySetOf(String.class),
-                        eq(false)))
+                        anyString()))
                 .thenReturn(running);
         when(
-                asyncClient.startTranslatedDocCreationOrUpdate(
-                        docIdCaptor.capture(), eq(pushOpts.getProj()),
+                asyncClient.startTranslatedDocCreationOrUpdateWithDocId(
+                        eq(pushOpts.getProj()),
                         eq(pushOpts.getProjectVersion()), localeIdCaptor.capture(),
-                        transResourceCaptor.capture(),
+                        transResourceCaptor.capture(), docIdCaptor.capture(),
                         extensionCaptor.capture(), eq(pushOpts.getMergeType()),
                         eq(pushOpts.isMyTrans())))
                 .thenReturn(running);
@@ -221,17 +221,18 @@ public class MockServerRule extends ExternalResource {
     }
 
     public void verifyPushSource() {
-        verify(asyncClient).startSourceDocCreationOrUpdate(
-                docIdCaptor.capture(), eq(pushOpts.getProj()),
+        verify(asyncClient).startSourceDocCreationOrUpdateWithDocId(
+                eq(pushOpts.getProj()),
                 eq(pushOpts.getProjectVersion()), resourceCaptor.capture(),
-                extensionCaptor.capture(), eq(false));
+                extensionCaptor.capture(), docIdCaptor.capture());
     }
 
     public void verifyPushTranslation() {
-        verify(asyncClient).startTranslatedDocCreationOrUpdate(
-                docIdCaptor.capture(), eq(pushOpts.getProj()),
+        verify(asyncClient).startTranslatedDocCreationOrUpdateWithDocId(
+                eq(pushOpts.getProj()),
                 eq(pushOpts.getProjectVersion()), localeIdCaptor.capture(),
-                transResourceCaptor.capture(), extensionCaptor.capture(),
+                transResourceCaptor.capture(), docIdCaptor.capture(),
+                extensionCaptor.capture(),
                 eq(pushOpts.getMergeType()), eq(pushOpts.isMyTrans()));
     }
 

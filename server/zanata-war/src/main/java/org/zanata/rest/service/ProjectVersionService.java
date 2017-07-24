@@ -45,6 +45,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.ProjectIteration;
@@ -306,7 +307,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         if (StringUtils.isEmpty(noSlashDocId)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        String docId = URIHelper.convertFromDocumentURIId(noSlashDocId);
+        String docId = RestUtil.convertFromDocumentURIId(noSlashDocId);
         HDocument document = documentDAO
                 .getByProjectIterationAndDocId(projectSlug, versionSlug, docId);
         if (document == null) {
