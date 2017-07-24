@@ -209,6 +209,34 @@ class TriCheckboxGroup extends Component {
   }
 }
 
+class FancyTriCheckbox extends Component {
+  render () {
+    return (
+      <div>
+        <h3> Passing custom styles to the TriCheckbox </h3>
+        <RealTriCheckbox
+          checked
+          indeterminate={false}
+          onChange={this.onClick}
+          className={'tri-checkbox'}
+        />
+        <RealTriCheckbox
+          checked={false}
+          indeterminate
+          onChange={this.onClick}
+          className={'tri-checkbox'}
+        />
+        <RealTriCheckbox
+          checked={false}
+          indeterminate={false}
+          onChange={this.onClick}
+          className={'tri-checkbox'}
+        />
+      </div>
+    )
+  }
+}
+
 storiesOf('TriCheckbox', module)
   .add('default', () => (
     <TriCheckbox onClick={action('onClick')} />
@@ -222,4 +250,7 @@ storiesOf('TriCheckbox', module)
         {checked: false, name: 'pear'}
       ]}
       onClick={action('onClick')} />
+  ))
+  .add('styled-tricheckbox', () => (
+    <FancyTriCheckbox onClick={action('onClick')} />
   ))
