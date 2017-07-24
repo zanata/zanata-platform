@@ -25,20 +25,20 @@ class EditorSearchInput extends React.Component {
   toggleAdvanced = () => {
     // ensure the action is visible in the logger
     this.props.toggleAdvanced()
-    this.setState({
-      showAdvanced: !this.state.showAdvanced
-    })
+    this.setState(prevState => ({
+      showAdvanced: !prevState.showAdvanced
+    }))
   }
 
   updateSearch = (search) => {
     // ensure the action is visible in the logger
     this.props.updateSearch(search)
-    this.setState({
+    this.setState(prevState => ({
       search: {
-        ...this.state.search,
+        ...prevState.search,
         ...search
       }
-    })
+    }))
   }
 
   render () {
