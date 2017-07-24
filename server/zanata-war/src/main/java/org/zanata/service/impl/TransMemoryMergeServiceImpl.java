@@ -20,13 +20,14 @@
  */
 package org.zanata.service.impl;
 
+import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectSome;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
@@ -40,7 +41,6 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -52,7 +52,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.ModelEntityBase;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.EntityType;
 import org.zanata.model.type.TranslationSourceType;
@@ -80,6 +79,7 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -255,28 +255,16 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             return AsyncTaskResult.completed();
         }
 
-        List<Long> fromVersionIds;
         InternalTMSource internalTMSource = mergeRequest.getInternalTMSource();
-        if (mergeRequest.getInternalTMSource().getChoice() == InternalTMSource.InternalTMChoice.SelectSome) {
-            fromVersionIds = mergeRequest.getInternalTMSource()
-                    .getProjectIterationIds().stream()
-                    .map(projectIterationId -> projectIterationDAO.getBySlug(
-                            projectIterationId.getProjectSlug(),
-                            projectIterationId.getIterationSlug()))
-                    .filter(ver -> ver != null
-                            && ver.getStatus() != EntityStatus.OBSOLETE
-                            && localeServiceImpl
-                            .getSupportedLanguageByProjectIteration(ver)
-                            .contains(targetLocale))
-                    .map(ModelEntityBase::getId).collect(Collectors.toList());
-            if (fromVersionIds.isEmpty()) {
-                throw new IllegalArgumentException("selected internal TM versions list has nothing to copy from");
-            }
-            // we update internal TM source selection list
-            internalTMSource.setFilteredProjectVersionIds(fromVersionIds);
+        List<Long> fromVersionIds = internalTMSource.getFilteredProjectVersionIds();
+
+
+        if (internalTMSource.getChoice() == SelectSome
+                && fromVersionIds.isEmpty()) {
+            log.error(
+                    "selected internal TM versions list has nothing to copy from");
+            return AsyncTaskResult.completed();
         }
-
-
 
         long mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
                 targetVersion.getId(), targetLocale);
