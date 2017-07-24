@@ -25,6 +25,12 @@ export const getLang = state => state.context.lang
 // FIXME move detail to detail[lang] and add timestamps
 const getPhrasesDetail = state => state.phrases.detail
 
+const getSelectedPhraseId = state => state.phrases.selectedPhraseId
+export const getSelectedPhrase = createSelector(
+  getSelectedPhraseId, getPhrasesDetail,
+  (phraseId, detail) => detail[phraseId]
+)
+
 // TODO move docId elsewhere in state
 const getDocId = state => state.context.docId
 
