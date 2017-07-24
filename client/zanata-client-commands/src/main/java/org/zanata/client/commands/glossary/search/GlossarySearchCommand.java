@@ -114,5 +114,6 @@ public class GlossarySearchCommand extends ConfigurableCommand<GlossarySearchOpt
                 log.info("Content: {}", contents);
             }
         }
+        log.info("");
     }
 }
