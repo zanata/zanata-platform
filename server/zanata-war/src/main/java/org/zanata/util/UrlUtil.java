@@ -138,6 +138,10 @@ public class UrlUtil implements Serializable {
         return contextPath + "/project/view/" + projectSlug + dswidQuery;
     }
 
+    public String groupUrl(String groupSlug) {
+        return contextPath + "/version-group/view/" + groupSlug + dswidQuery;
+    }
+
     /**
      * Get add-version url with dswid parameter
      */
