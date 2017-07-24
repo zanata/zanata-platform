@@ -6650,9 +6650,10 @@ table.tmx-table .badge .n1 {
   hyphens: initial;
 }
 
-.new-zanata .button--group input[type=radio]:checked+.button--Off {
+.new-zanata .button--group input[type=radio]:checked+.button--Off,
+.new-zanata .button--group input[type=radio]:checked+.button--Off:hover {
   background-color: @color-dark !important;
-  color: #f2f2f2;
+  color: @gray-lighter;
 }
 
 .panel__header a#new-version-link  i.i.i--add:not(.i--large) {
