@@ -84,7 +84,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
 
     @Produces
     TransactionUtil transactionUtil() {
-        return new TransactionUtilForUnitTest(getEmf().createEntityManager());
+        return new TransactionUtilForUnitTest(getEmf().createEntityManager(), true);
     }
 
     @Produces
@@ -170,7 +170,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
 
         Future<Void> future = service.startMergeTranslations(
                 targetVersion.getId(),
-                new VersionTMMerge(targetLocale.getLocaleId(), numOfTextFlows,
+                new VersionTMMerge(targetLocale.getLocaleId(), 100,
                         MergeRule.REJECT, MergeRule.REJECT, MergeRule.FUZZY,
                         InternalTMSource.SELECT_NONE),
                 new MergeTranslationsTaskHandle(
