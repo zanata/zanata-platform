@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,8 @@ import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface TranslationMemoryService extends TranslationFinder {
+public interface TranslationMemoryService extends TranslationFinder,
+        Serializable {
 
     TransMemoryDetails getTransMemoryDetail(HLocale hLocale, HTextFlow tf);
 

@@ -93,6 +93,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -121,6 +122,23 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     // SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
     private static final double MINIMUM_SIMILARITY = 1.0;
     private static final String LUCENE_KEY_WORDS = "(\\s*)(AND|OR|NOT)(\\s+)";
+    private static final long serialVersionUID = -570503476695179297L;
+
+    // sort desc by lastChanged of HTextFlowTarget
+    private transient final Sort lastChangedSort = new Sort(SortField.FIELD_SCORE,
+            new SortField(IndexFieldLabels.LAST_CHANGED_FIELD,
+                    SortField.Type.STRING, true));
+    private transient final TermQuery newStateQuery =
+            new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
+                    ContentState.New.toString()));
+    private transient final TermQuery needReviewStateQuery =
+            new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
+                    ContentState.NeedReview.toString()));
+    private transient final TermQuery rejectedStateQuery =
+            new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
+                    ContentState.Rejected.toString()));
+
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private FullTextEntityManager entityManager;
     private UrlUtil urlUtil;
 
@@ -133,20 +151,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     @SuppressWarnings("unused")
     public TranslationMemoryServiceImpl() {
     }
-
-    // sort desc by lastChanged of HTextFlowTarget
-    private final Sort lastChangedSort = new Sort(SortField.FIELD_SCORE,
-            new SortField(IndexFieldLabels.LAST_CHANGED_FIELD,
-                    SortField.Type.STRING, true));
-    private final TermQuery newStateQuery =
-            new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
-                    ContentState.New.toString()));
-    private final TermQuery needReviewStateQuery =
-            new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
-                    ContentState.NeedReview.toString()));
-    private final TermQuery rejectedStateQuery =
-            new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
-                    ContentState.Rejected.toString()));
 
     @Override
     public TransMemoryDetails getTransMemoryDetail(HLocale hLocale,

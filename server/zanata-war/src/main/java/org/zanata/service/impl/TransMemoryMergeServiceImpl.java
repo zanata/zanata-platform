@@ -80,6 +80,7 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Sean Flanigan
@@ -104,10 +105,13 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private TransMemoryUnitDAO transMemoryUnitDAO;
     private TranslationMemoryService translationMemoryServiceImpl;
     private TranslationService translationServiceImpl;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Event<TextFlowTargetUpdateContextEvent> textFlowTargetUpdateContextEvent;
-
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Event<TransMemoryMergeEvent> transMemoryMergeEvent;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Event<TransMemoryMergeProgressEvent> transMemoryMergeProgressEvent;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private TransactionUtil transactionUtil;
 
     private ProjectIterationDAO projectIterationDAO;
