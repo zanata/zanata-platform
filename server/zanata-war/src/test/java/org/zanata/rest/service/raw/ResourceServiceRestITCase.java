@@ -49,7 +49,8 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPutGetResourceWithExtension() {
+    @SuppressWarnings("deprecation")
+    public void testPutGetResourceWithExtensionDeprecated() {
         log.debug("put resource:" + sr.toString());
         getSourceDocResource().putResource(sr.getName(), sr, new StringSet(
                 "gettext;comment"), false);
@@ -64,11 +65,44 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPutGetNoExtensionResource() {
+    public void testPutGetResourceWithExtension() {
+        log.debug("put resource:" + sr.toString());
+        getSourceDocResource().putResourceWithDocId(sr, sr.getName(), new StringSet(
+                "gettext;comment"), false);
+        Resource get = getResourceFromResponse(
+                getSourceDocResource().getResourceWithDocId(
+                        sr.getName(),
+                        new StringSet("gettext;comment")));
+        ResourceTestUtil.clearRevs(sr);
+        ResourceTestUtil.clearRevs(get);
+        assertThat(get, equalTo(sr));
+    }
+
+    @Test
+    @RunAsClient
+    @SuppressWarnings("deprecation")
+    public void testPutGetNoExtensionResourceDeprecated() {
         log.debug("put resource:" + sr.toString());
         getSourceDocResource().putResource(sr.getName(), sr, null, false);
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResource(sr.getName(),
+                        new StringSet("gettext;comment")));
+        Resource base = resourceTestFactory.getTextFlowTest();
+        ResourceTestUtil.clearRevs(base);
+        ResourceTestUtil.clearRevs(get);
+        log.debug("expect:" + base.toString());
+        log.debug("actual:" + get.toString());
+        assertThat(get.toString(), is(base.toString()));
+    }
+
+    @Test
+    @RunAsClient
+    public void testPutGetNoExtensionResource() {
+        log.debug("put resource:" + sr.toString());
+        getSourceDocResource()
+                .putResourceWithDocId(sr, sr.getName(), null, false);
+        Resource get = getResourceFromResponse(
+                getSourceDocResource().getResourceWithDocId(sr.getName(),
                         new StringSet("gettext;comment")));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
@@ -82,10 +116,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testPutNoExtensionGetResource() {
         log.debug("put resource:" + sr.toString());
-        getSourceDocResource().putResource(sr.getName(), sr, new StringSet(
+        getSourceDocResource().putResourceWithDocId(sr, sr.getName(), new StringSet(
                 "gettext;comment"), false);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(), null));
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
@@ -96,7 +130,8 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPutGetResource() {
+    @SuppressWarnings("deprecation")
+    public void testPutGetResourceDeprecated() {
         getSourceDocResource().putResource(sr.getName(), sr, null, false);
         Resource base = resourceTestFactory.getTextFlowTest();
         Resource get = getResourceFromResponse(
@@ -108,11 +143,12 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPostGetResource() {
-        getSourceDocResource().post(sr, null, true);
+    public void testPutGetResource() {
+        getSourceDocResource()
+                .putResourceWithDocId(sr, sr.getName(), null, false);
         Resource base = resourceTestFactory.getTextFlowTest();
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(), null));
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         assertThat(get.toString(), is(base.toString()));
@@ -120,7 +156,20 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPostGetResourceWithExtension() {
+    public void testPostGetResource() {
+        getSourceDocResource().post(sr, null, true);
+        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource get = getResourceFromResponse(
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
+        ResourceTestUtil.clearRevs(base);
+        ResourceTestUtil.clearRevs(get);
+        assertThat(get.toString(), is(base.toString()));
+    }
+
+    @Test
+    @RunAsClient
+    @SuppressWarnings("deprecation")
+    public void testPostGetResourceWithExtensionDeprecated() {
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResource(sr.getName(),
@@ -134,11 +183,41 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
+    public void testPostGetResourceWithExtension() {
+        getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
+        Resource get = getResourceFromResponse(
+                getSourceDocResource().getResourceWithDocId(sr.getName(),
+                        new StringSet("gettext;comment")));
+        ResourceTestUtil.clearRevs(sr);
+        ResourceTestUtil.clearRevs(get);
+        log.debug("expect:" + sr.toString());
+        log.debug("actual:" + get.toString());
+        assertThat(get.toString(), is(sr.toString()));
+    }
+
+    @Test
+    @RunAsClient
+    @SuppressWarnings("deprecation")
+    public void testPostGetNoExtensionResourceDeprecated() {
+        log.debug("post resource:" + sr.toString());
+        getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
+        Resource get = getResourceFromResponse(
+                getSourceDocResource().getResource(sr.getName(), null));
+        Resource base = resourceTestFactory.getTextFlowTest();
+        ResourceTestUtil.clearRevs(base);
+        ResourceTestUtil.clearRevs(get);
+        log.debug("expect:" + base.toString());
+        log.debug("actual:" + get.toString());
+        assertThat(get.toString(), is(base.toString()));
+    }
+
+    @Test
+    @RunAsClient
     public void testPostNoExtensionGetResource() {
         log.debug("post resource:" + sr.toString());
         getSourceDocResource().post(sr, null, true);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(),
+                getSourceDocResource().getResourceWithDocId(sr.getName(),
                         new StringSet("gettext;comment")));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
@@ -156,7 +235,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         log.debug("post resource:" + sr.toString());
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(), null));
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
@@ -167,7 +246,8 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPutGetResourceMeta() {
+    @SuppressWarnings("deprecation")
+    public void testPutGetResourceMetaDeprecated() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
         getSourceDocResource().putResource(res.getName(), res, new StringSet(
@@ -188,17 +268,39 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPutNoExtensionGetResourceMeta() {
+    public void testPutGetResourceMeta() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
-        getSourceDocResource().putResource(res.getName(), res, null, false);
+        getSourceDocResource().putResourceWithDocId(res, res.getName(), new StringSet(
+                "gettext;comment"), false);
         ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
-        ResourceMeta base = resourceTestFactory.getResourceMeta();
-        getSourceDocResource().putResourceMeta(sr.getName(), sr, null);
+        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(), new StringSet(
+                "gettext;comment"));
         log.debug("get resource meta");
         Response resourceGetResponse =
                 getSourceDocResource()
-                        .getResourceMeta(sr.getName(), new StringSet(
+                        .getResourceMetaWithDocId(sr.getName(), new StringSet(
+                                "gettext;comment"));
+        ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
+        ResourceTestUtil.clearRevs(sr);
+        ResourceTestUtil.clearRevs(get);
+        assertThat(sr, equalTo(get));
+    }
+
+    @Test
+    @RunAsClient
+    public void testPutNoExtensionGetResourceMeta() {
+        log.debug("test put get resource meta service");
+        Resource res = resourceTestFactory.getTextFlowTest();
+        getSourceDocResource()
+                .putResourceWithDocId(res, res.getName(), null, false);
+        ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
+        ResourceMeta base = resourceTestFactory.getResourceMeta();
+        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(), null);
+        log.debug("get resource meta");
+        Response resourceGetResponse =
+                getSourceDocResource()
+                        .getResourceMetaWithDocId(sr.getName(), new StringSet(
                                 "gettext;comment"));
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(base);
@@ -208,7 +310,8 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPutGetNoExtensionResourceMeta() {
+    @SuppressWarnings("deprecation")
+    public void testPutGetNoExtensionResourceMetaDeprecated() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
         getSourceDocResource().putResource(res.getName(), res, null, false);
@@ -227,7 +330,29 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testDeleteResource() {
+    public void testPutGetNoExtensionResourceMeta() {
+        log.debug("test put get resource meta service");
+        Resource res = resourceTestFactory.getTextFlowTest();
+        getSourceDocResource()
+                .putResourceWithDocId(res, res.getName(), null, false);
+        ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
+        ResourceMeta base = resourceTestFactory.getResourceMeta();
+        getSourceDocResource()
+                .putResourceMetaWithDocId(sr, sr.getName(), new StringSet(
+                        "gettext;comment"));
+        log.debug("get resource meta");
+        Response resourceGetResponse =
+                getSourceDocResource().getResourceMetaWithDocId(sr.getName(), null);
+        ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
+        ResourceTestUtil.clearRevs(base);
+        ResourceTestUtil.clearRevs(get);
+        assertThat(get, equalTo(base));
+    }
+
+    @Test
+    @RunAsClient
+    @SuppressWarnings("deprecation")
+    public void testDeleteResourceDeprecated() {
         Resource rs1 = resourceTestFactory.getTextFlowTest2();
         getSourceDocResource().post(rs1, null, true);
         Response resourceGetResponse =
@@ -244,7 +369,25 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
 
     @Test
     @RunAsClient
-    public void testPostGetResourceWithUnderscoreInFileNameWithExtension() {
+    public void testDeleteResource() {
+        Resource rs1 = resourceTestFactory.getTextFlowTest2();
+        getSourceDocResource().post(rs1, null, true);
+        Response resourceGetResponse =
+                getSourceDocResource().deleteResourceWithDocId(rs1.getName());
+        assertThat(resourceGetResponse.getStatus(),
+                is(Status.OK.getStatusCode()));
+
+        Resource rs2 = resourceTestFactory.getTextFlowTest();
+        Response resourceGetResponse2 =
+                getSourceDocResource().deleteResourceWithDocId(rs2.getName());
+        assertThat(resourceGetResponse2.getStatus(),
+                is(Status.NOT_FOUND.getStatusCode()));
+    }
+
+    @Test
+    @RunAsClient
+    @SuppressWarnings("deprecation")
+    public void testPostGetResourceWithUnderscoreInFileNameWithExtensionDeprecated() {
         Resource resource = new Resource("_test1.file-a");
         resource.setContentType(sr.getContentType());
         resource.setExtensions(sr.getExtensions());
@@ -263,4 +406,24 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(got, is(expected));
     }
 
+    @Test
+    @RunAsClient
+    public void testPostGetResourceWithUnderscoreInFileNameWithExtension() {
+        Resource resource = new Resource("_test1.file-a");
+        resource.setContentType(sr.getContentType());
+        resource.setExtensions(sr.getExtensions());
+        resource.setLang(sr.getLang());
+        resource.setType(sr.getType());
+        getSourceDocResource().post(resource, new StringSet("gettext;comment"), false);
+        Resource get = getResourceFromResponse(
+                getSourceDocResource().getResourceWithDocId(resource.getName(),
+                        new StringSet("gettext;comment")));
+        ResourceTestUtil.clearRevs(resource);
+        ResourceTestUtil.clearRevs(get);
+        String expected = RawRestTestUtils.jaxbMarhsal(resource);
+        log.debug("expect:" + expected);
+        String got = RawRestTestUtils.jaxbMarhsal(get);
+        log.debug("actual:" + got);
+        assertThat(got, is(expected));
+    }
 }

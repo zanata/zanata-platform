@@ -32,10 +32,10 @@ import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
-import org.zanata.rest.service.URIHelper;
 import org.zanata.rest.editor.service.resource.StatisticResource;
 import com.google.common.collect.Lists;
 
@@ -56,7 +56,7 @@ public class StatisticsService implements StatisticResource {
             @PathParam("versionSlug") String versionSlug,
             @PathParam("docId") String docId,
             @PathParam("localeId") String localeId) {
-        docId = URIHelper.convertFromDocumentURIId(docId);
+        docId = RestUtil.convertFromDocumentURIId(docId);
         HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug,
                 versionSlug, docId);
         if (doc == null) {
