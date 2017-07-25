@@ -393,6 +393,19 @@ class TMMergeModal extends Component {
     this.props.startMergeProcess(this.props.projectSlug,
       this.props.versionSlug, this.state)
   }
+  // Close modal on escape key pressed
+  handleKeyDown = (e) => {
+    if (e.keyCode === 27) {
+      this.props.openTMMergeModal()
+    }
+  }
+  // Close modal when clicking outside
+  handleClickOutsideModal = (e) => {
+    const classname = e.target.className
+    if (classname === 'modal' || classname === 'container') {
+      this.props.openTMMergeModal()
+    }
+  }
   render () {
     const {
       showTMMergeModal,
@@ -455,7 +468,8 @@ class TMMergeModal extends Component {
     )
     return (
       <Modal id="TM-merge-modal" show={showTMMergeModal}
-        onHide={openTMMergeModal}>
+        onHide={openTMMergeModal} onKeyDown={this.handleKeyDown}
+        onClick={this.handleClickOutsideModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
           <p className="text-danger modal-danger">
