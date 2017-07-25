@@ -1,9 +1,8 @@
 package org.zanata.webtrans.shared.util;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.webtrans.shared.util.StringNotEmptyPredicate.INSTANCE;
 
 /**
@@ -13,9 +12,9 @@ import static org.zanata.webtrans.shared.util.StringNotEmptyPredicate.INSTANCE;
 public class StringNotEmptyPredicateTest {
     @Test
     public void testApply() throws Exception {
-        assertThat(INSTANCE.apply(""), Matchers.equalTo(false));
-        assertThat(INSTANCE.apply(null), Matchers.equalTo(false));
-        assertThat(INSTANCE.apply(" "), Matchers.equalTo(true));
-        assertThat(INSTANCE.apply("a"), Matchers.equalTo(true));
+        assertThat(INSTANCE.apply("")).isFalse();
+        assertThat(INSTANCE.apply(null)).isFalse();
+        assertThat(INSTANCE.apply(" ")).isTrue();
+        assertThat(INSTANCE.apply("a")).isTrue();
     }
 }

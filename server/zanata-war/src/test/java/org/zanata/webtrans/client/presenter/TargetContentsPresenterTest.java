@@ -28,8 +28,6 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -56,7 +54,6 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.service.UserOptionsService;
-import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationDisplay;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -74,8 +71,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.atLeast;
@@ -188,12 +184,11 @@ public class TargetContentsPresenterTest {
         RunValidationEvent event =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         RunValidationEvent.class);
-        assertThat(event.getSourceContent(), equalTo("source"));
-        assertThat(event.getTarget(), equalTo("target"));
-        assertThat(event.isFireNotification(), equalTo(false));
-        assertThat(event.getWidgetList(),
-                Matchers.<HasUpdateValidationMessage> containsInAnyOrder(
-                        editor, display));
+        assertThat(event.getSourceContent()).isEqualTo("source");
+        assertThat(event.getTarget()).isEqualTo("target");
+        assertThat(event.isFireNotification()).isFalse();
+        assertThat(event.getWidgetList())
+                .containsExactlyInAnyOrder(editor, display);
     }
 
     @Test
@@ -215,9 +210,9 @@ public class TargetContentsPresenterTest {
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         TransUnitSaveEvent.class);
 
-        assertThat(event.getTransUnitId(), equalTo(selectedTU.getId()));
-        assertThat(event.getTargets(), Matchers.equalTo(NEW_TARGETS));
-        assertThat(event.getStatus(), equalTo(ContentState.NeedReview));
+        assertThat(event.getTransUnitId()).isEqualTo(selectedTU.getId());
+        assertThat(event.getTargets()).isEqualTo(NEW_TARGETS);
+        assertThat(event.getStatus()).isEqualTo(ContentState.NeedReview);
     }
 
     @Test
@@ -244,7 +239,7 @@ public class TargetContentsPresenterTest {
 
         List<String> result = presenter.getNewTargets();
 
-        MatcherAssert.assertThat(result, Matchers.sameInstance(NEW_TARGETS));
+        assertThat(result).isSameAs(NEW_TARGETS);
     }
 
     @Test
@@ -282,7 +277,7 @@ public class TargetContentsPresenterTest {
         RunValidationEvent event =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         RunValidationEvent.class);
-        MatcherAssert.assertThat(event.getTarget(), Matchers.equalTo("target"));
+        assertThat(event.getTarget()).isEqualTo("target");
     }
 
     @Test
@@ -329,14 +324,12 @@ public class TargetContentsPresenterTest {
         NotificationEvent notificationEvent =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         NotificationEvent.class);
-        MatcherAssert.assertThat(notificationEvent.getMessage(),
-                Matchers.equalTo("copied"));
+        assertThat(notificationEvent.getMessage()).isEqualTo("copied");
 
         RunValidationEvent runValidationEvent =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         RunValidationEvent.class);
-        assertThat(runValidationEvent.getSourceContent(),
-                equalTo("source content"));
+        assertThat(runValidationEvent.getSourceContent()).isEqualTo("source content");
     }
 
     @Test
@@ -355,8 +348,7 @@ public class TargetContentsPresenterTest {
         NotificationEvent notificationEvent =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         NotificationEvent.class);
-        MatcherAssert.assertThat(notificationEvent.getMessage(),
-                Matchers.equalTo("copied"));
+        assertThat(notificationEvent.getMessage()).isEqualTo("copied");
     }
 
     @Test
@@ -421,15 +413,15 @@ public class TargetContentsPresenterTest {
         TransUnitSaveEvent saveEvent =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         TransUnitSaveEvent.class);
-        assertThat(saveEvent.getTransUnitId(), equalTo(selectedTU.getId()));
-        assertThat(saveEvent.getTargets(), Matchers.equalTo(NEW_TARGETS));
-        assertThat(saveEvent.getStatus(), equalTo(ContentState.Translated));
+        assertThat(saveEvent.getTransUnitId()).isEqualTo(selectedTU.getId());
+        assertThat(saveEvent.getTargets()).isEqualTo(NEW_TARGETS);
+        assertThat(saveEvent.getStatus()).isEqualTo(ContentState.Translated);
 
         NavTransUnitEvent navEvent =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         NavTransUnitEvent.class);
-        assertThat(navEvent.getRowType(),
-                equalTo(NavTransUnitEvent.NavigationType.NextEntry));
+        assertThat(navEvent.getRowType())
+                .isEqualTo(NavTransUnitEvent.NavigationType.NextEntry);
     }
 
     @Test
@@ -486,7 +478,7 @@ public class TargetContentsPresenterTest {
         presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
         TransUnitId result = presenter.getCurrentTransUnitIdOrNull();
-        assertThat(result, Matchers.sameInstance(selectedTU.getId()));
+        assertThat(result).isSameAs(selectedTU.getId());
     }
 
     @Test
@@ -495,13 +487,12 @@ public class TargetContentsPresenterTest {
 
         boolean readOnly = presenter.isReadOnly();
 
-        assertThat(readOnly, Matchers.is(true));
+        assertThat(readOnly).isTrue();
     }
 
     @Test
     public void canGetConfigState() {
-        assertThat(presenter.getConfigState(),
-                Matchers.equalTo(configHolder.getState()));
+        assertThat(presenter.getConfigState()).isEqualTo(configHolder.getState());
     }
 
     @Test
@@ -511,7 +502,7 @@ public class TargetContentsPresenterTest {
 
         boolean displayButtons = presenter.isDisplayButtons();
 
-        assertThat(displayButtons, Matchers.is(false));
+        assertThat(displayButtons).isFalse();
     }
 
     @Test
@@ -526,8 +517,7 @@ public class TargetContentsPresenterTest {
         TableRowSelectedEvent tableRowSelectedEvent =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(selectedTU.getId()));
+        assertThat(tableRowSelectedEvent.getSelectedId()).isEqualTo(selectedTU.getId());
     }
 
     @Test
@@ -575,7 +565,7 @@ public class TargetContentsPresenterTest {
     public void canGetDisplays() {
         List<TargetContentsDisplay> displays = presenter.getDisplays();
 
-        assertThat(displays, Matchers.contains(display, display, display));
+        assertThat(displays).contains(display, display, display);
     }
 
     @Test
@@ -910,7 +900,7 @@ public class TargetContentsPresenterTest {
         CommentBeforeSaveEvent commentBeforeSaveEvent =
                 extractFromEvents(eventCaptor.getAllValues(),
                         CommentBeforeSaveEvent.class);
-        assertThat(commentBeforeSaveEvent.getSaveEvent().getStatus(),
-                Matchers.equalTo(ContentState.Rejected));
+        assertThat(commentBeforeSaveEvent.getSaveEvent().getStatus())
+                .isEqualTo(ContentState.Rejected);
     }
 }

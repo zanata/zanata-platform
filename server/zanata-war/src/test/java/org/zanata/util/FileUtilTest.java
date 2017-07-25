@@ -24,8 +24,7 @@ package org.zanata.util;
 
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -34,14 +33,14 @@ public class FileUtilTest {
 
     @Test
     public void generateSimpleDocId() {
-        assertThat(FileUtil.generateDocId("foo", "bar.txt"),
-            is("foo/bar.txt"));
+        assertThat(FileUtil.generateDocId("foo", "bar.txt"))
+                .isEqualTo("foo/bar.txt");
     }
 
     @Test
     public void generateSQLInjectionDocId() {
         String sqlInjectFilename = "file.txt;DROP ALL OBJECTS;other.txt";
-        assertThat(FileUtil.generateDocId("", sqlInjectFilename),
-            is(sqlInjectFilename));
+        assertThat(FileUtil.generateDocId("", sqlInjectFilename))
+                .isEqualTo(sqlInjectFilename);
     }
 }

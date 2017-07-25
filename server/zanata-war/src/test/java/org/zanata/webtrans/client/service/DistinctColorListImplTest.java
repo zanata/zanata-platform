@@ -1,13 +1,11 @@
 package org.zanata.webtrans.client.service;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.zanata.webtrans.client.service.DistinctColorListImpl;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -31,14 +29,14 @@ public class DistinctColorListImplTest {
 
     @Test
     public void canGetNextColor() {
-        assertThat(distinctColor.getOrCreateColor(newEditorClientId()),
-                Matchers.is("red"));
-        assertThat(distinctColor.getOrCreateColor(newEditorClientId()),
-                Matchers.is("blue"));
-        assertThat(distinctColor.getOrCreateColor(newEditorClientId()),
-                Matchers.is("green"));
-        assertThat(distinctColor.getOrCreateColor(newEditorClientId()),
-                Matchers.is("red"));
+        assertThat(distinctColor.getOrCreateColor(newEditorClientId()))
+                .isEqualTo("red");
+        assertThat(distinctColor.getOrCreateColor(newEditorClientId()))
+                .isEqualTo("blue");
+        assertThat(distinctColor.getOrCreateColor(newEditorClientId()))
+                .isEqualTo("green");
+        assertThat(distinctColor.getOrCreateColor(newEditorClientId()))
+                .isEqualTo("red");
     }
 
     @Test
@@ -47,7 +45,7 @@ public class DistinctColorListImplTest {
         String color = distinctColor.getOrCreateColor(editorClientId);
         String sameColor = distinctColor.getOrCreateColor(editorClientId);
 
-        assertThat(sameColor, Matchers.equalTo(color));
+        assertThat(sameColor).isEqualTo(color);
     }
 
     @Test
@@ -57,6 +55,6 @@ public class DistinctColorListImplTest {
         distinctColor.releaseColor(editorClientId);
         String newColor = distinctColor.getOrCreateColor(editorClientId);
 
-        assertThat(newColor, Matchers.not(Matchers.equalTo(color)));
+        assertThat(newColor).isNotEqualTo(color);
     }
 }

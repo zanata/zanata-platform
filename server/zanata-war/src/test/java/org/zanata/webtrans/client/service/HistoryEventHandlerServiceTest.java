@@ -1,11 +1,10 @@
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.zanata.model.TestFixture.*;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -116,9 +115,8 @@ public class HistoryEventHandlerServiceTest {
         DocumentSelectionEvent documentSelectionEvent =
                 TestFixture.extractFromEvents(eventCaptor.getAllValues(),
                         DocumentSelectionEvent.class);
-        assertThat(documentSelectionEvent.getDocumentId(),
-                Matchers.equalTo(document.getId()));
-
+        assertThat(documentSelectionEvent.getDocumentId())
+                .isEqualTo(document.getId());
     }
 
     @Test

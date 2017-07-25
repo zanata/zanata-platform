@@ -1,11 +1,10 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +18,6 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.view.SideMenuDisplay;
@@ -199,7 +197,7 @@ public class SideMenuPresenterTest {
         // Then:
         verify(display).setSelectedTab(SideMenuDisplay.OPTION_VIEW);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(true));
+        assertThat(eventCaptor.getValue().isShowing()).isTrue();
         verifyNoMoreInteractions(display);
     }
 
@@ -239,7 +237,7 @@ public class SideMenuPresenterTest {
         // Then:
         verify(display).getCurrentTab();
         verify(eventBus, times(2)).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(false));
+        assertThat(eventCaptor.getValue().isShowing()).isFalse();
         verifyNoMoreInteractions(display);
     }
 
@@ -254,7 +252,7 @@ public class SideMenuPresenterTest {
         // Then:
         verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(true));
+        assertThat(eventCaptor.getValue().isShowing()).isTrue();
         verifyNoMoreInteractions(display);
 
     }
@@ -270,7 +268,7 @@ public class SideMenuPresenterTest {
         // Then:
         verify(display).setSelectedTab(SideMenuDisplay.VALIDATION_OPTION_VIEW);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(true));
+        assertThat(eventCaptor.getValue().isShowing()).isTrue();
         verifyNoMoreInteractions(display);
 
     }
@@ -286,7 +284,7 @@ public class SideMenuPresenterTest {
         // Then:
         verify(display).setSelectedTab(SideMenuDisplay.WORKSPACEUSER_VIEW);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(true));
+        assertThat(eventCaptor.getValue().isShowing()).isTrue();
         verifyNoMoreInteractions(display);
     }
 
@@ -311,7 +309,7 @@ public class SideMenuPresenterTest {
         // Given: expanded and current tab is editor options
         presenter.expendSideMenu(true);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().isShowing(), Matchers.is(true));
+        assertThat(eventCaptor.getValue().isShowing()).isTrue();
         when(display.getCurrentTab()).thenReturn(SideMenuDisplay.OPTION_VIEW);
 
         // When:

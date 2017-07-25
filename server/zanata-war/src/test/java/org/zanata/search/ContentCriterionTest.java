@@ -1,9 +1,8 @@
 package org.zanata.search;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -18,9 +17,7 @@ public class ContentCriterionTest {
                 criterion.withEntityAlias("tf").withCaseSensitive(true)
                         .contentsCriterionAsString();
 
-        assertThat(
-                hql,
-                Matchers.equalTo("(tf.content0 like :SearchString OR tf.content1 like :SearchString)"));
+        assertThat(hql).isEqualTo("(tf.content0 like :SearchString OR tf.content1 like :SearchString)");
     }
 
     @Test
@@ -28,17 +25,13 @@ public class ContentCriterionTest {
         String hql =
                 criterion.withCaseSensitive(true).contentsCriterionAsString();
 
-        assertThat(
-                hql,
-                Matchers.equalTo("(content0 like :SearchString OR content1 like :SearchString)"));
+        assertThat(hql).isEqualTo("(content0 like :SearchString OR content1 like :SearchString)");
     }
 
     @Test
     public void caseInsensitive() {
         String hql = criterion.contentsCriterionAsString();
 
-        assertThat(
-                hql,
-                Matchers.equalTo("(lower(content0) like :SearchString OR lower(content1) like :SearchString)"));
+        assertThat(hql).isEqualTo("(lower(content0) like :SearchString OR lower(content1) like :SearchString)");
     }
 }

@@ -33,8 +33,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.util.GlossaryUtil;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -70,7 +69,7 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest {
     public void testTermsSize() {
         List<HGlossaryEntry> entryList = glossaryDAO.getEntriesByLocale(
             LocaleId.EN_US, 0, 200, null, null, GlossaryUtil.GLOBAL_QUALIFIED_NAME);
-        assertThat(entryList.get(0).getGlossaryTerms().size(), is(3));
+        assertThat(entryList.get(0).getGlossaryTerms().size()).isEqualTo(3);
     }
 
     @Test
@@ -81,7 +80,7 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest {
         List<HGlossaryEntry> entryList = glossaryDAO.getEntriesByLocale(
             LocaleId.EN_US, 0, 200, null, null, GlossaryUtil.GLOBAL_QUALIFIED_NAME);
 
-        assertThat(entryList.size(), is(0));
+        assertThat(entryList.size()).isEqualTo(0);
     }
 
     @Override

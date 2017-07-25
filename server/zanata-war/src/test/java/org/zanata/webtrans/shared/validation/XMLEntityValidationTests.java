@@ -20,13 +20,9 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-
 import java.io.IOException;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -34,6 +30,8 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -58,8 +56,7 @@ public class XMLEntityValidationTests {
 
     @Test
     public void idIsSet() {
-        assertThat(xmlEntityValidation.getId(),
-                Matchers.equalTo(ValidationId.XML_ENTITY));
+        assertThat(xmlEntityValidation.getId()).isEqualTo(ValidationId.XML_ENTITY);
     }
 
     @Test
@@ -68,7 +65,7 @@ public class XMLEntityValidationTests {
         String target = "Target string without xml entity";
         List<String> errorList = xmlEntityValidation.validate(source, target);
 
-        assertThat(errorList.size(), Matchers.equalTo(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -77,7 +74,7 @@ public class XMLEntityValidationTests {
         String target = "Target string: &mash; bla bla &test;";
         List<String> errorList = xmlEntityValidation.validate(source, target);
 
-        assertThat(errorList.size(), Matchers.equalTo(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -86,11 +83,9 @@ public class XMLEntityValidationTests {
         String target = "Target string: &mash bla bla &test";
         List<String> errorList = xmlEntityValidation.validate(source, target);
 
-        assertThat(errorList.size(), Matchers.equalTo(2));
-        assertThat(
-                errorList,
-                contains(messages.invalidXMLEntity("&mash"),
-                        messages.invalidXMLEntity("&test")));
+        assertThat(errorList.size()).isEqualTo(2);
+        assertThat(errorList).contains(messages.invalidXMLEntity("&mash"),
+                messages.invalidXMLEntity("&test"));
     }
 
     @Test
@@ -99,11 +94,9 @@ public class XMLEntityValidationTests {
         String target = "Target string: &#1234 bla bla &#BC;";
         List<String> errorList = xmlEntityValidation.validate(source, target);
 
-        assertThat(errorList.size(), Matchers.equalTo(2));
-        assertThat(
-                errorList,
-                contains(messages.invalidXMLEntity("&#1234"),
-                        messages.invalidXMLEntity("&#BC;")));
+        assertThat(errorList.size()).isEqualTo(2);
+        assertThat(errorList).contains(messages.invalidXMLEntity("&#1234"),
+                messages.invalidXMLEntity("&#BC;"));
     }
 
     @Test
@@ -112,11 +105,9 @@ public class XMLEntityValidationTests {
         String target = "Target string: &#x1234 bla bla &#x09Z";
         List<String> errorList = xmlEntityValidation.validate(source, target);
 
-        assertThat(errorList.size(), Matchers.equalTo(2));
-        assertThat(
-                errorList,
-                contains(messages.invalidXMLEntity("&#x1234"),
-                        messages.invalidXMLEntity("&#x09Z")));
+        assertThat(errorList.size()).isEqualTo(2);
+        assertThat(errorList).contains(messages.invalidXMLEntity("&#x1234"),
+                messages.invalidXMLEntity("&#x09Z"));
     }
 
 }

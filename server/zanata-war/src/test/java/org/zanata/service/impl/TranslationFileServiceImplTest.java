@@ -20,9 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
@@ -35,6 +32,8 @@ import org.zanata.test.CdiUnitRunner;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(CdiUnitRunner.class)
 public class TranslationFileServiceImplTest extends ZanataTest {
 
@@ -46,7 +45,6 @@ public class TranslationFileServiceImplTest extends ZanataTest {
     @Test
     @InRequestScope
     public void hasPlainTextAdapter() {
-        assertThat(transFileService.hasAdapterFor(DocumentType.PLAIN_TEXT),
-                is(true));
+        assertThat(transFileService.hasAdapterFor(DocumentType.PLAIN_TEXT)).isTrue();
     }
 }

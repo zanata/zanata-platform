@@ -1,6 +1,5 @@
 package org.zanata.service.impl;
 
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import org.zanata.test.CdiUnitRunner;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -37,7 +36,7 @@ public class TranslationMergeServiceFactoryTest extends ZanataTest {
                         null, null, 1);
         TranslationMergeService result = factory.getMergeService(mergeContext);
 
-        assertThat(result, Matchers.instanceOf(TranslationMergeFirstTran.class));
+        assertThat(result).isInstanceOf(TranslationMergeFirstTran.class);
     }
 
     @Test
@@ -48,7 +47,7 @@ public class TranslationMergeServiceFactoryTest extends ZanataTest {
                         null, null, new HTextFlowTarget(), 1);
         TranslationMergeService result = factory.getMergeService(mergeContext);
 
-        assertThat(result, Matchers.instanceOf(TranslationMergeAuto.class));
+        assertThat(result).isInstanceOf(TranslationMergeAuto.class);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class TranslationMergeServiceFactoryTest extends ZanataTest {
                         MergeType.IMPORT, null, null, new HTextFlowTarget(), 1);
         TranslationMergeService result = factory.getMergeService(mergeContext);
 
-        assertThat(result, Matchers.instanceOf(TranslationMergeImport.class));
+        assertThat(result).isInstanceOf(TranslationMergeImport.class);
     }
 
 }

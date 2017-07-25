@@ -1,11 +1,8 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.Date;
 import java.util.HashMap;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
@@ -13,6 +10,8 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -39,46 +38,42 @@ public class PathDocumentFilterTest {
             throws Exception {
         filter.setPattern("a,b b,   c   , , d");
 
-        assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("b b", "/pot/")),
-                Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("c", "/pot/")), Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("C", "/pot/")), Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("d", "/pot/")), Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("b", "/pot/")),
-                Matchers.equalTo(false));
+        assertThat(filter.accept(docInfo("a", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("b b", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("c", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("C", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("d", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("b", "/pot/"))).isFalse();
     }
 
     @Test
     public void testAcceptWithCaseSensitiveAndNotExactMatch() throws Exception {
         filter.setPattern("a").setCaseSensitive(true);
 
-        assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("A", "/pot/")),
-                Matchers.equalTo(false));
+        assertThat(filter.accept(docInfo("a", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("A", "/pot/"))).isFalse();
     }
 
     @Test
     public void testSetFullText() throws Exception {
         filter.setPattern("/pot/a").setFullText(true);
 
-        assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("a", "")), Matchers.equalTo(false));
+        assertThat(filter.accept(docInfo("a", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("a", ""))).isFalse();
     }
 
     @Test
     public void alwaysAcceptIfNoPattern() {
-        assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(true));
+        assertThat(filter.accept(docInfo("a", "/pot/"))).isTrue();
     }
 
     @Test
     public void testSetPatternAgainWillClearPreviousPattern() throws Exception {
         filter.setPattern("a");
-        assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(true));
+        assertThat(filter.accept(docInfo("a", "/pot/"))).isTrue();
 
         filter.setPattern("b");
-        assertThat(filter.accept(docInfo("b", "/pot/")), Matchers.equalTo(true));
-        assertThat(filter.accept(docInfo("a", "/pot/")),
-                Matchers.equalTo(false));
+        assertThat(filter.accept(docInfo("b", "/pot/"))).isTrue();
+        assertThat(filter.accept(docInfo("a", "/pot/"))).isFalse();
     }
 }

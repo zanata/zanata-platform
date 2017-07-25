@@ -1,23 +1,15 @@
 package org.zanata.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -25,6 +17,8 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DocumentJPATest extends ZanataDbunitJpaTest {
 
@@ -70,20 +64,15 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
     public void traverseProjectGraph() throws Exception {
         EntityManager em = getEm();
         HProject project = em.find(HProject.class, 1l);
-        assertThat(project, notNullValue());
+        assertThat(project).isNotNull();
 
         List<HProjectIteration> projectTargets = project.getProjectIterations();
-        assertThat("Project should have 3 targets", projectTargets.size(),
-                is(3));
+        assertThat(projectTargets.size()).isEqualTo(3)
+                .as("Project should have 3 targets");
 
         List<Long> iterationIds = Lists.transform(projectTargets,
-                new Function<HProjectIteration, Long>() {
-                    @Override
-                    public Long apply(HProjectIteration input) {
-                        return input.getId();
-                    }
-                });
-        assertThat(iterationIds, Matchers.containsInAnyOrder(1L, 2L, 900L));
+                input -> input.getId());
+        assertThat(iterationIds).contains(1L, 2L, 900L);
     }
 
     @Test
@@ -108,11 +97,11 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
         em.refresh(hdoc);
 
         List<HTextFlow> textFlows2 = hdoc.getTextFlows();
-        assertThat(textFlows2.size(), is(2));
+        assertThat(textFlows2.size()).isEqualTo(2);
         flow1 = textFlows2.get(0);
-        assertThat(flow1, notNullValue());
+        assertThat(flow1).isNotNull();
         flow2 = textFlows2.get(1);
-        assertThat(flow2, notNullValue());
+        assertThat(flow2).isNotNull();
 
         // TODO: we should automate this...
         hdoc.incrementRevision();
@@ -126,17 +115,17 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
         em.refresh(hdoc);
         em.refresh(flow1);
         em.refresh(flow2);
-        assertThat(hdoc.getTextFlows().size(), is(1));
+        assertThat(hdoc.getTextFlows().size()).isEqualTo(1);
         flow2 = hdoc.getTextFlows().get(0);
-        assertThat(flow2.getResId(), equalTo("textflow2"));
+        assertThat(flow2.getResId()).isEqualTo("textflow2");
 
         flow1 = hdoc.getAllTextFlows().get("textflow1");
         // assertThat(flow1.getPos(), nullValue());
-        assertThat(flow1.isObsolete(), is(true));
-        assertThat(flow1.getRevision(), is(2));
+        assertThat(flow1.isObsolete()).isTrue();
+        assertThat(flow1.getRevision()).isEqualTo(2);
         flow2 = hdoc.getAllTextFlows().get("textflow2");
         // assertThat(flow1.getPos(), is(0));
-        assertThat(flow2.isObsolete(), is(false));
+        assertThat(flow2.isObsolete()).isFalse();
     }
 
     // FIXME this test only works if resources-dev is on the classpath.
@@ -180,8 +169,8 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
                 em.createQuery(
                         "from HTextFlowTargetHistory h where h.textFlowTarget =:target")
                         .setParameter("target", target).getResultList();
-        assertThat(hist, notNullValue());
-        assertThat(hist.size(), not(0));
+        assertThat(hist).isNotNull();
+        assertThat(hist.size()).isNotEqualTo(0);
 
     }
 

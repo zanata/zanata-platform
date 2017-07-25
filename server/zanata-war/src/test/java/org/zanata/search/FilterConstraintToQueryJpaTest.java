@@ -1,8 +1,6 @@
 package org.zanata.search;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
-import org.hamcrest.Matchers;
 import org.hibernate.transform.ResultTransformer;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -28,6 +26,8 @@ import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang
@@ -132,11 +132,11 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                         FilterConstraints.builder().build(), documentId);
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> textFlows = getResultList(hql, constraintToQuery);
-        assertThat(textFlows, Matchers.hasSize(10));
+        assertThat(textFlows).hasSize(10);
         String navigationQuery = constraintToQuery.toModalNavigationQuery();
         List<HTextFlow> navigationResult =
                 getNavigationResult(navigationQuery, constraintToQuery);
-        assertThat(navigationResult, Matchers.hasSize(10));
+        assertThat(navigationResult).hasSize(10);
     }
 
     @SuppressWarnings("unchecked")
@@ -157,7 +157,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res3"));
+        assertThat(ids).contains("res3");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -171,13 +171,13 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
     private void verifyIdAndContentStateMatches(List<HTextFlow> one,
             List<HTextFlow> two) {
-        assertThat(one.size(), Matchers.equalTo(two.size()));
+        assertThat(one.size()).isEqualTo(two.size());
         for (int i = 0; i < one.size(); i++) {
             HTextFlow textFlow1 = one.get(i);
             HTextFlow textFlow2 = two.get(i);
-            assertThat(textFlow1.getId(), Matchers.equalTo(textFlow2.getId()));
-            assertThat(getContentState(textFlow1, hLocale),
-                    Matchers.equalTo(getContentState(textFlow2, hLocale)));
+            assertThat(textFlow1.getId()).isEqualTo(textFlow2.getId());
+            assertThat(getContentState(textFlow1, hLocale))
+                    .isEqualTo(getContentState(textFlow2, hLocale));
         }
     }
 
@@ -200,7 +200,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res2"));
+        assertThat(ids).contains("res2");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -215,7 +215,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res1", "res4", "res6", "res7"));
+        assertThat(ids).contains("res1", "res4", "res6", "res7");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -229,7 +229,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res4"));
+        assertThat(ids).contains("res4");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -243,7 +243,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res2"));
+        assertThat(ids).contains("res2");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -257,7 +257,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res6"));
+        assertThat(ids).contains("res6");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -271,7 +271,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res7"));
+        assertThat(ids).contains("res7");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -285,7 +285,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res5"));
+        assertThat(ids).contains("res5");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -300,7 +300,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res9", "res10"));
+        assertThat(ids).contains("res9", "res10");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -314,8 +314,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids,
-                Matchers.contains("res2", "res3", "res4", "res5", "res9"));
+        assertThat(ids).contains("res2", "res3", "res4", "res5", "res9");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -329,7 +328,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res8", "res10"));
+        assertThat(ids).contains("res8", "res10");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -344,7 +343,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res4"));
+        assertThat(ids).contains("res4");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -360,7 +359,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res4"));
+        assertThat(ids).contains("res4");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
@@ -374,7 +373,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
-        assertThat(ids, Matchers.contains("res10"));
+        assertThat(ids).contains("res10");
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 
