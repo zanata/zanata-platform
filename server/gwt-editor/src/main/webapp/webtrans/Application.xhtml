@@ -19,13 +19,13 @@
     <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>#{msgs['jsf.PageTitle']}</title>
-    <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}"
-      type="image/x-icon" />
+    <link type="image/x-icon" rel="shortcut icon"
+        href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
     <link rel="stylesheet" href="#{request.contextPath}/frontend.css" type="text/css"/>
     <link type="text/css" rel="stylesheet"
       href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
-    <link type="text/css" rel="stylesheet" href="#{assets['css/style.min.css']}"/>
-    <link type="text/css" rel="stylesheet" href="#{assets['css/application.min.css']}"/>
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/assets/css/style.css"/>
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/assets/css/application.css"/>
 
     <script src="codemirror/codemirror-compressed-3.21.cache.js"
       type="text/javascript"></script>
