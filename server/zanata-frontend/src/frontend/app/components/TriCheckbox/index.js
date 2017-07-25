@@ -8,11 +8,13 @@ import cx from 'classnames'
 class TriCheckbox extends Component {
   static propTypes = {
     className: PropTypes.string,
+    useDefaultStyle: PropTypes.bool.isRequired,
     indeterminate: PropTypes.bool.isRequired
   }
 
   static defaultProps = {
-    indeterminate: false
+    indeterminate: false,
+    useDefaultStyle: true
   }
 
   setNativeComponent = (nativeComponent) => {
@@ -30,19 +32,18 @@ class TriCheckbox extends Component {
   }
 
   render () {
-    const className = cx('tri-checkbox', this.props.className)
-    /*eslint no-unused-vars: off*/
     // pulling indeterminate out of props to avoid invalid props errors
-    const { indeterminate, ...otherProps } = this.props
+    // eslint-disable-next-line no-unused-vars
+    const { indeterminate, useDefaultStyle, className, ...otherProps } =
+      this.props
+    const classes = cx({'tri-checkbox': useDefaultStyle}, className)
     return (
-      <div>
-        <input
-          className={className}
-          type="checkbox"
-          ref={this.setNativeComponent}
-          {...otherProps}
-        />
-      </div>
+      <input
+        className={classes}
+        type="checkbox"
+        ref={this.setNativeComponent}
+        {...otherProps}
+      />
     )
   }
 }
