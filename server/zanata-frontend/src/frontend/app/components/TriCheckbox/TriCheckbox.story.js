@@ -4,12 +4,12 @@ import { storiesOf, action } from '@kadira/storybook'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
 import { Table } from 'react-bootstrap'
-import './index.css'
 
 class TriCheckbox extends Component {
   static propTypes = {
     checked: PropTypes.bool.isRequired,
-    indeterminate: PropTypes.bool.isRequired
+    indeterminate: PropTypes.bool.isRequired,
+    onChange: PropTypes.func.isRequired
   }
   constructor (props) {
     super(props)
@@ -21,6 +21,7 @@ class TriCheckbox extends Component {
 
   checkboxChanged = (event) => {
     this.setState({checked: event.target.checked, indeterminate: false})
+    this.props.onChange()
   }
 
   render () {
@@ -39,7 +40,8 @@ class TriCheckbox extends Component {
 class WithButton extends Component {
   static propTypes = {
     checked: PropTypes.bool.isRequired,
-    indeterminate: PropTypes.bool.isRequired
+    indeterminate: PropTypes.bool.isRequired,
+    onChange: PropTypes.func.isRequired
   }
   constructor (props) {
     super(props)
@@ -55,6 +57,7 @@ class WithButton extends Component {
 
   checkboxChanged = (event) => {
     this.setState({checked: event.target.checked, indeterminate: false})
+    this.props.onChange()
   }
 
   render () {
@@ -75,7 +78,11 @@ storiesOf('TriCheckbox', module)
   .add('default', () => (
     <div>
       <h2>Setting Intermediate</h2>
-      <WithButton checked={false} indeterminate={false} />
+      <WithButton
+        checked={false}
+        indeterminate={false}
+        onChange={action('onChange')}
+        />
     </div>
   ))
   .add('truth table', () => (
@@ -96,6 +103,7 @@ storiesOf('TriCheckbox', module)
             <TriCheckbox
               checked={false}
               indeterminate={false}
+              onChange={action('onChange')}
             />
           </td>
         </tr>
@@ -107,6 +115,7 @@ storiesOf('TriCheckbox', module)
             <TriCheckbox
               checked={false}
               indeterminate
+              onChange={action('onChange')}
             />
           </td>
         </tr>
@@ -118,6 +127,7 @@ storiesOf('TriCheckbox', module)
             <TriCheckbox
               checked
               indeterminate={false}
+              onChange={action('onChange')}
             />
           </td>
         </tr>
@@ -126,9 +136,10 @@ storiesOf('TriCheckbox', module)
           <td>true</td>
           <td>intermediate</td>
           <td>
-            <RealTriCheckbox
+            <TriCheckbox
               checked
               indeterminate
+              onChange={action('onChange')}
             />
           </td>
         </tr>

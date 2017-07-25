@@ -15,7 +15,7 @@ class TriCheckbox extends Component {
     indeterminate: false
   }
 
-  hasIndeterminate = (nativeComponent) => {
+  setNativeComponent = (nativeComponent) => {
     this.nativeComponent = nativeComponent
     if (nativeComponent) {
       nativeComponent.indeterminate = this.props.indeterminate
@@ -31,13 +31,15 @@ class TriCheckbox extends Component {
 
   render () {
     const className = cx('tri-checkbox', this.props.className)
-    const { ...otherProps } = this.props
+    /*eslint no-unused-vars: off*/
+    // pulling indeterminate out of props to avoid invalid props errors
+    const { indeterminate, ...otherProps } = this.props
     return (
       <div>
         <input
           className={className}
           type="checkbox"
-          ref={this.hasIndeterminate}
+          ref={this.setNativeComponent}
           {...otherProps}
         />
       </div>
