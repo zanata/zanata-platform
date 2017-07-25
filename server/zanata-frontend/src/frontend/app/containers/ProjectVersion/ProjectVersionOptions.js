@@ -24,7 +24,8 @@ export const ProjectVersionOptions = (props) => {
     fromImportedTM,
     onDocIdCheckboxChange,
     onContextCheckboxChange,
-    onImportedCheckboxChange
+    onImportedCheckboxChange,
+    below100match
   } = props
   return (
     <Col xs={12}>
@@ -42,7 +43,7 @@ export const ProjectVersionOptions = (props) => {
         <ListGroup fill>
           <ListGroupItem>
             <Checkbox onChange={onContextCheckboxChange}
-              checked={differentContext}>
+              checked={differentContext} disabled={below100match}>
               Different Context
               <small> resId, msgctxt</small>
               <CopyLabel copy={differentContext} />
@@ -68,5 +69,6 @@ ProjectVersionOptions.propTypes = {
   fromImportedTM: PropTypes.bool.isRequired,
   onDocIdCheckboxChange: PropTypes.func.isRequired,
   onContextCheckboxChange: PropTypes.func.isRequired,
-  onImportedCheckboxChange: PropTypes.func.isRequired
+  onImportedCheckboxChange: PropTypes.func.isRequired,
+  below100match: PropTypes.bool.isRequired
 }

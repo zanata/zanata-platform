@@ -80,7 +80,8 @@ const MergeOptions = (
         fromImportedTM={mergeOptions.fromImportedTM}
         onDocIdCheckboxChange={onDocIdCheckboxChange}
         onContextCheckboxChange={onContextCheckboxChange}
-        onImportedCheckboxChange={onImportedCheckboxChange} />
+        onImportedCheckboxChange={onImportedCheckboxChange}
+        below100match={mergeOptions.matchPercentage < 100} />
       <Col xs={12} className='vmerge-row'>
         <Col xs={2}>
           <span className='vmerge-title text-info'>Language</span>
@@ -287,9 +288,18 @@ class TMMergeModal extends Component {
     this.props.onCancelTMMerge(this.props.processStatus.cancelUrl)
   }
   onPercentSelection = (percent) => {
-    this.setState({
-      matchPercentage: percent
-    })
+    // Different context must be checked if match percentage < 100
+    if (percent < 100) {
+      this.setState({
+        matchPercentage: percent,
+        differentContext: true
+      })
+    } else {
+      this.setState({
+        matchPercentage: percent,
+        differentContext: false
+      })
+    }
   }
   onLanguageSelection = (language) => {
     this.setState({
