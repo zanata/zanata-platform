@@ -15,20 +15,29 @@ class TriCheckbox extends Component {
     indeterminate: false
   }
 
+  hasIndeterminate = (nativeComponent) => {
+    this.nativeComponent = nativeComponent
+    if (nativeComponent) {
+      nativeComponent.indeterminate = this.props.indeterminate
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.nativeComponent &&
+      (nextProps.indeterminate !== this.props.indeterminate)) {
+      this.nativeComponent.indeterminate = nextProps.indeterminate
+    }
+  }
+
   render () {
     const className = cx('tri-checkbox', this.props.className)
-    const { indeterminate, ...otherProps } = this.props
-    const hasIndeterminate = (nativeComponent) => {
-      if (nativeComponent) {
-        nativeComponent.indeterminate = indeterminate
-      }
-    }
+    const { ...otherProps } = this.props
     return (
       <div>
         <input
           className={className}
           type="checkbox"
-          ref={hasIndeterminate}
+          ref={this.hasIndeterminate}
           {...otherProps}
         />
       </div>

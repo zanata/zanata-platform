@@ -4,17 +4,12 @@ import { storiesOf, action } from '@kadira/storybook'
 import RealTriCheckbox from '.'
 import { Table, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { find } from 'lodash'
+import './index.css'
 
 class TriCheckbox extends Component {
   static propTypes = {
     checked: PropTypes.bool.isRequired,
-    indeterminate: PropTypes.bool.isRequired,
-    onClick: PropTypes.func.isRequired
-  }
-  static defaultProps = {
-    checked: false,
-    indeterminate: false,
-    onClick: () => {}
+    indeterminate: PropTypes.bool.isRequired
   }
   constructor (props) {
     super(props)
@@ -24,81 +19,53 @@ class TriCheckbox extends Component {
     }
   }
 
-  onClick = (event) => {
+  checkboxChanged = (event) => {
     this.setState({checked: event.target.checked, indeterminate: false})
-    this.props.onClick(event)
   }
 
-  makeIndeterminate = (event) => {
-    this.setState({checked: false, indeterminate: true})
-    this.props.onClick(event)
-  }
   render () {
     return (
       <div>
         <RealTriCheckbox
           checked={this.state.checked}
           indeterminate={this.state.indeterminate}
-          onChange={this.onClick}
+          onChange={this.checkboxChanged}
         />
-        <button onClick={this.makeIndeterminate}>Make indeterminate</button>
-        <h2>Truth Table</h2>
-        <Table striped bordered condensed hover><tbody>
-          <tr>
-            <th>checked</th>
-            <th>intermediate</th>
-            <th>expected</th>
-            <th>appearance</th>
-          </tr>
-          <tr>
-            <td>false</td>
-            <td>false</td>
-            <td>unchecked</td>
-            <td>
-              <RealTriCheckbox
-                checked={false}
-                indeterminate={false}
-                onChange={this.onClick}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>false</td>
-            <td>true</td>
-            <td>indeterminate</td>
-            <td>
-              <RealTriCheckbox
-                checked={false}
-                indeterminate
-                onChange={this.onClick}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>true</td>
-            <td>false</td>
-            <td>checked</td>
-            <td>
-              <RealTriCheckbox
-                checked
-                indeterminate={false}
-                onChange={this.onClick}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>true</td>
-            <td>true</td>
-            <td>intermediate</td>
-            <td>
-              <RealTriCheckbox
-                checked
-                indeterminate
-                onChange={this.onClick}
-              />
-            </td>
-          </tr>
-        </tbody></Table>
+      </div>
+    )
+  }
+}
+
+class WithButton extends Component {
+  static propTypes = {
+    checked: PropTypes.bool.isRequired,
+    indeterminate: PropTypes.bool.isRequired
+  }
+  constructor (props) {
+    super(props)
+    this.state = {
+      checked: this.props.checked,
+      indeterminate: this.props.indeterminate
+    }
+  }
+
+  makeIndeterminate = (event) => {
+    this.setState({checked: false, indeterminate: true})
+  }
+
+  checkboxChanged = (event) => {
+    this.setState({checked: event.target.checked, indeterminate: false})
+  }
+
+  render () {
+    return (
+      <div>
+        <RealTriCheckbox
+          checked={this.state.checked}
+          indeterminate={this.state.indeterminate}
+          onChange={this.checkboxChanged}
+        />
+        <button onClick={this.makeIndeterminate}>Make intermediate</button>
       </div>
     )
   }
@@ -179,7 +146,7 @@ class TriCheckboxGroup extends Component {
   render () {
     const optionGroup = this.props.options.map((value, index) => {
       return (
-        <ListGroupItem>
+        <ListGroupItem key={index}>
           <RealTriCheckbox
             name={value.name}
             checked={this.state.options[index].checked}
@@ -209,39 +176,71 @@ class TriCheckboxGroup extends Component {
   }
 }
 
-class FancyTriCheckbox extends Component {
-  render () {
-    return (
-      <div>
-        <h3> Passing custom styles to the TriCheckbox </h3>
-        <RealTriCheckbox
-          checked
-          indeterminate={false}
-          onChange={this.onClick}
-          className={'tri-checkbox-story'}
-        />
-        <RealTriCheckbox
-          checked={false}
-          indeterminate
-          onChange={this.onClick}
-          className={'tri-checkbox-story'}
-        />
-        <RealTriCheckbox
-          checked={false}
-          indeterminate={false}
-          onChange={this.onClick}
-          className={'tri-checkbox-story'}
-        />
-      </div>
-    )
-  }
-}
-
 storiesOf('TriCheckbox', module)
   .add('default', () => (
-    <TriCheckbox onClick={action('onClick')} />
+    <div>
+      <h2>Setting Intermediate</h2>
+      <WithButton checked={false} indeterminate={false} />
+    </div>
   ))
-  .add('checkboxgroup', () => (
+  .add('truth table', () => (
+    <div>
+      <h2>Truth Table</h2>
+      <Table striped bordered condensed hover><tbody>
+        <tr>
+          <th>checked</th>
+          <th>intermediate</th>
+          <th>expected</th>
+          <th>appearance</th>
+        </tr>
+        <tr>
+          <td>false</td>
+          <td>false</td>
+          <td>unchecked</td>
+          <td>
+            <TriCheckbox
+              checked={false}
+              indeterminate={false}
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>false</td>
+          <td>true</td>
+          <td>indeterminate</td>
+          <td>
+            <TriCheckbox
+              checked={false}
+              indeterminate
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>true</td>
+          <td>false</td>
+          <td>checked</td>
+          <td>
+            <TriCheckbox
+              checked
+              indeterminate={false}
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>true</td>
+          <td>true</td>
+          <td>intermediate</td>
+          <td>
+            <RealTriCheckbox
+              checked
+              indeterminate
+            />
+          </td>
+        </tr>
+      </tbody></Table>
+    </div>
+  ))
+  .add('checkbox group', () => (
     <TriCheckboxGroup
       options={[
         {checked: false, name: 'リンゴ'},
@@ -251,6 +250,26 @@ storiesOf('TriCheckbox', module)
       ]}
       onClick={action('onClick')} />
   ))
-  .add('styled-tricheckbox', () => (
-    <FancyTriCheckbox onClick={action('onClick')} />
+  .add('with custom styles', () => (
+    <div>
+      <h2> Passing custom styles through props </h2>
+      <TriCheckbox
+        checked
+        indeterminate={false}
+        onChange={action('onChange')}
+        className={'tri-checkbox-story'}
+      />
+      <TriCheckbox
+        checked={false}
+        indeterminate
+        onChange={action('onChange')}
+        className={'tri-checkbox-story'}
+      />
+      <TriCheckbox
+        checked={false}
+        indeterminate={false}
+        onChange={action('onChange')}
+        className={'tri-checkbox-story'}
+      />
+    </div>
   ))
