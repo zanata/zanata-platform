@@ -574,10 +574,9 @@ li.inline-search-list span {
 }
 
 .InputEditorSearch {
-  width: 18em;
   margin-left: 0.75em;
   display: inline-flex;
-  margin-top: 0.15em;
+  margin-top: 0.25em;
   font-size: 0.875em;
 }
 
@@ -611,7 +610,11 @@ li.inline-search-list span {
 }
 
 #editor-header .InputGroup--outlined {
-  width: 18em;
+  width: 20em;
+}
+
+#editor-header .InputEditorSearch .InputGroup-addon span.n1 {
+  vertical-align: middle;
 }
 
 button.close {
@@ -669,10 +672,10 @@ li.inline-search-list span {
 }
 
 .InputEditorSearch {
-  width: 18em;
+  width: 20em;
   margin-left: 0.75em;
   display: inline-flex;
-  margin-top: 0.15em;
+  margin-top: 0.25em;
   font-size: 0.875em;
 }
 
@@ -703,10 +706,6 @@ li.inline-search-list span {
 
 .InputGroup-addon {
   vertical-align: baseline;
-}
-
-#editor-header .InputGroup--outlined {
-  width: 18em;
 }
 
 span.u-textNeutral span.s2, a.Link--Neutral span.s2 {
