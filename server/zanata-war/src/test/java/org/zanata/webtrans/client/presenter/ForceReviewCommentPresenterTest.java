@@ -21,7 +21,6 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -44,7 +43,8 @@ import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -86,8 +86,8 @@ public class ForceReviewCommentPresenterTest {
         verify(keyShortcutPresenter).register(shortcutCapture.capture());
 
         KeyShortcut keyShortcut = shortcutCapture.getValue();
-        assertThat(keyShortcut.getContext(),
-                Matchers.equalTo(ShortcutContext.RejectConfirmationPopup));
+        assertThat(keyShortcut.getContext())
+                .isEqualTo(ShortcutContext.RejectConfirmationPopup);
     }
 
     @Test
@@ -111,8 +111,8 @@ public class ForceReviewCommentPresenterTest {
 
         verify(dispatcher).execute(actionCaptor.capture(),
                 resultCaptor.capture());
-        assertThat(actionCaptor.getValue().getContent(),
-                Matchers.equalTo("i hate this"));
+        assertThat(actionCaptor.getValue().getContent())
+                .isEqualTo("i hate this");
 
         AsyncCallback<AddReviewCommentResult> callback =
                 resultCaptor.getValue();

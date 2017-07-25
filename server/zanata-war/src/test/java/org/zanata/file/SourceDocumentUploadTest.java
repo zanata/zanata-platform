@@ -21,9 +21,7 @@
 package org.zanata.file;
 
 import static javax.ws.rs.core.Response.Status.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -205,12 +203,12 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         when(documentUploadUtil.isNewDocument(conf.id)).thenReturn(true);
 
         response = sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(responseEntity().getSuccessMessage(),
-                is("Upload of new source document successful."));
+        assertThat(responseEntity().getSuccessMessage()).isEqualTo(
+                "Upload of new source document successful.");
         assertResponseHasStatus(CREATED);
-        assertThat(responseEntity().getAcceptedChunks(), is(1));
-        assertThat(responseEntity().isExpectingMore(), is(false));
-        assertThat(responseEntity().getErrorMessage(), is(nullValue()));
+        assertThat(responseEntity().getAcceptedChunks()).isEqualTo(1);
+        assertThat(responseEntity().isExpectingMore()).isFalse();
+        assertThat(responseEntity().getErrorMessage()).isNull();
     }
 
     @Test
@@ -222,11 +220,11 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
 
         response = sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
         assertResponseHasStatus(OK);
-        assertThat(responseEntity().getAcceptedChunks(), is(1));
-        assertThat(responseEntity().isExpectingMore(), is(false));
-        assertThat(responseEntity().getSuccessMessage(),
-                is("Upload of new version of source document successful."));
-        assertThat(responseEntity().getErrorMessage(), is(nullValue()));
+        assertThat(responseEntity().getAcceptedChunks()).isEqualTo(1);
+        assertThat(responseEntity().isExpectingMore()).isFalse();
+        assertThat(responseEntity().getSuccessMessage()).isEqualTo(
+                "Upload of new version of source document successful.");
+        assertThat(responseEntity().getErrorMessage()).isNull();
     }
 
     @Test
@@ -235,7 +233,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         conf = defaultUpload().build();
         mockRequiredServices();
         sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(paramCaptor.getValue().get(), is(conf.params));
+        assertThat(paramCaptor.getValue().get()).isEqualTo(conf.params);
     }
 
     @Test
@@ -244,7 +242,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         conf = defaultUpload().params(null).build();
         mockRequiredServices();
         sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(paramCaptor.getValue().get(), is(conf.storedParams));
+        assertThat(paramCaptor.getValue().get()).isEqualTo(conf.storedParams);
     }
 
     @Test
@@ -253,8 +251,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         conf = defaultUpload().build();
         mockRequiredServices();
         sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(persistedRawDocument.getValue().getAdapterParameters(),
-                is(conf.params));
+        assertThat(persistedRawDocument.getValue().getAdapterParameters())
+                .isEqualTo(conf.params);
     }
 
     @Test
@@ -263,7 +261,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         conf = defaultUpload().params("").build();
         mockRequiredServices();
         sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(persistedRawDocument.getValue().getAdapterParameters(),
-                is(conf.storedParams));
+        assertThat(persistedRawDocument.getValue().getAdapterParameters())
+                .isEqualTo(conf.storedParams);
     }
 }

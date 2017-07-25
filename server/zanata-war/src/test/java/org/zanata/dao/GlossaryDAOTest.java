@@ -1,10 +1,7 @@
 package org.zanata.dao;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import com.google.common.collect.Lists;
-import com.google.inject.matcher.Matchers;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -20,10 +17,8 @@ import org.zanata.model.HGlossaryTerm;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.DateUtil;
 import org.zanata.util.GlossaryUtil;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +53,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
         log.debug("testGetEntryById");
         HGlossaryEntry entry = dao.getEntryById(1L);
         Assert.assertNotNull(entry);
-        assertThat(entry.getGlossaryTerms().size(), is(3));
+        assertThat(entry.getGlossaryTerms().size()).isEqualTo(3);
     }
 
     @Test
@@ -66,7 +61,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
         log.debug("testGetTermByLocaleId");
         List<HGlossaryEntry> entryList = dao.getEntriesByLocale(LocaleId.EN_US,
                 0, 1, "", null, GlossaryUtil.GLOBAL_QUALIFIED_NAME);
-        assertThat(entryList.size(), is(1));
+        assertThat(entryList.size()).isEqualTo(1);
     }
 
     @Test
@@ -78,7 +73,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
                 GlossarySortField.getByField(GlossarySortField.DESCRIPTION));
         List<HGlossaryEntry> entryList = dao.getEntriesByLocale(LocaleId.EN_US,
                 0, 1, "", sortFields, GlossaryUtil.GLOBAL_QUALIFIED_NAME);
-        assertThat(entryList.size(), is(1));
+        assertThat(entryList.size()).isEqualTo(1);
     }
 
     @Test
@@ -89,7 +84,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
         List<GlossarySortField> sortFields = Lists.newArrayList(POS);
         List<HGlossaryEntry> entryList = dao.getEntriesByLocale(LocaleId.EN_US,
                 0, 1, "", sortFields, GlossaryUtil.GLOBAL_QUALIFIED_NAME);
-        assertThat(entryList.size(), is(1));
+        assertThat(entryList.size()).isEqualTo(1);
     }
 
     @Test
@@ -106,7 +101,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
     public void testGetTermByGlossaryEntryId() {
         log.debug("testGetTermByGlossaryEntry");
         List<HGlossaryTerm> termList = dao.getTermByEntryId(1L);
-        assertThat(termList.size(), is(3));
+        assertThat(termList.size()).isEqualTo(3);
     }
 
     @Test
@@ -115,7 +110,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
         HGlossaryEntry entry = dao.getEntryByContentHash("hash",
                 GlossaryUtil.GLOBAL_QUALIFIED_NAME);
         Assert.assertNotNull(entry);
-        assertThat(entry.getSrcLocale().getLocaleId(), is(LocaleId.EN_US));
+        assertThat(entry.getSrcLocale().getLocaleId()).isEqualTo(LocaleId.EN_US);
     }
 
     @Test
@@ -129,7 +124,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
         sortFields.add(pos);
         List<HGlossaryEntry> result = dao.getEntriesByLocale(LocaleId.EN_US, 0,
                 100, "", sortFields, GlossaryUtil.GLOBAL_QUALIFIED_NAME);
-        assertThat(result.get(0).getPos(), is("pos 1"));
+        assertThat(result.get(0).getPos()).isEqualTo("pos 1");
     }
 
     @Test
@@ -144,6 +139,6 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
 
         String srcDate = DateUtil.formatShortDate(srcTerm.getLastChanged());
         String entryDate = DateUtil.formatShortDate(entry.getLastChanged());
-        assertThat(srcDate, is(entryDate));
+        assertThat(srcDate).isEqualTo(entryDate);
     }
 }

@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,14 +20,13 @@ import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.client.view.WorkspaceUsersDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
-import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 import com.google.gwt.event.dom.client.KeyCodes;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -98,14 +95,12 @@ public class WorkspaceUsersPresenterTest {
 
         // key is 'enter', context is Chat, description is publish chat
         KeyShortcut keyShortcut = keyShortcutCaptor.getValue();
-        assertThat(keyShortcut.getAllKeys(), Matchers.hasSize(1));
+        assertThat(keyShortcut.getAllKeys()).hasSize(1);
         Keys keys = keyShortcut.getAllKeys().iterator().next();
-        assertThat(keys.getModifiers(), Matchers.equalTo(Keys.NO_MODIFIER));
-        assertThat(keys.getKeyCode(), Matchers.equalTo(KeyCodes.KEY_ENTER));
-        assertThat(keyShortcut.getDescription(),
-                Matchers.equalTo("publish chat"));
-        assertThat(keyShortcut.getContext(),
-                Matchers.equalTo(ShortcutContext.Chat));
+        assertThat(keys.getModifiers()).isEqualTo(Keys.NO_MODIFIER);
+        assertThat(keys.getKeyCode()).isEqualTo(KeyCodes.KEY_ENTER);
+        assertThat(keyShortcut.getDescription()).isEqualTo("publish chat");
+        assertThat(keyShortcut.getContext()).isEqualTo(ShortcutContext.Chat);
 
         // key handler
         when(identity.getPerson()).thenReturn(person);
@@ -132,11 +127,10 @@ public class WorkspaceUsersPresenterTest {
         verify(dispatcher).execute(actionCaptor.capture(),
                 isA(NoOpAsyncCallback.class));
         PublishWorkspaceChatAction chatAction = actionCaptor.getValue();
-        assertThat(chatAction.getPerson(),
-                Matchers.equalTo(person.getId().toString()));
-        assertThat(chatAction.getMsg(), Matchers.equalTo("hello"));
-        assertThat(chatAction.getMessageType(),
-                Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
+        assertThat(chatAction.getPerson()).isEqualTo(person.getId().toString());
+        assertThat(chatAction.getMsg()).isEqualTo("hello");
+        assertThat(chatAction.getMessageType())
+                .isEqualTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
         verify(display).setChatInputText("");
     }
 

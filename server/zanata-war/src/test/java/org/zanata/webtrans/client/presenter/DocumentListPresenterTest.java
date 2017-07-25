@@ -1,11 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isIn;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -170,24 +165,21 @@ public class DocumentListPresenterTest {
         documentListPresenter.setDocuments(buildSampleDocumentArray());
 
         // right amount of docs
-        assertThat(
-                "the data provider should have the same sized document list returned from the server",
-                documentListPresenter.getFilteredNodes().size(), is(3));
+        assertThat(documentListPresenter.getFilteredNodes()).hasSize(3)
+                .as("the data provider should have the same sized document list returned from the server");
 
         ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
 
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
         for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
-            assertThat(
-                    "the data provider should have only documents that were returned from the server",
-                    node.getDocInfo(), isIn(expectedDocs));
+            assertThat(node.getDocInfo()).isIn(expectedDocs)
+                    .as("the data provider should have only documents that were returned from the server");
             actualDocInfos.add(node.getDocInfo());
         }
-        assertThat(
-                "the data provider should have all documents returned from the server",
-                actualDocInfos,
-                hasItems(expectedDocs.get(0), expectedDocs.get(1),
-                        expectedDocs.get(2)));
+        assertThat(actualDocInfos)
+                .contains(expectedDocs.get(0), expectedDocs.get(1),
+                        expectedDocs.get(2))
+                .as("the data provider should have all documents returned from the server");
     }
 
     @Test
@@ -231,51 +223,43 @@ public class DocumentListPresenterTest {
                 TestFixture.extractFromEvents(capturedEventBusEvent.getAllValues(),
                         DocumentStatsUpdatedEvent.class);
 
-        assertThat(
-                "a document stats event should be fired when a TU update event occurs, not found",
-                docStatsEvent, notNullValue());
+        assertThat(docStatsEvent).isNotNull()
+                .as("a document stats event should be fired when a TU update event occurs, not found");
 
         // document stats
-        assertThat(
-                "document id in document stats event shoudl match updated TU document id",
-                docStatsEvent.getDocId(), equalTo(new DocumentId(2222L, "")));
+        assertThat(docStatsEvent.getDocId())
+                .isEqualTo(new DocumentId(2222L, ""))
+                .as("document id in document stats event shoudl match updated TU document id");
 
         // check actual counts (approved/fuzzy/untranslated)
         // default TUs: 1/2/3
         // approving 1 fuzzy, expect 2/1/3
-        assertThat(
-                "document Approved TU count should increase by 1 when a TU is updated from NeedsReview to Approved",
-                docStatsEvent.getNewStats()
-                        .getStats(LocaleId.ES.toString(), StatUnit.MESSAGE)
-                        .getApproved(), is(new Long(2)));
-        assertThat(
-                "document NeedsReview TU count should decrease by 1 when a TU is updated from NeedsReview to Approved",
-                docStatsEvent.getNewStats()
-                        .getStats(LocaleId.ES.toString(), StatUnit.MESSAGE)
-                        .getDraft(), is(new Long(1)));
-        assertThat(
-                "document Untranslated TU count should remain the same when a TU is updated from NeedsReview to Approved",
-                docStatsEvent.getNewStats()
-                        .getStats(LocaleId.ES.toString(), StatUnit.MESSAGE)
-                        .getUntranslated(), is(new Long(3)));
+        assertThat(docStatsEvent.getNewStats()
+                .getStats(LocaleId.ES.toString(), StatUnit.MESSAGE)
+                .getApproved()).isEqualTo(new Long(2))
+                .as("document Approved TU count should increase by 1 when a TU is updated from NeedsReview to Approved");
+        assertThat(docStatsEvent.getNewStats()
+                .getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getDraft())
+                .isEqualTo(new Long(1));
+        assertThat(docStatsEvent.getNewStats()
+                .getStats(LocaleId.ES.toString(), StatUnit.MESSAGE)
+                .getUntranslated()).isEqualTo(new Long(3))
+                .as("document Untranslated TU count should remain the same when a TU is updated from NeedsReview to Approved");
 
         // default words: 4/5/6
         // approving 3 fuzzy so expect 7/2/6
-        assertThat(
-                "document Approved words should increase when TU changes to Approved",
-                docStatsEvent.getNewStats()
-                        .getStats(LocaleId.ES.toString(), StatUnit.WORD)
-                        .getApproved(), is(new Long(7)));
-        assertThat(
-                "document NeedsReview words should decrease when a TU changes from NeedsReview",
-                docStatsEvent.getNewStats()
-                        .getStats(LocaleId.ES.toString(), StatUnit.WORD)
-                        .getDraft(), is(new Long(2)));
-        assertThat(
-                "document Untranslated words should not change when TU changes between NeedsReview and Approved",
-                docStatsEvent.getNewStats()
-                        .getStats(LocaleId.ES.toString(), StatUnit.WORD)
-                        .getDraft(), is(new Long(2)));
+        assertThat(docStatsEvent.getNewStats()
+                .getStats(LocaleId.ES.toString(), StatUnit.WORD).getApproved())
+                .isEqualTo(new Long(7))
+                .as("document Approved words should increase when TU changes to Approved");
+        assertThat(docStatsEvent.getNewStats()
+                .getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft())
+                .isEqualTo(new Long(2))
+                .as("document NeedsReview words should decrease when a TU changes from NeedsReview");
+        assertThat(docStatsEvent.getNewStats()
+                .getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft())
+                .isEqualTo(new Long(2))
+                .as("document Untranslated words should not change when TU changes between NeedsReview and Approved");
     }
 
     @Test
@@ -292,12 +276,11 @@ public class DocumentListPresenterTest {
         HistoryToken capturedHistoryToken =
                 HistoryToken.fromTokenString(capturedHistoryTokenString
                         .getValue());
-        assertThat(
-                "generated history token filter text should match the filter textbox",
-                capturedHistoryToken.getDocFilterText(), is(filterText));
-        assertThat(
-                "generated history token filter exact flag should match the exact match checkbox",
-                capturedHistoryToken.getDocFilterExact(), is(false));
+        assertThat(capturedHistoryToken.getDocFilterText())
+                .isEqualTo(filterText)
+                .as("generated history token filter text should match the filter textbox");
+        assertThat(capturedHistoryToken.getDocFilterExact()).isFalse()
+                .as("generated history token filter exact flag should match the exact match checkbox");
     }
 
     @Test
@@ -311,10 +294,9 @@ public class DocumentListPresenterTest {
 
         HistoryToken exactSearchToken = new HistoryToken();
         exactSearchToken.setDocFilterExact(true);
-        assertThat(
-                "checking the 'exact search' checkbox should be reflected in a new history token",
-                capturedHistoryTokenString.getValue(),
-                is(exactSearchToken.toTokenString()));
+        assertThat(capturedHistoryTokenString.getValue())
+                .isEqualTo(exactSearchToken.toTokenString())
+                .as("checking the 'exact search' checkbox should be reflected in a new history token");
     }
 
     @Test
@@ -333,10 +315,9 @@ public class DocumentListPresenterTest {
 
         HistoryToken inexactSearchToken = new HistoryToken();
         inexactSearchToken.setDocFilterExact(false);
-        assertThat(
-                "unchecking the 'exact search' checkbox should be reflected in a new history token",
-                capturedHistoryTokenString.getValue(),
-                is(inexactSearchToken.toTokenString()));
+        assertThat(capturedHistoryTokenString.getValue())
+                .isEqualTo(inexactSearchToken.toTokenString())
+                .as("unchecking the 'exact search' checkbox should be reflected in a new history token");
     }
 
     // TODO tests for check and uncheck case sensitive check
@@ -363,11 +344,10 @@ public class DocumentListPresenterTest {
         verify(mockUserWorkspaceContext).setSelectedDoc(docInfo);
 
         HistoryToken newToken = capturedHistoryToken.getValue();
-        assertThat("path of selected document should be set in history token",
-                newToken.getDocumentPath(), is("second/path/doc122"));
-        assertThat(
-                "view in history token should change to individual document view when a new document is selected",
-                newToken.getView(), is(MainView.Editor));
+        assertThat(newToken.getDocumentPath()).isEqualTo("second/path/doc122")
+                .as("path of selected document should be set in history token");
+        assertThat(newToken.getView()).isEqualTo(MainView.Editor)
+                .as("view in history token should change to individual document view when a new document is selected");
     }
 
     @Test
@@ -391,17 +371,14 @@ public class DocumentListPresenterTest {
         expectedDocs.remove(0); // first doc does not match the filter
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
         for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
-            assertThat(
-                    "the data provider should have only documents that exactly match the current filter",
-                    node.getDocInfo(), isIn(expectedDocs));
+            assertThat(node.getDocInfo()).isIn(expectedDocs)
+                    .as("the data provider should have only documents that exactly match the current filter");
             actualDocInfos.add(node.getDocInfo());
         }
-        assertThat(
-                "the data provider should have all documents that exactly match the filter",
-                actualDocInfos, hasItems(expectedDocs.get(0)));
-        assertThat(
-                "the data provider list should contain exactly the number of documents matching the filter",
-                documentListPresenter.getFilteredNodes().size(), is(1));
+        assertThat(actualDocInfos).contains(expectedDocs.get(0))
+                .as("the data provider should have all documents that exactly match the filter");
+        assertThat(documentListPresenter.getFilteredNodes()).hasSize(1)
+                .as("the data provider list should contain exactly the number of documents matching the filter");
     }
 
     // TODO test case sensitivity option
@@ -425,21 +402,18 @@ public class DocumentListPresenterTest {
 
         ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
         expectedDocs.remove(1); // second doc does not match any of the filter
-                                // strings
+        // strings
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
         for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
-            assertThat(
-                    "the data provider should have only documents that match the current filter",
-                    node.getDocInfo(), isIn(expectedDocs));
+            assertThat(node.getDocInfo()).isIn(expectedDocs)
+                    .as("the data provider should have only documents that match the current filter");
             actualDocInfos.add(node.getDocInfo());
         }
-        assertThat(
-                "the data provider should have all documents that match the filter",
-                actualDocInfos,
-                hasItems(expectedDocs.get(0), expectedDocs.get(1)));
-        assertThat(
-                "the data provider list should contain exactly the number of documents matching the filter",
-                documentListPresenter.getFilteredNodes().size(), is(2));
+        assertThat(actualDocInfos)
+                .contains(expectedDocs.get(0), expectedDocs.get(1))
+                .as("the data provider should have all documents that match the filter");
+        assertThat(documentListPresenter.getFilteredNodes()).hasSize(2)
+                .as("the data provider list should contain exactly the number of documents matching the filter");
     }
 
     // TODO test case sensitive check updated from history
@@ -456,11 +430,11 @@ public class DocumentListPresenterTest {
         DocumentId docId =
                 documentListPresenter
                         .getDocumentId("does/not/match/exact/filter");
-        assertThat(docId.getId(), is(3333L));
+        assertThat(docId.getId()).isEqualTo(3333L);
 
         // second document from buildSampleDocumentArray()
         docId = documentListPresenter.getDocumentId("match/exact/filter");
-        assertThat(docId.getId(), is(2222L));
+        assertThat(docId.getId()).isEqualTo(2222L);
     }
 
     @Test
@@ -471,19 +445,19 @@ public class DocumentListPresenterTest {
         DocumentId doc1 = new DocumentId(1111L, "no/filter/matches");
         DocumentInfo docInfo = documentListPresenter.getDocumentInfo(doc1);
 
-        assertThat(docInfo, is(equalTo(new DocumentInfo(doc1, "doc111",
+        assertThat(docInfo).isEqualTo(new DocumentInfo(doc1, "doc111",
                 "first/path/", LocaleId.EN_US,
                 new ContainerTranslationStatistics(), new AuditInfo(new Date(),
                         "Translator"), new HashMap<String, String>(),
-                new AuditInfo(new Date(), "last translator")))));
+                new AuditInfo(new Date(), "last translator")));
 
         DocumentId doc2 = new DocumentId(3333L, "does/not/match/exact/filter");
         docInfo = documentListPresenter.getDocumentInfo(doc2);
-        assertThat(docInfo, is(equalTo(new DocumentInfo(doc2, "doc123",
+        assertThat(docInfo).isEqualTo(new DocumentInfo(doc2, "doc123",
                 "third/path/", LocaleId.EN_US,
                 new ContainerTranslationStatistics(), new AuditInfo(new Date(),
                         "Translator"), new HashMap<String, String>(),
-                new AuditInfo(new Date(), "last translator")))));
+                new AuditInfo(new Date(), "last translator")));
     }
 
     @Test

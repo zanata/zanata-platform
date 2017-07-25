@@ -3,8 +3,7 @@ package org.zanata.file;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GlobalDocumentIdTest {
 
@@ -25,34 +24,28 @@ public class GlobalDocumentIdTest {
 
     @Test
     public void getDocId() {
-        assertThat(id.getDocId(), is(DOCUMENT_ID));
+        assertThat(id.getDocId()).isEqualTo(DOCUMENT_ID);
     }
 
     @Test
     public void getIterationSlug() {
-        assertThat(id.getVersionSlug(), is(VERSION_SLUG));
+        assertThat(id.getVersionSlug()).isEqualTo(VERSION_SLUG);
     }
 
     @Test
     public void getProjectSlug() {
-        assertThat(id.getProjectSlug(), is(PROJECT_SLUG));
-    }
-
-    @Test
-    public void equalsIsReflexive() {
-        assertThat(id, equalTo(id));
+        assertThat(id.getProjectSlug()).isEqualTo(PROJECT_SLUG);
     }
 
     @Test
     public void equalsIsSymmetric() {
         GlobalDocumentId sameId = newBasicInstance();
-        assertThat(sameId, equalTo(id));
-        assertThat(id, equalTo(sameId));
+        assertThat(sameId).isEqualTo(id);
     }
 
     @Test
     public void sameHashForEqualObjects() {
         GlobalDocumentId sameId = newBasicInstance();
-        assertThat(sameId.hashCode(), is(id.hashCode()));
+        assertThat(sameId.hashCode()).isEqualTo(id.hashCode());
     }
 }

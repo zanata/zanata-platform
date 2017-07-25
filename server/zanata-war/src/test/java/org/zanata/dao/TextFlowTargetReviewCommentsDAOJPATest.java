@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -35,7 +34,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -76,9 +75,9 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest 
                 reviewCommentsDAO.getReviewComments(new TransUnitId(5L),
                         LocaleId.EN_US);
 
-        assertThat(reviewComments, Matchers.hasSize(1));
-        assertThat(reviewComments.get(0).getCommenter().getName(),
-                Matchers.equalTo("Sample User"));
+        assertThat(reviewComments).hasSize(1);
+        assertThat(reviewComments.get(0).getCommenter().getName())
+                .isEqualTo("Sample User");
     }
 
     @Test
@@ -90,7 +89,7 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest 
         List<HTextFlowTargetReviewComment> userComments =
                 target.getReviewComments();
 
-        assertThat(userComments, Matchers.empty());
+        assertThat(userComments).isEmpty();
 
         target.addReviewComment("bad translation", person);
         getEm().persist(target);
@@ -99,11 +98,10 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest 
                 reviewCommentsDAO.getReviewComments(new TransUnitId(target
                         .getTextFlow().getId()), target.getLocaleId());
 
-        assertThat(result, Matchers.hasSize(1));
-        assertThat(result.get(0).getCommenterName(),
-                Matchers.equalTo(person.getName()));
-        assertThat(result.get(0).getCreationDate(),
-                Matchers.lessThanOrEqualTo(new Date()));
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getCommenterName()).isEqualTo(person.getName());
+        assertThat(result.get(0).getCreationDate())
+                .isBeforeOrEqualsTo(new Date());
     }
 
     @Test
@@ -126,7 +124,6 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest 
                 reviewCommentsDAO.getReviewComments(new TransUnitId(target
                         .getTextFlow().getId()), target.getLocaleId());
 
-        assertThat(result.get(0).getTargetVersion(),
-                Matchers.equalTo(oldVersion));
+        assertThat(result.get(0).getTargetVersion()).isEqualTo(oldVersion);
     }
 }

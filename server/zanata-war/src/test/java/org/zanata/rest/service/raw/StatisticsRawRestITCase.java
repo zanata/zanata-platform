@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import java.util.Arrays;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
@@ -37,6 +35,8 @@ import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
@@ -98,24 +98,24 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
 
                 assertJaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
                 ContainerTranslationStatistics stats = jaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("1.0"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue());
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("1.0");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getDetailedStats()).isNull();
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(transStat.getUnit(),
-                            is(TranslationStatistics.StatUnit.MESSAGE));
+                    assertThat(transStat.getUnit())
+                            .isEqualTo(TranslationStatistics.StatUnit.MESSAGE);
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
-                                    + transStat.getTranslatedAndApproved(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedAndApproved())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();
@@ -143,31 +143,31 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
 
                 assertJaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
                 ContainerTranslationStatistics stats = jaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("1.0"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats().size(), greaterThan(0));
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("1.0");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getDetailedStats().size()).isGreaterThan(0);
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
-                                    + transStat.getUntranslated(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getUntranslated())
+                            .isEqualTo(transStat.getTotal());
                 }
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(Arrays.asList(expectedLocales),
-                            hasItem(transStat.getLocale()));
+                    assertThat(Arrays.asList(expectedLocales))
+                            .contains(transStat.getLocale());
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
-                                    + transStat.getTranslatedAndApproved(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedAndApproved())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();
@@ -196,23 +196,23 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
                 ContainerTranslationStatistics stats = jaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("my/path/document.txt"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue());
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("my/path/document.txt");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getDetailedStats()).isNull();
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(transStat.getUnit(),
-                            is(TranslationStatistics.StatUnit.MESSAGE));
+                    assertThat(transStat.getUnit())
+                            .isEqualTo(TranslationStatistics.StatUnit.MESSAGE);
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
-                                    + transStat.getTranslatedAndApproved(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedAndApproved())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();
@@ -243,29 +243,29 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
                 ContainerTranslationStatistics stats = jaxbUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("my/path/document.txt"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("my/path/document.txt");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
-                                    + transStat.getTranslatedAndApproved(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedAndApproved())
+                            .isEqualTo(transStat.getTotal());
                 }
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(Arrays.asList(expectedLocales),
-                            hasItem(transStat.getLocale()));
+                    assertThat(Arrays.asList(expectedLocales))
+                            .contains(transStat.getLocale());
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
-                                    + transStat.getUntranslated(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getUntranslated())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();
@@ -295,20 +295,20 @@ public class StatisticsRawRestITCase extends RestTest {
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 ContainerTranslationStatistics stats = jsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("1.0"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue());
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("1.0");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getDetailedStats()).isNull();
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(transStat.getUnit(),
-                            is(TranslationStatistics.StatUnit.MESSAGE));
+                    assertThat(transStat.getUnit())
+                            .isEqualTo(TranslationStatistics.StatUnit.MESSAGE);
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
-                                    + transStat.getTranslatedAndApproved(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedAndApproved())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();
@@ -336,32 +336,32 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
 
                 assertJsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
                 ContainerTranslationStatistics stats = jsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("1.0"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats().size(), greaterThan(0));
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("1.0");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getDetailedStats().size()).isGreaterThan(0);
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
-                                    + transStat.getUntranslated(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getUntranslated())
+                            .isEqualTo(transStat.getTotal());
                 }
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(Arrays.asList(expectedLocales),
-                            hasItem(transStat.getLocale()));
+                    assertThat(Arrays.asList(expectedLocales))
+                            .contains(transStat.getLocale());
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
-                                    + transStat.getTranslatedOnly(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedOnly())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();
@@ -389,24 +389,24 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
                 ContainerTranslationStatistics stats = jsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("my/path/document.txt"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue());
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("my/path/document.txt");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getDetailedStats()).isNull();
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(transStat.getUnit(),
-                            is(TranslationStatistics.StatUnit.MESSAGE));
+                    assertThat(transStat.getUnit())
+                            .isEqualTo(TranslationStatistics.StatUnit.MESSAGE);
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
-                                    + transStat.getTranslatedOnly(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedOnly())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();
@@ -438,31 +438,31 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
                 ContainerTranslationStatistics stats = jsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
-                assertThat(stats.getId(), is("my/path/document.txt"));
-                assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getStats().size(), greaterThan(0));
+                assertThat(stats.getId()).isEqualTo("my/path/document.txt");
+                assertThat(stats.getRefs().size()).isGreaterThan(0);
+                assertThat(stats.getStats().size()).isGreaterThan(0);
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
-                                    + transStat.getTranslatedOnly(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedOnly())
+                            .isEqualTo(transStat.getTotal());
                 }
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    assertThat(Arrays.asList(expectedLocales),
-                            hasItem(transStat.getLocale()));
+                    assertThat(Arrays.asList(expectedLocales))
+                            .contains(transStat.getLocale());
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
-                                    + transStat.getTranslatedOnly(),
-                            equalTo(transStat.getTotal()));
+                                    + transStat.getTranslatedOnly())
+                            .isEqualTo(transStat.getTotal());
                 }
             }
         }.run();

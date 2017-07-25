@@ -1,9 +1,5 @@
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -22,6 +18,8 @@ import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.util.RawRestTestUtils;
 
 import com.google.common.collect.ImmutableList;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestBase {
     private final Logger log = LoggerFactory
@@ -60,7 +58,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                         new StringSet("gettext;comment")));
         ResourceTestUtil.clearRevs(sr);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get, equalTo(sr));
+        assertThat(get).isEqualTo(sr);
     }
 
     @Test
@@ -75,7 +73,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                         new StringSet("gettext;comment")));
         ResourceTestUtil.clearRevs(sr);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get, equalTo(sr));
+        assertThat(get).isEqualTo(sr);
     }
 
     @Test
@@ -92,7 +90,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
         log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -109,7 +107,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
         log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -125,7 +123,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
         log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -138,7 +136,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                 getSourceDocResource().getResource(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -151,7 +149,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                 getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -163,7 +161,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                 getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -178,7 +176,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + sr.toString());
         log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(sr.toString()));
+        assertThat(get.toString()).isEqualTo(sr.toString());
     }
 
     @Test
@@ -192,7 +190,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + sr.toString());
         log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(sr.toString()));
+        assertThat(get.toString()).isEqualTo(sr.toString());
     }
 
     @Test
@@ -208,7 +206,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
         log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -226,7 +224,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         log.debug("expect:" + expected);
         String got = RawRestTestUtils.jaxbMarhsal(get);
         log.debug("actual:" + got);
-        assertThat(got, is(expected));
+        assertThat(got).isEqualTo(expected);
     }
 
     @Test
@@ -241,7 +239,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
         log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(base.toString()));
+        assertThat(get.toString()).isEqualTo(base.toString());
     }
 
     @Test
@@ -263,7 +261,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(sr);
         ResourceTestUtil.clearRevs(get);
-        assertThat(sr, equalTo(get));
+        assertThat(sr).isEqualTo(get);
     }
 
     @Test
@@ -284,7 +282,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(sr);
         ResourceTestUtil.clearRevs(get);
-        assertThat(sr, equalTo(get));
+        assertThat(sr).isEqualTo(get);
     }
 
     @Test
@@ -305,7 +303,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get, equalTo(base));
+        assertThat(get).isEqualTo(base);
     }
 
     @Test
@@ -325,7 +323,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get, equalTo(base));
+        assertThat(get).isEqualTo(base);
     }
 
     @Test
@@ -346,7 +344,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
-        assertThat(get, equalTo(base));
+        assertThat(get).isEqualTo(base);
     }
 
     @Test
@@ -357,14 +355,14 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         getSourceDocResource().post(rs1, null, true);
         Response resourceGetResponse =
                 getSourceDocResource().deleteResource(rs1.getName());
-        assertThat(resourceGetResponse.getStatus(),
-                is(Status.OK.getStatusCode()));
+        assertThat(resourceGetResponse.getStatus())
+                .isEqualTo(Status.OK.getStatusCode());
 
         Resource rs2 = resourceTestFactory.getTextFlowTest();
         Response resourceGetResponse2 =
                 getSourceDocResource().deleteResource(rs2.getName());
-        assertThat(resourceGetResponse2.getStatus(),
-                is(Status.NOT_FOUND.getStatusCode()));
+        assertThat(resourceGetResponse2.getStatus())
+                .isEqualTo(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -374,14 +372,14 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         getSourceDocResource().post(rs1, null, true);
         Response resourceGetResponse =
                 getSourceDocResource().deleteResourceWithDocId(rs1.getName());
-        assertThat(resourceGetResponse.getStatus(),
-                is(Status.OK.getStatusCode()));
+        assertThat(resourceGetResponse.getStatus())
+                .isEqualTo(Status.OK.getStatusCode());
 
         Resource rs2 = resourceTestFactory.getTextFlowTest();
         Response resourceGetResponse2 =
                 getSourceDocResource().deleteResourceWithDocId(rs2.getName());
-        assertThat(resourceGetResponse2.getStatus(),
-                is(Status.NOT_FOUND.getStatusCode()));
+        assertThat(resourceGetResponse2.getStatus())
+                .isEqualTo(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -403,7 +401,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         log.debug("expect:" + expected);
         String got = RawRestTestUtils.jaxbMarhsal(get);
         log.debug("actual:" + got);
-        assertThat(got, is(expected));
+        assertThat(got).isEqualTo(expected);
     }
 
     @Test
@@ -424,6 +422,6 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         log.debug("expect:" + expected);
         String got = RawRestTestUtils.jaxbMarhsal(get);
         log.debug("actual:" + got);
-        assertThat(got, is(expected));
+        assertThat(got).isEqualTo(expected);
     }
 }

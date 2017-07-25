@@ -8,15 +8,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -46,10 +45,10 @@ public class LeakyBucketTest {
 
     @Test
     public void willWaitUntilRefill() throws InterruptedException {
-        assertThat(bucket.tryAcquire(), Matchers.is(true));
-        assertThat(bucket.tryAcquire(), Matchers.is(false));
+        assertThat(bucket.tryAcquire()).isTrue();
+        assertThat(bucket.tryAcquire()).isFalse();
         when(timeTracker.timePassed()).thenReturn(timeOverRefillDuration);
-        assertThat(bucket.tryAcquire(), Matchers.is(true));
+        assertThat(bucket.tryAcquire()).isTrue();
     }
 
     @Test
@@ -67,13 +66,12 @@ public class LeakyBucketTest {
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
         List<Future<Boolean>> futures = executorService.invokeAll(callables);
         List<Boolean> result = getFutureResult(futures);
-        assertThat(result, Matchers.containsInAnyOrder(true, false, false));
+        assertThat(result).contains(true, false, false);
         // here we simulate that we have waited enough time and try again
         when(timeTracker.timePassed()).thenReturn(timeOverRefillDuration, 0L,
                 0L);
         List<Future<Boolean>> callAgain = executorService.invokeAll(callables);
-        assertThat(getFutureResult(callAgain),
-                Matchers.containsInAnyOrder(true, false, false));
+        assertThat(getFutureResult(callAgain)).contains(true, false, false);
     }
 
     private static List<Boolean>

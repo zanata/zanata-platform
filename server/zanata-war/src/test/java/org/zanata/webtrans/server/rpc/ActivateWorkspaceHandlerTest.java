@@ -1,6 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -16,7 +16,6 @@ import java.util.Map;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
@@ -192,32 +191,30 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
         verify(translationWorkspace).addEditorClient(eq(HTTP_SESSION_ID),
                 editorClientIdCaptor.capture(), eq(person.getId()));
         EditorClientId editorClientId = editorClientIdCaptor.getValue();
-        assertThat(editorClientId.getHttpSessionId(),
-                Matchers.equalTo(HTTP_SESSION_ID));
+        assertThat(editorClientId.getHttpSessionId()).isEqualTo(HTTP_SESSION_ID);
 
         verify(translationWorkspace).publish(
                 enterWorkspaceEventCaptor.capture());
         EnterWorkspace enterWorkspace = enterWorkspaceEventCaptor.getValue();
-        assertThat(enterWorkspace.getPerson(), Matchers.equalTo(person));
-        assertThat(enterWorkspace.getEditorClientId(),
-                Matchers.equalTo(editorClientId));
+        assertThat(enterWorkspace.getPerson()).isEqualTo(person);
+        assertThat(enterWorkspace.getEditorClientId())
+                .isEqualTo(editorClientId);
 
         Identity userIdentity = result.getIdentity();
-        assertThat(userIdentity.getPerson(), Matchers.equalTo(person));
-        assertThat(userIdentity.getEditorClientId(),
-                Matchers.equalTo(editorClientId));
+        assertThat(userIdentity.getPerson()).isEqualTo(person);
+        assertThat(userIdentity.getEditorClientId()).isEqualTo(editorClientId);
 
         UserWorkspaceContext userWorkspaceContext =
                 result.getUserWorkspaceContext();
         assertThat(userWorkspaceContext.getWorkspaceRestrictions()
-                .isHasGlossaryUpdateAccess(), Matchers.equalTo(true));
+                .isHasGlossaryUpdateAccess()).isTrue();
         assertThat(userWorkspaceContext.getWorkspaceRestrictions()
-                .isProjectActive(), Matchers.equalTo(true));
+                .isProjectActive()).isTrue();
         assertThat(userWorkspaceContext.getWorkspaceRestrictions()
-                .isHasEditTranslationAccess(), Matchers.equalTo(true));
+                .isHasEditTranslationAccess()).isTrue();
 
-        assertThat(result.getStoredUserConfiguration(),
-                Matchers.sameInstance(optionsResult.getConfiguration()));
+        assertThat(result.getStoredUserConfiguration())
+                .isSameAs(optionsResult.getConfiguration());
     }
 
     @Test

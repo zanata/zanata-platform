@@ -1,10 +1,5 @@
 package org.zanata.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +12,8 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest {
     private LocaleDAO localeDAO;
@@ -61,17 +58,17 @@ public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest {
 
         List<HDocumentHistory> historyElems = loadHistory(d);
 
-        assertThat(historyElems.size(), is(1));
+        assertThat(historyElems.size()).isEqualTo(1);
         HDocumentHistory history = historyElems.get(0);
-        assertThat(history.getDocId(), is(d.getDocId()));
-        assertThat(history.getContentType(), is(ContentType.TextPlain));
-        assertThat(history.getLastChanged().getTime(),
-                equalTo(lastChanged.getTime()));
-        assertThat(history.getLastModifiedBy(), nullValue());
-        assertThat(history.getLocale().getLocaleId(), is(de_DE.getLocaleId()));
-        assertThat(history.getName(), is(d.getName()));
-        assertThat(history.getPath(), is(d.getPath()));
-        assertThat(history.getRevision(), is(d.getRevision() - 1));
+        assertThat(history.getDocId()).isEqualTo(d.getDocId());
+        assertThat(history.getContentType()).isEqualTo(ContentType.TextPlain);
+        assertThat(history.getLastChanged().getTime())
+                .isEqualTo(lastChanged.getTime());
+        assertThat(history.getLastModifiedBy()).isNull();
+        assertThat(history.getLocale().getLocaleId()).isEqualTo(de_DE.getLocaleId());
+        assertThat(history.getName()).isEqualTo(d.getName());
+        assertThat(history.getPath()).isEqualTo(d.getPath());
+        assertThat(history.getRevision()).isEqualTo(d.getRevision() - 1);
 
         d.incrementRevision();
         d.setName("name2");
@@ -79,7 +76,7 @@ public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest {
         session.flush();
 
         historyElems = loadHistory(d);
-        assertThat(historyElems.size(), is(2));
+        assertThat(historyElems.size()).isEqualTo(2);
 
     }
 

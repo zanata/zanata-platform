@@ -21,8 +21,6 @@
 package org.zanata.arquillian;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.containsString;
 
 import java.io.File;
 import java.util.Arrays;

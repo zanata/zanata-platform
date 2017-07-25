@@ -20,17 +20,17 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.webtrans.shared.rpc.NavOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserConfigHolderTest {
 
@@ -46,11 +46,10 @@ public class UserConfigHolderTest {
 
         Map<String, String> propertiesMap = getPropertiesMap();
 
-        assertThat(propertiesMap,
-                Matchers.hasEntry("enterSavesApproved", "false"));
-        assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
-        assertThat(propertiesMap, Matchers.hasEntry("editorPageSize", "25"));
-        assertThat(propertiesMap, Matchers.hasEntry("showError", "false"));
+        assertThat(propertiesMap).containsEntry("enterSavesApproved", "false");
+        assertThat(propertiesMap).containsEntry("displayButtons", "true");
+        assertThat(propertiesMap).containsEntry("editorPageSize", "25");
+        assertThat(propertiesMap).containsEntry("showError", "false");
     }
 
     @SuppressWarnings("unchecked")
@@ -69,26 +68,24 @@ public class UserConfigHolderTest {
         configHolder.setDisplayButtons(value);
         configHolder.setShowError(value);
 
-        assertThat(configHolder.getState().isEnterSavesApproved(),
-                Matchers.equalTo(value));
-        assertThat(configHolder.getState().isDisplayButtons(),
-                Matchers.equalTo(value));
-        assertThat(configHolder.getState().isShowError(),
-                Matchers.equalTo(value));
+        assertThat(configHolder.getState().isEnterSavesApproved())
+                .isEqualTo(value);
+        assertThat(configHolder.getState().isDisplayButtons()).isEqualTo(value);
+        assertThat(configHolder.getState().isShowError()).isEqualTo(value);
     }
 
     @Test
     public void canGetPredicateBasedOnNavOption() {
         configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
-        assertThat(configHolder.getContentStatePredicate(),
-                Matchers.is(UserConfigHolder.INCOMPLETE_PREDICATE));
+        assertThat(configHolder.getContentStatePredicate())
+                .isEqualTo(UserConfigHolder.INCOMPLETE_PREDICATE);
 
         configHolder.setNavOption(NavOption.FUZZY);
-        assertThat(configHolder.getContentStatePredicate(),
-                Matchers.is(UserConfigHolder.DRAFT_PREDICATE));
+        assertThat(configHolder.getContentStatePredicate())
+                .isEqualTo(UserConfigHolder.DRAFT_PREDICATE);
 
         configHolder.setNavOption(NavOption.UNTRANSLATED);
-        assertThat(configHolder.getContentStatePredicate(),
-                Matchers.is(UserConfigHolder.NEW_PREDICATE));
+        assertThat(configHolder.getContentStatePredicate())
+                .isEqualTo(UserConfigHolder.NEW_PREDICATE);
     }
 }
