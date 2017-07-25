@@ -235,6 +235,8 @@ timestamps {
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT", currentBuild.result)
+          updateGithubCommitStatus(currentBuild)
+
 
           // TODO publish coverage for jest (cobertura format)
           // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
@@ -309,6 +311,7 @@ timestamps {
         echo("Caught exception: " + e)
         notify.failed()
         currentBuild.result = 'FAILURE'
+        updateGithubCommitStatus(currentBuild)
         // abort the rest of the pipeline
         throw e
       }
@@ -349,6 +352,7 @@ timestamps {
         if (currentBuild.result == null) {
           echo 'marking build as successful'
           currentBuild.result = 'SUCCESS'
+          updateGithubCommitStatus(currentBuild)
         }
 
         // TODO notify finish
@@ -428,6 +432,7 @@ void integrationTests(String appserver) {
 
         if (mvnResult != 0) {
           currentBuild.result = 'UNSTABLE'
+          updateGithubCommitStatus(currentBuild)
 
           // gather db/app logs and screenshots to help debugging
           archive(
@@ -445,6 +450,7 @@ void integrationTests(String appserver) {
           sh "git clean -fdx"
         } else {
           currentBuild.result = 'FAILED'
+          updateGithubCommitStatus(currentBuild)
           error "no integration test results for $appserver"
         }
         notify.testResults(appserver.toUpperCase(), currentBuild.result)
@@ -480,4 +486,36 @@ boolean setJUnitPrefix(prefix, files) {
     echo "[WARNING] Failed to find JUnit report files **/${files}"
     return false
   }
+}
+
+// Modify from example code of Jenkins GitHub Plugin
+// https://wiki.jenkins.io/display/JENKINS/GitHub+Plugin#GitHubPlugin-AutomaticMode%28Jenkinsmanageshooksforjobsbyitself%29
+def getRepoURL() {
+  sh "git config --get remote.origin.url > .git/remote-url"
+  return readFile(".git/remote-url").trim()
+}
+
+def getCommitSha() {
+  sh "git rev-parse HEAD > .git/current-commit"
+  return readFile(".git/current-commit").trim()
+}
+
+def updateGithubCommitStatus(build) {
+  // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
+  repoUrl = getRepoURL()
+  commitSha = getCommitSha()
+
+  step([
+    $class: 'GitHubCommitStatusSetter',
+    reposSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl],
+    commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitSha],
+    errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
+    statusResultSource: [
+      $class: 'ConditionalStatusResultSource',
+      results: [
+        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: build.description],
+        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: build.description],
+      ]
+    ]
+  ])
 }
