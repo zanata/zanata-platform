@@ -235,7 +235,7 @@ timestamps {
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT", currentBuild.result)
-          updateBuildResult(currentBuild, currentBuild.result)
+          updateBuildResult(currentBuild, currentBuild.result, "UNIT")
 
 
           // TODO publish coverage for jest (cobertura format)
@@ -310,7 +310,7 @@ timestamps {
       } catch (e) {
         echo("Caught exception: " + e)
         notify.failed()
-        updateBuildResult(currentBuild, 'FAILURE')
+        updateBuildResult(currentBuild, 'FAILURE', e.toString())
         // abort the rest of the pipeline
         throw e
       }
@@ -429,7 +429,7 @@ void integrationTests(String appserver) {
          */
 
         if (mvnResult != 0) {
-          updateBuildResult(currentBuild, 'UNSTABLE')
+          updateBuildResult(currentBuild, 'UNSTABLE', 'Failed maven build for integration tests')
 
           // gather db/app logs and screenshots to help debugging
           archive(
@@ -446,7 +446,7 @@ void integrationTests(String appserver) {
           // Reduce workspace size
           sh "git clean -fdx"
         } else {
-          updateBuildResult(currentBuild, 'FAILED')
+          updateBuildResult(currentBuild, 'FAILED', "No integration test results for $appserver")
           error "no integration test results for $appserver"
         }
         notify.testResults(appserver.toUpperCase(), currentBuild.result)
@@ -487,19 +487,22 @@ boolean setJUnitPrefix(prefix, files) {
 // Modify from example code of Jenkins GitHub Plugin
 // https://wiki.jenkins.io/display/JENKINS/GitHub+Plugin#GitHubPlugin-AutomaticMode%28Jenkinsmanageshooksforjobsbyitself%29
 
-def updateBuildResult(build, result) {
+void updateBuildResult(def build, String result, String message = '') {
   // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
   build.result = result
+  def msg = message + ' Duration:' + build.duration + ' ' + build.description
 
   step([
     $class: 'GitHubCommitStatusSetter',
+    reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.CHANGE_URL],
+
     errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
     statusResultSource: [
       $class: 'ConditionalStatusResultSource',
       results: [
-        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: build.description],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'UNSTABLE', state: 'UNSTABLE', message: build.description],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: build.description],
+        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: msg ],
+        [$class: 'BetterThanOrEqualBuildResult', result: 'UNSTABLE', state: 'UNSTABLE', message: msg ],
+        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: msg ],
       ]
     ]
   ])
