@@ -96,6 +96,10 @@
       render="versions_form"
       action="#{projectHomeAction.setPageRendered(true)}"/>
 
+    <a4j:jsFunction name="resetProjectMembers"
+      render="people-size,people_form" limitRender="true"
+      action="#{projectHomeAction.clearCachedMembershipData}"/>
+
   </h:form>
 
 <div class="g full-width">

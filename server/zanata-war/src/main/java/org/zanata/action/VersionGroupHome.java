@@ -60,6 +60,7 @@ import org.zanata.util.ComparatorUtil;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import org.zanata.util.UrlUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -94,6 +95,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     private VersionAutocomplete versionAutocomplete;
     @Inject
     private GroupLocaleAutocomplete localeAutocomplete;
+    @Inject
+    private UrlUtil urlUtil;
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
 
@@ -223,10 +226,14 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         } else {
             getInstance().removeMaintainer(maintainer);
             maintainerFilter.reset();
-            update();
+            super.update();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.MaintainerRemoveFromGroup",
                             maintainer.getName()));
+            if (maintainer.equals(authenticatedAccount.getPerson())) {
+                urlUtil.redirectToInternal(
+                        urlUtil.groupUrl(getInstance().getSlug()));
+            }
         }
     }
 

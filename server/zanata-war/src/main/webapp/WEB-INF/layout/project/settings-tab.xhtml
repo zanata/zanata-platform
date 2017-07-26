@@ -119,9 +119,9 @@
           <a4j:commandLink
             id="remove-maintainer-button"
             action="#{projectHome.removeMaintainer(maintainer)}"
-            oncomplete="zanata.form.appendCheckboxes(getUserRoleId())"
+            oncomplete="resetProjectMembers();zanata.form.appendCheckboxes(getUserRoleId())"
             styleClass="l--float-right txt--danger reveal__target"
-            render="settings-permissions-form,maintainers-size,maintainers-form">
+            render="settings-permissions-form">
             <i class="i--large i--cancel"></i>
           </a4j:commandLink>
         </li>
@@ -137,8 +137,8 @@
           actionBean="#{projectHome.maintainerAutocomplete}"
           maxlength="80" minlength="3" id="maintainerAutocomplete"
           fetchValue="#{result.account.username}"
-          render="settings-permissions-form,maintainers-size, maintainers-form"
-          oncomplete="zanata.form.appendCheckboxes(getUserRoleId());focusCurrentActiveInput()"
+          render="settings-permissions-form"
+          oncomplete="resetProjectMembers();zanata.form.appendCheckboxes(getUserRoleId());focusCurrentActiveInput()"
           placeholder="#{msgs['jsf.SearchUsers']}">
 
           <span class="w--r-1 bx--round l--push-right-quarter">
