@@ -10,7 +10,7 @@ const CalendarPeriodHeading = ({
   const period = selectedDay
     ? dateUtils.formatDate(selectedDay, dateUtils.dateSingleDisplayFmt)
     : dateUtils.formatDate(dateRange.startDate, dateUtils.dateRangeDisplayFmt) +
-      ' … ' +
+      ' to ' +
       dateUtils.formatDate(dateRange.endDate, dateUtils.dateRangeDisplayFmt)
 
   return (

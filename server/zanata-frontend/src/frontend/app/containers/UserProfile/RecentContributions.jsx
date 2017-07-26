@@ -64,7 +64,7 @@ class RecentContributions extends React.Component {
 
     const displayDateRange =
       utilsDate.shortDate(this.state.dateRange.startDate) +
-      ' ... ' + utilsDate.shortDate(this.state.dateRange.endDate)
+      ' to ' + utilsDate.shortDate(this.state.dateRange.endDate)
 
     /* eslint-disable react/jsx-no-bind */
     return (
