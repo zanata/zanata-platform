@@ -234,9 +234,10 @@ timestamps {
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
-          notify.testResults("UNIT", currentBuild.result)
-          if ( currentBuild.result ){
-            updateBuildResult(currentBuild.result, "UNIT")
+          if ( currentBuild.result && currentBuild.result != 'SUCCESS'){
+             // Only failed/unstable should reach here
+             notify.testResults("UNIT", currentBuild.result)
+             updateBuildResult(currentBuild.result, "UNIT")
           }
 
           // TODO publish coverage for jest (cobertura format)
