@@ -16,7 +16,7 @@ import { transUnitStatusToPhraseStatus } from '../utils/status-util'
 import {
   PHRASE_LIST_REQUEST,
   PHRASE_LIST_SUCCESS,
-  PHRASE_LIST_FAILED
+  PHRASE_LIST_FAILURE
 } from '../actions/phrases-action-types'
 
 const getProject = state => state.context.projectSlug
@@ -131,7 +131,7 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
           meta: { filter: hasFilter }
         },
         {
-          type: PHRASE_LIST_FAILED,
+          type: PHRASE_LIST_FAILURE,
           meta: { filter: hasFilter }
         }
       ]
