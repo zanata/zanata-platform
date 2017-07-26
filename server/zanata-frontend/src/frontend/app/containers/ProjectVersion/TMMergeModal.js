@@ -289,17 +289,11 @@ class TMMergeModal extends Component {
   }
   onPercentSelection = (percent) => {
     // Different context must be checked if match percentage < 100
-    if (percent < 100) {
-      this.setState({
-        matchPercentage: percent,
-        differentContext: true
-      })
-    } else {
-      this.setState({
-        matchPercentage: percent,
-        differentContext: false
-      })
+    const newState = {
+      matchPercentage: percent,
+      differentContext: percent < 100
     }
+    this.setState(newState)
   }
   onLanguageSelection = (language) => {
     this.setState({
