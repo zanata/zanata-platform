@@ -1,5 +1,4 @@
 import updateObject from 'immutability-helper'
-import { some, negate, isEmpty } from 'lodash'
 import phraseFilterReducer, { defaultState as defaultFilterState }
   from './phrase-filter-reducer'
 import { composeReducers, subReducer } from 'redux-sac'
@@ -33,6 +32,7 @@ import {
   getHasAdvancedFilter,
   getMaxPageIndex
 } from '../../selectors'
+import { hasAdvancedFilter } from '../../utils/filter-util'
 import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
@@ -294,8 +294,8 @@ export const phraseReducer = (state = defaultState, action) => {
   function changeSelectedIndex (indexUpdateCallback) {
     const { docId } = action.getState().context
     const { inDoc, inDocFiltered, filter, selectedPhraseId } = state
-    const hasAdvancedFilter = some(filter.advanced, negate(isEmpty))
-    const phrases = hasAdvancedFilter ? inDocFiltered[docId] : inDoc[docId]
+    const phrases = hasAdvancedFilter(filter.advanced)
+      ? inDocFiltered[docId] : inDoc[docId]
 
     const currentIndex = phrases.findIndex(x => x.id === selectedPhraseId)
 

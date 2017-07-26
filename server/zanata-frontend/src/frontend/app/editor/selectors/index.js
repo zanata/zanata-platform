@@ -19,7 +19,8 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { isEmpty, isEqual, isNaN, max, negate, some } from 'lodash'
+import { isEqual, isNaN, max } from 'lodash'
+import { hasAdvancedFilter } from '../utils/filter-util'
 
 export const getLang = state => state.context.lang
 // FIXME move detail to detail[lang] and add timestamps
@@ -40,7 +41,7 @@ const getCountPerPage = state => state.phrases.paging.countPerPage
 const getFilter = state => state.phrases.filter
 const getAdvancedFilter = state => state.phrases.filter.advanced
 export const getHasAdvancedFilter = createSelector(getAdvancedFilter,
-  advancedFilter => some(advancedFilter, negate(isEmpty)))
+  advancedFilter => hasAdvancedFilter(advancedFilter))
 
 const getPhrasesInDoc = state => state.phrases.inDoc
 const getPhrasesInDocFiltered = state => state.phrases.inDocFiltered
