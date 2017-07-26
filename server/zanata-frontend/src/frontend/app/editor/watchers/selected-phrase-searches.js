@@ -10,7 +10,7 @@ export function watchSelectedPhraseSearches (store) {
 
   store.subscribe(watcher(
     (phrase, prevPhrase) => {
-      // don't want to search if there is no phrase, or it is the same phrase id
+      // only want to search if there is a phrase and it has different phrase id
       const newPhrase = phrase && (!prevPhrase || phrase.id !== prevPhrase.id)
       if (newPhrase) {
         store.dispatch(glossarySearchTextEntered(phrase.sources.join(' ')))
