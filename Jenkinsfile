@@ -209,7 +209,7 @@ timestamps {
 
           def surefireTestReports = 'target/surefire-reports/TEST-*.xml'
 
-          setJUnitPrefix("UNIT", surefireTestReports)
+          setJUnitPrefix('UNIT', surefireTestReports)
           // gather surefire results; mark build as unstable in case of failures
           junit(testResults: "**/${surefireTestReports}")
 
@@ -235,8 +235,9 @@ timestamps {
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT", currentBuild.result)
-          updateBuildResult(currentBuild, currentBuild.result, "UNIT")
-
+          if ( currentBuild.result ){
+            updateBuildResult(currentBuild.result, "UNIT")
+          }
 
           // TODO publish coverage for jest (cobertura format)
           // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
@@ -310,7 +311,7 @@ timestamps {
       } catch (e) {
         echo("Caught exception: " + e)
         notify.failed()
-        updateBuildResult(currentBuild, 'FAILURE', e.toString())
+        updateBuildResult('FAILURE', e.toString())
         // abort the rest of the pipeline
         throw e
       }
@@ -350,7 +351,7 @@ timestamps {
         // if the build is *still* green after running integration tests:
         if (currentBuild.result == null) {
           echo 'marking build as successful'
-          updateBuildResult(currentBuild, 'SUCCESS')
+          updateBuildResult('SUCCESS')
         }
 
         // TODO notify finish
@@ -429,7 +430,7 @@ void integrationTests(String appserver) {
          */
 
         if (mvnResult != 0) {
-          updateBuildResult(currentBuild, 'UNSTABLE', 'Failed maven build for integration tests')
+          updateBuildResult('UNSTABLE', 'Failed maven build for integration tests')
 
           // gather db/app logs and screenshots to help debugging
           archive(
@@ -446,7 +447,7 @@ void integrationTests(String appserver) {
           // Reduce workspace size
           sh "git clean -fdx"
         } else {
-          updateBuildResult(currentBuild, 'FAILED', "No integration test results for $appserver")
+          updateBuildResult('FAILED', "No integration test results for $appserver")
           error "no integration test results for $appserver"
         }
         notify.testResults(appserver.toUpperCase(), currentBuild.result)
@@ -487,12 +488,16 @@ boolean setJUnitPrefix(prefix, files) {
 // Modify from example code of Jenkins GitHub Plugin
 // https://wiki.jenkins.io/display/JENKINS/GitHub+Plugin#GitHubPlugin-AutomaticMode%28Jenkinsmanageshooksforjobsbyitself%29
 
-void updateBuildResult(def build, def result, String message = '') {
+void updateBuildResult(String result, String message = '') {
   // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
-  build.result = result
+  if (! result ){
+    return
+  }
+  currentBuild.result = result
+
   def msg = message\
-    + ((build.duration)? ' Duration: ' + build.duration : '')\
-    + ((build.description)? ' Desc: ' + build.description: '')
+    + ((currentBuild.duration)? ' Duration: ' + currentBuild.duration : '')\
+    + ((currentBuild.description)? ' Desc: ' + currentBuild.description: '')
 
   step([
     $class: 'GitHubCommitStatusSetter',
