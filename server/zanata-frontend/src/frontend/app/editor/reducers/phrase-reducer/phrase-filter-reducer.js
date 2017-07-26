@@ -11,14 +11,14 @@ import {
 export const defaultState = {
   showAdvanced: false,
   advanced: {
-    text: '',
-    resourceId: '',
-    lastModifiedBy: '',
-    lastModifiedBefore: '',
-    lastModifiedAfter: '',
+    searchString: '',
+    resId: '',
+    lastModifiedByUser: '',
+    changedBefore: '',
+    changedAfter: '',
     sourceComment: '',
-    translationComment: '',
-    msgctxt: ''
+    transComment: '',
+    msgContext: ''
   },
   status: statusDefaultState
 }
