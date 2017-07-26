@@ -487,14 +487,17 @@ boolean setJUnitPrefix(prefix, files) {
 // Modify from example code of Jenkins GitHub Plugin
 // https://wiki.jenkins.io/display/JENKINS/GitHub+Plugin#GitHubPlugin-AutomaticMode%28Jenkinsmanageshooksforjobsbyitself%29
 
-void updateBuildResult(def build, String result, String message = '') {
+void updateBuildResult(def build, def result, String message = '') {
   // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
   build.result = result
-  def msg = message + ' Duration:' + build.duration + ' ' + build.description
+  def msg = message
+    + ((build.duration)? ' Duration: ' + build.duration : '')
+    + ((build.description)? ' Desc: ' + build.description: '')
 
   step([
     $class: 'GitHubCommitStatusSetter',
-    reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.CHANGE_URL],
+    // Ensure it picked up zanata-platform, not zanata-pipeline-library
+    reposSource: [$class: "ManuallyEnteredRepositorySource", url: 'https://github.com/zanata/zanata-platform.git' ],
 
     errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
     statusResultSource: [
