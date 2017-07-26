@@ -33,19 +33,19 @@ import {
 } from '../../actions/phrases-filter-actions'
 
 const fields = {
-  resourceId: {
+  resId: {
     label: 'Resource ID',
     description: 'exact Resource ID for a string'
   },
-  lastModifiedBy: {
+  lastModifiedByUser: {
     label: 'Last modified by',
     description: 'username'
   },
-  lastModifiedBefore: {
+  changedBefore: {
     label: 'Last modified before',
     description: 'date in format yyyy/mm/dd'
   },
-  lastModifiedAfter: {
+  changedAfter: {
     label: 'Last modified after',
     description: 'date in format yyyy/mm/dd'
   },
@@ -53,11 +53,11 @@ const fields = {
     label: 'Source comment',
     description: 'source comment text'
   },
-  translationComment: {
+  transComment: {
     label: 'Translation comment',
     description: 'translation comment text'
   },
-  msgctxt: {
+  msgContext: {
     label: 'msgctxt (gettext)',
     description: 'exact Message Context for a string'
   }
@@ -74,14 +74,14 @@ export class EditorSearchInput extends Component {
   static propTypes = {
     showAdvanced: PropTypes.bool.isRequired,
     search: PropTypes.shape({
-      text: PropTypes.string.isRequired,
-      resourceId: PropTypes.string.isRequired,
-      lastModifiedBy: PropTypes.string.isRequired,
-      lastModifiedBefore: PropTypes.string.isRequired,
-      lastModifiedAfter: PropTypes.string.isRequired,
+      searchString: PropTypes.string.isRequired,
+      resId: PropTypes.string.isRequired,
+      lastModifiedByUser: PropTypes.string.isRequired,
+      changedBefore: PropTypes.string.isRequired,
+      changedAfter: PropTypes.string.isRequired,
       sourceComment: PropTypes.string.isRequired,
-      translationComment: PropTypes.string.isRequired,
-      msgctxt: PropTypes.string.isRequired
+      transComment: PropTypes.string.isRequired,
+      msgContext: PropTypes.string.isRequired
     }).isRequired,
     toggleAdvanced: PropTypes.func.isRequired,
     updateSearch: PropTypes.func.isRequired
@@ -120,13 +120,13 @@ export class EditorSearchInput extends Component {
 
   clearAllAdvancedFields = () => {
     this.props.updateSearch({
-      resourceId: '',
-      lastModifiedBy: '',
-      lastModifiedBefore: '',
-      lastModifiedAfter: '',
+      resId: '',
+      lastModifiedByUser: '',
+      changedBefore: '',
+      changedAfter: '',
       sourceComment: '',
-      translationComment: '',
-      msgctxt: ''
+      transComment: '',
+      msgContext: ''
     })
     // click on "Clear all" removes focus from input fields, so give focus back.
     this.focusInput()
@@ -150,11 +150,11 @@ export class EditorSearchInput extends Component {
   }
 
   clearSearch = () => this.props.updateSearch({
-    text: '' // FIXME include all the other search parameters?
+    searchString: '' // FIXME include all the other search parameters?
   })
 
   updateSearchText = (event) => {
-    this.props.updateSearch({ text: event.target.value })
+    this.props.updateSearch({ searchString: event.target.value })
   }
 
   clearButtonElement = () => {
@@ -195,7 +195,7 @@ export class EditorSearchInput extends Component {
             type="search"
             placeholder="Search source and target text"
             maxLength="1000"
-            value={this.props.search.text}
+            value={this.props.search.searchString}
             onChange={this.updateSearchText}
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />

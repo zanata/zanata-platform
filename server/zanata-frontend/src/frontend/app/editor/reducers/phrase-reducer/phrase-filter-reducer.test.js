@@ -14,14 +14,14 @@ describe('filter-status-reducer test', () => {
     expect(defaultState).toEqual({
       showAdvanced: false,
       advanced: {
-        text: '',
-        resourceId: '',
-        lastModifiedBy: '',
-        lastModifiedBefore: '',
-        lastModifiedAfter: '',
+        searchString: '',
+        resId: '',
+        lastModifiedByUser: '',
+        changedBefore: '',
+        changedAfter: '',
         sourceComment: '',
-        translationComment: '',
-        msgctxt: ''
+        transComment: '',
+        msgContext: ''
       },
       status: statusDefaultState
     })
@@ -43,7 +43,7 @@ describe('filter-status-reducer test', () => {
     const withText = phraseFilterReducer(undefined, {
       type: UPDATE_PHRASE_FILTER,
       payload: {
-        text: 'covfefe'
+        searchString: 'covfefe'
       }
     })
     const withSourceComment = phraseFilterReducer(withText, {
@@ -53,24 +53,24 @@ describe('filter-status-reducer test', () => {
       }
     })
     expect(withText.advanced).toEqual({
-      text: 'covfefe',
-      resourceId: '',
-      lastModifiedBy: '',
-      lastModifiedBefore: '',
-      lastModifiedAfter: '',
+      searchString: 'covfefe',
+      resId: '',
+      lastModifiedByUser: '',
+      changedBefore: '',
+      changedAfter: '',
       sourceComment: '',
-      translationComment: '',
-      msgctxt: ''
+      transComment: '',
+      msgContext: ''
     })
     expect(withSourceComment.advanced).toEqual({
-      text: 'covfefe',
-      resourceId: '',
-      lastModifiedBy: '',
-      lastModifiedBefore: '',
-      lastModifiedAfter: '',
+      searchString: 'covfefe',
+      resId: '',
+      lastModifiedByUser: '',
+      changedBefore: '',
+      changedAfter: '',
       sourceComment: 'Has anyone really been far even as decided to use?',
-      translationComment: '',
-      msgctxt: ''
+      transComment: '',
+      msgContext: ''
     })
   })
 
@@ -78,37 +78,37 @@ describe('filter-status-reducer test', () => {
     const withLastModified = phraseFilterReducer(undefined, {
       type: UPDATE_PHRASE_FILTER,
       payload: {
-        lastModifiedBy: 'bulbasaur',
-        lastModifiedBefore: '2017/06/07',
-        lastModifiedAfter: '2017/01/01'
+        lastModifiedByUser: 'bulbasaur',
+        changedBefore: '2017/06/07',
+        changedAfter: '2017/01/01'
       }
     })
     const withOtherStuff = phraseFilterReducer(withLastModified, {
       type: UPDATE_PHRASE_FILTER,
       payload: {
-        lastModifiedBy: 'ivysaur',
-        translationComment: "Gotta catch 'em all"
+        lastModifiedByUser: 'ivysaur',
+        transComment: "Gotta catch 'em all"
       }
     })
     expect(withLastModified.advanced).toEqual({
-      text: '',
-      resourceId: '',
-      lastModifiedBy: 'bulbasaur',
-      lastModifiedBefore: '2017/06/07',
-      lastModifiedAfter: '2017/01/01',
+      searchString: '',
+      resId: '',
+      lastModifiedByUser: 'bulbasaur',
+      changedBefore: '2017/06/07',
+      changedAfter: '2017/01/01',
       sourceComment: '',
-      translationComment: '',
-      msgctxt: ''
+      transComment: '',
+      msgContext: ''
     })
     expect(withOtherStuff.advanced).toEqual({
-      text: '',
-      resourceId: '',
-      lastModifiedBy: 'ivysaur',
-      lastModifiedBefore: '2017/06/07',
-      lastModifiedAfter: '2017/01/01',
+      searchString: '',
+      resId: '',
+      lastModifiedByUser: 'ivysaur',
+      changedBefore: '2017/06/07',
+      changedAfter: '2017/01/01',
       sourceComment: '',
-      translationComment: "Gotta catch 'em all",
-      msgctxt: ''
+      transComment: "Gotta catch 'em all",
+      msgContext: ''
     })
   })
 })

@@ -57,28 +57,8 @@ export function fetchPhraseList (project, version, localeId, docId, filter) {
   })
 }
 
-export function filterQueryString ({
-  text,
-  resourceId,
-  msgctxt,
-  lastModifiedBy,
-  lastModifiedBefore,
-  lastModifiedAfter,
-  sourceComment,
-  translationComment
-}) {
-  return chain({
-    // TODO rename to match what the server has, so this mapping is not needed
-    //      will be able to just do chain(advanced)...
-    searchString: text,
-    resId: resourceId,
-    changedBefore: lastModifiedBefore,
-    changedAfter: lastModifiedAfter,
-    lastModifiedByUser: lastModifiedBy,
-    sourceComment: sourceComment,
-    transComment: translationComment,
-    msgContext: msgctxt
-  })
+export function filterQueryString (advancedFilter) {
+  return chain(advancedFilter)
     .toPairs()
     .filter(([key, value]) => !isEmpty(value))
     .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)

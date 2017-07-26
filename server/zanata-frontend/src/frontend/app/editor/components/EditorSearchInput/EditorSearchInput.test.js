@@ -17,14 +17,14 @@ describe('EditorSearchInputTest', () => {
       <EditorSearchInput
         showAdvanced
         search={{
-          text: 'it was the worst of',
-          resourceId: 'para-0001',
-          lastModifiedBy: 'cdickens',
-          lastModifiedBefore: '1859-12-31',
-          lastModifiedAfter: '1859-01-01',
+          searchString: 'it was the worst of',
+          resId: 'para-0001',
+          lastModifiedByUser: 'cdickens',
+          changedBefore: '1859-12-31',
+          changedAfter: '1859-01-01',
           sourceComment: 'England and France',
-          translationComment: 'blurst of times?! You stupid monkey!',
-          msgctxt: 'chapter01.txt'
+          transComment: 'blurst of times?! You stupid monkey!',
+          msgContext: 'chapter01.txt'
         }}
         updateSearch={callback}
         toggleAdvanced={callback}
@@ -155,14 +155,14 @@ describe('EditorSearchInputTest', () => {
       <EditorSearchInput
         showAdvanced
         search={{
-          text: 'it was the worst of',
-          resourceId: 'para-0001',
-          lastModifiedBy: 'cdickens',
-          lastModifiedBefore: '1859-12-31',
-          lastModifiedAfter: '1859-01-01',
+          searchString: 'it was the worst of',
+          resId: 'para-0001',
+          lastModifiedByUser: 'cdickens',
+          changedBefore: '1859-12-31',
+          changedAfter: '1859-01-01',
           sourceComment: 'England and France',
-          translationComment: 'blurst of times?! You stupid monkey!',
-          msgctxt: 'chapter01.txt'
+          transComment: 'blurst of times?! You stupid monkey!',
+          msgContext: 'chapter01.txt'
         }}
         updateSearch={updateSearch}
         toggleAdvanced={callback}
@@ -180,7 +180,8 @@ describe('EditorSearchInputTest', () => {
     TestUtils.Simulate.focus(textInput)
     textInput.value = textInput.value + ' times'
     TestUtils.Simulate.change(textInput)
-    expect(updateSearchPayload).toEqual({ text: 'it was the worst of times' },
+    expect(updateSearchPayload).toEqual(
+      { searchString: 'it was the worst of times' },
         'Changing the main text input should call the search update event')
     // Note: cannot simulate event.currentTarget properly so this will always
     //       miss one line in coverage.
@@ -190,27 +191,28 @@ describe('EditorSearchInputTest', () => {
 
     resourceIdInput.value = resourceIdInput.value + '-1'
     TestUtils.Simulate.change(resourceIdInput)
-    expect(updateSearchPayload).toEqual({ resourceId: 'para-0001-1' },
+    expect(updateSearchPayload).toEqual({ resId: 'para-0001-1' },
         'Changing advanced search fields should update the appropriate field')
 
     lastModifiedByInput.value = 'damason'
     TestUtils.Simulate.change(lastModifiedByInput)
-    expect(updateSearchPayload).toEqual({ lastModifiedBy: 'damason' },
+    expect(updateSearchPayload).toEqual({ lastModifiedByUser: 'damason' },
         'Changing advanced search fields should update the appropriate field')
 
     TestUtils.Simulate.click(closeButton)
-    expect(updateSearchPayload).toEqual({ text: '' },
+    expect(updateSearchPayload).toEqual(
+      { searchString: '' },
       'Close button click should clear text')
 
     TestUtils.Simulate.click(clearAdvancedButton)
     expect(updateSearchPayload).toEqual({
-      resourceId: '',
-      lastModifiedBy: '',
-      lastModifiedBefore: '',
-      lastModifiedAfter: '',
+      resId: '',
+      lastModifiedByUser: '',
+      changedBefore: '',
+      changedAfter: '',
       sourceComment: '',
-      translationComment: '',
-      msgctxt: ''
+      transComment: '',
+      msgContext: ''
     }, 'Clear all should clear all fields except text')
   })
 })
