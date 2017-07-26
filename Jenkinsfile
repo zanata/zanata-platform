@@ -490,8 +490,8 @@ boolean setJUnitPrefix(prefix, files) {
 void updateBuildResult(def build, def result, String message = '') {
   // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
   build.result = result
-  def msg = message
-    + ((build.duration)? ' Duration: ' + build.duration : '')
+  def msg = message\
+    + ((build.duration)? ' Duration: ' + build.duration : '')\
     + ((build.description)? ' Desc: ' + build.description: '')
 
   step([
