@@ -3,19 +3,22 @@ import PropTypes from 'prop-types'
 import { storiesOf, action } from '@kadira/storybook'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
-import { Table } from 'react-bootstrap'
+import { Table, Col } from 'react-bootstrap'
 
 class TriCheckbox extends Component {
   static propTypes = {
+    className: PropTypes.string,
     checked: PropTypes.bool.isRequired,
     indeterminate: PropTypes.bool.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    useDefaultStyle: PropTypes.bool.isRequired
   }
   constructor (props) {
     super(props)
     this.state = {
       checked: this.props.checked,
-      indeterminate: this.props.indeterminate
+      indeterminate: this.props.indeterminate,
+      useDefaultStyle: this.props.useDefaultStyle
     }
   }
 
@@ -28,9 +31,11 @@ class TriCheckbox extends Component {
     return (
       <div>
         <RealTriCheckbox
+          className={this.props.className}
           checked={this.state.checked}
           indeterminate={this.state.indeterminate}
           onChange={this.checkboxChanged}
+          useDefaultStyle={this.state.useDefaultStyle}
         />
       </div>
     )
@@ -67,6 +72,7 @@ class WithButton extends Component {
           checked={this.state.checked}
           indeterminate={this.state.indeterminate}
           onChange={this.checkboxChanged}
+          useDefaultStyle={false}
         />
         <button onClick={this.makeIndeterminate}>Make intermediate</button>
       </div>
@@ -104,18 +110,20 @@ storiesOf('TriCheckbox', module)
               checked={false}
               indeterminate={false}
               onChange={action('onChange')}
+              useDefaultStyle={false}
             />
           </td>
         </tr>
         <tr>
           <td>false</td>
           <td>true</td>
-          <td>indeterminate</td>
+          <td>intermediate</td>
           <td>
             <TriCheckbox
               checked={false}
               indeterminate
               onChange={action('onChange')}
+              useDefaultStyle={false}
             />
           </td>
         </tr>
@@ -128,6 +136,7 @@ storiesOf('TriCheckbox', module)
               checked
               indeterminate={false}
               onChange={action('onChange')}
+              useDefaultStyle={false}
             />
           </td>
         </tr>
@@ -140,6 +149,7 @@ storiesOf('TriCheckbox', module)
               checked
               indeterminate
               onChange={action('onChange')}
+              useDefaultStyle={false}
             />
           </td>
         </tr>
@@ -159,23 +169,65 @@ storiesOf('TriCheckbox', module)
   .add('with custom styles', () => (
     <div>
       <h2> Passing custom styles through props </h2>
-      <TriCheckbox
-        checked
-        indeterminate={false}
-        onChange={action('onChange')}
-        className={'tri-checkbox-story'}
-      />
-      <TriCheckbox
-        checked={false}
-        indeterminate
-        onChange={action('onChange')}
-        className={'tri-checkbox-story'}
-      />
-      <TriCheckbox
-        checked={false}
-        indeterminate={false}
-        onChange={action('onChange')}
-        className={'tri-checkbox-story'}
-      />
+      <Col xs={4}>
+        <h3>unstyled</h3>
+        <TriCheckbox
+          checked
+          indeterminate={false}
+          onChange={action('onChange')}
+          useDefaultStyle={false}
+        />
+        <TriCheckbox
+          checked={false}
+          indeterminate
+          onChange={action('onChange')}
+          useDefaultStyle={false}
+        />
+        <TriCheckbox
+          checked={false}
+          indeterminate={false}
+          onChange={action('onChange')}
+          useDefaultStyle={false}
+        />
+      </Col>
+      <Col xs={4}>
+        <h3>default style</h3>
+        <TriCheckbox
+          checked
+          indeterminate={false}
+          onChange={action('onChange')}
+        />
+        <TriCheckbox
+          checked={false}
+          indeterminate
+          onChange={action('onChange')}
+        />
+        <TriCheckbox
+          checked={false}
+          indeterminate={false}
+          onChange={action('onChange')}
+        />
+      </Col>
+      <Col xs={4}>
+        <h3>s1 class</h3>
+        <TriCheckbox
+          className={'s1'}
+          checked
+          indeterminate={false}
+          onChange={action('onChange')}
+        />
+        <TriCheckbox
+          className={'s1'}
+          checked={false}
+          indeterminate
+          onChange={action('onChange')}
+        />
+        <TriCheckbox
+          className={'s1'}
+          checked={false}
+          indeterminate={false}
+          onChange={action('onChange')}
+        />
+      </Col>
     </div>
   ))

@@ -4,7 +4,7 @@
 	background-color: #fafafa;
 	border: 1px solid #cacece;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-	padding: 9px !important;
+	padding: 6px !important;
 	border-radius: 3px;
 	display: inline-block;
 	position: relative;
@@ -14,33 +14,37 @@
 }
 
 .tri-checkbox:checked {
-	background-color: #e9ecee;
+	background-color: #03A6D7;
 	border: 1px solid #adb8c0;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-	color: #99a1a7;
+	color: #ffffff;
 }
 
 .tri-checkbox:checked:after {
 	content: '\2714';
 	font-size: 14px;
 	position: absolute;
-	top: 0px;
-	left: 3px;
-	color: #99a1a7;
+  top : 50% !important;
+  right: 50% !important;
+  -ms-transform: translate(50%, -50%);
+  transform    : translate(50%, -50%);
+	color: #ffffff;
 }
 
 .tri-checkbox:indeterminate {
-	background-color: #e9ecee;
+	background-color: #03A6D7;
 	border: 1px solid #adb8c0;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-	color: #99a1a7;
+	color: #ffffff;
 }
 
 .tri-checkbox:indeterminate:after {
-	content: '\2015';
-	font-size: 14px;
+	content: '\2013';
 	position: absolute;
-	top: 0px;
-	left: 1.5px;
-	color: #99a1a7;
+  font-size: 14px;
+  top : 50% !important;
+  right: 50% !important;
+  -ms-transform: translate(50%, -55%);
+  transform    : translate(50%, -55%);
+	color: #ffffff;
 }
