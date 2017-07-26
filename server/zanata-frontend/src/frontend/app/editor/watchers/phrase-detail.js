@@ -18,9 +18,9 @@ import {
   transUnitStatusToPhraseStatus
 } from '../utils/status-util'
 import {
-  FETCHING_PHRASE_DETAIL,
-  PHRASE_DETAIL_FETCHED,
-  PHRASE_DETAIL_FETCH_FAILED
+  PHRASE_DETAIL_REQUEST,
+  PHRASE_DETAIL_SUCCESS,
+  PHRASE_DETAIL_FAILURE
 } from '../actions/phrases-action-types'
 
 // FIXME add state.phrases.fetchingDetail (bool) and only fetch when false.
@@ -48,15 +48,15 @@ function fetchPhraseDetail (locale, phraseIds) {
       endpoint: phraseDetailUrl,
       types: [
         {
-          type: FETCHING_PHRASE_DETAIL
+          type: PHRASE_DETAIL_REQUEST
         },
         {
-          type: PHRASE_DETAIL_FETCHED,
+          type: PHRASE_DETAIL_SUCCESS,
           payload: (action, state, res) => getJSON(res)
             .then(details => transUnitDetailToPhraseDetail(details, locale))
         },
         {
-          type: PHRASE_DETAIL_FETCH_FAILED
+          type: PHRASE_DETAIL_FAILURE
         }
       ]
     })

@@ -14,12 +14,12 @@ import {
   CANCEL_EDIT,
   COPY_FROM_ALIGNED_SOURCE,
   COPY_FROM_SOURCE,
-  FETCHING_PHRASE_DETAIL,
+  PHRASE_DETAIL_REQUEST,
   PENDING_SAVE_INITIATED,
   PHRASE_LIST_REQUEST,
   PHRASE_LIST_SUCCESS,
-  PHRASE_LIST_FAILED,
-  PHRASE_DETAIL_FETCHED,
+  PHRASE_LIST_FAILURE,
+  PHRASE_DETAIL_SUCCESS,
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
   SAVE_FINISHED,
@@ -121,7 +121,7 @@ describe('phrase-reducer test', () => {
       meta: { filter: false }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           selectedPluralIndex: 2,
@@ -153,7 +153,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           newTranslations: [ 'copy something here', 'translations' ]
@@ -200,7 +200,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           selectedPluralIndex: 2,
@@ -230,7 +230,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           selectedPluralIndex: 2,
@@ -256,7 +256,7 @@ describe('phrase-reducer test', () => {
 
   it('can record fetching phrase detail', () => {
     const fetching = phraseReducer(undefined, {
-      type: FETCHING_PHRASE_DETAIL
+      type: PHRASE_DETAIL_REQUEST
     })
     expect(fetching.fetchingDetail).toEqual(true)
   })
@@ -314,7 +314,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withFailure = phraseReducer(fetching, {
-      type: PHRASE_LIST_FAILED,
+      type: PHRASE_LIST_FAILURE,
       meta: { filter: false }
     })
     expect(fetching.fetchingList).toEqual(true)
@@ -331,7 +331,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withFailure = phraseReducer(fetching, {
-      type: PHRASE_LIST_FAILED,
+      type: PHRASE_LIST_FAILURE,
       meta: { filter: true }
     })
     expect(fetching.fetchingFilteredList).toEqual(true)
@@ -383,7 +383,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           sources: [ 'translation', 'translations' ],
@@ -426,7 +426,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           sources: [ 'translation', 'translations' ],
@@ -469,7 +469,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           sources: [ 'translation', 'translations' ],
@@ -540,7 +540,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           newTranslations: [ 'translation', 'translations' ]
@@ -579,7 +579,7 @@ describe('phrase-reducer test', () => {
   it('can input translation text', () => {
     const initialState = phraseReducer(undefined, {})
     const withPhrases = phraseReducer(initialState, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         '123': {
           newTranslations: [ '', '' ]
@@ -680,7 +680,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withDetail = phraseReducer(withPhrases, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         '1': {
           translations: [ 'original', 'originals' ],
@@ -726,7 +726,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const withPhraseDetail = phraseReducer(withPhraseList, {
-      type: PHRASE_DETAIL_FETCHED,
+      type: PHRASE_DETAIL_SUCCESS,
       payload: {
         'p01': {
           newTranslations: [ 'translation', 'SUGGESTIONS' ],

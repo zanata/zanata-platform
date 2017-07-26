@@ -1,8 +1,8 @@
 import { savePhrase } from '../api'
 import { toggleDropdown } from '.'
 import {
-  PHRASE_DETAIL_FETCHED,
-  PHRASE_DETAIL_FETCH_FAILED,
+  PHRASE_DETAIL_SUCCESS,
+  PHRASE_DETAIL_FAILURE,
   COPY_FROM_SOURCE,
   COPY_FROM_ALIGNED_SOURCE,
   CANCEL_EDIT,
@@ -24,11 +24,11 @@ import { hasTranslationChanged } from '../utils/phrase-util'
 
 // detail for phrases has been fetched from API
 export function phraseDetailFetched (phrases) {
-  return { type: PHRASE_DETAIL_FETCHED, phrases: phrases }
+  return { type: PHRASE_DETAIL_SUCCESS, phrases: phrases }
 }
 
 export function phraseDetailFetchFailed (error) {
-  return { type: PHRASE_DETAIL_FETCH_FAILED, error: error }
+  return { type: PHRASE_DETAIL_FAILURE, error: error }
 }
 
 /**

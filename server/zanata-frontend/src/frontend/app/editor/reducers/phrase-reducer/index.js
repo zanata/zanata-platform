@@ -12,12 +12,12 @@ import {
   CANCEL_EDIT,
   COPY_FROM_ALIGNED_SOURCE,
   COPY_FROM_SOURCE,
-  FETCHING_PHRASE_DETAIL,
+  PHRASE_DETAIL_REQUEST,
   PHRASE_LIST_REQUEST,
   PHRASE_LIST_SUCCESS,
-  PHRASE_LIST_FAILED,
+  PHRASE_LIST_FAILURE,
   PENDING_SAVE_INITIATED,
-  PHRASE_DETAIL_FETCHED,
+  PHRASE_DETAIL_SUCCESS,
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
   SAVE_FINISHED,
@@ -118,7 +118,7 @@ export const phraseReducer = (state = defaultState, action) => {
         return copyFromSuggestion(phrase, suggestion)
       }})
 
-    case FETCHING_PHRASE_DETAIL:
+    case PHRASE_DETAIL_REQUEST:
       return update({
         fetchingDetail: {$set: true}
       })
@@ -161,7 +161,7 @@ export const phraseReducer = (state = defaultState, action) => {
         })
       }
 
-    case PHRASE_LIST_FAILED:
+    case PHRASE_LIST_FAILURE:
       if (action.meta.filter) {
         return update({
           fetchingFilteredList: {$set: false}
@@ -172,7 +172,7 @@ export const phraseReducer = (state = defaultState, action) => {
         })
       }
 
-    case PHRASE_DETAIL_FETCHED:
+    case PHRASE_DETAIL_SUCCESS:
       // TODO this shallow merge will lose data from other locales
       //      ideally replace source and locale that was looked up, leaving
       //      others unchanged (depending on caching policy)
