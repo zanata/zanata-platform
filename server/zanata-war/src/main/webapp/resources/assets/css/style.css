@@ -3386,11 +3386,11 @@ All icons also need the class `.i` added to them.
 Use to display icons to the far side of text, either left or right. Usually used in a list.
 
 <ul class="list--no-bullets">
-	<li class="i__item--left">Text <i class="i i__item__icon i--export"></i></li>
-	<li class="i__item--right">Text <i class="i i__item__icon i--export"></i></li>
-	<li>
-		<a href="" class="i__item--left">Text <i class="i i__item__icon i--export"></i></a>
-	</li>
+    <li class="i__item--left">Text <i class="i i__item__icon i--export"></i></li>
+    <li class="i__item--right">Text <i class="i i__item__icon i--export"></i></li>
+    <li>
+        <a href="" class="i__item--left">Text <i class="i i__item__icon i--export"></i></a>
+    </li>
 </ul>
 
 */
