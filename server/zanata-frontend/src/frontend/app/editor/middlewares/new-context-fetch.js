@@ -55,10 +55,6 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
 
     const updatePage = oldPageIndex !== newPageIndex
     if (docChanged || localeChanged) {
-      // const paging = {
-      //   ...newState.phrases.paging,
-      //   pageIndex: newPageIndex
-      // }
       if (docChanged) {
         // FIXME looks like probably duplicate state
         dispatch(selectDoc(docId))
@@ -69,14 +65,7 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
         dispatch(selectLocale(lang))
       }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
-      // This included paging, which was ignored.
-  // dispatch(requestPhraseList(projectSlug, versionSlug, lang, docId, paging))
     } else if (updatePage) {
-      // const phraseState = newState.phrases
-      // const paging = {
-      //   ...phraseState.paging,
-      //   pageIndex: newPageIndex
-      // }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
     }
   },

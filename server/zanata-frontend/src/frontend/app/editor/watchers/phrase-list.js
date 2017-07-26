@@ -6,7 +6,6 @@
 import { createSelector } from 'reselect'
 import watch from './watch'
 import { debounce, every, isEmpty } from 'lodash'
-// import { fetchPhraseList } from '../api'
 import { getLang } from '../selectors'
 import { CALL_API, getJSON } from 'redux-api-middleware'
 import { getJsonWithCredentials } from '../utils/api-util'
@@ -23,14 +22,6 @@ const getProject = state => state.context.projectSlug
 const getVersion = state => state.context.versionSlug
 const getDocId = state => state.context.docId
 
-// Tradeoff: for max flexibility, could make a selector for every level,
-// so there would be less to change when something moves (just change one
-// selector). It means moderately deep selectors are less easy to match up to
-// what part of state they are talking about.
-// Note also: if selectors were packaged in/with reducers, it would keep the
-// state shape information all in one place. Perhaps phraseReducer.getFoo
-// would be a good place to store selectors.
-// import { getFoo, getBar } from '../reducers/phraseReducer'
 const getAdvancedFilter = state => state.phrases.filter.advanced
 
 const getPhraseListInfo = createSelector(
@@ -43,13 +34,6 @@ const getFilterPhraseListInfo = createSelector(
   getPhraseListInfo, getAdvancedFilter,
   (phraseListInfo, advancedFilter) => ({ ...phraseListInfo, advancedFilter })
 )
-
-// If any of those things change, we need to fetch a new thing
-// but better debounce it to avoid thrashing.
-// This returns a promise, but it would return it multiple times so I
-// can't just do .then() on it since I'll attach so many things.
-// Need to make a function with the whole lot in it that I can debounce
-// DO IT because this will replace the standard one soon anyway.
 
 /* Watch for changes that mean a new phrase list is needed.
  *
@@ -78,7 +62,6 @@ export function watchRequiredPhraseList (store) {
 }
 
 export const watchAdvancedFilterList = (store) => {
-  // FIXME use an appropriate comparator.
   const watcher = watch('watchAdvancedFilterList')(
     () => getFilterPhraseListInfo(store.getState()))
   const debounceCallApi = debounce(
