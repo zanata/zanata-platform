@@ -113,7 +113,7 @@ public class Project implements Serializable, HasCollectionSample<Project>,
         this.name = name;
     }
 
-    @Size(max = 80)
+    @Size(max = 100)
     @XmlElement(name = "description", required = false,
             namespace = Namespaces.ZANATA_OLD)
     @DocumentationExample("This is a sample project.")

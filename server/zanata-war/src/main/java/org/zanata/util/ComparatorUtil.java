@@ -43,7 +43,7 @@ public class ComparatorUtil {
             new Comparator<HLocale>() {
                 @Override
                 public int compare(HLocale hLocale, HLocale hLocale2) {
-                    return hLocale.retrieveDisplayName().compareTo(
+                    return hLocale.retrieveDisplayName().compareToIgnoreCase(
                             hLocale2.retrieveDisplayName());
                 }
             };
