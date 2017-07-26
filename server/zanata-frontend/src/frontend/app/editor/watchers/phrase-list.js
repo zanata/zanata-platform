@@ -12,6 +12,7 @@ import { getJsonWithCredentials } from '../utils/api-util'
 import { encode } from '../utils/doc-id-util'
 import { baseRestUrl, filterQueryString } from '../api'
 import { transUnitStatusToPhraseStatus } from '../utils/status-util'
+import { hasAdvancedFilter } from '../utils/filter-util'
 import {
   PHRASE_LIST_REQUEST,
   PHRASE_LIST_SUCCESS,
@@ -86,10 +87,13 @@ export const watchAdvancedFilterList = (store) => {
 }
 
 function fetchPhraseList (project, version, localeId, docId, filter) {
-  // TODO short-circuit empty-filter to immediately dispatch empty filter list
-  const hasFilter = !!filter
+  const filtered = !!filter
+  if (filtered && !hasAdvancedFilter(filter)) {
+    // empty filter, just let it fall back on unfiltered list
+    return
+  }
   const encodedId = encode(docId)
-  const queryString = hasFilter ? filterQueryString(filter) : ''
+  const queryString = filtered ? filterQueryString(filter) : ''
   const url =
     `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}?${queryString}` // eslint-disable-line max-len
 
@@ -99,7 +103,7 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
       types: [
         {
           type: PHRASE_LIST_REQUEST,
-          meta: { filter: hasFilter }
+          meta: { filter: filtered }
         },
         {
           type: PHRASE_LIST_SUCCESS,
@@ -111,11 +115,11 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
                 status: transUnitStatusToPhraseStatus(phrase.status)
               }))
             })),
-          meta: { filter: hasFilter }
+          meta: { filter: filtered }
         },
         {
           type: PHRASE_LIST_FAILURE,
-          meta: { filter: hasFilter }
+          meta: { filter: filtered }
         }
       ]
     })
