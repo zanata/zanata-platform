@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
+import {Button, Panel, Row, InputGroup,
+  Col, FormControl, Checkbox} from 'react-bootstrap'
 import {
   Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels
 } from '../../components'
@@ -126,10 +127,8 @@ const MergeOptions = (
         differentDocId={mergeOptions.differentDocId}
         differentContext={mergeOptions.differentContext}
         fromImportedTM={mergeOptions.fromImportedTM}
-        fromAllProjects={mergeOptions.fromAllProjects}
         onDocIdCheckboxChange={onDocIdCheckboxChange}
         onContextCheckboxChange={onContextCheckboxChange}
-        onFromAllProjectsChange={onFromAllProjectsChange}
         onImportedCheckboxChange={onImportedCheckboxChange} />
       <Col xs={12} className='vmerge-row'>
         <Col xs={2}>
@@ -158,6 +157,14 @@ const MergeOptions = (
             <ProjectVersionVertical projectSlug={projectSlug}
               versionSlug={versionSlug} />
           </div>
+        </Panel>
+      </Col>
+      <Col xs={12} className='vmerge-boxes'>
+        <Panel>
+          <Checkbox onChange={onFromAllProjectsChange}
+            checked={mergeOptions.fromAllProjects}>
+            Search TM from all projects
+          </Checkbox>
         </Panel>
       </Col>
       {fromVersionsPanel}

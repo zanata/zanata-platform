@@ -22,11 +22,9 @@ export const ProjectVersionOptions = (props) => {
     differentDocId,
     differentContext,
     fromImportedTM,
-    fromAllProjects,
     onDocIdCheckboxChange,
     onContextCheckboxChange,
-    onImportedCheckboxChange,
-    onFromAllProjectsChange
+    onImportedCheckboxChange
   } = props
   return (
     <Col xs={12}>
@@ -48,17 +46,14 @@ export const ProjectVersionOptions = (props) => {
               <CopyLabel copy={differentContext} />
             </Checkbox>
           </ListGroupItem>
+        </ListGroup>
+        <span />
+        <ListGroup fill>
           <ListGroupItem >
             <Checkbox onChange={onImportedCheckboxChange}
               checked={fromImportedTM}>
               Match from Imported TM
               <CopyLabel copy={fromImportedTM} />
-            </Checkbox>
-          </ListGroupItem>
-          <ListGroupItem >
-            <Checkbox onChange={onFromAllProjectsChange}
-              checked={fromAllProjects}>
-              Search TM from all projects
             </Checkbox>
           </ListGroupItem>
         </ListGroup>
@@ -70,9 +65,7 @@ ProjectVersionOptions.propTypes = {
   differentDocId: PropTypes.bool.isRequired,
   differentContext: PropTypes.bool.isRequired,
   fromImportedTM: PropTypes.bool.isRequired,
-  fromAllProjects: PropTypes.bool.isRequired,
   onDocIdCheckboxChange: PropTypes.func.isRequired,
   onContextCheckboxChange: PropTypes.func.isRequired,
-  onFromAllProjectsChange: PropTypes.func.isRequired,
   onImportedCheckboxChange: PropTypes.func.isRequired
 }
