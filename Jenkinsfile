@@ -168,7 +168,7 @@ timestamps {
 
         stage('Checkout') {
           // notify methods send instant messages about the build progress
-          notify.started()
+          notify.updateBuildStatus(currentBuild, 'STARTED')
 
           // Shallow Clone does not work with RHEL7, which uses git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
