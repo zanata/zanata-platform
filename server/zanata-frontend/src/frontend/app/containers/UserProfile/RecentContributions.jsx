@@ -34,9 +34,9 @@ class RecentContributions extends React.Component {
   }
 
   onToggleShowDateRange = () => {
-    this.setState({
-      showDateRange: !this.state.showDateRange
-    })
+    this.setState(prevState => ({
+      showDateRange: !prevState.showDateRange
+    }))
   }
 
   onDateRangeChanged = (dateRange) => {
