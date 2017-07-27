@@ -20,8 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +58,6 @@ import com.google.gwt.view.client.ListDataProvider;
 /**
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
- *
  */
 public class KeyShortcutPresenterTest {
     static final String TEST_MESSAGE_CLOSE_SHORTCUT_VIEW =
@@ -134,37 +132,38 @@ public class KeyShortcutPresenterTest {
         keyShortcutPresenter.showShortcuts();
 
         // Shortcut list should contain Alt+Y and Esc shortcuts
-        assertThat("KeyShortcutPresenter should register 2 global shortcuts",
-                shortcutList.size(), is(3));
+        assertThat(shortcutList.size()).isEqualTo(3)
+                .as("KeyShortcutPresenter should register 2 global shortcuts");
 
         // esc should be first as it has no modifiers
         Set<Keys> firstShortcutKeys = shortcutList.get(0).getAllKeys();
         String firstShortcut = "first shortcut should be Esc with no modifiers";
-        assertThat(firstShortcut, firstShortcutKeys.size(), is(1));
+        assertThat(firstShortcutKeys.size()).isEqualTo(1).as(firstShortcut);
         Keys firstShortcutFirstKeys = firstShortcutKeys.iterator().next();
-        assertThat(firstShortcut, firstShortcutFirstKeys.getModifiers(), is(0));
-        assertThat(firstShortcut, firstShortcutFirstKeys.getKeyCode(),
-                is(KeyCodes.KEY_ESCAPE));
+        assertThat(firstShortcutFirstKeys.getModifiers()).isEqualTo(0)
+                .as(firstShortcut);
+        assertThat(firstShortcutFirstKeys.getKeyCode())
+                .isEqualTo(KeyCodes.KEY_ESCAPE).as(firstShortcut);
 
         // Alt+X should be next
         Set<Keys> secondShortcutKeys = shortcutList.get(1).getAllKeys();
         String secondShortcut = "second shortcut should be Alt+X";
-        assertThat(secondShortcut, secondShortcutKeys.size(), is(1));
+        assertThat(secondShortcutKeys.size()).isEqualTo(1).as(secondShortcut);
         Keys secondShortcutFirstKeys = secondShortcutKeys.iterator().next();
-        assertThat(secondShortcut, secondShortcutFirstKeys.getModifiers(),
-                is(Keys.ALT_KEY));
-        assertThat(secondShortcut, secondShortcutFirstKeys.getKeyCode(),
-                is((int) 'X'));
+        assertThat(secondShortcutFirstKeys.getModifiers())
+                .isEqualTo(Keys.ALT_KEY).as(secondShortcut);
+        assertThat(secondShortcutFirstKeys.getKeyCode()).isEqualTo((int) 'X')
+                .as(secondShortcut);
 
         // Alt+Y should be last
         Set<Keys> thirdShortcutKeys = shortcutList.get(2).getAllKeys();
         String thirdShortcut = "third shortcut should be Alt+Y";
-        assertThat(thirdShortcut, thirdShortcutKeys.size(), is(1));
+        assertThat(thirdShortcutKeys.size()).isEqualTo(1).as(thirdShortcut);
         Keys thirdShortcutFirstKeys = thirdShortcutKeys.iterator().next();
-        assertThat(thirdShortcut, thirdShortcutFirstKeys.getModifiers(),
-                is(Keys.ALT_KEY));
-        assertThat(thirdShortcut, thirdShortcutFirstKeys.getKeyCode(),
-                is((int) 'Y'));
+        assertThat(thirdShortcutFirstKeys.getModifiers())
+                .isEqualTo(Keys.ALT_KEY).as(thirdShortcut);
+        assertThat(thirdShortcutFirstKeys.getKeyCode()).isEqualTo((int) 'Y')
+                .as(thirdShortcut);
     }
 
     @Test
@@ -199,9 +198,9 @@ public class KeyShortcutPresenterTest {
         verify(mockTimer).schedule(5000);
         capturedTimedAction.getValue().run();
         verify(mockEventBus, times(2)).fireEvent(eventBusCapture.capture());
-        assertThat(eventBusCapture.getAllValues().get(0).isActive(), is(true));
-        assertThat(eventBusCapture.getAllValues().get(1).isActive(), is(false));
-        assertThat(eventBusCapture.getAllValues().size(), is(2));
+        assertThat(eventBusCapture.getAllValues().get(0).isActive()).isTrue();
+        assertThat(eventBusCapture.getAllValues().get(1).isActive()).isFalse();
+        assertThat(eventBusCapture.getAllValues().size()).isEqualTo(2);
     }
 
     private NativePreviewEvent buildNativeKeyDownEvent(Keys keys) {

@@ -22,9 +22,7 @@ package org.zanata.file;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static javax.ws.rs.core.Response.Status.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -104,10 +102,10 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if user is not logged in");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(UNAUTHORIZED));
-            assertThat(e.getMessage(),
-                    is("Valid combination of username and api-key for this "
-                            + "server were not included in the request."));
+            assertThat(e.getStatusCode()).isEqualTo(UNAUTHORIZED);
+            assertThat(e.getMessage()).isEqualTo(
+                    "Valid combination of username and api-key for this "
+                            + "server were not included in the request.");
         }
     }
 
@@ -119,11 +117,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if there is no file content");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
-            assertThat(
-                    e.getMessage(),
-                    is("Required form parameter 'file' containing file content "
-                            + "was not found."));
+            assertThat(e.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+            assertThat(e.getMessage()).isEqualTo("Required form parameter 'file' containing file content "
+                            + "was not found.");
         }
     }
 
@@ -135,9 +131,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if file type is not set.");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
-            assertThat(e.getMessage(),
-                    is("Required form parameter 'type' was not found."));
+            assertThat(e.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+            assertThat(e.getMessage())
+                    .isEqualTo("Required form parameter 'type' was not found.");
         }
     }
 
@@ -149,9 +145,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfHashNotPresent(conf.uploadForm);
             fail("Should throw exception if hash is not set.");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
-            assertThat(e.getMessage(),
-                    is("Required form parameter 'hash' was not found."));
+            assertThat(e.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+            assertThat(e.getMessage())
+                    .isEqualTo("Required form parameter 'hash' was not found.");
         }
     }
 
@@ -164,10 +160,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if project-version does not exist.");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(NOT_FOUND));
-            assertThat(e.getMessage(),
-                    is("The specified project-version \"myproject:myversion\" "
-                            + "does not exist on this server."));
+            assertThat(e.getStatusCode()).isEqualTo(NOT_FOUND);
+            assertThat(e.getMessage()).isEqualTo("The specified project-version \"myproject:myversion\" "
+                            + "does not exist on this server.");
         }
     }
 
@@ -189,11 +184,10 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if project is read only or obsolete.");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(FORBIDDEN));
-            assertThat(
-                    e.getMessage(),
-                    is("The project \"myproject\" is not active. Document upload "
-                            + "is not allowed."));
+            assertThat(e.getStatusCode()).isEqualTo(FORBIDDEN);
+            assertThat(e.getMessage()).isEqualTo(
+                    "The project \"myproject\" is not active. Document upload "
+                            + "is not allowed.");
         }
     }
 
@@ -215,10 +209,10 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if version is read only or obsolete.");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(FORBIDDEN));
-            assertThat(e.getMessage(),
-                    is("The project-version \"myproject:myversion\" is not "
-                            + "active. Document upload is not allowed."));
+            assertThat(e.getStatusCode()).isEqualTo(FORBIDDEN);
+            assertThat(e.getMessage()).isEqualTo(
+                    "The project-version \"myproject:myversion\" is not "
+                            + "active. Document upload is not allowed.");
         }
     }
 
@@ -231,9 +225,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if file type is not valid.");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
-            assertThat(e.getMessage(),
-                    is("Value 'invalid' is not a recognized document type."));
+            assertThat(e.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+            assertThat(e.getMessage()).isEqualTo(
+                    "Value 'invalid' is not a recognized document type.");
         }
     }
 
@@ -246,11 +240,10 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if this is not the first part but no uploadId is supplied");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
-            assertThat(
-                    e.getMessage(),
-                    is("Form parameter 'uploadId' must be provided when this is "
-                            + "not the first part."));
+            assertThat(e.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+            assertThat(e.getMessage()).isEqualTo(
+                    "Form parameter 'uploadId' must be provided when this is "
+                            + "not the first part.");
 
         }
     }
@@ -266,9 +259,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
-            assertThat(e.getMessage(),
-                    is("No incomplete uploads found for uploadId '5'."));
+            assertThat(e.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+            assertThat(e.getMessage())
+                    .isEqualTo("No incomplete uploads found for uploadId '5'.");
         }
     }
 
@@ -287,10 +280,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
-            assertThat(
-                    e.getMessage(),
-                    is("Supplied uploadId '5' in request is not valid for document 'mismatched-id'."));
+            assertThat(e.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+            assertThat(e.getMessage()).isEqualTo(
+                    "Supplied uploadId '5' in request is not valid for document 'mismatched-id'.");
         }
     }
 
@@ -300,9 +292,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
                 new ByteArrayInputStream("test".getBytes());
         conf = defaultUpload().fileStream(streamFromForm).build();
         InputStream returnedStream =
-                getInputStream(Optional.<File> absent(), conf.uploadForm);
+                getInputStream(Optional.absent(), conf.uploadForm);
 
-        assertThat(returnedStream, is(sameInstance(streamFromForm)));
+        assertThat(returnedStream).isSameAs(streamFromForm);
     }
 
     @Test
@@ -319,8 +311,8 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             InputStream returnedStream =
                     getInputStream(presentFile, conf.uploadForm);
 
-            assertThat(IOUtils.toString(returnedStream, "utf-8"),
-                    is("text in file"));
+            assertThat(IOUtils.toString(returnedStream, "utf-8"))
+                    .isEqualTo("text in file");
         } finally {
             if (f != null) {
                 f.delete();
@@ -348,10 +340,10 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
                 util.combineToTempFileAndDeleteUploadRecord(upload,
                         uploadForm);
 
-        assertThat(returnedFile, is(sameInstance(persistedFile)));
+        assertThat(returnedFile).isSameAs(persistedFile);
         String persistedContents =
                 IOUtils.toString(persistedInputStreamCaptor.getValue(), "utf-8");
-        assertThat(persistedContents, is("abcdefghi"));
+        assertThat(persistedContents).isEqualTo("abcdefghi");
         verify(session).delete(upload);
     }
 
@@ -367,12 +359,11 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm);
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode(), is(CONFLICT));
-            assertThat(
-                    e.getMessage(),
-                    is("MD5 hash \"incorrect hash\" sent with request does " +
-                          "not match server-generated hash. Aborted upload " +
-                          "operation."));
+            assertThat(e.getStatusCode()).isEqualTo(CONFLICT);
+            assertThat(e.getMessage()).isEqualTo(
+                    "MD5 hash \"incorrect hash\" sent with request does " +
+                            "not match server-generated hash. Aborted upload " +
+                            "operation.");
         }
     }
 
@@ -386,7 +377,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         uploadForm.setFileStream(finalPartStream);
 
         util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm);
-        assertThat(uploadForm.getHash(), is(HASH_OF_ABCDEFGHI));
+        assertThat(uploadForm.getHash()).isEqualTo(HASH_OF_ABCDEFGHI);
     }
 
     private HDocumentUpload mockTwoPartUploadUsingHash(String hash)

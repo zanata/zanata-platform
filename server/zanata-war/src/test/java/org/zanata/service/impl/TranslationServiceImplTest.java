@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jglue.cdiunit.AdditionalClasses;
@@ -55,8 +54,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
@@ -135,14 +133,14 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
                 transService.translate(new LocaleId("de"),
                         Lists.newArrayList(translateReq));
 
-        assertThat(result.get(0).isTranslationSuccessful(), is(true));
-        assertThat(result.get(0).getBaseVersionNum(), is(1));
-        assertThat(result.get(0).getBaseContentState(),
-                is(ContentState.Translated));
-        assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum(),
-                is(2)); // moved up a version
-        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType(),
-            is(TranslationSourceType.UNKNOWN));
+        assertThat(result.get(0).isTranslationSuccessful()).isTrue();
+        assertThat(result.get(0).getBaseVersionNum()).isEqualTo(1);
+        assertThat(result.get(0).getBaseContentState())
+                .isEqualTo(ContentState.Translated);
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum())
+                .isEqualTo(2); // moved up a version
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType())
+                .isEqualTo(TranslationSourceType.UNKNOWN);
     }
 
     @Test
@@ -174,25 +172,25 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
 
         // First result
         TranslationResult result = results.get(0);
-        assertThat(result.isTranslationSuccessful(), is(true));
-        assertThat(result.getBaseVersionNum(), is(1));
-        assertThat(result.getBaseContentState(), is(ContentState.Translated));
+        assertThat(result.isTranslationSuccessful()).isTrue();
+        assertThat(result.getBaseVersionNum()).isEqualTo(1);
+        assertThat(result.getBaseContentState()).isEqualTo(ContentState.Translated);
 
         //there was a previous translation, moved up to a version
-        assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(2));
-        assertThat(result.getTranslatedTextFlowTarget().getSourceType(),
-            is(TranslationSourceType.COPY_VERSION));
+        assertThat(result.getTranslatedTextFlowTarget().getVersionNum()).isEqualTo(2);
+        assertThat(result.getTranslatedTextFlowTarget().getSourceType())
+                .isEqualTo(TranslationSourceType.COPY_VERSION);
 
         // Second result
         result = results.get(1);
-        assertThat(result.isTranslationSuccessful(), is(true));
-        assertThat(result.getBaseVersionNum(), is(0));
-        assertThat(result.getBaseContentState(), is(ContentState.New));
+        assertThat(result.isTranslationSuccessful()).isTrue();
+        assertThat(result.getBaseVersionNum()).isEqualTo(0);
+        assertThat(result.getBaseContentState()).isEqualTo(ContentState.New);
 
         //no previous translation, first version
-        assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(1));
-        assertThat(result.getTranslatedTextFlowTarget().getSourceType(),
-            is(TranslationSourceType.COPY_TRANS));
+        assertThat(result.getTranslatedTextFlowTarget().getVersionNum()).isEqualTo(1);
+        assertThat(result.getTranslatedTextFlowTarget().getSourceType())
+                .isEqualTo(TranslationSourceType.COPY_TRANS);
     }
 
     @Test
@@ -213,7 +211,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         List<TranslationResult> result =
                 transService.translate(new LocaleId("de"), translationRequests);
 
-        assertThat(result.get(0).isTranslationSuccessful(), Matchers.is(false));
+        assertThat(result.get(0).isTranslationSuccessful()).isFalse();
     }
 
     @Test
@@ -232,13 +230,13 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
 
         verify(identity).checkPermission(eq("translation-review"),
                 isA(HProject.class), isA(HLocale.class));
-        assertThat(result.get(0).isTranslationSuccessful(), is(true));
-        assertThat(result.get(0).getBaseVersionNum(), is(0));
-        assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum(),
-                is(1)); // moved up only one version
-        assertThat(result.get(0).getTranslatedTextFlowTarget().getState(),
-                is(ContentState.Approved));
-        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType(),
-            is(TranslationSourceType.MERGE_VERSION));
+        assertThat(result.get(0).isTranslationSuccessful()).isTrue();
+        assertThat(result.get(0).getBaseVersionNum()).isEqualTo(0);
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum())
+                .isEqualTo(1); // moved up only one version
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getState())
+                .isEqualTo(ContentState.Approved);
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType())
+                .isEqualTo(TranslationSourceType.MERGE_VERSION);
     }
 }

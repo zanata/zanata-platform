@@ -1,12 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.HashMap;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
@@ -27,6 +24,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -108,12 +107,9 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
         LoadOptionsResult result =
                 handler.execute(new LoadOptionsAction(null), null);
 
-        assertThat(result.getConfiguration().isShowError(),
-                Matchers.equalTo(true));
-        assertThat(result.getConfiguration().getNavOption(),
-                Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-        assertThat(result.getConfiguration().isDisplayButtons(),
-                Matchers.equalTo(true));
+        assertThat(result.getConfiguration().isShowError()).isTrue();
+        assertThat(result.getConfiguration().getNavOption()).isEqualTo(NavOption.FUZZY_UNTRANSLATED);
+        assertThat(result.getConfiguration().isDisplayButtons()).isTrue();
     }
 
     @Test
@@ -126,18 +122,15 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
         List<HAccountOption> options =
                 getEm().createQuery("from HAccountOption", HAccountOption.class)
                         .getResultList();
-        assertThat(options, Matchers.<HAccountOption> empty());
+        assertThat(options).isEmpty();
 
         LoadOptionsResult result =
                 handler.execute(new LoadOptionsAction(null), null);
 
         // then: we get back default values
-        assertThat(result.getConfiguration().isShowError(),
-                Matchers.equalTo(false));
-        assertThat(result.getConfiguration().getNavOption(),
-                Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-        assertThat(result.getConfiguration().getEditorPageSize(),
-                Matchers.equalTo(25));
+        assertThat(result.getConfiguration().isShowError()).isFalse();
+        assertThat(result.getConfiguration().getNavOption()).isEqualTo(NavOption.FUZZY_UNTRANSLATED);
+        assertThat(result.getConfiguration().getEditorPageSize()).isEqualTo(25);
     }
 
     @Test

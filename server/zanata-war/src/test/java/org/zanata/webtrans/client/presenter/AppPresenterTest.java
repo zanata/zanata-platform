@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
@@ -15,7 +14,6 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -177,26 +175,24 @@ public class AppPresenterTest {
 
         // testing keys
         KeyShortcut docListKey = shortcuts.get(0);
-        assertThat(docListKey.getAllKeys(),
-                Matchers.contains(new Keys(Keys.ALT_KEY, 'L')));
-        assertThat(docListKey.getDescription(), Matchers.equalTo("doc list"));
-        assertThat(docListKey.getContext(),
-                Matchers.equalTo(ShortcutContext.Application));
+        assertThat(docListKey.getAllKeys())
+                .contains(new Keys(Keys.ALT_KEY, 'L'));
+        assertThat(docListKey.getDescription()).isEqualTo("doc list");
+        assertThat(docListKey.getContext())
+                .isEqualTo(ShortcutContext.Application);
 
         KeyShortcut editorKey = shortcuts.get(1);
-        assertThat(editorKey.getAllKeys(),
-                Matchers.contains(new Keys(Keys.ALT_KEY, 'O')));
-        assertThat(editorKey.getDescription(), Matchers.equalTo("editor"));
-        assertThat(editorKey.getContext(),
-                Matchers.equalTo(ShortcutContext.Application));
+        assertThat(editorKey.getAllKeys())
+                .contains(new Keys(Keys.ALT_KEY, 'O'));
+        assertThat(editorKey.getDescription()).isEqualTo("editor");
+        assertThat(editorKey.getContext())
+                .isEqualTo(ShortcutContext.Application);
 
         KeyShortcut searchKey = shortcuts.get(2);
-        assertThat(searchKey.getAllKeys(),
-                Matchers.contains(new Keys(Keys.ALT_KEY, 'P')));
-        assertThat(searchKey.getDescription(),
-                Matchers.equalTo("project wide search"));
-        assertThat(searchKey.getContext(),
-                Matchers.equalTo(ShortcutContext.Application));
+        assertThat(searchKey.getAllKeys())
+                .contains(new Keys(Keys.ALT_KEY, 'P'));
+        assertThat(searchKey.getDescription()).isEqualTo("project wide search");
+        assertThat(searchKey.getContext()).isEqualTo(ShortcutContext.Application);
     }
 
     @Test
@@ -220,7 +216,7 @@ public class AppPresenterTest {
         HistoryToken docToken = new HistoryToken();
         when(history.getHistoryToken()).thenReturn(docToken);
         docListKey.getHandler().onKeyShortcut(null);
-        assertThat(docToken.getView(), Matchers.is(MainView.Documents));
+        assertThat(docToken.getView()).isEqualTo(MainView.Documents);
         verify(history).newItem(docToken.toTokenString());
 
         // editor key handler on selected doc is null
@@ -235,14 +231,14 @@ public class AppPresenterTest {
         presenter.setStatesForTest(null, null, MainView.Documents,
                 selectedDocument);
         editorKey.getHandler().onKeyShortcut(null);
-        assertThat(editorToken.getView(), Matchers.is(MainView.Editor));
+        assertThat(editorToken.getView()).isEqualTo(MainView.Editor);
         verify(history).newItem(editorToken.toTokenString());
 
         // search key handler
         HistoryToken searchToken = new HistoryToken();
         when(history.getHistoryToken()).thenReturn(searchToken);
         searchKey.getHandler().onKeyShortcut(null);
-        assertThat(searchToken.getView(), Matchers.is(MainView.Search));
+        assertThat(searchToken.getView()).isEqualTo(MainView.Search);
         verify(history).newItem(searchToken.toTokenString());
     }
 
@@ -267,7 +263,7 @@ public class AppPresenterTest {
 
         verify(eventBus).fireEvent(eventCaptor.capture());
         NotificationEvent event = eventCaptor.getValue();
-        assertThat(event.getMessage(), Matchers.equalTo("readonly workspace"));
+        assertThat(event.getMessage()).isEqualTo("readonly workspace");
         verify(display).setReadOnlyVisible(userWorkspace.hasReadOnlyAccess());
     }
 
@@ -283,7 +279,7 @@ public class AppPresenterTest {
 
         verify(eventBus).fireEvent(eventCaptor.capture());
         NotificationEvent event = eventCaptor.getValue();
-        assertThat(event.getMessage(), Matchers.equalTo("editable workspace"));
+        assertThat(event.getMessage()).isEqualTo("editable workspace");
         verify(display).setReadOnlyVisible(userWorkspace.hasReadOnlyAccess());
     }
 
@@ -303,8 +299,7 @@ public class AppPresenterTest {
         verify(display).showInMainView(MainView.Editor);
         verify(display).setStats(statsCaptor.capture(), eq(true));
 
-        assertThat(statsCaptor.getValue(),
-                Matchers.sameInstance(selectedDocumentStats));
+        assertThat(statsCaptor.getValue()).isSameAs(selectedDocumentStats);
     }
 
     @Test
@@ -327,16 +322,14 @@ public class AppPresenterTest {
         verify(display).showInMainView(MainView.Search);
         verify(display).setStats(statsCaptor.capture(), eq(true));
 
-        assertThat(statsCaptor.getValue(), Matchers.sameInstance(projectStats));
+        assertThat(statsCaptor.getValue()).isSameAs(projectStats);
     }
 
     @Test
     public void canSwitchToDocumentView() {
         // Given: current selected document is null
-        assertThat(presenter.getSelectedDocIdOrNull(),
-                Matchers.is(Matchers.nullValue()));
-        assertThat(presenter.getSelectedDocumentInfoOrNull(),
-                Matchers.is(Matchers.nullValue()));
+        assertThat(presenter.getSelectedDocIdOrNull()).isNull();
+        assertThat(presenter.getSelectedDocumentInfoOrNull()).isNull();
         when(messages.documentListTitle()).thenReturn("Documents");
         presenter.setStatesForTest(projectStats, selectedDocumentStats, null,
                 null);
@@ -352,7 +345,7 @@ public class AppPresenterTest {
         verify(display).showInMainView(MainView.Documents);
         verify(display).setStats(statsCaptor.capture(), eq(true));
 
-        assertThat(statsCaptor.getValue(), Matchers.sameInstance(projectStats));
+        assertThat(statsCaptor.getValue()).isSameAs(projectStats);
     }
 
     @Test
@@ -379,8 +372,7 @@ public class AppPresenterTest {
         // current view is editor
         presenter.showView(MainView.Editor);
         verify(display).setStats(statsCaptor.capture(), eq(true));
-        assertThat(statsCaptor.getValue(),
-                Matchers.sameInstance(selectedDocumentStats));
+        assertThat(statsCaptor.getValue()).isSameAs(selectedDocumentStats);
 
         // When:
         presenter.selectDocument(docId);
@@ -388,9 +380,8 @@ public class AppPresenterTest {
         // Then:
         display.setDocumentLabel("pot/", "a.po");
         verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
-        assertThat(selectedDocumentStats.getStats(),
-                Matchers.equalTo(newSelectedStats.getStats()));
-        assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(docId));
+        assertThat(selectedDocumentStats.getStats()).isEqualTo(newSelectedStats.getStats());
+        assertThat(presenter.getSelectedDocIdOrNull()).isEqualTo(docId);
     }
 
     @Test
@@ -423,15 +414,13 @@ public class AppPresenterTest {
         verify(display).enableTab(MainView.Editor, true);
 
         verifyNoMoreInteractions(display);
-        assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(docId));
-        assertThat(presenter.getSelectedDocumentInfoOrNull(),
-                Matchers.is(documentInfo));
+        assertThat(presenter.getSelectedDocIdOrNull()).isEqualTo(docId);
+        assertThat(presenter.getSelectedDocumentInfoOrNull()).isEqualTo(documentInfo);
     }
 
     @Test
     public void onDocumentStatsUpdateWillDoNothingIfNoSelectedDocument() {
-        assertThat(presenter.getSelectedDocumentInfoOrNull(),
-                Matchers.is(Matchers.nullValue()));
+        assertThat(presenter.getSelectedDocumentInfoOrNull()).isNull();
 
         presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(
                 new DocumentId(1L, ""), new ContainerTranslationStatistics()));
@@ -483,8 +472,7 @@ public class AppPresenterTest {
                 newStats));
 
         // Then:
-        assertThat(selectedDocumentStats.getStats(),
-                Matchers.equalTo(newStats.getStats()));
+        assertThat(selectedDocumentStats.getStats()).isEqualTo(newStats.getStats());
         verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
     }
 
@@ -581,8 +569,8 @@ public class AppPresenterTest {
         RefreshProjectStatsEvent event = new RefreshProjectStatsEvent(buildSampleDocumentArray());
         presenter.onProjectStatsUpdated(event);
 
-        assertThat("project stats should contain stats in the event",
-                projectStats.getStats().size(), is(2));
+        assertThat(projectStats.getStats().size()).isEqualTo(2)
+                .as("project stats should contain stats in the event");
 
         verify(display, times(2)).setStats(projectStats, true);
     }

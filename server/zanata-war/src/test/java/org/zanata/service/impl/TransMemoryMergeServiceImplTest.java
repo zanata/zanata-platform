@@ -22,7 +22,7 @@
 package org.zanata.service.impl;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -36,11 +36,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -303,15 +301,16 @@ public class TransMemoryMergeServiceImplTest {
 
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
-        assertThat(updateRequest, Matchers.hasSize(1));
+        assertThat(updateRequest).hasSize(1);
         TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
-        assertThat(transUnitUpdateRequest.getNewContents(),
-                Matchers.equalTo(mostSimilarTM.getTargetContents()));
-        assertThat(transUnitUpdateRequest.getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+        assertThat(transUnitUpdateRequest.getNewContents())
+                .isEqualTo(mostSimilarTM.getTargetContents());
+        assertThat(transUnitUpdateRequest.getSourceType())
+            .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
         assertThat(
-                transUnitUpdateRequest.getTargetComment(),
-                Matchers.equalTo("auto translated by TM merge from project: project a, version: master, DocId: pot/msg.pot"));
+                transUnitUpdateRequest.getTargetComment())
+                .isEqualTo(
+                        "auto translated by TM merge from project: project a, version: master, DocId: pot/msg.pot");
     }
 
     @Test
@@ -443,20 +442,20 @@ public class TransMemoryMergeServiceImplTest {
 
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
-        assertThat(updateRequest, Matchers.hasSize(3));
-        assertThat(updateRequest.get(0).getNewContents(),
-                Matchers.equalTo(tm100.get().getTargetContents()));
-        assertThat(updateRequest.get(1).getNewContents(),
-                Matchers.equalTo(tm90.get().getTargetContents()));
-        assertThat(updateRequest.get(2).getNewContents(),
-                Matchers.equalTo(tm80.get().getTargetContents()));
+        assertThat(updateRequest).hasSize(3);
+        assertThat(updateRequest.get(0).getNewContents())
+                .isEqualTo(tm100.get().getTargetContents());
+        assertThat(updateRequest.get(1).getNewContents())
+                .isEqualTo(tm90.get().getTargetContents());
+        assertThat(updateRequest.get(2).getNewContents())
+                .isEqualTo(tm80.get().getTargetContents());
 
-        assertThat(updateRequest.get(0).getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
-        assertThat(updateRequest.get(1).getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
-        assertThat(updateRequest.get(2).getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+        assertThat(updateRequest.get(0).getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
+        assertThat(updateRequest.get(1).getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
+        assertThat(updateRequest.get(2).getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
     }
 
     @Test
@@ -519,14 +518,14 @@ public class TransMemoryMergeServiceImplTest {
 
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
-        assertThat(updateRequest, Matchers.hasSize(1));
+        assertThat(updateRequest).hasSize(1);
         TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
-        assertThat(transUnitUpdateRequest.getNewContents(),
-                Matchers.equalTo(mostSimilarTM.getTargetContents()));
+        assertThat(transUnitUpdateRequest.getNewContents())
+                .isEqualTo(mostSimilarTM.getTargetContents());
         assertThat(
-                transUnitUpdateRequest.getTargetComment(),
-                Matchers.equalTo("auto translated by TM merge from translation memory: test-tm, unique id: uid10"));
-        assertThat(transUnitUpdateRequest.getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+                transUnitUpdateRequest.getTargetComment())
+                .isEqualTo("auto translated by TM merge from translation memory: test-tm, unique id: uid10");
+        assertThat(transUnitUpdateRequest.getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
     }
 }

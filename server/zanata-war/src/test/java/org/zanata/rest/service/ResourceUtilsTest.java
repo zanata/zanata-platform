@@ -36,9 +36,7 @@ import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.test.CdiUnitRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,13 +73,13 @@ public class ResourceUtilsTest extends ZanataTest {
 
     @Test
     public void mergeNoTextFlows() {
-        List<TextFlow> from = new ArrayList<TextFlow>();
+        List<TextFlow> from = new ArrayList<>();
         HDocument to = new HDocument();
         boolean changed =
                 resourceUtils.transferFromTextFlows(from, to,
-                        new HashSet<String>(), 1);
+                        new HashSet<>(), 1);
 
-        assertThat(changed, is(false));
+        assertThat(changed).isFalse();
     }
 
     @Test
@@ -97,7 +95,7 @@ public class ResourceUtilsTest extends ZanataTest {
                 resourceUtils.transferFromTextFlows(from, to,
                         new HashSet<String>(), 1);
 
-        assertThat(changed, is(true));
+        assertThat(changed).isTrue();
     }
 
     @Test
@@ -155,25 +153,24 @@ public class ResourceUtilsTest extends ZanataTest {
         Map<Long, HTextFlowTarget> targets =
                 to.getAllTextFlows().get("id").getTargets();
         newTarg = targets.get(newLocId);
-        assertThat(newTarg.getState(), is(ContentState.New));
-        assertThat(newTarg.getVersionNum(), is(newTargVersionBefore));
-        assertThat(newTarg.getTextFlowRevision(), is(originalTFRevision));
+        assertThat(newTarg.getState()).isEqualTo(ContentState.New);
+        assertThat(newTarg.getVersionNum()).isEqualTo(newTargVersionBefore);
+        assertThat(newTarg.getTextFlowRevision()).isEqualTo(originalTFRevision);
 
         fuzzyTarg = targets.get(fuzzyLocId);
-        assertThat(fuzzyTarg.getState(), is(ContentState.NeedReview));
-        assertThat(fuzzyTarg.getVersionNum(), is(fuzzyTargVersionBefore));
-        assertThat(fuzzyTarg.getTextFlowRevision(), is(originalTFRevision));
+        assertThat(fuzzyTarg.getState()).isEqualTo(ContentState.NeedReview);
+        assertThat(fuzzyTarg.getVersionNum()).isEqualTo(fuzzyTargVersionBefore);
+        assertThat(fuzzyTarg.getTextFlowRevision()).isEqualTo(originalTFRevision);
 
         apprTarg = targets.get(apprLocId);
-        assertThat(
-                "approved targets should be set to fuzzy when source content changes",
-                apprTarg.getState(), is(ContentState.NeedReview));
-        assertThat(apprTarg.getVersionNum(), is(apprTargVersionBefore + 1));
+        assertThat(apprTarg.getState()).isEqualTo(ContentState.NeedReview)
+                .as("approved targets should be set to fuzzy when source content changes");
+        assertThat(apprTarg.getVersionNum()).isEqualTo(apprTargVersionBefore + 1);
         // Note: TFTRevision should be updated when target content or state is
         // changed in editor, not here.
-        assertThat(apprTarg.getTextFlowRevision(), is(originalTFRevision));
+        assertThat(apprTarg.getTextFlowRevision()).isEqualTo(originalTFRevision);
 
-        assertThat(changed, is(true));
+        assertThat(changed).isTrue();
     }
 
     @Test
@@ -183,7 +180,7 @@ public class ResourceUtilsTest extends ZanataTest {
         fromHeader.setComment(comment);
         HPoTargetHeader toHeader = new HPoTargetHeader();
         resourceUtils.pushPoTargetComment(fromHeader, toHeader, MergeType.AUTO);
-        assertThat("", toHeader.getComment().getComment(), is(comment));
+        assertThat(toHeader.getComment().getComment()).isEqualTo(comment);
     }
 
     @Test
@@ -195,7 +192,7 @@ public class ResourceUtilsTest extends ZanataTest {
         HPoTargetHeader toHeader = new HPoTargetHeader();
         resourceUtils.pushPoTargetComment(fromHeader, toHeader,
                 MergeType.IMPORT);
-        assertThat("", toHeader.getComment().getComment(), is(expectedComment));
+        assertThat(toHeader.getComment().getComment()).isEqualTo(expectedComment);
     }
 
     @Test
@@ -207,7 +204,7 @@ public class ResourceUtilsTest extends ZanataTest {
         HPoTargetHeader toHeader = new HPoTargetHeader();
         toHeader.setComment(new HSimpleComment("initial comment\nBob"));
         resourceUtils.pushPoTargetComment(fromHeader, toHeader, MergeType.AUTO);
-        assertThat("", toHeader.getComment().getComment(), is(expectedComment));
+        assertThat(toHeader.getComment().getComment()).isEqualTo(expectedComment);
     }
 
     @Test
@@ -220,7 +217,7 @@ public class ResourceUtilsTest extends ZanataTest {
         toHeader.setComment(new HSimpleComment("initial comment\nBob"));
         resourceUtils.pushPoTargetComment(fromHeader, toHeader,
                 MergeType.IMPORT);
-        assertThat("", toHeader.getComment().getComment(), is(expectedComment));
+        assertThat(toHeader.getComment().getComment()).isEqualTo(expectedComment);
     }
 
     @Test
@@ -232,7 +229,7 @@ public class ResourceUtilsTest extends ZanataTest {
         List<HTextFlowTarget> hTargets = Collections.emptyList();
         resourceUtils.pullPoTargetComment(fromHeader, toHeader, hTargets);
 
-        assertThat("", toHeader.getComment(), is(""));
+        assertThat(toHeader.getComment()).isEqualTo("");
     }
 
     @Test
@@ -246,7 +243,7 @@ public class ResourceUtilsTest extends ZanataTest {
         List<HTextFlowTarget> hTargets = Collections.emptyList();
         resourceUtils.pullPoTargetComment(fromHeader, toHeader, hTargets);
 
-        assertThat("", toHeader.getComment(), is(expectedComment));
+        assertThat(toHeader.getComment()).isEqualTo(expectedComment);
     }
 
     @Test
@@ -281,7 +278,7 @@ public class ResourceUtilsTest extends ZanataTest {
 
         resourceUtils.pullPoTargetComment(fromHeader, toHeader, hTargets);
 
-        assertThat("", toHeader.getComment(), is(expectedComment));
+        assertThat(toHeader.getComment()).isEqualTo(expectedComment);
     }
 
     @Test
@@ -289,7 +286,7 @@ public class ResourceUtilsTest extends ZanataTest {
         String s = "1\n2\n3";
         List<String> expected = Arrays.asList("1", "2", "3");
         List<String> lines = ResourceUtils.splitLines(s, null);
-        assertThat("", lines, is(expected));
+        assertThat(lines).isEqualTo(expected);
     }
 
     @Test
@@ -297,7 +294,7 @@ public class ResourceUtilsTest extends ZanataTest {
         String s = "";
         List<String> expected = Collections.emptyList();
         List<String> lines = ResourceUtils.splitLines(s, null);
-        assertThat("", lines, is(expected));
+        assertThat(lines).isEqualTo(expected);
     }
 
     @Test
@@ -305,7 +302,7 @@ public class ResourceUtilsTest extends ZanataTest {
         String s = "1\n2 #zanata\n3";
         List<String> expected = Arrays.asList("1", "3");
         List<String> lines = ResourceUtils.splitLines(s, "#zanata");
-        assertThat("", lines, is(expected));
+        assertThat(lines).isEqualTo(expected);
     }
 
     @Test
@@ -313,7 +310,7 @@ public class ResourceUtilsTest extends ZanataTest {
         String s = "1 #zanata\n2 #zanata\n3 #zanata";
         List<String> expected = Collections.emptyList();
         List<String> lines = ResourceUtils.splitLines(s, "#zanata");
-        assertThat("", lines, is(expected));
+        assertThat(lines).isEqualTo(expected);
     }
 
     /**
@@ -339,21 +336,21 @@ public class ResourceUtilsTest extends ZanataTest {
 
         verify(mockLocaleDAO).findByLocaleId(LocaleId.ES);
 
-        assertThat(esPluralForm, notNullValue());
+        assertThat(esPluralForm).isNotNull();
 
         // Alternate forms that should match the "es" plurals
         // "es_ES"
-        assertThat(resourceUtils.getPluralForms(new LocaleId("es-ES")),
-                is(esPluralForm));
+        assertThat(resourceUtils.getPluralForms(new LocaleId("es-ES")))
+                .isEqualTo(esPluralForm);
         // "es.ES"
-        assertThat(resourceUtils.getPluralForms(new LocaleId("es.ES")),
-                is(esPluralForm));
+        assertThat(resourceUtils.getPluralForms(new LocaleId("es.ES")))
+                .isEqualTo(esPluralForm);
         // "es@ES"
-        assertThat(resourceUtils.getPluralForms(new LocaleId("es@ES")),
-                is(esPluralForm));
+        assertThat(resourceUtils.getPluralForms(new LocaleId("es@ES")))
+                .isEqualTo(esPluralForm);
         // "es.ES@Latin"
-        assertThat(resourceUtils.getPluralForms(new LocaleId("es.ES@Latin")),
-                is(esPluralForm));
+        assertThat(resourceUtils.getPluralForms(new LocaleId("es.ES@Latin")))
+                .isEqualTo(esPluralForm);
     }
 
     @Test
@@ -370,7 +367,7 @@ public class ResourceUtilsTest extends ZanataTest {
 
         //verify and assert
         verify(mockLocaleDAO).findByLocaleId(LocaleId.ES);
-        assertThat(pluralForms, is(testPluralForms));
+        assertThat(pluralForms).isEqualTo(testPluralForms);
     }
 
     @Test
@@ -385,31 +382,31 @@ public class ResourceUtilsTest extends ZanataTest {
 
         //verify and assert
         verify(mockLocaleDAO).findByLocaleId(LocaleId.ES);
-        assertThat(pluralForms, notNullValue());
+        assertThat(pluralForms).isNotNull();
     }
 
     @Test
     public void isValidPluralFormsTest() {
         String invalidPluralForms = "testPluralForms";
-        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms)).isFalse();
 
         invalidPluralForms = "nplurals=notinteger";
-        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms)).isFalse();
 
         invalidPluralForms = "nplurals=-1";
-        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms)).isFalse();
 
         invalidPluralForms = "nplurals=" + ResourceUtils.MAX_TARGET_CONTENTS + 1;
-        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms)).isFalse();
 
         invalidPluralForms = "nplurals=0";
-        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms)).isFalse();
 
         invalidPluralForms = "nplurals=1;plural=0";
-        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms)).isTrue();
 
         invalidPluralForms = "nplurals=5; plural=10" +
                 ResourceUtils.MAX_TARGET_CONTENTS;
-        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms)).isTrue();
     }
 }

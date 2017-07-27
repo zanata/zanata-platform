@@ -1,8 +1,7 @@
 package org.zanata.rest.service.raw;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
@@ -16,7 +15,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.tennera.jgettext.HeaderFields;
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -70,7 +68,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         Response response =
                 getSourceDocResource().post(sr, null, true);
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         doGetandAssertThatResourceListContainsNItems(1);
     }
 
@@ -84,15 +82,15 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         Response postResponse =
                 getSourceDocResource().post(sr, null, true);
-        assertThat(postResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+        assertThat(postResponse.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         postResponse = getSourceDocResource().post(sr, null, true);
 
         Response resourceGetResponse =
                 getSourceDocResource().getResourceWithDocId("my.txt", null);
-        assertThat(resourceGetResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(resourceGetResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         Resource gotSr = getResourceFromResponse(resourceGetResponse);
-        assertThat(gotSr.getTextFlows().size(), is(1));
-        assertThat(gotSr.getTextFlows().get(0).getContents(), is(asList("tf1")));
+        assertThat(gotSr.getTextFlows().size()).isEqualTo(1);
+        assertThat(gotSr.getTextFlows().get(0).getContents()).isEqualTo(asList("tf1"));
 
     }
 
@@ -107,14 +105,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getSourceDocResource()
                         .putResourceWithDocId(sr, "my.txt", null, false);
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
 
         Response resourceGetResponse =
                 getSourceDocResource().getResourceWithDocId("my.txt", null);
-        assertThat(resourceGetResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(resourceGetResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         Resource gotSr = getResourceFromResponse(resourceGetResponse);
-        assertThat(gotSr.getTextFlows().size(), is(1));
-        assertThat(gotSr.getTextFlows().get(0).getContents(), is(asList("tf1")));
+        assertThat(gotSr.getTextFlows().size()).isEqualTo(1);
+        assertThat(gotSr.getTextFlows().get(0).getContents()).isEqualTo(asList("tf1"));
 
     }
 
@@ -140,16 +138,16 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response postResponse =
                 getSourceDocResource().post(sr, null, true);
         // new StringSet(PoHeader.ID));
-        assertThat(postResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+        assertThat(postResponse.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         doGetandAssertThatResourceListContainsNItems(1);
 
         Response resourceGetResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);
         // , new StringSet(PoHeader.ID));
-        assertThat(resourceGetResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(resourceGetResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         Resource gotSr = getResourceFromResponse(resourceGetResponse);
-        assertThat(gotSr.getTextFlows().size(), is(1));
-        assertThat(gotSr.getTextFlows().get(0).getContents(), is(asList("tf1")));
+        assertThat(gotSr.getTextFlows().size()).isEqualTo(1);
+        assertThat(gotSr.getTextFlows().get(0).getContents()).isEqualTo(asList("tf1"));
 
         // @formatter:off
         /*
@@ -184,17 +182,17 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         .putTranslationsWithDocId(de_DE, entity, "my.txt", null,
                                 "auto");
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
         Response getResponse =
                 getTransResource()
                         .getTranslationsWithDocId(de_DE, "my.txt", null, false,
                         null);
-        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(getResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         TranslationsResource entity2 =
                 getTranslationsResourceFromResponse(getResponse);
-        assertThat(entity2.getTextFlowTargets().size(), is(entity
-                .getTextFlowTargets().size()));
+        assertThat(entity2.getTextFlowTargets().size()).isEqualTo(entity
+                .getTextFlowTargets().size());
 
         entity.getTextFlowTargets().clear();
         // push an empty document
@@ -202,13 +200,13 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 getTransResource()
                         .putTranslationsWithDocId(de_DE, entity, "my.txt", null,
                                 MergeType.IMPORT.toString());
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
         getResponse =
                 getTransResource()
                         .getTranslationsWithDocId(de_DE, "my.txt", null, false,
                                 null);
-        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(getResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
     }
 
     @Test
@@ -217,7 +215,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response clientResponse =
                 getSourceDocResource()
                         .getResourceWithDocId("my,doc,does,not,exist.txt", null);
-        assertThat(clientResponse.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
+        assertThat(clientResponse.getStatus()).isEqualTo(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -230,12 +228,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         Response response =
                 getSourceDocResource().getResourceMetaWithDocId(docName, null);
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
         ResourceMeta doc = getResourceMetaFromResponse(response);
-        assertThat(doc.getName(), is(docName));
-        assertThat(doc.getContentType(), is(ContentType.TextPlain));
-        assertThat(doc.getLang(), is(LocaleId.EN_US));
-        assertThat(doc.getRevision(), is(1));
+        assertThat(doc.getName()).isEqualTo(docName);
+        assertThat(doc.getContentType()).isEqualTo(ContentType.TextPlain);
+        assertThat(doc.getLang()).isEqualTo(LocaleId.EN_US);
+        assertThat(doc.getRevision()).isEqualTo(1);
 
         /*
          * Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
@@ -264,10 +262,10 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         {
             Response response =
                     getSourceDocResource().getResourceWithDocId(docName, null);
-            assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+            assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
             Resource doc = getResourceFromResponse(response);
-            assertThat(doc.getTextFlows().size(), is(1));
+            assertThat(doc.getTextFlows().size()).isEqualTo(1);
         }
 
         Response response =
@@ -275,20 +273,20 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         .getTranslationsWithDocId(nbLocale, docName, null,
                                 false,
                                 null);
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
         TranslationsResource doc = getTranslationsResourceFromResponse(response);
-        assertThat("should have one textFlow", doc.getTextFlowTargets().size(),
-                is(1));
+        assertThat(doc.getTextFlowTargets().size()).isEqualTo(1)
+                .as("should have one textFlow");
         TextFlowTarget tft = doc.getTextFlowTargets().get(0);
 
-        assertThat(tft, notNullValue());
-        assertThat("should have a textflow with this id", tft.getResId(),
-                is("tf1"));
+        assertThat(tft).isNotNull();
+        assertThat(tft.getResId()).isEqualTo("tf1")
+                .as("should have a textflow with this id");
 
-        assertThat("expected de target", tft, notNullValue());
-        assertThat("expected translation for de", tft.getContents(),
-                is(asList("hei verden")));
+        assertThat(tft).isNotNull().as("expected de target");
+        assertThat(tft.getContents()).isEqualTo(asList("hei verden"))
+                .as("expected translation for de");
     }
 
     @Test
@@ -299,17 +297,18 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response = getSourceDocResource()
                 .putResourceWithDocId(doc, docName, null, false);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
-        assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(BASE_PATH + "?docId=" + UrlUtil.encodeString(docName)));
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
+        assertThat(response.getMetadata().getFirst("Location").toString())
+                .endsWith(
+                        BASE_PATH + "?docId=" + UrlUtil.encodeString(docName));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);
 
-        assertThat(documentResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(documentResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
         doc = getResourceFromResponse(documentResponse);
-        assertThat(doc.getRevision(), is(1));
+        assertThat(doc.getRevision()).isEqualTo(1);
 
         /*
          * Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
@@ -338,9 +337,9 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getSourceDocResource()
                         .putResourceWithDocId(doc, docName, null, false);
-        assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST.getStatusCode());
         String message = response.readEntity(String.class);
-        assertThat(message, containsString("tf1"));
+        assertThat(message).contains("tf1");
     }
 
     @Test
@@ -369,25 +368,26 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response = getSourceDocResource()
                 .putResourceWithDocId(doc, docName, null, false);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
-        assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(BASE_PATH + "?docId=" + UrlUtil.encodeString(docName)));
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
+        assertThat(response.getMetadata().getFirst("Location").toString())
+                .endsWith(BASE_PATH + "?docId=" + UrlUtil.encodeString(docName));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);
 
-        assertThat(documentResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(documentResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
         doc = getResourceFromResponse(documentResponse);
 
-        assertThat(doc.getRevision(), is(1));
+        assertThat(doc.getRevision()).isEqualTo(1);
 
-        assertThat("Should have textFlows", doc.getTextFlows(), notNullValue());
-        assertThat("Should have 2 textFlows", doc.getTextFlows().size(), is(2));
-        assertThat("Should have tf1 textFlow", doc.getTextFlows().get(0)
-                .getId(), is("tf1"));
-        assertThat("Container1 should have tf3 textFlow", doc.getTextFlows()
-                .get(1).getId(), is(tf3.getId()));
+        assertThat(doc.getTextFlows()).isNotNull().as("Should have textFlows");
+        assertThat(doc.getTextFlows().size()).isEqualTo(2)
+                .as("Should have 2 textFlows");
+        assertThat(doc.getTextFlows().get(0).getId()).isEqualTo("tf1")
+                .as("Should have tf1 textFlow");
+        assertThat(doc.getTextFlows().get(1).getId()).isEqualTo(tf3.getId())
+                .as("Container1 should have tf3 textFlow");
 
         textFlow = doc.getTextFlows().get(0);
         textFlow.setId("tf2");
@@ -396,20 +396,20 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 null, false);
 
         // this WAS testing for status 205
-        assertThat(response.getStatus(), is(200));
+        assertThat(response.getStatus()).isEqualTo(200);
 
         documentResponse = getSourceDocResource()
                 .getResourceWithDocId(docName, null);
-        assertThat(documentResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(documentResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         doc = getResourceFromResponse(documentResponse);
 
-        assertThat(doc.getRevision(), is(2));
+        assertThat(doc.getRevision()).isEqualTo(2);
 
-        assertThat("Should have textFlows", doc.getTextFlows(), notNullValue());
-        assertThat("Should have two textFlows", doc.getTextFlows().size(),
-                is(2));
-        assertThat("should have same id", doc.getTextFlows().get(0).getId(),
-                is("tf2"));
+        assertThat(doc.getTextFlows()).isNotNull().as("Should have textFlows");
+        assertThat(doc.getTextFlows().size()).isEqualTo(2)
+                .as("Should have two textFlows");
+        assertThat(doc.getTextFlows().get(0).getId()).isEqualTo("tf2")
+                .as("should have same id");
     }
 
     @Test
@@ -639,7 +639,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                                 "gettext"), true, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
-        assertThat(translations.getExtensions().size(), greaterThan(0));
+        assertThat(translations.getExtensions().size()).isGreaterThan(0);
 
         // List of custom Zanata headers that should be present
         final String[] requiredHeaders =
@@ -656,10 +656,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                     headerFound = true;
                 }
             }
-
-            assertThat("PO Target Header '" + reqHeader
-                    + "' was not present when pulling translations.",
-                    headerFound, is(true));
+            assertThat(headerFound).isTrue().as("PO Target Header '" + reqHeader
+                    + "' was not present when pulling translations.");
         }
 
         /**
@@ -672,14 +670,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
             String value = entry.getValue().trim();
             if (entry.getKey().equals(HeaderFields.KEY_LastTranslator)) {
-                assertThat(value,
-                        containsString(ResourceUtils.COPIED_BY_ZANATA_NAME));
-                assertThat(value, containsString(
-                        ResourceUtils.COPIED_BY_ZANATA_NAME_EMAIL));
+                assertThat(value).contains(ResourceUtils.COPIED_BY_ZANATA_NAME,
+                        ResourceUtils.COPIED_BY_ZANATA_NAME_EMAIL);
             }
 
             if (entry.getKey().equals(HeaderFields.KEY_PoRevisionDate)) {
-                assertThat(value, not(isEmptyOrNullString()));
+                assertThat(value).isNotBlank();
             }
         }
     }
@@ -701,22 +697,22 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
         // Expecting no translations
-        assertThat(translations.getTextFlowTargets().size(), is(0));
+        assertThat(translations.getTextFlowTargets().size()).isEqualTo(0);
 
         // Make sure the headers are populated
         PoTargetHeader header =
                 translations.getExtensions(true).findByType(
                         PoTargetHeader.class);
-        assertThat(header, notNullValue());
-        assertThat(header.getEntries().size(), greaterThan(0));
+        assertThat(header).isNotNull();
+        assertThat(header.getEntries().size()).isGreaterThan(0);
 
         // Make sure the header values are empty since the system does not have
         // any information for them
         for (HeaderEntry entry : header.getEntries()) {
             if (entry.getKey().equals(HeaderFields.KEY_LastTranslator)) {
-                assertThat(entry.getValue().trim(), is(""));
+                assertThat(entry.getValue().trim()).isEqualTo("");
             } else if (entry.getKey().equals(HeaderFields.KEY_PoRevisionDate)) {
-                assertThat(entry.getValue().trim(), is(""));
+                assertThat(entry.getValue().trim()).isEqualTo("");
             }
         }
     }
@@ -758,7 +754,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response putResponse =
                 getTransResource().putTranslationsWithDocId(de_DE, entity,
                         "my.txt", new StringSet("gettext"), "auto");
-        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(putResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
 
         // Get the translations with PO headers
@@ -772,20 +768,18 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         PoTargetHeader header =
                 translations.getExtensions(true).findByType(
                         PoTargetHeader.class);
-        assertThat(header, notNullValue());
-        assertThat(header.getEntries().size(), greaterThan(0));
+        assertThat(header).isNotNull();
+        assertThat(header.getEntries().size()).isGreaterThan(0);
 
         // Make sure the header values are the same as the ones pushed with the
         // document
         for (HeaderEntry entry : header.getEntries()) {
             String value = entry.getValue().trim();
             if (entry.getKey().equals(HeaderFields.KEY_LastTranslator)) {
-                assertThat(value,
-                    containsString(ResourceUtils.COPIED_BY_ZANATA_NAME));
-                assertThat(value, containsString(
-                    ResourceUtils.COPIED_BY_ZANATA_NAME_EMAIL));
+                assertThat(value).contains(ResourceUtils.COPIED_BY_ZANATA_NAME,
+                        ResourceUtils.COPIED_BY_ZANATA_NAME_EMAIL);
             } else if (entry.getKey().equals(HeaderFields.KEY_PoRevisionDate)) {
-                assertThat(value, is(dateFormat.format(poRevDate.getTime())));
+                assertThat(value).isEqualTo(dateFormat.format(poRevDate.getTime()));
             }
         }
     }
@@ -810,7 +804,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 getTransResource()
                         .putTranslationsWithDocId(de_DE, entity, "my.txt", null,
                                 "auto");
-        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(putResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
         // Get the translations with PO headers
         Response response =
@@ -819,7 +813,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                                 "gettext"), false, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
-        assertThat(translations.getTextFlowTargets().size(), greaterThan(0));
+        assertThat(translations.getTextFlowTargets().size()).isGreaterThan(0);
 
         // Now translate and push them again
         for (TextFlowTarget tft : translations.getTextFlowTargets()) {
@@ -831,8 +825,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 getTransResource()
                         .putTranslationsWithDocId(de_DE, translations,
                                 "my.txt", null, "auto");
-        assertThat(putResponse.getStatus(),
-                is(Status.OK.getStatusCode()));
+        assertThat(putResponse.getStatus())
+                .isEqualTo(Status.OK.getStatusCode());
 
         // Fetch the translations again
         response =
@@ -841,14 +835,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                                 "gettext"), false, null);
 
         translations = getTranslationsResourceFromResponse(response);
-        assertThat(translations.getTextFlowTargets().size(), greaterThan(0));
+        assertThat(translations.getTextFlowTargets().size()).isGreaterThan(0);
 
         // Make sure the headers are now populated
         PoTargetHeader header =
                 translations.getExtensions(true).findByType(
                         PoTargetHeader.class);
-        assertThat(header, notNullValue());
-        assertThat(header.getEntries().size(), greaterThan(0));
+        assertThat(header).isNotNull();
+        assertThat(header.getEntries().size()).isGreaterThan(0);
     }
 
 
@@ -875,11 +869,11 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getSourceDocResource().get(null);
 
-        assertThat(response.getStatus(), is(200));
+        assertThat(response.getStatus()).isEqualTo(200);
         String entityString = response.readEntity(String.class);
         List<ResourceMeta> actualDocs = Lists.newArrayList(jsonUnmarshal(
                 entityString, ResourceMeta[].class));
-        assertThat(actualDocs, notNullValue());
+        assertThat(actualDocs).isNotNull();
         Map<String, AbstractResourceMeta> expectedDocs =
                 new HashMap<>();
         for (AbstractResourceMeta doc : docs) {
@@ -893,9 +887,9 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
             log.debug("actual doc: " + doc.toString());
             AbstractResourceMeta expectedDoc = expectedDocs.get(doc.getName());
             if (checkRevs)
-                assertThat(doc.getRevision(), is(expectedDoc.getRevision()));
+                assertThat(doc.getRevision()).isEqualTo(expectedDoc.getRevision());
         }
-        assertThat(actualDocsMap.keySet(), is(expectedDocs.keySet()));
+        assertThat(actualDocsMap.keySet()).isEqualTo(expectedDocs.keySet());
     }
 
     private void expectResources(boolean checkRevs, Resource... docs) {
@@ -903,7 +897,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
             Response response =
                     getSourceDocResource().getResourceWithDocId(expectedDoc.getName(),
                             extGettextComment);
-            assertThat(response.getStatus(), is(200));
+            assertThat(response.getStatus()).isEqualTo(200);
             Resource actualDoc = getResourceFromResponse(response);
             if (!checkRevs) {
                 ResourceTestUtil.clearRevs(expectedDoc);
@@ -911,7 +905,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
             }
             createExtensionSets(expectedDoc);
             createExtensionSets(actualDoc);
-            assertThat(actualDoc, Matchers.equalTo(expectedDoc));
+            assertThat(actualDoc).isEqualTo(expectedDoc);
         }
     }
 
@@ -927,7 +921,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 getTransResource()
                         .getTranslationsWithDocId(locale, id, null, false,
                                 null);
-        assertThat(response.getStatus(), is(404));
+        assertThat(response.getStatus()).isEqualTo(404);
     }
 
     private void expectTarget(boolean checkRevs, String id, LocaleId locale,
@@ -936,7 +930,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 getTransResource()
                         .getTranslationsWithDocId(locale, id, extGettextComment,
                                 false, null);
-        assertThat(response.getStatus(), is(200));
+        assertThat(response.getStatus()).isEqualTo(200);
         TranslationsResource actualDoc = getTranslationsResourceFromResponse(response);
         actualDoc.getLinks(true).clear();
         actualDoc.getExtensions(true);
@@ -959,8 +953,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         // Clear Po Headers since Zanata will generate custom ones
         ResourceTestUtil.clearPoTargetHeaders(actualDoc, expectedDoc);
 
-        assertThat(jaxbMarhsal(actualDoc),
-                Matchers.equalTo(jaxbMarhsal(expectedDoc)));
+        assertThat(jaxbMarhsal(actualDoc)).isEqualTo(jaxbMarhsal(expectedDoc));
     }
 
     private Resource createSourceDoc(String name, boolean withTextFlow) {
@@ -998,11 +991,11 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     private void doGetandAssertThatResourceListContainsNItems(int n) {
         Response resources =
                 getSourceDocResource().get(null);
-        assertThat(resources.getStatus(), is(Status.OK.getStatusCode()));
+        assertThat(resources.getStatus()).isEqualTo(Status.OK.getStatusCode());
         String entityString = resources.readEntity(String.class);
         ResourceMeta[] resourceMetas =
                 jsonUnmarshal(entityString, ResourceMeta[].class);
-        assertThat(resourceMetas.length, is(n));
+        assertThat(resourceMetas.length).isEqualTo(n);
     }
 
     private Resource newDoc(String id, TextFlow... textFlows) {
@@ -1072,7 +1065,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getSourceDocResource()
                         .putResourceWithDocId(doc, id, extGettextComment, false);
-        assertThat(response.getStatus(), isOneOf(200, 201));
+        assertThat(response.getStatus()).isIn(200, 201);
         return doc;
     }
 
@@ -1103,7 +1096,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                                 "slime mould comment"));
         Response response = getSourceDocResource()
                 .putResourceWithDocId(doc, id, extComment, false);
-        assertThat(response.getStatus(), isOneOf(200, 201));
+        assertThat(response.getStatus()).isIn(200, 201);
 
         if (putTarget)
             putTarget1();
@@ -1136,7 +1129,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Resource doc = newDoc(id, newTextFlow("HELLO", "Hello World", null));
         Response response = getSourceDocResource()
                 .putResourceWithDocId(doc, id, extComment, false);
-        assertThat(response.getStatus(), isOneOf(200, 201));
+        assertThat(response.getStatus()).isIn(200, 201);
 
         if (putTarget)
             putTarget1a();
@@ -1174,14 +1167,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
     protected void deleteDoc(String id) {
         Response response = getSourceDocResource().deleteResourceWithDocId(id);
-        assertThat(response.getStatus(), is(200));
+        assertThat(response.getStatus()).isIn(200);
     }
 
     private Resource postDoc2(boolean putTarget) {
         Resource doc =
                 newDoc(DOC2_NAME, newTextFlow("HELLO", "Hello World", "hello comment"));
         Response response = getSourceDocResource().post(doc, extComment, true);
-        assertThat(response.getStatus(), is(201));
+        assertThat(response.getStatus()).isIn(201);
 
         if (putTarget)
             putTarget2();

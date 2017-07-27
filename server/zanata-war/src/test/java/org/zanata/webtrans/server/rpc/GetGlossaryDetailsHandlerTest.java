@@ -3,15 +3,12 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.GlossaryDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Glossary;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -20,23 +17,18 @@ import org.zanata.model.TestFixture;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GlossarySearchService;
-import org.zanata.service.LocaleService;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import com.google.common.collect.Lists;
 
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -95,7 +87,7 @@ public class GetGlossaryDetailsHandlerTest extends ZanataTest {
         GetGlossaryDetailsResult result = handler.execute(action, null);
 
         verify(identity).checkLoggedIn();
-        assertThat(result.getGlossaryDetails(), Matchers.is(details));
+        assertThat(result.getGlossaryDetails()).isEqualTo(details);
     }
 
     @Test

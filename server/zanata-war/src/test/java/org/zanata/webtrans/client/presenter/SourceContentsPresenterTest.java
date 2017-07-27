@@ -5,7 +5,6 @@ import javax.inject.Provider;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.GwtEvent;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -96,8 +96,7 @@ public class SourceContentsPresenterTest {
         verify(display2).setValue(transUnits.get(1));
         verify(display2).setSourceSelectionHandler(presenter);
 
-        assertThat(presenter.getDisplays(),
-                Matchers.contains(display1, display2));
+        assertThat(presenter.getDisplays()).contains(display1, display2);
     }
 
     @Test
@@ -119,8 +118,8 @@ public class SourceContentsPresenterTest {
 
         // Then:
         verify(hasSelectableSource1).clickSelf();
-        assertThat(presenter.getCurrentTransUnitIdOrNull(),
-                Matchers.equalTo(selectedId));
+        assertThat(presenter.getCurrentTransUnitIdOrNull())
+                .isEqualTo(selectedId);
     }
 
     @Test
@@ -151,14 +150,14 @@ public class SourceContentsPresenterTest {
     @Test
     public void testGetSelectedSource() throws Exception {
         String noSelectedSource = presenter.getSelectedSource();
-        assertThat(noSelectedSource, Matchers.nullValue());
+        assertThat(noSelectedSource).isNull();
 
         when(clickEvent.getSource()).thenReturn(hasSelectableSource1);
         when(hasSelectableSource1.getSource()).thenReturn("source content");
         presenter.onClick(clickEvent);
 
         String selectedSource = presenter.getSelectedSource();
-        assertThat(selectedSource, Matchers.equalTo("source content"));
+        assertThat(selectedSource).isEqualTo("source content");
     }
 
     @Test
@@ -180,8 +179,8 @@ public class SourceContentsPresenterTest {
 
         // When: select source with id 1
         presenter.setSelectedSource(previousSelectedId);
-        assertThat(presenter.getCurrentTransUnitIdOrNull(),
-                Matchers.equalTo(previousSelectedId));
+        assertThat(presenter.getCurrentTransUnitIdOrNull())
+                .isEqualTo(previousSelectedId);
 
         // after select source with id 1 click on source panel in display2
         when(clickEvent.getSource()).thenReturn(hasSelectableSource2);
@@ -196,8 +195,7 @@ public class SourceContentsPresenterTest {
                 TestFixture.extractFromEvents(
                         gwtEventArgumentCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(selectedId));
+        assertThat(tableRowSelectedEvent.getSelectedId()).isEqualTo(selectedId);
 
         // on display2 selected it should select the second source panel
         presenter.setSelectedSource(selectedId);
@@ -222,7 +220,7 @@ public class SourceContentsPresenterTest {
     public void withNoPriorSelectionGetCurrentTransUnitIdIsNull()
             throws Exception {
         TransUnitId transUnitId = presenter.getCurrentTransUnitIdOrNull();
-        assertThat(transUnitId, Matchers.nullValue());
+        assertThat(transUnitId).isNull();
     }
 
     @Test

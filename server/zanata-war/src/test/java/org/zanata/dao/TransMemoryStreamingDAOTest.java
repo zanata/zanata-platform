@@ -1,7 +1,6 @@
 package org.zanata.dao;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.model.tm.TransMemory.tm;
 import static org.zanata.model.tm.TransMemoryUnit.tu;
 import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
@@ -42,7 +41,7 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest {
         CloseableIterator<TransMemoryUnit> iter =
                 dao.findTransUnitsByTM(transMemory.get());
         try {
-            assertThat(Iterators.size(iter), equalTo(4));
+            assertThat(Iterators.size(iter)).isEqualTo(4);
             deleteTMData();
         } finally {
             if (iter != null) {

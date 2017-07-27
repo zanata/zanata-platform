@@ -68,16 +68,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -193,24 +184,24 @@ public class TMXParserTest {
 
         // Make sure everything is stored properly
         tm = getEm().find(TransMemory.class, tm.getId());
-        assertThat(tm.getTranslationUnits().size(), is(4));
+        assertThat(tm.getTranslationUnits().size()).isEqualTo(4);
 
         // Dates were modified to match the TM header in the file
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.setTime(tm.getCreationDate());
-        assertThat(cal.get(Calendar.YEAR), is(2013));
-        assertThat(cal.get(Calendar.MONTH), is(4));
-        assertThat(cal.get(Calendar.DATE), is(9));
+        assertThat(cal.get(Calendar.YEAR)).isEqualTo(2013);
+        assertThat(cal.get(Calendar.MONTH)).isEqualTo(4);
+        assertThat(cal.get(Calendar.DATE)).isEqualTo(9);
 
-        assertThat(tm.getSourceLanguage(), equalTo("en"));
+        assertThat(tm.getSourceLanguage()).isEqualTo("en");
 
         // TM metadata
-        assertThat(tm.getMetadata().size(), greaterThan(0));
-        assertThat(tm.getMetadata().get(TMMetadataType.TMX14), notNullValue());
+        assertThat(tm.getMetadata().size()).isGreaterThan(0);
+        assertThat(tm.getMetadata().get(TMMetadataType.TMX14)).isNotNull();
 
         // Translation Units
         for (TransMemoryUnit tu : tm.getTranslationUnits()) {
-            assertThat(tu.getTransUnitVariants().size(), greaterThan(0));
+            assertThat(tu.getTransUnitVariants().size()).isGreaterThan(0);
         }
 
         Optional<String> seg = tm.getTranslationUnits().stream()
@@ -219,7 +210,7 @@ public class TMXParserTest {
                 .map(map ->  map.get("ja"))
                 .map(TransMemoryUnitVariant::getPlainTextSegment)
                 .findAny();
-        assertThat(seg.orElseGet(null), containsString("を選択します"));
+        assertThat(seg.orElseGet(null)).contains("を選択します");
     }
 
     @Test
@@ -231,9 +222,9 @@ public class TMXParserTest {
 
         // Make sure everything is stored properly
         tm = getEm().find(TransMemory.class, tm.getId());
-        assertThat(tm.getTranslationUnits().size(), is(1));
+        assertThat(tm.getTranslationUnits().size()).isEqualTo(1);
 
-        assertThat(tm.getSourceLanguage(), equalTo("en-US"));
+        assertThat(tm.getSourceLanguage()).isEqualTo("en-US");
 
         Set<String> expectedLocales =
                 Sets.newHashSet("en-US", "es", "es-ES", "fr", "fr-FR", "he",
@@ -241,7 +232,7 @@ public class TMXParserTest {
         TransMemoryUnit tu = tm.getTranslationUnits().iterator().next();
         HashSet<String> actualLocales =
                 Sets.newHashSet(tu.getTransUnitVariants().keySet());
-        assertThat(actualLocales, equalTo(expectedLocales));
+        assertThat(actualLocales).isEqualTo(expectedLocales);
     }
 
     @Test
@@ -255,77 +246,73 @@ public class TMXParserTest {
 
         // Metadata at the header level
         Map<String, String> tmAtts = TMXMetadataHelper.getAttributes(tm);
-        assertThat(tmAtts.size(), is(9));
-        assertThat(tmAtts, hasEntry("segtype", "paragraph"));
-        assertThat(tmAtts, hasEntry("creationtoolversion", "unknown"));
-        assertThat(tmAtts,
-                hasEntry("creationtool", "Zanata TransMemoryExportTMXStrategy"));
-        assertThat(tmAtts, hasEntry("datatype", "unknown"));
-        assertThat(tmAtts, hasEntry("adminlang", "en"));
-        assertThat(tmAtts, hasEntry("o-tmf", "unknown"));
-        assertThat(tmAtts, hasEntry("srclang", "*all*"));
-        assertThat(tmAtts, hasKey("creationdate"));
-        assertThat(tmAtts, hasKey("changedate"));
+        assertThat(tmAtts.size()).isEqualTo(9);
+        assertThat(tmAtts).containsEntry("segtype", "paragraph")
+                .containsEntry("creationtoolversion", "unknown")
+                .containsEntry("creationtool",
+                        "Zanata TransMemoryExportTMXStrategy")
+                .containsEntry("datatype", "unknown")
+                .containsEntry("adminlang", "en")
+                .containsEntry("o-tmf", "unknown")
+                .containsEntry("srclang", "*all*")
+                .containsKeys("creationdate", "changedate");
 
         List<Element> tmChildren = TMXMetadataHelper.getChildren(tm);
-        assertThat(tmChildren.size(), is(2));
-        assertThat(tmChildren.get(0).getLocalName(), is("prop"));
-        assertThat(tmChildren.get(0).getValue(), is("Header Prop value"));
-        assertThat(tmChildren.get(1).getLocalName(), is("note"));
-        assertThat(tmChildren.get(1).getValue(), is("Header Note value"));
+        assertThat(tmChildren.size()).isEqualTo(2);
+        assertThat(tmChildren.get(0).getLocalName()).isEqualTo("prop");
+        assertThat(tmChildren.get(0).getValue()).isEqualTo("Header Prop value");
+        assertThat(tmChildren.get(1).getLocalName()).isEqualTo("note");
+        assertThat(tmChildren.get(1).getValue()).isEqualTo("Header Note value");
 
         // Metadata at the TU level
         TransMemoryUnit tu0 =
                 findInCollection(tm.getTranslationUnits(), "doc0:resId0");
         Map<String, String> tu0Atts = TMXMetadataHelper.getAttributes(tu0);
-        assertThat(tu0Atts.size(), is(4));
-        assertThat(tu0Atts, hasEntry("tuid", "doc0:resId0"));
-        assertThat(tu0Atts, hasEntry("srclang", "en"));
-        assertThat(tu0Atts, hasKey("creationdate"));
-        assertThat(tu0Atts, hasKey("changedate"));
+        assertThat(tu0Atts.size()).isEqualTo(4);
+        assertThat(tu0Atts).containsEntry("tuid", "doc0:resId0")
+                .containsEntry("srclang", "en")
+                .containsKeys("creationdate", "changedate");
 
         List<Element> tu0Children = TMXMetadataHelper.getChildren(tu0);
-        assertThat(tu0Children.size(), is(2));
-        assertThat(tu0Children.get(0).getLocalName(), is("prop"));
-        assertThat(tu0Children.get(0).getValue(), is("Custom prop0 value"));
-        assertThat(tu0Children.get(1).getLocalName(), is("note"));
-        assertThat(tu0Children.get(1).getValue(), is("Custom note"));
+        assertThat(tu0Children.size()).isEqualTo(2);
+        assertThat(tu0Children.get(0).getLocalName()).isEqualTo("prop");
+        assertThat(tu0Children.get(0).getValue()).isEqualTo("Custom prop0 value");
+        assertThat(tu0Children.get(1).getLocalName()).isEqualTo("note");
+        assertThat(tu0Children.get(1).getValue()).isEqualTo("Custom note");
 
         TransMemoryUnit tu1 =
                 findInCollection(tm.getTranslationUnits(), "doc0:resId1");
         Map<String, String> tu1Atts = TMXMetadataHelper.getAttributes(tu1);
-        assertThat(tu1Atts.size(), is(4));
-        assertThat(tu1Atts, hasEntry("tuid", "doc0:resId1"));
-        assertThat(tu1Atts, hasEntry("srclang", "en"));
-        assertThat(tu1Atts, hasKey("creationdate"));
-        assertThat(tu1Atts, hasKey("changedate"));
+        assertThat(tu1Atts.size()).isEqualTo(4);
+        assertThat(tu1Atts).containsEntry("tuid", "doc0:resId1")
+                .containsEntry("srclang", "en")
+                .containsKeys("creationdate", "changedate");
 
         List<Element> tu1Children = TMXMetadataHelper.getChildren(tu1);
-        assertThat(tu1Children.size(), is(4));
-        assertThat(tu1Children.get(0).getLocalName(), is("prop"));
-        assertThat(tu1Children.get(0).getValue(), is("Custom prop0 value"));
-        assertThat(tu1Children.get(1).getLocalName(), is("prop"));
-        assertThat(tu1Children.get(1).getValue(), is("Custom prop1 value"));
-        assertThat(tu1Children.get(2).getLocalName(), is("note"));
-        assertThat(tu1Children.get(2).getValue(), is("Custom note0"));
-        assertThat(tu1Children.get(3).getLocalName(), is("note"));
-        assertThat(tu1Children.get(3).getValue(), is("Custom note1"));
+        assertThat(tu1Children.size()).isEqualTo(4);
+        assertThat(tu1Children.get(0).getLocalName()).isEqualTo("prop");
+        assertThat(tu1Children.get(0).getValue()).isEqualTo("Custom prop0 value");
+        assertThat(tu1Children.get(1).getLocalName()).isEqualTo("prop");
+        assertThat(tu1Children.get(1).getValue()).isEqualTo("Custom prop1 value");
+        assertThat(tu1Children.get(2).getLocalName()).isEqualTo("note");
+        assertThat(tu1Children.get(2).getValue()).isEqualTo("Custom note0");
+        assertThat(tu1Children.get(3).getLocalName()).isEqualTo("note");
+        assertThat(tu1Children.get(3).getValue()).isEqualTo("Custom note1");
 
         // Metadata at the TUV level
         TransMemoryUnitVariant tuv0 = tu0.getTransUnitVariants().get("en");
         Map<String, String> tuv0Atts = TMXMetadataHelper.getAttributes(tuv0);
-        assertThat(tuv0Atts.size(), is(3));
-        assertThat(tuv0Atts, hasEntry("xml:lang", "en"));
-        assertThat(tuv0Atts, hasKey("creationdate"));
-        assertThat(tuv0Atts, hasKey("changedate"));
+        assertThat(tuv0Atts.size()).isEqualTo(3);
+        assertThat(tuv0Atts).containsEntry("xml:lang", "en")
+                .containsKeys("creationdate", "changedate");
 
         List<Element> tuv0Children = TMXMetadataHelper.getChildren(tuv0);
-        assertThat(tuv0Children.size(), is(2));
-        assertThat(tuv0Children.get(0).getLocalName(), is("prop"));
-        assertThat(tuv0Children.get(0).getValue(),
-                is("Custom prop0 value on tuv"));
-        assertThat(tuv0Children.get(1).getLocalName(), is("note"));
-        assertThat(tuv0Children.get(1).getValue(), is("Custom note on tuv"));
+        assertThat(tuv0Children.size()).isEqualTo(2);
+        assertThat(tuv0Children.get(0).getLocalName()).isEqualTo("prop");
+        assertThat(tuv0Children.get(0).getValue()).
+                isEqualTo("Custom prop0 value on tuv");
+        assertThat(tuv0Children.get(1).getLocalName()).isEqualTo("note");
+        assertThat(tuv0Children.get(1).getValue()).isEqualTo("Custom note on tuv");
     }
 
     @Test(expected = TMXParseException.class)
@@ -350,13 +337,13 @@ public class TMXParserTest {
 
         // Make sure everything is stored properly
         tm = getEm().find(TransMemory.class, tm.getId());
-        assertThat(tm.getTranslationUnits().size(), is(4));
+        assertThat(tm.getTranslationUnits().size()).isEqualTo(4);
 
         // Second load (should yield the same result)
         populateTMFromFile(tm, "/tmx/default-valid-tm.tmx");
 
         tm = getEm().find(TransMemory.class, tm.getId());
-        assertThat(tm.getTranslationUnits().size(), is(4));
+        assertThat(tm.getTranslationUnits().size()).isEqualTo(4);
     }
 
     @Test
@@ -367,12 +354,12 @@ public class TMXParserTest {
 
         // Make sure everything is stored properly
         tm = getEm().find(TransMemory.class, tm.getId());
-        assertThat(tm.getTranslationUnits().size(), is(4));
+        assertThat(tm.getTranslationUnits().size()).isEqualTo(4);
 
         // Second load (should add all new tuids)
         populateTMFromFile(tm, "/tmx/valid-tm-with-tuids.tmx");
 
         tm = getEm().find(TransMemory.class, tm.getId());
-        assertThat(tm.getTranslationUnits().size(), is(8));
+        assertThat(tm.getTranslationUnits().size()).isEqualTo(8);
     }
 }

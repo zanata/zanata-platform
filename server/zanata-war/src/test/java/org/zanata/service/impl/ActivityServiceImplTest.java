@@ -20,16 +20,11 @@
  */
 package org.zanata.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.List;
-
-import com.google.common.base.Throwables;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -133,8 +128,8 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
                 activityService.findActivity(personId,
                         EntityType.HProjectIteration, projectVersionId,
                         ActivityType.REVIEWED_TRANSLATION, new Date());
-        assertThat(activity, not(nullValue()));
-        assertThat(activity.getEventCount(), equalTo(1));
+        assertThat(activity).isNotNull();
+        assertThat(activity.getEventCount()).isEqualTo(1);
     }
 
     @Test
@@ -149,7 +144,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         List<Activity> activities =
                 activityService.findLatestActivitiesForContext(personId,
                         projectVersionId, 0, 10);
-        assertThat(activities.size(), equalTo(1));
+        assertThat(activities.size()).isEqualTo(1);
 
         TextFlowTargetStateEvent event2 =
             buildEvent(personId, versionId, documentId, null,
@@ -161,13 +156,13 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         activities =
                 activityService.findLatestActivitiesForContext(personId,
                         projectVersionId, 0, 10);
-        assertThat(activities.size(), equalTo(1));
+        assertThat(activities.size()).isEqualTo(1);
 
         Activity activity =
                 activityService.findActivity(personId,
                         EntityType.HProjectIteration, projectVersionId,
                         ActivityType.REVIEWED_TRANSLATION, new Date());
-        assertThat(activity.getEventCount(), equalTo(2));
+        assertThat(activity.getEventCount()).isEqualTo(2);
     }
 
     @Test
@@ -184,7 +179,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
                 activityService.findActivity(personId,
                         EntityType.HProjectIteration, projectVersionId,
                         ActivityType.UPDATE_TRANSLATION, new Date());
-        assertThat(activity, not(nullValue()));
+        assertThat(activity).isNotNull();
 
         Long id = activity.getId();
 
@@ -197,7 +192,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
                 activityService.findActivity(personId,
                         EntityType.HProjectIteration, projectVersionId,
                         ActivityType.UPDATE_TRANSLATION, new Date());
-        assertThat(activity.getId(), equalTo(id));
+        assertThat(activity.getId()).isEqualTo(id);
     }
 
     @Test
@@ -223,7 +218,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         List<Activity> activities =
                 activityService.findLatestActivitiesForContext(personId,
                         projectVersionId, 0, 5);
-        assertThat(activities.size(), equalTo(3));
+        assertThat(activities.size()).isEqualTo(3);
     }
 
     @Test
@@ -260,7 +255,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
             activityService.findLatestActivitiesForContext(personId,
                 projectVersionId, 0, 10);
 
-        assertThat(activities.size(), equalTo(2));
+        assertThat(activities.size()).isEqualTo(2);
     }
 
     private TextFlowTargetStateEvent buildEvent(Long personId, Long versionId,

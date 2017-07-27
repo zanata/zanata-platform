@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.service;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,7 +17,8 @@ import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,9 +73,9 @@ public class UserSessionServiceTest {
 
         // Then:
         assertThat(service.getUserSessionMap().get(editorClientId)
-                .getSelectedId(), Matchers.sameInstance(transUnit.getId()));
+                .getSelectedId()).isSameAs(transUnit.getId());
         assertThat(service.getUserSessionMap().get(editorClientId)
-                .getSelectedId(), Matchers.sameInstance(transUnit.getId()));
+                .getSelectedId()).isSameAs(transUnit.getId());
     }
 
     @Test
@@ -90,12 +90,12 @@ public class UserSessionServiceTest {
 
         service.onEnterWorkspace(event);
 
-        assertThat(service.getUserSessionMap(), Matchers.hasKey(editorClientId));
+        assertThat(service.getUserSessionMap()).containsKey(editorClientId);
         UserPanelSessionItem userPanel =
                 service.getUserSessionMap().get(editorClientId);
-        assertThat(userPanel.getPanel(), Matchers.sameInstance(panel));
+        assertThat(userPanel.getPanel()).isSameAs(panel);
         verify(panel).setColor("red");
-        assertThat(userPanel.getSelectedId(), Matchers.nullValue());
+        assertThat(userPanel.getSelectedId()).isNull();
     }
 
     @Test
@@ -117,7 +117,7 @@ public class UserSessionServiceTest {
                 person.getId().toString());
         verify(translatorInteractionService).personExit(person,
                 selectedTransUnit.getId());
-        assertThat(service.getUserSessionMap().size(), Matchers.is(0));
+        assertThat(service.getUserSessionMap().size()).isEqualTo(0);
     }
 
 }

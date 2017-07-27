@@ -3,13 +3,12 @@ package org.zanata.eventservice;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -34,12 +33,12 @@ public class SequentialConnectionIdGeneratorTest {
         when(request.getSession(true)).thenReturn(session);
         when(session.getId()).thenReturn("sessionId");
 
-        assertThat(idGenerator.generateConnectionId(request),
-                Matchers.equalTo("sessionId-0"));
-        assertThat(idGenerator.generateConnectionId(request),
-                Matchers.equalTo("sessionId-1"));
-        assertThat(idGenerator.generateConnectionId(request),
-                Matchers.equalTo("sessionId-2"));
+        assertThat(idGenerator.generateConnectionId(request))
+                .isEqualTo("sessionId-0");
+        assertThat(idGenerator.generateConnectionId(request))
+                .isEqualTo("sessionId-1");
+        assertThat(idGenerator.generateConnectionId(request))
+                .isEqualTo("sessionId-2");
     }
 
     @Test
@@ -48,6 +47,6 @@ public class SequentialConnectionIdGeneratorTest {
 
         String connectionId = idGenerator.getConnectionId(request);
 
-        assertThat(connectionId, Matchers.equalTo("connectionId"));
+        assertThat(connectionId).isEqualTo("connectionId");
     }
 }

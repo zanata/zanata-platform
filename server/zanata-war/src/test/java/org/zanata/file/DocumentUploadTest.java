@@ -1,8 +1,7 @@
 package org.zanata.file;
 
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -89,16 +88,16 @@ public abstract class DocumentUploadTest extends ZanataTest {
     }
 
     protected void assertResponseHasStatus(Status errorStatus) {
-        assertThat(fromStatusCode(response.getStatus()), is(errorStatus));
+        assertThat(fromStatusCode(response.getStatus())).isEqualTo(errorStatus);
     }
 
     protected void assertResponseHasErrorMessage(String errorMessage) {
-        assertThat(responseEntity().getErrorMessage(), is(errorMessage));
+        assertThat(responseEntity().getErrorMessage()).isEqualTo(errorMessage);
     }
 
     protected void assertUploadTerminated() {
-        assertThat(responseEntity().getAcceptedChunks(), is(0));
-        assertThat(responseEntity().isExpectingMore(), is(false));
+        assertThat(responseEntity().getAcceptedChunks()).isEqualTo(0);
+        assertThat(responseEntity().isExpectingMore()).isFalse();
     }
 
     /**

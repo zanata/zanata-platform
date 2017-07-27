@@ -20,10 +20,6 @@
  */
 package org.zanata.model;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +32,8 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HTextFlowJPATest extends ZanataDbunitJpaTest {
 
@@ -93,12 +91,13 @@ public class HTextFlowJPATest extends ZanataDbunitJpaTest {
         // reload the doc
         em.refresh(hdoc);
 
-        assertThat("Expected document to contain at least one text flow", hdoc
-                .getTextFlows().size(), greaterThan(0));
-        assertThat("Expected Text flow to contain single content", hdoc
-                .getTextFlows().get(0).getContents().size(), is(1));
-        assertThat("Expected deprecated method to still work", hdoc
-                .getTextFlows().get(0).getContents().get(0), is("hello world"));
+        assertThat(hdoc.getTextFlows().size()).isGreaterThan(0)
+                .as("Expected document to contain at least one text flow");
+        assertThat(hdoc.getTextFlows().get(0).getContents().size()).isEqualTo(1)
+                .as("Expected Text flow to contain single content");
+        assertThat(hdoc.getTextFlows().get(0).getContents().get(0))
+                .isEqualTo("hello world")
+                .as("Expected deprecated method to still work");
     }
 
     @Test
@@ -125,15 +124,17 @@ public class HTextFlowJPATest extends ZanataDbunitJpaTest {
         // reload the doc
         em.refresh(hdoc);
 
-        assertThat("Expected document to contain at least one text flow", hdoc
-                .getTextFlows().size(), greaterThan(0));
-        assertThat("Expected Text flow to contain 3 content strings", hdoc
-                .getTextFlows().get(0).getContents().size(), is(3));
-        assertThat("Expected contents to be preserved", hdoc.getTextFlows()
-                .get(0).getContents(), is(Arrays.asList("hello world",
-                "hello worlds", "hellos worlds")));
-        assertThat("Expected deprecated method to still work", hdoc
-                .getTextFlows().get(0).getContents().get(0), is("hello world"));
+        assertThat(hdoc.getTextFlows().size()).isGreaterThan(0)
+                .as("Expected document to contain at least one text flow");
+        assertThat(hdoc.getTextFlows().get(0).getContents().size()).isEqualTo(3)
+                .as("Expected Text flow to contain 3 content strings");
+        assertThat(hdoc.getTextFlows().get(0).getContents())
+                .isEqualTo(Arrays.asList("hello world",
+                        "hello worlds", "hellos worlds"))
+                .as("Expected contents to be preserved");
+        assertThat(hdoc.getTextFlows().get(0).getContents().get(0))
+                .isEqualTo("hello world")
+                .as("Expected deprecated method to still work");
     }
 
     @Test
@@ -156,16 +157,16 @@ public class HTextFlowJPATest extends ZanataDbunitJpaTest {
         // reload the doc
         em.refresh(hdoc);
 
-        assertThat("Expected document to contain at least one text flow", hdoc
-                .getTextFlows().size(), greaterThan(0));
-        assertThat("Expected Text flow to contain 4 content strings", hdoc
-                .getTextFlows().get(0).getContents().size(), is(4));
-        assertThat("Expected contents to be preserved", hdoc.getTextFlows()
-                .get(0).getContents(), is(Arrays.asList("hello world 1",
-                "hello world 2", null, "hello world 4")));
-        assertThat("Expected deprecated method to still work", hdoc
-                .getTextFlows().get(0).getContents().get(0),
-                is("hello world 1"));
+        assertThat(hdoc.getTextFlows().size()).isGreaterThan(0)
+                .as("Expected document to contain at least one text flow");
+        assertThat(hdoc.getTextFlows().get(0).getContents().size()).isEqualTo(4)
+                .as("Expected Text flow to contain 4 content strings");
+        assertThat(hdoc.getTextFlows().get(0).getContents())
+                .isEqualTo(Arrays.asList("hello world 1",
+                        "hello world 2", null, "hello world 4"))
+                .as("Expected contents to be preserved");
+        assertThat(hdoc.getTextFlows().get(0).getContents().get(0))
+                .isEqualTo("hello world 1");
     }
 
 }

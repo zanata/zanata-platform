@@ -2,7 +2,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,14 +79,14 @@ public class GetTranslatorListHandlerTest extends ZanataTest {
         GetTranslatorListResult result = handler.execute(action, null);
 
         verify(identity).checkLoggedIn();
-        assertThat(result.getSize(), Matchers.equalTo(1));
+        assertThat(result.getSize()).isEqualTo(1);
         Map<EditorClientId, PersonSessionDetails> translatorList =
                 result.getTranslatorList();
-        assertThat(translatorList, Matchers.hasKey(editorClientId));
+        assertThat(translatorList).containsKey(editorClientId);
         assertThat(translatorList.get(editorClientId).getPerson()
-                .getAvatarUrl(), Matchers.equalTo("gravatarUrl"));
-        assertThat(translatorList.get(editorClientId).getPerson().getName(),
-                Matchers.equalTo("pahuang"));
+                .getAvatarUrl()).isEqualTo("gravatarUrl");
+        assertThat(translatorList.get(editorClientId).getPerson().getName())
+                .isEqualTo("pahuang");
     }
 
     private static HAccount createHAccount(String email, String name) {

@@ -20,11 +20,6 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -34,6 +29,8 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -56,8 +53,7 @@ public class NewlineLeadTrailValidationTests {
 
     @Test
     public void idIsSet() {
-        assertThat(newlineLeadTrailValidation.getId(),
-                is(ValidationId.NEW_LINE));
+        assertThat(newlineLeadTrailValidation.getId()).isEqualTo(ValidationId.NEW_LINE);
     }
 
     @Test
@@ -67,7 +63,7 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -77,7 +73,7 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -87,10 +83,8 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.leadingNewlineMissing()));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.leadingNewlineMissing());
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -100,10 +94,8 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.leadingNewlineAdded()));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.leadingNewlineAdded());
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -113,10 +105,8 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.trailingNewlineMissing()));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.trailingNewlineMissing());
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -126,10 +116,8 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.trailingNewlineAdded()));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.trailingNewlineAdded());
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -139,11 +127,9 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.leadingNewlineAdded(),
-                        messages.trailingNewlineAdded()));
-        assertThat(errorList.size(), is(2));
+        assertThat(errorList).contains(messages.leadingNewlineAdded(),
+                messages.trailingNewlineAdded());
+        assertThat(errorList.size()).isEqualTo(2);
     }
 
     @Test
@@ -153,11 +139,9 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.leadingNewlineMissing(),
-                        messages.trailingNewlineMissing()));
-        assertThat(errorList.size(), is(2));
+        assertThat(errorList).contains(messages.leadingNewlineMissing(),
+                messages.trailingNewlineMissing());
+        assertThat(errorList.size()).isEqualTo(2);
     }
 
     @Test
@@ -167,11 +151,9 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.leadingNewlineMissing(),
-                        messages.trailingNewlineAdded()));
-        assertThat(errorList.size(), is(2));
+        assertThat(errorList).contains(messages.leadingNewlineMissing(),
+                messages.trailingNewlineAdded());
+        assertThat(errorList.size()).isEqualTo(2);
     }
 
     @Test
@@ -181,10 +163,8 @@ public class NewlineLeadTrailValidationTests {
         List<String> errorList =
                 newlineLeadTrailValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.leadingNewlineAdded(),
-                        messages.trailingNewlineMissing()));
-        assertThat(errorList.size(), is(2));
+        assertThat(errorList).contains(messages.leadingNewlineAdded(),
+                messages.trailingNewlineMissing());
+        assertThat(errorList.size()).isEqualTo(2);
     }
 }
