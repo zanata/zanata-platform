@@ -34,7 +34,8 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                 // uncomment to use already-downloaded (perhaps modified) copy instead of git:
 //                .retriever(localSource(LIB_PATH))
                 .targetPath(LIB_PATH)
-                .defaultVersion("master")
+                // TODO: Change Back to master after zanata-pipeline-library merge
+                .defaultVersion("ZNTA-2035-GitHubReporting")
                 .allowOverride(true)
                 .implicit(false)
                 .build();

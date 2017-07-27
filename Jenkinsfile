@@ -6,6 +6,7 @@
 
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
+// TODO: Change Back to master after zanata-pipeline-library merge
 @Library('zanata-pipeline-library@ZNTA-2035-GitHubReporting')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
