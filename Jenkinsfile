@@ -238,7 +238,7 @@ timestamps {
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
-          notify.updateBuildStatus("UNIT")
+          notify.updateBuildStatus(currentBuild, "UNIT")
 
           // TODO publish coverage for jest (cobertura format)
           // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
@@ -311,7 +311,7 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.updateBuildStatus('BUILDING', e.toString(), 'FAILURE')
+        notify.updateBuildStatus(currentBuild, 'BUILDING', e.toString(), 'FAILURE')
         // abort the rest of the pipeline
         throw e
       }
@@ -350,7 +350,7 @@ timestamps {
 
         // Let nofify.updateBuildStatus handle the case
         // when build is *still* green after running integration tests:
-        notify.updateBuildStatus('FINISH')
+        notify.updateBuildStatus(currentBuild, 'FINISH')
         // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
         // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
         // http://stackoverflow.com/a/39535424/14379
@@ -426,7 +426,7 @@ void integrationTests(String appserver) {
          */
 
         if (mvnResult != 0) {
-          notify.updateBuildStatus(appserver, 'Failed maven build for integration tests', 'UNSTABLE')
+          notify.updateBuildStatus(currentBuild, appserver, 'Failed maven build for integration tests', 'UNSTABLE')
 
           // gather db/app logs and screenshots to help debugging
           archive(
@@ -443,10 +443,10 @@ void integrationTests(String appserver) {
           // Reduce workspace size
           sh "git clean -fdx"
         } else {
-          notify.updateBuildStatus(appserver, 'No integration test results', 'FAILED')
+          notify.updateBuildStatus(currentBuild, appserver, 'No integration test results', 'FAILED')
           error "no integration test results for $appserver"
         }
-        notify.testResults(appserver.toUpperCase(), currentBuild.result)
+        notify.updateBuildStatus(currentBuild, appserver)
       }
     }
   }
