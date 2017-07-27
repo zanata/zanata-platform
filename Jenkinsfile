@@ -21,7 +21,7 @@ PullRequests.ensureJobDescription(env, manager, steps)
 @Field
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps)
+notify = new Notifier(env, steps, 'https://github.com/zanata/zanata-platform.git')
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
