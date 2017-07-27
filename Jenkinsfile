@@ -6,7 +6,7 @@
 
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
-@Library('zanata-pipeline-library@master')
+@Library('zanata-pipeline-library@ZNTA-2035-GitHubReporting')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
 import static org.zanata.jenkins.StackTraces.getStackTrace
@@ -48,6 +48,10 @@ node {
         numToKeepStr: '20',        // keep records for at most X builds
         artifactDaysToKeepStr: '', // keep artifacts no more than X days
         artifactNumToKeepStr: '4'] // keep artifacts for at most X builds
+    ],
+    [
+      $class: 'GithubProjectProperty',
+      projectUrlStr: 'https://github.com/zanata/zanata-platform'
     ],
     [
       $class: 'ParametersDefinitionProperty',
@@ -234,11 +238,7 @@ timestamps {
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
-          if ( currentBuild.result && currentBuild.result != 'SUCCESS'){
-             // Only failed/unstable should reach here
-             notify.testResults("UNIT", currentBuild.result)
-             updateBuildResult(currentBuild.result, "UNIT")
-          }
+          notify.updateBuildStatus("UNIT")
 
           // TODO publish coverage for jest (cobertura format)
           // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
@@ -311,8 +311,7 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.failed()
-        updateBuildResult('FAILURE', e.toString())
+        notify.updateBuildStatus('BUILDING', e.toString(), 'FAILURE')
         // abort the rest of the pipeline
         throw e
       }
@@ -349,13 +348,9 @@ timestamps {
         // run integration test tasks in parallel
         parallel tasks
 
-        // if the build is *still* green after running integration tests:
-        if (currentBuild.result == null) {
-          echo 'marking build as successful'
-          updateBuildResult('SUCCESS')
-        }
-
-        // TODO notify finish
+        // Let nofify.updateBuildStatus handle the case
+        // when build is *still* green after running integration tests:
+        notify.updateBuildStatus('FINISH')
         // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
         // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
         // http://stackoverflow.com/a/39535424/14379
@@ -431,7 +426,7 @@ void integrationTests(String appserver) {
          */
 
         if (mvnResult != 0) {
-          updateBuildResult('UNSTABLE', 'Failed maven build for integration tests')
+          notify.updateBuildStatus(appserver, 'Failed maven build for integration tests', 'UNSTABLE')
 
           // gather db/app logs and screenshots to help debugging
           archive(
@@ -448,7 +443,7 @@ void integrationTests(String appserver) {
           // Reduce workspace size
           sh "git clean -fdx"
         } else {
-          updateBuildResult('FAILED', "No integration test results for $appserver")
+          notify.updateBuildStatus(appserver, 'No integration test results', 'FAILED')
           error "no integration test results for $appserver"
         }
         notify.testResults(appserver.toUpperCase(), currentBuild.result)
@@ -486,33 +481,3 @@ boolean setJUnitPrefix(prefix, files) {
   }
 }
 
-// Modify from example code of Jenkins GitHub Plugin
-// https://wiki.jenkins.io/display/JENKINS/GitHub+Plugin#GitHubPlugin-AutomaticMode%28Jenkinsmanageshooksforjobsbyitself%29
-
-void updateBuildResult(String result, String message = '') {
-  // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
-  if (! result ){
-    return
-  }
-  currentBuild.result = result
-
-  def msg = message\
-    + ((currentBuild.duration)? ' Duration: ' + currentBuild.duration : '')\
-    + ((currentBuild.description)? ' Desc: ' + currentBuild.description: '')
-
-  step([
-    $class: 'GitHubCommitStatusSetter',
-    // Ensure it picked up zanata-platform, not zanata-pipeline-library
-    reposSource: [$class: "ManuallyEnteredRepositorySource", url: 'https://github.com/zanata/zanata-platform.git' ],
-
-    errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
-    statusResultSource: [
-      $class: 'ConditionalStatusResultSource',
-      results: [
-        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: msg ],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'UNSTABLE', state: 'UNSTABLE', message: msg ],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: msg ],
-      ]
-    ]
-  ])
-}
