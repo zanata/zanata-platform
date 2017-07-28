@@ -3,7 +3,7 @@
  */
 
 import { debounce, isEmpty } from 'lodash'
-import { CALL_API } from 'redux-api-middleware'
+import { CALL_API_ENHANCED } from '../middlewares/call-api'
 
 import {
   GLOSSARY_SEARCH_TEXT_CHANGE,
@@ -20,7 +20,6 @@ import {
 
 import { baseRestUrl } from '../api'
 import { waitForPhraseDetail } from '../utils/phrase-util'
-import { getJsonWithCredentials } from '../utils/api-util'
 
 /* Call as search text changes to trigger a glossary search when the text stops
  * changing. This prevents excessive requests while the user is typing.
@@ -100,20 +99,17 @@ function findGlossaryTerms (searchText) {
       `${baseRestUrl}/glossary/search?srcLocale=${srcLocale}&transLocale=${transLocale}&project=${projectSlug}&searchText=${encodeURIComponent(searchText)}&maxResults=${MAX_GLOSSARY_TERMS}` // eslint-disable-line max-len
 
     dispatch({
-      [CALL_API]: getJsonWithCredentials({
+      [CALL_API_ENHANCED]: {
         endpoint: glossaryUrl,
         types: [
           GLOSSARY_TERMS_REQUEST,
           {
             type: GLOSSARY_TERMS_SUCCESS,
-            meta: { timestamp, searchText }
+            meta: { searchText }
           },
-          {
-            type: GLOSSARY_TERMS_FAILURE,
-            meta: { timestamp }
-          }
+          GLOSSARY_TERMS_FAILURE
         ]
-      })
+      }
     })
   }
 }
@@ -162,7 +158,7 @@ function getGlossaryDetails (term) {
       `${baseRestUrl}/glossary/details/${transLocale}?${termIdsQuery}`
 
     dispatch({
-      [CALL_API]: getJsonWithCredentials({
+      [CALL_API_ENHANCED]: {
         endpoint: glossaryDetailsUrl,
         types: [
           GLOSSARY_DETAILS_REQUEST,
@@ -174,7 +170,7 @@ function getGlossaryDetails (term) {
             type: GLOSSARY_DETAILS_FAILURE
           }
         ]
-      })
+      }
     })
   }
 }

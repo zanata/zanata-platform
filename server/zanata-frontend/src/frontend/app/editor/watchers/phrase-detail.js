@@ -11,8 +11,8 @@ import watch from './watch'
 import { getCurrentPagePhrasesAndLocale } from '../selectors'
 import { baseRestUrl } from '../api'
 import { fill, isEmpty, mapValues } from 'lodash'
-import { getJsonWithCredentials } from '../utils/api-util'
-import { CALL_API, getJSON } from 'redux-api-middleware'
+import { getJSON } from 'redux-api-middleware'
+import { CALL_API_ENHANCED } from '../middlewares/call-api'
 import {
   STATUS_UNTRANSLATED,
   transUnitStatusToPhraseStatus
@@ -44,22 +44,18 @@ function fetchPhraseDetail (locale, phraseIds) {
   const phraseDetailUrl =
     `${baseRestUrl}/source+trans/${locale.id}?ids=${phraseIds.join(',')}`
   return {
-    [CALL_API]: getJsonWithCredentials({
+    [CALL_API_ENHANCED]: {
       endpoint: phraseDetailUrl,
       types: [
-        {
-          type: PHRASE_DETAIL_REQUEST
-        },
+        PHRASE_DETAIL_REQUEST,
         {
           type: PHRASE_DETAIL_SUCCESS,
           payload: (action, state, res) => getJSON(res)
             .then(details => transUnitDetailToPhraseDetail(details, locale))
         },
-        {
-          type: PHRASE_DETAIL_FAILURE
-        }
+        PHRASE_DETAIL_FAILURE
       ]
-    })
+    }
   }
 }
 

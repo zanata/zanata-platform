@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import { apiMiddleware } from 'redux-api-middleware'
+import enhancedCallApi from './call-api'
 import newContextFetchMiddleware from './new-context-fetch'
 import getStateInActions from './getstate-in-actions'
 import titleUpdateMiddleware from './title-update'
@@ -26,6 +27,7 @@ const createStoreWithMiddleware =
     newContextFetchMiddleware,
     // reduxRouterMiddleware,
     thunk,
+    enhancedCallApi,
     apiMiddleware,
     // must run after thunk because it fails with thunks
     getStateInActions,
