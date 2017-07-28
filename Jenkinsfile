@@ -349,9 +349,12 @@ timestamps {
         // run integration test tasks in parallel
         parallel tasks
 
-        // Let nofify.updateBuildStatus handle the case
-        // when build is *still* green after running integration tests:
-        notify.updateBuildStatus(currentBuild, 'FINISH')
+        node(getLabel()) {
+            // Let notify.updateBuildStatus handle the case
+            // when build is *still* green after running integration tests
+            // GitHubCommitStatusSetter need to be inside a node
+            notify.updateBuildStatus(currentBuild, 'FINISH')
+        }
         // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
         // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
         // http://stackoverflow.com/a/39535424/14379
