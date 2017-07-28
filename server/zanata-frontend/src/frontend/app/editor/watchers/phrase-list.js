@@ -7,8 +7,8 @@ import { createSelector } from 'reselect'
 import watch from './watch'
 import { debounce, every, isEmpty } from 'lodash'
 import { getLang } from '../selectors'
-import { CALL_API, getJSON } from 'redux-api-middleware'
-import { jsonWithCredentials } from '../utils/api-util'
+import { getJSON } from 'redux-api-middleware'
+import { CALL_API_ENHANCED } from '../middlewares/call-api'
 import { encode } from '../utils/doc-id-util'
 import { baseRestUrl } from '../api'
 import { transUnitStatusToPhraseStatus } from '../utils/status-util'
@@ -97,7 +97,7 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
     `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}` // eslint-disable-line max-len
 
   return {
-    [CALL_API]: jsonWithCredentials({
+    [CALL_API_ENHANCED]: {
       endpoint: url,
       method: 'POST',
       body: JSON.stringify(filter || {}),
@@ -123,6 +123,6 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
           meta: { filter: filtered }
         }
       ]
-    })
+    }
   }
 }
