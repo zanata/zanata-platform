@@ -17,8 +17,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
@@ -30,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -48,6 +45,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.RestUtil;
+import org.zanata.rest.dto.FilterFields;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.ProjectIteration;
@@ -57,13 +55,11 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.util.StringUtil;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
@@ -308,14 +304,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             @PathParam("versionSlug") String versionSlug,
             @PathParam("docId") String noSlashDocId,
             @DefaultValue("en-US") @PathParam("localeId") String localeId,
-            @QueryParam("searchString") String searchString,
-            @QueryParam("resId") String resId,
-            @QueryParam("changedBefore") String changedBefore,
-            @QueryParam("changedAfter") String changedAfter,
-            @QueryParam("lastModifiedByUser") String lastModifiedByUser,
-            @QueryParam("sourceComment") String sourceComment,
-            @QueryParam("transComment") String transComment,
-            @QueryParam("msgContext") String msgContext) {
+            FilterFields filterFields) {
         if (StringUtils.isEmpty(noSlashDocId)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -332,20 +321,22 @@ public class ProjectVersionService implements ProjectVersionResource {
         TextFlowResultTransformer resultTransformer =
                 new TextFlowResultTransformer(hLocale);
 
-        FilterConstraints filterConstraints = FilterConstraints.builder()
-            .filterBy(searchString)
-            .resourceIdIs(resId)
-            .targetChangedBefore(parseQueryDate(changedBefore))
-            .targetChangedAfter(parseQueryDate(changedAfter))
-            .lastModifiedBy(lastModifiedByUser)
-            .sourceCommentContains(sourceComment)
-            .targetCommentContains(transComment)
-            .msgContext(msgContext)
-            .build();
+        FilterConstraints.Builder filterConstraints = FilterConstraints.builder();
+        if (filterFields != null) {
+            filterConstraints
+                .filterBy(filterFields.getSearchString())
+                .resourceIdIs(filterFields.getResId())
+                .targetChangedBefore(parseQueryDate(filterFields.getChangedBefore()))
+                .targetChangedAfter(parseQueryDate(filterFields.getChangedAfter()))
+                .lastModifiedBy(filterFields.getLastModifiedByUser())
+                .sourceCommentContains(filterFields.getSourceComment())
+                .targetCommentContains(filterFields.getTransComment())
+                .msgContext(filterFields.getMsgContext());
+        }
 
         List<HTextFlow> textFlows = textFlowDAO.getNavigationByDocumentId(
                 new DocumentId(document.getId(), document.getDocId()), hLocale,
-                resultTransformer, filterConstraints);
+                resultTransformer, filterConstraints.build());
         List<TransUnitStatus> statusList =
                 Lists.newArrayListWithExpectedSize(textFlows.size());
         for (HTextFlow textFlow : textFlows) {

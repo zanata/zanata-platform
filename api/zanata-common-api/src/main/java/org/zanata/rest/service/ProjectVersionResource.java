@@ -25,16 +25,18 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.FilterFields;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.TransUnitStatus;
@@ -240,8 +242,10 @@ public interface ProjectVersionResource extends RestResource {
         @PathParam("versionSlug") String versionSlug);
 
     /**
-     * Retrieves a list of translation unit id with status in a document.
+     * Queries for a list of translation unit id with status in a document.
      *
+     * @param filterConstraints
+     *            Optional filtering based on one or several fields.
      * @param projectSlug
      *            Project identifier
      * @param versionSlug
@@ -258,24 +262,17 @@ public interface ProjectVersionResource extends RestResource {
      *         the given parameters.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
-     *
      */
-    @GET
+    @POST
     @Produces({ MediaTypes.APPLICATION_ZANATA_TRANS_UNIT_RESOURCE_JSON,
             MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
     @Path(VERSION_SLUG_TEMPLATE + "/doc/{docId}/status/{localeId}")
     @TypeHint(TransUnitStatus[].class)
     public Response getTransUnitStatus(
-        @PathParam("projectSlug") String projectSlug,
-        @PathParam("versionSlug") String versionSlug,
-        @PathParam("docId") String docId,
-        @DefaultValue("en-US") @PathParam("localeId")  String localeId,
-        @QueryParam("searchString") String searchString,
-        @QueryParam("resId") String resId,
-        @QueryParam("changedBefore") String changedBefore,
-        @QueryParam("changedAfter") String changedAfter,
-        @QueryParam("lastModifiedByUser") String lastModifiedByUser,
-        @QueryParam("sourceComment") String sourceComment,
-        @QueryParam("transComment") String transComment,
-        @QueryParam("msgContext") String msgContext);
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("versionSlug") String versionSlug,
+            @PathParam("docId") String docId,
+            @DefaultValue("en-US") @PathParam("localeId") String localeId,
+            FilterFields filterFields);
 }

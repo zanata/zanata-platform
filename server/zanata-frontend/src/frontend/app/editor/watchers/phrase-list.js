@@ -8,9 +8,9 @@ import watch from './watch'
 import { debounce, every, isEmpty } from 'lodash'
 import { getLang } from '../selectors'
 import { CALL_API, getJSON } from 'redux-api-middleware'
-import { getJsonWithCredentials } from '../utils/api-util'
+import { jsonWithCredentials } from '../utils/api-util'
 import { encode } from '../utils/doc-id-util'
-import { baseRestUrl, filterQueryString } from '../api'
+import { baseRestUrl } from '../api'
 import { transUnitStatusToPhraseStatus } from '../utils/status-util'
 import { hasAdvancedFilter } from '../utils/filter-util'
 import {
@@ -93,13 +93,14 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
     return
   }
   const encodedId = encode(docId)
-  const queryString = filtered ? filterQueryString(filter) : ''
   const url =
-    `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}?${queryString}` // eslint-disable-line max-len
+    `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}` // eslint-disable-line max-len
 
   return {
-    [CALL_API]: getJsonWithCredentials({
+    [CALL_API]: jsonWithCredentials({
       endpoint: url,
+      method: 'POST',
+      body: JSON.stringify(filter || {}),
       types: [
         {
           type: PHRASE_LIST_REQUEST,
