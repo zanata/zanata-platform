@@ -44,13 +44,6 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
         em.persist(hProject);
     }
 
-    private void doInTransaction(Consumer<EntityManager> function) {
-        EntityManager em = getEmf().createEntityManager();
-        em.getTransaction().begin();
-        function.accept(em);
-        em.getTransaction().commit();
-    }
-
     @After
     public void cleanUp() {
         deleteAllTables();

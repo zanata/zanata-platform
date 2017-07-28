@@ -32,7 +32,6 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +80,7 @@ import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
@@ -149,7 +149,7 @@ public class TransMemoryMergeServiceImplTest {
     private final EditorClientId editorClientId =
             new EditorClientId("sessionId", 1);
     private FilterConstraints untranslatedFilter;
-    private List<Long> fromVersions;
+    private InternalTMSource fromVersions;
 
     private TransMemoryMergeRequest prepareAction(int threshold, MergeOptions opts) {
         LocaleId localeId = targetLocale.getLocaleId();
@@ -235,7 +235,7 @@ public class TransMemoryMergeServiceImplTest {
     @Before
     public void setUp() throws NoSuchWorkspaceException {
         MockitoAnnotations.initMocks(this);
-        fromVersions = Collections.emptyList();
+        fromVersions = InternalTMSource.SELECT_ALL;
         asyncTaskHandle = new TransMemoryMergeTaskHandle();
         WorkspaceId workspaceId =
                 new WorkspaceId(projectIterationId, targetLocale.getLocaleId());

@@ -33,8 +33,12 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
+import com.google.common.annotations.VisibleForTesting;
 
 public interface TransMemoryMergeService extends Serializable {
+
+    @VisibleForTesting
+    int BATCH_SIZE = 50;
 
     List<TranslationService.TranslationResult> executeMerge(
             TransMemoryMergeRequest request,

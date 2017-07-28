@@ -6,6 +6,7 @@ import {
 } from './common-actions'
 import { apiUrl } from '../config'
 import {replace} from 'lodash'
+import {toInternalTMSource} from '../utils/EnumValueUtils'
 
 import {
   TOGGLE_TM_MERGE_MODAL,
@@ -123,15 +124,19 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
     differentDocId,
     differentContext,
     fromImportedTM,
+    fromAllProjects,
     selectedVersions
   } = mergeOptions
+
+  const internalTMSource = toInternalTMSource(
+    fromAllProjects, selectedVersions.map(toProjectVersionString))
   const body = {
     localeId: localeId,
     thresholdPercent: matchPercentage,
     differentDocumentRule: fuzzyOrRejectMergeRule(differentDocId),
     differentContextRule: fuzzyOrRejectMergeRule(differentContext),
     importedMatchRule: fuzzyOrRejectMergeRule(fromImportedTM),
-    fromProjectVersions: selectedVersions.map(toProjectVersionString)
+    internalTMSource: internalTMSource
   }
   const apiRequest = buildAPIRequest(
     endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(body)

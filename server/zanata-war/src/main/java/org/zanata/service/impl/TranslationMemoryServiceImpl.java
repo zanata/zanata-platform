@@ -21,6 +21,8 @@
 package org.zanata.service.impl;
 
 import static com.google.common.collect.Collections2.filter;
+import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectNone;
+import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectSome;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -80,6 +84,7 @@ import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
@@ -88,15 +93,15 @@ import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Named("translationMemoryServiceImpl")
 @RequestScoped
 public class TranslationMemoryServiceImpl implements TranslationMemoryService {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(TranslationMemoryServiceImpl.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(TranslationMemoryServiceImpl.class);
 
     private static final int SEARCH_MAX_RESULTS =
             SysProperties.getInt(SysProperties.TM_MAX_RESULTS, 20);
@@ -117,24 +122,35 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     // SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
     private static final double MINIMUM_SIMILARITY = 1.0;
     private static final String LUCENE_KEY_WORDS = "(\\s*)(AND|OR|NOT)(\\s+)";
-    @Inject
-    @FullText
-    private FullTextEntityManager entityManager;
-    @Inject
-    private UrlUtil urlUtil;
+    private static final long serialVersionUID = -570503476695179297L;
+
     // sort desc by lastChanged of HTextFlowTarget
-    private final Sort lastChangedSort = new Sort(SortField.FIELD_SCORE,
+    private transient final Sort lastChangedSort = new Sort(SortField.FIELD_SCORE,
             new SortField(IndexFieldLabels.LAST_CHANGED_FIELD,
                     SortField.Type.STRING, true));
-    private final TermQuery newStateQuery =
+    private transient final TermQuery newStateQuery =
             new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
                     ContentState.New.toString()));
-    private final TermQuery needReviewStateQuery =
+    private transient final TermQuery needReviewStateQuery =
             new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
                     ContentState.NeedReview.toString()));
-    private final TermQuery rejectedStateQuery =
+    private transient final TermQuery rejectedStateQuery =
             new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
                     ContentState.Rejected.toString()));
+
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
+    private FullTextEntityManager entityManager;
+    private UrlUtil urlUtil;
+
+    @Inject
+    public TranslationMemoryServiceImpl(@FullText FullTextEntityManager entityManager, UrlUtil urlUtil) {
+        this.entityManager = entityManager;
+        this.urlUtil = urlUtil;
+    }
+
+    @SuppressWarnings("unused")
+    public TranslationMemoryServiceImpl() {
+    }
 
     @Override
     public TransMemoryDetails getTransMemoryDetail(HLocale hLocale,
@@ -180,7 +196,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         TransMemoryQuery query =
                 buildTMQuery(textFlow, HasSearchType.SearchType.CONTENT_HASH,
                         checkContext, checkDocument, checkProject, false,
-                        Collections.emptyList());
+                        InternalTMSource.SELECT_ALL);
         Collection<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId, query,
                         0, Optional.empty(), HTextFlowTarget.class);
@@ -200,18 +216,18 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * @param checkDocument
      * @param checkProject
      * @param thresholdPercent
-     * @param fromVersionIds
+     * @param internalTMSource
      */
     @Override
     public Optional<TransMemoryResultItem> searchBestMatchTransMemory(
             HTextFlow textFlow, LocaleId targetLocaleId,
             LocaleId sourceLocaleId, boolean checkContext,
             boolean checkDocument, boolean checkProject, int thresholdPercent,
-            List<Long> fromVersionIds) {
+            InternalTMSource internalTMSource) {
         TransMemoryQuery query =
                 buildTMQuery(textFlow, HasSearchType.SearchType.FUZZY_PLURAL,
                         checkContext, checkDocument, checkProject,
-                        true, fromVersionIds);
+                        true, internalTMSource);
         List<TransMemoryResultItem> tmResults =
                 searchTransMemory(targetLocaleId, sourceLocaleId, query);
         // findTMAboveThreshold
@@ -242,7 +258,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
         List<TransMemoryResultItem> results =
                 Lists.newArrayList(matchesMap.values());
-        Collections.sort(results, new TransMemoryResultComparator(transMemoryQuery.getFromVersionIds()));
+        Collections.sort(results, new TransMemoryResultComparator(transMemoryQuery.getInternalTMSource()));
         return results;
     }
 
@@ -259,7 +275,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             HasSearchType.SearchType searchType, boolean checkContext,
             boolean checkDocument, boolean checkProject,
             boolean includeOwnTranslation,
-            List<Long> fromVersions) {
+            InternalTMSource internalTMSource) {
         TransMemoryQuery.Condition project = new TransMemoryQuery.Condition(
                 checkProject, textFlow.getDocument().getProjectIteration()
                         .getProject().getId().toString());
@@ -273,7 +289,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     project, document, res);
         } else {
             query = new TransMemoryQuery(textFlow.getContents(), searchType,
-                    project, document, res, fromVersions);
+                    project, document, res, internalTMSource);
         }
         if (!includeOwnTranslation) {
             query.setIncludeOwnTranslation(false, textFlow.getId().toString());
@@ -484,11 +500,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
 
         private static final long serialVersionUID = 1L;
-        private final List<Long> fromVersionIds;
+        private final InternalTMSource internalTMSource;
 
         public TransMemoryResultComparator(
-                @Nullable List<Long> fromVersionIds) {
-            this.fromVersionIds = fromVersionIds;
+                InternalTMSource internalTMSource) {
+            this.internalTMSource = internalTMSource;
         }
 
         @Override
@@ -510,11 +526,14 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 // sort match type
                 return result;
             }
-            // if TM is from TMX, getFromVersionId is null
-            // if fromVersionIds is empty, we have no restriction on source version
+            // if TM is from TMX, getFromVersionId is null.
+            // if internal TM source is SelectSome,
+            // we have a list of version ids to prioritise results
             if (m2.getFromVersionId() != null &&
-                    m1.getFromVersionId() != null && fromVersionIds != null &&
-                    !fromVersionIds.isEmpty()) {
+                    m1.getFromVersionId() != null &&
+                    internalTMSource.getChoice() == SelectSome) {
+                List<Long> fromVersionIds =
+                        internalTMSource.getFilteredProjectVersionIds();
                 int indexOfM2 = fromVersionIds.indexOf(m2.getFromVersionId());
                 int indexOfM1 = fromVersionIds.indexOf(m1.getFromVersionId());
                 // sort higher when index is lower
@@ -642,7 +661,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     "Unknown query type: " + query.getSearchType());
 
         }
-        // Use the TextFlowTarget index
+        // Use the TextFlowTarget and TransMemoryUnit index
         Query textQuery = generateQuery(query, sourceLocale, targetLocale,
                 textFlowTargetId, queryText, multiQueryText,
                 IndexFieldLabels.TF_CONTENT_FIELDS);
@@ -715,8 +734,13 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             Query transUnitQuery = generateTransMemoryQuery(sourceLocale,
                     targetLocale, tmQueryText);
             // Join the queries for each different type
-            return join(BooleanClause.Occur.SHOULD, textFlowTargetQuery,
-                    transUnitQuery);
+            if (query.getInternalTMSource().getChoice() != SelectNone) {
+                return join(BooleanClause.Occur.SHOULD, textFlowTargetQuery,
+                        transUnitQuery);
+            } else {
+                // user don't want to search from internal TM
+                return transUnitQuery;
+            }
         }
     }
 
@@ -832,9 +856,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 query.add(resIdQuery, BooleanClause.Occur.SHOULD);
             }
         }
-        if (queryParams.getFromVersionIds() != null && !queryParams.getFromVersionIds().isEmpty()) {
+        if (queryParams.getInternalTMSource().getChoice() == SelectSome) {
             BooleanQuery.Builder fromVersions = new BooleanQuery.Builder();
-            queryParams.getFromVersionIds().forEach(projectIterationId -> {
+            queryParams.getInternalTMSource().getFilteredProjectVersionIds()
+                    .forEach(projectIterationId -> {
                 TermQuery fromVersionQuery = new TermQuery(
                         new Term(IndexFieldLabels.PROJECT_VERSION_ID_FIELD,
                                 projectIterationId.toString()));
