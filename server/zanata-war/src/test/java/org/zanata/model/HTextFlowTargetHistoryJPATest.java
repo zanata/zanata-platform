@@ -14,8 +14,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
     private LocaleDAO localeDAO;
@@ -67,27 +66,27 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         session.flush();
 
         List<HTextFlowTargetHistory> historyElems = getHistory(target);
-        assertThat("Incorrect History size on persist", historyElems.size(),
-                is(0));
+        assertThat(historyElems.size()).isEqualTo(0)
+                .as("Incorrect History size on persist");
 
         target.setContents("blah!");
         session.flush();
 
         historyElems = getHistory(target);
 
-        assertThat("Incorrect History size on first update",
-                historyElems.size(), is(1));
+        assertThat(historyElems.size()).isEqualTo(1)
+                .as("Incorrect History size on first update");
 
         target.setContents("hola mundo!");
         session.flush();
 
         historyElems = getHistory(target);
 
-        assertThat("Incorrect History size on second update",
-                historyElems.size(), is(2));
-        assertThat(historyElems.size(), is(2));
+        assertThat(historyElems.size()).isEqualTo(2)
+                .as("Incorrect History size on second update");
+        assertThat(historyElems.size()).isEqualTo(2);
         HTextFlowTargetHistory hist = historyElems.get(0);
-        assertThat(hist.getContents(), is(Arrays.asList("helleu world")));
+        assertThat(hist.getContents()).isEqualTo(Arrays.asList("helleu world"));
     }
 
     @Test
@@ -110,17 +109,17 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         session.flush();
 
         List<HTextFlowTargetHistory> historyElems = getHistory(target);
-        assertThat(historyElems.size(), is(0));
+        assertThat(historyElems.size()).isEqualTo(0);
 
         target.setContents("blah", "blah!");
         session.flush();
 
         historyElems = getHistory(target);
 
-        assertThat(historyElems.size(), is(1));
+        assertThat(historyElems.size()).isEqualTo(1);
         HTextFlowTargetHistory hist = historyElems.get(0);
-        assertThat(hist.getContents(),
-                is(Arrays.asList("helleu world", "helleu worlds")));
+        assertThat(hist.getContents())
+                .isEqualTo(Arrays.asList("helleu world", "helleu worlds"));
 
         assert historyDAO.findContentInHistory(target,
                 Arrays.asList("helleu world", "helleu worlds"));

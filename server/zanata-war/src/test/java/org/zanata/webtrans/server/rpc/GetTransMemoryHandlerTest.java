@@ -3,7 +3,6 @@ package org.zanata.webtrans.server.rpc;
 import java.util.List;
 
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +23,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +64,7 @@ public class GetTransMemoryHandlerTest extends ZanataTest {
 
         // Then:
         verify(identity).checkLoggedIn();
-        assertThat(result.getMemories(), Matchers.hasSize(0));
+        assertThat(result.getMemories()).hasSize(0);
     }
 
     @Test
@@ -79,11 +77,13 @@ public class GetTransMemoryHandlerTest extends ZanataTest {
     // http://lucene.apache.org/java/2_4_1/queryparsersyntax.html#Escaping%20Special%20Characters
     @Test
     public void testLuceneQuery() {
-        assertThat(QueryParser.escape("plaintext"), is("plaintext"));
+        assertThat(QueryParser.escape("plaintext")).isEqualTo("plaintext");
         assertThat(
                 QueryParser.escape("lucene special characters + - && || ! ( ) "
-                        + "{ } [ ] ^ \" ~ * ? : \\ plus % _"),
-                is("lucene special characters \\+ \\- \\&\\& \\|\\| \\! \\( \\) "
-                        + "\\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\ plus % _"));
+                        + "{ } [ ] ^ \" ~ * ? : \\ plus % _"))
+                .isEqualTo(
+                        "lucene special characters \\+ \\- \\&\\& \\|\\| \\! \\( \\) "
+                                +
+                                "\\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\ plus % _");
     }
 }

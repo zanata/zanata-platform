@@ -21,9 +21,7 @@
 
 package org.zanata.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -166,11 +164,11 @@ public class DocumentServiceImplTest {
             eq(projectSlug), eq(versionSlug), eq(docIdString),
             eq(localeId), eq(message), eq(testUrl), captor.capture());
 
-        assertThat(captor.getValue().size(), is(2));
-        assertThat((captor.getValue().get(0)).getTypes(),
-            contains(WebhookType.DocumentMilestoneEvent));
-        assertThat((captor.getValue().get(1)).getTypes(),
-            contains(WebhookType.DocumentMilestoneEvent));
+        assertThat(captor.getValue().size()).isEqualTo(2);
+        assertThat((captor.getValue().get(0)).getTypes())
+            .contains(WebhookType.DocumentMilestoneEvent);
+        assertThat((captor.getValue().get(1)).getTypes())
+            .contains(WebhookType.DocumentMilestoneEvent);
     }
 
     @Test
@@ -203,11 +201,11 @@ public class DocumentServiceImplTest {
             eq(projectSlug), eq(versionSlug), eq(docIdString),
             eq(localeId), eq(message), eq(testUrl), captor.capture());
 
-        assertThat(captor.getValue().size(), is(2));
-        assertThat((captor.getValue().get(0)).getTypes(),
-            contains(WebhookType.DocumentMilestoneEvent));
-        assertThat((captor.getValue().get(1)).getTypes(),
-            contains(WebhookType.DocumentMilestoneEvent));
+        assertThat(captor.getValue().size()).isEqualTo(2);
+        assertThat((captor.getValue().get(0)).getTypes())
+            .contains(WebhookType.DocumentMilestoneEvent);
+        assertThat((captor.getValue().get(1)).getTypes())
+                .contains(WebhookType.DocumentMilestoneEvent);
     }
 
     @Test

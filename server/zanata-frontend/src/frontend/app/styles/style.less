@@ -1028,8 +1028,8 @@ pre {
   display: block;
   margin: 0 0 @spacing-heading;
   padding: @spacing-large-horizontal;
-  word-wrap: break-word;
-  word-break: break-all;
+  word-break: normal;
+  word-break: break-word; /*Chrome specific*/
   color: @gray-dark;
   border: 1px solid #ccc;
   border-radius: @border-radius-base;
@@ -1351,6 +1351,10 @@ table td {
   font-size: 1.44rem;
 }
 
+#messages {
+  margin-left: 4rem;
+}
+
 .locale-options {
   display: flex;
   display: -webkit-flex;
@@ -1667,6 +1671,12 @@ td span.txt--understated {
   color: @color-danger;
 }
 
+.modal-danger {
+  text-align: center;
+  padding-top: 1rem;
+  margin-bottom: 0;
+}
+
 .text-success {
   color: @color-success;
 }
@@ -1698,12 +1708,14 @@ button.btn-link-sort i.fa.fa-sort {
 .vmerge-target {
   margin-left: 1em;
 }
+
 .vmerge-target ul {
   list-style-type: none;
   margin-top: 0.5em;
   font-size: 1.1em;
   margin-bottom: 0;
   line-height:2em;
+  margin-left: 1rem;
 }
 
 .vmerge-boxes .panel-group {
@@ -1721,6 +1733,7 @@ button.btn-link-sort i.fa.fa-sort {
 .vmerge-title {
   font-weight: 600;
   font-size: 1em;
+  margin-bottom: 0.375rem;
 }
 
 .vmerge-title .text-muted {
@@ -1762,10 +1775,10 @@ label  .s0.icon-locked  {
 }
 
 .tm-panel .checkbox .label {
-  font-size: 0.95em;
-  margin-left: 1em;
-  padding-left: 0.375em;
-  padding-right: 0.375em;
+  font-size: 0.875rem;
+  margin-left: 1rem;
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
 }
 
 .tm-panel .checkbox small {
@@ -2739,7 +2752,7 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
   color: @color-danger;
 }
 
-.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+.btn-link, .btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
   background-color: transparent;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -2893,19 +2906,19 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 }
 
 .label-success {
-  background-color: @label-success-bg;
+  background-color: @color-success;
 }
 
 .label-info {
-  background-color: @label-info-bg;
+  background-color: @color-light;
 }
 
 .label-warning {
-  background-color: @label-warning-bg;
+  background-color: @color-warning !important;
 }
 
 .label-danger {
-  background-color: @label-danger-bg;
+  background-color: @color-danger !important;
 }
 
 .dropdown {
@@ -3350,6 +3363,11 @@ tbody.collapse {
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
   padding: @spacing-rq;
   font-size: 1.2rem;
+}
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: scroll;
 }
 
 .modal-select .Select-menu-outer {
@@ -4422,6 +4440,12 @@ img.avatar-round {
     }
   }
 }
+
+// Override legacy JSF new-zanata classes for TMMergeModal React component
+@import "../containers/ProjectVersion/index.css";
+
+// Override legacy JSF new-zanata classes for TMXModal React component
+@import "../containers/TMX/index.css";
 
 // Nav variations
 // --------------------------------------------------
@@ -5853,10 +5877,6 @@ a.lineclamp:after {
   margin: 0;
 }
 
-.react-draggable.list-group-item span.text-muted {
-  margin-left: 1em;
-}
-
 .modal-body textarea.text-input {
   max-width: 100%;
 }
@@ -6273,6 +6293,15 @@ button.close:focus, button.close:hover, button.close:active:focus {
   align-self: center;
 }
 
+.new-zanata button.close {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding: 0.75rem
+}
+
 li.more-list-item {
   border-bottom: solid 1px #edf2f8;
   padding-top: @spacing-rq;
@@ -6402,6 +6431,10 @@ i.i--left.i--lock, i.i--left.i--trash {
   padding-bottom: @spacing-base-and-a-half;
 }
 
+.tm-panel ul.list-group {
+  padding:0;
+  margin:0;
+}
 //Project Version Sidebar
 
 .accordion-section-title {
@@ -6610,6 +6643,25 @@ table.tmx-table .badge .n1 {
   margin-right: -0.9em;
 }
 
+
+.translationContainer pre.cm-s-default {
+  word-wrap: normal;
+  word-break: normal;
+  word-break: break-word; /*Chrome specific*/
+  -webkit-hyphens: initial;
+  -moz-hyphens: initial;
+  hyphens: initial;
+}
+
+.new-zanata .button--group input[type=radio]:checked+.button--Off,
+.new-zanata .button--group input[type=radio]:checked+.button--Off:hover {
+  background-color: @color-dark !important;
+  color: @gray-lighter;
+}
+
+.panel__header a#new-version-link  i.i.i--add:not(.i--large) {
+  color: @color-light;
+}
 
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {

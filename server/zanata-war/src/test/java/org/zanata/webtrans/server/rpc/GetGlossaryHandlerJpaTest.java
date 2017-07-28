@@ -3,11 +3,9 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jglue.cdiunit.InRequestScope;
-import org.jglue.cdiunit.ProducesAlternative;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +19,6 @@ import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.rest.service.ProjectService;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossarySearchServiceImpl;
 import org.zanata.test.CdiUnitRunner;
@@ -30,15 +27,12 @@ import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
-import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import com.google.common.collect.Lists;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import static org.hamcrest.MatcherAssert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -138,14 +132,10 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         log.info("************** {} second", duration);
 
         // Then:
-        assertThat(result, Matchers.hasSize(2));
-        assertThat(result.get(0).getSource(),
-                Matchers.equalTo("Planet Fedora"));
-        assertThat(result.get(0).getTarget(),
-                Matchers.equalTo("Fedora 博客聚集"));
-        assertThat(result.get(1).getSource(),
-                Matchers.equalTo("Fedora Artwork"));
-        assertThat(result.get(1).getTarget(),
-                Matchers.equalTo("Fedora 美工"));
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getSource()).isEqualTo("Planet Fedora");
+        assertThat(result.get(0).getTarget()).isEqualTo("Fedora 博客聚集");
+        assertThat(result.get(1).getSource()).isEqualTo("Fedora Artwork");
+        assertThat(result.get(1).getTarget()).isEqualTo("Fedora 美工");
     }
 }

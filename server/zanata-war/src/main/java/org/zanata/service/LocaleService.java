@@ -33,6 +33,8 @@ import com.google.common.collect.Lists;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.LanguageTeamSearchResult;
@@ -92,11 +94,17 @@ public interface LocaleService extends Serializable {
     // TODO I don't think this method is specifically about source languages
     HLocale validateSourceLocale(LocaleId locale) throws ZanataServiceException;
 
+    List<HLocale>
+    getSupportedLanguageByProject(@Nonnull HProject project);
+
     List<HLocale> getTranslation(@Nonnull String project,
             @Nonnull String iterationSlug, String username);
 
     List<HLocale> getSupportedLanguageByProjectIteration(
             @Nonnull String projectSlug, @Nonnull String iterationSlug);
+
+    List<HLocale> getSupportedLanguageByProjectIteration(
+            @Nonnull HProjectIteration version);
 
     List<HLocale> getSupportedLanguageByProject(@Nonnull String project);
 

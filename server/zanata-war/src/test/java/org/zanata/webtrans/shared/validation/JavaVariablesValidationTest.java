@@ -20,11 +20,6 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -37,10 +32,10 @@ import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
- *
  * @author David Mason, damason@redhat.com
- *
  **/
 public class JavaVariablesValidationTest {
     private JavaVariablesValidation javaVariablesValidation;
@@ -60,8 +55,8 @@ public class JavaVariablesValidationTest {
 
     @Test
     public void idIsSet() {
-        assertThat(javaVariablesValidation.getId(),
-                is(ValidationId.JAVA_VARIABLES));
+        assertThat(javaVariablesValidation.getId())
+                .isEqualTo(ValidationId.JAVA_VARIABLES);
     }
 
     @Test
@@ -71,7 +66,7 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -81,9 +76,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                hasItem(messages.varsMissing(Arrays.asList("{0}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList)
+                .contains(messages.varsMissing(Arrays.asList("{0}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -93,9 +88,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{0}",
-                "{1}", "{2}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.varsMissing(Arrays.asList("{0}",
+                "{1}", "{2}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -105,8 +100,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.varsAdded(Arrays.asList("{0}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList)
+                .contains(messages.varsAdded(Arrays.asList("{0}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -116,9 +112,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                hasItem(messages.varsAdded(Arrays.asList("{0}", "{1}", "{2}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(
+                messages.varsAdded(Arrays.asList("{0}", "{1}", "{2}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -128,11 +124,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                hasItems(messages.varsAdded(Arrays.asList("{2}")),
-                        messages.varsMissing(Arrays.asList("{0}"))));
-        assertThat(errorList.size(), is(2));
+        assertThat(errorList).contains(messages.varsAdded(Arrays.asList("{2}")),
+                messages.varsMissing(Arrays.asList("{0}")));
+        assertThat(errorList.size()).isEqualTo(2);
     }
 
     @Test
@@ -144,9 +138,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{0}",
-                "{1}", "{2}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.varsMissing(Arrays.asList("{0}",
+                "{1}", "{2}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -156,9 +150,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                hasItem(messages.varsMissing(Arrays.asList("{0}", "{1}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList)
+                .contains(messages.varsMissing(Arrays.asList("{0}", "{1}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -168,7 +162,7 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -178,7 +172,7 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -188,7 +182,7 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -199,9 +193,9 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                hasItem(messages.varsMissing(Arrays.asList("{0}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList)
+                .contains(messages.varsMissing(Arrays.asList("{0}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -212,7 +206,7 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -224,7 +218,7 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -235,9 +229,8 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                hasItem(messages.varsMissing(Arrays.asList("{0}"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.varsMissing(Arrays.asList("{0}")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     // TODO tests for format type

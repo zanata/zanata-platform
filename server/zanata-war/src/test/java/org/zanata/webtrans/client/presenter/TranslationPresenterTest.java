@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -15,7 +15,6 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -129,31 +128,25 @@ public class TranslationPresenterTest {
 
         // test keys
         KeyShortcut prevKey = shortcuts.get(0);
-        assertThat(prevKey.getAllKeys(), Matchers.equalTo(Keys.setOf(new Keys(
-                Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J'))));
-        assertThat(prevKey.getDescription(), Matchers.equalTo("previous row"));
-        assertThat(prevKey.getContext(),
-                Matchers.equalTo(ShortcutContext.Navigation));
-        assertThat(prevKey.getKeyEvent(),
-                Matchers.equalTo(KeyShortcut.KeyEvent.KEY_DOWN));
+        assertThat(prevKey.getAllKeys()).isEqualTo(Keys.setOf(new Keys(
+                Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J')));
+        assertThat(prevKey.getDescription()).isEqualTo("previous row");
+        assertThat(prevKey.getContext()).isEqualTo(ShortcutContext.Navigation);
+        assertThat(prevKey.getKeyEvent()).isEqualTo(KeyShortcut.KeyEvent.KEY_DOWN);
 
         KeyShortcut nextKey = shortcuts.get(1);
-        assertThat(nextKey.getAllKeys(), Matchers.equalTo(Keys.setOf(new Keys(
-                Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K'))));
-        assertThat(nextKey.getDescription(), Matchers.equalTo("next row"));
-        assertThat(nextKey.getContext(),
-                Matchers.equalTo(ShortcutContext.Navigation));
-        assertThat(nextKey.getKeyEvent(),
-                Matchers.equalTo(KeyShortcut.KeyEvent.KEY_DOWN));
+        assertThat(nextKey.getAllKeys()).isEqualTo(Keys.setOf(new Keys(
+                Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K')));
+        assertThat(nextKey.getDescription()).isEqualTo("next row");
+        assertThat(nextKey.getContext()).isEqualTo(ShortcutContext.Navigation);
+        assertThat(nextKey.getKeyEvent()).isEqualTo(KeyShortcut.KeyEvent.KEY_DOWN);
 
         KeyShortcut enterKey = shortcuts.get(2);
-        assertThat(enterKey.getAllKeys(), Matchers.contains(new Keys(
-                Keys.NO_MODIFIER, KeyCodes.KEY_ENTER)));
-        assertThat(enterKey.getDescription(), Matchers.equalTo("open editor"));
-        assertThat(enterKey.getContext(),
-                Matchers.equalTo(ShortcutContext.Navigation));
-        assertThat(enterKey.getKeyEvent(),
-                Matchers.equalTo(KeyShortcut.KeyEvent.KEY_UP));
+        assertThat(enterKey.getAllKeys()).contains(new Keys(
+                Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
+        assertThat(enterKey.getDescription()).isEqualTo("open editor");
+        assertThat(enterKey.getContext()).isEqualTo(ShortcutContext.Navigation);
+        assertThat(enterKey.getKeyEvent()).isEqualTo(KeyShortcut.KeyEvent.KEY_UP);
 
         // test key handlers
         prevKey.getHandler().onKeyShortcut(null);
@@ -236,7 +229,7 @@ public class TranslationPresenterTest {
         when(event.isProjectActive()).thenReturn(false);
 
         presenter.onWorkspaceContextUpdated(event);
-        assertThat(userWorkspaceContext.hasReadOnlyAccess(), Matchers.is(true));
+        assertThat(userWorkspaceContext.hasReadOnlyAccess()).isTrue();
         verify(transMemoryPresenter).unbind();
         verify(glossaryPresenter).unbind();
     }

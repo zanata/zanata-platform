@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -12,7 +12,6 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -121,7 +120,7 @@ public class EditorKeyShortcutsTest {
         copy3TM.getHandler().onKeyShortcut(null);
 
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getIndex(), Matchers.is(3));
+        assertThat(eventCaptor.getValue().getIndex()).isEqualTo(3);
     }
 
     @Test
@@ -185,8 +184,8 @@ public class EditorKeyShortcutsTest {
 
         verify(targetContentsPresenter).savePendingChangesIfApplicable();
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getRowType(),
-                Matchers.equalTo(NavTransUnitEvent.NavigationType.NextState));
+        assertThat(eventCaptor.getValue().getRowType())
+                .isEqualTo(NavTransUnitEvent.NavigationType.NextState);
     }
 
     @Test
@@ -202,8 +201,8 @@ public class EditorKeyShortcutsTest {
 
         verify(targetContentsPresenter).savePendingChangesIfApplicable();
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getRowType(),
-                Matchers.equalTo(NavTransUnitEvent.NavigationType.PrevState));
+        assertThat(eventCaptor.getValue().getRowType())
+                .isEqualTo(NavTransUnitEvent.NavigationType.PrevState);
     }
 
     @Test
@@ -360,27 +359,26 @@ public class EditorKeyShortcutsTest {
         KeyShortcut nextState = allKeys.get(2);
         KeyShortcut prevState = allKeys.get(3);
 
-        assertThat(nextState.getDescription(), Matchers.equalTo("next fuzzy"));
-        assertThat(prevState.getDescription(), Matchers.equalTo("prev fuzzy"));
+        assertThat(nextState.getDescription()).isEqualTo("next fuzzy");
+        assertThat(prevState.getDescription()).isEqualTo("prev fuzzy");
     }
 
     private static void assertKeys(KeyShortcut shortcut, String description,
             boolean isStopPropagation, boolean isPreventDefault, Keys... keys) {
-        assertThat(shortcut.getAllKeys(), Matchers.containsInAnyOrder(keys));
-        assertThat(shortcut.getContext(),
-                Matchers.equalTo(ShortcutContext.Edit));
-        assertThat(shortcut.getDescription(), Matchers.equalTo(description));
-        assertThat(shortcut.getKeyEvent(),
-                Matchers.equalTo(KeyShortcut.KeyEvent.KEY_DOWN));
-        assertThat(shortcut.isStopPropagation(),
-                Matchers.equalTo(isStopPropagation));
-        assertThat(shortcut.isPreventDefault(),
-                Matchers.equalTo(isPreventDefault));
+        assertThat(shortcut.getAllKeys()).contains(keys);
+        assertThat(shortcut.getContext())
+                .isEqualTo(ShortcutContext.Edit);
+        assertThat(shortcut.getDescription()).isEqualTo(description);
+        assertThat(shortcut.getKeyEvent())
+                .isEqualTo(KeyShortcut.KeyEvent.KEY_DOWN);
+        assertThat(shortcut.isStopPropagation())
+                .isEqualTo(isStopPropagation);
+        assertThat(shortcut.isPreventDefault())
+                .isEqualTo(isPreventDefault);
     }
 
     private static void assertAttentionKeys(KeyShortcut shortcut, Keys... keys) {
-        assertThat(shortcut.getAllAttentionKeys(),
-                Matchers.containsInAnyOrder(keys));
+        assertThat(shortcut.getAllAttentionKeys()).contains(keys);
     }
 
     @Test

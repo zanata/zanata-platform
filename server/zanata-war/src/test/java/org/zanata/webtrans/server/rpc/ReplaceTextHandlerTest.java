@@ -22,8 +22,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -37,6 +35,8 @@ import com.google.common.collect.Lists;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -78,8 +78,8 @@ public class ReplaceTextHandlerTest {
         verify(mockUpdateTransUnitHandler).execute(captor.capture(),
                 eq(context));
         List<String> expectedList = Lists.newArrayList("123", "123", "123");
-        MatcherAssert.assertThat(captor.getValue().getUpdateRequests().get(0)
-                .getNewContents(), Matchers.equalTo(expectedList));
+        assertThat(captor.getValue().getUpdateRequests().get(0)
+                .getNewContents()).isEqualTo(expectedList);
     }
 
     @Test
@@ -96,8 +96,8 @@ public class ReplaceTextHandlerTest {
         verify(mockUpdateTransUnitHandler).execute(captor.capture(),
                 eq(context));
         List<String> expectedList = Lists.newArrayList("123", "AbC", "ABC");
-        MatcherAssert.assertThat(captor.getValue().getUpdateRequests().get(0)
-                .getNewContents(), Matchers.equalTo(expectedList));
+        assertThat(captor.getValue().getUpdateRequests().get(0)
+                .getNewContents()).isEqualTo(expectedList);
     }
 
     @Test(expected = ActionException.class)

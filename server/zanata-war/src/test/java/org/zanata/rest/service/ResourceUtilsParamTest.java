@@ -1,8 +1,5 @@
 package org.zanata.rest.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.Arrays;
 
 import javax.enterprise.inject.Produces;
@@ -22,6 +19,8 @@ import org.zanata.ZanataTest;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.test.CdiUnitRunnerWithParameters;
 import org.zanata.test.ParamTestCdiExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 @UseParametersRunnerFactory(CdiUnitRunnerWithParameters.Factory.class)
@@ -56,13 +55,13 @@ public class ResourceUtilsParamTest extends ZanataTest {
 
     @Test
     public void decodeDocIds() {
-        assertThat("Decoding " + encoded, resourceUtils.decodeDocId(encoded),
-                is(decoded));
+        assertThat(resourceUtils.decodeDocId(encoded)).isEqualTo(decoded)
+                .as("Decoding " + encoded);
     }
 
     @Test
     public void encodeDocIds() {
-        assertThat("Encoding " + decoded, resourceUtils.encodeDocId(decoded),
-                is(encoded));
+        assertThat(resourceUtils.encodeDocId(decoded)).isEqualTo(encoded)
+                .as("Encoding " + decoded);
     }
 }

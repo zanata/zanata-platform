@@ -52,10 +52,7 @@ import org.zanata.util.StatisticsUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -152,8 +149,8 @@ public class TranslationUpdatedManagerTest {
         verify(webhookService).processDocumentStats(eq(username),
                 eq(projectSlug), eq(versionSlug), eq(strDocId), eq(localeId),
                 eq(contentStates), captor.capture());
-        assertThat(captor.getValue().size(), is(1));
-        assertThat((captor.getValue().get(0)).getTypes(),
-                contains(WebhookType.DocumentStatsEvent));
+        assertThat(captor.getValue().size()).isEqualTo(1);
+        assertThat((captor.getValue().get(0)).getTypes())
+                .contains(WebhookType.DocumentStatsEvent);
     }
 }

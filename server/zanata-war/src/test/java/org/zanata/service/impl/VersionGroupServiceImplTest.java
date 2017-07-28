@@ -21,15 +21,11 @@
 
 package org.zanata.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.infinispan.manager.CacheContainer;
@@ -57,6 +53,8 @@ import org.zanata.util.Zanata;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -120,7 +118,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
                         localeId);
 
         // 3 versions in group1
-        assertThat(result.size(), equalTo(3));
+        assertThat(result).hasSize(3);
     }
 
     @Test
@@ -133,7 +131,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
                         localeId);
 
         // 2 versions in group1
-        assertThat(result.size(), equalTo(2));
+        assertThat(result).hasSize(2);
     }
 
     @Test
@@ -141,7 +139,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     public void getTotalMessageCountTest1() {
         int totalMessageCount =
                 versionGroupServiceImpl.getTotalMessageCount(GROUP1_SLUG);
-        assertThat(totalMessageCount, equalTo(18));
+        assertThat(totalMessageCount).isEqualTo(18);
     }
 
     @Test
@@ -149,7 +147,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     public void getTotalMessageCountTest2() {
         int totalMessageCount =
                 versionGroupServiceImpl.getTotalMessageCount(GROUP2_SLUG);
-        assertThat(totalMessageCount, equalTo(0));
+        assertThat(totalMessageCount).isEqualTo(0);
     }
 
     @Test
@@ -157,7 +155,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     public void getMaintainersBySlugTest() {
         List<HPerson> maintainers =
                 versionGroupServiceImpl.getMaintainersBySlug(GROUP1_SLUG);
-        assertThat(maintainers.size(), equalTo(2));
+        assertThat(maintainers.size()).isEqualTo(2);
     }
 
     @Test
@@ -166,12 +164,12 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
         boolean result =
                 versionGroupServiceImpl.isVersionInGroup(GROUP1_SLUG, new Long(
                         1));
-        assertThat(result, equalTo(true));
+        assertThat(result).isTrue();
 
         result =
                 versionGroupServiceImpl.isVersionInGroup(GROUP1_SLUG, new Long(
                         3));
-        assertThat(result, equalTo(false));
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -179,11 +177,11 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     public void getGroupActiveLocalesTest() {
         Set<HLocale> activeLocales =
                 versionGroupServiceImpl.getGroupActiveLocales(GROUP1_SLUG);
-        assertThat(activeLocales.size(), equalTo(3));
+        assertThat(activeLocales).hasSize(3);
 
         activeLocales =
                 versionGroupServiceImpl.getGroupActiveLocales(GROUP3_SLUG);
-        assertThat(activeLocales.size(), equalTo(0));
+        assertThat(activeLocales).hasSize(0);
     }
 
     @Test
@@ -195,7 +193,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
         int activateLocaleSize =
                 versionGroupServiceImpl.getGroupActiveLocales(GROUP1_SLUG)
                         .size();
-        assertThat(map.size(), equalTo(activateLocaleSize));
+        assertThat(map.size()).isEqualTo(activateLocaleSize);
 
         // See ProjectsData.dbunit.xml, HProjectIteration id="900" in group1
         ProjectIterationDAO projectIterationDAO =
@@ -203,7 +201,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
         HProjectIteration version = projectIterationDAO.findById(new Long(900));
 
         for (List<HProjectIteration> versions : map.values()) {
-            assertThat("", versions, Matchers.contains(version));
+            assertThat(versions).contains(version);
         }
     }
 }

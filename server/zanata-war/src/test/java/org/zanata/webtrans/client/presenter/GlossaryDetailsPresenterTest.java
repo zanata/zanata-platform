@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -29,7 +29,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -123,8 +122,8 @@ public class GlossaryDetailsPresenterTest {
 
         verify(mockDispatcher).execute(getGlossaryDetailsCaptor.capture(),
                 getGlossarycallbackCaptor.capture());
-        assertThat(getGlossaryDetailsCaptor.getValue().getSourceIdList(),
-                Matchers.equalTo(item.getSourceIdList()));
+        assertThat(getGlossaryDetailsCaptor.getValue().getSourceIdList())
+                .isEqualTo(item.getSourceIdList());
         AsyncCallback<GetGlossaryDetailsResult> callback =
                 getGlossarycallbackCaptor.getValue();
 

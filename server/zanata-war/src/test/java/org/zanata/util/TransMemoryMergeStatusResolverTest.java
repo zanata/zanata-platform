@@ -38,10 +38,7 @@ import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 /**
@@ -78,13 +75,13 @@ public class TransMemoryMergeStatusResolverTest {
 
     private static TransMemoryResultItem tmResultWithSimilarity(double percent) {
         return new TransMemoryResultItem(null, null,
-                MatchType.TranslatedInternal, 0, percent);
+                MatchType.TranslatedInternal, 0, percent, 1L);
     }
 
     private static TransMemoryResultItem
             tmResultWithSimilarityAndExternallyImported(double percent) {
         return new TransMemoryResultItem(null, null, MatchType.Imported, 0,
-                percent);
+                percent, null);
     }
 
     private static TransMemoryDetails tmDetail(String projectName,
@@ -131,7 +128,7 @@ public class TransMemoryMergeStatusResolverTest {
                 resolver.decideStatus(action, textFlow, tmDetail,
                         tmResultWithSimilarity(90), null);
 
-        assertThat(result, equalTo(ContentState.NeedReview));
+        assertThat(result).isEqualTo(ContentState.NeedReview);
     }
 
     @Test
@@ -140,8 +137,8 @@ public class TransMemoryMergeStatusResolverTest {
                 tmDetail(projectName, docId, "different res id", msgContext);
         action = mergeTMActionWhenResIdIsDifferent(MergeRule.FUZZY);
         assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(100), null),
-                equalTo(ContentState.NeedReview));
+                tmResultWithSimilarity(100), null))
+                .isEqualTo(ContentState.NeedReview);
     }
 
 
@@ -151,8 +148,8 @@ public class TransMemoryMergeStatusResolverTest {
                 tmDetail(projectName, "different doc id", resId, msgContext);
         action = mergeTMActionWhenDocIdIsDifferent(MergeRule.FUZZY);
         assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(100), null),
-                equalTo(ContentState.NeedReview));
+                tmResultWithSimilarity(100), null))
+                .isEqualTo(ContentState.NeedReview);
     }
 
 
@@ -162,8 +159,8 @@ public class TransMemoryMergeStatusResolverTest {
                 tmDetail("different project name", docId, resId, msgContext);
         action = mergeTMActionWhenProjectNameIsDifferent(MergeRule.FUZZY);
         assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(100), null),
-                equalTo(ContentState.NeedReview));
+                tmResultWithSimilarity(100), null))
+                .isEqualTo(ContentState.NeedReview);
     }
 
 
@@ -180,7 +177,7 @@ public class TransMemoryMergeStatusResolverTest {
         oldTarget.setState(ContentState.NeedReview);
 
         assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(100), oldTarget), is(nullValue()));
+                tmResultWithSimilarity(100), oldTarget)).isNull();
     }
 
     @Test
@@ -188,8 +185,8 @@ public class TransMemoryMergeStatusResolverTest {
         TransMemoryMergeRequest transMemoryMerge =
                 mergeTMAction(importedMatch(MergeRule.FUZZY));
         assertThat(resolver.decideStatus(transMemoryMerge,
-                tmResultWithSimilarityAndExternallyImported(100), null),
-                equalTo(ContentState.NeedReview));
+                tmResultWithSimilarityAndExternallyImported(100), null))
+                .isEqualTo(ContentState.NeedReview);
     }
 
 

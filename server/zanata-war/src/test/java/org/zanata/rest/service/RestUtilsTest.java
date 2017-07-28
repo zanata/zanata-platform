@@ -32,8 +32,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.test.CdiUnitRunner;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(CdiUnitRunner.class)
 public class RestUtilsTest extends ZanataTest {
@@ -132,7 +131,7 @@ public class RestUtilsTest extends ZanataTest {
                             MediaType.APPLICATION_XML_TYPE,
                             new Headers<>());
             log.info("got:" + DTOUtil.toXML(unmarshall));
-            assertThat(DTOUtil.toXML(entity), is(testStr));
+            assertThat(DTOUtil.toXML(entity)).isEqualTo(testStr);
         } finally {
             if (messageBody != null) {
                 try {

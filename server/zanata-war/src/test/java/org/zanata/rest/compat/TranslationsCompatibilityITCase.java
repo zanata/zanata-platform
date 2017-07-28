@@ -42,9 +42,7 @@ import org.zanata.apicompat.rest.dto.resource.TranslationsResource;
 import org.zanata.apicompat.rest.service.SourceDocResource;
 import org.zanata.apicompat.rest.service.TranslatedDocResource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 public class TranslationsCompatibilityITCase extends CompatibilityBase {
@@ -95,7 +93,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         response.close();
 
         // Verify that it was created successfully
@@ -104,35 +103,35 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         PoHeader.ID + ";" + SimpleComment.ID));
         Resource createdResource = getResourceFromResponse(resourceResponse);
 
-        assertThat(createdResource.getName(), is(res.getName()));
-        assertThat(createdResource.getType(), is(res.getType()));
-        assertThat(createdResource.getContentType(), is(res.getContentType()));
-        assertThat(createdResource.getLang(), is(res.getLang()));
-        assertThat(createdResource.getRevision(), is(1)); // Created, so
-                                                          // revision 1
+        assertThat(createdResource.getName()).isEqualTo(res.getName());
+        assertThat(createdResource.getType()).isEqualTo(res.getType());
+        assertThat(createdResource.getContentType()).isEqualTo(res.getContentType());
+        assertThat(createdResource.getLang()).isEqualTo(res.getLang());
+        // Created, so revision 1
+        assertThat(createdResource.getRevision()).isEqualTo(1);
 
         // Extensions
-        assertThat(createdResource.getExtensions(true).size(),
-                greaterThanOrEqualTo(1));
+        assertThat(createdResource.getExtensions(true).size())
+                .isGreaterThanOrEqualTo(1);
         assertThat(
                 createdResource.getExtensions(true).findByType(PoHeader.class)
-                        .getComment(), is("This is a PO Header"));
+                        .getComment()).isEqualTo("This is a PO Header");
 
         // Text Flow
-        assertThat(createdResource.getTextFlows().size(), is(1));
+        assertThat(createdResource.getTextFlows().size()).isEqualTo(1);
 
         TextFlow createdTf = createdResource.getTextFlows().get(0);
-        assertThat(createdTf.getContents().get(0), is(tf1.getContents().get(0)));
-        assertThat(createdTf.getId(), is(tf1.getId()));
-        assertThat(createdTf.getLang(), is(tf1.getLang()));
-        assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
+        assertThat(createdTf.getContents().get(0)).isEqualTo(tf1.getContents().get(0));
+        assertThat(createdTf.getId()).isEqualTo(tf1.getId());
+        assertThat(createdTf.getLang()).isEqualTo(tf1.getLang());
+        // Create, so revision 1
+        assertThat(createdTf.getRevision()).isEqualTo(1);
 
         // Text Flow extensions
-        assertThat(createdTf.getExtensions(true).size(), is(1));
-        assertThat(
-                createdTf.getExtensions(true)
-                        .findOrAddByType(SimpleComment.class).getValue(),
-                is("This is one comment"));
+        assertThat(createdTf.getExtensions(true).size()).isEqualTo(1);
+        assertThat(createdTf.getExtensions(true)
+                .findOrAddByType(SimpleComment.class).getValue())
+                .isEqualTo("This is one comment");
     }
 
     @Test
@@ -151,7 +150,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         response.close();
 
         // Post Twice (should conflict)
@@ -159,7 +159,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
-        assertThat(response.getStatus(), is(Status.CONFLICT.getStatusCode())); // 409
+        // 409
+        assertThat(response.getStatus()).isEqualTo(Status.CONFLICT.getStatusCode());
         response.close();
     }
 
@@ -183,7 +184,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.putResource(res.getName(), res, new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID), false);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         response.close();
 
         // Verify that it was created successfully
@@ -192,35 +194,35 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         PoHeader.ID + ";" + SimpleComment.ID));
         Resource createdResource = getResourceFromResponse(resourceResponse);
 
-        assertThat(createdResource.getName(), is(res.getName()));
-        assertThat(createdResource.getType(), is(res.getType()));
-        assertThat(createdResource.getContentType(), is(res.getContentType()));
-        assertThat(createdResource.getLang(), is(res.getLang()));
-        assertThat(createdResource.getRevision(), is(1)); // Created, so
-                                                          // revision 1
+        assertThat(createdResource.getName()).isEqualTo(res.getName());
+        assertThat(createdResource.getType()).isEqualTo(res.getType());
+        assertThat(createdResource.getContentType()).isEqualTo(res.getContentType());
+        assertThat(createdResource.getLang()).isEqualTo(res.getLang());
+        // Created, so revision 1
+        assertThat(createdResource.getRevision()).isEqualTo(1);
 
         // Extensions
-        assertThat(createdResource.getExtensions(true).size(),
-                greaterThanOrEqualTo(1));
+        assertThat(createdResource.getExtensions(true).size())
+                .isGreaterThanOrEqualTo(1);
         assertThat(
                 createdResource.getExtensions(true).findByType(PoHeader.class)
-                        .getComment(), is("This is a PO Header"));
+                        .getComment()).isEqualTo("This is a PO Header");
 
         // Text Flow
-        assertThat(createdResource.getTextFlows().size(), is(1));
+        assertThat(createdResource.getTextFlows().size()).isEqualTo(1);
 
         TextFlow createdTf = createdResource.getTextFlows().get(0);
-        assertThat(createdTf.getContents().get(0), is(tf1.getContents().get(0)));
-        assertThat(createdTf.getId(), is(tf1.getId()));
-        assertThat(createdTf.getLang(), is(tf1.getLang()));
-        assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
+        assertThat(createdTf.getContents().get(0)).isEqualTo(tf1.getContents().get(0));
+        assertThat(createdTf.getId()).isEqualTo(tf1.getId());
+        assertThat(createdTf.getLang()).isEqualTo(tf1.getLang());
+        // Create, so revision 1
+        assertThat(createdTf.getRevision()).isEqualTo(1);
 
         // Text Flow extensions
-        assertThat(createdTf.getExtensions(true).size(), is(1));
-        assertThat(
-                createdTf.getExtensions(true)
-                        .findOrAddByType(SimpleComment.class).getValue(),
-                is("This is one comment"));
+        assertThat(createdTf.getExtensions(true).size()).isEqualTo(1);
+        assertThat(createdTf.getExtensions(true)
+                        .findOrAddByType(SimpleComment.class).getValue())
+                .isEqualTo("This is one comment");
     }
 
     @Test
@@ -232,28 +234,28 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         new StringSet(SimpleComment.ID));
         Resource resource = getResourceFromResponse(response);
 
-        assertThat(resource.getName(), is("my/path/document-2.txt"));
-        assertThat(resource.getType(), is(ResourceType.FILE));
-        assertThat(resource.getLang(), is(LocaleId.EN_US));
+        assertThat(resource.getName()).isEqualTo("my/path/document-2.txt");
+        assertThat(resource.getType()).isEqualTo(ResourceType.FILE);
+        assertThat(resource.getLang()).isEqualTo(LocaleId.EN_US);
 
         // Make sure all Text Flows are present
-        assertThat(resource.getTextFlows().size(), greaterThanOrEqualTo(3));
+        assertThat(resource.getTextFlows().size()).isGreaterThanOrEqualTo(3);
 
         // Evaluate individual text flows
         TextFlow txtFlow = resource.getTextFlows().get(0);
-        assertThat(txtFlow.getId(), is("tf2"));
-        assertThat(txtFlow.getRevision(), is(1));
-        assertThat(txtFlow.getContents().get(0), is("mssgId1"));
+        assertThat(txtFlow.getId()).isEqualTo("tf2");
+        assertThat(txtFlow.getRevision()).isEqualTo(1);
+        assertThat(txtFlow.getContents().get(0)).isEqualTo("mssgId1");
 
         txtFlow = resource.getTextFlows().get(1);
-        assertThat(txtFlow.getId(), is("tf3"));
-        assertThat(txtFlow.getRevision(), is(1));
-        assertThat(txtFlow.getContents().get(0), is("mssgId2"));
+        assertThat(txtFlow.getId()).isEqualTo("tf3");
+        assertThat(txtFlow.getRevision()).isEqualTo(1);
+        assertThat(txtFlow.getContents().get(0)).isEqualTo("mssgId2");
 
         txtFlow = resource.getTextFlows().get(2);
-        assertThat(txtFlow.getId(), is("tf4"));
-        assertThat(txtFlow.getRevision(), is(1));
-        assertThat(txtFlow.getContents().get(0), is("mssgId3"));
+        assertThat(txtFlow.getId()).isEqualTo("tf4");
+        assertThat(txtFlow.getRevision()).isEqualTo(1);
+        assertThat(txtFlow.getContents().get(0)).isEqualTo("mssgId3");
     }
 
     @Test
@@ -273,21 +275,24 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.putResource(res.getName(), res, new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID), false);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         response.close();
 
         // Delete the resource
         Response deleteResponse =
                 sourceDocClient.deleteResource(res.getName());
 
-        assertThat(deleteResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(deleteResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         deleteResponse.close();
 
         // try to fetch it again
         Response getResponse =
                 sourceDocClient.getResource(res.getName(), null);
-        assertThat(getResponse.getStatus(),
-                is(Status.NOT_FOUND.getStatusCode())); // 404
+        // 404
+        assertThat(getResponse.getStatus())
+                .isEqualTo(Status.NOT_FOUND.getStatusCode());
         getResponse.close();
     }
 
@@ -301,11 +306,12 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         new StringSet(SimpleComment.ID));
         ResourceMeta resMeta = getResourceMetaFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-        assertThat(resMeta.getName(), is("my/path/document-2.txt"));
-        assertThat(resMeta.getType(), is(ResourceType.FILE));
-        assertThat(resMeta.getLang(), is(LocaleId.EN_US));
-        assertThat(resMeta.getContentType(), is(ContentType.TextPlain));
+        // 200
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+        assertThat(resMeta.getName()).isEqualTo("my/path/document-2.txt");
+        assertThat(resMeta.getType()).isEqualTo(ResourceType.FILE);
+        assertThat(resMeta.getLang()).isEqualTo(LocaleId.EN_US);
+        assertThat(resMeta.getContentType()).isEqualTo(ContentType.TextPlain);
     }
 
     @Test
@@ -323,7 +329,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
         Response putResponse =
                 sourceDocClient.putResourceMeta("my,path,document-2.txt",
                         resMeta, null);
-        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(putResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         putResponse.close();
 
         // Fetch again
@@ -331,12 +338,14 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.getResourceMeta("my,path,document-2.txt", null);
         ResourceMeta newResMeta = getResourceMetaFromResponse(getResponse);
 
-        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
-        assertThat(newResMeta.getName(), is(resMeta.getName()));
-        assertThat(newResMeta.getContentType(), is(resMeta.getContentType()));
-        assertThat(newResMeta.getLang(), is(resMeta.getLang()));
-        assertThat(newResMeta.getType(), is(resMeta.getType()));
-        assertThat(newResMeta.getRevision(), is(1)); // Created, so revision 1
+        // 200
+        assertThat(getResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
+        assertThat(newResMeta.getName()).isEqualTo(resMeta.getName());
+        assertThat(newResMeta.getContentType()).isEqualTo(resMeta.getContentType());
+        assertThat(newResMeta.getLang()).isEqualTo(resMeta.getLang());
+        assertThat(newResMeta.getType()).isEqualTo(resMeta.getType());
+        // Created, so revision 1
+        assertThat(newResMeta.getRevision()).isEqualTo(1);
     }
 
     @Test
@@ -351,39 +360,39 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         null);
         TranslationsResource transRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-        assertThat(transRes.getTextFlowTargets().size(),
-                greaterThanOrEqualTo(3));
+        // 200
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+        assertThat(transRes.getTextFlowTargets().size()).isGreaterThanOrEqualTo(3);
 
         // First Text Flow Target
         TextFlowTarget tft1 = transRes.getTextFlowTargets().get(0);
-        assertThat(tft1.getResId(), is("tf2"));
-        assertThat(tft1.getState(), is(ContentState.NeedReview));
-        assertThat(tft1.getContents().get(0), is("mssgTrans1"));
+        assertThat(tft1.getResId()).isEqualTo("tf2");
+        assertThat(tft1.getState()).isEqualTo(ContentState.NeedReview);
+        assertThat(tft1.getContents().get(0)).isEqualTo("mssgTrans1");
         assertThat(tft1.getExtensions(true).findByType(SimpleComment.class)
-                .getValue(), is("Text Flow Target Comment 1"));
-        assertThat(tft1.getTranslator().getName(), is("Sample User"));
-        assertThat(tft1.getTranslator().getEmail(), is("user1@localhost"));
+                .getValue()).isEqualTo("Text Flow Target Comment 1");
+        assertThat(tft1.getTranslator().getName()).isEqualTo("Sample User");
+        assertThat(tft1.getTranslator().getEmail()).isEqualTo("user1@localhost");
 
         // Second Text Flow Target
         TextFlowTarget tft2 = transRes.getTextFlowTargets().get(1);
-        assertThat(tft2.getResId(), is("tf3"));
-        assertThat(tft2.getState(), is(ContentState.NeedReview));
-        assertThat(tft2.getContents().get(0), is("mssgTrans2"));
+        assertThat(tft2.getResId()).isEqualTo("tf3");
+        assertThat(tft2.getState()).isEqualTo(ContentState.NeedReview);
+        assertThat(tft2.getContents().get(0)).isEqualTo("mssgTrans2");
         assertThat(tft2.getExtensions(true).findByType(SimpleComment.class)
-                .getValue(), is("Text Flow Target Comment 2"));
-        assertThat(tft2.getTranslator().getName(), is("Sample User"));
-        assertThat(tft2.getTranslator().getEmail(), is("user1@localhost"));
+                .getValue()).isEqualTo("Text Flow Target Comment 2");
+        assertThat(tft2.getTranslator().getName()).isEqualTo("Sample User");
+        assertThat(tft2.getTranslator().getEmail()).isEqualTo("user1@localhost");
 
         // First Text Flow Target
         TextFlowTarget tft3 = transRes.getTextFlowTargets().get(2);
-        assertThat(tft3.getResId(), is("tf4"));
-        assertThat(tft3.getState(), is(ContentState.NeedReview));
-        assertThat(tft3.getContents().get(0), is("mssgTrans3"));
+        assertThat(tft3.getResId()).isEqualTo("tf4");
+        assertThat(tft3.getState()).isEqualTo(ContentState.NeedReview);
+        assertThat(tft3.getContents().get(0)).isEqualTo("mssgTrans3");
         assertThat(tft3.getExtensions(true).findByType(SimpleComment.class)
-                .getValue(), is("Text Flow Target Comment 3"));
-        assertThat(tft3.getTranslator().getName(), is("Sample User"));
-        assertThat(tft3.getTranslator().getEmail(), is("user1@localhost"));
+                .getValue()).isEqualTo("Text Flow Target Comment 3");
+        assertThat(tft3.getTranslator().getName()).isEqualTo("Sample User");
+        assertThat(tft3.getTranslator().getEmail()).isEqualTo("user1@localhost");
     }
 
     @Test
@@ -397,9 +406,9 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         null);
         TranslationsResource transRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-        assertThat(transRes.getTextFlowTargets().size(),
-                greaterThanOrEqualTo(3));
+        // 200
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+        assertThat(transRes.getTextFlowTargets().size()).isGreaterThanOrEqualTo(3);
 
         // Alter the translations
         transRes.getTextFlowTargets().get(0).setContents("Translated 1");
@@ -423,7 +432,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         LocaleId.EN_US, transRes, new StringSet(
                                 SimpleComment.ID), "auto");
 
-        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(putResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         putResponse.close();
 
         // Retrieve the translations once more to make sure they were changed
@@ -433,34 +443,34 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         LocaleId.EN_US, new StringSet(SimpleComment.ID), false, null);
         transRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-        assertThat(transRes.getTextFlowTargets().size(),
-                greaterThanOrEqualTo(3));
+        // 200
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+        assertThat(transRes.getTextFlowTargets().size()).isGreaterThanOrEqualTo(3);
 
         // First Text Flow Target
         TextFlowTarget tft1 = transRes.getTextFlowTargets().get(0);
-        assertThat(tft1.getResId(), is("tf2"));
-        assertThat(tft1.getState(), is(ContentState.Approved));
-        assertThat(tft1.getContents().get(0), is("Translated 1"));
+        assertThat(tft1.getResId()).isEqualTo("tf2");
+        assertThat(tft1.getState()).isEqualTo(ContentState.Approved);
+        assertThat(tft1.getContents().get(0)).isEqualTo("Translated 1");
         assertThat(tft1.getExtensions(true).findByType(SimpleComment.class)
-                .getValue(), is("Translated Comment 1"));
+                .getValue()).isEqualTo("Translated Comment 1");
 
 
         // Second Text Flow Target
         TextFlowTarget tft2 = transRes.getTextFlowTargets().get(1);
-        assertThat(tft2.getResId(), is("tf3"));
-        assertThat(tft2.getState(), is(ContentState.Approved));
-        assertThat(tft2.getContents().get(0), is("Translated 2"));
+        assertThat(tft2.getResId()).isEqualTo("tf3");
+        assertThat(tft2.getState()).isEqualTo(ContentState.Approved);
+        assertThat(tft2.getContents().get(0)).isEqualTo("Translated 2");
         assertThat(tft2.getExtensions(true).findByType(SimpleComment.class)
-                .getValue(), is("Translated Comment 2"));
+                .getValue()).isEqualTo("Translated Comment 2");
 
         // First Text Flow Target
         TextFlowTarget tft3 = transRes.getTextFlowTargets().get(2);
-        assertThat(tft3.getResId(), is("tf4"));
-        assertThat(tft3.getState(), is(ContentState.Approved));
-        assertThat(tft3.getContents().get(0), is("Translated 3"));
+        assertThat(tft3.getResId()).isEqualTo("tf4");
+        assertThat(tft3.getState()).isEqualTo(ContentState.Approved);
+        assertThat(tft3.getContents().get(0)).isEqualTo("Translated 3");
         assertThat(tft3.getExtensions(true).findByType(SimpleComment.class)
-                .getValue(), is("Translated Comment 3"));
+                .getValue()).isEqualTo("Translated Comment 3");
     }
 
     @Test
@@ -472,7 +482,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 translationsClient.deleteTranslations("my,path,document-3.txt",
                         LocaleId.EN_US);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
         response.close();
 
         // try to fetch them again
@@ -483,7 +494,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
         List<TextFlowTarget> targets =
                 getTransResourceFromResponse(getResponse).getTextFlowTargets();
         for (TextFlowTarget target : targets) {
-            assertThat(target.getState(), is(ContentState.New));
+            assertThat(target.getState()).isEqualTo(ContentState.New);
         }
     }
 }

@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -31,6 +32,7 @@ import org.zanata.rest.dto.extensions.gettext.TranslationsResourceExtension;
 @JsonPropertyOrder({ "links", "extensions", "textFlowTargets" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Translations")
 public class TranslationsResource implements Serializable,
         HasSample<TranslationsResource>,
         Extensible<TranslationsResourceExtension> {
@@ -40,6 +42,9 @@ public class TranslationsResource implements Serializable,
     private List<TextFlowTarget> textFlowTargets;
     private Integer revision;
 
+    /**
+     * Any provided extensions
+     */
     @XmlElementWrapper(name = "extensions", required = false,
             namespace = Namespaces.ZANATA_OLD)
     @XmlElement(name = "extension", namespace = Namespaces.ZANATA_OLD)
@@ -60,6 +65,9 @@ public class TranslationsResource implements Serializable,
         return extensions;
     }
 
+    /**
+     * The text flow targets (i.e. translated text)
+     */
     @XmlElementWrapper(name = "targets", required = false,
             namespace = Namespaces.ZANATA_OLD)
     @XmlElement(name = "text-flow-target", namespace = Namespaces.ZANATA_API)
@@ -71,6 +79,9 @@ public class TranslationsResource implements Serializable,
         return textFlowTargets;
     }
 
+    /**
+     * A collection of links provided with the translations.
+     */
     @XmlElement(name = "links", namespace = Namespaces.ZANATA_OLD)
     public Links getLinks() {
         return links;
@@ -87,6 +98,9 @@ public class TranslationsResource implements Serializable,
         return links;
     }
 
+    /**
+     * Revision number for the translations
+     */
     @XmlAttribute()
     public Integer getRevision() {
         return revision;

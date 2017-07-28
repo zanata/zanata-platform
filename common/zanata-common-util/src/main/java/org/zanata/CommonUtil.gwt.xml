@@ -3,6 +3,7 @@
   <source path="common/util" />
   <source path="util">
     <include name="StringUtil.java" />
+    <include name="ShortString.java" />
   </source>
 
 </module>

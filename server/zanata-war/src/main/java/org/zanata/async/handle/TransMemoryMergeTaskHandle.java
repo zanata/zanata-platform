@@ -21,6 +21,7 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -30,50 +31,17 @@ import com.google.common.base.MoreObjects;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
-    private long textFlowFilled;
-    private long totalTextFlows;
-    private String cancelledBy;
-    private Long cancelledTime;
+public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> implements
+        UserTriggeredTaskHandle {
     private String triggeredBy;
     private String mergeTarget;
 
-    public long getTextFlowFilled() {
-        return this.textFlowFilled;
-    }
-
-    public void setTextFlowFilled(final long textFlowFilled) {
-        this.textFlowFilled = textFlowFilled;
-    }
-
-    public long getTotalTextFlows() {
-        return this.totalTextFlows;
-    }
-
-    public void setTotalTextFlows(final long totalTextFlows) {
-        this.totalTextFlows = totalTextFlows;
-    }
-
-    public String getCancelledBy() {
-        return this.cancelledBy;
-    }
-
-    public void setCancelledBy(final String cancelledBy) {
-        this.cancelledBy = cancelledBy;
-    }
-
-    public long getCancelledTime() {
-        return this.cancelledTime;
-    }
-
-    public void setCancelledTime(final long cancelledTime) {
-        this.cancelledTime = cancelledTime;
-    }
-
+    @Override
     public String getTriggeredBy() {
         return this.triggeredBy;
     }
 
+    @Override
     public void setTriggeredBy(final String triggeredBy) {
         this.triggeredBy = triggeredBy;
     }
@@ -84,19 +52,13 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
                 documentId.getDocId(), localeId);
     }
 
-    public String getMergeTarget() {
-        return mergeTarget;
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .omitNullValues()
                 .add("mergeTarget", mergeTarget)
-                .add("textFlowFilled", textFlowFilled)
-                .add("totalTextFlows", totalTextFlows)
-                .add("cancelledBy", cancelledBy)
-                .add("cancelledTime", cancelledTime)
+                .add("currentProgress", currentProgress)
+                .add("maxProgress", maxProgress)
                 .add("triggeredBy", triggeredBy)
                 .toString();
     }

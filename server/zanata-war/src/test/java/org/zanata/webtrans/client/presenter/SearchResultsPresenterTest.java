@@ -20,11 +20,9 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -324,19 +322,18 @@ public class SearchResultsPresenterTest {
         verify(mockHistory).newItem(capturedHistoryToken.capture());
 
         HistoryToken newToken = capturedHistoryToken.getValue();
-        assertThat(
-                "new history token should be updated with current search phrase in search text box",
-                newToken.getProjectSearchText(), is(TEST_SEARCH_PHRASE));
-        assertThat(
-                "new history token project search case sensitivity should match checkbox value",
-                newToken.getProjectSearchCaseSensitive(),
-                is(caseSensitiveFalseValue));
-        assertThat(
-                "new history token should reflect search in target when selected search field is target",
-                newToken.isProjectSearchInTarget(), is(true));
-        assertThat(
-                "new history token should reflect not to search in source when selected search field is target",
-                newToken.isProjectSearchInSource(), is(false));
+        assertThat(newToken.getProjectSearchText())
+                .isEqualTo(TEST_SEARCH_PHRASE)
+                .as("new history token should be updated with current search phrase in search text box");
+        assertThat(newToken.getProjectSearchCaseSensitive())
+                .isEqualTo(caseSensitiveFalseValue)
+                .as("new history token project search case sensitivity should match checkbox value");
+        assertThat(newToken.isProjectSearchInTarget())
+                .isTrue()
+                .as("new history token should reflect search in target when selected search field is target");
+        assertThat(newToken.isProjectSearchInSource())
+                .isFalse()
+                .as("new history token should reflect not to search in source when selected search field is target");
     }
 
     @Test
@@ -355,10 +352,9 @@ public class SearchResultsPresenterTest {
 
         verify(mockHistory).newItem(capturedHistoryToken.capture());
         HistoryToken newToken = capturedHistoryToken.getValue();
-        assertThat(
-                "new history token project search case sensitivity should match checkbox value",
-                newToken.getProjectSearchCaseSensitive(),
-                is(caseSensitiveTrueValue));
+        assertThat(newToken.getProjectSearchCaseSensitive()).
+                isEqualTo(caseSensitiveTrueValue)
+                .as("new history token project search case sensitivity should match checkbox value");
     }
 
     @Test
@@ -374,12 +370,10 @@ public class SearchResultsPresenterTest {
         verify(mockHistory).newItem(capturedHistoryToken.capture());
 
         HistoryToken newToken = capturedHistoryToken.getValue();
-        assertThat(
-                "new history token should reflect search in source when selected search field is source",
-                newToken.isProjectSearchInSource(), is(true));
-        assertThat(
-                "new history token should reflect not to search in target when selected search field is source",
-                newToken.isProjectSearchInTarget(), is(false));
+        assertThat(newToken.isProjectSearchInSource()).isTrue()
+                .as("new history token should reflect search in source when selected search field is source");
+        assertThat(newToken.isProjectSearchInTarget()).isFalse()
+                .as("new history token should reflect not to search in target when selected search field is source");
     }
 
     @Test
@@ -396,12 +390,10 @@ public class SearchResultsPresenterTest {
         verify(mockHistory).newItem(capturedHistoryToken.capture());
 
         HistoryToken newToken = capturedHistoryToken.getValue();
-        assertThat(
-                "new history token should reflect search in source when selected search field is both",
-                newToken.isProjectSearchInSource(), is(true));
-        assertThat(
-                "new history token should reflect search in target when selected search field is both",
-                newToken.isProjectSearchInTarget(), is(true));
+        assertThat(newToken.isProjectSearchInSource()).isTrue()
+                .as("new history token should reflect search in source when selected search field is both");
+        assertThat(newToken.isProjectSearchInTarget()).isTrue()
+                .as("new history token should reflect search in target when selected search field is both");
     }
 
     @Test
@@ -420,9 +412,8 @@ public class SearchResultsPresenterTest {
         verify(mockHistory).newItem(capturedHistoryToken.capture());
 
         HistoryToken newToken = capturedHistoryToken.getValue();
-        assertThat(
-                "new history token should be updated with current replacement phrase",
-                newToken.getProjectSearchReplacement(), is(TEST_REPLACE_PHRASE));
+        assertThat(newToken.getProjectSearchReplacement()).isEqualTo(TEST_REPLACE_PHRASE)
+                .as("new history token should be updated with current replacement phrase");
     }
 
     @Ignore
@@ -454,8 +445,8 @@ public class SearchResultsPresenterTest {
         searchResultsPresenter.bind();
         simulateSearch();
 
-        assertThat("text flows for document should be added to data provider",
-                dataProviderDoc1List.size(), is(1));
+        assertThat(dataProviderDoc1List.size()).isEqualTo(1)
+                .as("text flows for document should be added to data provider");
     }
 
     // TODO use 4 results in 2 documents

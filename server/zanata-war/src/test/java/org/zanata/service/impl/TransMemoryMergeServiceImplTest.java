@@ -22,7 +22,7 @@
 package org.zanata.service.impl;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -32,13 +32,13 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,12 +46,12 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.model.HAccount;
@@ -60,11 +60,13 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
+import org.zanata.service.VersionStateCache;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.transaction.TransactionUtilForUnitTest;
@@ -124,6 +126,13 @@ public class TransMemoryMergeServiceImplTest {
     @Produces
     TransactionUtil transactionUtil = new TransactionUtilForUnitTest(null);
 
+    @Produces @Mock
+    private VersionStateCache versionStateCacheImpl;
+    @Produces @Mock
+    private ZanataIdentity identity;
+    @Produces @Mock
+    private ProjectIterationDAO projectIterationDAO;
+
     private String projectSlug = "projectSlug";
     private String versionSlug = "versionSlug";
     private String docId = "pot/a.po";
@@ -140,6 +149,7 @@ public class TransMemoryMergeServiceImplTest {
     private final EditorClientId editorClientId =
             new EditorClientId("sessionId", 1);
     private FilterConstraints untranslatedFilter;
+    private List<Long> fromVersions;
 
     private TransMemoryMergeRequest prepareAction(int threshold, MergeOptions opts) {
         LocaleId localeId = targetLocale.getLocaleId();
@@ -173,7 +183,7 @@ public class TransMemoryMergeServiceImplTest {
     private static TransMemoryResultItem tmResult(Long sourceId, int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.ApprovedInternal, 1D, percent);
+                        MatchType.ApprovedInternal, 1D, percent, 1L);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }
@@ -182,7 +192,7 @@ public class TransMemoryMergeServiceImplTest {
             int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.Imported, 1D, percent);
+                        MatchType.Imported, 1D, percent, 1L);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }
@@ -201,7 +211,7 @@ public class TransMemoryMergeServiceImplTest {
             return new TransMemoryQuery(contents, searchType,
                     new TransMemoryQuery.Condition(false, projectSlug),
                     new TransMemoryQuery.Condition(false, docId),
-                    new TransMemoryQuery.Condition(false, resId));
+                    new TransMemoryQuery.Condition(false, resId), fromVersions);
         } else {
             TransMemoryQuery.Condition projectCondition =
                     new TransMemoryQuery.Condition(
@@ -218,13 +228,14 @@ public class TransMemoryMergeServiceImplTest {
                             opts.getDifferentResId() == MergeRule.REJECT, resId);
 
             return new TransMemoryQuery(contents, searchType, projectCondition,
-                    documentCondition, resCondition);
+                    documentCondition, resCondition, fromVersions);
         }
     }
 
     @Before
     public void setUp() throws NoSuchWorkspaceException {
         MockitoAnnotations.initMocks(this);
+        fromVersions = Collections.emptyList();
         asyncTaskHandle = new TransMemoryMergeTaskHandle();
         WorkspaceId workspaceId =
                 new WorkspaceId(projectIterationId, targetLocale.getLocaleId());
@@ -275,7 +286,8 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,
                         targetLocale.getLocaleId(), sourceLocale.getLocaleId(),
-                        false, false, false, action.getThresholdPercent()))
+                        false, false, false, action.getThresholdPercent(),
+                        fromVersions))
                 .thenReturn(matches);
 
         // When: execute the action
@@ -289,15 +301,16 @@ public class TransMemoryMergeServiceImplTest {
 
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
-        assertThat(updateRequest, Matchers.hasSize(1));
+        assertThat(updateRequest).hasSize(1);
         TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
-        assertThat(transUnitUpdateRequest.getNewContents(),
-                Matchers.equalTo(mostSimilarTM.getTargetContents()));
-        assertThat(transUnitUpdateRequest.getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+        assertThat(transUnitUpdateRequest.getNewContents())
+                .isEqualTo(mostSimilarTM.getTargetContents());
+        assertThat(transUnitUpdateRequest.getSourceType())
+            .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
         assertThat(
-                transUnitUpdateRequest.getTargetComment(),
-                Matchers.equalTo("auto translated by TM merge from project: project a, version: master, DocId: pot/msg.pot"));
+                transUnitUpdateRequest.getTargetComment())
+                .isEqualTo(
+                        "auto translated by TM merge from project: project a, version: master, DocId: pot/msg.pot");
     }
 
     @Test
@@ -320,7 +333,8 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,
                         targetLocale.getLocaleId(), sourceLocale.getLocaleId(),
-                        false, false, false, action.getThresholdPercent()))
+                        false, false, false, action.getThresholdPercent(),
+                        fromVersions))
                 .thenReturn(matches);
 
         when(localeService.getByLocaleId(action.localeId))
@@ -388,22 +402,26 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFlow100TM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(tm100);
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFLow90TM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(tm90);
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFlow80TM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(tm80);
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFlowNoTM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(noMatch);
 
         when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(
@@ -424,20 +442,20 @@ public class TransMemoryMergeServiceImplTest {
 
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
-        assertThat(updateRequest, Matchers.hasSize(3));
-        assertThat(updateRequest.get(0).getNewContents(),
-                Matchers.equalTo(tm100.get().getTargetContents()));
-        assertThat(updateRequest.get(1).getNewContents(),
-                Matchers.equalTo(tm90.get().getTargetContents()));
-        assertThat(updateRequest.get(2).getNewContents(),
-                Matchers.equalTo(tm80.get().getTargetContents()));
+        assertThat(updateRequest).hasSize(3);
+        assertThat(updateRequest.get(0).getNewContents())
+                .isEqualTo(tm100.get().getTargetContents());
+        assertThat(updateRequest.get(1).getNewContents())
+                .isEqualTo(tm90.get().getTargetContents());
+        assertThat(updateRequest.get(2).getNewContents())
+                .isEqualTo(tm80.get().getTargetContents());
 
-        assertThat(updateRequest.get(0).getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
-        assertThat(updateRequest.get(1).getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
-        assertThat(updateRequest.get(2).getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+        assertThat(updateRequest.get(0).getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
+        assertThat(updateRequest.get(1).getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
+        assertThat(updateRequest.get(2).getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
     }
 
     @Test
@@ -483,7 +501,8 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,
                         targetLocale.getLocaleId(), sourceLocale.getLocaleId(),
-                        false, false, false, action.getThresholdPercent()))
+                        false, false, false, action.getThresholdPercent(),
+                        fromVersions))
                 .thenReturn(match);
         when(transMemoryUnitDAO.findById(tuResultSource.getId())).thenReturn(
                 tuResultSource);
@@ -499,14 +518,14 @@ public class TransMemoryMergeServiceImplTest {
 
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
-        assertThat(updateRequest, Matchers.hasSize(1));
+        assertThat(updateRequest).hasSize(1);
         TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
-        assertThat(transUnitUpdateRequest.getNewContents(),
-                Matchers.equalTo(mostSimilarTM.getTargetContents()));
+        assertThat(transUnitUpdateRequest.getNewContents())
+                .isEqualTo(mostSimilarTM.getTargetContents());
         assertThat(
-                transUnitUpdateRequest.getTargetComment(),
-                Matchers.equalTo("auto translated by TM merge from translation memory: test-tm, unique id: uid10"));
-        assertThat(transUnitUpdateRequest.getSourceType(),
-            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+                transUnitUpdateRequest.getTargetComment())
+                .isEqualTo("auto translated by TM merge from translation memory: test-tm, unique id: uid10");
+        assertThat(transUnitUpdateRequest.getSourceType())
+                .isEqualTo(TranslationSourceType.TM_MERGE.getAbbr());
     }
 }

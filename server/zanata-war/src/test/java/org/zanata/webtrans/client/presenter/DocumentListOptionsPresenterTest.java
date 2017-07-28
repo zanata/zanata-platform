@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -10,7 +10,6 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -108,10 +107,9 @@ public class DocumentListOptionsPresenterTest {
         presenter.onWorkspaceContextUpdated(workspaceContextUpdateEvent);
 
         // Then:
-        assertThat(configHolder.getState().getDocumentListPageSize(),
-                Matchers.equalTo(25));
-        assertThat(configHolder.getState().isShowError(),
-                Matchers.equalTo(false));
+        assertThat(configHolder.getState().getDocumentListPageSize())
+                .isEqualTo(25);
+        assertThat(configHolder.getState().isShowError()).isFalse();
 
         verify(userWorkspaceContext).setProjectActive(false);
         verify(display, times(3)).setOptionsState(
@@ -166,13 +164,13 @@ public class DocumentListOptionsPresenterTest {
         presenter.onBind();
         presenter.onPageSizeClick(99);
 
-        assertThat(configHolder.getState().getDocumentListPageSize(),
-                Matchers.equalTo(99));
+        assertThat(configHolder.getState().getDocumentListPageSize())
+                .isEqualTo(99);
         ArgumentCaptor<UserConfigChangeEvent> eventCaptor =
                 ArgumentCaptor.forClass(UserConfigChangeEvent.class);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getView(),
-                Matchers.equalTo(MainView.Documents));
+        assertThat(eventCaptor.getValue().getView())
+                .isEqualTo(MainView.Documents);
     }
 
     @Test
@@ -211,10 +209,9 @@ public class DocumentListOptionsPresenterTest {
         AsyncCallback<LoadOptionsResult> callback = callbackCaptor.getValue();
 
         callback.onSuccess(result);
-        assertThat(configHolder.getState().getDocumentListPageSize(),
-                Matchers.equalTo(100));
-        assertThat(configHolder.getState().isShowError(),
-                Matchers.equalTo(true));
+        assertThat(configHolder.getState().getDocumentListPageSize())
+                .isEqualTo(100);
+        assertThat(configHolder.getState().isShowError()).isTrue();
 
         verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
 

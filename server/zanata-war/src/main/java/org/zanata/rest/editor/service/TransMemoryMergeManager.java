@@ -20,28 +20,35 @@
  */
 package org.zanata.rest.editor.service;
 
+import static org.zanata.async.AsyncTaskKey.joinFields;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.GenericAsyncTaskKey;
+import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HAccount;
-import org.zanata.security.annotations.Authenticated;
+import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Patrick Huang
@@ -51,20 +58,23 @@ import com.google.common.base.MoreObjects;
 public class TransMemoryMergeManager implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(TransMemoryMergeManager.class);
+    private static final long serialVersionUID = 1364316697376958035L;
+    private static final String KEY_NAME = "TMMergeForVerKey";
+
     private final AsyncTaskHandleManager asyncTaskHandleManager;
 
     private final TransMemoryMergeService transMemoryMergeService;
 
-    private final HAccount authenticated;
+    private final ZanataIdentity identity;
 
     @Inject
     public TransMemoryMergeManager(
             AsyncTaskHandleManager asyncTaskHandleManager,
             TransMemoryMergeService transMemoryMergeService,
-            @Authenticated HAccount authenticated) {
+            ZanataIdentity identity) {
         this.asyncTaskHandleManager = asyncTaskHandleManager;
         this.transMemoryMergeService = transMemoryMergeService;
-        this.authenticated = authenticated;
+        this.identity = identity;
     }
 
     /**
@@ -77,15 +87,14 @@ public class TransMemoryMergeManager implements Serializable {
      *             if there is already a task running
      */
     public boolean startTransMemoryMerge(TransMemoryMergeRequest request) {
-        TransMemoryTaskKey key =
-                new TransMemoryTaskKey(request.projectIterationId,
+        TMMergeForDocTaskKey key =
+                new TMMergeForDocTaskKey(
                         request.documentId, request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
-        if (handleByKey == null || handleByKey.isCancelled()
-                || handleByKey.isDone()) {
+        if (taskIsNotRunning(handleByKey)) {
             TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
-            handle.setTriggeredBy(authenticated.getUsername());
+            handle.setTriggeredBy(identity.getAccountUsername());
             asyncTaskHandleManager.registerTaskHandle(handle, key);
             transMemoryMergeService.executeMergeAsync(request, handle);
             return true;
@@ -93,65 +102,83 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
+    @VisibleForTesting
+    protected static boolean taskIsNotRunning(@Nullable AsyncTaskHandle handleByKey) {
+        return handleByKey == null || handleByKey.isCancelled()
+                || handleByKey.isDone();
+    }
+
     public boolean cancelTransMemoryMerge(TransMemoryMergeCancelRequest request) {
-        TransMemoryTaskKey key =
-                new TransMemoryTaskKey(request.projectIterationId,
+        TMMergeForDocTaskKey key =
+                new TMMergeForDocTaskKey(
                         request.documentId, request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
-        if (handleByKey != null && !(handleByKey.isDone() || handleByKey.isCancelled())) {
-            TransMemoryMergeTaskHandle handle =
-                    (TransMemoryMergeTaskHandle) handleByKey;
-            String triggeredBy = handle.getTriggeredBy();
-            if (Objects.equals(authenticated.getUsername(), triggeredBy)) {
-                handle.cancel(true);
-                handle.setCancelledTime(System.currentTimeMillis());
-                handle.setCancelledBy(authenticated.getUsername());
-                log.info("task: {} cancelled by its creator", handle);
-                return true;
-            } else {
-                log.warn("{} is attempting to cancel {}", authenticated.getUsername(), handle);
-            }
+        if (taskIsNotRunning(handleByKey)) {
+            return false;
+        }
+        TransMemoryMergeTaskHandle handle =
+                (TransMemoryMergeTaskHandle) handleByKey;
+        String triggeredBy = handle.getTriggeredBy();
+        if (Objects.equals(identity.getAccountUsername(), triggeredBy)) {
+            handle.cancel(true);
+            handle.setCancelledTime(System.currentTimeMillis());
+            handle.setCancelledBy(identity.getAccountUsername());
+            log.info("task: {} cancelled by its creator", handle);
+            return true;
+        } else {
+            log.warn("{} is attempting to cancel {}", identity.getAccountUsername(), handle);
         }
         return false;
     }
 
-    static class TransMemoryTaskKey implements Serializable {
+    public AsyncTaskHandle<Void> start(Long versionId, VersionTMMerge mergeRequest) {
+        AsyncTaskKey key = makeKey(versionId, mergeRequest.getLocaleId());
+        MergeTranslationsTaskHandle handleByKey =
+                (MergeTranslationsTaskHandle) asyncTaskHandleManager.getHandleByKey(key);
+        if (taskIsNotRunning(handleByKey)) {
+            handleByKey = new MergeTranslationsTaskHandle(key);
 
-        @SuppressFBWarnings("SE_BAD_FIELD")
-        private final ProjectIterationId projectIterationId;
+            handleByKey.setTriggeredBy(identity.getAccountUsername());
+            asyncTaskHandleManager.registerTaskHandle(handleByKey, key);
+            transMemoryMergeService.startMergeTranslations(versionId,
+                    mergeRequest, handleByKey);
+        } else {
+            log.warn(
+                    "there is already a task running for version id {} and locale {}",
+                    versionId, mergeRequest.getLocaleId());
+            throw new UnsupportedOperationException("there is already a task running for version and locale");
+        }
+        return handleByKey;
+    }
+
+    @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")
+    static class TMMergeForDocTaskKey extends
+            GenericAsyncTaskKey {
+
+        private static final long serialVersionUID = -7210004008208642L;
+        private static final String KEY_NAME = "TMMergeForDocKey";
         private final DocumentId documentId;
         private final LocaleId localeId;
 
-        TransMemoryTaskKey(ProjectIterationId projectIterationId,
-                DocumentId documentId, LocaleId localeId) {
-
-            this.projectIterationId = projectIterationId;
+        TMMergeForDocTaskKey(DocumentId documentId, LocaleId localeId) {
+            // here we use numeric id to form the string id because it doesn't require URL encoding
+            super(joinFields(KEY_NAME, documentId.getId(), localeId));
             this.documentId = documentId;
             this.localeId = localeId;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TransMemoryTaskKey that = (TransMemoryTaskKey) o;
-            return Objects.equals(projectIterationId, that.projectIterationId)
-                    && Objects.equals(documentId, that.documentId)
-                    && Objects.equals(localeId, that.localeId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(projectIterationId, documentId, localeId);
-        }
-
-        @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("projectIterationId", projectIterationId)
-                    .add("documentId", documentId).add("localeId", localeId)
+                    .add("documentId", documentId)
+                    .add("localeId", localeId)
                     .toString();
         }
+    }
+
+    @VisibleForTesting
+    protected static AsyncTaskKey makeKey(Long versionId, LocaleId localeId) {
+        return new GenericAsyncTaskKey(joinFields(KEY_NAME, versionId, localeId));
     }
 }

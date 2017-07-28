@@ -37,8 +37,7 @@ import org.zanata.rest.ResourceRequest;
 
 import java.io.IOException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.*;
 
@@ -76,13 +75,14 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
             @Override
             protected void onResponse(Response response)
                     throws IOException {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ProjectIteration.class);
 
                 ProjectIteration it =
                         jsonUnmarshal(entityString, ProjectIteration.class);
-                assertThat(it.getId(), is("1.0"));
+                assertThat(it.getId()).isEqualTo("1.0");
             }
         }.run();
     }
@@ -102,13 +102,14 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);
 
                 ProjectIteration it =
                         jaxbUnmarshal(entityString, ProjectIteration.class);
-                assertThat(it.getId(), is("1.0"));
+                assertThat(it.getId()).isEqualTo("1.0");
             }
 
         }.run();
@@ -140,8 +141,9 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+                // 201
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.CREATED.getStatusCode());
             }
 
         }.run();
@@ -160,12 +162,13 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ProjectIteration.class);
                 ProjectIteration it =
                         jsonUnmarshal(entityString, ProjectIteration.class);
-                assertThat(it.getId(), is("new-iteration"));
+                assertThat(it.getId()).isEqualTo("new-iteration");
             }
 
         }.run();
@@ -197,8 +200,8 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+                // 201
+                assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
             }
 
         }.run();
@@ -216,13 +219,14 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);
 
                 ProjectIteration it =
                         jaxbUnmarshal(entityString, ProjectIteration.class);
-                assertThat(it.getId(), is("new-iteration"));
+                assertThat(it.getId()).isEqualTo("new-iteration");
             }
 
         }.run();

@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.zanata.rest.dto.Link;
@@ -45,6 +47,7 @@ import org.zanata.rest.dto.Links;
 @XmlRootElement(name = "containerStats")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "id", "refs", "stats", "detailedStats" })
+@Label("Container Translation Statistics")
 public class ContainerTranslationStatistics implements Serializable {
     private static final long serialVersionUID = 1L;
     private String id;
@@ -60,6 +63,7 @@ public class ContainerTranslationStatistics implements Serializable {
      * etc).
      */
     @XmlAttribute
+    @DocumentationExample("my-project")
     public String getId() {
         return id;
     }

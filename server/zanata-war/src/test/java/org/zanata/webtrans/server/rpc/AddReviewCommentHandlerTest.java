@@ -23,7 +23,6 @@ package org.zanata.webtrans.server.rpc;
 
 import org.jglue.cdiunit.InRequestScope;
 import org.zanata.ZanataTest;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -58,7 +57,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
@@ -158,8 +157,8 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
         inOrder.verify(textFlowTargetReviewCommentsDAO).flush();
         inOrder.verify(workspace).publish(isA(AddReviewComment.class));
 
-        assertThat(result.getComment().getId(),
-                Matchers.equalTo(new ReviewCommentId(1L)));
+        assertThat(result.getComment().getId())
+                .isEqualTo(new ReviewCommentId(1L));
     }
 
     @Test(expected = ActionException.class)

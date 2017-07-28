@@ -3,7 +3,6 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,7 +23,8 @@ import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 import com.google.common.collect.Lists;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -68,8 +68,8 @@ public class TransMemoryDetailsPresenterTest {
 
         verify(dispatcher).execute(actionCaptor.capture(),
                 resultCaptor.capture());
-        assertThat(actionCaptor.getValue().getTransUnitIdList(),
-                Matchers.equalTo(sourceIds));
+        assertThat(actionCaptor.getValue().getTransUnitIdList())
+                .isEqualTo(sourceIds);
         AbstractAsyncCallback<TransMemoryDetailsList> callback =
                 resultCaptor.getValue();
 

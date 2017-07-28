@@ -74,7 +74,7 @@ const tmx = handleActions(
     tmxExport: {
       sourceLocale: undefined,
       targetLocale: undefined,
-      showModal: true,
+      showModal: false,
       showSourceLanguages: false,
       sourceLanguages: undefined,
       type: TMX_TYPE[0]

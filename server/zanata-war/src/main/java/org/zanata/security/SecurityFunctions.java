@@ -506,8 +506,11 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "update")
     public boolean canUpdateVersionGroup(HIterationGroup group) {
-        return isLoggedIn()
-                && authenticatedAccount.get().getPerson().isMaintainer(group);
+        if (isLoggedIn()) {
+            HPerson person = authenticatedAccount.get().getPerson();
+            return group.getMaintainers().contains(person);
+        }
+        return false;
     }
 
     @GrantsPermission(actions = "insert")

@@ -8,6 +8,8 @@ import java.util.List;
  */
 public interface GenericDAO<T, ID extends Serializable> {
 
+    int MAX_PARAMS_IN_IN_CLAUSE = 50;
+
     T findById(ID id, boolean lock);
 
     void deleteAll();

@@ -310,6 +310,41 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         return count == null ? 0 : count.intValue();
     }
 
+    public long getUntranslatedOrFuzzyTextFlowCountInVersion(Long targetVersionId, HLocale targetLocale) {
+        String queryString =
+                "select count(*) from HTextFlow tf left join " +
+                        "tf.targets tfts WITH index(tfts) =:locale" +
+                        " WHERE (tf.obsolete=0 AND tf.document.projectIteration.id=:targetVersionId ) AND" +
+                        " ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale.id=:locale) AND state = :untranslatedState)) OR (:locale not in indices(tf.targets) ))";
+        Query query = getSession().createQuery(queryString)
+                .setParameter("locale", targetLocale.getId())
+                .setParameter("targetVersionId", targetVersionId)
+                .setParameter("untranslatedState", ContentState.New)
+                .setCacheable(true)
+                .setComment("TextFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion");
+        Long count = (Long) query.uniqueResult();
+        return count == null ? 0 : count;
+    }
+
+    public List<HTextFlow> getUntranslatedOrFuzzyTextFlowsInVersion(
+            Long targetVersionId,
+            HLocale targetLocale, int startIndex, int maxCount) {
+        String queryString =
+                "select distinct tf from HTextFlow tf left join " +
+                        "tf.targets tfts WITH index(tfts) =:locale" +
+                        " WHERE (tf.obsolete=0 AND tf.document.projectIteration.id=:targetVersionId ) AND" +
+                        " ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale.id=:locale) AND state = :untranslatedState)) OR (:locale not in indices(tf.targets) ))";
+
+        Query query = getSession().createQuery(queryString)
+                .setParameter("locale", targetLocale.getId())
+                .setParameter("targetVersionId", targetVersionId)
+                .setParameter("untranslatedState", ContentState.New)
+                .setFirstResult(startIndex).setMaxResults(maxCount)
+                .setCacheable(true)
+                .setComment("TextFlowDAO.getUntranslatedOrFuzzyTextFlowsInVersion");
+        return query.list();
+    }
+
     /**
      * Generate query string for text flows that have matching document id and
      * content between the given source and target version

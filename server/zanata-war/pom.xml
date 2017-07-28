@@ -858,11 +858,6 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
-      <artifactId>zanata-assets</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.zanata</groupId>
       <artifactId>zanata-frontend</artifactId>
     </dependency>
 
@@ -1405,18 +1400,6 @@
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

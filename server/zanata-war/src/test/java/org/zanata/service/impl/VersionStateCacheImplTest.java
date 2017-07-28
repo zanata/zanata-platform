@@ -1,16 +1,13 @@
 package org.zanata.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.infinispan.manager.CacheContainer;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -60,6 +57,6 @@ public class VersionStateCacheImplTest {
 
         // Then:
         verify(versionStatisticLoader).load(key); // only load the value once
-        assertThat(result, equalTo(wordStatistic));
+        assertThat(result).isEqualTo(wordStatistic);
     }
 }

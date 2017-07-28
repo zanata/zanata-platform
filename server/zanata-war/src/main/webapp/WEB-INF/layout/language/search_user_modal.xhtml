@@ -33,26 +33,30 @@
     <div class="modal__content l--pad-all-1">
       <h:form id="searchForm">
         <a4j:jsFunction name="clearSearch"
-          action="#{languageAction.clearSearchResult}" render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())"/>
+          action="#{languageAction.clearSearchResult}" render="searchResults,addSelectedBtnSection"
+          oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())"/>
 
         <a4j:jsFunction name="addSelected" limitRender="true"
           action="#{languageAction.addSelected}" render="searchResults"
           oncomplete="refreshMembersForm();jQuery('#cancel').click();zanata.modal.hide('#searchUserDialog');zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())"/>
 
         <a4j:jsFunction name="bindSearchResultTranslator" action="#{languageAction.bindSearchResultTranslator(personId, checked)}"
-          render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
+          render="searchResults,addSelectedBtnSection"
+          oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
           <a4j:param name="val1" assignTo="#{personId}"/>
           <a4j:param name="val2" assignTo="#{checked}"/>
         </a4j:jsFunction>
 
         <a4j:jsFunction name="bindSearchResultReviewer" action="#{languageAction.bindSearchResultReviewer(personId, checked)}"
-          render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
+          render="searchResults,addSelectedBtnSection"
+          oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
           <a4j:param name="val1" assignTo="#{personId}"/>
           <a4j:param name="val2" assignTo="#{checked}"/>
         </a4j:jsFunction>
 
         <a4j:jsFunction name="bindSearchResultCoordinator" action="#{languageAction.bindSearchResultCoordinator(personId, checked)}"
-          render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
+          render="searchResults,addSelectedBtnSection"
+          oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
           <a4j:param name="val1" assignTo="#{personId}"/>
           <a4j:param name="val2" assignTo="#{checked}"/>
         </a4j:jsFunction>
@@ -134,12 +138,21 @@
               #{msgs['jsf.Cancel']}
             </button>
           </div>
-          <div class="bx--inline-block">
-            <button id="addSelectedBtn" class="button--primary"
-              onclick="addSelected()">
-              #{msgs['jsf.AddSelected']}
-            </button>
-          </div>
+          <h:panelGroup layout="block"  styleClass="bx--inline-block" id="addSelectedBtnSection">
+            <ui:fragment rendered="#{languageAction.isAnySelected()}">
+              <button id="addSelectedBtn" class="button--primary"
+                  onclick="addSelected()">
+                #{msgs['jsf.AddSelected']}
+              </button>
+            </ui:fragment>
+            <ui:fragment rendered="#{not languageAction.isAnySelected()}">
+              <button id="addSelectedBtnDisabled" class="button--primary"
+                  disabled="disabled">
+                #{msgs['jsf.AddSelected']}
+              </button>
+            </ui:fragment>
+
+          </h:panelGroup>
         </div>
       </div>
 

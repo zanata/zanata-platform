@@ -1,10 +1,11 @@
 package org.zanata.rest.editor.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.Serializable;
-
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,12 +13,17 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.model.HAccount;
 import org.zanata.model.TestFixture;
+import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.rest.editor.service.TransMemoryMergeManager.TMMergeForDocTaskKey;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -33,21 +39,24 @@ public class TransMemoryMergeManagerTest {
     private AsyncTaskHandleManager asyncTaskHandleManager;
     @Mock
     private TransMemoryMergeService transMemoryMergeService;
-    private HAccount authenticated;
     private TransMemoryMergeRequest request;
+    @Mock
+    private MergeTranslationsTaskHandle taskHandle;
     @Captor
-    private ArgumentCaptor<TransMemoryMergeTaskHandle> handleCaptor;
+    private ArgumentCaptor<TransMemoryMergeTaskHandle> docTMMergeHandleCaptor;
     @Captor
-    private ArgumentCaptor<Serializable> taskKeyCaptor;
+    private ArgumentCaptor<MergeTranslationsTaskHandle> versionTMMergeHandleCaptor;
+    @Captor
+    private ArgumentCaptor<AsyncTaskKey> taskKeyCaptor;
     private TransMemoryMergeCancelRequest cancelRequest;
+    @Mock private ZanataIdentity identity;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        authenticated = new HAccount();
-        authenticated.setUsername("admin");
+
         manager = new TransMemoryMergeManager(asyncTaskHandleManager,
-                transMemoryMergeService, authenticated);
+                transMemoryMergeService, identity);
 
         WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE,
                 "project", "version", ProjectType.Gettext);
@@ -61,6 +70,17 @@ public class TransMemoryMergeManagerTest {
         cancelRequest = new TransMemoryMergeCancelRequest(
                 workspaceId.getProjectIterationId(), documentId,
                 workspaceId.getLocaleId());
+
+        when(identity.getAccountUsername()).thenReturn("admin");
+    }
+
+    @Test
+    public void canCheckIfTaskIsRunning() {
+        assertThat(TransMemoryMergeManager.taskIsNotRunning(null)).isTrue();
+        when(taskHandle.isCancelled()).thenReturn(true);
+        assertThat(TransMemoryMergeManager.taskIsNotRunning(taskHandle)).isTrue();
+        when(taskHandle.isDone()).thenReturn(true);
+        assertThat(TransMemoryMergeManager.taskIsNotRunning(taskHandle)).isTrue();
     }
 
     @Test
@@ -70,10 +90,10 @@ public class TransMemoryMergeManagerTest {
 
         assertThat(result).isTrue();
         Mockito.verify(asyncTaskHandleManager).registerTaskHandle(
-                handleCaptor.capture(), taskKeyCaptor.capture());
-        TransMemoryMergeTaskHandle handle = handleCaptor.getValue();
+                docTMMergeHandleCaptor.capture(), taskKeyCaptor.capture());
+        TransMemoryMergeTaskHandle handle = docTMMergeHandleCaptor.getValue();
         assertThat(handle.getTriggeredBy())
-                .isEqualTo(authenticated.getUsername());
+                .isEqualTo(identity.getAccountUsername());
         Mockito.verify(transMemoryMergeService).executeMergeAsync(request,
                 handle);
     }
@@ -89,9 +109,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        request.projectIterationId, request.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -99,10 +119,10 @@ public class TransMemoryMergeManagerTest {
 
         assertThat(result).isTrue();
         Mockito.verify(asyncTaskHandleManager).registerTaskHandle(
-                handleCaptor.capture(), taskKeyCaptor.capture());
-        TransMemoryMergeTaskHandle handle = handleCaptor.getValue();
+                docTMMergeHandleCaptor.capture(), taskKeyCaptor.capture());
+        TransMemoryMergeTaskHandle handle = docTMMergeHandleCaptor.getValue();
         assertThat(handle.getTriggeredBy())
-                .isEqualTo(authenticated.getUsername());
+                .isEqualTo(identity.getAccountUsername());
         Mockito.verify(transMemoryMergeService).executeMergeAsync(request,
                 handle);
     }
@@ -118,9 +138,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        request.projectIterationId, request.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -128,10 +148,10 @@ public class TransMemoryMergeManagerTest {
 
         assertThat(result).isTrue();
         Mockito.verify(asyncTaskHandleManager).registerTaskHandle(
-                handleCaptor.capture(), taskKeyCaptor.capture());
-        TransMemoryMergeTaskHandle handle = handleCaptor.getValue();
+                docTMMergeHandleCaptor.capture(), taskKeyCaptor.capture());
+        TransMemoryMergeTaskHandle handle = docTMMergeHandleCaptor.getValue();
         assertThat(handle.getTriggeredBy())
-                .isEqualTo(authenticated.getUsername());
+                .isEqualTo(identity.getAccountUsername());
         Mockito.verify(transMemoryMergeService).executeMergeAsync(request,
                 handle);
     }
@@ -139,9 +159,9 @@ public class TransMemoryMergeManagerTest {
     @Test
     public void
             startTMMergeWillReturnFalseIfProcessForSameRequestIsAlreadyRunning() {
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        request.projectIterationId, request.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(new TransMemoryMergeTaskHandle());
@@ -169,9 +189,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -191,9 +211,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -208,9 +228,9 @@ public class TransMemoryMergeManagerTest {
                 new TransMemoryMergeTaskHandle();
         existingHandle.setTriggeredBy("someone else");
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -229,17 +249,57 @@ public class TransMemoryMergeManagerTest {
                         return true;
                     }
                 };
-        existingHandle.setTriggeredBy(authenticated.getUsername());
+        existingHandle.setTriggeredBy(identity.getAccountUsername());
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
         boolean result = manager.cancelTransMemoryMerge(cancelRequest);
 
         assertThat(result).isTrue();
+    }
+
+    @Test
+    public void
+    startTMMergeForVersionIfNoProcessForThisRequestIsAlreadyRunning() {
+        VersionTMMerge versionTMMerge =
+                new VersionTMMerge(LocaleId.FR, 80, MergeRule.FUZZY,
+                        MergeRule.FUZZY, MergeRule.FUZZY,
+                        Lists.newArrayList());
+        long versionId = 1L;
+        AsyncTaskHandle<Void> result = manager.start(versionId, versionTMMerge);
+
+        Mockito.verify(asyncTaskHandleManager).registerTaskHandle(
+                versionTMMergeHandleCaptor.capture(), taskKeyCaptor.capture());
+        MergeTranslationsTaskHandle handle = versionTMMergeHandleCaptor.getValue();
+        assertThat(result).isSameAs(handle);
+        assertThat(handle.getTriggeredBy())
+                .isEqualTo(identity.getAccountUsername());
+        Mockito.verify(transMemoryMergeService).startMergeTranslations(
+                versionId, versionTMMerge,
+                handle);
+    }
+
+    @Test
+    public void
+    startTMMergeForVersionIfProcessForThisRequestIsAlreadyRunning() {
+        long versionId = 1L;
+        LocaleId localeId = LocaleId.FR;
+        when(asyncTaskHandleManager.getHandleByKey(TransMemoryMergeManager.makeKey(
+                versionId, localeId))).thenReturn(taskHandle);
+        VersionTMMerge versionTMMerge =
+                new VersionTMMerge(localeId, 80, MergeRule.FUZZY,
+                        MergeRule.FUZZY, MergeRule.FUZZY,
+                        Lists.newArrayList());
+
+        assertThatThrownBy(() -> manager.start(versionId, versionTMMerge))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("there is already a task running for version and locale");
+
+        Mockito.verifyZeroInteractions(transMemoryMergeService);
     }
 
 }

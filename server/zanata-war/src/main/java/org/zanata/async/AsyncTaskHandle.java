@@ -21,14 +21,17 @@
 package org.zanata.async;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 
+import org.zanata.security.ZanataIdentity;
+
 import com.google.common.base.Optional;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -42,18 +45,24 @@ public class AsyncTaskHandle<V> implements Serializable {
 
     @SuppressFBWarnings("SE_BAD_FIELD")
     private CompletableFuture<V> futureResult;
-    public int maxProgress = 100;
-    public int minProgress = 0;
-    public int currentProgress = 0;
+    public long maxProgress = 100;
+    public long currentProgress = 0;
     private long startTime = -1;
     private long finishTime = -1;
+    private String cancelledBy;
+    private long cancelledTime;
+    private String keyId;
 
-    public int increaseProgress(int increaseBy) {
+    public boolean isRunning() {
+        return isStarted() && !isCancelled() && !isDone();
+    }
+
+    public long increaseProgress(long increaseBy) {
         currentProgress += increaseBy;
         return currentProgress;
     }
 
-    void startTiming() {
+    protected void startTiming() {
         startTime = System.currentTimeMillis();
     }
 
@@ -95,12 +104,33 @@ public class AsyncTaskHandle<V> implements Serializable {
         if (this.startTime > 0 && currentProgress > 0) {
             long currentTime = System.currentTimeMillis();
             long timeElapsed = currentTime - this.startTime;
-            int remainingUnits = this.maxProgress - this.currentProgress;
+            long remainingUnits = this.maxProgress - this.currentProgress;
             return Optional
                     .of(timeElapsed * remainingUnits / this.currentProgress);
         } else {
             return Optional.absent();
         }
+    }
+
+    public boolean isVisibleTo(ZanataIdentity identity) {
+        return isAdminOrSameUser(this, identity);
+    }
+
+    public boolean canCancel(ZanataIdentity identity) {
+        return isAdminOrSameUser(this, identity);
+    }
+
+    private static boolean isAdminOrSameUser(AsyncTaskHandle taskHandle,
+            ZanataIdentity identity) {
+        return identity != null && (identity.hasRole("admin")
+                || triggeredBySameUser(taskHandle, identity));
+    }
+
+    private static boolean triggeredBySameUser(AsyncTaskHandle taskHandle,
+            ZanataIdentity identity) {
+        return taskHandle instanceof UserTriggeredTaskHandle && Objects.equals(
+                ((UserTriggeredTaskHandle) taskHandle).getTriggeredBy(),
+                identity.getAccountUsername());
     }
 
     /**
@@ -147,31 +177,23 @@ public class AsyncTaskHandle<V> implements Serializable {
         }
     }
 
-    void setFutureResult(final CompletableFuture<V> futureResult) {
+    protected void setFutureResult(final CompletableFuture<V> futureResult) {
         this.futureResult = futureResult;
     }
 
-    public int getMaxProgress() {
+    public long getMaxProgress() {
         return this.maxProgress;
     }
 
-    public void setMaxProgress(final int maxProgress) {
+    public void setMaxProgress(final long maxProgress) {
         this.maxProgress = maxProgress;
     }
 
-    public int getMinProgress() {
-        return this.minProgress;
-    }
-
-    public void setMinProgress(final int minProgress) {
-        this.minProgress = minProgress;
-    }
-
-    public int getCurrentProgress() {
+    public long getCurrentProgress() {
         return this.currentProgress;
     }
 
-    public void setCurrentProgress(final int currentProgress) {
+    protected void setCurrentProgress(final long currentProgress) {
         this.currentProgress = currentProgress;
     }
 
@@ -194,5 +216,29 @@ public class AsyncTaskHandle<V> implements Serializable {
      */
     public void whenTaskComplete(BiConsumer<V, Throwable> action) {
         futureResult = futureResult.whenComplete(action);
+    }
+
+    public String getCancelledBy() {
+        return this.cancelledBy;
+    }
+
+    public void setCancelledBy(final String cancelledBy) {
+        this.cancelledBy = cancelledBy;
+    }
+
+    public long getCancelledTime() {
+        return this.cancelledTime;
+    }
+
+    public void setCancelledTime(final long cancelledTime) {
+        this.cancelledTime = cancelledTime;
+    }
+
+    public String getKeyId() {
+        return keyId;
+    }
+
+    public void setKeyId(String keyId) {
+        this.keyId = keyId;
     }
 }

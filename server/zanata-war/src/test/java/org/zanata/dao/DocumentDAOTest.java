@@ -20,10 +20,6 @@
  */
 package org.zanata.dao;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-
 import javax.annotation.Nullable;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -38,6 +34,8 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
 import com.google.common.base.Function;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a
@@ -95,9 +93,8 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
             String unchangedHash =
                     documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                             ITERATION_SLUG, DOC_ID, as);
-            assertThat(
-                    "Translated Document state hash function not repeatable",
-                    unchangedHash, equalTo(docHash));
+            assertThat(unchangedHash).isEqualTo(docHash)
+                    .as("Translated Document state hash function not repeatable");
         }
     }
 
@@ -120,13 +117,11 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
                 documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                         ITERATION_SLUG, DOC_ID, as);
         if (expectHashChange) {
-            assertThat(
-                    "Translated document hash must change when something is changed",
-                    changedDocHash, not(equalTo(docHash)));
+            assertThat(changedDocHash).isNotEqualTo(docHash)
+                    .as("Translated document hash must change when something is changed");
         } else {
-            assertThat(
-                    "Translated document hash must not change when nothing is changed",
-                    changedDocHash, equalTo(docHash));
+            assertThat(changedDocHash).isEqualTo(docHash)
+                    .as("Translated document hash must not change when nothing is changed");
         }
     }
 

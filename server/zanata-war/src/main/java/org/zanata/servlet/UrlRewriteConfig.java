@@ -138,17 +138,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}/{section}").to("/iteration/view.xhtml"))
                 .where("section").matches(".*")
 
-                /* JSF serves zanata-assets with suffix of .xhtml only.
-                   This is to make sure any reference to zanata-assets
-                   without .xhtml can access the resource.
-                   e.g. jars/assets/style.css forwards to
-                   jars/assets/style.css.xhtml
-                */
-                .addRule(Join.pathNonBinding("/javax.faces.resource/jars/assets/{path}")
-                        .to("/javax.faces.resource/jars/assets/{path}.xhtml"))
-                .when(Direction.isInbound())
-                .where("path").matches(".*(?<!.xhtml)")
-
                 .addRule(Join.path("/language/view/{id}").to("/language/language.xhtml"))
 
                 .addRule(Join.path("/language/view/{id}/{section}").to("/language/language.xhtml"))

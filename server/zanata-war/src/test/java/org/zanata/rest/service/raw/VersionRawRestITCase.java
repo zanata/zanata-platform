@@ -20,8 +20,7 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
@@ -64,7 +63,8 @@ public class VersionRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, VersionInfo.class);
             }
@@ -83,7 +83,8 @@ public class VersionRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, VersionInfo.class);
             }

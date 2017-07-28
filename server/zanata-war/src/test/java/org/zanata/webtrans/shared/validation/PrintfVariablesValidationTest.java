@@ -20,11 +20,6 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +31,8 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -61,8 +58,8 @@ public class PrintfVariablesValidationTest {
 
     @Test
     public void idIsSet() {
-        assertThat(printfVariablesValidation.getId(),
-                is(ValidationId.PRINTF_VARIABLES));
+        assertThat(printfVariablesValidation.getId())
+                .isEqualTo(ValidationId.PRINTF_VARIABLES);
     }
 
     @Test
@@ -72,7 +69,7 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -82,9 +79,9 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                contains(messages.varsMissing(Arrays.asList("%1v"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList)
+                .contains(messages.varsMissing(Arrays.asList("%1v")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -94,9 +91,9 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                contains(messages.varsMissing(Arrays.asList("%a", "%b", "%c"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList)
+                .contains(messages.varsMissing(Arrays.asList("%a", "%b", "%c")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -107,9 +104,9 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                contains(messages.varsAdded(Arrays.asList("%2$#x"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList)
+                .contains(messages.varsAdded(Arrays.asList("%2$#x")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -120,9 +117,9 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList, contains(messages.varsAdded(Arrays.asList(
-                "%1$-0lls", "%2$-0hs", "%3$-0ls"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.varsAdded(Arrays.asList(
+                "%1$-0lls", "%2$-0hs", "%3$-0ls")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -132,11 +129,9 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                containsInAnyOrder(messages.varsAdded(Arrays.asList("%z")),
-                        messages.varsMissing(Arrays.asList("%x"))));
-        assertThat(errorList.size(), is(2));
+        assertThat(errorList).contains(messages.varsAdded(Arrays.asList("%z")),
+                        messages.varsMissing(Arrays.asList("%x")));
+        assertThat(errorList.size()).isEqualTo(2);
 
     }
 
@@ -147,8 +142,8 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList, contains(messages.varsAdded(Arrays.asList("%l"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.varsAdded(Arrays.asList("%l")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -158,9 +153,8 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList,
-                contains(messages.varsMissing(Arrays.asList("%l"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.varsMissing(Arrays.asList("%l")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 
     @Test
@@ -170,11 +164,10 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(
-                errorList,
-                contains(messages.varsMissing(Arrays.asList("%z")),
-                        messages.varsAdded(Arrays.asList("%zz"))));
-        assertThat(errorList.size(), is(2));
+        assertThat(errorList)
+                .contains(messages.varsMissing(Arrays.asList("%z")),
+                        messages.varsAdded(Arrays.asList("%zz")));
+        assertThat(errorList.size()).isEqualTo(2);
     }
 
     @Test
@@ -185,8 +178,8 @@ public class PrintfVariablesValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList, contains(messages.varsMissing(Arrays.asList("%s",
-                "%d", "%-25s", "%r"))));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.varsMissing(Arrays.asList("%s",
+                "%d", "%-25s", "%r")));
+        assertThat(errorList.size()).isEqualTo(1);
     }
 }

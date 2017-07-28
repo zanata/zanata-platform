@@ -3,7 +3,6 @@ package org.zanata.webtrans.client.presenter;
 import java.util.Date;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -38,7 +37,8 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -111,8 +111,8 @@ public class TranslationHistoryPresenterTest {
         verify(display).setTitle("translation history");
         verify(display).resetView();
         verify(display).center();
-        assertThat(actionCaptor.getValue().getTransUnitId(),
-                Matchers.equalTo(transUnitId));
+        assertThat(actionCaptor.getValue().getTransUnitId())
+                .isEqualTo(transUnitId);
 
         // And on failure
         AsyncCallback<GetTranslationHistoryResult> result =
@@ -169,7 +169,7 @@ public class TranslationHistoryPresenterTest {
                 resultCaptor.getValue();
         result.onSuccess(createTranslationHistory(latest, historyItem));
         verify(display).setData(listArgumentCaptor.capture());
-        assertThat(listArgumentCaptor.getValue(), Matchers.hasSize(3));
+        assertThat(listArgumentCaptor.getValue()).hasSize(3);
     }
 
     private static GetTranslationHistoryResult createTranslationHistory(
@@ -189,8 +189,8 @@ public class TranslationHistoryPresenterTest {
                 ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
         verify(eventBus).fireEvent(eventCaptor.capture());
 
-        assertThat(eventCaptor.getValue().getTargetResult(),
-                Matchers.equalTo(contents));
+        assertThat(eventCaptor.getValue().getTargetResult())
+                .isEqualTo(contents);
     }
 
     @Test
@@ -201,8 +201,8 @@ public class TranslationHistoryPresenterTest {
 
         verify(dispatcher).execute(addReviewCommentActionArgumentCaptor.capture(),
                 addReviewCommentResultCaptor.capture());
-        assertThat(addReviewCommentActionArgumentCaptor.getValue().getContent(),
-                Matchers.equalTo("some comment"));
+        assertThat(addReviewCommentActionArgumentCaptor.getValue().getContent())
+                .isEqualTo("some comment");
 
         AsyncCallback<AddReviewCommentResult> callback =
                 addReviewCommentResultCaptor.getValue();
@@ -236,8 +236,7 @@ public class TranslationHistoryPresenterTest {
 
         verify(display).setData(listArgumentCaptor.capture());
         List<ComparableByDate> result = listArgumentCaptor.getValue();
-        assertThat(result,
-                Matchers.<ComparableByDate> contains(comment, latest, item));
+        assertThat(result).contains(comment, latest, item);
     }
 
     @Test
@@ -268,8 +267,8 @@ public class TranslationHistoryPresenterTest {
         when(display.getComment()).thenReturn("blah");
         KeyShortcut keyShortcut = keyShortcutCapture.getValue();
 
-        assertThat(keyShortcut.getAllKeys().iterator().next(),
-                Matchers.equalTo(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER)));
+        assertThat(keyShortcut.getAllKeys().iterator().next())
+                .isEqualTo(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
         keyShortcut.getHandler().onKeyShortcut(mock(KeyShortcutEvent.class));
 
         verify(display).getComment();

@@ -41,6 +41,7 @@ public class TransMemoryQuery implements IsSerializable, Serializable {
     private Condition project;
     private Condition document;
     private Condition res;
+    private List<Long> fromVersionIds;
     private Condition includeOwnTranslation = new Condition(true, null);
 
     @SuppressWarnings("unused")
@@ -67,11 +68,13 @@ public class TransMemoryQuery implements IsSerializable, Serializable {
     }
 
     public TransMemoryQuery(List<String> queries, SearchType searchType,
-            Condition project, Condition document, Condition res) {
+            Condition project, Condition document, Condition res,
+            List<Long> fromVersionIds) {
         this(queries, searchType);
         this.project = project;
         this.document = document;
         this.res = res;
+        this.fromVersionIds = fromVersionIds;
     }
 
     public TransMemoryQuery(String query, SearchType searchType,
@@ -108,6 +111,10 @@ public class TransMemoryQuery implements IsSerializable, Serializable {
 
     public SearchType getSearchType() {
         return searchType;
+    }
+
+    public List<Long> getFromVersionIds() {
+        return fromVersionIds;
     }
 
     @Override

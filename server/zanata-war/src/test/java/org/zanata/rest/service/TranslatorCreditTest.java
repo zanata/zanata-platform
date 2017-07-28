@@ -2,11 +2,10 @@ package org.zanata.rest.service;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.Set;
 import java.util.TreeSet;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TranslatorCreditTest {
@@ -37,7 +36,7 @@ public class TranslatorCreditTest {
     @Test
     public void testToString() {
         TranslatorCredit cred = getAnne2011();
-        assertThat(cred.toString(), is("Anne <anne@example.org>, 2011."));
+        assertThat(cred.toString()).isEqualTo("Anne <anne@example.org>, 2011.");
     }
 
     @Test
@@ -47,9 +46,9 @@ public class TranslatorCreditTest {
         set.add(getAnne2011());
         set.add(getAnne2012());
         set.add(getBob2010());
-        assertThat(set.toString(), is("[Bob <bob@example.org>, 2010., "
+        assertThat(set.toString()).isEqualTo("[Bob <bob@example.org>, 2010., "
                 + "Anne <anne@example.org>, 2011., "
-                + "Anne <anne@example.org>, 2012.]"));
+                + "Anne <anne@example.org>, 2012.]");
     }
 
 }

@@ -29,6 +29,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.zanata.rest.dto.CopyTransStatus;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
@@ -55,26 +57,23 @@ public interface CopyTransResource extends RestResource {
      *            Project version identifier
      * @param docId
      *            Document Id to copy translations into.
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Translation copy was started for the given document.
-     *         The status of the process is also returned in the response
-     *         contents.<br>
-     *         UNAUTHORIZED(401) - If the user does not have the proper
-     *         permissions to perform this operation.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation. Translation copy will
-     *         not start in this case.
      */
     @POST
     @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
     // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}
-            @TypeHint(CopyTransStatus.class)
-            public
-            CopyTransStatus startCopyTrans(
-                    @PathParam("projectSlug") String projectSlug,
-                    @PathParam("iterationSlug") String iterationSlug,
-                    @PathParam("docId") String docId);
+    @TypeHint(CopyTransStatus.class)
+    @StatusCodes({
+            @ResponseCode(code = 200,
+                    condition = "Translation copy was started for the given document. " +
+                            "The status of the process is also returned in the response's body."),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
+    public
+    CopyTransStatus startCopyTrans(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("iterationSlug") String iterationSlug,
+            @PathParam("docId") String docId);
 
     /**
      * Retrieves the status for a Translation copy process for a document.
@@ -85,22 +84,21 @@ public interface CopyTransResource extends RestResource {
      *            Project version identifier
      * @param docId
      *            Document Id
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - A Translation copy process was found, and its status
-     *         will be returned in the body of the response.<br>
-     *         NOT_FOUND(404) - If there is no record of a recent translation
-     *         copy process for the specified document. INTERNAL SERVER
-     *         ERROR(500) - If there is an unexpected error in the server while
-     *         performing this operation.
      */
     @GET
     @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
     // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}
-            @TypeHint(CopyTransStatus.class)
-            public
-            CopyTransStatus getCopyTransStatus(
-                    @PathParam("projectSlug") String projectSlug,
-                    @PathParam("iterationSlug") String iterationSlug,
-                    @PathParam("docId") String docId);
+    @TypeHint(CopyTransStatus.class)
+    @StatusCodes({
+            @ResponseCode(code = 200,
+                    condition = "A translation copy process was found, and its " +
+                            "status will be returned in the body of the response"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
+    public
+    CopyTransStatus getCopyTransStatus(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("iterationSlug") String iterationSlug,
+            @PathParam("docId") String docId);
 }

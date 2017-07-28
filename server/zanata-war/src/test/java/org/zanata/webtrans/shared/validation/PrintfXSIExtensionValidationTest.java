@@ -1,10 +1,5 @@
 package org.zanata.webtrans.shared.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +11,8 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -40,8 +37,8 @@ public class PrintfXSIExtensionValidationTest {
 
     @Test
     public void idAndDescriptionAreSet() {
-        assertThat(printfVariablesValidation.getId(),
-                is(ValidationId.PRINTF_XSI_EXTENSION));
+        assertThat(printfVariablesValidation.getId())
+                .isEqualTo(ValidationId.PRINTF_XSI_EXTENSION);
     }
 
     @Test
@@ -51,7 +48,7 @@ public class PrintfXSIExtensionValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(0));
+        assertThat(errorList.size()).isEqualTo(0);
     }
 
     @Test
@@ -61,14 +58,12 @@ public class PrintfXSIExtensionValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(3));
+        assertThat(errorList.size()).isEqualTo(3);
 
-        assertThat(
-                errorList,
-                containsInAnyOrder(
-                        messages.varsMissing(Arrays.asList("%3$lu")),
-                        messages.varsAdded(Arrays.asList("%lu")),
-                        messages.mixVarFormats()));
+        assertThat(errorList).contains(
+                messages.varsMissing(Arrays.asList("%3$lu")),
+                messages.varsAdded(Arrays.asList("%lu")),
+                messages.mixVarFormats());
     }
 
     @Test
@@ -78,13 +73,12 @@ public class PrintfXSIExtensionValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(3));
+        assertThat(errorList.size()).isEqualTo(3);
 
-        assertThat(
-                errorList,
-                containsInAnyOrder(messages.varPositionOutOfRange("%99$lu"),
-                        messages.varsMissing(Arrays.asList("%1$s", "%3$lu")),
-                        messages.varsAdded(Arrays.asList("%3$s", "%99$lu"))));
+        assertThat(errorList).contains(
+                messages.varPositionOutOfRange("%99$lu"),
+                messages.varsMissing(Arrays.asList("%1$s", "%3$lu")),
+                messages.varsAdded(Arrays.asList("%3$s", "%99$lu")));
     }
 
     @Test
@@ -95,13 +89,12 @@ public class PrintfXSIExtensionValidationTest {
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
 
-        assertThat(errorList.size(), is(3));
-        assertThat(
-                errorList,
-                containsInAnyOrder(messages.varsMissing(Arrays.asList("%1$s")),
-                        messages.varsAdded(Arrays.asList("%3$s")), messages
-                                .varPositionDuplicated(Arrays.asList("%3$s",
-                                        "%3$lu"))));
+        assertThat(errorList.size()).isEqualTo(3);
+        assertThat(errorList).contains(
+                messages.varsMissing(Arrays.asList("%1$s")),
+                messages.varsAdded(Arrays.asList("%3$s")), messages
+                        .varPositionDuplicated(Arrays.asList("%3$s",
+                                "%3$lu")));
     }
 
     @Test
@@ -110,14 +103,11 @@ public class PrintfXSIExtensionValidationTest {
         String target = "%2$d %2$s %9$lu %z";
         List<String> errorList =
                 printfVariablesValidation.validate(source, target);
-
-        assertThat(errorList, hasItem(messages.varPositionOutOfRange("%9$lu")));
-        assertThat(errorList, hasItem(messages.mixVarFormats()));
-        assertThat(errorList, hasItem(messages.varPositionDuplicated(Arrays
-                .asList("%2$d", "%2$s"))));
-        assertThat(errorList,
-                hasItem(messages.varsMissing(Arrays.asList("%1$s", "%3$lu"))));
-        assertThat(errorList, hasItem(messages.varsAdded(Arrays.asList("%2$s",
-                "%9$lu", "%z"))));
+        assertThat(errorList).contains(
+                messages.varPositionOutOfRange("%9$lu"),
+                messages.mixVarFormats(),
+                messages.varPositionDuplicated(Arrays.asList("%2$d", "%2$s")),
+                messages.varsMissing(Arrays.asList("%1$s", "%3$lu")),
+                messages.varsAdded(Arrays.asList("%2$s", "%9$lu", "%z")));
     }
 }

@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.shared.rest.dto;
 
+import java.util.List;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -30,7 +32,7 @@ import org.zanata.webtrans.shared.rpc.MergeRule;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMergeRequest {
+public class TransMemoryMergeRequest implements HasTMMergeCriteria {
     @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
             justification = "For future implement")
     public EditorClientId editorClientId;
@@ -71,23 +73,29 @@ public class TransMemoryMergeRequest {
     public TransMemoryMergeRequest() {
     }
 
+    @Override
     public int getThresholdPercent() {
         return thresholdPercent;
     }
 
+    @Override
     public MergeRule getDifferentProjectRule() {
         return differentProjectRule;
     }
 
+    @Override
     public MergeRule getDifferentDocumentRule() {
         return differentDocumentRule;
     }
 
+    @Override
     public MergeRule getDifferentContextRule() {
         return differentContextRule;
     }
 
+    @Override
     public MergeRule getImportedMatchRule() {
         return importedMatchRule;
     }
+
 }

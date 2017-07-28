@@ -1,11 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.runner.RunWith;
@@ -22,6 +20,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang
@@ -73,23 +73,21 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
         configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(true));
         SaveOptionsAction action = new SaveOptionsAction(configMap);
         SaveOptionsResult result = handler.execute(action, null);
-        assertThat(result.isSuccess(), Matchers.equalTo(true));
+        assertThat(result.isSuccess()).isTrue();
         List<HAccountOption> accountOptions =
                 getEm().createQuery("from HAccountOption", HAccountOption.class)
                         .getResultList();
-        assertThat(accountOptions, Matchers.hasSize(configMap.size()));
+        assertThat(accountOptions).hasSize(configMap.size());
         Map<String, HAccountOption> editorOptions =
                 getAuthenticatedAcount(getEm()).getEditorOptions();
-        assertThat(editorOptions.values(),
-                Matchers.containsInAnyOrder(accountOptions.toArray()));
+        assertThat(editorOptions.values()).containsAll(accountOptions);
         handler.execute(action, null); // save again should override previous
         // value
         accountOptions =
                 getEm().createQuery("from HAccountOption", HAccountOption.class)
                         .getResultList();
-        assertThat(accountOptions, Matchers.hasSize(configMap.size()));
-        assertThat(editorOptions.values(),
-                Matchers.containsInAnyOrder(accountOptions.toArray()));
+        assertThat(accountOptions).hasSize(configMap.size());
+        assertThat(editorOptions.values()).containsAll(accountOptions);
     }
 
     @Test

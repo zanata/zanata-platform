@@ -275,8 +275,8 @@ public abstract class DBUnitProvider {
         try {
             con.getConnection()
                     .prepareStatement("set referential_integrity FALSE")
-                    .execute(); // HSQL
-            // DB
+                    // HSQLDB
+                    .execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -294,8 +294,8 @@ public abstract class DBUnitProvider {
         try {
             con.getConnection()
                     .prepareStatement("set referential_integrity TRUE")
-                    .execute(); // HSQL
-            // DB
+                    // HSQLDB
+                    .execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

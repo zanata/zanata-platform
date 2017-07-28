@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
@@ -13,7 +12,6 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,6 +24,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.service.impl.TranslationMemoryServiceImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -156,7 +155,7 @@ public class TransMemoryPresenterTest {
         TransMemoryResultItem object =
                 new TransMemoryResultItem(new ArrayList<String>(),
                         new ArrayList<String>(), MatchType.ApprovedInternal, 0,
-                        0);
+                        0, null);
         when(display.getSearchType()).thenReturn(searchType);
 
         presenter.showTMDetails(object);
@@ -169,7 +168,7 @@ public class TransMemoryPresenterTest {
         TransMemoryResultItem object =
                 new TransMemoryResultItem(new ArrayList<String>(),
                         new ArrayList<String>(), MatchType.ApprovedInternal, 0,
-                        0);
+                        0, null);
         ArgumentCaptor<CopyDataToEditorEvent> eventCaptor =
                 ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
 
@@ -300,11 +299,10 @@ public class TransMemoryPresenterTest {
                 callbackCaptor.capture());
         // verify action
         GetTranslationMemory action = getTMActionCaptor.getValue();
-        assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
-        assertThat(action.getLocaleId(), Matchers.equalTo(targetLocale));
-        assertThat(action.getSourceLocaleId(), Matchers.equalTo(sourceLocale));
-        assertThat(action.getQuery().getQueries(),
-                Matchers.contains("search query"));
+        assertThat(action.getSearchType()).isEqualTo(SearchType.FUZZY);
+        assertThat(action.getLocaleId()).isEqualTo(targetLocale);
+        assertThat(action.getSourceLocaleId()).isEqualTo(sourceLocale);
+        assertThat(action.getQuery().getQueries()).contains("search query");
     }
 
     @Test
@@ -446,8 +444,8 @@ public class TransMemoryPresenterTest {
         presenter.onTransMemoryCopy(new TransMemoryShortcutCopyEvent(0));
 
         verify(eventBus).fireEvent(copyTMEventCaptor.capture());
-        assertThat(copyTMEventCaptor.getValue().getTargetResult(),
-                Matchers.equalTo(targetContents));
+        assertThat(copyTMEventCaptor.getValue().getTargetResult())
+                .isEqualTo(targetContents);
     }
 
     @Test
@@ -461,7 +459,7 @@ public class TransMemoryPresenterTest {
 
         verify(tMTextBox).setText("");
         verify(display).clearTableContent();
-        assertThat(currentResult, Matchers.<TransMemoryResultItem> empty());
+        assertThat(currentResult).isEmpty();
     }
 
     @Test
@@ -512,13 +510,13 @@ public class TransMemoryPresenterTest {
      * it.
      *
      * @throws Exception
-     * @see org.zanata.webtrans.server.rpc.GetTransMemoryHandler.TransMemoryResultComparator
+     * @see TranslationMemoryServiceImpl.TransMemoryResultComparator
      */
     @Test
     public void matchTypeEnumOrder() throws Exception {
-        assertThat(MatchType.ApprovedInternal,
-                greaterThan(MatchType.TranslatedInternal));
-        assertThat(MatchType.TranslatedInternal,
-                greaterThan(MatchType.Imported));
+        assertThat(MatchType.ApprovedInternal)
+                .isGreaterThan(MatchType.TranslatedInternal);
+        assertThat(MatchType.TranslatedInternal)
+                .isGreaterThan(MatchType.Imported);
     }
 }

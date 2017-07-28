@@ -20,44 +20,34 @@ class TMXExportModal extends Component {
     show: PropTypes.bool,
     showSourceLanguages: PropTypes.bool,
     type: PropTypes.oneOf(TMX_TYPE).isRequired,
-    project: PropTypes.string,
-    version: PropTypes.string,
     srcLanguages: PropTypes.arrayOf(PropTypes.object),
     handleOnClose: PropTypes.func,
     handleToggleShowSourceLanguages: PropTypes.func,
     handleExportTMX: PropTypes.func,
     handleInitLoad: PropTypes.func.isRequired,
-    params: PropTypes.object
+    params: PropTypes.shape({
+      project: PropTypes.string.isRequired,
+      version: PropTypes.string.isRequired
+    })
   }
 
   componentDidMount () {
-    const project = this.props.params.project
-    const version = this.props.params.version
-    let type
-    if ((project || !isUndefined(project)) &&
-        (!version || isUndefined(version))) {
-      type = TMX_TYPE[1] // project type
-    } else if ((project || !isUndefined(project)) &&
-        (version || !isUndefined(version))) {
-      type = TMX_TYPE[2] // project version type
-    } else {
-      type = TMX_TYPE[0] // all type
-    }
-    this.props.handleInitLoad(type, project, version)
+    const { project, version } = this.props.params
+    this.props.handleInitLoad(project, version)
   }
 
   render () {
     const {
       show,
       showSourceLanguages,
-      project,
-      version,
       srcLanguages,
       handleOnClose,
       handleToggleShowSourceLanguages,
       handleExportTMX,
       type
     } = this.props
+
+    const {project, version} = this.props.params
 
     let title = ''
     let question = ''
@@ -67,11 +57,11 @@ class TMXExportModal extends Component {
         question = 'Are you sure you want to all projects to TMX?'
         break
       case 'project':
-        title = 'Export project ' + project + ' to TMX'
+        title = 'Export project \'' + project + '\' to TMX'
         question = 'Are you sure you want to export this project to TMX?'
         break
       case 'version':
-        title = 'Export version ' + version + ' to TMX'
+        title = 'Export version \'' + version + '\' to TMX'
         question = 'Are you sure you want to this version to TMX?'
         break
       default:
@@ -110,7 +100,7 @@ class TMXExportModal extends Component {
                 <Button
                   bsStyle='primary'
                   bsSize='small'
-                  onClick={handleExportTMX}>
+                  onClick={handleExportTMX(srcLang.localeDetails.localeId)}>
                   Download
                 </Button>
                 <span className='asterix'>*</span>
@@ -120,42 +110,45 @@ class TMXExportModal extends Component {
       })
     }
     return (
-      <Modal show={show} onHide={handleOnClose}>
-        <Modal.Header>
-          <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {showSourceLanguages && !isEmpty(srcLanguagesRow)
-            ? <span className='tmx-export'>
-              <p className='lead'>Source languages</p>
-              <Table className='tmx-table'>
-                <tbody>
-                  {srcLanguagesRow}
-                </tbody>
-              </Table>
-            </span>
-            : <span className='tmx-export'>
-              <p>{question}<br />
-                <strong>Default source language
-                  {isEmpty(srcLanguagesRow)
-                    ? <span> en-US</span>
-                    : <a onClick={handleToggleShowSourceLanguages}> en-US</a>
-                  }
-                </strong>
-              </p>
-              <br />
-              <p>
-                <Button
-                  bsStyle='primary'
-                  onClick={handleExportTMX}>
-                  Download
-                </Button>
-              </p>
-            </span>
-          }
-
-        </Modal.Body>
-      </Modal>
+      <div className='page wide-view-theme'>
+        <div className='center-block'>
+          <Modal show={show} onHide={handleOnClose} id='tmx-export-modal'>
+            <Modal.Header>
+              <Modal.Title>{title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {showSourceLanguages && !isEmpty(srcLanguagesRow)
+                ? <span className='tmx-export'>
+                  <p className='lead'>Source languages</p>
+                  <Table className='tmx-table'>
+                    <tbody>
+                      {srcLanguagesRow}
+                    </tbody>
+                  </Table>
+                </span>
+                : <span className='tmx-export'>
+                  <p>{question}<br />
+                    <strong>Default source language
+                      {isEmpty(srcLanguagesRow)
+                        ? <span> en-US</span>
+                        : <a
+                          onClick={handleToggleShowSourceLanguages}> en-US</a>
+                      }
+                    </strong>
+                  </p>
+                  <br />
+                  <p>
+                    <Button bsStyle='primary'
+                      onClick={handleExportTMX}>
+                      Download
+                    </Button>
+                  </p>
+                </span>
+              }
+            </Modal.Body>
+          </Modal>
+        </div>
+      </div>
     )
   }
 }
@@ -166,9 +159,7 @@ const mapStateToProps = (state) => {
     show: tmxExport.showModal,
     srcLanguages: tmxExport.sourceLanguages,
     showSourceLanguages: tmxExport.showSourceLanguages,
-    type: tmxExport.type,
-    project: tmxExport.project,
-    version: tmxExport.version
+    type: tmxExport.type
   }
 }
 
@@ -181,11 +172,12 @@ const mapDispatchToProps = (dispatch) => {
     handleToggleShowSourceLanguages: () => {
       dispatch(toggleShowSourceLanguages())
     },
-    handleExportTMX: () => {
-      dispatch(exportTMX())
+    handleExportTMX: (localeId) => {
+      dispatch(exportTMX(localeId))
+      dispatch(showExportTMXModal(false))
     },
-    handleInitLoad: (type, project, version) => {
-      dispatch(tmxInitialLoad(type, project, version))
+    handleInitLoad: (project, version) => {
+      dispatch(tmxInitialLoad(project, version))
     }
   }
 }

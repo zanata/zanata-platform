@@ -36,4 +36,8 @@ public interface IndexFieldLabels {
     public static final String GLOSSARY_QUALIFIED_NAME = "glossaryEntry.glossary.qualifiedName";
 
     String PROJECT_VERSION_ID_FIELD = "projectVersionId";
+    /*
+     * Represents the full slug without tokenize
+     */
+    String FULL_SLUG_FIELD = "fullSlug";
 }

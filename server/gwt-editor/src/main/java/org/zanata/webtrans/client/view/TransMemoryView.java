@@ -5,6 +5,7 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.util.ShortString;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
@@ -91,7 +92,7 @@ public class TransMemoryView extends Composite implements
     UiMessages messages;
 
     @UiField
-    InlineLabel searchOnly, tmOnly, diffLegendLabel;
+    InlineLabel searchOnly, tmOnly, diffLegendLabel, notMatching;
 
     @UiField
     FocusPanel diffLegend;
@@ -235,10 +236,14 @@ public class TransMemoryView extends Composite implements
         if (determineDiffMode() == DiffMode.NORMAL) {
             tmOnly.removeStyleName("is-hidden");
             searchOnly.removeStyleName("is-hidden");
+            notMatching.removeStyleName("CodeMirror-searching");
+            notMatching.setText(messages.matching());
             diffLegendLabel.setText(messages.tmDiffHighlighting());
         } else {
             tmOnly.addStyleName("is-hidden");
             searchOnly.addStyleName("is-hidden");
+            notMatching.addStyleName("CodeMirror-searching");
+            notMatching.setText(messages.notMatching());
             diffLegendLabel.setText(messages.tmHighlighting());
         }
     }
@@ -340,7 +345,7 @@ public class TransMemoryView extends Composite implements
             Anchor infoCell = new Anchor();
             if (item.getMatchType() == MatchType.Imported) {
                 String originStr = Joiner.on(", ").join(item.getOrigins());
-                infoCell.setText(shorten(originStr, 10));
+                infoCell.setText(ShortString.shorten(originStr, 10));
                 infoCell.setTitle(originStr);
             } else {
                 infoCell.setStyleName("i i--info txt--lead");
@@ -356,15 +361,6 @@ public class TransMemoryView extends Composite implements
             resultTable.getFlexCellFormatter().setStyleName(i + 1, ORIGIN_COL,
                     "txt--align-center");
         }
-    }
-
-    // TODO: Replace with ShortString::shorten when gwt can resolve the module
-    private String shorten(String s, int maxLength) {
-        String ellipsis = "…";
-        if (s.length() <= maxLength) {
-            return s;
-        }
-        return s.substring(0, maxLength - ellipsis.length()) + ellipsis;
     }
 
     private static boolean odd(int n) {
