@@ -26,6 +26,7 @@ import {
 } from '../../utils/prop-types-util.js'
 import {isProcessEnded} from '../../utils/EnumValueUtils'
 import {getVersionLanguageSettingsUrl} from '../../utils/UrlHelper'
+import specialKeys from 'combokeys/helpers/special-keys-map'
 
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
@@ -194,7 +195,7 @@ class TMMergeModal extends Component {
     /* params: projectSlug and versionSlug */
     fetchVersionLocales: PropTypes.func.isRequired,
     showTMMergeModal: PropTypes.bool.isRequired,
-    openTMMergeModal: PropTypes.func.isRequired,
+    toggleTMMergeModal: PropTypes.func.isRequired,
     /* params: project object */
     fetchProjectPage: PropTypes.func.isRequired,
     projectSlug: PropTypes.string.isRequired,
@@ -395,21 +396,21 @@ class TMMergeModal extends Component {
   }
   // Close modal on escape key pressed
   handleKeyDown = (e) => {
-    if (e.keyCode === 27) {
-      this.props.openTMMergeModal()
+    if (specialKeys[e.keyCode] === 'esc') {
+      this.props.toggleTMMergeModal()
     }
   }
   // Close modal when clicking outside
   handleClickOutsideModal = (e) => {
     const classname = e.target.className
     if (classname === 'modal' || classname === 'container') {
-      this.props.openTMMergeModal()
+      this.props.toggleTMMergeModal()
     }
   }
   render () {
     const {
       showTMMergeModal,
-      openTMMergeModal,
+      toggleTMMergeModal,
       projectSlug,
       versionSlug,
       projectVersions,
@@ -455,7 +456,7 @@ class TMMergeModal extends Component {
       <span>
         <Row>
           <Button bsStyle='link' className='btn-left link-danger'
-            onClick={openTMMergeModal}>
+            onClick={toggleTMMergeModal}>
             Close
           </Button>
           <Button bsStyle='primary' onClick={this.submitForm}
@@ -468,7 +469,7 @@ class TMMergeModal extends Component {
     )
     return (
       <Modal id="TM-merge-modal" show={showTMMergeModal}
-        onHide={openTMMergeModal} onKeyDown={this.handleKeyDown}
+        onHide={toggleTMMergeModal} onKeyDown={this.handleKeyDown}
         onClick={this.handleClickOutsideModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
@@ -519,7 +520,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchProjectPage: (project) => {
       dispatch(fetchProjectPage(project))
     },
-    openTMMergeModal: () => {
+    toggleTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
     },
     startMergeProcess: (projectSlug, versionSlug, mergeOptions) => {

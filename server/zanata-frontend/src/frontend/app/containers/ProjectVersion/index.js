@@ -13,7 +13,7 @@ import {
  */
 class ProjectVersion extends Component {
   static propTypes = {
-    openTMMergeModal: PropTypes.func.isRequired,
+    toggleTMMergeModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
       project: PropTypes.string.isRequired,
       version: PropTypes.string.isRequired
@@ -36,7 +36,7 @@ class ProjectVersion extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    openTMMergeModal: () => {
+    toggleTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
     }
   }

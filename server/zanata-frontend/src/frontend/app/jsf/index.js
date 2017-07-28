@@ -46,7 +46,7 @@ const store = ((initialState) => {
 const enhancedHistory = syncHistoryWithStore(history, store)
 export default function mountReactComponent () {
   // Attaching to window object so modal can be triggered from the JSF page
-  window.openTMMergeModal = () => store.dispatch(toggleTMMergeModal())
+  window.toggleTMMergeModal = () => store.dispatch(toggleTMMergeModal())
   const mountPoint = document.getElementById('jsfReactRoot')
 
   render(<JsfRoot store={store} history={enhancedHistory} />, mountPoint)
