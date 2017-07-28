@@ -238,9 +238,7 @@ public class ProjectVersionServiceUnitTest {
                 .thenReturn(null);
 
         Response response =
-                service.getTransUnitStatus("a", "1", "authors", "de",
-                        "", "", "", "", "", "",
-                        "", "");
+                service.getTransUnitStatus("a", "1", "authors", "de", null);
         assertThat(response.getStatus()).isEqualTo(404);
     }
 
@@ -251,9 +249,7 @@ public class ProjectVersionServiceUnitTest {
         when(localeService.getByLocaleId("de")).thenReturn(null);
 
         Response response =
-                service.getTransUnitStatus("a", "1", "authors", "de",
-                        "", "", "", "", "", "",
-                        "", "");
+                service.getTransUnitStatus("a", "1", "authors", "de", null);
         assertThat(response.getStatus()).isEqualTo(404);
     }
 
@@ -265,9 +261,7 @@ public class ProjectVersionServiceUnitTest {
                 new HLocale(LocaleId.DE));
 
         Response response =
-                service.getTransUnitStatus("a", "1", "authors", "de",
-                        "", "", "", "", "", "",
-                        "", "");
+                service.getTransUnitStatus("a", "1", "authors", "de", null);
         assertThat(response.getStatus()).isEqualTo(200);
         verify(textFlowDAO).getNavigationByDocumentId(isA(DocumentId.class), isA(HLocale.class), isA(
                 GetTransUnitsNavigationService.TextFlowResultTransformer.class), isA(FilterConstraints.class));

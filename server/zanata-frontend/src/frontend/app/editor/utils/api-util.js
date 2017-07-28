@@ -17,8 +17,13 @@ import { merge } from 'lodash'
  * @see redux-api-middleware
  */
 export function getJsonWithCredentials (apiCall) {
+  return merge({}, jsonWithCredentials(apiCall), {
+    method: 'GET'
+  })
+}
+
+export function jsonWithCredentials (apiCall) {
   return merge({}, apiCall, {
-    method: 'GET',
     credentials: 'include',
     headers: {
       'Accept': 'application/json',
