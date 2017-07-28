@@ -26,7 +26,6 @@ import {
 } from '../../utils/prop-types-util.js'
 import {isProcessEnded} from '../../utils/EnumValueUtils'
 import {getVersionLanguageSettingsUrl} from '../../utils/UrlHelper'
-import specialKeys from 'combokeys/helpers/special-keys-map'
 
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
@@ -394,19 +393,6 @@ class TMMergeModal extends Component {
     this.props.startMergeProcess(this.props.projectSlug,
       this.props.versionSlug, this.state)
   }
-  // Close modal on escape key pressed
-  handleKeyDown = (e) => {
-    if (specialKeys[e.keyCode] === 'esc') {
-      this.props.toggleTMMergeModal()
-    }
-  }
-  // Close modal when clicking outside
-  handleClickOutsideModal = (e) => {
-    const classname = e.target.className
-    if (classname === 'modal' || classname === 'container') {
-      this.props.toggleTMMergeModal()
-    }
-  }
   render () {
     const {
       showTMMergeModal,
@@ -469,8 +455,7 @@ class TMMergeModal extends Component {
     )
     return (
       <Modal id="TM-merge-modal" show={showTMMergeModal}
-        onHide={toggleTMMergeModal} onKeyDown={this.handleKeyDown}
-        onClick={this.handleClickOutsideModal}>
+        onHide={toggleTMMergeModal} keyboard backdrop>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
           <p className="text-danger modal-danger">
