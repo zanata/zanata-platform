@@ -37,6 +37,7 @@ import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
 } from '../../actions/phrase-navigation-actions'
+import { findIndex } from 'lodash'
 
 // FIXME this reducer is too big. See if it can be split up.
 
@@ -156,12 +157,12 @@ export const phraseReducer = (state = defaultState, action) => {
           return state
         }
       } else {
-        // select the first phrase if unfiltered list is showing
         const showingFiltered = getHasAdvancedFilter({ phrases: state })
         const selectedPhraseId = showingFiltered
           // this list not visible, keep same value
           ? state.selectedPhraseId
-          : action.payload.phraseList.length && action.payload.phraseList[0].id
+          // list is showing, select a visible phrase
+          : decideSelectedPhrase(state, action.payload.phraseList)
         return update({
           fetchingList: {$set: false},
           inDoc: {[action.payload.docId]: {$set: action.payload.phraseList}},
@@ -409,6 +410,30 @@ function insertTextAtRange (phrase, text, {start, end}) {
       $splice: [[focusedTranslationIndex, 1, updated]]
     }
   })
+}
+
+/* Decide which phrase should be selected out of a given phrase list
+ *
+ * Considers which phrase was selected and which page is showing.
+ * Does not filter the list, so pass in filtered phrase list if that is showing.
+ */
+function decideSelectedPhrase (state, phraseList) {
+  const { selectedPhraseId, paging: { countPerPage, pageIndex } } = state
+
+  const selectedPhraseIndex =
+    findIndex(phraseList, ({ id }) => id === selectedPhraseId)
+
+  if (selectedPhraseIndex > -1) {
+    // A present phrase is already selected, just may be wrong page number
+    // TODO set page number? Would need to return full state
+    return selectedPhraseId
+  }
+
+  const maxPageIndex = Math.ceil(phraseList.length / countPerPage) - 1
+  const clampedPageIndex = Math.min(pageIndex, maxPageIndex)
+
+  const firstIndex = clampedPageIndex * countPerPage
+  return phraseList[firstIndex].id
 }
 
 export default composeReducers(
