@@ -83,14 +83,31 @@ const getLocale = createSelector(
   (lang, locales) => locales[lang]
 )
 
-/* Phrases and locale object, needed for phrase detail.
- * Locale may be undefined
+/* Visible phrases that do not have data yet.
+ *
+ * Must only use this when phrase detail is not requesting, to avoid requesting
+ * the same detail twice.
+ *
+ * TODO add timestamps to detail items to allow including stale phrases here
  */
-export const getCurrentPagePhrasesAndLocale =
+export const getMissingPhrases = createSelector(
+  getCurrentPagePhrases, getPhrasesDetail,
+  (currentPage, detail) =>
+    currentPage.filter(({ id }) => !detail.hasOwnProperty(id))
+)
+
+const getFetchingPhraseDetail = state => state.phrases.fetchingDetail
+
+/* Data needed for fetching phrase detail.
+ *
+ * Phrases, locale object, and whether details is currently fetching.
+ * Locale may be undefined.
+ */
+export const getPhraseDetailFetchData =
   // deep equal since filtered phrases can be a new array with the same contents
   createSelectorCreator(defaultMemoize, isEqual)(
-    getCurrentPagePhrases, getLocale,
-    (phrases, locale) => ({ phrases, locale })
+    getMissingPhrases, getLocale, getFetchingPhraseDetail,
+    (phrases, locale, fetching) => ({ phrases, locale, fetching })
   )
 
 /* Detail for the current page, falling back on flyweight. */
@@ -101,28 +118,6 @@ export const getCurrentPagePhraseDetail = createSelector(
       ? detail[flyweight.id] : flyweight)
   }
 )
-
-/* Visible phrases that do not have data yet.
- * Careful here - do not want to keep firing requests for phrases that are
- * already fetching.
- *
- * FIXME could include stale phrases here
- * FIXME need state indicating which phrases have been requested recently
- * Note: this will trigger when fetchingPhrases updates, but usually the list
- *       would be empty since all the ids that made it through before will be
- *       filtered out in the first step.
- */
-// export const getMissingPhrases = createSelector(
-//   getCurrentPagePhrases, getPhrasesDetail,
-//   (currentPage, detail) => {
-//     // TODO add fetchingPhrases set in state
-//     const fetchingPhrases = new Set([])
-//     currentPage
-//       .filter(phrase => !fetchingPhrases.has(phrase.id))
-//       .map(({ id }) => id)
-//       .filter(id => !detail.hasOwnProperty(id))
-//   }
-// )
 
 // may be undefined
 export const getLocation = state => state.routing.locationBeforeTransitions

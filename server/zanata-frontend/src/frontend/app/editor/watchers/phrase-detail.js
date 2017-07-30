@@ -8,7 +8,7 @@
  */
 
 import watch from './watch'
-import { getCurrentPagePhrasesAndLocale } from '../selectors'
+import { getPhraseDetailFetchData } from '../selectors'
 import { baseRestUrl } from '../api'
 import { fill, isEmpty, mapValues } from 'lodash'
 import { getJSON } from 'redux-api-middleware'
@@ -23,15 +23,16 @@ import {
   PHRASE_DETAIL_FAILURE
 } from '../actions/phrases-action-types'
 
-// FIXME add state.phrases.fetchingDetail (bool) and only fetch when false.
-//   this requires watching fetchingDetail as well, which will work great to
-//   fetch the next batch after the current batch are merged in.
 export const watchVisiblePhrasesInStore = (store) => {
   const watcher = watch('phrase-detail > watchVisiblePhrasesInStore')(
-    () => getCurrentPagePhrasesAndLocale(store.getState()))
-  store.subscribe(watcher(({ phrases, locale }) => {
-    // optimization: only fetch if ID is not currently fetching and there is no
-    // recent detail in the cache.
+    () => getPhraseDetailFetchData(store.getState()))
+  store.subscribe(watcher(({ phrases, locale, fetching }) => {
+    // Only want one detail request at a time.
+    // Watcher triggers again when this flips to false.
+    if (fetching) {
+      return
+    }
+
     const ids = phrases.map(phrase => phrase.id)
     if (locale && !isEmpty(ids)) {
       // TODO debounce to handle rapid page changes etc?
