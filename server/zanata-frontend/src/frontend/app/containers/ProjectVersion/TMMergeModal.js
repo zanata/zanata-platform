@@ -210,7 +210,7 @@ class TMMergeModal extends Component {
     /* params: projectSlug and versionSlug */
     fetchVersionLocales: PropTypes.func.isRequired,
     showTMMergeModal: PropTypes.bool.isRequired,
-    openTMMergeModal: PropTypes.func.isRequired,
+    toggleTMMergeModal: PropTypes.func.isRequired,
     /* params: project object */
     fetchProjectPage: PropTypes.func.isRequired,
     projectSlug: PropTypes.string.isRequired,
@@ -419,7 +419,7 @@ class TMMergeModal extends Component {
   render () {
     const {
       showTMMergeModal,
-      openTMMergeModal,
+      toggleTMMergeModal,
       projectSlug,
       versionSlug,
       projectVersions,
@@ -467,7 +467,7 @@ class TMMergeModal extends Component {
       <span>
         <Row>
           <Button bsStyle='link' className='btn-left link-danger'
-            onClick={openTMMergeModal}>
+            onClick={toggleTMMergeModal}>
             Close
           </Button>
           <Button bsStyle='primary' onClick={this.submitForm}
@@ -479,7 +479,7 @@ class TMMergeModal extends Component {
     )
     return (
       <Modal id="TM-merge-modal" show={showTMMergeModal}
-        onHide={openTMMergeModal}>
+        onHide={toggleTMMergeModal} keyboard backdrop>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
           <p className="text-danger modal-danger">
@@ -529,7 +529,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchProjectPage: (project) => {
       dispatch(fetchProjectPage(project))
     },
-    openTMMergeModal: () => {
+    toggleTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
     },
     startMergeProcess: (projectSlug, versionSlug, mergeOptions) => {
