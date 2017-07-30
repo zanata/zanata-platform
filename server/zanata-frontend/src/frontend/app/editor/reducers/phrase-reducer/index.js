@@ -49,11 +49,13 @@ function clamp (number, lower, upper) {
 const defaultState = {
   fetchingList: false,
   fetchingFilteredList: false,
+  filteredListTimestamp: new Date(0),
   fetchingDetail: false,
   saveAsMode: false,
   // expected shape: { [docId1]: [{ id, resId, status }, ...], [docId2]: [...] }
   inDoc: {},
   inDocFiltered: {},
+
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
   selectedPhraseId: undefined,
@@ -141,12 +143,18 @@ export const phraseReducer = (state = defaultState, action) => {
 
     case PHRASE_LIST_SUCCESS:
       if (action.meta.filter) {
-        return update({
-          fetchingFilteredList: {$set: false},
-          inDocFiltered: {
-            [action.payload.docId]: {$set: action.payload.phraseList}
-          }
-        })
+        if (action.meta.timestamp > state.filteredListTimestamp) {
+          return update({
+            fetchingFilteredList: {$set: false},
+            filteredListTimestamp: {$set: action.meta.timestamp},
+            inDocFiltered: {
+              [action.payload.docId]: {$set: action.payload.phraseList}
+            }
+          })
+        } else {
+          // stale search, ignore results
+          return state
+        }
       } else {
         // select the first phrase if unfiltered list is showing
         const showingFiltered = getHasAdvancedFilter({ phrases: state })
