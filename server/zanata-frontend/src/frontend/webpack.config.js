@@ -31,18 +31,18 @@ module.exports = {
     chunkFilename: '[name].js'
   },
   module: {
-    /* Checks for errors in syntax, and for problematic and inconsistent
-     * code in all JavaScript files.
-     * Configured in .eslintrc
-     */
-    preLoaders: [
+    rules: [
+      /* Checks for errors in syntax, and for problematic and inconsistent
+      * code in all JavaScript files.
+      * Configured in .eslintrc
+      */
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'eslint'
-      }
-    ],
-    loaders: [
+        enforce: 'pre',
+        loader: 'eslint-loader'
+      },
+
       /* Allows use of newer javascript syntax.
        *  - mainly ES6/ES2015 syntax, and a few ES2016 things
        *  - configured in .babelrc
@@ -51,7 +51,7 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         include: join(__dirname, 'app'),
-        loader: 'babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
+        loader: 'babel-loader?presets[]=react,presets[]=es2015,presets[]=stage-0'
       },
 
       /* Bundles all the css and allows use of various niceties, including
@@ -59,10 +59,15 @@ module.exports = {
        */
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract(
-          'style',
-          'css!csso!postcss!rework'
-        )
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader',
+            'csso-loader',
+            'postcss-loader',
+            'rework-loader'
+          ]
+        })
       },
 
       /* Bundles bootstrap css into the same bundle as the other css.
@@ -71,10 +76,14 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract(
-          'style',
-          'css!postcss!less'
-        )
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader',
+            'postcss-loader',
+            'less-loader'
+          ]
+        })
       }
     ]
   },
@@ -82,16 +91,16 @@ module.exports = {
   plugins: [
     /* Outputs css to a separate file per entry-point.
        Note the call to .extract above */
-    new ExtractTextPlugin('[name].css'),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
+    new ExtractTextPlugin({
+      filename: '[name].css'
+    }),
     new webpack.NoErrorsPlugin()
   ],
 
   resolve: {
     /* Subdirectories to check while searching up tree for module
      * Default is ['', '.js'] */
-    extensions: ['', '.js', '.jsx', '.json', '.css', '.less']
+    extensions: ['.js', '.jsx', '.json', '.css', '.less']
   },
 
   node: {

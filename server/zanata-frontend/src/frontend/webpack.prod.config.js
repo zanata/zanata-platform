@@ -19,7 +19,7 @@ module.exports = merge.smart(defaultConfig, {
     chunkFilename: '[name].min.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         babelrc: false
@@ -28,14 +28,17 @@ module.exports = merge.smart(defaultConfig, {
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
+      sourceMap: true
     }),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
+    }),
+    // Workaround to switch old loaders to minimize mode
+    // FIXME update loaders and configure them directly instead
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
     })
   ],
 

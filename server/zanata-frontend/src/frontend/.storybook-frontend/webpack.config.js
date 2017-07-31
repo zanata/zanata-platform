@@ -1,7 +1,6 @@
 var autoprefixer = require('autoprefixer')
 var reworkCalc = require('rework-calc')
 var reworkColorFunction = require('rework-color-function')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var reworkCustomMedia = require('rework-custom-media')
 var reworkIeLimits = require('rework-ie-limits')
 var reworkNpm = require('rework-npm')
@@ -18,7 +17,7 @@ var reworkSuitConformance = require('rework-suit-conformance')
  */
 module.exports = {
   module: {
-    loaders: [
+    rules: [
       /* Allows use of newer javascript syntax.
        *  - mainly ES6/ES2015 syntax, and a few ES2016 things
        *  - configured in .babelrc
@@ -26,7 +25,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
+        loader: 'babel-loader?presets[]=react,presets[]=es2015,presets[]=stage-0'
       },
 
       /* Bundles all the css and allows use of various niceities, including
@@ -34,7 +33,13 @@ module.exports = {
        */
       {
         test: /\.css$/,
-        loader: 'style!css!csso!postcss!rework'
+        use: [
+          'style-loader',
+          'css-loader',
+          'csso-loader',
+          'postcss-loader',
+          'rework-loader'
+        ]
       },
 
       /* Bundles bootstrap css into the same bundle as the other css.
@@ -43,7 +48,12 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /node_modules/,
-        loader: 'style!css!postcss!less'
+        use: [
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
+          'less-loader'
+        ]
       }
     ]
   },
@@ -51,7 +61,7 @@ module.exports = {
   resolve: {
     /* Subdirectories to check while searching up tree for module */
     // TODO remove when components migrated to use .js (default is ['', '.js'])
-    extensions: ['', '.js', '.jsx']
+    extensions: ['.js', '.jsx']
   },
 
   /* Used just to run autoprefix */
