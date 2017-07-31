@@ -75,10 +75,9 @@
     "rework-suit-conformance": "0.4.2",
     "rework-vars": "3.1.1",
     "style-loader": "0.13.1",
-    "webpack": "1.13.0",
-    "webpack-dev-middleware": "1.6.1",
-    "webpack-dev-server": "1.14.1",
-    "webpack-merge": "1.1.1"
+    "webpack": "3.4.1",
+    "webpack-dev-server": "2.6.1",
+    "webpack-merge": "4.1.0"
   },
   "dependencies": {
     "@kadira/storybook-addon-actions": "1.1.1",
