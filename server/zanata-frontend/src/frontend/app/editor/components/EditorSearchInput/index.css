@@ -9,39 +9,13 @@
   --InputGroup-transition: 0.2s cubic-bezier(.26, .47, .36, .94);
 }
 
-.InputEditorSearch  .panel.panel-default {
-  margin-bottom: 0.5em !important;
-  position: absolute;
-  width: 27em;
-}
 
 .InputEditorSearch {
   margin-left: 0.75em;
   display: inline-flex;
   margin-top: 0.25em;
   font-size: 0.875em;
-}
-
-.InputEditorSearch .help-icon button {
-  vertical-align: sub;
-  margin-left: 0.375em;
-}
-
-.InputEditorSearch .help-icon button span {
-  vertical-align: bottom;
-}
-
-
-.InputGroup-addon {
-  vertical-align: baseline;
-}
-
-#editor-header .InputGroup--outlined {
-  width: 20em;
-}
-
-#editor-header .InputEditorSearch .InputGroup-addon span.n1 {
-  vertical-align: middle;
+  width: 80%;
 }
 
 .InputGroup--wide {
@@ -52,16 +26,9 @@
 .InputEditorSearch  .panel.panel-default {
   margin-bottom: 0.5em !important;
   position: absolute;
-  width: 27em;
 }
 
-.InputEditorSearch {
-  width: 20em;
-  margin-left: 0.75em;
-  display: inline-flex;
-  margin-top: 0.25em;
-  font-size: 0.875em;
-}
+
 
 .InputEditorSearch .help-icon button {
   vertical-align: sub;
@@ -72,10 +39,10 @@
   vertical-align: bottom;
 }
 
-.InputGroup--wide {
-  width: inherit !important;
-}
 
+#editor-header .InputEditorSearch .InputGroup-addon span.n1 {
+  vertical-align: middle;
+}
 
 
 .InputGroup-addon {
@@ -194,4 +161,88 @@ button.clearadvsearch {
   color:#03A6D7;
   padding:0;
   padding-top:0.75em;
+}
+
+@media (min-width:560px) {
+  .InputEditorSearch {
+    width: 35%;
+  }
+}
+
+@media (min-width:600px) {
+  .InputEditorSearch {
+    width: 40%;
+  }
+}
+
+@media (min-width:680px) {
+  .InputEditorSearch {
+    width: 45%;
+  }
+}
+
+@media (min-width:740px) {
+  .InputEditorSearch {
+    width: 35%;
+  }
+}
+
+@media (min-width:780px) {
+  .InputEditorSearch {
+    width: 40%;
+  }
+}
+
+@media (min-width:820px) {
+  .InputEditorSearch {
+    width: 45%;
+  }
+}
+
+@media (min-width:895px) {
+  .InputEditorSearch {
+    width: 50%;
+  }
+}
+
+@media (min-width:961px) {
+  .InputEditorSearch {
+    width: 15%;
+  }
+}
+
+@media (min-width:980px) {
+  .InputEditorSearch {
+    width: 20%;
+  }
+}
+
+@media (min-width:1040px) {
+  .InputEditorSearch {
+    width: 25%;
+  }
+}
+
+@media (min-width:1110px) {
+  .InputEditorSearch {
+    width: 30%;
+  }
+}
+
+@media (min-width:1280px) {
+  .InputEditorSearch {
+    width: 35%;
+  }
+}
+
+@media (min-width:1300px) {
+  .InputEditorSearch {
+    width: 40%;
+  }
+}
+
+@media (min-width:1400px) {
+  .InputEditorSearch {
+    width: 45%;
+  }
 }

@@ -600,11 +600,6 @@ button.close:focus, button.close:hover, button.close:active:focus {
   color: #f00;
 }
 
-/* WTF are these rules? This looks super fragile. */
-span.u-textNeutral span.s2, a.Link--Neutral span.s2 {
-  vertical-align:baseline !important;
-}
-
 button.Link--neutral .row span.u-ltemd-hidden {
   vertical-align:super;
 }
