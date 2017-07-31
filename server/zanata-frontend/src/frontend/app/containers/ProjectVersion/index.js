@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import Helmet from 'react-helmet'
 import TMMergeModal from './TMMergeModal'
 
 import {
@@ -24,7 +23,6 @@ class ProjectVersion extends Component {
     const { params } = this.props
     return (
       <div className='page wide-view-theme' id='version'>
-        <Helmet title='ProjectVersion' />
         <div className='center-block'>
           <TMMergeModal projectSlug={params.project}
             versionSlug={params.version} />
