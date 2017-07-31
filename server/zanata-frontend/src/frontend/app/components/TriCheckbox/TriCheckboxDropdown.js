@@ -7,7 +7,6 @@ import { find } from 'lodash'
 class TriCheckboxDropdown extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
-    checked: PropTypes.bool.isRequired,
     indeterminate: PropTypes.bool.isRequired,
     open: PropTypes.bool.isRequired,
     options: PropTypes.arrayOf(PropTypes.shape({
@@ -17,7 +16,6 @@ class TriCheckboxDropdown extends Component {
     onClick: PropTypes.func.isRequired
   }
   static defaultProps = {
-    checked: false,
     indeterminate: false,
     open: false
   }
@@ -25,7 +23,6 @@ class TriCheckboxDropdown extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      checked: this.props.checked,
       indeterminate: this.props.indeterminate,
       options: this.props.options,
       open: this.props.open
@@ -34,12 +31,13 @@ class TriCheckboxDropdown extends Component {
 
   masterCheckBoxClick = (event) => {
     event.persist()
-    const checked = !this.state.checked
+    const checked = this.props.options.every((option) => {
+      return option.checked
+    })
     this.setState((prevState, props) => ({
-      checked: checked,
       indeterminate: false,
       options: props.options.map((value) => {
-        value.checked = checked
+        value.checked = !checked
         return value
       })
     }))
@@ -55,9 +53,6 @@ class TriCheckboxDropdown extends Component {
           value.checked = !value.checked
         }
         return value
-      }),
-      checked: props.options.every((option) => {
-        return option.checked
       }),
       indeterminate: !(props.options.every((option) => {
         return option.checked
@@ -83,6 +78,9 @@ class TriCheckboxDropdown extends Component {
     this.subCheckboxClick(e)
   }
   render () {
+    const checked = this.props.options.every((option) => {
+      return option.checked
+    })
     const optionGroup = this.props.options.map((value, index) => {
       return (
         <MenuItem key={index} eventKey={index} onClick={this.subCheckboxClick}
@@ -102,7 +100,7 @@ class TriCheckboxDropdown extends Component {
         onClick={this.masterCheckBoxClick} id={'TriCheckbox'} title={
           <div>
             <TriCheckbox
-              checked={this.state.checked}
+              checked={checked}
               indeterminate={this.state.indeterminate}
               onChange={this.masterCheckBoxClick}
             /> {this.props.title}
