@@ -51,6 +51,7 @@ import org.zanata.rest.dto.LocalesResults;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import com.google.common.collect.Lists;
+import org.zanata.service.RequestService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.AllJavaLocales;
 
@@ -78,6 +79,8 @@ public class LocalesService implements LocalesResource {
     @Inject
     @AllJavaLocales
     private List<LocaleId> allJavaLocales;
+    @Inject
+    RequestService requestService;
 
     @Transactional(readOnly = true)
     @Override
@@ -104,6 +107,10 @@ public class LocalesService implements LocalesResource {
                 .collect(Collectors.toList());
         LocalesResults localesResults =
                 new LocalesResults(totalCount, localesRefs);
+        for (LanguageTeamSearchResult searchResult : localesRefs) {
+                searchResult.setRequestCount(requestService.getPendingLanguageRequests(
+                        searchResult.getLocaleDetails().getLocaleId()).size());
+        }
         return Response.ok(localesResults).build();
     }
 
