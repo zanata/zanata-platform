@@ -82,7 +82,5 @@ describe('TriCheckbox', () => {
       // swallow on purpose, valid for code to not bind onClick
     }
     expect(changeEvent).toEqual('sleep')
-    expect(slothCheckbox.props.checked).toEqual(true)
-    expect(slothCheckbox.props.indeterminate).toEqual(false)
   })
 })

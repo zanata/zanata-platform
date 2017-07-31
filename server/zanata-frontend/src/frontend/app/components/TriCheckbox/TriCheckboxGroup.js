@@ -85,7 +85,6 @@ class TriCheckboxGroup extends Component {
             checked={this.state.options[index].checked}
             indeterminate={false}
             onChange={this.subCheckboxClick}
-            useDefaultStyle={false}
           />
           {value.name}
         </ListGroupItem>
@@ -100,7 +99,6 @@ class TriCheckboxGroup extends Component {
               checked={this.state.checked}
               indeterminate={this.state.indeterminate}
               onChange={this.masterCheckBoxClick}
-              useDefaultStyle={false}
             />
             <label>Fruits</label>
           </ListGroupItem>

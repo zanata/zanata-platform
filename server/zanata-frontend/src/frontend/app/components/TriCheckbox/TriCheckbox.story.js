@@ -24,7 +24,7 @@ class TriCheckbox extends Component {
 
   checkboxChanged = (event) => {
     this.setState({checked: event.target.checked, indeterminate: false})
-    this.props.onChange()
+    this.props.onChange(event)
   }
 
   render () {
@@ -62,7 +62,7 @@ class WithButton extends Component {
 
   checkboxChanged = (event) => {
     this.setState({checked: event.target.checked, indeterminate: false})
-    this.props.onChange()
+    this.props.onChange(event)
   }
 
   render () {
