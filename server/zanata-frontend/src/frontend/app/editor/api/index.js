@@ -7,7 +7,6 @@
 // (it is just a wrapper around whatwg-fetch)
 import fetch from 'isomorphic-fetch'
 import { encode } from '../utils/doc-id-util'
-import { chain, isEmpty } from 'lodash'
 import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
@@ -37,48 +36,6 @@ function getServiceUrl () {
   let serviceUrl = location.origin + baseUrl
   serviceUrl = serviceUrl.replace(/\/?$/, '') // remove trailing slash
   return serviceUrl
-}
-
-export function fetchPhraseList (project, version, localeId, docId, filter) {
-  // FIXME damason check that arguments are all defined
-  const encodedId = encode(docId)
-  const queryString = filter ? filterQueryString(filter) : ''
-  const statusListUrl =
-    `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}?${queryString}` // eslint-disable-line max-len
-
-  return fetch(statusListUrl, {
-    credentials: 'include',
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    mode: 'cors'
-  })
-}
-
-export function filterQueryString (advancedFilter) {
-  return chain(advancedFilter)
-    .toPairs()
-    .filter(([key, value]) => !isEmpty(value))
-    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-    .join('&')
-    .value()
-}
-
-export function fetchPhraseDetail (localeId, phraseIds) {
-  const phraseDetailUrl =
-    `${baseRestUrl}/source+trans/${localeId}?ids=${phraseIds.join(',')}`
-
-  return fetch(phraseDetailUrl, {
-    credentials: 'include',
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    mode: 'cors'
-  })
 }
 
 export function fetchStatistics (_projectSlug, _versionSlug,
