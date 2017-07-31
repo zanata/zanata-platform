@@ -38,8 +38,6 @@ export const ProjectVersionOptions = (props) => {
               <CopyLabel copy={differentDocId} />
             </Checkbox>
           </ListGroupItem>
-        </ListGroup>
-        <ListGroup fill>
           <ListGroupItem>
             <Checkbox onChange={onContextCheckboxChange}
               checked={differentContext}>
@@ -49,10 +47,11 @@ export const ProjectVersionOptions = (props) => {
             </Checkbox>
           </ListGroupItem>
         </ListGroup>
-        <span></span>
+        <span />
         <ListGroup fill>
           <ListGroupItem >
-            <Checkbox onChange={onImportedCheckboxChange}>
+            <Checkbox onChange={onImportedCheckboxChange}
+              checked={fromImportedTM}>
               Match from Imported TM
               <CopyLabel copy={fromImportedTM} />
             </Checkbox>

@@ -153,21 +153,6 @@
     </script>
   </ui:fragment>
 
-  <ui:fragment rendered="#{identity.loggedIn}">
-    <script type="application/javascript">
-      function onExportAllTMXResponse(exp) {
-        if (exp) {
-          window.open("#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}");
-        }
-        zanata.modal.hide('#exportTMXVersionModal');
-      }
-    </script>
-    <zanata:confirm-modal id="exportTMXVersionModal"
-      title="#{msgs['jsf.iteration.ExportTMXIter']}"
-      message="#{msgs['jsf.ConfirmExportTMXIter']}"
-      onresponse="onExportAllTMXResponse"/>
-  </ui:fragment>
-
   <h:form styleClass="l--push-bottom-0">
 
     <a4j:jsFunction name="deleteDoc" action="#{versionHomeAction.deleteDocument(id)}"
@@ -403,8 +388,7 @@
           <h:panelGroup layout="block"
             styleClass="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
             id="version-more-actions">
-            <ui:fragment
-              rendered="#{identity.loggedIn}">
+            <ui:fragment rendered="#{identity.loggedIn}">
               <a class="dropdown__toggle js-dropdown__toggle"
                 title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
                 <i class="i i--ellipsis"></i>
@@ -436,7 +420,7 @@
                     rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
                     <li>
                       <a href="#" class="i__item--right"
-                        onclick="openTMMergeModal(); return false">
+                        onclick="toggleTMMergeModal(); return false">
                         #{msgs['jsf.iteration.TMMerge']}
                         <i class="i i--translate i__item__icon"></i>
                       </a>
@@ -471,10 +455,10 @@
                 </li>
                 <li>
                   <a href="#" id="exportTMXIterLink" class="i__item--right"
-                    title="#{msgs['jsf.iteration.ExportTMXIterInfo']}"
-                    data-toggle="modal" data-target="#exportTMXVersionModal">
+                      title="#{msgs['jsf.iteration.ExportTMXIterInfo']}"
+                      onclick="toggleTMXExportModal(true); return false">
                     #{msgs['jsf.iteration.ExportTMXIter']}<i
-                    class="i i--export i__item__icon"></i>
+                      class="i i--export i__item__icon"></i>
                   </a>
                 </li>
               </ul>

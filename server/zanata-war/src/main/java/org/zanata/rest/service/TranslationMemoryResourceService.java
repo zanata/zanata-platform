@@ -92,7 +92,6 @@ public class TranslationMemoryResourceService
         log.debug("exporting TMX for all projects, locale {}", locale);
         if (srcLocale != null) {
             localeServiceImpl.validateSourceLocale(srcLocale);
-            // TODO findTextFlowsByLocale
         }
         if (locale != null) {
             localeServiceImpl.validateSourceLocale(locale);
@@ -113,6 +112,9 @@ public class TranslationMemoryResourceService
                 locale);
         HProject hProject =
                 restSlugValidator.retrieveAndCheckProject(projectSlug, false);
+        if (srcLocale != null) {
+            localeServiceImpl.validateSourceLocale(srcLocale);
+        }
         if (locale != null) {
             restSlugValidator.validateTargetLocale(locale, projectSlug);
             // TODO findTextFlowsByProjectAndLocale
@@ -133,6 +135,9 @@ public class TranslationMemoryResourceService
                 projectSlug, iterationSlug, locale);
         HProjectIteration hProjectIteration = restSlugValidator
                 .retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+        if (srcLocale != null) {
+            localeServiceImpl.validateSourceLocale(srcLocale);
+        }
         if (locale != null) {
             restSlugValidator.validateTargetLocale(locale, projectSlug,
                     iterationSlug);

@@ -98,4 +98,9 @@ public class TransMemoryMergeRequest implements HasTMMergeCriteria {
         return importedMatchRule;
     }
 
+    @Override
+    public InternalTMSource getInternalTMSource() {
+        return InternalTMSource.SELECT_ALL;
+    }
+
 }

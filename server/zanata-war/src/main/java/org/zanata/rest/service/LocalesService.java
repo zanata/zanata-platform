@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
@@ -77,6 +78,8 @@ public class LocalesService implements LocalesResource {
     private ZanataIdentity identity;
     @Inject
     private LocaleDAO localeDAO;
+    @Inject
+    private DocumentDAO documentDAO;
     @Inject
     private ResourceUtils resourceUtils;
     @Inject
@@ -193,6 +196,10 @@ public class LocalesService implements LocalesResource {
         for (Map.Entry<HLocale, Integer> entry: locales.entrySet()) {
             LocaleDetails details = LocaleService.convertHLocaleToDTO(entry.getKey());
             results.add(new SourceLocaleDetails(entry.getValue(), details));
+        }
+        if (results.size() > 1) {
+            int count = documentDAO.getTotalDocCount();
+            results.add(new SourceLocaleDetails(count, null));
         }
         return Response
                 .ok(new GenericEntity<List<SourceLocaleDetails>>(results) {

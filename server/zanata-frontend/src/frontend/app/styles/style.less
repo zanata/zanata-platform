@@ -4445,7 +4445,7 @@ img.avatar-round {
 @import "../containers/ProjectVersion/index.css";
 
 // Override legacy JSF new-zanata classes for TMXModal React component
-@import "../containers/TMX/index.css";
+@import "../components/TMX/index.css";
 
 // Nav variations
 // --------------------------------------------------
@@ -4765,6 +4765,10 @@ h2.recent-contrib {
 
 #activity-table td button.btn-success {
   background-color: rgba(98, 200, 118, 0.65);
+}
+
+table.activity-graph tr td {
+  padding: 0;
 }
 
 button.success.btn.btn-default, button.plain.btn.btn-default, button.primary.btn.btn-default, button.unsure.btn.btn-default {
@@ -6563,7 +6567,7 @@ table .projectWideSearchResultsDocumentBody {
 }
 
 .tmx-export {
-  text-align: center;
+  text-align: center !important;
 }
 
 .tmx-export p.lead {
@@ -6575,7 +6579,8 @@ table .projectWideSearchResultsDocumentBody {
 }
 
 table.tmx-table {
-  width:50%;
+  width:50% !important;
+  display: table !important;
   margin-left:auto;
   margin-right:auto;
 }
@@ -6609,6 +6614,7 @@ table.tmx-table .badge {
   line-height: 1.5rem;
   width: 4rem;
   font-weight: 400;
+  height: 100%;
 }
 
 .tmx-export p.all-warning {

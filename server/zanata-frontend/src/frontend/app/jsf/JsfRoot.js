@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
 import { Router, Route } from 'react-router'
 import ProjectVersion from '../containers/ProjectVersion'
-import TMX from '../containers/TMX'
+import Project from '../containers/Project'
+import Admin from '../containers/Admin'
 
 const App = ({children}) => {
   return (<div className='container-sidebar'>{children}</div>)
@@ -19,7 +20,8 @@ const JsfRoot = ({store, history}) => {
         <Route component={App} >
           <Route path='iteration/view/:project/:version*'
             component={ProjectVersion} />
-          <Route path='project/view/:project' component={TMX} />
+          <Route path='project/view/:project' component={Project} />
+          <Route path='admin/home' component={Admin} />
         </Route>
       </Router>
     </Provider>

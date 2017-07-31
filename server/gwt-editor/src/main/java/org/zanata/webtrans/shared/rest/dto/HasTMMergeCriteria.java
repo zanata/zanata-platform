@@ -20,9 +20,6 @@
  */
 package org.zanata.webtrans.shared.rest.dto;
 
-import java.util.List;
-
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 public interface HasTMMergeCriteria {
@@ -35,5 +32,7 @@ public interface HasTMMergeCriteria {
     MergeRule getDifferentContextRule();
 
     MergeRule getImportedMatchRule();
+
+    InternalTMSource getInternalTMSource();
 
 }

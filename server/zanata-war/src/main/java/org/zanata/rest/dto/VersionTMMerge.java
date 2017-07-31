@@ -20,11 +20,10 @@
  */
 package org.zanata.rest.dto;
 
-import java.util.List;
 
 import org.zanata.common.LocaleId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 /**
@@ -36,19 +35,19 @@ public class VersionTMMerge implements HasTMMergeCriteria {
     private MergeRule differentDocumentRule;
     private MergeRule differentContextRule;
     private MergeRule importedMatchRule;
-    private List<ProjectIterationId> fromProjectVersions;
+    private InternalTMSource internalTMSource;
 
     public VersionTMMerge(LocaleId localeId, int thresholdPercent,
             MergeRule differentDocumentRule,
             MergeRule differentContextRule,
             MergeRule importedMatchRule,
-            List<ProjectIterationId> fromProjectVersions) {
+            InternalTMSource internalTMSource) {
         this.localeId = localeId;
         this.thresholdPercent = thresholdPercent;
         this.differentDocumentRule = differentDocumentRule;
         this.differentContextRule = differentContextRule;
         this.importedMatchRule = importedMatchRule;
-        this.fromProjectVersions = fromProjectVersions;
+        this.internalTMSource = internalTMSource;
     }
 
     @SuppressWarnings("unused")
@@ -85,7 +84,9 @@ public class VersionTMMerge implements HasTMMergeCriteria {
         return importedMatchRule;
     }
 
-    public List<ProjectIterationId> getFromProjectVersions() {
-        return fromProjectVersions;
+    @Override
+    public InternalTMSource getInternalTMSource() {
+        return internalTMSource;
     }
+
 }

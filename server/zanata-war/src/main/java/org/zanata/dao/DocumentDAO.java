@@ -16,6 +16,7 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
@@ -504,5 +505,17 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
 
     public LobHelper getLobHelper() {
         return getSession().getLobHelper();
+    }
+
+    public int getTotalDocCount() {
+        StringBuilder query = new StringBuilder();
+        query.append("select count(doc) from HDocument doc ")
+                .append("where doc.projectIteration.status <> :obsolete ")
+                .append("and doc.projectIteration.project.status <> :obsolete ")
+                .append("and doc.obsolete = false");
+
+        Query q = getSession().createQuery(query.toString())
+                .setParameter("obsolete", EntityStatus.OBSOLETE);
+        return ((Long) q.uniqueResult()).intValue();
     }
 }

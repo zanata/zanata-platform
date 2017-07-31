@@ -96,6 +96,11 @@ public class ProjectIterationLocalesService implements ProjectIterationLocalesRe
             LocaleDetails details = LocaleService.convertHLocaleToDTO(entry.getKey());
             results.add(new SourceLocaleDetails(entry.getValue(), details));
         }
+        if (results.size() > 1) {
+            int count = projectIterationDAO
+                    .getTotalDocCount(projectSlug, iterationSlug);
+            results.add(new SourceLocaleDetails(count, null));
+        }
         return Response
                 .ok(new GenericEntity<List<SourceLocaleDetails>>(results) {
                 }).build();

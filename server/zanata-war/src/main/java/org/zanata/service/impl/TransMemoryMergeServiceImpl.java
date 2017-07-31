@@ -20,18 +20,18 @@
  */
 package org.zanata.service.impl;
 
+import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectSome;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
@@ -41,7 +41,6 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -53,12 +52,10 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.ModelEntityBase;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.EntityType;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.VersionTMMerge;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TransMemoryMergeService;
@@ -74,70 +71,88 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Named("transMemoryMergeServiceImpl")
 @RequestScoped
-@Transactional
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private static final Logger log = LoggerFactory
             .getLogger(TransMemoryMergeServiceImpl.class);
     private static final String commentPrefix =
             "auto translated by TM merge from";
-    @VisibleForTesting
-    protected static final int BATCH_SIZE = 50;
     private static final FilterConstraints
             UNTRANSLATED_FILTER = FilterConstraints.builder().keepAll().excludeRejected()
                     .excludeApproved().excludeTranslated()
                     .excludeFuzzy().build();
+    private static final long serialVersionUID = -6049179312875626300L;
 
-    @Inject
     private LocaleService localeServiceImpl;
-    @Inject
     private TextFlowDAO textFlowDAO;
-    @Inject
     private TransMemoryUnitDAO transMemoryUnitDAO;
-    @Inject
     private TranslationMemoryService translationMemoryServiceImpl;
-    @Inject
     private TranslationService translationServiceImpl;
-    @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Event<TextFlowTargetUpdateContextEvent> textFlowTargetUpdateContextEvent;
-
-    @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Event<TransMemoryMergeEvent> transMemoryMergeEvent;
-    @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Event<TransMemoryMergeProgressEvent> transMemoryMergeProgressEvent;
-    @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private TransactionUtil transactionUtil;
 
-    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @Inject
-    private ZanataIdentity identity;
-
-    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @Inject
-    @Authenticated
     private HAccount authenticatedAccount;
 
+    @Inject
+    public TransMemoryMergeServiceImpl(
+            LocaleService localeServiceImpl, TextFlowDAO textFlowDAO,
+            TransMemoryUnitDAO transMemoryUnitDAO,
+            TranslationMemoryService translationMemoryServiceImpl,
+            TranslationService translationServiceImpl,
+            Event<TextFlowTargetUpdateContextEvent> textFlowTargetUpdateContextEvent,
+            Event<TransMemoryMergeEvent> transMemoryMergeEvent,
+            Event<TransMemoryMergeProgressEvent> transMemoryMergeProgressEvent,
+            TransactionUtil transactionUtil,
+            ProjectIterationDAO projectIterationDAO,
+            VersionStateCache versionStateCacheImpl,
+            @Authenticated HAccount authenticatedAccount) {
+        this.localeServiceImpl = localeServiceImpl;
+        this.textFlowDAO = textFlowDAO;
+        this.transMemoryUnitDAO = transMemoryUnitDAO;
+        this.translationMemoryServiceImpl = translationMemoryServiceImpl;
+        this.translationServiceImpl = translationServiceImpl;
+        this.textFlowTargetUpdateContextEvent =
+                textFlowTargetUpdateContextEvent;
+        this.transMemoryMergeEvent = transMemoryMergeEvent;
+        this.transMemoryMergeProgressEvent = transMemoryMergeProgressEvent;
+        this.transactionUtil = transactionUtil;
+        this.projectIterationDAO = projectIterationDAO;
+        this.versionStateCacheImpl = versionStateCacheImpl;
+        this.authenticatedAccount = authenticatedAccount;
+    }
+
+    @SuppressWarnings("unused")
+    public TransMemoryMergeServiceImpl() {
+    }
 
     @Override
+    @Transactional
     public List<TranslationService.TranslationResult> executeMerge(
             TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle) {
@@ -189,7 +204,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                          TransUnitUpdated.UpdateType.NonEditorSave));
                 List<TranslationService.TranslationResult> batchResult =
                         translateInBatch(request, textFlowsBatch, targetLocale,
-                                Collections.emptyList(), Optional.of(callback));
+                                request.getInternalTMSource(), Optional.of(callback));
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
@@ -214,6 +229,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
     @Async
     @Override
+    @Transactional
     public Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle) {
         List<TranslationService.TranslationResult> translationResults =
@@ -226,66 +242,78 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     public Future<Void> startMergeTranslations(Long targetVersionId,
             VersionTMMerge mergeRequest,
             MergeTranslationsTaskHandle handle) {
-        // since this is async we need to reload entities
-        HProjectIteration targetVersion =
-                projectIterationDAO.findById(targetVersionId);
-        HLocale targetLocale =
-                localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
-
-        List<HLocale> localesInTargetVersion = localeServiceImpl
-                .getSupportedLanguageByProjectIteration(targetVersion);
-        if (!localesInTargetVersion.contains(targetLocale)) {
-            log.error("No locales enabled in target version of [{}]",
-                    targetVersion.userFriendlyToString());
+        InternalTMSource internalTMSource = mergeRequest.getInternalTMSource();
+        List<Long> fromVersionIds = internalTMSource.getFilteredProjectVersionIds();
+        if (internalTMSource.getChoice() == SelectSome
+                && fromVersionIds.isEmpty()) {
+            log.error(
+                    "selected internal TM versions list has nothing to copy from");
+            return AsyncTaskResult.completed();
+        }
+        // we need a separate read only transaction to load all the entities and close
+        // it so that the following batch job can take as long as it can and no
+        // transaction reaper will kick in.
+        NeededEntities neededEntities = new NeededEntities();
+        try {
+            transactionUtil.call(() -> {
+                // since this is async we need to reload entities
+                neededEntities.targetVersion =
+                        projectIterationDAO.findById(targetVersionId);
+                neededEntities.targetLocale =
+                        localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
+                neededEntities.localesInTargetVersion = localeServiceImpl
+                        .getSupportedLanguageByProjectIteration(neededEntities.targetVersion);
+                neededEntities.mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
+                        targetVersionId, neededEntities.targetLocale);
+                return neededEntities;
+            });
+        } catch (Exception e) {
+            log.error("error loading entities", e);
             return AsyncTaskResult.completed();
         }
 
-        List<Long> fromVersionIds = mergeRequest.getFromProjectVersions().stream()
-                .map(projectIterationId -> projectIterationDAO.getBySlug(
-                        projectIterationId.getProjectSlug(),
-                        projectIterationId.getIterationSlug()))
-                .filter(ver -> ver != null
-                        && ver.getStatus() != EntityStatus.OBSOLETE
-                        && localeServiceImpl
-                        .getSupportedLanguageByProjectIteration(ver)
-                        .contains(targetLocale))
-                .map(ModelEntityBase::getId).collect(Collectors.toList());
+        long mergeTargetCount = neededEntities.mergeTargetCount;
+        HLocale targetLocale = neededEntities.targetLocale;
+        String targetVersionStr = neededEntities.targetVersion.userFriendlyToString();
 
+        if (!neededEntities.isTargetLocaleEnabledInVersion()) {
+            log.error("No locales enabled in target version of [{}]",
+                    neededEntities.targetVersion.userFriendlyToString());
+            return AsyncTaskResult.completed();
+        }
 
-        long mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
-                targetVersion.getId(), targetLocale);
 
         Optional<MergeTranslationsTaskHandle>
                 taskHandleOpt = Optional.ofNullable(handle);
         if (taskHandleOpt.isPresent()) {
             MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
-            handle1.setTriggeredBy(identity.getAccountUsername());
+            handle1.setTriggeredBy(authenticatedAccount.getUsername());
             handle1.setMaxProgress((int) mergeTargetCount);
             handle1.setTotalTranslations(mergeTargetCount);
         }
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         log.info("merge translations from TM start: from {} to {}",
-                fromVersionIds,
-                targetVersion.userFriendlyToString());
+                mergeRequest.getInternalTMSource(),
+                targetVersionStr);
         int startCount = 0;
 
         while (startCount < mergeTargetCount) {
             List<HTextFlow> batch = textFlowDAO
                     .getUntranslatedOrFuzzyTextFlowsInVersion(
-                            targetVersion.getId(), targetLocale, startCount,
+                            targetVersionId, targetLocale, startCount,
                             BATCH_SIZE);
             translateInBatch(mergeRequest, batch,
-                    targetLocale, fromVersionIds, Optional.empty());
+                    targetLocale, internalTMSource, Optional.empty());
 
             taskHandleOpt.ifPresent(
                     mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
                             .increaseProgress(batch.size()));
             startCount += BATCH_SIZE;
         }
-        versionStateCacheImpl.clearVersionStatsCache(targetVersion.getId());
+        versionStateCacheImpl.clearVersionStatsCache(targetVersionId);
         log.info("merge translation from TM end: from {} to {}, {}",
-                mergeRequest.getFromProjectVersions(),
-                targetVersion.userFriendlyToString(), overallStopwatch);
+                mergeRequest.getInternalTMSource(),
+                targetVersionStr, overallStopwatch);
         return AsyncTaskResult.completed();
     }
 
@@ -298,8 +326,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      *            the text flows to be filled
      * @param targetLocale
      *            target locale
-     * @param fromVersionIds
-     *            source version ids
+     * @param internalTMSource
+     *            source versions from internal TM
      * @param callbackOnUpdate
      *            an optional callback to call when we have a
      *            TransUnitUpdateRequest ready
@@ -308,7 +336,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private List<TranslationService.TranslationResult> translateInBatch(
             HasTMMergeCriteria request, List<HTextFlow> textFlows,
             HLocale targetLocale,
-            List<Long> fromVersionIds,
+            InternalTMSource internalTMSource,
             Optional<Consumer<TransUnitUpdateRequest>> callbackOnUpdate) {
 
         if (textFlows.isEmpty()) {
@@ -333,7 +361,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                     hTextFlow.getDocument().getLocale().getLocaleId(),
                                     checkContext, checkDocument, checkProject,
                                     request.getThresholdPercent(),
-                                    fromVersionIds);
+                                    internalTMSource);
                     if (tmResult.isPresent()) {
                         TransUnitUpdateRequest updateRequest =
                                 createRequest(request, targetLocale,
@@ -412,5 +440,16 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         return new StringBuilder(commentPrefix).append(" translation memory: ")
                 .append(tu.getTranslationMemory().getSlug())
                 .append(", unique id: ").append(tu.getUniqueId()).toString();
+    }
+
+    private static class NeededEntities {
+        private HProjectIteration targetVersion;
+        private HLocale targetLocale;
+        private List<HLocale> localesInTargetVersion;
+        private long mergeTargetCount;
+
+        boolean isTargetLocaleEnabledInVersion() {
+            return localesInTargetVersion.contains(targetLocale);
+        }
     }
 }

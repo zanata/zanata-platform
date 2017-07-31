@@ -61,7 +61,19 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
     }
 
     @Test
-    public void findAllTextFlowsNoSrcLocale() throws Exception {
+    public void findAllTextFlows2() throws Exception {
+        CloseableIterator<HTextFlow> iter = dao.findTextFlows(Optional.of(LocaleId.DE));
+        try {
+            assertThat(Iterators.size(iter)).isEqualTo(0);
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+        }
+    }
+
+    @Test
+    public void findAllTextFlowsNullSrcLocale() throws Exception {
         CloseableIterator<HTextFlow> iter = dao.findTextFlows(Optional.empty());
         try {
             assertThat(Iterators.size(iter)).isEqualTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10);

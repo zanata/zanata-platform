@@ -6,7 +6,6 @@ import App from '../containers/App'
 import Glossary from '../containers/Glossary'
 import Languages from '../containers/Languages'
 import ProjectVersion from '../containers/ProjectVersion'
-import TMX from '../containers/TMX'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import { user } from '../config'
@@ -34,10 +33,6 @@ export default class Root extends Component {
             <Route path='languages' component={Languages} />
             <Route path='project/:project/version/:version'
               component={ProjectVersion} />
-            <Route path='tmx' component={TMX} />
-            <Route path='tmx/project/:project' component={TMX} />
-            <Route path='tmx/project/:project/version/:version'
-              component={TMX} />
             <Route path='profile/view/:username' component={UserProfile} />
             <Redirect from='profile' to={`profile/view/${username}`} />
           </Route>

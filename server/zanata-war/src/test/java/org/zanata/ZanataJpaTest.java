@@ -3,6 +3,7 @@ package org.zanata;
 import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -125,5 +126,12 @@ public abstract class ZanataJpaTest extends ZanataTest {
 
     protected void deleteAllTables() {
         deleteAll(getEm(), ZanataEntities.entitiesForRemoval());
+    }
+
+    protected void doInTransaction(Consumer<EntityManager> function) {
+        EntityManager em = getEmf().createEntityManager();
+        em.getTransaction().begin();
+        function.accept(em);
+        em.getTransaction().commit();
     }
 }

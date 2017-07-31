@@ -90,6 +90,10 @@ public class ProjectLocalesService implements ProjectLocalesResource {
             LocaleDetails details = LocaleService.convertHLocaleToDTO(entry.getKey());
             results.add(new SourceLocaleDetails(entry.getValue(), details));
         }
+        if (results.size() > 1) {
+            int count = projectDAO.getTotalDocCount(projectSlug);
+            results.add(new SourceLocaleDetails(count, null));
+        }
         return Response
                 .ok(new GenericEntity<List<SourceLocaleDetails>>(results) {
                 }).build();
