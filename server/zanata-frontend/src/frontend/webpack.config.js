@@ -40,7 +40,11 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         enforce: 'pre',
-        loader: 'eslint-loader'
+        use: 'eslint-loader',
+        options: {
+          failOnWarning: false,
+          failOnError: true
+        }
       },
 
       /* Allows use of newer javascript syntax.
@@ -51,7 +55,10 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         include: join(__dirname, 'app'),
-        loader: 'babel-loader?presets[]=react,presets[]=es2015,presets[]=stage-0'
+        use: 'babel-loader',
+        options: {
+          presets: [ 'react', 'es2015', 'stage-0' ]
+        }
       },
 
       /* Bundles all the css and allows use of various niceties, including
@@ -105,11 +112,6 @@ module.exports = {
 
   node: {
     __dirname: true
-  },
-
-  eslint: {
-    failOnWarning: false,
-    failOnError: true
   },
 
   devtool: 'source-map',
