@@ -26,7 +26,9 @@ const Modal = ({
   }
   const handleClickOutside = (e) => {
     const classname = e.target.className
-    if (classname === 'modal' || classname === 'container') {
+    const clickedBackdrop = (classname === 'modal' || classname === 'container')
+    const clickedOutsideComponent = (e.target === e.currentTarget)
+    if (clickedOutsideComponent || clickedBackdrop) {
       onHide()
     }
   }
@@ -36,8 +38,9 @@ const Modal = ({
       onKeyDown={keyboard && handleKeyDown}
       containerClassName='has-modal'
       className='modal'
+      onClick={backdrop && handleClickOutside}
     >
-      <div className='container' onClick={backdrop && handleClickOutside}>
+      <div className='container'>
         <div className='modal-content' tabIndex="0">
           {closeButton && (
             <Button aria-label={closeLabel}
