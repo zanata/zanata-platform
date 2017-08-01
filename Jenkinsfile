@@ -22,7 +22,7 @@ PullRequests.ensureJobDescription(env, manager, steps)
 @Field
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps, 'https://github.com/zanata/zanata-platform.git')
+notify = new Notifier(env, steps, currentBuild, 'https://github.com/zanata/zanata-platform.git')
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -169,7 +169,7 @@ timestamps {
 
         stage('Checkout') {
           // notify methods send instant messages about the build progress
-          notify.updateBuildStatus(currentBuild, 'STARTED')
+          notify.started()
 
           // Shallow Clone does not work with RHEL7, which uses git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
@@ -239,7 +239,7 @@ timestamps {
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
-          notify.updateBuildStatus(currentBuild, "UNIT")
+          notify.testResults('UNIT', currentBuild.result)
 
           // TODO publish coverage for jest (cobertura format)
           // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
@@ -312,7 +312,7 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.updateBuildStatus(currentBuild, 'BUILDING', e.toString(), 'FAILURE')
+        notify.testResults('BUILD', 'FAILURE', e.toString())
         // abort the rest of the pipeline
         throw e
       }
@@ -349,11 +349,11 @@ timestamps {
         // run integration test tasks in parallel
         parallel tasks
 
-        node(getLabel()) {
+        node() {
             // Let notify.updateBuildStatus handle the case
             // when build is *still* green after running integration tests
             // GitHubCommitStatusSetter need to be inside a node
-            notify.updateBuildStatus(currentBuild, 'FINISH')
+            notify.finish()
         }
         // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
         // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
@@ -430,7 +430,7 @@ void integrationTests(String appserver) {
          */
 
         if (mvnResult != 0) {
-          notify.updateBuildStatus(currentBuild, appserver, 'Failed maven build for integration tests', 'UNSTABLE')
+          notify.testResults(appserver, 'UNSTABLE', 'Failed maven build for integration tests')
 
           // gather db/app logs and screenshots to help debugging
           archive(
@@ -446,11 +446,11 @@ void integrationTests(String appserver) {
           )
           // Reduce workspace size
           sh "git clean -fdx"
+          notify.testResults(appserver, 'SUCCESS')
         } else {
-          notify.updateBuildStatus(currentBuild, appserver, 'No integration test results', 'FAILED')
+          notify.testResults(appserver, 'FAILED', 'No integration test results')
           error "no integration test results for $appserver"
         }
-        notify.updateBuildStatus(currentBuild, appserver)
       }
     }
   }
