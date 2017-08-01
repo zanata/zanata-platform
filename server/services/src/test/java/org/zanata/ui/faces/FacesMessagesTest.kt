@@ -39,8 +39,6 @@ import org.zanata.cdi.WithActiveWindow
 import org.zanata.cdi.WithActiveWindowInterceptor
 import org.zanata.i18n.Messages
 import org.zanata.test.CdiUnitRunner
-import org.zanata.util.WithRequestScope
-import org.zanata.util.WithRequestScopeInterceptor
 import java.util.Collections.emptyIterator
 import javax.enterprise.context.RequestScoped
 import javax.enterprise.inject.Produces
@@ -55,9 +53,7 @@ import javax.inject.Inject
  */
 @RunWith(CdiUnitRunner::class)
 @AdditionalClasses(WithActiveWindowInterceptor::class)
-//@AdditionalClasses(WithActiveWindowInterceptor::class, WithRequestScopeInterceptor::class)
 @InRequestScope
-//@WithRequestScope
 @WithActiveWindow("34")
 @SupportDeltaspikeCore
 class FacesMessagesTest {

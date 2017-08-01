@@ -85,11 +85,12 @@ public class Deployments {
         // see what will be in the war
         printArchiveContents(archive);
 
-        // Export to .war (to actually see what is being deployed)
+        // Uncomment this if you want to export a .war (to actually see
+        // what is being deployed):
 //        archive.as(ZipExporter.class).exportTo(
 //                new File("/tmp/zanata-arquillian.war"), true);
 
-        // OR Export to exploded dir:
+        // OR uncomment this if you want an exploded war directory:
 //        File exploded = new File("/tmp/zanata-arquillian-exploded.war");
 //        exploded.delete();
 //        archive.as(ExplodedExporter.class).exportExplodedInto(
@@ -97,20 +98,13 @@ public class Deployments {
     }
 
     private static void printArchiveContents(Archive archive) {
+        // We could just use archive.toString(verbose=true), but it's
+        // nicer to have sorting.
         ArrayList<ArchivePath> paths =
                 new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);
         System.out.println("Deployment contents:");
         paths.forEach(it -> System.out.println("  " + it.get()));
-//        System.out.println("beans.xml: ");
-//        InputStream is =
-//                archive.get("/WEB-INF/beans.xml").getAsset().openStream();
-//        try {
-//            System.out.println(IOUtils.toString(is, StandardCharsets.UTF_8));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        IOUtils.closeQuietly(is);
     }
 
     static File[] runtimeAndTestDependenciesFromPom() {
@@ -170,8 +164,7 @@ public class Deployments {
         archive.setWebXML("arquillian/test-web.xml");
         archive.delete("/WEB-INF/classes/arquillian");
         archive.delete("/WEB-INF/classes/arquillian.xml");
-        // Note: run the main method if you want to see or extract the contents of the deployment
-//        printArchiveContents(archive);
+        // Note: see the main method if you want to see or extract the contents of the deployment
         return archive;
     }
 
