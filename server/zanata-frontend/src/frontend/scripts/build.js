@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const c = require('cli-color')
 const webpack = require('webpack')
+const createConfig = require('../webpack.config.js')
 const prodConfig = require('../webpack.prod.config.js')
 const draftConfig = require('../webpack.draft.config.js')
 
@@ -14,7 +15,8 @@ console.log(isDraft
   ? c.bgYellow(' DRAFT BUILD - do not deploy! ')
   : c.bgCyan(' PRODUCTION BUILD '))
 
-const config = isDraft ? draftConfig : prodConfig
+// const config = isDraft ? draftConfig : prodConfig
+const config = createConfig({ buildtype: isDraft ? 'draft' : 'prod' })
 webpack(config, (err, stats) => {
   if (err) {
     console.error(err.stack || err)

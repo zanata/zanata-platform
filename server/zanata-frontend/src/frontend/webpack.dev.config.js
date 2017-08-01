@@ -13,7 +13,7 @@ module.exports = merge.smart(defaultConfig, {
   // TODO change to an option that will show original files in the debugger
   //      and will allow setting breakpoints
   //      See: https://webpack.github.io/docs/configuration.html#devtool
-  devtool: 'eval',
+  // devtool: 'eval',
   output: {
     // includes comments in the generated code about where the code came from
     pathinfo: true,
@@ -26,9 +26,9 @@ module.exports = merge.smart(defaultConfig, {
         'NODE_ENV': JSON.stringify('development')
       }
     })
-  ],
+  ] // ,
 
-  eslint: {
-    failOnError: false
-  }
+  // eslint: {
+  //   failOnError: false
+  // }
 })

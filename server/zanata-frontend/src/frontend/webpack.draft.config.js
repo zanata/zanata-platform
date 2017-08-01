@@ -15,7 +15,7 @@ var merge = require('webpack-merge')
 var defaultConfig = require('./webpack.prod.config.js')
 
 module.exports = merge.smart(defaultConfig, {
-  devtool: 'eval',
+  // devtool: 'eval',
 
   module: {
     rules: [

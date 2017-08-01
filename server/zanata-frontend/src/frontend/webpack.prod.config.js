@@ -10,22 +10,22 @@ var merge = require('webpack-merge')
 var defaultConfig = require('./webpack.config.js')
 
 module.exports = merge.smart(defaultConfig, {
-  entry: {
-    'frontend.legacy': './app/legacy'
-  },
-  cache: false,
-  output: {
-    filename: '[name].min.js',
-    chunkFilename: '[name].min.js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        babelrc: false
-      }
-    ]
-  },
+  // entry: {
+  //   'frontend.legacy': './app/legacy'
+  // },
+  // cache: false,
+  // output: {
+  //   filename: '[name].min.js',
+  //   chunkFilename: '[name].min.js'
+  // },
+  // module: {
+  //   rules: [
+  //     {
+  //       test: /\.jsx?$/,
+  //       babelrc: false
+  //     }
+  //   ]
+  // },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true
