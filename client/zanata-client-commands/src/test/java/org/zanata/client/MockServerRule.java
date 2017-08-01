@@ -70,8 +70,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.FileResource;
 
-import com.google.common.base.Throwables;
-
 /**
  * Test rule to set up push and/or pull commands which will interact with
  * mockito mocked REST clients.

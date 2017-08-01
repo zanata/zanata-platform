@@ -5,8 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +16,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.tennera.jgettext.Message;
-import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,7 +33,6 @@ public class PoReader2Test {
     private static final Logger log = LoggerFactory
             .getLogger(PoReader2Test.class);
 
-    LocaleId ja = new LocaleId("ja-JP");
     String testDir = "src/test/resources/";
     PoReader2 poReader = new PoReader2();
 
