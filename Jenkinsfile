@@ -22,7 +22,7 @@ PullRequests.ensureJobDescription(env, manager, steps)
 @Field
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps, 'https://github.com/zanata/zanata-platform.git')
+notify = new Notifier(env, steps, currentBuild, 'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile')
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -169,7 +169,7 @@ timestamps {
 
         stage('Checkout') {
           // notify methods send instant messages about the build progress
-          notify.started(currentBuild)
+          notify.started()
 
           // Shallow Clone does not work with RHEL7, which uses git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
@@ -436,6 +436,8 @@ void integrationTests(String appserver) {
           archive(
                   includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
                   excludes: '**/BACKUP-*.log')
+        }else{
+          notify.testResults(appserver, 'SUCCESS')
         }
 
         echo "Capturing JUnit results"
@@ -446,7 +448,6 @@ void integrationTests(String appserver) {
           )
           // Reduce workspace size
           sh "git clean -fdx"
-          notify.testResults(appserver, 'SUCCESS')
         } else {
           notify.testResults(appserver, 'FAILED', 'No integration test results')
           error "no integration test results for $appserver"
