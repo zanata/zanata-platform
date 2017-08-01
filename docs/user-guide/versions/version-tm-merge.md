@@ -1,4 +1,4 @@
-# Merge translations from TM
+# Merge translations from Translation Memory
 
 TM Merge allows project maintainers to copy translations from TM based on certain criteria. (See below for matching criteria)
 
@@ -8,7 +8,7 @@ TM Merge allows project maintainers to copy translations from TM based on certai
 - Only untranslated strings will be changed
 - TM Merge translation can only be run if there are no other TM merge operations in progress for the selected version and locale.
 
-## Criteria of which translations will be copied over
+## Criteria of which translations will be copied
 <table class='docutils'>
     <tr>
         <td>**Condition**</td><td>**User selection**</td><td>**Copy?**</td>
@@ -35,10 +35,7 @@ TM Merge allows project maintainers to copy translations from TM based on certai
         <td>From imported TM (TMX import)</td><td>Copy as fuzzy</td><td>Saved as fuzzy</td>
     </tr>
     <tr>
-        <td>From imported TM (TMX import)</td><td>Copy as fuzzy</td><td>Saved as fuzzy</td>
-    </tr>
-    <tr>
-        <td>TM origin</td><td>From any project version or from selected project versions</td><td></td>
+        <td>TM origin</td><td>From any project version or from selected project versions</td><td>Yes if it's from selected versions</td>
     </tr>
 </table>
      
