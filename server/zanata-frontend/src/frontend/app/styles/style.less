@@ -4447,6 +4447,9 @@ img.avatar-round {
 // Override legacy JSF new-zanata classes for TMXModal React component
 @import "../components/TMX/index.css";
 
+// Include CSS for tri-checkbox component
+@import "../components/TriCheckbox/index.less";
+
 // Nav variations
 // --------------------------------------------------
 // Justified nav links
@@ -6567,7 +6570,7 @@ table .projectWideSearchResultsDocumentBody {
 }
 
 .tmx-export {
-  text-align: center !important;
+  text-align: center;
 }
 
 .tmx-export p.lead {
@@ -6579,8 +6582,7 @@ table .projectWideSearchResultsDocumentBody {
 }
 
 table.tmx-table {
-  width:50% !important;
-  display: table !important;
+  width:50%;
   margin-left:auto;
   margin-right:auto;
 }
@@ -6614,7 +6616,6 @@ table.tmx-table .badge {
   line-height: 1.5rem;
   width: 4rem;
   font-weight: 400;
-  height: 100%;
 }
 
 .tmx-export p.all-warning {

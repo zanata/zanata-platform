@@ -24,16 +24,24 @@ const Modal = ({
       onHide()
     }
   }
+  const handleClickOutside = (e) => {
+    const classname = e.target.className
+    const clickedBackdrop = (classname === 'modal' || classname === 'container')
+    const clickedOutsideComponent = (e.target === e.currentTarget)
+    if (clickedOutsideComponent || clickedBackdrop) {
+      onHide()
+    }
+  }
   return (
     <OverlayModal
       {...props}
       onKeyDown={keyboard && handleKeyDown}
       containerClassName='has-modal'
       className='modal'
+      onClick={backdrop && handleClickOutside}
     >
       <div className='container'>
-        <div className='modal-content' tabIndex="0"
-          onBlur={backdrop && onHide}>
+        <div className='modal-content' tabIndex="0">
           {closeButton && (
             <Button aria-label={closeLabel}
               className='close s0'
