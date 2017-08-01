@@ -20,18 +20,12 @@
  */
 package org.zanata.page.search;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
-import org.zanata.page.projects.CreateProjectPage;
-import org.zanata.page.projects.ProjectVersionsPage;
-import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
 
 public class SearchPage extends BasePage {
     private static final org.slf4j.Logger log =

@@ -42,7 +42,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;

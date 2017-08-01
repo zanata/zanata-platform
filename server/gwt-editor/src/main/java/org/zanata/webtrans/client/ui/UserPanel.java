@@ -1,10 +1,8 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 
 public class UserPanel extends ListItemWidget implements HasManageUserPanel {
-    private static final long serialVersionUID = 1L;
     private final Image userImage;
     private final String personName;
     private final ListItemWidget colorLabel = new ListItemWidget();

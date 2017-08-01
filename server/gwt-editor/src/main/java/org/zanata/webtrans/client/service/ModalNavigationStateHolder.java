@@ -28,7 +28,6 @@ import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

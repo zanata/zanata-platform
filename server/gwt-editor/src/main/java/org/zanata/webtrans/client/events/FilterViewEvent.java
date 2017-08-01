@@ -5,7 +5,6 @@ import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.rpc.EditorFilter;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 

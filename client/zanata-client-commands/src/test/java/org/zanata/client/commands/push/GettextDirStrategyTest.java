@@ -34,7 +34,6 @@ import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
