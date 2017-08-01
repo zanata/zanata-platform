@@ -22,6 +22,7 @@ package org.zanata.rest.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,6 +55,8 @@ import com.google.common.collect.Lists;
 import org.zanata.service.RequestService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.AllJavaLocales;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -92,7 +95,8 @@ public class LocalesService implements LocalesResource {
         int totalCount;
         int validatedPageSize = validatePageSize(sizePerPage);
         int offset = (validatePage(page) - 1) * validatedPageSize;
-        if (identity != null && identity.hasRole("admin")) {
+        boolean isAdmin = identity != null && identity.hasRole("admin");
+        if (isAdmin) {
             locales = localeServiceImpl.getAllLocales(offset, validatedPageSize,
                     filter, convertToSortField(fields));
             totalCount = localeServiceImpl.getLocalesTotalCount(filter);
@@ -107,9 +111,20 @@ public class LocalesService implements LocalesResource {
                 .collect(Collectors.toList());
         LocalesResults localesResults =
                 new LocalesResults(totalCount, localesRefs);
-        for (LanguageTeamSearchResult searchResult : localesRefs) {
-                searchResult.setRequestCount(requestService.getPendingLanguageRequests(
-                        searchResult.getLocaleDetails().getLocaleId()).size());
+
+        if (isAdmin) {
+            List<LocaleId> localeIds = localeDAO.findAll().stream()
+                    .map(hLocale -> hLocale.getLocaleId()).collect(Collectors.toList());
+            // Map all requests to localeIds, to prevent multiple requests
+            Map<LocaleId, Long> allRequests =
+                    requestService.getPendingLanguageRequests(
+                            localeIds.toArray(new LocaleId[0]))
+                            .stream().collect(Collectors.groupingBy(languageRequest ->
+                            languageRequest.getLocale().getLocaleId(), Collectors.counting()));
+            for (LanguageTeamSearchResult searchResult : localesRefs) {
+                searchResult.setRequestCount(firstNonNull(allRequests.get(
+                        searchResult.getLocaleDetails().getLocaleId()), 0L));
+            }
         }
         return Response.ok(localesResults).build();
     }
