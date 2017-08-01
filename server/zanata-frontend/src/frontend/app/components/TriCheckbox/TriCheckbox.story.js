@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { storiesOf, action } from '@kadira/storybook'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
-import TriCheckboxDropdown from './TriCheckboxDropdown'
 import { Table, Col } from 'react-bootstrap'
 
 class TriCheckbox extends Component {
@@ -160,26 +159,12 @@ storiesOf('TriCheckbox', module)
   .add('checkbox group', () => (
     <TriCheckboxGroup
       options={[
+        {checked: false, name: 'リンゴ'},
         {checked: false, name: 'apple'},
-        {checked: false, name: 'blueberry'},
-        {checked: false, name: 'mango'},
+        {checked: false, name: '梨'},
         {checked: false, name: 'pear'}
       ]}
       onClick={action('onClick')} />
-  ))
-  .add('checkbox dropdown', () => (
-    <div>
-      <h3>Checkbox dropdown with tri-state control</h3>
-      <TriCheckboxDropdown
-        title={'Fruits'}
-        options={[
-          {checked: false, name: 'apple'},
-          {checked: false, name: 'blueberry'},
-          {checked: false, name: 'mango'},
-          {checked: false, name: 'pear'}
-        ]}
-        onClick={action('onClick')} />
-    </div>
   ))
   .add('with custom styles', () => (
     <div>
