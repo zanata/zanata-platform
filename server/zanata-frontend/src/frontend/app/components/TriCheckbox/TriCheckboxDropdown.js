@@ -7,23 +7,35 @@ import { find } from 'lodash'
 class TriCheckboxDropdown extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
-    indeterminate: PropTypes.bool.isRequired,
     open: PropTypes.bool.isRequired,
     options: PropTypes.arrayOf(PropTypes.shape({
       checked: PropTypes.bool,
       name: PropTypes.string
     })),
-    onClick: PropTypes.func.isRequired
+    /**
+    * A callback fired when the master checkbox is clicked.
+    *
+    * ```js
+    * (eventKey: any, event: Object) => any
+    * ```
+    */
+    onClick: PropTypes.func.isRequired,
+    /**
+    * A callback fired when a checkbox menu item is selected.
+    *
+    * ```js
+    * (eventKey: any, event: Object) => any
+    * ```
+    */
+    onSelect: PropTypes.func
   }
   static defaultProps = {
-    indeterminate: false,
     open: false
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      indeterminate: this.props.indeterminate,
       options: this.props.options,
       open: this.props.open
     }
@@ -35,32 +47,27 @@ class TriCheckboxDropdown extends Component {
       return option.checked
     })
     this.setState((prevState, props) => ({
-      indeterminate: false,
       options: props.options.map((value) => {
         value.checked = !checked
         return value
       })
     }))
-    this.props.onClick(event)
+    this.props.onClick(event, {checked: checked})
   }
 
   subCheckboxClick = (event) => {
     event.persist()
     const name = event.target.name
+    const checked = event.target.checked
     this.setState((prevState, props) => ({
       options: props.options.map((value) => {
         if (name === value.name) {
           value.checked = !value.checked
         }
         return value
-      }),
-      indeterminate: !(props.options.every((option) => {
-        return option.checked
-      })) && (find(props.options, (option) => {
-        return option.checked
-      }) !== undefined)
+      })
     }))
-    this.props.onClick(event)
+    this.props.onSelect(event, {name: name, checked: checked})
   }
 
   // Don't close the dropdown on menu select events
@@ -81,6 +88,11 @@ class TriCheckboxDropdown extends Component {
     const checked = this.props.options.every((option) => {
       return option.checked
     })
+    const indeterminate = !(this.props.options.every((option) => {
+      return option.checked
+    })) && (find(this.props.options, (option) => {
+      return option.checked
+    }) !== undefined)
     const optionGroup = this.props.options.map((value, index) => {
       return (
         <MenuItem key={index} eventKey={index} onClick={this.subCheckboxClick}
@@ -101,7 +113,7 @@ class TriCheckboxDropdown extends Component {
           <div>
             <TriCheckbox
               checked={checked}
-              indeterminate={this.state.indeterminate}
+              indeterminate={indeterminate}
               onChange={this.masterCheckBoxClick}
             /> {this.props.title}
           </div>
