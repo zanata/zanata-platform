@@ -43,14 +43,12 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;

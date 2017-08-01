@@ -25,7 +25,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.page.administration.AddLanguagePage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

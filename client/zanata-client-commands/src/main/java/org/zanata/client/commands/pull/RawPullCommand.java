@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 

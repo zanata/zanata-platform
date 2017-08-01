@@ -42,7 +42,6 @@ import org.zanata.webtrans.shared.util.Finds;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gwt.event.dom.client.ClickEvent;

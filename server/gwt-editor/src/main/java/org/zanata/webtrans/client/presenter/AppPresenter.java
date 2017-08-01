@@ -31,8 +31,6 @@ import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
-import org.zanata.webtrans.client.events.KeyShortcutEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;

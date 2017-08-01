@@ -1,6 +1,5 @@
 package org.zanata.feature.document;
 
-import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -10,7 +9,6 @@ import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 

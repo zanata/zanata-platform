@@ -37,7 +37,6 @@ import com.google.common.collect.*;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.*;
-import com.google.gwt.user.client.Event.*;
 import com.google.gwt.view.client.*;
 import com.google.inject.*;
 

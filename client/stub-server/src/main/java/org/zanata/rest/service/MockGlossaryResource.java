@@ -35,8 +35,6 @@ import org.zanata.rest.GlossaryFileUploadForm;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryResults;
 
-import com.google.common.collect.Lists;
-
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

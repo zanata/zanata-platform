@@ -26,8 +26,6 @@ import static org.mockito.Mockito.when;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;

@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
@@ -38,9 +37,7 @@ import org.zanata.webtrans.client.ui.Pager;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
