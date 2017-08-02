@@ -46,6 +46,7 @@
 
 .vmerge-searchbox .input-group-addon {
   color: @color-muted;
+  height: 2rem;
 }
 
 .vmerge-boxes .info-icon  {
