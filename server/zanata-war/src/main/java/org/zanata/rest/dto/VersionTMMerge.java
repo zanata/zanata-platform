@@ -68,7 +68,7 @@ public class VersionTMMerge implements HasTMMergeCriteria {
     @Override
     public MergeRule getDifferentProjectRule() {
         // TM merge for version always accept TM from different project
-        return MergeRule.FUZZY;
+        return MergeRule.IGNORE_CHECK;
     }
 
     @Override

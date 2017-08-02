@@ -172,9 +172,9 @@ public class TransMemoryMergeServiceImplTest {
         // we have TransMemoryMergeStatusResolverTest to cover various different
         // merge options so here we don't test that
         MergeRule importedTMOption =
-                acceptImportedTMResults ? MergeRule.FUZZY
+                acceptImportedTMResults ? MergeRule.IGNORE_CHECK
                         : MergeRule.REJECT;
-        MergeOptions opts = MergeOptions.allFuzzy();
+        MergeOptions opts = MergeOptions.allIgnore();
         opts.setImportedMatch(importedTMOption);
 
         return prepareAction(threshold, opts);
