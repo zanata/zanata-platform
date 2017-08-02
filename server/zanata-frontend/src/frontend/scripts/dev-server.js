@@ -72,8 +72,8 @@ function runDevServer () {
     console.log('REST requests: ' + c.blue(
       'http://localhost:8080/rest (you need to run zanata server)'))
     console.log(c.magenta('Watch browser console for actions and errors.'))
-    console.log(c.red('Please fix errors before you commit.'))
+    console.log(c.red('If you see errors, please fix them before you commit.'))
     console.log(c.yellow(
-      'Wait for "webpack: bundle is now VALID." (can take several seconds).'))
+      'Wait for "webpack: Compiled successfully." (can take several seconds).'))
   })
 }

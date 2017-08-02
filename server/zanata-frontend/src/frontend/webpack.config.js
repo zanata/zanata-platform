@@ -12,55 +12,48 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
-// var compact = require('lodash/compact')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-// var reworkCalc = require('rework-calc')
-// var reworkColorFunction = require('rework-color-function')
-// var reworkCustomMedia = require('rework-custom-media')
-// var reworkIeLimits = require('rework-ie-limits')
-// var reworkNpm = require('rework-npm')
-// var reworkVars = require('rework-vars')
-// var reworkSuitConformance = require('rework-suit-conformance')
-
-// var postcssNpm = require('postcss-npm')
 var postcssImport = require('postcss-import')
-// var postcssCssVariables = require('postcss-css-variables')
-// var postcssVars = require('postcss-vars')
 var postcssCustomProperties = require('postcss-custom-properties')
 var postcssCalc = require('postcss-calc')
 var postcssColorFunction = require('postcss-color-function')
 var postcssCustomMedia = require('postcss-custom-media')
 var postcssEsplit = require('postcss-esplit')
-var postcssBemLinter = require('postcss-bem-linter')
+// var postcssBemLinter = require('postcss-bem-linter')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
   return _(obj).omitBy(_.isNil).value()
 }
 
-/* Used just to run autoprefix */
 var postCssLoader = {
   loader: 'postcss-loader',
   options: {
     plugins: [
-      // looks outdated, trying a different one
-      // postcssNpm(/*{ root: join(__dirname, 'app') }*/),
       postcssImport(),
-
-      // seeing error "processor is not a function" with this in the stack
-      // postcssVars,
-      // This one is failing to recognize variables from theme.css that are
-      // used in other places.
-      // postcssCssVariables,
       postcssCustomProperties,
-
       postcssCalc,
       postcssColorFunction,
       postcssCustomMedia,
-      postcssEsplit,
+      postcssEsplit({
+        quiet: true
+      }),
 
-      // emitting too many warnings, can't see what is happening
-      // postcssBemLinter,
+      /*
+       * This is not called with each imported file, but only with top-level
+       * files. Some work is needed before this will give useful output.
+       */
+      // postcssBemLinter({
+      //   preset: 'suit',
+      //   implicitComponents: [
+      //     '**/components/**/*.css',
+      //     '**/containers/**/*.css'
+      //   ],
+      //   implicitUtilities: [
+      //     '**/editor/css/**/*.css'
+      //   ]
+      // }),
+
       autoprefixer({
         browsers: [
           'Explorer >= 9',
@@ -75,42 +68,43 @@ var postCssLoader = {
   }
 }
 
-// Postcss equivalents of these rework things
-//
-// Suitcss can be generated from a nested structure, but so far we are just
-// linting for it.
-//  SUIT convention is the default
-// eslint-disable-next-line max-len
-// https://webdesign.tutsplus.com/tutorials/using-postcss-with-bem-and-suit-methodologies--cms-24592
-
-/* Enables a range of syntax improvements and checks for css files */
-// var reworkLoader = {
-//   loader: 'rework-loader',
-//   options: {
-//     use: [
-//       reworkNpm({ root: join(__dirname, 'app') }),
-//       reworkVars(),
-//       reworkCalc,
-//       reworkColorFunction,
-//       reworkCustomMedia,
-//       reworkIeLimits,
-//       reworkSuitConformance
-//     ]
-//   }
-// }
-
 module.exports = function (env) {
   // TODO could make this 2 options instead. build: dev|server, min: true/false
   var buildtype = env && env.buildtype || 'prod'
+
+  /**
+   * Development build.
+   *
+   * This build is meant to use with webpack-dev-server for hot redeployment. It
+   * should be optimised primarily for in-browser debugging, then for fast
+   * incremental builds.
+   */
   var dev = buildtype === 'dev'
+
+  /**
+   * Draft build (the fast build).
+   *
+   * This build is intended to build as fast as possible, while being
+   * semantically the same as the production build.
+   *
+   * The output is not optimised for artifact size, human-readability or to work
+   * well with development tools or debuggers. Use the prod or dev config if you
+   * want those properties in the output.
+   */
   var draft = buildtype === 'draft'
+
+  /**
+   * Production build config.
+   *
+   * This should be optimised for production performance and a small download.
+   * Builds with this config should fail on any error, including linting errors.
+   */
   var prod = buildtype === 'prod'
 
   // several options have the same values for both draft and prod
   var fullBuild = draft || prod
 
-  var config = {
-    // prod adds frontend.legacy
+  return {
     entry: dropUndef({
       'frontend': './app/index',
       'editor': './app/editor/index.js',
@@ -154,7 +148,7 @@ module.exports = function (env) {
           options: {
             // do not use babelrc for full build. Not sure why it would need to
             // be used for incremental build.
-            // FIXME babelrc configures translation file output, need it to be
+            // TODO babelrc configures translation file output, need it to be
             // used somewhere that it can be picked up.
             babelrc: !fullBuild,
             presets: [ 'react', 'es2015', 'stage-0' ]
@@ -218,7 +212,6 @@ module.exports = function (env) {
         : undefined,
       prod
         // Workaround to switch old loaders to minimize mode
-        // FIXME update loaders and configure them directly instead
         ? new webpack.LoaderOptionsPlugin({ minimize: true })
         : undefined,
 
@@ -238,13 +231,13 @@ module.exports = function (env) {
     node: {
       __dirname: true
     },
+
+    /* Caching for incremental builds, only needed for dev mode */
     cache: !fullBuild,
 
-  // fail on first error
+    /* fail on first error */
     bail: fullBuild,
 
     devtool: prod ? 'source-map' : 'eval'
   }
-
-  return config
 }

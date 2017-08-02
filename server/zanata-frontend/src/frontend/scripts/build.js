@@ -31,14 +31,16 @@ webpack(config, (err, stats) => {
     console.warn(stats.toJson().warnings)
   }
 
-  // stats options: https://webpack.github.io/docs/node.js-api.html#stats
+  // stats options: https://webpack.js.org/configuration/stats/
   // This set of options appears to generate the same output as the CLI with
   // only the --display-error-details flag set.
   const statsOptions = {
     colors: true,
     cached: false,
     chunks: false,
-    modules: true,
+    // prevents some extract-text-webpack-plugin output
+    children: false,
+    modules: false,
     cachedAssets: false,
     exclude: ['node_modules', 'bower_components', 'components'],
     errorDetails: true
