@@ -1,24 +1,24 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { isUndefined, forEach, size } from 'lodash'
-import { connect } from 'react-redux'
-import { Modal, Icon } from '../index'
-import {
-  Button, Badge, Table, OverlayTrigger, Tooltip
-} from 'react-bootstrap'
+import {forEach, isUndefined, size} from 'lodash'
+import {connect} from 'react-redux'
+import {Icon, Modal} from '../index'
+import {Badge, Button, OverlayTrigger, Table, Tooltip} from 'react-bootstrap'
 
 import {
-  TMX_TYPE,
-  tmxInitialLoad,
+  exportTMX,
   showExportTMXModal,
-  exportTMX
+  TMX_ALL,
+  TMX_PROJECT,
+  TMX_VERSION,
+  tmxInitialLoad
 } from '../../actions/tmx-actions'
 
 class TMXExportModal extends Component {
   static propTypes = {
     show: PropTypes.bool,
     showSourceLanguages: PropTypes.bool,
-    type: PropTypes.oneOf(TMX_TYPE).isRequired,
+    type: PropTypes.oneOf(TMX_ALL, TMX_PROJECT, TMX_VERSION).isRequired,
     srcLanguages: PropTypes.arrayOf(PropTypes.object),
     handleOnClose: PropTypes.func,
     handleExportTMX: PropTypes.func,
@@ -48,15 +48,15 @@ class TMXExportModal extends Component {
     let title = ''
     let question = ''
     switch (type) {
-      case 'all':
+      case TMX_ALL:
         title = 'Export all projects to TMX'
         question = 'Are you sure you want to all projects to TMX?'
         break
-      case 'project':
+      case TMX_PROJECT:
         title = 'Export project \'' + project + '\' to TMX'
         question = 'Are you sure you want to export this project to TMX?'
         break
-      case 'version':
+      case TMX_VERSION:
         title = 'Export version \'' + version + '\' to TMX'
         question = 'Are you sure you want to this version to TMX?'
         break
@@ -69,29 +69,42 @@ class TMXExportModal extends Component {
         const localeId = srcLang.localeDetails
           ? srcLang.localeDetails.localeId : 'ALL'
 
-        const downloadTooltip = srcLang.localeDetails
-          ? (<Tooltip id={'download-' + localeId + '-tooltip'}>
+        let downloadTooltip
+        let tooltip
+        if (srcLang.localeDetails) {
+          downloadTooltip = (
+            <Tooltip id={'download-' + localeId + '-tooltip'}>
               Download TMX for {localeId}
-          </Tooltip>)
-          : (<Tooltip id='download-all-tooltip'>
+            </Tooltip>
+          )
+          tooltip = (
+            <Tooltip id={localeId + '-locale-tooltip'}>
+              {srcLang.localeDetails.displayName}<br />
+              {srcLang.localeDetails.nativeName}
+            </Tooltip>
+          )
+        } else {
+          // all locales
+          downloadTooltip = (
+            <Tooltip id='download-all-tooltip'>
               Produces a TMX file (srclang=*all*)
               which some systems can't import.
-          </Tooltip>)
-        const tooltip = srcLang.localeDetails
-          ? (<Tooltip id={localeId + '-locale-tooltip'}>
-                {srcLang.localeDetails.displayName}<br />
-                {srcLang.localeDetails.nativeName}
-          </Tooltip>)
-          : (<Tooltip id={localeId + '-locale-tooltip'}>
+            </Tooltip>
+          )
+          tooltip = (
+            <Tooltip id={localeId + '-locale-tooltip'}>
               All source locales
-          </Tooltip>)
+            </Tooltip>
+          )
+        }
+
         const docCount = (
           <Tooltip id={localeId + '-doc-tooltip'}>
             {srcLang.docCount} documents
           </Tooltip>
         )
         const downloadTMX = handleExportTMX.bind(undefined,
-            (srcLang.localeDetails ? localeId : undefined), project, version)
+            srcLang.localeDetails, project, version)
         srcLanguagesRow.push(
           <tr key={localeId}>
             <td>
@@ -131,7 +144,8 @@ class TMXExportModal extends Component {
      'selected source language will be included.'
 
     return (
-      <Modal show={show} onHide={handleOnClose} id='tmx-export-modal'>
+      <Modal id='tmx-export-modal' show={show} onHide={handleOnClose}
+        keyboard backdrop>
         <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
@@ -172,7 +186,8 @@ const mapDispatchToProps = (dispatch) => {
     handleOnClose: () => {
       dispatch(showExportTMXModal(false))
     },
-    handleExportTMX: (localeId, project, version) => {
+    handleExportTMX: (localeDetails, project, version) => {
+      const localeId = localeDetails ? localeDetails.localeId : undefined
       dispatch(exportTMX(localeId, project, version))
     },
     handleInitLoad: (project, version) => {

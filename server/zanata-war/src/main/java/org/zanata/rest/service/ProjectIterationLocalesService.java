@@ -97,6 +97,7 @@ public class ProjectIterationLocalesService implements ProjectIterationLocalesRe
             results.add(new SourceLocaleDetails(entry.getValue(), details));
         }
         if (results.size() > 1) {
+            // Adding total doc count to the result set
             int count = projectIterationDAO
                     .getTotalDocCount(projectSlug, iterationSlug);
             results.add(new SourceLocaleDetails(count, null));

@@ -91,6 +91,7 @@ public class ProjectLocalesService implements ProjectLocalesResource {
             results.add(new SourceLocaleDetails(entry.getValue(), details));
         }
         if (results.size() > 1) {
+            // Adding total doc count to the result set
             int count = projectDAO.getTotalDocCount(projectSlug);
             results.add(new SourceLocaleDetails(count, null));
         }

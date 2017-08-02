@@ -1,5 +1,7 @@
 package org.zanata.rest.dto;
 
+import javax.annotation.Nullable;
+
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -14,8 +16,10 @@ import java.io.Serializable;
 @JsonPropertyOrder({"docCount", "localeDetails"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SourceLocaleDetails implements Serializable {
+    private static final long serialVersionUID = -155454847734832690L;
     private Integer docCount;
-    private LocaleDetails localeDetails;
+    // This will be null for total doc count
+    private @Nullable LocaleDetails localeDetails;
 
     public SourceLocaleDetails() {
         this(null, null);

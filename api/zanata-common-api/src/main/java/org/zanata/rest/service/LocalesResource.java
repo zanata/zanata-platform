@@ -79,6 +79,7 @@ public interface LocalesResource extends RestResource {
 
     /**
      * Returns list of active source locales of all documents for all active projects.
+     * Restricted to admin
      *
      * @return
      *    OK 200 containing the list of SourceLocaleDetails

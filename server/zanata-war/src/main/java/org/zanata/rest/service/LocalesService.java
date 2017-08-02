@@ -187,6 +187,7 @@ public class LocalesService implements LocalesResource {
 
     @Transactional(readOnly = true)
     @Override
+    @CheckRole("admin")
     public Response getSourceLocales() {
         identity.checkPermission("read-source-language");
         Map<HLocale, Integer> locales = localeDAO.getAllSourceLocalesAndDocCount();
@@ -198,6 +199,7 @@ public class LocalesService implements LocalesResource {
             results.add(new SourceLocaleDetails(entry.getValue(), details));
         }
         if (results.size() > 1) {
+            // Adding total doc count to the result set
             int count = documentDAO.getTotalDocCount();
             results.add(new SourceLocaleDetails(count, null));
         }

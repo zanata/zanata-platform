@@ -35,6 +35,9 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/TMXTestData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
     }
 
     @BeforeClass

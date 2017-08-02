@@ -8,7 +8,9 @@ import {
 } from './common-actions'
 import { apiUrl, isLoggedIn } from '../config'
 
-export const TMX_TYPE = ['all', 'project', 'version']
+export const TMX_ALL = 'all'
+export const TMX_PROJECT = 'project'
+export const TMX_VERSION = 'version'
 
 export const SHOW_EXPORT_TMX_MODAL = 'SHOW_EXPORT_TMX_MODAL'
 export const SET_INITIAL_STATE = 'SET_INITIAL_STATE'
@@ -80,35 +82,22 @@ export const tmxInitialLoad = (project, version) => {
   return (dispatch, getState) => {
     if (isLoggedIn) {
       let type
+      let endpoint
       if ((project || !isUndefined(project)) &&
           (!version || isUndefined(version))) {
-        type = TMX_TYPE[1] // project type
+        type = TMX_PROJECT
+        endpoint = apiUrl + '/projects/p/' + project + '/locales/source'
       } else if ((project || !isUndefined(project)) &&
           (version || !isUndefined(version))) {
-        type = TMX_TYPE[2] // project version type
+        type = TMX_VERSION
+        endpoint = apiUrl + '/projects/p/' + project +
+            '/iterations/i/' + version + '/locales/source'
       } else {
-        type = TMX_TYPE[0] // all type
+        type = TMX_ALL
+        endpoint = apiUrl + '/locales/source'
       }
       dispatch(setInitialState(type))
-      let endpoint
-      switch (type) {
-        case TMX_TYPE[0]:
-          // get all source language in all active documents
-          endpoint = apiUrl + '/locales/source'
-          dispatch(fetchSourceLanguages(endpoint))
-          break
-        case TMX_TYPE[1]:
-          // get all source language in all active documents in project
-          endpoint = apiUrl + '/projects/p/' + project + '/locales/source'
-          dispatch(fetchSourceLanguages(endpoint))
-          break
-        case TMX_TYPE[2]:
-          // get all source language in all active documents in project version
-          endpoint = apiUrl + '/projects/p/' + project +
-              '/iterations/i/' + version + '/locales/source'
-          dispatch(fetchSourceLanguages(endpoint))
-          break
-      }
+      dispatch(fetchSourceLanguages(endpoint))
     }
   }
 }
@@ -118,15 +107,15 @@ export const exportTMX = (localeId, project, version) => {
     const type = getState().tmx.tmxExport.type
     let endpoint
     switch (type) {
-      case TMX_TYPE[0]:
+      case TMX_ALL:
         endpoint = apiUrl + '/tm/all' +
           (isUndefined(localeId) ? '' : ('?srcLocale=' + localeId))
         break
-      case TMX_TYPE[1]:
+      case TMX_PROJECT:
         endpoint = apiUrl + '/tm/projects/' + project +
           (isUndefined(localeId) ? '' : ('?srcLocale=' + localeId))
         break
-      case TMX_TYPE[2]:
+      case TMX_VERSION:
         endpoint = apiUrl + '/tm/projects/' + project + '/iterations/' +
           version +
           (isUndefined(localeId) ? '' : ('?srcLocale=' + localeId))
