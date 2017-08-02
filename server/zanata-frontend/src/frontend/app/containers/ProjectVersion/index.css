@@ -1,5 +1,9 @@
 /* Override legacy JSF new-zanata classes for TMMergeModal React components */
 
+.modal__alert--affix {
+  position: fixed !important;
+}
+
 .panel-title {
    font-size: 1.1rem !important;
    margin: 0 !important;
