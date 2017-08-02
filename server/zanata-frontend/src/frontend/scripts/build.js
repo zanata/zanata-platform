@@ -13,7 +13,6 @@ console.log(isDraft
   ? c.bgYellow(' DRAFT BUILD - do not deploy! ')
   : c.bgCyan(' PRODUCTION BUILD '))
 
-// const config = isDraft ? draftConfig : prodConfig
 const config = createConfig({ buildtype: isDraft ? 'draft' : 'prod' })
 webpack(config, (err, stats) => {
   if (err) {
