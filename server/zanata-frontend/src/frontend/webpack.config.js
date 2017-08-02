@@ -11,6 +11,8 @@
 var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
+var _ = require('lodash')
+// var compact = require('lodash/compact')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 // var reworkCalc = require('rework-calc')
 // var reworkColorFunction = require('rework-color-function')
@@ -22,13 +24,19 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 // var postcssNpm = require('postcss-npm')
 var postcssImport = require('postcss-import')
-var postcssCssVariables = require('postcss-css-variables')
+// var postcssCssVariables = require('postcss-css-variables')
 // var postcssVars = require('postcss-vars')
+var postcssCustomProperties = require('postcss-custom-properties')
 var postcssCalc = require('postcss-calc')
 var postcssColorFunction = require('postcss-color-function')
 var postcssCustomMedia = require('postcss-custom-media')
 var postcssEsplit = require('postcss-esplit')
 var postcssBemLinter = require('postcss-bem-linter')
+
+/* Helper so we can use ternary with undefined to not specify a key */
+function dropUndef (obj) {
+  return _(obj).omitBy(_.isNil).value()
+}
 
 /* Used just to run autoprefix */
 var postCssLoader = {
@@ -43,7 +51,8 @@ var postCssLoader = {
       // postcssVars,
       // This one is failing to recognize variables from theme.css that are
       // used in other places.
-      postcssCssVariables,
+      // postcssCssVariables,
+      postcssCustomProperties,
 
       postcssCalc,
       postcssColorFunction,
@@ -91,6 +100,7 @@ var postCssLoader = {
 // }
 
 module.exports = function (env) {
+  // TODO could make this 2 options instead. build: dev|server, min: true/false
   var buildtype = env && env.buildtype || 'prod'
   var dev = buildtype === 'dev'
   var draft = buildtype === 'draft'
@@ -101,18 +111,20 @@ module.exports = function (env) {
 
   var config = {
     // prod adds frontend.legacy
-    entry: {
+    entry: dropUndef({
       'frontend': './app/index',
       'editor': './app/editor/index.js',
-      // TODO check this works as desired, don't want a failure in dev
       'frontend.legacy': fullBuild ? './app/legacy' : undefined
-    },
-    cache: !fullBuild,
-    output: {
+    }),
+    output: dropUndef({
       path: join(__dirname, 'dist'),
       filename: fullBuild ? '[name].min.js' : '[name].js',
-      chunkFilename: fullBuild ? '[name].min.js' : '[name].js'
-    },
+      chunkFilename: fullBuild ? '[name].min.js' : '[name].js',
+      // includes comments in the generated code about where the code came from
+      pathinfo: dev,
+      // required for hot module replacement
+      publicPath: dev ? 'http://localhost:8000/' : undefined
+    }),
     module: {
       rules: [
         /* Checks for errors in syntax, and for problematic and inconsistent
@@ -142,7 +154,8 @@ module.exports = function (env) {
           options: {
             // do not use babelrc for full build. Not sure why it would need to
             // be used for incremental build.
-            // FIXME babelrc configures translation file output
+            // FIXME babelrc configures translation file output, need it to be
+            // used somewhere that it can be picked up.
             babelrc: !fullBuild,
             presets: [ 'react', 'es2015', 'stage-0' ]
           }
@@ -155,17 +168,22 @@ module.exports = function (env) {
           test: /\.css$/,
           use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
-            use: [
-              'css-loader',
-              'csso-loader',
+            use: _.compact([
+              {
+                loader: 'css-loader',
+                options: {
+                  minimize: prod
+                }
+              },
+              draft ? undefined : 'csso-loader',
               postCssLoader // ,
               // reworkLoader
-            ]
+            ])
           })
         },
 
         /* Bundles bootstrap css into the same bundle as the other css.
-         * TODO look at running through csso and rework, same as other css
+         * TODO look at running through csso, same as other css
          */
         {
           test: /\.less$/,
@@ -173,7 +191,12 @@ module.exports = function (env) {
           use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
             use: [
-              'css-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  minimize: prod
+                }
+              },
               postCssLoader,
               'less-loader'
             ]
@@ -182,14 +205,29 @@ module.exports = function (env) {
       ]
     },
 
-    plugins: [
+    plugins: _.compact([
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
       new ExtractTextPlugin({
         filename: '[name].css'
       }),
-      new webpack.NoEmitOnErrorsPlugin()
-    ],
+      new webpack.NoEmitOnErrorsPlugin(),
+
+      prod
+        ? new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
+        : undefined,
+      prod
+        // Workaround to switch old loaders to minimize mode
+        // FIXME update loaders and configure them directly instead
+        ? new webpack.LoaderOptionsPlugin({ minimize: true })
+        : undefined,
+
+      new webpack.DefinePlugin({
+        'process.env': {
+          'NODE_ENV': JSON.stringify(dev ? 'development' : 'production')
+        }
+      })
+    ]),
 
     resolve: {
       /* Subdirectories to check while searching up tree for module
@@ -200,6 +238,10 @@ module.exports = function (env) {
     node: {
       __dirname: true
     },
+    cache: !fullBuild,
+
+  // fail on first error
+    bail: fullBuild,
 
     devtool: prod ? 'source-map' : 'eval'
   }

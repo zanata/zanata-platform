@@ -11,10 +11,13 @@ const fs = require('fs-extra')
 const c = require('cli-color')
 const WebpackDevServer = require('webpack-dev-server')
 const webpack = require('webpack')
-const webpackConfig = require('../webpack.dev.config.js')
+// const webpackConfig = require('../webpack.dev.config.js')
+const createConfig = require('../webpack.config.js')
 const devServerConfig = require('./dev-server.config.js')
 
 const isEditor = process.argv.indexOf('--editor') !== -1
+
+const webpackConfig = createConfig({ buildtype: 'dev' })
 
 fs.ensureDir('dist')
   .then(() => {

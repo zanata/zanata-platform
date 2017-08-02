@@ -26,26 +26,26 @@ module.exports = merge.smart(defaultConfig, {
   //     }
   //   ]
   // },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }),
-    // Workaround to switch old loaders to minimize mode
-    // FIXME update loaders and configure them directly instead
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ],
+  // plugins: [
+  //   new webpack.optimize.UglifyJsPlugin({
+  //     sourceMap: true
+  //   }),
+  //   new webpack.DefinePlugin({
+  //     'process.env': {
+  //       'NODE_ENV': JSON.stringify('production')
+  //     }
+  //   }),
+  //   // Workaround to switch old loaders to minimize mode
+  //   // FIXME update loaders and configure them directly instead
+  //   new webpack.LoaderOptionsPlugin({
+  //     minimize: true
+  //   })
+  // ],
 
   // fail on first error
-  bail: true,
+  // bail: true,
 
-  eslint: {
-    failOnWarning: true
-  }
+  // eslint: {
+  //   failOnWarning: true
+  // }
 })

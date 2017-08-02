@@ -2,8 +2,6 @@
 const c = require('cli-color')
 const webpack = require('webpack')
 const createConfig = require('../webpack.config.js')
-const prodConfig = require('../webpack.prod.config.js')
-const draftConfig = require('../webpack.draft.config.js')
 
 // execute icon scripts to generate required files
 require('./createIconsComponent')

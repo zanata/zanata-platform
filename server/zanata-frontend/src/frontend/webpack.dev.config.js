@@ -14,19 +14,19 @@ module.exports = merge.smart(defaultConfig, {
   //      and will allow setting breakpoints
   //      See: https://webpack.github.io/docs/configuration.html#devtool
   // devtool: 'eval',
-  output: {
-    // includes comments in the generated code about where the code came from
-    pathinfo: true,
-    // required for hot module replacement
-    publicPath: 'http://localhost:8000/'
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('development')
-      }
-    })
-  ] // ,
+  // output: {
+  //   // includes comments in the generated code about where the code came from
+  //   pathinfo: true,
+  //   // required for hot module replacement
+  //   publicPath: 'http://localhost:8000/'
+  // } // ,
+  // plugins: [
+  //   new webpack.DefinePlugin({
+  //     'process.env': {
+  //       'NODE_ENV': JSON.stringify('development')
+  //     }
+  //   })
+  // ] // ,
 
   // eslint: {
   //   failOnError: false

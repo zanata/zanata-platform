@@ -17,36 +17,36 @@ var defaultConfig = require('./webpack.prod.config.js')
 module.exports = merge.smart(defaultConfig, {
   // devtool: 'eval',
 
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        // prevent css optimisation and minification
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader?-minimize',
-            'postcss-loader',
-            'rework-loader'
-          ]
-        })
-      },
-      {
-        test: /\.less$/,
-        exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader?-minimize',
-            'less-loader'
-          ]
-        })
-      }
-    ]
-  },
+  // module: {
+  //   rules: [
+  //     {
+  //       test: /\.css$/,
+  //       // prevent css optimisation and minification
+  //       loader: ExtractTextPlugin.extract({
+  //         fallback: 'style-loader',
+  //         use: [
+  //           'css-loader?-minimize',
+  //           'postcss-loader',
+  //           'rework-loader'
+  //         ]
+  //       })
+  //     },
+  //     {
+  //       test: /\.less$/,
+  //       exclude: /node_modules/,
+  //       loader: ExtractTextPlugin.extract({
+  //         fallback: 'style-loader',
+  //         use: [
+  //           'css-loader?-minimize',
+  //           'less-loader'
+  //         ]
+  //       })
+  //     }
+  //   ]
+  // } // ,
   // do not minify/uglify the output
   // LoaderOptionsPlugin is only used to set minimize: true
-  plugins: _.filter(defaultConfig.plugins,
-    (plugin) => plugin.constructor.name !== 'UglifyJsPlugin' &&
-      plugin.constructor.name !== 'LoaderOptionsPlugin')
+  // plugins: _.filter(defaultConfig.plugins,
+  //   (plugin) => plugin.constructor.name !== 'UglifyJsPlugin' &&
+  //     plugin.constructor.name !== 'LoaderOptionsPlugin')
 })
