@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
-  Panel, Checkbox, ListGroup, ListGroupItem, PanelGroup
+  Panel, ListGroup, ListGroupItem, PanelGroup
 } from 'react-bootstrap'
-import {LockIcon, Icon} from '../../components'
+import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
   versionDtoPropType} from '../../utils/prop-types-util'
 
@@ -119,13 +119,19 @@ class SelectAllVersionsCheckbox extends Component {
     // the size
     const allVersionsChecked =
       project.versions.length === selectedVersionsInProject.length
+    const someVersionsChecked =
+      selectedVersionsInProject.length < project.versions.length &&
+      selectedVersionsInProject.length > 0
     return (
-      <Checkbox onChange={this.onAllVersionCheckboxChange}
-        checked={allVersionsChecked}>
-        <Icon name='project' title='source project'
-          className='s0 tmx-icon' />
-        {project.title} <LockIcon status={project.status} />
-      </Checkbox>
+      <label >
+        <TriCheckbox
+          onChange={this.onAllVersionCheckboxChange}
+          checked={allVersionsChecked}
+          indeterminate={someVersionsChecked} /> <Icon name='project'
+            title='source project'
+            className='s0 tmx-icon' /> {project.title} <LockIcon
+              status={project.status} />
+      </label>
     )
   }
 }
@@ -151,11 +157,12 @@ class VersionMenuCheckbox extends Component {
       checked
     } = this.props
     return (
-      <Checkbox onChange={this.onVersionCheckboxChange}
-        checked={checked}>
-        <Icon name='version' title='source version' className='s0 tmx-icon' />
-        {version.id} <LockIcon status={version.status} />
-      </Checkbox>
+      <label>
+        <TriCheckbox onChange={this.onVersionCheckboxChange}
+          checked={checked} /> <Icon name='version' title='source version'
+            className='s0 tmx-icon' /> {version.id} <LockIcon
+              status={version.status} />
+      </label>
     )
   }
 }
