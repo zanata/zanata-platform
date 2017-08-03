@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Draggable from 'react-draggable'
-import {storiesOf} from '@kadira/storybook'
-import {action, decorateAction} from '@kadira/storybook-addon-actions'
+import {storiesOf} from '@storybook/react'
+import {action, decorateAction} from '@storybook/addon-actions'
 import {
   Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
   FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup,

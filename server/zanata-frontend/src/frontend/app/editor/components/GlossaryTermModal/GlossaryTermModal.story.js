@@ -1,6 +1,6 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action, decorateAction } from '@kadira/storybook-addon-actions'
+import { storiesOf } from '@storybook/react'
+import { action, decorateAction } from '@storybook/addon-actions'
 import { Button, Panel, Row, Table } from 'react-bootstrap'
 import { Icon, Modal } from '../../../components'
 import Lorem from 'react-lorem-component'
