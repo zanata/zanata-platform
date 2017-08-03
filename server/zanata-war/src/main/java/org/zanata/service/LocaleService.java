@@ -164,6 +164,7 @@ public interface LocaleService extends Serializable {
         Set<HLocaleMember> members = locale.getMembers();
         int count = members == null ? 0 : members.size();
         result.setMemberCount(count);
+        result.setRequestCount(0L);
         return result;
     }
 }
