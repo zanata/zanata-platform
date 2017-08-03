@@ -60,6 +60,8 @@ public class TranslationsTMXExportStrategy
     private static final String creationToolVersion = VersionUtility
             .getVersionInfo(TranslationsTMXExportStrategy.class).getVersionNo();
     @Nullable
+    private final LocaleId srcLocaleId;
+    @Nullable
     private final LocaleId localeId;
 
     /**
@@ -68,7 +70,9 @@ public class TranslationsTMXExportStrategy
      * @param localeId
      *            locale to export, or null for all locales
      */
-    public TranslationsTMXExportStrategy(@Nullable LocaleId localeId) {
+    public TranslationsTMXExportStrategy(@Nullable LocaleId srcLocaleId,
+            @Nullable LocaleId localeId) {
+        this.srcLocaleId = srcLocaleId;
         this.localeId = localeId;
     }
 
@@ -81,7 +85,9 @@ public class TranslationsTMXExportStrategy
         header.addAttribute(new Attribute("segtype", "block"));
         header.addAttribute(new Attribute("o-tmf", "unknown"));
         header.addAttribute(new Attribute("adminlang", "en"));
-        header.addAttribute(new Attribute("srclang", TMXConstants.ALL_LOCALE));
+        header.addAttribute(new Attribute("srclang",
+                srcLocaleId != null ? srcLocaleId.getId() :
+                        TMXConstants.ALL_LOCALE));
         header.addAttribute(new Attribute("datatype", "unknown"));
         return header;
     }

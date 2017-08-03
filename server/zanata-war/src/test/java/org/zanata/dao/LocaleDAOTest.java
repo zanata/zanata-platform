@@ -1,6 +1,8 @@
 package org.zanata.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,14 +23,18 @@ import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
 
 public class LocaleDAOTest extends ZanataDbunitJpaTest {
-    private static final Logger log = LoggerFactory.getLogger(LocaleDAOTest.class);
-
     private LocaleDAO dao;
 
     @Override
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/TMXTestData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
     }
 
@@ -94,6 +100,53 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
         //first result of results2 can be ES or TE
 
         assertThat(results1.get(0)).isNotEqualTo(results2.get(0));
+    }
+
+    @Test
+    public void getAllLocalesAndDocCount() {
+        // expected localeIds
+        LocaleId localeId1 = LocaleId.EN_US;
+        LocaleId localeId2 = new LocaleId("as");
+
+        Map<HLocale, Integer> results = dao.getAllSourceLocalesAndDocCount();
+        assertThat(results).hasSize(2);
+
+        List<LocaleId> returnedLocaleId =
+                results.keySet().stream().map(hLocale -> hLocale.getLocaleId())
+                        .collect(Collectors.toList());
+        assertThat(returnedLocaleId).contains(localeId1, localeId2);
+    }
+
+    @Test
+    public void getProjectSourceLocalesAndDocCount() {
+        // expected localeIds
+        LocaleId localeId1 = LocaleId.EN_US;
+        LocaleId localeId2 = new LocaleId("as");
+
+        Map<HLocale, Integer> results =
+                dao.getProjectSourceLocalesAndDocCount("sample-project");
+        assertThat(results).hasSize(2);
+
+        List<LocaleId> returnedLocaleId =
+                results.keySet().stream().map(hLocale -> hLocale.getLocaleId())
+                        .collect(Collectors.toList());
+        assertThat(returnedLocaleId).contains(localeId1, localeId2);
+    }
+
+    @Test
+    public void getProjectVersionSourceLocalesAndDocCount() {
+        // expected localeIds
+        LocaleId localeId1 = LocaleId.EN_US;
+
+        Map<HLocale, Integer> results =
+                dao.getProjectVersionSourceLocalesAndDocCount("sample-project",
+                        "1.0");
+        assertThat(results).hasSize(1);
+
+        List<LocaleId> returnedLocaleId =
+                results.keySet().stream().map(hLocale -> hLocale.getLocaleId())
+                        .collect(Collectors.toList());
+        assertThat(returnedLocaleId).contains(localeId1);
     }
 
 }

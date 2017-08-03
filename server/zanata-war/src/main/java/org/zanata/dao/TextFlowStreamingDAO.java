@@ -30,11 +30,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.util.CloseableIterator;
 import org.zanata.util.Zanata;
+
+import java.util.Optional;
 
 /**
  * This class uses Hibernate's StatelessSession to iterate over large queries
@@ -74,24 +77,30 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
      * @return
      */
     public @Nonnull
-            CloseableIterator<HTextFlow> findTextFlows() {
+            CloseableIterator<HTextFlow> findTextFlows(Optional<LocaleId> localeId) {
         StreamingEntityIterator<HTextFlow> iter = createIterator();
         try {
-            Query q =
-                    iter.getSession()
-                            .createQuery(
-                                    "from HTextFlow tf "
-                                            + "inner join fetch tf.targets target "
-                                            + "inner join fetch target.locale "
-                                            + "inner join fetch tf.document "
-                                            + "inner join fetch tf.document.locale "
-                                            + "inner join fetch tf.document.projectIteration "
-                                            + "inner join fetch tf.document.projectIteration.project "
-                                            + "where tf.document.projectIteration.project.status<>:OBSOLETE "
-                                            + "and tf.document.projectIteration.status<>:OBSOLETE "
-                                            + "and tf.document.obsolete=0 "
-                                            + "and tf.obsolete=0 ");
+            StringBuilder queryString = new StringBuilder();
+            queryString
+                    .append("from HTextFlow tf ")
+                    .append("inner join fetch tf.targets target ")
+                    .append("inner join fetch target.locale ")
+                    .append("inner join fetch tf.document ")
+                    .append("inner join fetch tf.document.locale ")
+                    .append("inner join fetch tf.document.projectIteration ")
+                    .append("inner join fetch tf.document.projectIteration.project ")
+                    .append("where tf.document.projectIteration.project.status<>:OBSOLETE ")
+                    .append("and tf.document.projectIteration.status<>:OBSOLETE ")
+                    .append("and tf.document.obsolete=0 ")
+                    .append("and tf.obsolete=0 ");
+            if (localeId.isPresent()) {
+                queryString.append("and tf.document.locale.localeId=:localeId");
+            }
+            Query q = iter.getSession().createQuery(queryString.toString());
             q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
+            if (localeId.isPresent()) {
+                q.setParameter("localeId", localeId.get());
+            }
             q.setComment("TextFlowStreamDAO.findTextFlows");
             iter.initQuery(q);
             return iter;
@@ -113,25 +122,31 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
      */
     public @Nonnull
             CloseableIterator<HTextFlow>
-            findTextFlowsByProject(HProject hProject) {
+            findTextFlowsByProject(HProject hProject, Optional<LocaleId> localeId) {
         StreamingEntityIterator<HTextFlow> iter = createIterator();
         try {
-            Query q =
-                    iter.getSession()
-                            .createQuery(
-                                    "from HTextFlow tf "
-                                            + "inner join fetch tf.targets target "
-                                            + "inner join fetch target.locale "
-                                            + "inner join fetch tf.document "
-                                            + "inner join fetch tf.document.locale "
-                                            + "inner join fetch tf.document.projectIteration "
-                                            + "inner join fetch tf.document.projectIteration.project "
-                                            + "where tf.document.projectIteration.status<>:OBSOLETE "
-                                            + "and tf.document.obsolete=0 "
-                                            + "and tf.obsolete=0"
-                                            + "and tf.document.projectIteration.project=:proj");
+            StringBuilder queryString = new StringBuilder();
+            queryString
+                    .append("from HTextFlow tf ")
+                    .append("inner join fetch tf.targets target ")
+                    .append("inner join fetch target.locale ")
+                    .append("inner join fetch tf.document ")
+                    .append("inner join fetch tf.document.locale ")
+                    .append("inner join fetch tf.document.projectIteration ")
+                    .append("inner join fetch tf.document.projectIteration.project ")
+                    .append("where tf.document.projectIteration.status<>:OBSOLETE ")
+                    .append("and tf.document.obsolete=0 ")
+                    .append("and tf.obsolete=0 ")
+                    .append("and tf.document.projectIteration.project=:proj ");
+            if (localeId.isPresent()) {
+                queryString.append("and tf.document.locale.localeId=:localeId");
+            }
+            Query q = iter.getSession().createQuery(queryString.toString());
             q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
             q.setParameter("proj", hProject);
+            if (localeId.isPresent()) {
+                q.setParameter("localeId", localeId.get());
+            }
             q.setComment("TextFlowStreamDAO.findTextFlowsByProject");
             iter.initQuery(q);
             return iter;
@@ -152,24 +167,30 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
      * @return
      */
     public @Nonnull
-            CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(
-                    HProjectIteration hProjectIteration) {
+    CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(
+            HProjectIteration hProjectIteration, Optional<LocaleId> localeId) {
         StreamingEntityIterator<HTextFlow> iter = createIterator();
         try {
-            Query q =
-                    iter.getSession()
-                            .createQuery(
-                                    "from HTextFlow tf "
-                                            + "inner join fetch tf.targets target "
-                                            + "inner join fetch target.locale "
-                                            + "inner join fetch tf.document "
-                                            + "inner join fetch tf.document.locale "
-                                            + "inner join fetch tf.document.projectIteration "
-                                            + "inner join fetch tf.document.projectIteration.project "
-                                            + "where tf.document.obsolete=0 "
-                                            + "and tf.obsolete=0"
-                                            + "and tf.document.projectIteration=:iter");
+            StringBuilder queryString = new StringBuilder();
+            queryString
+                    .append("from HTextFlow tf ")
+                    .append("inner join fetch tf.targets target ")
+                    .append("inner join fetch target.locale ")
+                    .append("inner join fetch tf.document ")
+                    .append("inner join fetch tf.document.locale ")
+                    .append("inner join fetch tf.document.projectIteration ")
+                    .append("inner join fetch tf.document.projectIteration.project ")
+                    .append("where tf.document.obsolete=0 ")
+                    .append("and tf.obsolete=0 ")
+                    .append("and tf.document.projectIteration=:iter ");
+            if (localeId.isPresent()) {
+                queryString.append("and tf.document.locale.localeId=:localeId");
+            }
+            Query q = iter.getSession().createQuery(queryString.toString());
             q.setParameter("iter", hProjectIteration);
+            if (localeId.isPresent()) {
+                q.setParameter("localeId", localeId.get());
+            }
             q.setComment("TextFlowStreamDAO.findTextFlowsByProjectIteration");
 
             iter.initQuery(q);

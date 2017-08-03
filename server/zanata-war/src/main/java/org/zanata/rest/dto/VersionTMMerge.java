@@ -20,10 +20,8 @@
  */
 package org.zanata.rest.dto;
 
-import java.util.List;
 
 import org.zanata.common.LocaleId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.MergeRule;

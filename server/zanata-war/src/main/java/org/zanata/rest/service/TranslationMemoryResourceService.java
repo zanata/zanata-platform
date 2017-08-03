@@ -22,6 +22,7 @@ package org.zanata.rest.service;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +56,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.tmx.TMXParser;
 import org.zanata.util.CloseableIterator;
-import com.google.common.base.Optional;
 // TODO this should use transactions (probably too big for one though)
 // TODO options to export obsolete docs and textflows to TMX?
 
@@ -87,55 +87,68 @@ public class TranslationMemoryResourceService
 
     @Override
     @CheckRole("admin")
-    public Response getAllTranslationMemory(@Nullable LocaleId locale) {
+    public Response getAllTranslationMemory(@Nullable LocaleId srcLocale,
+            @Nullable LocaleId locale) {
         log.debug("exporting TMX for all projects, locale {}", locale);
+        if (srcLocale != null) {
+            localeServiceImpl.validateSourceLocale(srcLocale);
+        }
         if (locale != null) {
             localeServiceImpl.validateSourceLocale(locale);
             // TODO findTextFlowsByLocale
         }
-        String filename = makeTMXFilename(null, null, locale);
-        CloseableIterator<HTextFlow> iter = textFlowStreamDAO.findTextFlows();
-        return buildTMX("getAllTranslationMemory", iter, locale, filename);
+        String filename = makeTMXFilename(null, null, srcLocale, locale);
+        CloseableIterator<HTextFlow> iter = textFlowStreamDAO.findTextFlows(
+                Optional.ofNullable(srcLocale));
+        return buildTMX("getAllTranslationMemory", iter, srcLocale, locale,
+                filename);
     }
 
     @Override
     public Response getProjectTranslationMemory(@Nonnull String projectSlug,
-            @Nullable LocaleId locale) {
+            @Nullable LocaleId srcLocale, @Nullable LocaleId locale) {
         identity.checkPermission("", "download-tmx");
         log.debug("exporting TMX for project {}, locale {}", projectSlug,
                 locale);
         HProject hProject =
                 restSlugValidator.retrieveAndCheckProject(projectSlug, false);
+        if (srcLocale != null) {
+            localeServiceImpl.validateSourceLocale(srcLocale);
+        }
         if (locale != null) {
             restSlugValidator.validateTargetLocale(locale, projectSlug);
             // TODO findTextFlowsByProjectAndLocale
         }
-        String filename = makeTMXFilename(projectSlug, null, locale);
+        String filename = makeTMXFilename(projectSlug, null, srcLocale, locale);
         CloseableIterator<HTextFlow> iter =
-                textFlowStreamDAO.findTextFlowsByProject(hProject);
-        return buildTMX("getProjectTranslationMemory-" + filename, iter, locale,
-                filename);
+                textFlowStreamDAO.findTextFlowsByProject(hProject, Optional.ofNullable(srcLocale));
+        return buildTMX("getProjectTranslationMemory-" + filename, iter,
+                srcLocale, locale, filename);
     }
 
     @Override
     public Response getProjectIterationTranslationMemory(
             @Nonnull String projectSlug, @Nonnull String iterationSlug,
-            @Nullable LocaleId locale) {
+            @Nullable LocaleId srcLocale, @Nullable LocaleId locale) {
         identity.checkPermission("", "download-tmx");
         log.debug("exporting TMX for project {}, iteration {}, locale {}",
                 projectSlug, iterationSlug, locale);
         HProjectIteration hProjectIteration = restSlugValidator
                 .retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+        if (srcLocale != null) {
+            localeServiceImpl.validateSourceLocale(srcLocale);
+        }
         if (locale != null) {
             restSlugValidator.validateTargetLocale(locale, projectSlug,
                     iterationSlug);
             // TODO findTextFlowsByProjectIterationAndLocale
         }
-        String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
+        String filename =
+                makeTMXFilename(projectSlug, iterationSlug, srcLocale, locale);
         CloseableIterator<HTextFlow> iter = textFlowStreamDAO
-                .findTextFlowsByProjectIteration(hProjectIteration);
+                .findTextFlowsByProjectIteration(hProjectIteration, Optional.ofNullable(srcLocale));
         return buildTMX("getProjectIterationTranslationMemory-" + filename,
-                iter, locale, filename);
+                iter, srcLocale, locale, filename);
     }
 
     @Override
@@ -238,9 +251,10 @@ public class TranslationMemoryResourceService
 
     private Response buildTMX(String jobName,
             @Nonnull CloseableIterator<? extends ITextFlow> iter,
-            @Nullable LocaleId locale, @Nonnull String filename) {
+            @Nullable LocaleId srcLocale, @Nullable LocaleId locale,
+            @Nonnull String filename) {
         TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(jobName,
-                iter, new TranslationsTMXExportStrategy(locale));
+                iter, new TranslationsTMXExportStrategy(srcLocale, locale));
         return okResponse(filename, output);
     }
 
@@ -261,11 +275,13 @@ public class TranslationMemoryResourceService
 
     @Nonnull
     private static String makeTMXFilename(@Nullable String projectSlug,
-            @Nullable String iterationSlug, @Nullable LocaleId locale) {
+            @Nullable String iterationSlug, @Nullable LocaleId srcLocale,
+            @Nullable LocaleId locale) {
         String p = projectSlug != null ? projectSlug : "allProjects";
         String i = iterationSlug != null ? iterationSlug : "allVersions";
+        String sl = srcLocale != null ? srcLocale.getId() : "allLocales";
         String l = locale != null ? locale.getId() : "allLocales";
-        return "zanata-" + p + "-" + i + "-" + l + ".tmx";
+        return "zanata-" + p + "-" + i + "-" + sl + "-" + l + ".tmx";
     }
 
     @Nonnull

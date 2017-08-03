@@ -6,6 +6,8 @@ import static org.zanata.model.tm.TransMemoryUnit.tu;
 import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +17,6 @@ import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.CloseableIterator;
-import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
