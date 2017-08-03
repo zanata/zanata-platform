@@ -46,8 +46,6 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
 
-import com.google.common.base.Throwables;
-
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

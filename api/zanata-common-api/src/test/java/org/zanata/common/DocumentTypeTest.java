@@ -28,7 +28,6 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.zanata.common.DocumentType.*;
 
-import java.util.List;
 import java.util.Set;
 
 public class DocumentTypeTest {

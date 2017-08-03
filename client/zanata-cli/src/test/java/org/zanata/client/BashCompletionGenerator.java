@@ -3,7 +3,6 @@ package org.zanata.client;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
-import java.nio.charset.Charset;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;

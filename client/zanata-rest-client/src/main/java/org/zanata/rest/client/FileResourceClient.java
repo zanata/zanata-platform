@@ -38,8 +38,6 @@ import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.service.FileResource;
-import com.google.common.base.Throwables;
-
 
 /**
  * @author Patrick Huang <a

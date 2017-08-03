@@ -98,6 +98,7 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
             }
         } finally {
             csvPrinter.flush();
+            csvPrinter.close();
         }
     }
 
