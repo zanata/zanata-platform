@@ -170,6 +170,7 @@ timestamps {
         stage('Checkout') {
           // notify methods send instant messages about the build progress
           notify.started()
+          currentBuild.result=null
 
           // Shallow Clone does not work with RHEL7, which uses git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
@@ -312,7 +313,8 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.testResults('BUILD', 'FAILURE', e.toString())
+        notify.testResults('BUILD', 'ERROR', e.toString())
+        currentBuild.result='FAILURE'
         // abort the rest of the pipeline
         throw e
       }
@@ -350,10 +352,10 @@ timestamps {
         parallel tasks
 
         node() {
-            // Let notify.updateBuildStatus handle the case
             // when build is *still* green after running integration tests
             // GitHubCommitStatusSetter need to be inside a node
             notify.finish()
+            currentBuild.result = (currentBuild.result) ?: 'SUCCESS'
         }
         // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
         // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
@@ -431,6 +433,7 @@ void integrationTests(String appserver) {
 
         if (mvnResult != 0) {
           notify.testResults(appserver, 'UNSTABLE', 'Failed maven build for integration tests')
+          currentBuild.result = 'UNSTABLE'
 
           // gather db/app logs and screenshots to help debugging
           archive(
@@ -449,7 +452,8 @@ void integrationTests(String appserver) {
           // Reduce workspace size
           sh "git clean -fdx"
         } else {
-          notify.testResults(appserver, 'FAILED', 'No integration test results')
+          notify.error("No integration test result for $appserver")
+          currentBuild.result = 'FAILURE'
           error "no integration test results for $appserver"
         }
       }
