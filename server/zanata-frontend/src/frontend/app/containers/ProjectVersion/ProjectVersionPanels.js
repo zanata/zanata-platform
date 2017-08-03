@@ -123,15 +123,17 @@ class SelectAllVersionsCheckbox extends Component {
       selectedVersionsInProject.length < project.versions.length &&
       selectedVersionsInProject.length > 0
     return (
-      <label >
-        <TriCheckbox
-          onChange={this.onAllVersionCheckboxChange}
-          checked={allVersionsChecked}
-          indeterminate={someVersionsChecked} /> <Icon name='project'
-            title='source project'
-            className='s0 tmx-icon' /> {project.title} <LockIcon
-              status={project.status} />
-      </label>
+      <div className='checkbox'>
+        <label>
+          <TriCheckbox
+            onChange={this.onAllVersionCheckboxChange}
+            checked={allVersionsChecked}
+            indeterminate={someVersionsChecked} /> <Icon name='project'
+              title='source project'
+              className='s0 tmx-icon' /> {project.title} <LockIcon
+                status={project.status} />
+        </label>
+      </div>
     )
   }
 }
@@ -157,12 +159,14 @@ class VersionMenuCheckbox extends Component {
       checked
     } = this.props
     return (
-      <label>
-        <TriCheckbox onChange={this.onVersionCheckboxChange}
-          checked={checked} /> <Icon name='version' title='source version'
-            className='s0 tmx-icon' /> {version.id} <LockIcon
-              status={version.status} />
-      </label>
+      <div className='checkbox'>
+        <label>
+          <TriCheckbox onChange={this.onVersionCheckboxChange}
+            checked={checked} /> <Icon name='version' title='source version'
+              className='s0 tmx-icon' /> {version.id} <LockIcon
+                status={version.status} />
+        </label>
+      </div>
     )
   }
 }
