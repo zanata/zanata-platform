@@ -478,7 +478,7 @@ class TMMergeModal extends Component {
       </span>
     )
     // TODO: Implement custom style .modal__alert--affix
-    const Notify = <Alert bsStyle='danger'>
+    const Notify = <Alert bsStyle='danger' className='modal__alert--affix'>
       {notification && notification.message}
     </Alert>
     return (
