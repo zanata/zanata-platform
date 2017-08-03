@@ -118,7 +118,7 @@ public class LocalesService implements LocalesResource {
             // Map all requests to localeIds, to prevent multiple requests
             Map<LocaleId, Long> allRequests =
                     requestService.getPendingLanguageRequests(
-                            localeIds.toArray(new LocaleId[0]))
+                            localeIds.toArray(new LocaleId[localeIds.size()]))
                             .stream().collect(Collectors.groupingBy(languageRequest ->
                             languageRequest.getLocale().getLocaleId(), Collectors.counting()));
             for (LanguageTeamSearchResult searchResult : localesRefs) {
