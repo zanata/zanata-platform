@@ -23,8 +23,6 @@ import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
 
 public class LocaleDAOTest extends ZanataDbunitJpaTest {
-    private static final Logger log = LoggerFactory.getLogger(LocaleDAOTest.class);
-
     private LocaleDAO dao;
 
     @Override

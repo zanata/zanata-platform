@@ -20,19 +20,19 @@
  */
 package org.zanata.dao
 
+import com.google.common.base.Joiner
+import com.google.common.collect.Lists
 import org.apache.commons.lang.StringUtils
+import org.hibernate.Query
 import org.hibernate.Session
 import org.hibernate.criterion.Restrictions
+import org.hibernate.transform.ResultTransformer
+import org.zanata.common.EntityStatus
 import org.zanata.common.LocaleId
 import org.zanata.model.HLocale
 import org.zanata.rest.editor.dto.LocaleSortField
+import java.util.*
 import javax.enterprise.context.RequestScoped
-
-import com.google.common.base.Joiner
-import com.google.common.collect.Lists
-import com.google.common.collect.Maps
-import org.hibernate.Query
-import org.zanata.common.EntityStatus
 
 @RequestScoped
 class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
@@ -78,7 +78,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
 
     fun getAllSourceLocalesAndDocCount(): Map<HLocale, Int> {
         val queryBuilder = StringBuilder()
-        queryBuilder.append("select doc.locale, count(*) from HDocument doc ")
+        queryBuilder.append("select doc.locale as locale, count(*) as count from HDocument doc ")
                 .append("where doc.obsolete = false ")
                 .append("and doc.projectIteration.status<>:OBSOLETE ")
                 .append("and doc.projectIteration.project.status<>:OBSOLETE ")
@@ -94,7 +94,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
     fun getProjectSourceLocalesAndDocCount(
             projectSlug: String): Map<HLocale, Int> {
         val queryBuilder = StringBuilder()
-        queryBuilder.append("select doc.locale, count(*) from HDocument doc ")
+        queryBuilder.append("select doc.locale as locale, count(*) as count from HDocument doc ")
                 .append("where doc.obsolete = false ")
                 .append("and doc.projectIteration.status<>:OBSOLETE ")
                 .append("and doc.projectIteration.project.status<>:OBSOLETE ")
@@ -111,7 +111,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
     fun getProjectVersionSourceLocalesAndDocCount(
             projectSlug: String, versionSlug: String): Map<HLocale, Int> {
         val queryBuilder = StringBuilder()
-        queryBuilder.append("select doc.locale, count(*) from HDocument doc ")
+        queryBuilder.append("select doc.locale as locale, count(*) as count from HDocument doc ")
                 .append("where doc.obsolete = false ")
                 .append("and doc.projectIteration.status<>:OBSOLETE ")
                 .append("and doc.projectIteration.slug =:versionSlug ")
@@ -129,16 +129,13 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
 
     fun processGetSourceLocalesAndDocCount(query: Query): Map<HLocale, Int> {
         @Suppress("UNCHECKED_CAST")
-        val list = query.list() as List<Array<*>>
-
-        val results = Maps.newHashMap<HLocale, Int>()
-        for (obj in list) {
-            val locale = obj[0] as HLocale
-            val count = obj[1] as Long
-            val countInt = if (count == null) 0 else Math.toIntExact(count)
-            results.put(locale, countInt)
+        val list = query.setResultTransformer(LocalesAndDocCountTransformer()).list()
+                as List<Map.Entry<HLocale, Int>>
+        var map = HashMap<HLocale, Int>()
+        for (entry in list) {
+            map.put(entry.key, entry.value)
         }
-        return results
+        return map
     }
 
     fun countByFind(filter: String?, onlyActive: Boolean): Int {
@@ -201,5 +198,32 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
             queryBuilder.append(Joiner.on(", ").join(sortQuery))
         }
         return queryBuilder.toString()
+    }
+
+    class LocalesAndDocCountTransformer : ResultTransformer {
+        override fun transformTuple(tuple: Array<Any>,
+                                    aliases: Array<String>): Map.Entry<HLocale, Int> {
+            val LOCALE = "locale"
+            val COUNT = "count"
+
+            var hLocale: HLocale? = null
+            var count: Int? = null
+            var i = 0
+            val aliasesLength = aliases.size
+            while (i < aliasesLength) {
+                val columnName = aliases[i]
+                if (columnName == LOCALE) {
+                    hLocale = tuple[i] as HLocale
+                } else if (columnName == COUNT) {
+                    count = Math.toIntExact(tuple[i] as Long)
+                }
+                i++
+            }
+            return AbstractMap.SimpleEntry<HLocale, Int>(hLocale, count)
+        }
+
+        override fun transformList(collection: List<*>): List<*> {
+            return collection
+        }
     }
 }
