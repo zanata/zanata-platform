@@ -69,7 +69,6 @@ var postCssLoader = {
 }
 
 module.exports = function (env) {
-  // TODO could make this 2 options instead. build: dev|server, min: true/false
   var buildtype = env && env.buildtype || 'prod'
 
   /**
@@ -80,6 +79,14 @@ module.exports = function (env) {
    * incremental builds.
    */
   var dev = buildtype === 'dev'
+
+  /**
+   * Storybook config.
+   *
+   * Used by storybook to build individual components. Should inline the css and
+   * optimize for fast incremental builds.
+   */
+  var storybook = buildtype === 'storybook'
 
   /**
    * Draft build (the fast build).
@@ -104,13 +111,13 @@ module.exports = function (env) {
   // several options have the same values for both draft and prod
   var fullBuild = draft || prod
 
-  return {
-    entry: dropUndef({
+  return dropUndef({
+    entry: storybook ? undefined : dropUndef({
       'frontend': './app/index',
       'editor': './app/editor/index.js',
       'frontend.legacy': fullBuild ? './app/legacy' : undefined
     }),
-    output: dropUndef({
+    output: storybook ? undefined : dropUndef({
       path: join(__dirname, 'dist'),
       filename: fullBuild ? '[name].min.js' : '[name].js',
       chunkFilename: fullBuild ? '[name].min.js' : '[name].js',
@@ -120,12 +127,13 @@ module.exports = function (env) {
       publicPath: dev ? 'http://localhost:8000/' : undefined
     }),
     module: {
-      rules: [
+      rules: _.compact([
         /* Checks for errors in syntax, and for problematic and inconsistent
         * code in all JavaScript files.
         * Configured in .eslintrc
         */
-        {
+        // TODO consider turning on for storybook
+        storybook ? undefined : {
           test: /\.jsx?$/,
           exclude: /node_modules/,
           enforce: 'pre',
@@ -170,8 +178,7 @@ module.exports = function (env) {
                 }
               },
               draft ? undefined : 'csso-loader',
-              postCssLoader // ,
-              // reworkLoader
+              postCssLoader
             ])
           })
         },
@@ -196,14 +203,16 @@ module.exports = function (env) {
             ]
           })
         }
-      ]
+      ])
     },
 
     plugins: _.compact([
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
       new ExtractTextPlugin({
-        filename: '[name].css'
+        filename: '[name].css',
+        // storybook should use the fallback: style-loader
+        disable: storybook
       }),
       new webpack.NoEmitOnErrorsPlugin(),
 
@@ -217,7 +226,8 @@ module.exports = function (env) {
 
       new webpack.DefinePlugin({
         'process.env': {
-          'NODE_ENV': JSON.stringify(dev ? 'development' : 'production')
+          'NODE_ENV': JSON.stringify(
+            dev || storybook ? 'development' : 'production')
         }
       })
     ]),
@@ -239,5 +249,5 @@ module.exports = function (env) {
     bail: fullBuild,
 
     devtool: prod ? 'source-map' : 'eval'
-  }
+  })
 }
