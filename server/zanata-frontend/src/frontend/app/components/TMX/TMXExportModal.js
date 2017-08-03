@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {forEach, isUndefined, size} from 'lodash'
+import {size} from 'lodash'
 import {connect} from 'react-redux'
 import {Icon, Modal} from '../index'
 import {Badge, Button, OverlayTrigger, Table, Tooltip} from 'react-bootstrap'
@@ -13,6 +13,43 @@ import {
   TMX_VERSION,
   tmxInitialLoad
 } from '../../actions/tmx-actions'
+
+const toDownloadTooltipMsg = (localeDetails) => {
+  return localeDetails
+    ? `Download TMX for ${localeDetails.localeId}`
+    : "Produces a TMX file (srclang=*all*) which some systems can't import."
+}
+
+const toLocaleTooltipMsg = (localeDetails) => {
+  return localeDetails
+    ? `${localeDetails.displayName} - ${localeDetails.nativeName}`
+    : 'All source locales'
+}
+
+const localeDetailsToLocaleId = (localeDetails) => {
+  return localeDetails ? localeDetails.localeId : 'ALL'
+}
+
+const fromTMXTypeToTitleAndQuestion = (tmxType, project, version) => {
+  let title, question
+  switch (tmxType) {
+    case TMX_ALL:
+      title = 'Export all projects to TMX'
+      question = 'Are you sure you want to all projects to TMX?'
+      break
+    case TMX_PROJECT:
+      title = `Export project '${project}' to TMX`
+      question = 'Are you sure you want to export this project to TMX?'
+      break
+    case TMX_VERSION:
+      title = `Export version '${version}' to TMX`
+      question = 'Are you sure you want to export this version to TMX?'
+      break
+    default:
+      break
+  }
+  return {title, question}
+}
 
 class TMXExportModal extends Component {
   static propTypes = {
@@ -36,7 +73,7 @@ class TMXExportModal extends Component {
   render () {
     const {
       show,
-      srcLanguages,
+      srcLanguages = [],
       handleOnClose,
       handleExportTMX,
       type,
@@ -45,101 +82,68 @@ class TMXExportModal extends Component {
       version
     } = this.props
 
-    let title = ''
-    let question = ''
-    switch (type) {
-      case TMX_ALL:
-        title = 'Export all projects to TMX'
-        question = 'Are you sure you want to all projects to TMX?'
-        break
-      case TMX_PROJECT:
-        title = 'Export project \'' + project + '\' to TMX'
-        question = 'Are you sure you want to export this project to TMX?'
-        break
-      case TMX_VERSION:
-        title = 'Export version \'' + version + '\' to TMX'
-        question = 'Are you sure you want to this version to TMX?'
-        break
-      default:
-        break
-    }
-    let srcLanguagesRow = []
-    if (!isUndefined(srcLanguages)) {
-      forEach(srcLanguages, function (srcLang) {
-        const localeId = srcLang.localeDetails
-          ? srcLang.localeDetails.localeId : 'ALL'
+    const {title, question} =
+      fromTMXTypeToTitleAndQuestion(type, project, version)
 
-        let downloadTooltip
-        let tooltip
-        if (srcLang.localeDetails) {
-          downloadTooltip = (
-            <Tooltip id={'download-' + localeId + '-tooltip'}>
-              Download TMX for {localeId}
-            </Tooltip>
-          )
-          tooltip = (
-            <Tooltip id={localeId + '-locale-tooltip'}>
-              {srcLang.localeDetails.displayName}<br />
-              {srcLang.localeDetails.nativeName}
-            </Tooltip>
-          )
-        } else {
-          // all locales
-          downloadTooltip = (
-            <Tooltip id='download-all-tooltip'>
-              Produces a TMX file (srclang=*all*)
-              which some systems can't import.
-            </Tooltip>
-          )
-          tooltip = (
-            <Tooltip id={localeId + '-locale-tooltip'}>
-              All source locales
-            </Tooltip>
-          )
-        }
+    const srcLangRows = srcLanguages.map(srcLang => {
+      const localeDetails = srcLang.localeDetails
+      const localeId = localeDetailsToLocaleId(localeDetails)
+      const downloadTooltipMsg = toDownloadTooltipMsg(localeDetails)
+      const localeTooltipMsg = toLocaleTooltipMsg(localeDetails)
 
-        const docCount = (
-          <Tooltip id={localeId + '-doc-tooltip'}>
-            {srcLang.docCount} documents
-          </Tooltip>
-        )
-        const downloadTMX = handleExportTMX.bind(undefined,
-            srcLang.localeDetails, project, version)
-        srcLanguagesRow.push(
-          <tr key={localeId}>
-            <td>
-              <OverlayTrigger placement='left' overlay={tooltip}>
-                <Button bsStyle='link' className='button--link'>
-                  {localeId}
+      const downloadTooltip = (
+        <Tooltip id={`download-${localeId}-tooltip`}>
+          {downloadTooltipMsg}
+        </Tooltip>
+      )
+      const tooltip = (
+        <Tooltip id={`${localeId}-locale-tooltip`}>
+          {localeTooltipMsg}
+        </Tooltip>
+      )
+
+      const docCount = (
+        <Tooltip id={`${localeId}-doc-tooltip`}>
+          {srcLang.docCount} documents
+        </Tooltip>
+      )
+      const downloadTMX = handleExportTMX.bind(undefined,
+        srcLang.localeDetails, project, version)
+      return (
+        <tr key={localeId}>
+          <td>
+            <OverlayTrigger placement='left' overlay={tooltip}>
+              <Button bsStyle='link' className='button--link'>
+                {localeId}
+              </Button>
+            </OverlayTrigger>
+          </td>
+          <td>
+            <OverlayTrigger placement='top' overlay={docCount}>
+              <Badge>
+                {srcLang.docCount} <Icon name='document' className='n1' />
+              </Badge>
+            </OverlayTrigger>
+          </td>
+          <td>
+            <span className='tmx-dl'>
+              <OverlayTrigger placement='top' overlay={downloadTooltip}>
+                <Button
+                  className={'button--primary ' +
+                  (downloading[localeId] ? 'disabled' : '')}
+                  disabled={downloading[localeId]}
+                  bsStyle='primary'
+                  bsSize='small'
+                  onClick={downloadTMX}>
+                  {downloading[localeId] ? 'Downloading' : 'Download'}
                 </Button>
               </OverlayTrigger>
-            </td>
-            <td>
-              <OverlayTrigger placement='top' overlay={docCount}>
-                <Badge>
-                  {srcLang.docCount} <Icon name='document' className='n1' />
-                </Badge>
-              </OverlayTrigger>
-            </td>
-            <td>
-              <span className='tmx-dl'>
-                <OverlayTrigger placement='top' overlay={downloadTooltip}>
-                  <Button
-                    className={'button--primary ' +
-                      (downloading[localeId] ? 'disabled' : '')}
-                    disabled={downloading[localeId]}
-                    bsStyle='primary'
-                    bsSize='small'
-                    onClick={downloadTMX}>
-                    {downloading[localeId] ? 'Downloading' : 'Download'}
-                  </Button>
-                </OverlayTrigger>
-                <span className='asterix'>*</span>
-              </span>
-            </td>
-          </tr>)
-      })
-    }
+              <span className='asterix'>*</span>
+            </span>
+          </td>
+        </tr>
+      )
+    })
     const warningText = '* All translations of documents for the ' +
      'selected source language will be included.'
 
@@ -152,11 +156,11 @@ class TMXExportModal extends Component {
         <Modal.Body>
           <span className='tmx-export'>
             <p>{question}</p>
-            {size(srcLanguagesRow) > 1 &&
+            {size(srcLangRows) > 1 &&
               <p className='lead'>Source languages</p>}
             <Table className='tmx-table'>
               <tbody>
-                {srcLanguagesRow}
+                {srcLangRows}
               </tbody>
             </Table>
             <p className='text-warning'>
