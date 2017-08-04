@@ -12,12 +12,11 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.EditorFilter;
-import org.zanata.webtrans.shared.rpc.QueryParser;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;

@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.view;
 
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;

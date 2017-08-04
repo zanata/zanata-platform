@@ -4,7 +4,7 @@ import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.user.client.ui.ListBox;
 import java.util.ArrayList;
 import java.util.List;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.shared.model.Locale;
 
 /**

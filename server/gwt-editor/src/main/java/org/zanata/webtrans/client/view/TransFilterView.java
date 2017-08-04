@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.util.CoverageIgnore;
-import org.zanata.webtrans.client.presenter.UserConfigHolder.ConfigurationState;
+import org.zanata.webtrans.shared.ui.UserConfigHolder.ConfigurationState;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EditorSearchField;
 
