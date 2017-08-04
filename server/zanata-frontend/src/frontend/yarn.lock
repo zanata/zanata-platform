@@ -25,7 +25,7 @@
     react-addons-create-fragment "^15.5.3"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-knobs@^3.0.0":
+"@storybook/addon-knobs@3.2.0", "@storybook/addon-knobs@^3.0.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@storybook/addon-knobs/-/addon-knobs-3.2.0.tgz#675b6648034996b1c2aa57fd6d318155d7e511bc"
   dependencies:
