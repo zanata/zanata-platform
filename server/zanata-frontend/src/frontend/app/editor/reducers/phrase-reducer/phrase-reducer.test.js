@@ -40,6 +40,7 @@ describe('phrase-reducer test', () => {
     expect(initialState).toEqual({
       fetchingList: false,
       fetchingFilteredList: false,
+      filteredListTimestamp: new Date(0),
       fetchingDetail: false,
       saveAsMode: false,
       inDoc: {},
@@ -67,11 +68,8 @@ describe('phrase-reducer test', () => {
      */
 
     const initialState = phraseReducer(undefined, {})
-    // Simplified model for test, since code happens to only check id of the
-    // first element. Could be a little fragile but we can make a proper list
-    // of phrases if this ever stops working.
-    const phraseList = new Array(50)
-    phraseList[0] = { id: 'p01' }
+    // Make stub phrases with id p1 to p50
+    const phraseList = Array.from(Array(50), (v, i) => ({ id: `p${i}` }))
 
     const withPhrases = phraseReducer(initialState, {
       type: PHRASE_LIST_SUCCESS,
@@ -339,16 +337,18 @@ describe('phrase-reducer test', () => {
   })
 
   it('can track fetching filtered phrases', () => {
+    const timestamp = new Date(2017, 1, 1)
     const initialState = phraseReducer(undefined, { type: 'any' })
     const fetching = phraseReducer(initialState, {
       type: PHRASE_LIST_REQUEST,
       meta: {
-        filter: true
+        filter: true,
+        timestamp
       }
     })
     const withPhrases = phraseReducer(fetching, {
       type: PHRASE_LIST_SUCCESS,
-      meta: { filter: true },
+      meta: { filter: true, timestamp },
       payload: {
         docId: 'mydoc',
         phraseList: [
