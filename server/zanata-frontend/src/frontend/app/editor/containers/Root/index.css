@@ -600,6 +600,14 @@ button.close:focus, button.close:hover, button.close:active:focus {
   color: #f00;
 }
 
+/* This rule looks fragile - 5 different things needed to trigger it, and they
+ * do not look related to the adjustment:
+ *  .Link--neutral is just color
+ *  .row is just displaying as table cell
+ *  .u-ltemd-hidden is just hiding on non-large screens
+ *
+ * FIXME use a utility class for this adjustment instead. Probably
+ *   .u-vAlignSuper, which could go next to .u-vAlignMiddle in utils-display */
 button.Link--neutral .row span.u-ltemd-hidden {
   vertical-align:super;
 }
