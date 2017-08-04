@@ -62,6 +62,7 @@ class OptionMismatchChecker<T> {
                 && collectionIsNotEmpty(valueInOption);
     }
 
+    @SuppressWarnings("rawtypes")
     private boolean collectionIsNotEmpty(T value) {
         return !(value instanceof Collection) || !((Collection) value).isEmpty();
     }
