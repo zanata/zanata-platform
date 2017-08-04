@@ -1,12 +1,17 @@
 import React from 'react'
 import { storiesOf, action } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
+import { host } from 'storybook-host'
 import Button from '.'
 
 /*
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('Button', module)
+  .addDecorator(host({
+    title: 'Button',
+    align: 'center middle'
+  }))
   .add('plain', withInfo()(() => (
     <Button title="Click should trigger onClick action"
       onClick={action('onClick')}>

@@ -79,6 +79,7 @@
     "react-styleguidist": "2.3.1",
     "react-transform-hmr": "1.0.4",
     "reselect": "1.1.0",
+    "storybook-host": "3.0.0",
     "style-loader": "0.13.1",
     "webpack": "3.4.1",
     "webpack-dev-server": "2.6.1",
