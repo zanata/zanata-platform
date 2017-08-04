@@ -1,11 +1,6 @@
 /**
- * This is the base config for all builds.
- *
- * Cleanup needed:
- *  - This config is used for a first-pass build that is required for atomic css
- *   to work. This should be fixed so that atomic works without the extra build.
- *  - This outputs to a different file than the production build, but we could
- *    just use the same filename for all builds.
+ * This is the base config for all builds. It uses env.buildtype to change
+ * the output configuration for different build types.
  */
 
 var webpack = require('webpack')
@@ -68,6 +63,19 @@ var postCssLoader = {
   }
 }
 
+/*
+ * To set env on command line:
+ *   webpack --env.buildtype=draft
+ *
+ * To set env in build scripts, just pass it as a normal function argument:
+ *   import createConfig from '../webpack.config'
+ *   const config = createConfig({ buildtype: 'draft' })
+ *
+ * Valid buildtype settings: prod (default), draft, dev, storybook.
+ *
+ * More info:
+ *   https://blog.flennik.com/the-fine-art-of-the-webpack-2-config-dc4d19d7f172
+ */
 module.exports = function (env) {
   var buildtype = env && env.buildtype || 'prod'
 
