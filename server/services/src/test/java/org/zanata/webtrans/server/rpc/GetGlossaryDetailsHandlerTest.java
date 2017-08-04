@@ -3,7 +3,6 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +28,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -88,7 +87,7 @@ public class GetGlossaryDetailsHandlerTest extends ZanataTest {
         GetGlossaryDetailsResult result = handler.execute(action, null);
 
         verify(identity).checkLoggedIn();
-        assertThat(result.getGlossaryDetails(), Matchers.is(details));
+        assertThat(result.getGlossaryDetails()).isEqualTo(details);
     }
 
     @Test

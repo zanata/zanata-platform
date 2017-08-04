@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.service;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ContentState;
@@ -11,7 +10,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.webtrans.client.service.NavigationService.UNDEFINED;
 import static org.zanata.webtrans.test.GWTTestData.makeTransUnit;
 
@@ -36,17 +35,17 @@ public class SinglePageDataModelImplTest {
 
     @Test
     public void canSetDataAndResetCurrentRowToUnselected() {
-        assertThat(model.getData(), Matchers.is(Matchers.<TransUnit> empty()));
+        assertThat(model.getData()).isEmpty();
 
         model.setData(data);
 
-        assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
-        assertThat(model.getData(), Matchers.is(data));
+        assertThat(model.getCurrentRow()).isEqualTo(UNDEFINED);
+        assertThat(model.getData()).isEqualTo(data);
 
         model.setSelected(1);
-        assertThat(model.getCurrentRow(), Matchers.equalTo(1));
+        assertThat(model.getCurrentRow()).isEqualTo(1);
         model.setData(data);
-        assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
+        assertThat(model.getCurrentRow()).isEqualTo(UNDEFINED);
     }
 
     @Test
@@ -54,10 +53,10 @@ public class SinglePageDataModelImplTest {
         model.setData(data);
 
         TransUnit found = model.getByIdOrNull(new TransUnitId(2));
-        assertThat(found, Matchers.equalTo(data.get(1)));
+        assertThat(found).isEqualTo(data.get(1));
 
         TransUnit notFound = model.getByIdOrNull(new TransUnitId(99));
-        assertThat(notFound, Matchers.is(Matchers.nullValue()));
+        assertThat(notFound).isNull();
     }
 
     @Test
@@ -65,10 +64,10 @@ public class SinglePageDataModelImplTest {
         model.setData(data);
 
         int index = model.findIndexById(new TransUnitId(3));
-        assertThat(index, Matchers.is(2));
+        assertThat(index).isEqualTo(2);
 
         int notFoundIndex = model.findIndexById(new TransUnitId(99));
-        assertThat(notFoundIndex, Matchers.is(UNDEFINED));
+        assertThat(notFoundIndex).isEqualTo(UNDEFINED);
     }
 
     @Test
@@ -77,9 +76,8 @@ public class SinglePageDataModelImplTest {
 
         model.setSelected(2);
 
-        assertThat(model.getCurrentRow(), Matchers.is(2));
-        assertThat(model.getSelectedOrNull(),
-                Matchers.sameInstance(data.get(2)));
+        assertThat(model.getCurrentRow()).isEqualTo(2);
+        assertThat(model.getSelectedOrNull()).isSameAs(data.get(2));
     }
 
     @Test
@@ -89,7 +87,7 @@ public class SinglePageDataModelImplTest {
         model.setSelected(-1);
 
         TransUnit result = model.getSelectedOrNull();
-        assertThat(result, Matchers.is(Matchers.nullValue()));
+        assertThat(result).isNull();
     }
 
     @Test
@@ -100,15 +98,14 @@ public class SinglePageDataModelImplTest {
         List<TransUnit> oldData = ImmutableList.copyOf(data);
 
         model.setData(data);
-        assertThat(model.getByIdOrNull(updatedTUId),
-                Matchers.not(Matchers.sameInstance(updatedTransUnit)));
+        assertThat(model.getByIdOrNull(updatedTUId))
+                .isNotSameAs(updatedTransUnit);
 
         boolean updated = model.updateIfInCurrentPage(updatedTransUnit);
 
-        assertThat(updated, Matchers.is(true));
-        assertThat(model.getData(), Matchers.not(Matchers.equalTo(oldData)));
-        assertThat(model.getByIdOrNull(updatedTUId),
-                Matchers.sameInstance(updatedTransUnit));
+        assertThat(updated).isTrue();
+        assertThat(model.getData()).isNotEqualTo(oldData);
+        assertThat(model.getByIdOrNull(updatedTUId)).isSameAs(updatedTransUnit);
     }
 
     @Test
@@ -119,12 +116,11 @@ public class SinglePageDataModelImplTest {
         List<TransUnit> oldData = ImmutableList.copyOf(data);
 
         model.setData(data);
-        assertThat(model.getByIdOrNull(updatedTUId),
-                Matchers.not(Matchers.sameInstance(updatedTransUnit)));
+        assertThat(model.getByIdOrNull(updatedTUId)).isNotSameAs(updatedTransUnit);
 
         boolean updated = model.updateIfInCurrentPage(updatedTransUnit);
 
-        assertThat(updated, Matchers.is(false));
-        assertThat(model.getData(), Matchers.equalTo(oldData));
+        assertThat(updated).isFalse();
+        assertThat(model.getData()).isEqualTo(oldData);
     }
 }

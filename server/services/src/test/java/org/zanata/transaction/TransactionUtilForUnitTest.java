@@ -18,10 +18,16 @@ import org.zanata.util.RunnableEx;
 public class TransactionUtilForUnitTest implements TransactionUtil {
     private static final Logger log =
             LoggerFactory.getLogger(TransactionUtilForUnitTest.class);
+    private boolean useTransaction = false;
     private @CheckForNull EntityManager em;
 
     public TransactionUtilForUnitTest(@CheckForNull EntityManager em) {
         this.em = em;
+    }
+
+    public TransactionUtilForUnitTest(@CheckForNull EntityManager em, boolean useTransaction) {
+        this(em);
+        this.useTransaction = useTransaction;
     }
 
     private void flushAndClear() {
@@ -29,19 +35,31 @@ public class TransactionUtilForUnitTest implements TransactionUtil {
             em.flush();
             em.clear();
         }
+        if (em != null && useTransaction) {
+            log.debug("committing in TestTransactionUtil");
+            em.getTransaction().commit();
+        }
     }
 
     @Override
     public <R> R call(Callable<R> function) throws Exception {
         log.debug("running in TestTransactionUtil");
+        startTransactionIfNeeded();
         R result = function.call();
         flushAndClear();
         return result;
     }
 
+    private void startTransactionIfNeeded() {
+        if (useTransaction && em != null) {
+            em.getTransaction().begin();
+        }
+    }
+
     @Override
     public void run(Runnable runnable) throws Exception {
         log.debug("running in TestTransactionUtil");
+        startTransactionIfNeeded();
         runnable.run();
         flushAndClear();
     }
@@ -49,6 +67,7 @@ public class TransactionUtilForUnitTest implements TransactionUtil {
     @Override
     public void runEx(RunnableEx runnable) throws Exception {
         log.debug("running in TestTransactionUtil");
+        startTransactionIfNeeded();
         runnable.run();
         flushAndClear();
     }

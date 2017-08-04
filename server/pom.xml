@@ -662,13 +662,6 @@
         <version>2.2.1</version>
       </dependency>
 
-      <!-- zanata assets -->
-      <dependency>
-        <groupId>org.zanata</groupId>
-        <artifactId>zanata-assets</artifactId>
-        <version>${zanata.assets.version}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>services</artifactId>

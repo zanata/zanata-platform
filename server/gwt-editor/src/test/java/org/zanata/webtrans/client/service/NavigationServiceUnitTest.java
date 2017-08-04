@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.zanata.webtrans.test.GWTTestData.documentInfo;
 import static org.zanata.webtrans.test.GWTTestData.extractFromEvents;
@@ -11,7 +11,6 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -136,8 +135,8 @@ public class NavigationServiceUnitTest {
         TableRowSelectedEvent tableRowSelectedEvent =
                 extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(data.get(0).getId()));
+        assertThat(tableRowSelectedEvent.getSelectedId())
+                .isEqualTo(data.get(0).getId());
     }
 
     @Test
@@ -150,10 +149,10 @@ public class NavigationServiceUnitTest {
         verify(dispatcher, times(2)).execute(actionCaptor.capture(),
                 resultCaptor.capture());
         GetTransUnitList action = actionCaptor.getValue();
-        assertThat(action.getOffset(), Matchers.equalTo(3));
-        assertThat(action.getCount(), Matchers.equalTo(EDITOR_PAGE_SIZE));
-        assertThat(action.getTargetTransUnitId(),
-                Matchers.equalTo(data.get(data.size() - 1).getId()));
+        assertThat(action.getOffset()).isEqualTo(3);
+        assertThat(action.getCount()).isEqualTo(EDITOR_PAGE_SIZE);
+        assertThat(action.getTargetTransUnitId())
+                .isEqualTo(data.get(data.size() - 1).getId());
     }
 
     @Test
@@ -167,8 +166,8 @@ public class NavigationServiceUnitTest {
         TableRowSelectedEvent tableRowSelectedEvent =
                 extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(data.get(1).getId()));
+        assertThat(tableRowSelectedEvent.getSelectedId())
+                .isEqualTo(data.get(1).getId());
     }
 
     @Test
@@ -181,8 +180,8 @@ public class NavigationServiceUnitTest {
         TableRowSelectedEvent tableRowSelectedEvent =
                 extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(data.get(1).getId()));
+        assertThat(tableRowSelectedEvent.getSelectedId())
+                .isEqualTo(data.get(1).getId());
     }
 
     @Test
@@ -196,8 +195,8 @@ public class NavigationServiceUnitTest {
         TableRowSelectedEvent tableRowSelectedEvent =
                 extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(data.get(2).getId()));
+        assertThat(tableRowSelectedEvent.getSelectedId())
+                .isEqualTo(data.get(2).getId());
     }
 
     @Test
@@ -211,8 +210,8 @@ public class NavigationServiceUnitTest {
         TableRowSelectedEvent tableRowSelectedEvent =
                 extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(data.get(2).getId()));
+        assertThat(tableRowSelectedEvent.getSelectedId())
+                .isEqualTo(data.get(2).getId());
     }
 
     @Test
@@ -263,9 +262,8 @@ public class NavigationServiceUnitTest {
 
         // Then:
         verifyZeroInteractions(pageDataChangeListener);
-        assertThat(data.get(data.size() - 1).getSourceComment(),
-                Matchers.not(Matchers.equalTo(updatedTU.getSourceComment())));
-
+        assertThat(data.get(data.size() - 1).getSourceComment())
+                .isNotEqualTo(updatedTU.getSourceComment());
     }
 
     @Test
@@ -290,14 +288,14 @@ public class NavigationServiceUnitTest {
     public void testUpdateDataModel() throws Exception {
         service.init(initContext);
         service.selectByRowIndex(0);
-        assertThat(service.getSelectedOrNull().getStatus(),
-                Matchers.equalTo(ContentState.Approved));
+        assertThat(service.getSelectedOrNull().getStatus())
+                .isEqualTo(ContentState.Approved);
 
         service.updateDataModel(makeTransUnit(service
                 .getSelectedOrNull().getId().getId(), ContentState.NeedReview));
 
-        assertThat(service.getSelectedOrNull().getStatus(),
-                Matchers.equalTo(ContentState.NeedReview));
+        assertThat(service.getSelectedOrNull().getStatus())
+                .isEqualTo(ContentState.NeedReview);
     }
 
     @Test
@@ -309,8 +307,7 @@ public class NavigationServiceUnitTest {
         verify(dispatcher).execute(actionCaptor.capture(),
                 resultCaptor.capture());
         GetTransUnitList getTransUnitList = actionCaptor.getValue();
-        assertThat(getTransUnitList.getDocumentId(),
-                Matchers.equalTo(documentId));
+        assertThat(getTransUnitList.getDocumentId()).isEqualTo(documentId);
     }
 
     @Test
@@ -322,7 +319,7 @@ public class NavigationServiceUnitTest {
         verify(dispatcher, times(2)).execute(actionCaptor.capture(),
                 resultCaptor.capture());
         GetTransUnitList getTransUnitList = actionCaptor.getValue();
-        assertThat(getTransUnitList.getCount(), Matchers.equalTo(5));
+        assertThat(getTransUnitList.getCount()).isEqualTo(5);
 
     }
 
@@ -331,45 +328,44 @@ public class NavigationServiceUnitTest {
         service.init(initContext);
         service.selectByRowIndex(1);
 
-        assertThat(service.getCurrentRowIndexOnPage(), Matchers.equalTo(1));
-        assertThat(service.getSelectedOrNull(), Matchers.equalTo(data.get(1)));
+        assertThat(service.getCurrentRowIndexOnPage()).isEqualTo(1);
+        assertThat(service.getSelectedOrNull()).isEqualTo(data.get(1));
     }
 
     @Test
     public void testFindRowIndexById() throws Exception {
-        assertThat(service.findRowIndexById(new TransUnitId(2)),
-                Matchers.equalTo(1));
+        assertThat(service.findRowIndexById(new TransUnitId(2)))
+                .isEqualTo(1);
 
         // not in current page
-        assertThat(service.findRowIndexById(new TransUnitId(99)),
-                Matchers.equalTo(NavigationService.UNDEFINED));
+        assertThat(service.findRowIndexById(new TransUnitId(99)))
+                .isEqualTo(NavigationService.UNDEFINED);
     }
 
     @Test
     public void testGetSelectedOrNull() throws Exception {
         service.init(initContext);
 
-        assertThat(service.getSelectedOrNull(), Matchers.nullValue());
+        assertThat(service.getSelectedOrNull()).isNull();
 
         service.selectByRowIndex(1);
 
-        assertThat(service.getSelectedOrNull(), Matchers.equalTo(data.get(1)));
+        assertThat(service.getSelectedOrNull()).isEqualTo(data.get(1));
     }
 
     @Test
     public void testGetCurrentPageValues() throws Exception {
-        assertThat(service.getCurrentPageValues(),
-                Matchers.equalTo(data.subList(0, EDITOR_PAGE_SIZE)));
+        assertThat(service.getCurrentPageValues())
+                .isEqualTo(data.subList(0, EDITOR_PAGE_SIZE));
     }
 
     @Test
     public void testGetByIdOrNull() throws Exception {
-        assertThat(service.getByIdOrNull(new TransUnitId(2)),
-                Matchers.equalTo(data.get(1)));
+        assertThat(service.getByIdOrNull(new TransUnitId(2)))
+                .isEqualTo(data.get(1));
 
         // not in current page
-        assertThat(service.getByIdOrNull(new TransUnitId(99)),
-                Matchers.nullValue());
+        assertThat(service.getByIdOrNull(new TransUnitId(99))).isNull();
     }
 
     @Test
@@ -383,7 +379,7 @@ public class NavigationServiceUnitTest {
         TableRowSelectedEvent event =
                 extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
-        assertThat(event.getSelectedId(), Matchers.equalTo(targetId));
+        assertThat(event.getSelectedId()).isEqualTo(targetId);
         verifyZeroInteractions(dispatcher);
     }
 

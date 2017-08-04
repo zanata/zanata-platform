@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.FirstEntry;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.LastEntry;
@@ -8,7 +8,6 @@ import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -71,8 +70,7 @@ public class TransUnitNavigationPresenterTest {
 
         verify(targetContentsPresenter).savePendingChangesIfApplicable();
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getRowType(),
-                Matchers.equalTo(FirstEntry));
+        assertThat(eventCaptor.getValue().getRowType()).isEqualTo(FirstEntry);
     }
 
     @Test
@@ -81,8 +79,7 @@ public class TransUnitNavigationPresenterTest {
 
         verify(targetContentsPresenter).savePendingChangesIfApplicable();
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getRowType(),
-                Matchers.equalTo(LastEntry));
+        assertThat(eventCaptor.getValue().getRowType()).isEqualTo(LastEntry);
     }
 
     @Test
@@ -91,8 +88,7 @@ public class TransUnitNavigationPresenterTest {
 
         verify(targetContentsPresenter).savePendingChangesIfApplicable();
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getRowType(),
-                Matchers.equalTo(PrevState));
+        assertThat(eventCaptor.getValue().getRowType()).isEqualTo(PrevState);
     }
 
     @Test
@@ -101,7 +97,6 @@ public class TransUnitNavigationPresenterTest {
 
         verify(targetContentsPresenter).savePendingChangesIfApplicable();
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getRowType(),
-                Matchers.equalTo(NextState));
+        assertThat(eventCaptor.getValue().getRowType()).isEqualTo(NextState);
     }
 }

@@ -2,7 +2,7 @@ package org.zanata.webtrans.server;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import org.hamcrest.Matchers;
+import org.assertj.core.matcher.AssertionMatcher;
 import org.jglue.cdiunit.ProducerConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,6 @@ import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.test.LambdaMatcher;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -196,10 +195,9 @@ public class TranslationWorkspaceManagerImplTest {
                 manager.getOrRegisterWorkspace(workspaceId);
 
         WorkspaceContext context = workspace.getWorkspaceContext();
-        assertThat(context.getWorkspaceId(), Matchers.equalTo(workspaceId));
-        assertThat(context.getLocaleName(), Matchers.equalTo("German"));
-        assertThat(context.getWorkspaceName(),
-                Matchers.equalTo("project (master)"));
+        assertThat(context.getWorkspaceId()).isEqualTo(workspaceId);
+        assertThat(context.getLocaleName()).isEqualTo("German");
+        assertThat(context.getWorkspaceName()).isEqualTo("project (master)");
     }
 
     @Test
@@ -221,7 +219,7 @@ public class TranslationWorkspaceManagerImplTest {
         // call again with same workspace id will return same instance
         TranslationWorkspace anotherWorkspace =
                 manager.getOrRegisterWorkspace(workspaceId);
-        assertThat(anotherWorkspace, Matchers.sameInstance(workspace));
+        assertThat(anotherWorkspace).isSameAs(workspace);
     }
 
     @Test
@@ -267,15 +265,14 @@ public class TranslationWorkspaceManagerImplTest {
         verify(mockWorkspace, times(2)).publish(eventCaptor.capture());
 
         ExitWorkspace exitWorkspace1 = eventCaptor.getAllValues().get(0);
-        assertThat(exitWorkspace1.getEditorClientId(),
-                Matchers.equalTo(editorClientIds.get(0)));
-        assertThat(exitWorkspace1.getPerson().getName(),
-                Matchers.equalTo("patrick"));
+        assertThat(exitWorkspace1.getEditorClientId())
+                .isEqualTo(editorClientIds.get(0));
+        assertThat(exitWorkspace1.getPerson().getName()).isEqualTo("patrick");
         verify(mockWorkspace).publish(exitWorkspace1);
 
         ExitWorkspace exitWorkspace2 = eventCaptor.getAllValues().get(1);
-        assertThat(exitWorkspace2.getEditorClientId(),
-                Matchers.equalTo(editorClientIds.get(1)));
+        assertThat(exitWorkspace2.getEditorClientId())
+                .isEqualTo(editorClientIds.get(1));
         verify(mockWorkspace).publish(exitWorkspace2);
         verify(gravatarServiceImpl, times(2)).getUserImageUrl(16,
                 "admin@example.com");
@@ -351,15 +348,25 @@ public class TranslationWorkspaceManagerImplTest {
 
     private static WorkspaceContextUpdate matchEvent(String oldProjectSlug,
             String newProjectSlug) {
-        return argThat(new LambdaMatcher<>(wcu ->
-                wcu.getOldProjectSlug().equals(oldProjectSlug) &&
-                        wcu.getNewProjectSlug().equals(newProjectSlug)));
+        return argThat(new AssertionMatcher<WorkspaceContextUpdate>() {
+            @Override
+            public void assertion(WorkspaceContextUpdate actual)
+                    throws AssertionError {
+                assertThat(actual.getOldProjectSlug()).isEqualTo(oldProjectSlug);
+                assertThat(actual.getNewProjectSlug()).isEqualTo(newProjectSlug);
+            }
+        });
     }
 
     private static WorkspaceId matchIteration(String iterationSlug) {
-        return argThat(new LambdaMatcher<>(
-                workspaceId -> workspaceId.getProjectIterationId()
-                        .getIterationSlug().equals(iterationSlug)));
+        return argThat(new AssertionMatcher<WorkspaceId>() {
+            @Override
+            public void assertion(WorkspaceId actual)
+                    throws AssertionError {
+                assertThat(actual.getProjectIterationId().getIterationSlug())
+                        .isEqualTo(iterationSlug);
+            }
+        });
     }
 }
 

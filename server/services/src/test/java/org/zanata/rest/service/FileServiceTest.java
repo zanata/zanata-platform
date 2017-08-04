@@ -58,9 +58,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -133,7 +131,7 @@ public class FileServiceTest extends ZanataTest {
         when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture()))
                 .thenReturn(okResponse);
         fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
-        assertThat(formCaptor.getValue(), is(sameInstance(form)));
+        assertThat(formCaptor.getValue()).isSameAs(form);
     }
 
     @Test
@@ -143,7 +141,7 @@ public class FileServiceTest extends ZanataTest {
                 okResponse);
         response =
                 fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
-        assertThat(response, is(sameInstance(okResponse)));
+        assertThat(response).isSameAs(okResponse);
     }
 
     @Test
@@ -155,7 +153,7 @@ public class FileServiceTest extends ZanataTest {
                 .thenReturn(okResponse);
         fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID,
                 MERGE, form);
-        assertThat(formCaptor.getValue(), is(sameInstance(form)));
+        assertThat(formCaptor.getValue()).isSameAs(form);
     }
 
     @Test
@@ -166,6 +164,6 @@ public class FileServiceTest extends ZanataTest {
         response =
                 fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE,
                         DOC_ID, MERGE, form);
-        assertThat(response, is(sameInstance(okResponse)));
+        assertThat(response).isSameAs(okResponse);
     }
 }

@@ -3,7 +3,6 @@ package org.zanata.service.impl;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -28,7 +27,7 @@ import org.zanata.webtrans.test.GWTTestData;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -90,6 +89,6 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
                 service.findTextFlows(workspaceId, FilterConstraints.builder()
                         .filterBy("file").build());
 
-        assertThat(result.size(), Matchers.equalTo(7));
+        assertThat(result).hasSize(7);
     }
 }

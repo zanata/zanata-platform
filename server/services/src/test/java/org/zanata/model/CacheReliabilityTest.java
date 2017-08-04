@@ -30,8 +30,7 @@ import org.hibernate.stat.Statistics;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a
@@ -57,13 +56,13 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
                 getSecondLevelCacheStatistics(em, HPerson.class.getName());
 
         HPerson p = em.find(HPerson.class, 3L);
-        assertThat(p.getName(), is("Bob Translator"));
+        assertThat(p.getName()).isEqualTo("Bob Translator");
 
         em.clear();
 
         p = em.find(HPerson.class, 3L);
-        assertThat(p.getName(), is("Bob Translator")); // Should still be bob
-                                                       // translator
+        // Should still be bob translator
+        assertThat(p.getName()).isEqualTo("Bob Translator");
     }
 
     @Test
@@ -74,15 +73,15 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
                 getSecondLevelCacheStatistics(em, HPerson.class.getName());
 
         HPerson p = em.find(HPerson.class, 3L);
-        assertThat(p.getName(), is("Bob Translator"));
+        assertThat(p.getName()).isEqualTo("Bob Translator");
 
         em.close();
         em = super.newEntityManagerInstance();
         sessionStats = getSessionStatistics(em);
 
         p = em.find(HPerson.class, 3L);
-        assertThat(p.getName(), is("Bob Translator")); // Should still be bob
-                                                       // translator
+        // Should still be bob translator
+        assertThat(p.getName()).isEqualTo("Bob Translator");
     }
 
     @Test
@@ -101,24 +100,22 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
 
         // EM 1
         HPerson bobT = em1.find(HPerson.class, 3L);
-        assertThat(bobT.getName(), is("Bob Translator"));
+        assertThat(bobT.getName()).isEqualTo("Bob Translator");
 
         // EM 2
         HPerson bobTCopy = em2.find(HPerson.class, 3L);
-        assertThat(bobTCopy.getName(), is("Bob Translator"));
+        assertThat(bobTCopy.getName()).isEqualTo("Bob Translator");
 
         // EM 1
         bobT.setName("Bob Administrator");
         bobT = em1.merge(bobT);
         em1.flush();
-        assertThat(bobT.getName(), is("Bob Administrator"));
+        assertThat(bobT.getName()).isEqualTo("Bob Administrator");
 
         // EM2
         bobTCopy = em2.find(HPerson.class, 3L);
-        assertThat(bobTCopy.getName(), is("Bob Translator")); // Still bob
-                                                              // Translator
-                                                              // (even after
-                                                              // flush)
+        // Still Bob Translator (even after flush)
+        assertThat(bobTCopy.getName()).isEqualTo("Bob Translator");
 
         // EM 1
         em1.getTransaction().commit();
@@ -127,9 +124,8 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
         // EM 2
         em2.clear();
         bobTCopy = em2.find(HPerson.class, 3L);
-        assertThat(bobTCopy.getName(), is("Bob Administrator")); // Bob
-                                                                 // Administrator
-                                                                 // now
+        // Bob Administrator now
+        assertThat(bobTCopy.getName()).isEqualTo("Bob Administrator");
 
         // EM 2
         em2.getTransaction().commit();

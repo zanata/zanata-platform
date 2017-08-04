@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,7 +19,8 @@ import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.domain.Domain;
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -70,10 +70,9 @@ public class EventProcessorTest {
 
         verify(remoteEventService).addListener(domainCaptor.capture(),
                 eq(eventProcessor), callbackCaptor.capture());
-        assertThat(
-                domainCaptor.getValue().getName(),
-                Matchers.equalTo(userWorkspaceContext.getWorkspaceContext()
-                        .getWorkspaceId().toString()));
+        assertThat(domainCaptor.getValue().getName())
+                .isEqualTo(userWorkspaceContext.getWorkspaceContext()
+                        .getWorkspaceId().toString());
         AsyncCallback<Void> callback = callbackCaptor.getValue();
 
         when(configuration.getConnectionId()).thenReturn("connectionId");

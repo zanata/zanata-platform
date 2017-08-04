@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -33,7 +33,6 @@ import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -147,7 +146,7 @@ public class GlossaryPresenterTest {
                 ShortcutContext.Navigation, !isFocused);
         verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit,
                 !isFocused);
-        assertThat(presenter.isFocused(), Matchers.is(isFocused));
+        assertThat(presenter.isFocused()).isEqualTo(isFocused);
     }
 
     @Test
@@ -213,10 +212,9 @@ public class GlossaryPresenterTest {
         verify(dispatcher).execute(getGlossaryCaptor.capture(),
                 callbackCaptor.capture());
         GetGlossary action = getGlossaryCaptor.getValue();
-        assertThat(action.getQuery(), Matchers.equalTo("query"));
-        assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
-        assertThat(action.getSrcLocaleId(),
-                Matchers.equalTo(docInfo.getSourceLocale()));
+        assertThat(action.getQuery()).isEqualTo("query");
+        assertThat(action.getSearchType()).isEqualTo(SearchType.FUZZY);
+        assertThat(action.getSrcLocaleId()).isEqualTo(docInfo.getSourceLocale());
     }
 
     @Test
@@ -249,10 +247,9 @@ public class GlossaryPresenterTest {
         verify(dispatcher).execute(getGlossaryCaptor.capture(),
                 callbackCaptor.capture());
         GetGlossary action = getGlossaryCaptor.getValue();
-        assertThat(action.getQuery(), Matchers.equalTo("query1"));
-        assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
-        assertThat(action.getSrcLocaleId(),
-                Matchers.equalTo(docInfo.getSourceLocale()));
+        assertThat(action.getQuery()).isEqualTo("query1");
+        assertThat(action.getSearchType()).isEqualTo(SearchType.FUZZY);
+        assertThat(action.getSrcLocaleId()).isEqualTo(docInfo.getSourceLocale());
     }
 
     @Test
@@ -381,7 +378,7 @@ public class GlossaryPresenterTest {
         verify(dispatcher).execute(getGlossaryCaptor.capture(),
                 callbackCaptor.capture());
         GetGlossary action = getGlossaryCaptor.getValue();
-        assertThat(action.getQuery(), Matchers.equalTo("source1 source2 "));
+        assertThat(action.getQuery()).isEqualTo("source1 source2 ");
     }
 
     @Test
@@ -396,13 +393,10 @@ public class GlossaryPresenterTest {
 
         verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
         KeyShortcut keyShortcut = keyShortcutCaptor.getValue();
-        assertThat(keyShortcut.getAllKeys(),
-                Matchers.containsInAnyOrder(new Keys(Keys.NO_MODIFIER,
-                        KeyCodes.KEY_ENTER)));
-        assertThat(keyShortcut.getContext(),
-                Matchers.equalTo(ShortcutContext.Glossary));
-        assertThat(keyShortcut.getDescription(),
-                Matchers.equalTo("search glossary"));
+        assertThat(keyShortcut.getAllKeys()).contains(new Keys(Keys.NO_MODIFIER,
+                        KeyCodes.KEY_ENTER));
+        assertThat(keyShortcut.getContext()).isEqualTo(ShortcutContext.Glossary);
+        assertThat(keyShortcut.getDescription()).isEqualTo("search glossary");
 
         keyShortcut.getHandler().onKeyShortcut(null);
         verify(spyPresenter).fireSearchEvent();

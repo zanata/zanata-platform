@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +16,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,7 +56,7 @@ public class RemoteLoggingHandlerTest extends ZanataTest {
         NoOpResult result =
                 handler.execute(new RemoteLoggingAction("blah"), null);
 
-        assertThat(result, Matchers.notNullValue());
+        assertThat(result).isNotNull();
     }
 
     @Test

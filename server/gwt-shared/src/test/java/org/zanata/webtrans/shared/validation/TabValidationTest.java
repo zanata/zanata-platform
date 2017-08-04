@@ -20,11 +20,7 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
 import static org.zanata.webtrans.shared.validation.FakeValidationMessages.fakeValidationMessages;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +30,8 @@ import org.junit.Test;
 import org.zanata.webtrans.shared.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.TabValidation;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TabValidationTest {
     private ValidationMessages messages;
@@ -50,7 +48,7 @@ public class TabValidationTest {
 
     @Test
     public void idIsSet() {
-        assertThat(validation.getId(), is(ValidationId.TAB));
+        assertThat(validation.getId()).isEqualTo(ValidationId.TAB);
     }
 
     @Test
@@ -59,7 +57,7 @@ public class TabValidationTest {
         String target = "Target without tab";
         List<String> errorList = validation.validate(source, target);
 
-        assertThat(errorList, is(noErrors));
+        assertThat(errorList).isEqualTo(noErrors);
     }
 
     @Test
@@ -68,7 +66,7 @@ public class TabValidationTest {
         String target = "Target with\ttab";
         List<String> errorList = validation.validate(source, target);
 
-        assertThat(errorList, is(noErrors));
+        assertThat(errorList).isEqualTo(noErrors);
     }
 
     @Test
@@ -77,8 +75,8 @@ public class TabValidationTest {
         String target = "Target without tab";
         List<String> errorList = validation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.targetHasFewerTabs(1, 0)));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.targetHasFewerTabs(1, 0));
+        assertThat(errorList.size()).isEqualTo(1);
 
     }
 
@@ -88,8 +86,8 @@ public class TabValidationTest {
         String target = "Target with\textra tab";
         List<String> errorList = validation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.targetHasMoreTabs(0, 1)));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.targetHasMoreTabs(0, 1));
+        assertThat(errorList.size()).isEqualTo(1);
 
     }
 
@@ -99,8 +97,8 @@ public class TabValidationTest {
         String target = "Target with one\ttab";
         List<String> errorList = validation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.targetHasFewerTabs(2, 1)));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.targetHasFewerTabs(2, 1));
+        assertThat(errorList.size()).isEqualTo(1);
 
     }
 
@@ -110,8 +108,8 @@ public class TabValidationTest {
         String target = "Target with two\t\t tabs";
         List<String> errorList = validation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.targetHasMoreTabs(1, 2)));
-        assertThat(errorList.size(), is(1));
+        assertThat(errorList).contains(messages.targetHasMoreTabs(1, 2));
+        assertThat(errorList.size()).isEqualTo(1);
 
     }
 

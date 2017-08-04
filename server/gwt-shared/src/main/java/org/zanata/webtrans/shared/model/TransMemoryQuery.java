@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
+import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -41,7 +43,7 @@ public class TransMemoryQuery implements IsSerializable, Serializable {
     private Condition project;
     private Condition document;
     private Condition res;
-    private List<Long> fromVersionIds;
+    private InternalTMSource internalTMSource = InternalTMSource.SELECT_ALL;
     private Condition includeOwnTranslation = new Condition(true, null);
 
     @SuppressWarnings("unused")
@@ -69,12 +71,12 @@ public class TransMemoryQuery implements IsSerializable, Serializable {
 
     public TransMemoryQuery(List<String> queries, SearchType searchType,
             Condition project, Condition document, Condition res,
-            List<Long> fromVersionIds) {
+            InternalTMSource internalTMSource) {
         this(queries, searchType);
         this.project = project;
         this.document = document;
         this.res = res;
-        this.fromVersionIds = fromVersionIds;
+        this.internalTMSource = internalTMSource;
     }
 
     public TransMemoryQuery(String query, SearchType searchType,
@@ -113,8 +115,8 @@ public class TransMemoryQuery implements IsSerializable, Serializable {
         return searchType;
     }
 
-    public List<Long> getFromVersionIds() {
-        return fromVersionIds;
+    public InternalTMSource getInternalTMSource() {
+        return internalTMSource;
     }
 
     @Override

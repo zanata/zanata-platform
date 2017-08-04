@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.Comparator;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -10,7 +9,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.webtrans.test.GWTTestData.makeTransUnit;
 
 /**
@@ -36,7 +35,7 @@ public class TransUnitReplaceInfoTest {
         Comparator<TransUnitReplaceInfo> sameComparator =
                 TransUnitReplaceInfo.getRowComparator();
 
-        assertThat(comparator, Matchers.sameInstance(sameComparator));
+        assertThat(comparator).isSameAs(sameComparator);
     }
 
     @Test
@@ -44,17 +43,17 @@ public class TransUnitReplaceInfoTest {
         Comparator<TransUnitReplaceInfo> comparator =
                 TransUnitReplaceInfo.getRowComparator();
 
-        assertThat(comparator.compare(null, null), Matchers.equalTo(0));
-        assertThat(comparator.compare(null, newReplaceInfo(1)),
-                Matchers.equalTo(-1));
-        assertThat(comparator.compare(newReplaceInfo(1), null),
-                Matchers.equalTo(1));
-        assertThat(comparator.compare(newReplaceInfo(1), newReplaceInfo(1)),
-                Matchers.equalTo(0));
-        assertThat(comparator.compare(newReplaceInfo(1), newReplaceInfo(2)),
-                Matchers.equalTo(-1));
-        assertThat(comparator.compare(newReplaceInfo(2), newReplaceInfo(1)),
-                Matchers.equalTo(1));
+        assertThat(comparator.compare(null, null)).isEqualTo(0);
+        assertThat(comparator.compare(null, newReplaceInfo(1)))
+                .isEqualTo(-1);
+        assertThat(comparator.compare(newReplaceInfo(1), null))
+                .isEqualTo(1);
+        assertThat(comparator.compare(newReplaceInfo(1), newReplaceInfo(1)))
+                .isEqualTo(0);
+        assertThat(comparator.compare(newReplaceInfo(1), newReplaceInfo(2)))
+                .isEqualTo(-1);
+        assertThat(comparator.compare(newReplaceInfo(2), newReplaceInfo(1)))
+                .isEqualTo(1);
     }
 
     @Test
@@ -65,14 +64,12 @@ public class TransUnitReplaceInfoTest {
                 new TransUnitReplaceInfo(CONTAINING_DOC_ID, transUnit);
 
         // init state
-        assertThat(info.getDocId(), Matchers.equalTo(CONTAINING_DOC_ID));
-        assertThat(info.getPreview(), Matchers.nullValue());
-        assertThat(info.getPreviewState(),
-                Matchers.equalTo(PreviewState.NotFetched));
-        assertThat(info.getReplaceInfo(), Matchers.nullValue());
-        assertThat(info.getReplaceState(),
-                Matchers.equalTo(ReplacementState.NotReplaced));
-        assertThat(info.getTransUnit(), Matchers.sameInstance(transUnit));
+        assertThat(info.getDocId()).isEqualTo(CONTAINING_DOC_ID);
+        assertThat(info.getPreview()).isNull();
+        assertThat(info.getPreviewState()).isEqualTo(PreviewState.NotFetched);
+        assertThat(info.getReplaceInfo()).isNull();
+        assertThat(info.getReplaceState()).isEqualTo(ReplacementState.NotReplaced);
+        assertThat(info.getTransUnit()).isSameAs(transUnit);
 
         // update state
         info.setPreview(updatePreview);
@@ -82,11 +79,10 @@ public class TransUnitReplaceInfoTest {
         TransUnit newTU = makeTransUnit(2);
         info.setTransUnit(newTU);
 
-        assertThat(info.getPreview(), Matchers.sameInstance(updatePreview));
-        assertThat(info.getPreviewState(), Matchers.equalTo(PreviewState.Show));
-        assertThat(info.getReplaceInfo(), Matchers.sameInstance(updateInfo));
-        assertThat(info.getReplaceState(),
-                Matchers.equalTo(ReplacementState.Replaced));
-        assertThat(info.getTransUnit(), Matchers.sameInstance(newTU));
+        assertThat(info.getPreview()).isSameAs(updatePreview);
+        assertThat(info.getPreviewState()).isEqualTo(PreviewState.Show);
+        assertThat(info.getReplaceInfo()).isSameAs(updateInfo);
+        assertThat(info.getReplaceState()).isSameAs(ReplacementState.Replaced);
+        assertThat(info.getTransUnit()).isSameAs(newTU);
     }
 }

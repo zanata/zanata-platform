@@ -24,6 +24,8 @@ import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -38,6 +40,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -46,8 +49,10 @@ import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
+
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
 /**
@@ -65,6 +70,7 @@ public class AsynchronousProcessResourceService
         implements AsynchronousProcessResource {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(AsynchronousProcessResourceService.class);
+    private static final long serialVersionUID = -5915271018788588841L;
 
     @Inject
     private LocaleService localeServiceImpl;
@@ -79,8 +85,6 @@ public class AsynchronousProcessResourceService
     @Inject
     private ProjectIterationDAO projectIterationDAO;
     @Inject
-    private ResourceUtils resourceUtils;
-    @Inject
     private ZanataIdentity identity;
 
     @Override
@@ -92,7 +96,7 @@ public class AsynchronousProcessResourceService
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         HDocument document = documentDAO
                 .getByDocIdAndIteration(hProjectIteration, resource.getName());
         // already existing non-obsolete document.
@@ -108,7 +112,7 @@ public class AsynchronousProcessResourceService
         }
         String name = "SourceDocCreation: " + projectSlug + "-" + iterationSlug
                 + "-" + idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug,
@@ -125,23 +129,41 @@ public class AsynchronousProcessResourceService
             final String projectSlug, final String iterationSlug,
             final Resource resource, final Set<String> extensions,
             final boolean copytrans) {
+        String docId = RestUtil.convertFromDocumentURIId(idNoSlash);
+        return startSourceDocCreationOrUpdateProcess(projectSlug,
+                iterationSlug, resource, extensions, docId, copytrans);
+    }
+
+    @Override
+    public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, Resource resource,
+            Set<String> extensions, String docId) {
+        boolean copyTrans = false;
+        return startSourceDocCreationOrUpdateProcess(projectSlug,
+                iterationSlug, resource, extensions, docId, copyTrans);
+    }
+
+    private ProcessStatus startSourceDocCreationOrUpdateProcess(
+            String projectSlug, String iterationSlug, Resource resource,
+            Set<String> extensions, String docId, boolean copyTrans) {
+        if (StringUtils.isBlank(docId)) {
+            throw new BadRequestException("missing id");
+        }
         HProjectIteration hProjectIteration =
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
-                + iterationSlug + "-" + idNoSlash;
+                + iterationSlug + "-" + docId;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug, resource,
-                        extensions, copytrans, true, handle);
+                        extensions, copyTrans, true, handle);
         logWhenUploadComplete(handle, name, keyId);
         return getProcessStatus(keyId); // TODO Change to return 202
-        // Accepted,
-        // with a url to get the
-        // progress
+        // Accepted, with a url to get the progress
     }
 
     private <T> void logWhenUploadComplete(
@@ -176,12 +198,27 @@ public class AsynchronousProcessResourceService
             final TranslationsResource translatedDoc,
             final Set<String> extensions, final String merge,
             final boolean assignCreditToUploader) {
+        final String id = RestUtil.convertFromDocumentURIId(idNoSlash);
+        return startTranslatedDocCreationOrUpdateWithDocId(projectSlug,
+                iterationSlug, locale, translatedDoc, id, extensions, merge,
+                assignCreditToUploader);
+    }
+
+    @Override
+    public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, LocaleId locale,
+            TranslationsResource translatedDoc, String docId,
+            Set<String> extensions,
+            String merge, boolean assignCreditToUploader) {
         // check security (cannot be on @Restrict as it refers to method
         // parameters)
         identity.checkPermission("modify-translation",
                 this.localeServiceImpl.getByLocaleId(locale),
                 this.getSecuredIteration(projectSlug, iterationSlug)
                         .getProject());
+        if (StringUtils.isBlank(docId)) {
+            throw new BadRequestException("missing docId");
+        }
         MergeType mergeType;
         try {
             mergeType = MergeType.valueOf(merge.toUpperCase());
@@ -191,22 +228,22 @@ public class AsynchronousProcessResourceService
             status.getMessages().add("bad merge type " + merge);
             return status;
         }
-        final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
         String taskName =
                 "TranslatedDocUpload: " + projectSlug + "-" + iterationSlug +
-                        "-" + idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+                        "-" + docId;
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
-                        iterationSlug, id, locale, translatedDoc, extensions,
-                        finalMergeType, assignCreditToUploader, true, handle,
-                        TranslationSourceType.API_UPLOAD);
+                iterationSlug, docId, locale, translatedDoc, extensions,
+                finalMergeType, assignCreditToUploader, true, handle,
+                TranslationSourceType.API_UPLOAD);
         logWhenUploadComplete(handle, taskName, keyId);
         return this.getProcessStatus(keyId);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public ProcessStatus getProcessStatus(String processId) {
         AsyncTaskHandle handle =
                 asyncTaskHandleManager.getHandleByKeyId(processId);

@@ -31,9 +31,7 @@ import org.zanata.test.CdiUnitRunner;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the Database backed config store.
@@ -66,117 +64,117 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
     @Test
     @InRequestScope
     public void getHomeContent() {
-        assertThat(databaseBackedConfig.getHomeContent(),
-                equalTo("This is the home content"));
+        assertThat(databaseBackedConfig.getHomeContent())
+                .isEqualTo("This is the home content");
     }
 
     @Test
     @InRequestScope
     public void getAdminEmailAddress() {
-        assertThat(databaseBackedConfig.getAdminEmailAddress(),
-                equalTo("lcroft@redhat.com"));
+        assertThat(databaseBackedConfig.getAdminEmailAddress())
+                .isEqualTo("lcroft@redhat.com");
     }
 
     @Test
     @InRequestScope
     public void getAdminFromAddress() {
-        assertThat(databaseBackedConfig.getFromEmailAddress(),
-                equalTo("aloy@redhat.com"));
+        assertThat(databaseBackedConfig.getFromEmailAddress())
+                .isEqualTo("aloy@redhat.com");
     }
 
     @Test
     @InRequestScope
     public void getDomain() {
-        assertThat(databaseBackedConfig.getDomain(), equalTo("redhat.com"));
+        assertThat(databaseBackedConfig.getDomain()).isEqualTo("redhat.com");
     }
 
     @Test
     @InRequestScope
     public void getShouldLogEvents() {
-        assertThat(databaseBackedConfig.getShouldLogEvents(), equalTo("true"));
+        assertThat(databaseBackedConfig.getShouldLogEvents()).isEqualTo("true");
     }
 
     @Test
     @InRequestScope
     public void getEmailLogLevel() {
-        assertThat(databaseBackedConfig.getEmailLogLevel(), equalTo("INFO"));
+        assertThat(databaseBackedConfig.getEmailLogLevel()).isEqualTo("INFO");
     }
 
     @Test
     @InRequestScope
     public void getHelpUrl() {
-        assertThat(databaseBackedConfig.getHelpUrl(), equalTo("http://zanata.org/help"));
+        assertThat(databaseBackedConfig.getHelpUrl()).isEqualTo("http://zanata.org/help");
     }
 
     @Test
     @InRequestScope
     public void getServerHost() {
-        assertThat(databaseBackedConfig.getServerHost(), equalTo("http://localhost:8080"));
+        assertThat(databaseBackedConfig.getServerHost()).isEqualTo("http://localhost:8080");
     }
 
     @Test
     @InRequestScope
     public void getLogEventsDestinationEmailAddress() {
-        assertThat(databaseBackedConfig.getLogEventsDestinationEmailAddress(),
-                equalTo("tihocan@redhat.com"));
+        assertThat(databaseBackedConfig.getLogEventsDestinationEmailAddress())
+                .isEqualTo("tihocan@redhat.com");
     }
 
     @Test
     @InRequestScope
     public void getRegistrationUrl() {
-        assertThat(databaseBackedConfig.getRegistrationUrl(),
-                equalTo("http://zanata.org/register"));
+        assertThat(databaseBackedConfig.getRegistrationUrl())
+                .isEqualTo("http://zanata.org/register");
     }
 
     @Test
     @InRequestScope
     public void getPiwikUrl() {
-        assertThat(databaseBackedConfig.getPiwikUrl(),
-                equalTo("http://zanata.org/piwik"));
+        assertThat(databaseBackedConfig.getPiwikUrl())
+                .isEqualTo("http://zanata.org/piwik");
     }
 
     @Test
     @InRequestScope
     public void getPiwikSiteId() {
-        assertThat(databaseBackedConfig.getPiwikSiteId(), equalTo("47"));
+        assertThat(databaseBackedConfig.getPiwikSiteId()).isEqualTo("47");
     }
 
     @Test
     @InRequestScope
     public void getTermsOfUseUrl() {
-        assertThat(databaseBackedConfig.getTermsOfUseUrl(),
-                equalTo("http://zanata.org/terms"));
+        assertThat(databaseBackedConfig.getTermsOfUseUrl())
+                .isEqualTo("http://zanata.org/terms");
     }
 
     @Test
     @InRequestScope
     public void getMaxConcurrentRequestsPerApiKey() {
-        assertThat(databaseBackedConfig.getMaxConcurrentRequestsPerApiKey(),
-                equalTo("9"));
+        assertThat(databaseBackedConfig.getMaxConcurrentRequestsPerApiKey())
+                .isEqualTo("9");
     }
 
     @Test
     @InRequestScope
     public void getMaxActiveRequestsPerApiKey() {
-        assertThat(databaseBackedConfig.getMaxActiveRequestsPerApiKey(), equalTo("8"));
+        assertThat(databaseBackedConfig.getMaxActiveRequestsPerApiKey()).isEqualTo("8");
     }
 
     @Test
     @InRequestScope
     public void getMaxFilesPerUpload() {
-        assertThat(databaseBackedConfig.getMaxFilesPerUpload(), equalTo("7"));
+        assertThat(databaseBackedConfig.getMaxFilesPerUpload()).isEqualTo("7");
     }
 
     @Test
     @InRequestScope
     public void isDisplayUserEmail() {
-        assertThat(databaseBackedConfig.isDisplayUserEmail(), equalTo(true));
+        assertThat(databaseBackedConfig.isDisplayUserEmail()).isTrue();
     }
 
     @Test
     @InRequestScope
     public void getPermittedEmailDomains() {
-        assertThat(databaseBackedConfig.getPermittedEmailDomains(), equalTo("horizon.com"));
+        assertThat(databaseBackedConfig.getPermittedEmailDomains()).isEqualTo("horizon.com");
     }
 
     @Test
@@ -184,19 +182,19 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
     public void getNonExistentValue() throws Exception {
         // Prematurely clean out data, assert missing value is null
         cleanDataAfterTest();
-        assertThat(databaseBackedConfig.getAdminEmailAddress(), nullValue());
+        assertThat(databaseBackedConfig.getAdminEmailAddress()).isNull();
     }
 
     @Test
     @InRequestScope
     public void autoAcceptTranslatorIsFalseIfNull() {
-        assertThat(databaseBackedConfig.isAutoAcceptTranslators(), equalTo(false));
+        assertThat(databaseBackedConfig.isAutoAcceptTranslators()).isFalse();
     }
 
     @Test
     @InRequestScope
     public void getGravatarRating() {
-        assertThat(databaseBackedConfig.getMaxGravatarRating(), equalTo("R"));
+        assertThat(databaseBackedConfig.getMaxGravatarRating()).isEqualTo("R");
     }
 
     @Test
@@ -204,6 +202,6 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
     public void gravatarRatingDefaultsToGeneral() {
         // Prematurely clean out data, assert missing value is null
         cleanDataAfterTest();
-        assertThat(databaseBackedConfig.getMaxGravatarRating(), equalTo("G"));
+        assertThat(databaseBackedConfig.getMaxGravatarRating()).isEqualTo("G");
     }
 }

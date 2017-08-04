@@ -1,6 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -8,7 +8,6 @@ import static org.zanata.test.EntityTestData.makeHTextFlow;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
@@ -89,9 +88,9 @@ public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
 
         UpdateTransUnitResult result = handler.execute(action, null);
 
-        assertThat(result.getUpdateInfoList(), Matchers.hasSize(1));
-        assertThat(result.getUpdateInfoList().get(0).getPreviousState(),
-                Matchers.equalTo(ContentState.NeedReview));
+        assertThat(result.getUpdateInfoList()).hasSize(1);
+        assertThat(result.getUpdateInfoList().get(0).getPreviousState())
+                .isEqualTo(ContentState.NeedReview);
     }
 
     private static TranslationService.TranslationResult mockTranslationResult(

@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,7 +31,6 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -107,10 +106,10 @@ public class UserOptionsServiceTest {
                 Boolean.parseBoolean(action.getConfigurationMap().get(
                         DisplayButtons));
 
-        assertThat(docListSize, Matchers.equalTo(1000));
-        assertThat(editorSize, Matchers.equalTo(2000));
-        assertThat(displayButton, Matchers.equalTo(false));
-        assertThat(showError, Matchers.equalTo(true));
+        assertThat(docListSize).isEqualTo(1000);
+        assertThat(editorSize).isEqualTo(2000);
+        assertThat(displayButton).isFalse();
+        assertThat(showError).isTrue();
 
         AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
         callback.onSuccess(new SaveOptionsResult());
@@ -121,55 +120,50 @@ public class UserOptionsServiceTest {
     @Test
     public void getCommonOptions() {
         Map<UserOptions, String> map = service.getCommonOptions();
-        assertThat(map.size(), Matchers.equalTo(2));
-        assertThat(map.containsKey(ShowErrors),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(Themes), Matchers.equalTo(true));
+        assertThat(map.size()).isEqualTo(2);
+        assertThat(map.containsKey(ShowErrors)).isTrue();
+        assertThat(map.containsKey(Themes)).isTrue();
     }
 
     @Test
     public void getDocumentListOptions() {
         Map<UserOptions, String> map = service.getDocumentListOptions();
-        assertThat(map.size(), Matchers.equalTo(3));
-        assertThat(map.containsKey(ShowErrors),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(Themes), Matchers.equalTo(true));
-        assertThat(map.containsKey(DocumentListPageSize),
-                Matchers.equalTo(true));
+        assertThat(map).hasSize(3);
+        assertThat(map).containsKey(ShowErrors);
+        assertThat(map).containsKey(Themes);
+        assertThat(map).containsKey(DocumentListPageSize);
     }
 
     @Test
     public void getEditorOptions() {
         Map<UserOptions, String> map = service.getEditorOptions();
 
-        assertThat(map.keySet(), Matchers.containsInAnyOrder(ShowErrors,
+        assertThat(map.keySet()).contains(ShowErrors,
                 Themes, DisplayButtons, EnterSavesApproved, EditorPageSize,
                 TranslatedMessageFilter, UseCodeMirrorEditor,
                 TransMemoryDisplayMode, FuzzyMessageFilter,
                 UntranslatedMessageFilter, ApprovedMessageFilter,
                 RejectedMessageFilter, Navigation, ShowSaveApprovedWarning,
-                SelectedReferenceLang, DisplayTransMemory, DisplayGlossary));
+                SelectedReferenceLang, DisplayTransMemory, DisplayGlossary);
     }
 
     @Test
     public void loadCommonOptions() {
         service.loadCommonOptions();
-
-        assertThat(configHolder.getState().isShowError(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
+        assertThat(configHolder.getState().isShowError())
+                .isEqualTo(UserConfigHolder.DEFAULT_SHOW_ERROR);
     }
 
     @Test
     public void loadDocumentListDefaultOptions() {
         service.getConfigHolder().setShowError(true);
         service.getConfigHolder().setDocumentListPageSize(2000);
-
         service.loadDocumentListDefaultOptions();
 
-        assertThat(configHolder.getState().isShowError(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
-        assertThat(configHolder.getState().getDocumentListPageSize(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE));
+        assertThat(configHolder.getState().isShowError())
+                .isEqualTo(UserConfigHolder.DEFAULT_SHOW_ERROR);
+        assertThat(configHolder.getState().getDocumentListPageSize())
+                .isEqualTo(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
 
     }
 
@@ -181,39 +175,38 @@ public class UserOptionsServiceTest {
 
         service.loadEditorDefaultOptions();
 
-        assertThat(configHolder.getState().isShowError(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
-        assertThat(configHolder.getState().isDisplayButtons(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS));
-        assertThat(configHolder.getState().isEnterSavesApproved(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED));
-        assertThat(configHolder.getState().isFilterByFuzzy(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
-        assertThat(configHolder.getState().isFilterByTranslated(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
-        assertThat(configHolder.getState().isFilterByUntranslated(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
-        assertThat(configHolder.getState().isFilterByApproved(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
-        assertThat(configHolder.getState().isFilterByRejected(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
-        assertThat(configHolder.getState().getNavOption(),
-                Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-        assertThat(configHolder.getState().getEditorPageSize(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE));
-        assertThat(
-                configHolder.getState().isShowSaveApprovedWarning(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING));
-        assertThat(configHolder.getState().isUseCodeMirrorEditor(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_USE_CODE_MIRROR));
-        assertThat(configHolder.getState().getTransMemoryDisplayMode(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE));
-        assertThat(configHolder.getState().getSelectedReferenceForSourceLang(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_SELECTED_REFERENCE));
+        assertThat(configHolder.getState().isShowError())
+                .isEqualTo(UserConfigHolder.DEFAULT_SHOW_ERROR);
+        assertThat(configHolder.getState().isDisplayButtons())
+                .isEqualTo(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS);
+        assertThat(configHolder.getState().isEnterSavesApproved())
+                .isEqualTo(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED);
+        assertThat(configHolder.getState().isFilterByFuzzy())
+                .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
+        assertThat(configHolder.getState().isFilterByTranslated())
+                .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
+        assertThat(configHolder.getState().isFilterByUntranslated())
+                .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
+        assertThat(configHolder.getState().isFilterByApproved())
+                .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
+        assertThat(configHolder.getState().isFilterByRejected())
+                .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
+        assertThat(configHolder.getState().getNavOption())
+                .isEqualTo(NavOption.FUZZY_UNTRANSLATED);
+        assertThat(configHolder.getState().getEditorPageSize())
+                .isEqualTo(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE);
+        assertThat(configHolder.getState().isShowSaveApprovedWarning())
+                .isEqualTo(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING);
+        assertThat(configHolder.getState().isUseCodeMirrorEditor())
+                .isEqualTo(UserConfigHolder.DEFAULT_USE_CODE_MIRROR);
+        assertThat(configHolder.getState().getTransMemoryDisplayMode())
+                .isEqualTo(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE);
+        assertThat(configHolder.getState().getSelectedReferenceForSourceLang())
+                .isEqualTo(UserConfigHolder.DEFAULT_SELECTED_REFERENCE);
     }
 
     @Test
     public void getConfigHolder() {
-        assertThat(service.getConfigHolder(), Matchers.equalTo(configHolder));
+        assertThat(service.getConfigHolder()).isEqualTo(configHolder);
     }
 }

@@ -1,6 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.zanata.test.EntityTestData.setId;
@@ -8,7 +8,6 @@ import static org.zanata.test.EntityTestData.setId;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,12 +70,11 @@ public class GetDocumentListHandlerTest extends ZanataTest {
         GetDocumentListResult result = handler.execute(action, null);
 
         verify(identity).checkLoggedIn();
-        assertThat(result.getDocuments(), Matchers.hasSize(1));
+        assertThat(result.getDocuments()).hasSize(1);
         DocumentInfo documentInfo = result.getDocuments().get(0);
-        assertThat(documentInfo.getId(),
-                Matchers.equalTo(new DocumentId(new Long(1), "")));
-        assertThat(documentInfo.getPath(), Matchers.equalTo("/dot/"));
-        assertThat(documentInfo.getName(), Matchers.equalTo("a.po"));
+        assertThat(documentInfo.getId()).isEqualTo(new DocumentId(new Long(1), ""));
+        assertThat(documentInfo.getPath()).isEqualTo("/dot/");
+        assertThat(documentInfo.getName()).isEqualTo("a.po");
     }
 
     @Test
@@ -92,7 +90,7 @@ public class GetDocumentListHandlerTest extends ZanataTest {
 
         GetDocumentListResult result = handler.execute(action, null);
 
-        assertThat(result.getDocuments(), Matchers.hasSize(1));
+        assertThat(result.getDocuments()).hasSize(1);
     }
 
     private HDocument hDocument(long id) {

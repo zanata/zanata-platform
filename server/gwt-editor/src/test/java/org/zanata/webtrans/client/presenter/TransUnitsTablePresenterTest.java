@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -18,7 +18,6 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -225,8 +224,7 @@ public class TransUnitsTablePresenterTest {
         ArgumentCaptor<FilterViewEvent> filterViewEventCaptor =
                 ArgumentCaptor.forClass(FilterViewEvent.class);
         verify(eventBus).fireEvent(filterViewEventCaptor.capture());
-        assertThat(filterViewEventCaptor.getValue().isCancelFilter(),
-                Matchers.equalTo(true));
+        assertThat(filterViewEventCaptor.getValue().isCancelFilter()).isTrue();
         verify(display).hideFilterConfirmation();
     }
 
@@ -332,8 +330,8 @@ public class TransUnitsTablePresenterTest {
         ArgumentCaptor<NotificationEvent> eventCaptor =
                 ArgumentCaptor.forClass(NotificationEvent.class);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getMessage(),
-                Matchers.equalTo("concurrent edit detected"));
+        assertThat(eventCaptor.getValue().getMessage())
+                .isEqualTo("concurrent edit detected");
         verify(targetContentsPresenter).currentEditorContentHasChanged();
         verify(targetContentsPresenter).updateRow(updatedTransUnit);
         verifyNoMoreInteractions(targetContentsPresenter);
@@ -364,8 +362,8 @@ public class TransUnitsTablePresenterTest {
         ArgumentCaptor<NotificationEvent> eventCaptor =
                 ArgumentCaptor.forClass(NotificationEvent.class);
         verify(eventBus).fireEvent(eventCaptor.capture());
-        assertThat(eventCaptor.getValue().getMessage(),
-                Matchers.equalTo("concurrent edit detected"));
+        assertThat(eventCaptor.getValue().getMessage())
+                .isEqualTo("concurrent edit detected");
 
         ArgumentCaptor<TransHistoryItem> transHistoryCaptor =
                 ArgumentCaptor.forClass(TransHistoryItem.class);
@@ -378,10 +376,10 @@ public class TransUnitsTablePresenterTest {
                 transHistoryCaptor.capture(),
                 eq(Collections.<TransHistoryItem> emptyList()),
                 eq(Collections.<ReviewComment> emptyList()));
-        assertThat(transHistoryCaptor.getValue().getVersionNum(),
-                Matchers.equalTo(updatedTransUnit.getVerNum().toString()));
-        assertThat(transHistoryCaptor.getValue().getContents(),
-                Matchers.equalTo(updatedTransUnit.getTargets()));
+        assertThat(transHistoryCaptor.getValue().getVersionNum())
+                .isEqualTo(updatedTransUnit.getVerNum().toString());
+        assertThat(transHistoryCaptor.getValue().getContents())
+                .isEqualTo(updatedTransUnit.getTargets());
         inOrder.verify(targetContentsPresenter).updateRow(updatedTransUnit);
     }
 

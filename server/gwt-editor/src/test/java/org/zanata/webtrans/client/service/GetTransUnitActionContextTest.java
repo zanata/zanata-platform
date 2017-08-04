@@ -1,9 +1,8 @@
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.webtrans.test.GWTTestData.documentInfo;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -30,9 +29,8 @@ public class GetTransUnitActionContextTest {
         GetTransUnitActionContext newContext =
                 context.changeDocument(documentInfo(99, ""));
 
-        assertThat(context.getDocument(), Matchers.sameInstance(document));
-        assertThat(newContext.getDocument(),
-                Matchers.equalTo(documentInfo(99, "")));
+        assertThat(context.getDocument()).isSameAs(document);
+        assertThat(newContext.getDocument()).isEqualTo(documentInfo(99, ""));
     }
 
     @Test
@@ -41,25 +39,24 @@ public class GetTransUnitActionContextTest {
         GetTransUnitActionContext result =
                 context.withFindMessage("new find message");
 
-        assertThat(context.getFindMessage(), Matchers.sameInstance(findMessage));
-        assertThat(result.getFindMessage(),
-                Matchers.equalTo("new find message"));
+        assertThat(context.getFindMessage()).isSameAs(findMessage);
+        assertThat(result.getFindMessage()).isEqualTo("new find message");
     }
 
     @Test
     public void testChangeFilterTranslated() throws Exception {
         GetTransUnitActionContext result = context.withFilterTranslated(true);
 
-        assertThat(context.isFilterTranslated(), Matchers.is(false));
-        assertThat(result.isFilterTranslated(), Matchers.is(true));
+        assertThat(context.isFilterTranslated()).isFalse();
+        assertThat(result.isFilterTranslated()).isTrue();
     }
 
     @Test
     public void testChangeFilterNeedReview() throws Exception {
         GetTransUnitActionContext result = context.withFilterFuzzy(true);
 
-        assertThat(context.isFilterFuzzy(), Matchers.is(false));
-        assertThat(result.isFilterFuzzy(), Matchers.is(true));
+        assertThat(context.isFilterFuzzy()).isFalse();
+        assertThat(result.isFilterFuzzy()).isTrue();
     }
 
     @Test
@@ -67,24 +64,24 @@ public class GetTransUnitActionContextTest {
         GetTransUnitActionContext result =
                 context.withFilterUntranslated(true);
 
-        assertThat(context.isFilterUntranslated(), Matchers.is(false));
-        assertThat(result.isFilterUntranslated(), Matchers.is(true));
+        assertThat(context.isFilterUntranslated()).isFalse();
+        assertThat(result.isFilterUntranslated()).isTrue();
     }
 
     @Test
     public void testChangeFilterApproved() throws Exception {
         GetTransUnitActionContext result = context.withFilterApproved(true);
 
-        assertThat(context.isFilterApproved(), Matchers.is(false));
-        assertThat(result.isFilterApproved(), Matchers.is(true));
+        assertThat(context.isFilterApproved()).isFalse();
+        assertThat(result.isFilterApproved()).isTrue();
     }
 
     @Test
     public void testChangeFilterRejected() throws Exception {
         GetTransUnitActionContext result = context.withFilterRejected(true);
 
-        assertThat(context.isFilterRejected(), Matchers.is(false));
-        assertThat(result.isFilterRejected(), Matchers.is(true));
+        assertThat(context.isFilterRejected()).isFalse();
+        assertThat(result.isFilterRejected()).isTrue();
     }
 
     @Test
@@ -113,7 +110,7 @@ public class GetTransUnitActionContextTest {
             GetTransUnitActionContext context,
             GetTransUnitActionContext newContext, boolean needed) {
         boolean result = context.needReloadList(newContext);
-        assertThat(result, Matchers.is(needed));
+        assertThat(result).isEqualTo(needed);
     }
 
     @Test
@@ -145,6 +142,6 @@ public class GetTransUnitActionContextTest {
             GetTransUnitActionContext context,
             GetTransUnitActionContext newContext, boolean needed) {
         boolean result = context.needReloadNavigationIndex(newContext);
-        assertThat(result, Matchers.is(needed));
+        assertThat(result).isEqualTo(needed);
     }
 }

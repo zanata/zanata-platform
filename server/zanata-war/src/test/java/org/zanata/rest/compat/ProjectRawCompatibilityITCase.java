@@ -43,9 +43,7 @@ import org.zanata.apicompat.rest.MediaTypes;
 import org.zanata.apicompat.rest.dto.Project;
 import org.zanata.rest.ResourceRequest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertHeaderPresent;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
@@ -95,7 +93,7 @@ public class ProjectRawCompatibilityITCase extends RestTest {
             protected void onResponse(Response response)
                     throws IOException {
                 // Ok
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderPresent(response, HttpHeaders.ETAG);
             }
         }.run();
@@ -116,16 +114,16 @@ public class ProjectRawCompatibilityITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 // Ok
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Project.class);
                 Project project = jsonUnmarshal(entityString, Project.class);
 
                 // Assert correct parsing of all properties
-                assertThat(project.getId(), is("sample-project"));
-                assertThat(project.getName(), is("Sample Project"));
-                assertThat(project.getDescription(), is("An example Project"));
-                assertThat(project.getIterations().size(), is(3));
+                assertThat(project.getId()).isEqualTo("sample-project");
+                assertThat(project.getName()).isEqualTo("Sample Project");
+                assertThat(project.getDescription()).isEqualTo("An example Project");
+                assertThat(project.getIterations().size()).isEqualTo(3);
             }
         }.run();
     }
@@ -144,7 +142,7 @@ public class ProjectRawCompatibilityITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 // Ok
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 List<Project> projects = jsonParse(response);
                 Project sampleProject = null;
 
@@ -156,10 +154,10 @@ public class ProjectRawCompatibilityITCase extends RestTest {
                 }
 
                 // Assertions on individual project
-                assertThat(sampleProject, notNullValue());
-                assertThat(sampleProject.getId(), is("sample-project"));
-                assertThat(sampleProject.getName(), is("Sample Project"));
-                assertThat(sampleProject.getLinks().size(), is(1));
+                assertThat(sampleProject).isNotNull();
+                assertThat(sampleProject.getId()).isEqualTo("sample-project");
+                assertThat(sampleProject.getName()).isEqualTo("Sample Project");
+                assertThat(sampleProject.getLinks().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -180,7 +178,7 @@ public class ProjectRawCompatibilityITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 // Ok
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, Projects.class);
                 Projects projects = jaxbUnmarshal(entityString, Projects.class);
@@ -194,10 +192,10 @@ public class ProjectRawCompatibilityITCase extends RestTest {
                 }
 
                 // Assertions on individual project
-                assertThat(sampleProject, notNullValue());
-                assertThat(sampleProject.getId(), is("sample-project"));
-                assertThat(sampleProject.getName(), is("Sample Project"));
-                assertThat(sampleProject.getLinks().size(), is(1));
+                assertThat(sampleProject).isNotNull();
+                assertThat(sampleProject.getId()).isEqualTo("sample-project");
+                assertThat(sampleProject.getName()).isEqualTo("Sample Project");
+                assertThat(sampleProject.getLinks().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -230,9 +228,9 @@ public class ProjectRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        // 201
-                        is(Status.CREATED.getStatusCode()));
+                // 201
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.CREATED.getStatusCode());
             }
         }.run();
     }

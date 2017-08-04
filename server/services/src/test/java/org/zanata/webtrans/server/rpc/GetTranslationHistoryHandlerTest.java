@@ -10,7 +10,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.ReviewComment;
-import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
@@ -48,7 +46,8 @@ import com.google.common.collect.Maps;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.zanata.test.EntityTestData.*;
@@ -119,17 +118,15 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
         HTextFlow hTextFlow = createHTextFlow();
         when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(
                 hTextFlow);
-        assertThat(hTextFlow.getTargets().values(),
-                Matchers.<HTextFlowTarget> emptyIterable());
+        assertThat(hTextFlow.getTargets().values()).isEmpty();
 
         // When:
         GetTranslationHistoryResult result =
                 handler.execute(action, executionContext);
 
         // Then:
-        assertThat(result.getHistoryItems(),
-                Matchers.<TransHistoryItem> empty());
-        assertThat(result.getLatest(), Matchers.nullValue());
+        assertThat(result.getHistoryItems()).isEmpty();
+        assertThat(result.getLatest()).isNull();
     }
 
     @Test
@@ -167,13 +164,12 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
                 handler.execute(action, executionContext);
 
         // Then:
-        assertThat(result.getHistoryItems(), Matchers.hasSize(2));
-        assertThat(result.getLatest().getVersionNum(),
-                Matchers.equalTo(currentTranslation.getVersionNum().toString()));
-        assertThat(result.getLatest().getContents(),
-                Matchers.equalTo(currentTranslation.getContents()));
-        assertThat(result.getLatest().getModifiedBy(),
-                Matchers.equalTo("admin"));
+        assertThat(result.getHistoryItems()).hasSize(2);
+        assertThat(result.getLatest().getVersionNum())
+                .isEqualTo(currentTranslation.getVersionNum().toString());
+        assertThat(result.getLatest().getContents())
+                .isEqualTo(currentTranslation.getContents());
+        assertThat(result.getLatest().getModifiedBy()).isEqualTo("admin");
     }
 
     @Test
@@ -205,13 +201,12 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
                 handler.execute(action, executionContext);
 
         // Then:
-        assertThat(result.getHistoryItems(),
-                Matchers.<TransHistoryItem> emptyIterable());
-        assertThat(result.getLatest().getVersionNum(),
-                Matchers.equalTo(currentTranslation.getVersionNum().toString()));
-        assertThat(result.getLatest().getContents(),
-                Matchers.equalTo(currentTranslation.getContents()));
-        assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
+        assertThat(result.getHistoryItems()).isEmpty();
+        assertThat(result.getLatest().getVersionNum())
+                .isEqualTo(currentTranslation.getVersionNum().toString());
+        assertThat(result.getLatest().getContents())
+                .isEqualTo(currentTranslation.getContents());
+        assertThat(result.getLatest().getModifiedBy()).isEqualTo("");
     }
 
     @Test
@@ -242,13 +237,12 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
                 handler.execute(action, executionContext);
 
         // Then: the contents we get back is consistent against number of plural
-        assertThat(result.getHistoryItems(),
-                Matchers.<TransHistoryItem> emptyIterable());
-        assertThat(result.getLatest().getVersionNum(),
-                Matchers.equalTo(currentTranslation.getVersionNum().toString()));
-        assertThat(result.getLatest().getContents(),
-                Matchers.contains(currentTranslation.getContents().get(0)));
-        assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
+        assertThat(result.getHistoryItems()).isEmpty();
+        assertThat(result.getLatest().getVersionNum())
+                .isEqualTo(currentTranslation.getVersionNum().toString());
+        assertThat(result.getLatest().getContents())
+                .contains(currentTranslation.getContents().get(0));
+        assertThat(result.getLatest().getModifiedBy()).isEqualTo("");
     }
 
     private static HTextFlow createHTextFlow() {
@@ -298,10 +292,9 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
 
         List<ReviewComment> result = handler.getReviewComments(action);
 
-        assertThat(result, Matchers.hasSize(2));
-        assertThat(result.get(0).getComment(), Matchers.equalTo("a comment"));
-        assertThat(result.get(1).getComment(),
-                Matchers.equalTo("another comment"));
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getComment()).isEqualTo("a comment");
+        assertThat(result.get(1).getComment()).isEqualTo("another comment");
     }
 
     private static HTextFlowTargetReviewComment makeCommentEntity(

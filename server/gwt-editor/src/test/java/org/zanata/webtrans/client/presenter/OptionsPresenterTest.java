@@ -1,16 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -36,9 +33,6 @@ public class OptionsPresenterTest {
     private UserOptionsService userOptionsService;
 
     private UserConfigHolder configHolder = new UserConfigHolder();
-
-    @Captor
-    private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
 
     @Before
     public void beforeMethod() {
@@ -110,8 +104,7 @@ public class OptionsPresenterTest {
         presenter.onBind();
         presenter.onShowErrorsOptionChanged(true);
 
-        assertThat(configHolder.getState().isShowError(),
-                Matchers.equalTo(true));
+        assertThat(configHolder.getState().isShowError()).isTrue();
     }
 
     @Test
@@ -119,8 +112,8 @@ public class OptionsPresenterTest {
         presenter.onBind();
         presenter.onThemesChanged(ThemesOption.THEMES_COMPACT.name());
 
-        assertThat(configHolder.getState().getDisplayTheme(),
-                Matchers.equalTo(ThemesOption.THEMES_COMPACT));
+        assertThat(configHolder.getState().getDisplayTheme())
+                .isEqualTo(ThemesOption.THEMES_COMPACT);
     }
 
     @Test

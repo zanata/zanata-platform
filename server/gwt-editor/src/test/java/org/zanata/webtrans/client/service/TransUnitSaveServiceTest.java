@@ -1,9 +1,6 @@
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -13,7 +10,6 @@ import static org.zanata.webtrans.test.GWTTestData.makeTransUnit;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -28,7 +24,6 @@ import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.GoToRowLink;
-import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -131,16 +126,16 @@ public class TransUnitSaveServiceTest {
                 resultCaptor.capture());
 
         UpdateTransUnit updateTransUnit = actionCaptor.getValue();
-        assertThat(updateTransUnit.getUpdateRequests(), hasSize(1));
-        assertThat(updateTransUnit.getUpdateType(),
-                equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
+        assertThat(updateTransUnit.getUpdateRequests()).hasSize(1);
+        assertThat(updateTransUnit.getUpdateType())
+                .isEqualTo(TransUnitUpdated.UpdateType.WebEditorSave);
 
         TransUnitUpdateRequest request =
                 updateTransUnit.getUpdateRequests().get(0);
-        assertThat(request.getTransUnitId(), equalTo(TRANS_UNIT_ID));
-        assertThat(request.getNewContents(), Matchers.contains("new content"));
-        assertThat(request.getBaseTranslationVersion(), equalTo(VER_NUM));
-        assertThat(request.getNewContentState(), equalTo(ContentState.Approved));
+        assertThat(request.getTransUnitId()).isEqualTo(TRANS_UNIT_ID);
+        assertThat(request.getNewContents()).contains("new content");
+        assertThat(request.getBaseTranslationVersion()).isEqualTo(VER_NUM);
+        assertThat(request.getNewContentState()).isEqualTo(ContentState.Approved);
     }
 
     @Test
@@ -162,18 +157,18 @@ public class TransUnitSaveServiceTest {
                 resultCaptor.capture());
 
         UpdateTransUnit updateTransUnit = actionCaptor.getValue();
-        assertThat(updateTransUnit.getUpdateRequests(), hasSize(1));
-        assertThat(updateTransUnit.getUpdateType(),
-                equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
+        assertThat(updateTransUnit.getUpdateRequests()).hasSize(1);
+        assertThat(updateTransUnit.getUpdateType())
+                .isEqualTo(TransUnitUpdated.UpdateType.WebEditorSave);
 
         TransUnitUpdateRequest request =
                 updateTransUnit.getUpdateRequests().get(0);
-        assertThat(request.getTransUnitId(), equalTo(TRANS_UNIT_ID));
-        assertThat(request.getNewContents(), Matchers.contains("new content"));
-        assertThat(request.getBaseTranslationVersion(), equalTo(VER_NUM));
-        assertThat(request.getNewContentState(), equalTo(ContentState.Approved));
+        assertThat(request.getTransUnitId()).isEqualTo(TRANS_UNIT_ID);
+        assertThat(request.getNewContents()).contains("new content");
+        assertThat(request.getBaseTranslationVersion()).isEqualTo(VER_NUM);
+        assertThat(request.getNewContentState()).isEqualTo(ContentState.Approved);
 
-        assertThat(queue.hasPending(), Matchers.is(true));
+        assertThat(queue.hasPending()).isTrue();
     }
 
     @Test
@@ -191,8 +186,8 @@ public class TransUnitSaveServiceTest {
         // Then:
         verify(dispatcher).execute(actionCaptor.capture(),
                 resultCaptor.capture());
-        assertThat(actionCaptor.getValue().getUpdateType(),
-                equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
+        assertThat(actionCaptor.getValue().getUpdateType())
+                .isEqualTo(TransUnitUpdated.UpdateType.WebEditorSave);
 
         // on save success
         // Given: result comes back with saving successful
@@ -218,8 +213,8 @@ public class TransUnitSaveServiceTest {
                 ArgumentCaptor.forClass(NotificationEvent.class);
         verify(eventBus).fireEvent(notificationEventCaptor.capture());
         NotificationEvent event = notificationEventCaptor.getValue();
-        assertThat(event.getSeverity(), is(NotificationEvent.Severity.Info));
-        assertThat(event.getMessage(), equalTo("saved row 1, id 1"));
+        assertThat(event.getSeverity()).isEqualTo(NotificationEvent.Severity.Info);
+        assertThat(event.getMessage()).isEqualTo("saved row 1, id 1");
         verify(undoLink).prepareUndoFor(result);
         verify(targetContentsPresenter).addUndoLink(rowIndex, undoLink);
         verify(navigationService).updateDataModel(updatedTU);
@@ -267,10 +262,10 @@ public class TransUnitSaveServiceTest {
                 resultCaptor.capture());
 
         // Then: we have 3 action here just because we verify dispatcher twice
-        assertThat(actionCaptor.getAllValues(), Matchers.hasSize(3));
+        assertThat(actionCaptor.getAllValues()).hasSize(3);
         UpdateTransUnit secondRequest = actionCaptor.getAllValues().get(2);
-        assertThat(secondRequest.getUpdateRequests().get(0).getNewContents(),
-                Matchers.contains("newer content"));
+        assertThat(secondRequest.getUpdateRequests().get(0).getNewContents())
+                .contains("newer content");
     }
 
     @Test
@@ -313,10 +308,9 @@ public class TransUnitSaveServiceTest {
                 TargetContentsDisplay.EditingState.UNSAVED);
         verify(eventBus).fireEvent(notificationEventCaptor.capture());
         NotificationEvent event = notificationEventCaptor.getValue();
-        assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
-        assertThat(event.getMessage(), equalTo("update failed"));
-        assertThat(event.getInlineLink(),
-                Matchers.<InlineLink> sameInstance(goToLink));
+        assertThat(event.getSeverity()).isEqualTo(NotificationEvent.Severity.Error);
+        assertThat(event.getMessage()).isEqualTo("update failed");
+        assertThat(event.getInlineLink()).isSameAs(goToLink);
     }
 
     @Test
@@ -351,10 +345,9 @@ public class TransUnitSaveServiceTest {
                 TargetContentsDisplay.EditingState.UNSAVED);
         verify(eventBus).fireEvent(notificationEventCaptor.capture());
         NotificationEvent event = notificationEventCaptor.getValue();
-        assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
-        assertThat(event.getMessage(), equalTo("update failed"));
-        assertThat(event.getInlineLink(),
-                Matchers.<InlineLink> sameInstance(goToLink));
+        assertThat(event.getSeverity()).isEqualTo(NotificationEvent.Severity.Error);
+        assertThat(event.getMessage()).isEqualTo("update failed");
+        assertThat(event.getInlineLink()).isSameAs(goToLink);
     }
 
     private static UpdateTransUnitResult

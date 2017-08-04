@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.Date;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ContentState;
@@ -31,7 +30,7 @@ import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -55,8 +54,8 @@ public class ComparingPairTest {
         TransHistoryItem newItem = newItem("1");
         pair = ComparingPair.empty().tryAddOrRemoveIfExists(newItem);
 
-        assertThat(pair.one(), Matchers.sameInstance(newItem));
-        assertThat(pair.two(), Matchers.nullValue());
+        assertThat(pair.one()).isSameAs(newItem);
+        assertThat(pair.two()).isNull();
     }
 
     @Test
@@ -66,8 +65,8 @@ public class ComparingPairTest {
                 ComparingPair.empty().tryAddOrRemoveIfExists(newItem)
                         .tryAddOrRemoveIfExists(newItem);
 
-        assertThat(pair.one(), Matchers.nullValue());
-        assertThat(pair.two(), Matchers.nullValue());
+        assertThat(pair.one()).isNull();
+        assertThat(pair.two()).isNull();
     }
 
     @Test
@@ -79,15 +78,15 @@ public class ComparingPairTest {
                 ComparingPair.empty().tryAddOrRemoveIfExists(one)
                         .tryAddOrRemoveIfExists(two);
 
-        assertThat(pair.isFull(), Matchers.is(true));
-        assertThat(pair.one(), Matchers.sameInstance(one));
-        assertThat(pair.two(), Matchers.sameInstance(two));
+        assertThat(pair.isFull()).isTrue();
+        assertThat(pair.one()).isSameAs(one);
+        assertThat(pair.two()).isSameAs(two);
 
         pair = pair.tryAddOrRemoveIfExists(three);
 
-        assertThat(pair.isFull(), Matchers.is(true));
-        assertThat(pair.one(), Matchers.sameInstance(one));
-        assertThat(pair.two(), Matchers.sameInstance(two));
+        assertThat(pair.isFull()).isTrue();
+        assertThat(pair.one()).isSameAs(one);
+        assertThat(pair.two()).isSameAs(two);
     }
 
     @Test
@@ -96,7 +95,7 @@ public class ComparingPairTest {
         TransHistoryItem two = newItem("2");
         pair = ComparingPair.empty().tryAddOrRemoveIfExists(one);
 
-        assertThat(pair.contains(one), Matchers.is(true));
-        assertThat(pair.contains(two), Matchers.is(false));
+        assertThat(pair.contains(one)).isTrue();
+        assertThat(pair.contains(two)).isFalse();
     }
 }

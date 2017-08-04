@@ -1,9 +1,6 @@
 package org.zanata.dao;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +10,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.util.CloseableIterator;
 import com.google.common.collect.Iterators;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
 
@@ -49,8 +48,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
     public void findAllTextFlows() throws Exception {
         CloseableIterator<HTextFlow> iter = dao.findTextFlows();
         try {
-            assertThat(Iterators.size(iter),
-                    equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+            assertThat(Iterators.size(iter)).isEqualTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10);
         } finally {
             if (iter != null) {
                 iter.close();
@@ -63,8 +61,8 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
         HProject proj = projectDao.getBySlug("sample-project");
         CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
         try {
-            assertThat(Iterators.size(iter),
-                    equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+            assertThat(Iterators.size(iter)).isEqualTo(
+                    TEXTFLOWS_IN_SAMPLE_PROJECT_10);
         } finally {
             if (iter != null) {
                 iter.close();
@@ -77,7 +75,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
         HProject proj = projectDao.getBySlug("retired-project");
         CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
         try {
-            assertThat(iter.hasNext(), Matchers.not(true));
+            assertThat(iter.hasNext()).isFalse();
         } finally {
             if (iter != null) {
                 iter.close();
@@ -92,8 +90,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
         CloseableIterator<HTextFlow> iter =
                 dao.findTextFlowsByProjectIteration(projIter);
         try {
-            assertThat(Iterators.size(iter),
-                    equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+            assertThat(Iterators.size(iter)).isEqualTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10);
         } finally {
             if (iter != null) {
                 iter.close();
@@ -108,7 +105,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
         CloseableIterator<HTextFlow> iter =
                 dao.findTextFlowsByProjectIteration(projIter);
         try {
-            assertThat(iter.hasNext(), Matchers.not(true));
+            assertThat(iter.hasNext()).isFalse();
         } finally {
             if (iter != null) {
                 iter.close();

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Model;
@@ -205,16 +206,14 @@ public class ProjectHome extends SlugHome<HProject>
      * already in the project.
      */
     private List<HLocale> findActiveNotEnabledLocales() {
-        Collection<HLocale> filtered = Collections2
-                .filter(localeDAO.findAllActive(), new Predicate<HLocale>() {
-
-                    @Override
-                    public boolean apply(HLocale input) {
-                        // only include those not already in the project
-                        return !getEnabledLocales().contains(input);
-                    }
-                });
-        return Lists.newArrayList(filtered);
+        List<HLocale> activeLocales = localeDAO.findAllActive();
+        // only include those not already in the project
+        List<HLocale> filteredList = activeLocales.stream()
+                .filter(hLocale -> !getEnabledLocales().contains(hLocale))
+                .collect(
+                        Collectors.toList());
+        Collections.sort(filteredList, ComparatorUtil.LOCALE_COMPARATOR);
+        return filteredList;
     }
 
     private Map<String, Boolean> roleRestrictions;
@@ -688,6 +687,28 @@ public class ProjectHome extends SlugHome<HProject>
         }
     }
 
+    public void onProjectNameChange(ValueChangeEvent e) {
+        if (!isValidName((String) e.getNewValue())) {
+            String componentId = e.getComponent().getId();
+            facesMessages.addToControl(componentId,
+                    msgs.get("jsf.project.name.validation.alphanumeric"));
+        }
+    }
+
+    /**
+     * Check the name by removing any whitespaces in the string and
+     * make sure it contains at least an alphanumeric char
+     */
+    public boolean isValidName(String name) {
+        String trimmedName = StringUtils.deleteWhitespace(name);
+        for (char c : trimmedName.toCharArray()) {
+            if (Character.isDigit(c) || Character.isLetter(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
         validateSlug(slug, e.getComponent().getId());
@@ -740,6 +761,11 @@ public class ProjectHome extends SlugHome<HProject>
                 && !getSlug().equals(getInputSlugValue())) {
             getInstance().setSlug(getInputSlugValue());
         }
+        if (!isValidName(getInstance().getName())) {
+            facesMessages.addGlobal(SEVERITY_ERROR,
+                    msgs.get("jsf.project.name.validation.alphanumeric"));
+            return null;
+        }
         boolean softDeleted = false;
         if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
             softDeleted = true;
@@ -768,6 +794,11 @@ public class ProjectHome extends SlugHome<HProject>
             return null;
         }
         getInstance().setSlug(getInputSlugValue());
+        if (!isValidName(getInstance().getName())) {
+            facesMessages.addGlobal(SEVERITY_ERROR,
+                    msgs.get("jsf.project.name.validation.alphanumeric"));
+            return null;
+        }
         if (StringUtils.isEmpty(selectedProjectType)
                 || selectedProjectType.equals("null")) {
             facesMessages.addGlobal(SEVERITY_ERROR,

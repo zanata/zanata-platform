@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.service;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,7 +17,7 @@ import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.zanata.webtrans.test.GWTTestData.makeTransUnit;
 
@@ -48,8 +47,7 @@ public class TranslatorInteractionServiceTest {
         EditorClientId currentEditorClientId =
                 service.getCurrentEditorClientId();
 
-        assertThat(currentEditorClientId,
-                Matchers.equalTo(identity.getEditorClientId()));
+        assertThat(currentEditorClientId).isEqualTo(identity.getEditorClientId());
     }
 
     @Test
@@ -61,10 +59,9 @@ public class TranslatorInteractionServiceTest {
         verify(dispatcher).execute(actionCaptor.capture(),
                 Mockito.isA(NoOpAsyncCallback.class));
         TransUnitEditAction action = actionCaptor.getValue();
-        assertThat(action.getPerson(),
-                Matchers.sameInstance(identity.getPerson()));
-        assertThat(action.getSelectedTransUnitId(),
-                Matchers.sameInstance(selectedTransUnit.getId()));
+        assertThat(action.getPerson()).isSameAs(identity.getPerson());
+        assertThat(action.getSelectedTransUnitId())
+                .isSameAs(selectedTransUnit.getId());
     }
 
     @Test
@@ -78,8 +75,8 @@ public class TranslatorInteractionServiceTest {
         verify(dispatcher).execute(actionCaptor.capture(),
                 Mockito.isA(NoOpAsyncCallback.class));
         TransUnitEditAction action = actionCaptor.getValue();
-        assertThat(action.getPerson(), Matchers.sameInstance(person));
-        assertThat(action.getSelectedTransUnitId(),
-                Matchers.sameInstance(selectedTransUnit.getId()));
+        assertThat(action.getPerson()).isSameAs(person);
+        assertThat(action.getSelectedTransUnitId())
+                .isSameAs(selectedTransUnit.getId());
     }
 }

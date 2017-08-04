@@ -23,7 +23,6 @@ package org.zanata.webtrans.server;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
@@ -39,8 +38,7 @@ import org.zanata.webtrans.test.GWTTestData;
 
 import com.google.common.collect.MapMaker;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TranslationWorkspaceImplTest {
     private TranslationWorkspaceImpl translationWorkspace;
@@ -66,8 +64,7 @@ public class TranslationWorkspaceImplTest {
         WorkspaceContext workspaceContext =
                 translationWorkspace.getWorkspaceContext();
 
-        assertThat(workspaceContext.getWorkspaceId(),
-                Matchers.equalTo(workspaceId));
+        assertThat(workspaceContext.getWorkspaceId()).isEqualTo(workspaceId);
     }
 
     @Test
@@ -80,10 +77,9 @@ public class TranslationWorkspaceImplTest {
         Map<EditorClientId, PersonSessionDetails> users =
                 translationWorkspace.getUsers();
 
-        assertThat(users, Matchers.hasKey(editorClientId));
+        assertThat(users).containsKey(editorClientId);
         PersonSessionDetails personSessionDetails = users.get(editorClientId);
-        assertThat(personSessionDetails.getPerson().getId(),
-                Matchers.equalTo(personId));
+        assertThat(personSessionDetails.getPerson().getId()).isEqualTo(personId);
     }
 
     @Test
@@ -92,12 +88,11 @@ public class TranslationWorkspaceImplTest {
         PersonId personId = new PersonId("personId");
         translationWorkspace.addEditorClient("sessionId", editorClientId,
                 personId);
-        assertThat(translationWorkspace.getUsers(),
-                Matchers.hasKey(editorClientId));
+        assertThat(translationWorkspace.getUsers()).containsKey(editorClientId);
 
         translationWorkspace.removeEditorClient(editorClientId);
 
-        assertThat(translationWorkspace.getUsers().size(), Matchers.is(0));
+        assertThat(translationWorkspace.getUsers().size()).isEqualTo(0);
     }
 
     @Test
@@ -111,19 +106,14 @@ public class TranslationWorkspaceImplTest {
                 personId);
         translationWorkspace.addEditorClient(httpSessionId, editorClientId2,
                 personId);
-        assertThat(translationWorkspace.getUsers().keySet(),
-                Matchers.containsInAnyOrder(editorClientId1, editorClientId2));
+        assertThat(translationWorkspace.getUsers().keySet())
+                .contains(editorClientId1, editorClientId2);
 
         // When:
         translationWorkspace.removeEditorClients(httpSessionId);
 
         // Then:
-        assertThat(
-                translationWorkspace.getUsers().entrySet(),
-                is(Matchers
-                        .<Map.Entry<EditorClientId, PersonSessionDetails>> empty()));
-        // requires hamcrest 1.3.1:
-        // assertThat(translationWorkspace.getUsers(), is(anEmptyMap()));
+        assertThat(translationWorkspace.getUsers().entrySet()).isEmpty();
     }
 
     @Test
@@ -138,10 +128,10 @@ public class TranslationWorkspaceImplTest {
 
         PersonSessionDetails personSessionDetails =
                 translationWorkspace.getUsers().get(editorClientId);
-        assertThat(personSessionDetails.getSelectedTransUnitId(),
-                Matchers.equalTo(selectedTransUnit.getId()));
-        assertThat(translationWorkspace.getUserSelection(editorClientId),
-                Matchers.equalTo(selectedTransUnit.getId()));
+        assertThat(personSessionDetails.getSelectedTransUnitId())
+                .isEqualTo(selectedTransUnit.getId());
+        assertThat(translationWorkspace.getUserSelection(editorClientId))
+                .isEqualTo(selectedTransUnit.getId());
     }
 
     @Test

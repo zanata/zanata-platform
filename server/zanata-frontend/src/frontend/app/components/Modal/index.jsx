@@ -7,22 +7,33 @@ import ModalBody from './ModalBody'
 import ModalFooter from './ModalFooter'
 import { Button } from 'react-bootstrap'
 import { Icon } from '../../components'
+import specialKeys from 'combokeys/helpers/special-keys-map'
 
 const Modal = ({
   children,
   closeButton,
+  backdrop,
+  keyboard,
   closeLabel,
   onHide,
 ...props
 }) => {
+  // Close modal on escape key pressed
+  const handleKeyDown = (e) => {
+    if (specialKeys[e.keyCode] === 'esc') {
+      onHide()
+    }
+  }
   return (
     <OverlayModal
       {...props}
+      onKeyDown={keyboard && handleKeyDown}
       containerClassName='has-modal'
       className='modal'
     >
       <div className='container'>
-        <div className='modal-content'>
+        <div className='modal-content' tabIndex="0"
+          onBlur={backdrop && onHide}>
           {closeButton && (
             <Button aria-label={closeLabel}
               className='close s0'
@@ -49,6 +60,14 @@ Modal.propTypes = {
    */
   closeButton: PropTypes.bool,
   /**
+   * Whether or not to trigger onHide when clicking outside the modal
+   */
+  backdrop: PropTypes.bool,
+  /**
+   * Whether or not to trigger onHide when pressing 'esc' key
+   */
+  keyboard: PropTypes.bool,
+  /**
    * What aria-label to use on the close button
    */
   closeLabel: PropTypes.string,
@@ -59,6 +78,8 @@ Modal.propTypes = {
 }
 Modal.defaultProps = {
   closeButton: true,
+  backdrop: false,
+  keyboard: false,
   closeLabel: 'cross'
 }
 

@@ -3,15 +3,9 @@ package org.zanata.dao;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,9 +52,9 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
         dao.flush();
         dao.clear();
         HLocale loadedLocale = dao.findById(id);
-        assertThat(loadedLocale.getLocaleId().getId(), is("en-ENABLED"));
-        assertThat("still active", loadedLocale.isActive());
-        assertThat("still enabled by default", loadedLocale.isEnabledByDefault());
+        assertThat(loadedLocale.getLocaleId().getId()).isEqualTo("en-ENABLED");
+        assertThat(loadedLocale.isActive()).isTrue().as("still active");
+        assertThat(loadedLocale.isEnabledByDefault()).isTrue().as("still enabled by default");
     }
 
     @Test
@@ -68,23 +62,23 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
         String id = "de";
         HLocale hl = dao.findByLocaleId(new LocaleId(id));
         assert hl != null;
-        assertThat(hl.getLocaleId().getId(), is(id));
+        assertThat(hl.getLocaleId().getId()).isEqualTo(id);
     }
 
     @Test
     public void findByLocaleIdReturnsNullForNonexistentLocale() {
         String id = "nonexistentLocaleId";
         HLocale hl = dao.findByLocaleId(new LocaleId(id));
-        assertThat(hl, is(nullValue()));
+        assertThat(hl).isNull();
     }
 
     @Test
     public void testFind() {
         List<HLocale> results = dao.find(0, 1, "a", emptyList(), true);
-        assertThat(results.size(), is(1));
+        assertThat(results.size()).isEqualTo(1);
 
         results = dao.find(0, 10, "a", emptyList(), true);
-        assertThat(results.size(), is(4));
+        assertThat(results.size()).isEqualTo(4);
     }
 
     @Test
@@ -92,14 +86,14 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
         List<LocaleSortField> sortFields1 = Lists.newArrayList(
             LocaleSortField.getByField(LocaleSortField.LOCALE));
         List<HLocale> results1 = dao.find(0, 10, "e", sortFields1, true); // 5 results
-        assertThat(results1.get(0).getLocaleId(), is(LocaleId.DE));
+        assertThat(results1.get(0).getLocaleId()).isEqualTo(LocaleId.DE);
 
         List<LocaleSortField> sortFields2 = Lists.newArrayList(
             LocaleSortField.getByField(LocaleSortField.MEMBER));
         List<HLocale> results2 = dao.find(0, 10, "e", sortFields2, true); // 5 results
         //first result of results2 can be ES or TE
 
-        assertThat(results1.get(0), not(Matchers.equalTo(results2.get(0))));
+        assertThat(results1.get(0)).isNotEqualTo(results2.get(0));
     }
 
 }

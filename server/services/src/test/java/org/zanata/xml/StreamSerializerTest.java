@@ -1,9 +1,5 @@
 package org.zanata.xml;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.startsWith;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,7 +10,8 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 
 import org.junit.Test;
-import org.zanata.xml.StreamSerializer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StreamSerializerTest {
 
@@ -41,12 +38,12 @@ public class StreamSerializerTest {
         serializer.flush();
         String output = out.toString();
 
-        assertThat(output,
-                startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+        assertThat(output)
+                .startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         String expected =
                 "<root rootAttr=\"rootAttrVal\">"
                         + "<sub subAttr=\"subAttrVal\"/>"
                         + "<sub xml:lang=\"en\"/>" + "</root>";
-        assertThat(output, containsString(expected));
+        assertThat(output).contains(expected);
     }
 }

@@ -37,9 +37,7 @@ import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertHeaderValue;
 
@@ -77,7 +75,7 @@ public class FileRawRestITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 // Ok
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderValue(response, "Content-Disposition",
                         "attachment; filename=\"document.txt.po\"");
                 assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
@@ -108,7 +106,7 @@ public class FileRawRestITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 // Ok
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderValue(response, "Content-Disposition",
                         "attachment; filename=\"document-2.txt.po\"");
                 assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
@@ -133,20 +131,11 @@ public class FileRawRestITCase extends RestTest {
             if (message.isHeader()) {
                 // assert that expected headers are present (with values if
                 // needed)
-                assertThat(message.getMsgstr(), containsString("MIME-Version:"));
-                assertThat(message.getMsgstr(), containsString("Content-Type:"));
-                assertThat(message.getMsgstr(),
-                        containsString("Content-Transfer-Encoding:"));
-                assertThat(message.getMsgstr(),
-                        containsString("Last-Translator:"));
-                assertThat(message.getMsgstr(),
-                        containsString("PO-Revision-Date:"));
-                assertThat(message.getMsgstr(),
-                        containsString("Language-Team:"));
-                // Generator is Zanata
-                assertThat(message.getMsgstr(),
-                        containsString("X-Generator: Zanata"));
-                assertThat(message.getMsgstr(), containsString("Plural-Forms:"));
+                assertThat(message.getMsgstr())
+                        .contains("MIME-Version:", "Content-Type:",
+                                "Content-Transfer-Encoding:",
+                                "Last-Translator:", "PO-Revision-Date:",
+                                "X-Generator: Zanata", "Plural-Forms:");
             }
         }
     }

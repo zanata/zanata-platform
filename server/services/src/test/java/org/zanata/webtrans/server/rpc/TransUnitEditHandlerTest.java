@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,11 +65,10 @@ public class TransUnitEditHandlerTest extends ZanataTest {
                 selectedTransUnit.getId());
         verify(translationWorkspace).publish(eventCaptor.capture());
         TransUnitEdit transUnitEdit = eventCaptor.getValue();
-        assertThat(transUnitEdit.getEditorClientId(),
-                Matchers.sameInstance(editorClientId));
-        assertThat(transUnitEdit.getPerson(), Matchers.sameInstance(person));
-        assertThat(transUnitEdit.getSelectedTransUnitId(),
-                Matchers.sameInstance(selectedTransUnit.getId()));
+        assertThat(transUnitEdit.getEditorClientId()).isSameAs(editorClientId);
+        assertThat(transUnitEdit.getPerson()).isSameAs(person);
+        assertThat(transUnitEdit.getSelectedTransUnitId())
+                .isSameAs(selectedTransUnit.getId());
     }
 
     @Test

@@ -21,20 +21,11 @@
 package org.zanata.rest.service;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.MessageFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HDocument;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.validator.SlugValidator;
-import org.zanata.rest.RestUtil;
 
 /**
  * Service that provides static services to build, parse and interpret Zanata
@@ -50,43 +41,13 @@ import org.zanata.rest.RestUtil;
 // TODO this should probably be Transactional (and not Dependent)
 public class ZPathService implements Serializable {
     /*
-     * Public ZPaths. Used for rest resource path declaration.
-     */
-    public static final String PROJECT_ZPATH = "/proj/"
-            + RestConstants.SLUG_PATTERN;
-
-    /*
      * Private ZPaths. Mainly used for generation.
      */
     private static final String PROJECT_ZPATH_PRIVATE = "/projects/p/{0}";
     private static final String PROJECT_ITER_ZPATH_PRIVATE =
             PROJECT_ZPATH_PRIVATE + "/iterations/i/{1}";
     private static final String DOCUMENT_ZPATH_PRIVATE =
-            PROJECT_ITER_ZPATH_PRIVATE + "/r/{2}";
-
-    /*
-     * Internal utilities based on the public ZPaths
-     */
-    private static final Pattern PROJECT_ZPATH_PATTERN = Pattern
-            .compile(PROJECT_ZPATH);
-
-    @Inject
-    private ProjectDAO projectDAO;
-
-    public HProject resolveProject(String zPath) {
-        Matcher projMatcher = PROJECT_ZPATH_PATTERN.matcher(zPath);
-        if (projMatcher.matches()) {
-            String projectSlug = projMatcher.group(1); // Group 1, project slug
-            return projectDAO.getBySlug(projectSlug);
-        } else {
-            return null;
-        }
-    }
-
-    public String generatePathForProject(HProject project) {
-        MessageFormat mssgFormat = new MessageFormat(PROJECT_ZPATH_PRIVATE);
-        return mssgFormat.format(project.getSlug());
-    }
+            PROJECT_ITER_ZPATH_PRIVATE + "/resource?docId={2}";
 
     public String generatePathForProjectIteration(HProjectIteration iteration) {
         MessageFormat mssgFormat =
@@ -96,27 +57,10 @@ public class ZPathService implements Serializable {
     }
 
     public String generatePathForDocument(HDocument document) {
-        String docIdNoSlash = null;
-        try {
-            docIdNoSlash =
-                    URLEncoder.encode(RestUtil.convertToDocumentURIId(document
-                            .getDocId()), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-
         MessageFormat mssgFormat = new MessageFormat(DOCUMENT_ZPATH_PRIVATE);
-        return mssgFormat.format(new Object[] {
+        return mssgFormat.format(new Object[]{
                 document.getProjectIteration().getProject().getSlug(),
-                document.getProjectIteration().getSlug(), docIdNoSlash });
-    }
-
-    public Object resolve(String zPath) {
-        Matcher projMatcher = PROJECT_ZPATH_PATTERN.matcher(zPath);
-        if (projMatcher.matches()) {
-            return resolveProject(zPath);
-        }
-
-        return null;
+                document.getProjectIteration().getSlug(), document
+                .getDocId()});
     }
 }

@@ -47,6 +47,7 @@ import org.zanata.servlet.annotations.SessionId;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.DefaultLocale;
 import org.zanata.util.UrlUtil;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 /**
@@ -140,13 +141,13 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String versionSlug = "2.0";
         VersionTMMerge request1 = new VersionTMMerge(LocaleId.FR, 79,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
+                InternalTMSource.SELECT_ALL);
         assertThat(service.prefillWithTM(projectSlug, versionSlug, request1)
                 .getStatus()).isEqualTo(BAD_REQUEST.getStatusCode());
 
         VersionTMMerge request2 = new VersionTMMerge(LocaleId.FR, 101,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
+                InternalTMSource.SELECT_ALL);
         assertThat(service.prefillWithTM(projectSlug, versionSlug, request2)
                 .getStatus()).isEqualTo(BAD_REQUEST.getStatusCode());
     }
@@ -158,7 +159,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String versionSlug = "2.0";
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
+                InternalTMSource.SELECT_ALL);
 
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)
                 .getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
@@ -171,7 +172,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
 
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
+                InternalTMSource.SELECT_ALL);
 
         assertThat(service.prefillWithTM(projectSlug, "non-exist", mergeRequest)
                 .getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
@@ -183,9 +184,12 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String projectSlug = "sample-project";
         String versionSlug = "readonly";
 
+        HLocale fr = getEm().find(HLocale.class, 6L);
+        when(localeService.getByLocaleId(LocaleId.FR)).thenReturn(fr);
+
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
+                InternalTMSource.SELECT_ALL);
 
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)
                 .getStatus()).isEqualTo(FORBIDDEN.getStatusCode());
@@ -199,7 +203,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
 
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
+                InternalTMSource.SELECT_ALL);
         when(localeService.getByLocaleId(LocaleId.FR)).thenReturn(null);
 
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)
@@ -214,7 +218,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
 
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
+                InternalTMSource.SELECT_ALL);
 
         when(transMemoryMergeManager.start(2L, mergeRequest)).thenReturn(new AsyncTaskHandle<>());
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)

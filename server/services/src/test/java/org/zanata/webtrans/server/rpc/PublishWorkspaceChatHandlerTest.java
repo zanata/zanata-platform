@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,10 +58,10 @@ public class PublishWorkspaceChatHandlerTest extends ZanataTest {
         verify(identity).checkLoggedIn();
         verify(translationWorkspace).publish(eventCaptor.capture());
         PublishWorkspaceChat chat = eventCaptor.getValue();
-        assertThat(chat.getPersonId(), Matchers.equalTo("admin"));
-        assertThat(chat.getMsg(), Matchers.equalTo("hi"));
-        assertThat(chat.getMessageType(),
-                Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
+        assertThat(chat.getPersonId()).isEqualTo("admin");
+        assertThat(chat.getMsg()).isEqualTo("hi");
+        assertThat(chat.getMessageType())
+                .isEqualTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
     }
 
     @Test

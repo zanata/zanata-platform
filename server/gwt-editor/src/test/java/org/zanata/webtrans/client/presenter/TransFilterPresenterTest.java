@@ -1,11 +1,10 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -72,7 +71,7 @@ public class TransFilterPresenterTest {
 
         presenter.searchTerm("blah");
 
-        assertThat(historyToken.getEditorTextSearch(), Matchers.equalTo("blah"));
+        assertThat(historyToken.getEditorTextSearch()).isEqualTo("blah");
         verify(history).newItem(historyToken);
     }
 
@@ -103,18 +102,18 @@ public class TransFilterPresenterTest {
         verify(display).setApprovedFilter(event.isFilterApproved());
         verify(display).setRejectedFilter(event.isFilterRejected());
 
-        assertThat(historyToken.isFilterUntranslated(),
-                Matchers.equalTo(event.isFilterUntranslated()));
-        assertThat(historyToken.isFilterTranslated(),
-                Matchers.equalTo(event.isFilterTranslated()));
-        assertThat(historyToken.isFilterFuzzy(),
-                Matchers.equalTo(event.isFilterFuzzy()));
-        assertThat(historyToken.isFilterApproved(),
-                Matchers.equalTo(event.isFilterApproved()));
-        assertThat(historyToken.isFilterRejected(),
-                Matchers.equalTo(event.isFilterRejected()));
-        assertThat(historyToken.isFilterHasError(),
-                Matchers.equalTo(event.isFilterHasError()));
+        assertThat(historyToken.isFilterUntranslated())
+                .isEqualTo(event.isFilterUntranslated());
+        assertThat(historyToken.isFilterTranslated())
+                .isEqualTo(event.isFilterTranslated());
+        assertThat(historyToken.isFilterFuzzy())
+                .isEqualTo(event.isFilterFuzzy());
+        assertThat(historyToken.isFilterApproved())
+                .isEqualTo(event.isFilterApproved());
+        assertThat(historyToken.isFilterRejected())
+                .isEqualTo(event.isFilterRejected());
+        assertThat(historyToken.isFilterHasError())
+                .isEqualTo(event.isFilterHasError());
     }
 
     @Test
@@ -157,19 +156,19 @@ public class TransFilterPresenterTest {
                 configHolder.getState().isFilterByHasError());
 
         assertThat(
-                historyToken.isFilterTranslated(),
-                Matchers.equalTo(configHolder.getState().isFilterByTranslated()));
-        assertThat(historyToken.isFilterFuzzy(),
-                Matchers.equalTo(configHolder.getState().isFilterByFuzzy()));
-        assertThat(historyToken.isFilterUntranslated(),
-                Matchers.equalTo(configHolder.getState()
-                        .isFilterByUntranslated()));
-        assertThat(historyToken.isFilterApproved(),
-                Matchers.equalTo(configHolder.getState().isFilterByApproved()));
-        assertThat(historyToken.isFilterRejected(),
-                Matchers.equalTo(configHolder.getState().isFilterByRejected()));
-        assertThat(historyToken.isFilterHasError(),
-                Matchers.equalTo(configHolder.getState().isFilterByHasError()));
+                historyToken.isFilterTranslated())
+                .isEqualTo(configHolder.getState().isFilterByTranslated());
+        assertThat(historyToken.isFilterFuzzy())
+                .isEqualTo(configHolder.getState().isFilterByFuzzy());
+        assertThat(historyToken.isFilterUntranslated())
+                .isEqualTo(configHolder.getState()
+                        .isFilterByUntranslated());
+        assertThat(historyToken.isFilterApproved())
+                .isEqualTo(configHolder.getState().isFilterByApproved());
+        assertThat(historyToken.isFilterRejected())
+                .isEqualTo(configHolder.getState().isFilterByRejected());
+        assertThat(historyToken.isFilterHasError())
+                .isEqualTo(configHolder.getState().isFilterByHasError());
     }
 
     @Test
@@ -181,24 +180,18 @@ public class TransFilterPresenterTest {
                 false);
 
         UserConfigHolder configHolder = userOptionsService.getConfigHolder();
-        assertThat(configHolder.getState().isFilterByTranslated(),
-                Matchers.equalTo(true));
-        assertThat(configHolder.getState().isFilterByFuzzy(),
-                Matchers.equalTo(false));
-        assertThat(configHolder.getState().isFilterByUntranslated(),
-                Matchers.equalTo(true));
-        assertThat(configHolder.getState().isFilterByApproved(),
-                Matchers.equalTo(true));
-        assertThat(configHolder.getState().isFilterByRejected(),
-                Matchers.equalTo(false));
-        assertThat(configHolder.getState().isFilterByHasError(),
-                Matchers.equalTo(false));
-        assertThat(historyToken.isFilterTranslated(), Matchers.equalTo(true));
-        assertThat(historyToken.isFilterFuzzy(), Matchers.equalTo(false));
-        assertThat(historyToken.isFilterUntranslated(), Matchers.equalTo(true));
-        assertThat(historyToken.isFilterApproved(), Matchers.equalTo(true));
-        assertThat(historyToken.isFilterRejected(), Matchers.equalTo(false));
-        assertThat(historyToken.isFilterHasError(), Matchers.equalTo(false));
+        assertThat(configHolder.getState().isFilterByTranslated()).isTrue();
+        assertThat(configHolder.getState().isFilterByFuzzy()).isFalse();
+        assertThat(configHolder.getState().isFilterByUntranslated()).isTrue();
+        assertThat(configHolder.getState().isFilterByApproved()).isTrue();
+        assertThat(configHolder.getState().isFilterByRejected()).isFalse();
+        assertThat(configHolder.getState().isFilterByHasError()).isFalse();
+        assertThat(historyToken.isFilterTranslated()).isTrue();
+        assertThat(historyToken.isFilterFuzzy()).isFalse();
+        assertThat(historyToken.isFilterUntranslated()).isTrue();
+        assertThat(historyToken.isFilterApproved()).isTrue();
+        assertThat(historyToken.isFilterRejected()).isFalse();
+        assertThat(historyToken.isFilterHasError()).isFalse();
         verify(history).newItem(historyToken);
     }
 }

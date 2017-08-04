@@ -21,7 +21,6 @@
 package org.zanata.service.impl;
 
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataTest;
@@ -35,9 +34,7 @@ import org.zanata.util.ServiceLocator;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This service does not inject other components, so it can be tested without a
@@ -69,12 +66,12 @@ public class LockManagerServiceImplTest extends ZanataTest {
 
         boolean lockAquired = lockManagerService.checkAndAttain(l1);
 
-        assertThat(lockAquired, is(true));
+        assertThat(lockAquired).isTrue();
 
         lockManagerService.release(l1);
         lockAquired = lockManagerService.checkAndAttain(l1);
 
-        assertThat(lockAquired, is(true));
+        assertThat(lockAquired).isTrue();
         lockManagerService.release(l1);
     }
 
@@ -84,22 +81,22 @@ public class LockManagerServiceImplTest extends ZanataTest {
         Lock l1Eq = new Lock("prop1", "prop2", "prop3");
         Lock l2 = new Lock("prop1", "prop2");
 
-        assertThat(l1, equalTo(l1Eq));
+        assertThat(l1).isEqualTo(l1Eq);
 
         boolean lockAquired = lockManagerService.checkAndAttain(l1);
-        assertThat(lockAquired, is(true));
+        assertThat(lockAquired).isTrue();
 
         // Same lock, should not aquire
         lockAquired = lockManagerService.checkAndAttain(l1Eq);
-        assertThat(lockAquired, is(false));
+        assertThat(lockAquired).isFalse();
 
         // different lock
         lockAquired = lockManagerService.checkAndAttain(l2);
-        assertThat(lockAquired, is(true));
+        assertThat(lockAquired).isTrue();
 
         lockManagerService.release(l1Eq);
         lockAquired = lockManagerService.checkAndAttain(l1Eq);
-        assertThat(lockAquired, is(true));
+        assertThat(lockAquired).isTrue();
 
         lockManagerService.release(l1Eq);
         lockManagerService.release(l2);

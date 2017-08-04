@@ -1,7 +1,6 @@
 package org.zanata.service.impl;
 
 import com.google.common.collect.Lists;
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +24,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(CdiUnitRunner.class)
@@ -87,8 +85,7 @@ public class GlossarySearchServiceImplTest extends ZanataTest {
         // is tested in the GetGlossaryDetailsHandler test.
 //        verify(identity).checkLoggedIn();
 
-        assertThat(result, Matchers.hasSize(1));
-        assertThat(result.get(0).getTarget(),
-                Matchers.equalTo("target term"));
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTarget()).isEqualTo("target term");
     }
 }

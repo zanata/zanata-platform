@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.zanata.webtrans.client.util.FakeValidationMessages.fakeValidationMessages;
 
@@ -13,7 +13,6 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -79,8 +78,7 @@ public class ValidationServiceTest {
         ValidationAction validationAction =
                 service.getValidationMap().get(VAL_KEY);
 
-        assertThat(validationAction.getRules().isEnabled(),
-                Matchers.equalTo(false));
+        assertThat(validationAction.getRules().isEnabled()).isFalse();
         verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
     }
 
@@ -90,7 +88,7 @@ public class ValidationServiceTest {
                 new ArrayList<ValidationAction>(service.getValidationMap()
                         .values());
 
-        assertThat(validationList.size(), Matchers.equalTo(7));
+        assertThat(validationList.size()).isEqualTo(7);
     }
 
 }

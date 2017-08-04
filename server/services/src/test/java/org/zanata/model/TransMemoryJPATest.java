@@ -34,11 +34,7 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TMMetadataType;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a
@@ -79,7 +75,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
 
         TransMemory stored = loadTM("new-trans-memory");
 
-        assertThat(stored.getSlug(), is(tm.getSlug()));
+        assertThat(stored.getSlug()).isEqualTo(tm.getSlug());
     }
 
     @Test
@@ -90,10 +86,11 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
         super.getEm().persist(tm);
 
         TransMemory stored = loadTM("new-trans-memory");
-        assertThat(stored.getSlug(), is(tm.getSlug()));
-        assertThat(stored.getMetadata().size(), is(tm.getMetadata().size()));
-        assertThat(stored.getMetadata().get(TMMetadataType.TMX14),
-                equalTo(defaultMetadataVal));
+        assertThat(stored.getSlug()).isEqualTo(tm.getSlug());
+        assertThat(stored.getMetadata().size())
+                .isEqualTo(tm.getMetadata().size());
+        assertThat(stored.getMetadata().get(TMMetadataType.TMX14))
+                .isEqualTo(defaultMetadataVal);
     }
 
     @Test
@@ -116,7 +113,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
         // Fetch it, should have the same elements
         TransMemory stored = loadTM("new-trans-memory");
 
-        assertThat(stored.getTranslationUnits().size(), is(NUM_TRANS_UNITS));
+        assertThat(stored.getTranslationUnits().size()).isEqualTo(NUM_TRANS_UNITS);
     }
 
     @Test
@@ -140,10 +137,11 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
         // Fetch it, should have the same elements
         TransMemory stored = loadTM("new-trans-memory");
 
-        assertThat(stored.getTranslationUnits().size(), is(NUM_TRANS_UNITS));
+        assertThat(stored.getTranslationUnits().size())
+                .isEqualTo(NUM_TRANS_UNITS);
         for (TransMemoryUnit tu : tm.getTranslationUnits()) {
-            assertThat(tu.getMetadata(TMMetadataType.TMX14),
-                    startsWith("Metadata "));
+            assertThat(tu.getMetadata(TMMetadataType.TMX14))
+                    .startsWith("Metadata ");
         }
     }
 
@@ -177,7 +175,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
 
         // Verify they were saved
         List<?> results = queryTUVs().getResultList();
-        assertThat(results.size(), greaterThan(0));
+        assertThat(results.size()).isGreaterThan(0);
     }
 
     @Test
@@ -204,7 +202,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
         // Verify they were saved
         TransMemoryUnitVariant tuv =
                 (TransMemoryUnitVariant) queryTUVs().getSingleResult();
-        assertThat(tuv.getPlainTextSegment(), equalTo("Mensaje de Prueba"));
+        assertThat(tuv.getPlainTextSegment()).isEqualTo("Mensaje de Prueba");
     }
 
     private Query queryTUVs() {

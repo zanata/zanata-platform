@@ -1,7 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +32,8 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import static org.hamcrest.MatcherAssert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -131,7 +131,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         action.setWorkspaceId(workspaceId);
         GetProjectTransUnitListsResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
-        assertThat(result.getDocumentIds(), Matchers.<Long> emptyIterable());
+        assertThat(result.getDocumentIds()).isEmpty();
         verifyZeroInteractions(textFlowSearchServiceImpl);
     }
 
@@ -148,12 +148,12 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitListsResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         FilterConstraints constraints = constraintCaptor.getValue();
-        assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
-        assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
-        assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
-        assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-        assertThat(getIntIds(result.getUnits(DOC_ID)),
-                Matchers.contains(1, 2, 3, 4));
+        assertThat(constraints.isSearchInSource()).isTrue();
+        assertThat(constraints.isSearchInTarget()).isTrue();
+        assertThat(constraints.isCaseSensitive()).isTrue();
+        assertThat(result.getDocumentIds()).contains(DOC_ID);
+        assertThat(getIntIds(result.getUnits(DOC_ID)))
+                .contains(1, 2, 3, 4);
     }
 
     @Test
@@ -169,12 +169,11 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitListsResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         FilterConstraints constraints = constraintCaptor.getValue();
-        assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
-        assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
-        assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
-        assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-        assertThat(getIntIds(result.getUnits(DOC_ID)),
-                Matchers.contains(2, 3));
+        assertThat(constraints.isSearchInSource()).isTrue();
+        assertThat(constraints.isSearchInTarget()).isTrue();
+        assertThat(constraints.isCaseSensitive()).isTrue();
+        assertThat(result.getDocumentIds()).contains(DOC_ID);
+        assertThat(getIntIds(result.getUnits(DOC_ID))).contains(2, 3);
     }
 
     @Test
@@ -190,12 +189,11 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitListsResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         FilterConstraints constraints = constraintCaptor.getValue();
-        assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
-        assertThat(constraints.isSearchInTarget(), Matchers.equalTo(false));
-        assertThat(constraints.isCaseSensitive(), Matchers.equalTo(false));
-        assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-        assertThat(getIntIds(result.getUnits(DOC_ID)),
-                Matchers.contains(1, 3));
+        assertThat(constraints.isSearchInSource()).isTrue();
+        assertThat(constraints.isSearchInTarget()).isFalse();
+        assertThat(constraints.isCaseSensitive()).isFalse();
+        assertThat(result.getDocumentIds()).contains(DOC_ID);
+        assertThat(getIntIds(result.getUnits(DOC_ID))).contains(1, 3);
     }
 
     @Test

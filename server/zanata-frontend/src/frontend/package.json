@@ -14,8 +14,8 @@
     "storybook-editor": "start-storybook -p 9001 -s ./dist --config-dir .storybook-editor",
     "storybook-frontend": "start-storybook -p 9001 -s ./dist --config-dir .storybook-frontend",
     "storybook-build": "build-storybook -s ./dist",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch --coverage"
+    "test": "jest --coverage --config jest.config.json",
+    "test:watch": "jest --watch --coverage --config jest.config.json"
   },
   "repository": {
     "type": "git",
@@ -115,6 +115,7 @@
     "react-router": "3.0.5",
     "react-router-redux": "4.0.8",
     "react-select": "1.0.0-rc.5",
+    "react-sortable-hoc": "0.6.3",
     "react-textarea-autosize": "4.3.2",
     "redux": "3.5.2",
     "redux-actions": "0.10.0",
@@ -132,36 +133,5 @@
     "svg-sprite": "1.3.6",
     "text-diff": "1.0.1",
     "webfontloader": "1.6.24"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "app/**/*.{js,jsx}",
-      "!**/node_modules/**",
-      "!app/**/*.story.js"
-    ],
-    "coverageReporters": [
-      "cobertura",
-      "html",
-      "lcov",
-      "text"
-    ],
-    "moduleNameMapper": {
-      "^.+\\.(css)$": "./__tests__/mock/mockCss.js"
-    },
-    "transform": {
-      ".*": "./node_modules/babel-jest"
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/__tests__/mock"
-    ],
-    "unmockedModulePathPatterns": [
-      "/node_modules",
-      "/app"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "jsx"
-    ]
   }
 }

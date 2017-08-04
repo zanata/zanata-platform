@@ -1,10 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,8 +77,8 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
                         .thenReturn(getEm().find(HTextFlowTarget.class, 61L));
         GetTargetForLocaleResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
-        assertThat(result.getTarget().getContent(), Matchers.equalTo(
-                getEm().find(HTextFlowTarget.class, 61L).getContents().get(0)));
+        assertThat(result.getTarget().getContent()).isEqualTo(
+                getEm().find(HTextFlowTarget.class, 61L).getContents().get(0));
     }
 
     @Test
@@ -89,7 +88,7 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
                 jaHLocale.getLocaleId())).thenReturn(null);
         GetTargetForLocaleResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
-        assertThat(result.getTarget(), Matchers.equalTo(null));
+        assertThat(result.getTarget()).isNull();
     }
 
     @Test

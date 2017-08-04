@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -49,12 +48,12 @@ public class PreviewReplaceTextHandlerTest extends ZanataTest {
         PreviewReplaceTextResult result = handler.execute(action, null);
 
         verify(identity).checkLoggedIn();
-        assertThat(result.getPreviews(), Matchers.hasSize(1));
+        assertThat(result.getPreviews()).hasSize(1);
         TransUnitUpdatePreview preview = result.getPreviews().get(0);
-        assertThat(preview.getId(), Matchers.equalTo(transUnit.getId()));
-        assertThat(preview.getState(),
-                Matchers.equalTo(ContentState.NeedReview));
-        assertThat(preview.getContents(), Matchers.contains("replace"));
+        assertThat(preview.getId()).isEqualTo(transUnit.getId());
+        assertThat(preview.getState())
+                .isEqualTo(ContentState.NeedReview);
+        assertThat(preview.getContents()).contains("replace");
     }
 
     @Test(expected = ActionException.class)

@@ -27,7 +27,6 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.customware.gwt.presenter.client.EventBus;
-import org.hamcrest.Matchers;
 import org.hibernate.transform.ResultTransformer;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jglue.cdiunit.AdditionalClasspaths;
@@ -79,11 +78,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -222,26 +217,27 @@ public class NavigationServiceIntegrationTest {
     @Test
     public void canMockHandler() {
         service.requestTransUnitsAndUpdatePageIndex(context.withCount(6), true);
-        assertThat(getTransUnitListResult.getDocumentId(),
-                equalTo(DOCUMENT.getId()));
-        assertThat(getIntIds(getTransUnitListResult.getUnits()),
-                contains(0, 1, 2, 3, 4, 5));
+        assertThat(getTransUnitListResult.getDocumentId())
+                .isEqualTo(DOCUMENT.getId());
+        assertThat(getIntIds(getTransUnitListResult.getUnits()))
+                .contains(0, 1, 2, 3, 4, 5);
         GetTransUnitsNavigationResult navigationResult =
                 getTransUnitListResult.getNavigationIndex();
-        assertThat(getLongIds(navigationResult.getIdIndexList()),
-                contains(0L, 1L, 2L, 3L, 4L, 5L));
-        assertThat(navigationResult.getTransIdStateList(),
-                hasEntry(new TransUnitId(0L), ContentState.New));
-        assertThat(navigationResult.getTransIdStateList(),
-                hasEntry(new TransUnitId(1L), ContentState.New));
-        assertThat(navigationResult.getTransIdStateList(),
-                hasEntry(new TransUnitId(2L), ContentState.NeedReview));
-        assertThat(navigationResult.getTransIdStateList(),
-                hasEntry(new TransUnitId(3L), ContentState.Approved));
-        assertThat(navigationResult.getTransIdStateList(),
-                hasEntry(new TransUnitId(4L), ContentState.NeedReview));
-        assertThat(navigationResult.getTransIdStateList(),
-                hasEntry(new TransUnitId(5L), ContentState.New));
+        assertThat(getLongIds(navigationResult.getIdIndexList()))
+                .contains(0L, 1L, 2L, 3L, 4L, 5L);
+        assertThat(navigationResult.getTransIdStateList())
+                .containsEntry(new TransUnitId(0L), ContentState.New);
+        assertThat(navigationResult.getTransIdStateList())
+                .containsEntry(new TransUnitId(1L), ContentState.New);
+
+        assertThat(navigationResult.getTransIdStateList())
+                .containsEntry(new TransUnitId(2L), ContentState.NeedReview);
+        assertThat(navigationResult.getTransIdStateList())
+                .containsEntry(new TransUnitId(3L), ContentState.Approved);
+        assertThat(navigationResult.getTransIdStateList())
+                .containsEntry(new TransUnitId(4L), ContentState.NeedReview);
+        assertThat(navigationResult.getTransIdStateList())
+                .containsEntry(new TransUnitId(5L), ContentState.New);
     }
 
     @Test
@@ -249,13 +245,13 @@ public class NavigationServiceIntegrationTest {
         service.init(context.withCount(3));
         verifyDispatcherAndCallOnSuccess();
         service.gotoPage(0);
-        assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(getPageDataModelAsIds()).contains(0, 1, 2);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
         // go again won't cause another call to server
         service.gotoPage(0);
         verifyNoMoreInteractions(dispatcher);
-        assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(getPageDataModelAsIds()).contains(0, 1, 2);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
     }
 
     private List<Integer> getPageDataModelAsIds() {
@@ -268,8 +264,8 @@ public class NavigationServiceIntegrationTest {
         verifyDispatcherAndCallOnSuccess();
         service.gotoPage(1);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(1));
+        assertThat(getPageDataModelAsIds()).contains(4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(1);
         service.gotoPage(1);
         verifyNoMoreInteractions(dispatcher);
     }
@@ -280,12 +276,12 @@ public class NavigationServiceIntegrationTest {
         verifyDispatcherAndCallOnSuccess();
         service.gotoPage(1);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(1));
+        assertThat(getPageDataModelAsIds()).contains(3, 4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(1);
         service.gotoPage(1);
         verifyNoMoreInteractions(dispatcher);
-        assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(1));
+        assertThat(getPageDataModelAsIds()).contains(3, 4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(1);
     }
 
     @Test
@@ -294,12 +290,12 @@ public class NavigationServiceIntegrationTest {
         verifyDispatcherAndCallOnSuccess();
         service.gotoPage(100);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(getPageDataModelAsIds()).contains(0, 1, 2, 3, 4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
         service.gotoPage(0);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(getPageDataModelAsIds()).contains(0, 1, 2, 3, 4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
     }
 
     @Test
@@ -308,17 +304,17 @@ public class NavigationServiceIntegrationTest {
         verifyDispatcherAndCallOnSuccess();
         service.gotoPage(1);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(2, 3));
-        assertThat(navigationStateHolder.getCurrentPage(), is(1));
+        assertThat(getPageDataModelAsIds()).contains(2, 3);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(1);
         service.gotoPage(2);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(2));
+        assertThat(getPageDataModelAsIds()).contains(4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(2);
         // can't go any further
         service.gotoPage(2);
         verifyNoMoreInteractions(dispatcher);
-        assertThat(getPageDataModelAsIds(), contains(4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(2));
+        assertThat(getPageDataModelAsIds()).contains(4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(2);
     }
 
     @Test
@@ -328,24 +324,24 @@ public class NavigationServiceIntegrationTest {
         // should be on first page already
         service.gotoPage(0);
         verifyNoMoreInteractions(dispatcher);
-        assertThat(getPageDataModelAsIds(), contains(0, 1));
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(getPageDataModelAsIds()).contains(0, 1);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
         service.gotoPage(2);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(2));
+        assertThat(getPageDataModelAsIds()).contains(4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(2);
         service.gotoPage(1);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(2, 3));
-        assertThat(navigationStateHolder.getCurrentPage(), is(1));
+        assertThat(getPageDataModelAsIds()).contains(2, 3);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(1);
         service.gotoPage(0);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(0, 1));
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(getPageDataModelAsIds()).contains(0, 1);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
         // can't go any further
         service.gotoPage(0);
         verifyNoMoreInteractions(dispatcher);
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
     }
 
     @Test
@@ -354,18 +350,18 @@ public class NavigationServiceIntegrationTest {
         verifyDispatcherAndCallOnSuccess();
         service.gotoPage(1);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(1));
+        assertThat(getPageDataModelAsIds()).contains(3, 4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(1);
         // page out of bound
         service.gotoPage(7);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-        assertThat(navigationStateHolder.getCurrentPage(), is(1));
+        assertThat(getPageDataModelAsIds()).contains(3, 4, 5);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(1);
         // page is negative
         service.gotoPage(-1);
         verifyDispatcherAndCallOnSuccess();
-        assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
-        assertThat(navigationStateHolder.getCurrentPage(), is(0));
+        assertThat(getPageDataModelAsIds()).contains(0, 1, 2);
+        assertThat(navigationStateHolder.getCurrentPage()).isEqualTo(0);
     }
 
     @Test
@@ -382,13 +378,12 @@ public class NavigationServiceIntegrationTest {
                 extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
         TransUnitId firstItem = new TransUnitId(TEXT_FLOWS.get(0).getId());
-        assertThat(tableRowSelectedEvent.getSelectedId(),
-                Matchers.equalTo(firstItem));
+        assertThat(tableRowSelectedEvent.getSelectedId()).isEqualTo(firstItem);
         // behaviour on GetTransUnitNavigation success
         PageCountChangeEvent pageCountChangeEvent =
                 extractFromEvents(eventCaptor.getAllValues(),
                         PageCountChangeEvent.class);
-        assertThat(pageCountChangeEvent.getPageCount(), Matchers.is(2));
+        assertThat(pageCountChangeEvent.getPageCount()).isEqualTo(2);
         inOrder.verify(eventBus).fireEvent(LoadingEvent.FINISH_EVENT);
     }
 

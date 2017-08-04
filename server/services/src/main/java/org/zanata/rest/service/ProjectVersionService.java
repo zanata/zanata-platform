@@ -43,8 +43,10 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.ModelEntityBase;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.ProjectIteration;
@@ -58,6 +60,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -306,7 +309,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         if (StringUtils.isEmpty(noSlashDocId)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        String docId = URIHelper.convertFromDocumentURIId(noSlashDocId);
+        String docId = RestUtil.convertFromDocumentURIId(noSlashDocId);
         HDocument document = documentDAO
                 .getByProjectIterationAndDocId(projectSlug, versionSlug, docId);
         if (document == null) {
@@ -378,6 +381,15 @@ public class ProjectVersionService implements ProjectVersionResource {
         if (projectResponse.isPresent()) {
             return projectResponse.get();
         }
+
+        LocaleId localeId = mergeRequest.getLocaleId();
+        HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+        if (hLocale == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        identity.checkPermission("modify-translation", hProject, hLocale);
+
         HProjectIteration version =
                 projectIterationDAO.getBySlug(hProject, versionSlug);
         if (version == null || version.getStatus() == OBSOLETE) {
@@ -395,13 +407,30 @@ public class ProjectVersionService implements ProjectVersionResource {
                     .entity("{\"error\":\"project version has no documents\"}")
                     .build();
         }
-        LocaleId localeId = mergeRequest.getLocaleId();
-        HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-        if (hLocale == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+
+
+        if (mergeRequest.getInternalTMSource().getChoice() == InternalTMSource.InternalTMChoice.SelectSome) {
+            List<Long> fromVersionIds = mergeRequest.getInternalTMSource()
+                    .getProjectIterationIds().stream()
+                    .map(projectIterationId -> projectIterationDAO.getBySlug(
+                            projectIterationId.getProjectSlug(),
+                            projectIterationId.getIterationSlug()))
+                    .filter(ver -> ver != null
+                            && ver.getStatus() != EntityStatus.OBSOLETE
+                            && localeServiceImpl
+                            .getSupportedLanguageByProjectIteration(ver)
+                            .contains(hLocale))
+                    .map(ModelEntityBase::getId).collect(Collectors.toList());
+            if (fromVersionIds.isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"error\":\"selected internal TM versions list has nothing to copy from\"}")
+                        .build();
+            }
+            // we update internal TM source selection list
+            mergeRequest.getInternalTMSource()
+                    .setFilteredProjectVersionIds(fromVersionIds);
         }
 
-        identity.checkPermission("modify-translation", hProject, hLocale);
         AsyncTaskHandle<Void> handle = transMemoryMergeManager
                 .start(version.getId(), mergeRequest);
 

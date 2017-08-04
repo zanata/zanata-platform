@@ -2,7 +2,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.Date;
 
-import org.hamcrest.Matchers;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
@@ -41,7 +40,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.zanata.test.EntityTestData.makeApprovedHTextFlow;
@@ -130,7 +129,7 @@ public class GetTransMemoryDetailsHandlerTest extends ZanataTest {
         TransMemoryDetailsList result = handler.execute(action, null);
 
         verify(identity).checkLoggedIn();
-        assertThat(result.getItems(), Matchers.hasSize(2));
+        assertThat(result.getItems()).hasSize(2);
     }
 
     @Test(expected = ActionException.class)

@@ -1,13 +1,9 @@
 package org.zanata.dao;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
 import java.util.Map;
 import com.google.common.collect.Lists;
-import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -19,6 +15,8 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextFlowDAOTest extends ZanataDbunitJpaTest {
     private static final org.slf4j.Logger log =
@@ -88,11 +86,11 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 .excludeFuzzy().excludeTranslated().build();
         List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(
                 new DocumentId(1L, ""), deLocale, untranslated, 0, 10);
-        assertThat(result.size(), is(0));
+        assertThat(result.size()).isEqualTo(0);
         HLocale frLocale = getEm().find(HLocale.class, 6L);
         result = dao.getTextFlowByDocumentIdWithConstraints(
                 new DocumentId(1L, ""), frLocale, untranslated, 0, 10);
-        assertThat(result.size(), is(1));
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
@@ -102,7 +100,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 .excludeFuzzy().excludeTranslated().build();
         List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(
                 new DocumentId(4L, ""), deLocale, untranslated, 0, 10);
-        assertThat(result, Matchers.hasSize(1));
+        assertThat(result).hasSize(1);
     }
 
     @Test
@@ -114,7 +112,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 documentId2, enUSLocale,
                 FilterConstraints.builder().keepAll().excludeNew().build(), 0,
                 10);
-        assertThat(result, Matchers.hasSize(3));
+        assertThat(result).hasSize(3);
     }
 
     @Test
@@ -126,7 +124,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 FilterConstraints.builder().keepAll().excludeFuzzy().build();
         List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(
                 documentId, frLocale, notFuzzy, 0, 10);
-        assertThat(result, Matchers.hasSize(1));
+        assertThat(result).hasSize(1);
     }
 
     @Test
@@ -138,7 +136,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 .keepAll().excludeTranslated().excludeNew().build();
         List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(
                 documentId, esLocale, notNewOrTranslated, 0, 10);
-        assertThat(result, Matchers.hasSize(1));
+        assertThat(result).hasSize(1);
     }
 
     @Test
@@ -150,7 +148,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 .excludeFuzzy().excludeNew().build();
         List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(
                 documentId, deLocale, notNewOrFuzzy, 0, 10);
-        assertThat(result, Matchers.hasSize(1));
+        assertThat(result).hasSize(1);
     }
 
     @Test
@@ -162,7 +160,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 .keepAll().excludeTranslated().excludeFuzzy().build();
         List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(
                 documentId2, enUSLocale, notFuzzyOrTranslated, 0, 10);
-        assertThat(result, Matchers.<HTextFlow> empty());
+        assertThat(result).isEmpty();
     }
 
     @Ignore
@@ -187,7 +185,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                         FilterConstraints.builder().filterBy("mssg")
                                 .excludeTranslated().excludeFuzzy().build(),
                         0, 10);
-        assertThat(result, Matchers.hasSize(1));
+        assertThat(result).hasSize(1);
     }
 
     @Test
@@ -216,21 +214,21 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 new ProjectIterationDAO((Session) getEm().getDelegate());
         HProjectIteration fromVersion =
                 projectIterationDAO.getBySlug(projectSlug, fromVersionSlug);
-        Assertions.assertThat(fromVersion).isNotNull();
+        assertThat(fromVersion).isNotNull();
         HProjectIteration toVersion =
                 projectIterationDAO.getBySlug(projectSlug, toVersionSlug);
-        Assertions.assertThat(toVersion).isNotNull();
+        assertThat(toVersion).isNotNull();
         List<HTextFlow[]> results = dao.getSourceByMatchedContext(
                 fromVersion.getId(), toVersion.getId(), 0, 100);
-        Assertions.assertThat(results).isNotEmpty();
+        assertThat(results).isNotEmpty();
         for (HTextFlow[] result : results) {
-            Assertions.assertThat(result[0].getContentHash())
+            assertThat(result[0].getContentHash())
                     .isEqualTo(result[1].getContentHash());
-            Assertions.assertThat(result[0].getDocument().getDocId())
+            assertThat(result[0].getDocument().getDocId())
                     .isEqualTo(result[1].getDocument().getDocId());
-            Assertions.assertThat(result[0].getResId())
+            assertThat(result[0].getResId())
                     .isEqualTo(result[1].getResId());
-            Assertions.assertThat(result[0]).isNotEqualTo(result[1]);
+            assertThat(result[0]).isNotEqualTo(result[1]);
         }
     }
 }

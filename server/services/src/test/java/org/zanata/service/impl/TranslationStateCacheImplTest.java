@@ -47,8 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -97,8 +96,8 @@ public class TranslationStateCacheImplTest {
 
         // Then:
         verify(docStatusLoader).load(key); // only load the value once
-        assertThat(result1, equalTo(docStats));
-        assertThat(result2, equalTo(docStats));
+        assertThat(result1).isEqualTo(docStats);
+        assertThat(result2).isEqualTo(docStats);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class TranslationStateCacheImplTest {
         // Then:
         verify(targetValidationLoader).load(targetId); // only load the value
                                                        // once
-        assertThat(result, equalTo(null));
+        assertThat(result).isNull();
     }
 
     @Test
@@ -139,6 +138,6 @@ public class TranslationStateCacheImplTest {
         // Then:
         verify(targetValidationLoader).load(targetId); // only load the value
                                                        // once
-        assertThat(result, equalTo(true));
+        assertThat(result).isTrue();
     }
 }

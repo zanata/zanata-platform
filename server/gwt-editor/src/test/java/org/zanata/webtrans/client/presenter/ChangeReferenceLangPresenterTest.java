@@ -1,13 +1,11 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -61,8 +59,8 @@ public class ChangeReferenceLangPresenterTest {
         presenter.onSourceLangListBoxOptionChanged(new Locale(
                 new IdForLocale(1L, LocaleId.EN_US), "en-US"));
 
-        assertThat(configHolder.getState().getSelectedReferenceForSourceLang(),
-                Matchers.equalTo("en-US"));
+        assertThat(configHolder.getState().getSelectedReferenceForSourceLang())
+                .isEqualTo("en-US");
         verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
     }
 
@@ -73,8 +71,8 @@ public class ChangeReferenceLangPresenterTest {
 
         presenter.onSourceLangListBoxOptionChanged(Locale.notChosenLocale);
 
-        assertThat(configHolder.getState().getSelectedReferenceForSourceLang(),
-                Matchers.equalTo(UserConfigHolder.DEFAULT_SELECTED_REFERENCE));
+        assertThat(configHolder.getState().getSelectedReferenceForSourceLang())
+                .isEqualTo(UserConfigHolder.DEFAULT_SELECTED_REFERENCE);
         verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
     }
 }

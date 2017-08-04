@@ -159,4 +159,10 @@
     <addPrimaryKey tableName="HTextFlowTargetContentHistory" columnNames="pos,text_flow_target_history_id"/>
   </changeSet>
 
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>Alter TransMemory description, limit max length</comment>
+    <sql>UPDATE TransMemory SET description=SUBSTRING(description,1,100);</sql>
+    <modifyDataType tableName="TransMemory" columnName="description"
+        newDataType="varchar(100)"/>
+  </changeSet>
 </databaseChangeLog>

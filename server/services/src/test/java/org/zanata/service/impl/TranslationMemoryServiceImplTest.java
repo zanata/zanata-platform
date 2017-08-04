@@ -53,6 +53,7 @@ import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 
 import com.google.common.collect.Lists;
@@ -211,7 +212,7 @@ public class TranslationMemoryServiceImplTest {
                     service.searchBestMatchTransMemory(textFlow,
                             targetLocale.getLocaleId(),
                             sourceLocale.getLocaleId(), false, false, false,
-                            threshold, Collections.emptyList());
+                            threshold, InternalTMSource.SELECT_ALL);
             assertThat(match.isPresent()).isEqualTo(hasMatch);
         }
         // to check if any of the sourceContents contain searchString

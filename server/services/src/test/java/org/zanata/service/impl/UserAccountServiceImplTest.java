@@ -20,10 +20,7 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
@@ -33,7 +30,6 @@ import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
-import org.zanata.model.HAccountRole;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.model.validator.UniqueValidator;
@@ -43,9 +39,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a
@@ -103,18 +97,13 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     public void assignedRule() {
         // Non admin account
         HAccount account = em.find(HAccount.class, 3L);
-        assertThat(new ArrayList<HAccountRole>(account.getRoles()),
-                not(Matchers.<HAccountRole> hasItem(hasProperty("name",
-                        Matchers.is("admin")))));
+        assertThat(account.getRoles()).extracting("name").doesNotContain("admin");
 
         account =
                 userAccountService.runRoleAssignmentRules(account, null,
                         "zanata");
         // Now it's admin
-        assertThat(
-                new ArrayList<HAccountRole>(account.getRoles()),
-                Matchers.<HAccountRole> hasItem(hasProperty("name",
-                        Matchers.is("admin"))));
+        assertThat(account.getRoles()).extracting("name").contains("admin");
     }
 
     @Test
@@ -122,18 +111,13 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     public void assignedFedoraRule() {
         // Non Fedora account
         HAccount account = createFedoraAccount();
-        assertThat(new ArrayList<HAccountRole>(account.getRoles()),
-                not(Matchers.<HAccountRole> hasItem(hasProperty("name",
-                        Matchers.is("Fedora")))));
+        assertThat(account.getRoles()).extracting("name").doesNotContain("Fedora");
 
         account =
                 userAccountService.runRoleAssignmentRules(account, account
                         .getCredentials().iterator().next(), "fedora");
         // Now it's fedora
-        assertThat(
-                new ArrayList<HAccountRole>(account.getRoles()),
-                Matchers.<HAccountRole> hasItem(hasProperty("name",
-                        Matchers.is("Fedora"))));
+        assertThat(account.getRoles()).extracting("name").contains("Fedora");
     }
 
     @Test
@@ -141,17 +125,13 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     public void notAssignedFedoraRule() {
         // Non Fedora account
         HAccount account = em.find(HAccount.class, 3L);
-        assertThat(new ArrayList<HAccountRole>(account.getRoles()),
-                not(Matchers.<HAccountRole> hasItem(hasProperty("name",
-                        Matchers.is("Fedora")))));
+        assertThat(account.getRoles()).extracting("name").doesNotContain("Fedora");
 
         account =
                 userAccountService.runRoleAssignmentRules(account, null,
                         "fedora");
         // It's still not Fedora
-        assertThat(new ArrayList<HAccountRole>(account.getRoles()),
-                not(Matchers.<HAccountRole> hasItem(hasProperty("name",
-                        Matchers.is("Fedora")))));
+        assertThat(account.getRoles()).extracting("name").doesNotContain("Fedora");
     }
 
     @Test
@@ -159,14 +139,14 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     public void requestPasswordReset() {
         // account with no reset password key
         HAccount account = em.find(HAccount.class, 3L);
-        assertThat(account.getAccountResetPasswordKey(), Matchers.nullValue());
+        assertThat(account.getAccountResetPasswordKey()).isNull();
 
 
         HAccountResetPasswordKey resetPasswordKey = userAccountService
                 .requestPasswordReset(account.getUsername(),
                         account.getPerson().getEmail());
         // Now it has reset password key
-        assertThat(account.getAccountResetPasswordKey(),
-                Matchers.notNullValue(HAccountResetPasswordKey.class));
+        assertThat(account.getAccountResetPasswordKey()).isNotNull()
+                .isInstanceOf(HAccountResetPasswordKey.class);
     }
 }

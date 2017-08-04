@@ -207,6 +207,15 @@ public class LanguageAction implements Serializable {
         resetLocale();
     }
 
+    public boolean isAnySelected() {
+        for (SelectablePerson selectablePerson : getSearchResults()) {
+            if (selectablePerson.isSelected()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getPluralsPlaceholder() {
         String pluralForms = resourceUtils
                 .getPluralForms(new LocaleId(language), false, true);
