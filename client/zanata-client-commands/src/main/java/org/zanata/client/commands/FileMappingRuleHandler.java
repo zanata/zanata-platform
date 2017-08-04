@@ -56,6 +56,7 @@ public class FileMappingRuleHandler {
     private static final Logger log =
             LoggerFactory.getLogger(FileMappingRuleHandler.class);
     private final FileMappingRule mappingRule;
+    @SuppressWarnings("unused")
     private final ProjectType projectType;
     private final ConfigurableProjectOptions opts;
 

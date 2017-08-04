@@ -156,17 +156,14 @@ public class FileResourceClientTest {
     }
 
     private Pair<String, Long> calculateFileHashAndSize(InputStream in) {
-        CountingInputStream countingStream = new CountingInputStream(in);
-        try {
+        try (CountingInputStream countingStream = new CountingInputStream(in)) {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            try {
-                in = new DigestInputStream(countingStream, md);
+            try (InputStream digestInputStream = new DigestInputStream(
+                    countingStream, md)) {
                 byte[] buffer = new byte[256];
-                while (in.read(buffer) > 0) {
+                while (digestInputStream.read(buffer) > 0) {
                     // continue
                 }
-            } finally {
-                in.close();
             }
             String hash = new String(Hex.encodeHex(md.digest()));
             return new ImmutablePair<>(hash, countingStream.getByteCount());

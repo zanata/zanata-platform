@@ -286,7 +286,7 @@ timestamps {
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '1366',
+                unstableTotalAll: '1212',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
