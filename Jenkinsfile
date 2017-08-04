@@ -313,7 +313,7 @@ timestamps {
       } catch (e) {
         echo("Caught exception: " + e)
         notify.testResults('BUILD', 'ERROR', e.toString())
-        currentBuild.result='FAILURE'
+        currentBuild.result = 'FAILURE'
         // abort the rest of the pipeline
         throw e
       }
@@ -438,7 +438,7 @@ void integrationTests(String appserver) {
           archive(
                   includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
                   excludes: '**/BACKUP-*.log')
-        }else{
+        } else {
           notify.testResults(appserver, 'SUCCESS')
         }
 
@@ -488,4 +488,3 @@ boolean setJUnitPrefix(prefix, files) {
     return false
   }
 }
-
