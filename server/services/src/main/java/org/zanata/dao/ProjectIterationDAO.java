@@ -547,4 +547,19 @@ public class ProjectIterationDAO extends
             "ProjectIterationDAO.getContributors");
         return q.list();
     }
+
+    public int getTotalDocCount(String projectSlug, String iterationSlug) {
+        StringBuilder query = new StringBuilder();
+        query.append("select count(doc) from HDocument doc ")
+                .append("where doc.projectIteration.slug=:iterationSlug")
+                .append("and doc.projectIteration.project.slug=:projectSlug ")
+                .append("and doc.projectIteration.status <> :obsolete ")
+                .append("and doc.obsolete = false");
+
+        Query q = getSession().createQuery(query.toString())
+                .setParameter("iterationSlug", iterationSlug)
+                .setParameter("projectSlug", projectSlug)
+                .setParameter("obsolete", EntityStatus.OBSOLETE);
+        return ((Long) q.uniqueResult()).intValue();
+    }
 }

@@ -131,9 +131,11 @@ public class TMXDummyRestTest extends ZanataRestTest {
         // TODO find a way to get entity without ClientResponse
         @SuppressWarnings("unchecked")
         // don't import this class, because @SuppressWarnings("deprecation") won't work
-        org.jboss.resteasy.client.ClientResponse<String> response = (org.jboss.resteasy.client.ClientResponse<String>)
-                tmResource.getProjectIterationTranslationMemory("iok", "6.4",
-                        new LocaleId("as"));
+                org.jboss.resteasy.client.ClientResponse<String> response =
+                (org.jboss.resteasy.client.ClientResponse<String>)
+                        tmResource.getProjectIterationTranslationMemory("iok",
+                                "6.4",
+                                LocaleId.EN_US, new LocaleId("as"));
         assertThat(response.getStatus()).isEqualTo(404);
         assertThat(response.getEntity(String.class)).isEqualTo("Project \'iok\' not found.");
     }
@@ -148,9 +150,11 @@ public class TMXDummyRestTest extends ZanataRestTest {
 //        when(sessionFactory.openSession()).
 
         @SuppressWarnings("unchecked")
-        org.jboss.resteasy.client.ClientResponse<String> response = (org.jboss.resteasy.client.ClientResponse<String>)
-                tmResource.getProjectIterationTranslationMemory("iok", "6.4",
-                        new LocaleId("as"));
+        org.jboss.resteasy.client.ClientResponse<String> response =
+                (org.jboss.resteasy.client.ClientResponse<String>)
+                        tmResource.getProjectIterationTranslationMemory("iok",
+                                "6.4",
+                                LocaleId.EN_US, new LocaleId("as"));
         assertThat(response.getStatus()).isEqualTo(200);
 
 //        InputStream inputStream = response.readEntity(InputStream.class);

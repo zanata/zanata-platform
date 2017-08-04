@@ -455,4 +455,17 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                 .setParameter("filter", "%" + sqlFilter + "%");
         return ((Long) q.uniqueResult()).intValue();
     }
+
+    public int getTotalDocCount(String projectSlug) {
+        StringBuilder query = new StringBuilder();
+        query.append("select count(doc) from HDocument doc ")
+                .append("where doc.projectIteration.project.slug=:projectSlug ")
+                .append("and doc.projectIteration.status <> :obsolete ")
+                .append("and doc.obsolete = false");
+
+        Query q = getSession().createQuery(query.toString())
+                .setParameter("projectSlug", projectSlug)
+                .setParameter("obsolete", EntityStatus.OBSOLETE);
+        return ((Long) q.uniqueResult()).intValue();
+    }
 }

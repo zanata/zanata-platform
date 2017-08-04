@@ -1555,10 +1555,6 @@ h1:not(:first-of-type) {
   font-size: @spacing-rq;
 }
 
-.AutoTags h1:after, form i, table i {
-  color: @color-dark;
-}
-
 p {
   margin: 0 0 @spacing-base-and-a-half;
   font-size: 1rem;
@@ -4444,6 +4440,12 @@ img.avatar-round {
 // Override legacy JSF new-zanata classes for TMMergeModal React component
 @import "../containers/ProjectVersion/index.css";
 
+// Override legacy JSF new-zanata classes for TMXModal React component
+@import "../components/TMX/index.css";
+
+// Include CSS for tri-checkbox component
+@import "../components/TriCheckbox/index.less";
+
 // Nav variations
 // --------------------------------------------------
 // Justified nav links
@@ -6337,10 +6339,6 @@ table.search-table {
   max-width: 36.05em;
 }
 
-.panel__header i.i--add:not(.i--large) {
-  color: #fff;
-}
-
 .button--small i.i--settings {
   vertical-align: baseline;
 }
@@ -6576,7 +6574,7 @@ table .projectWideSearchResultsDocumentBody {
 }
 
 table.tmx-table {
-  width:50%;
+  width:50% !important;
   margin-left:auto;
   margin-right:auto;
 }
@@ -6610,6 +6608,7 @@ table.tmx-table .badge {
   line-height: 1.5rem;
   width: 4rem;
   font-weight: 400;
+  height: 100%;
 }
 
 .tmx-export p.all-warning {

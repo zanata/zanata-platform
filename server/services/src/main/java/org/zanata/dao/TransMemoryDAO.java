@@ -21,6 +21,7 @@
 package org.zanata.dao;
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -37,7 +38,6 @@ import org.zanata.exception.EntityMissingException;
 import org.zanata.jpa.FullText;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
-import com.google.common.base.Optional;
 
 /**
  * Data Access Object for Translation Memory and related entities.
@@ -68,9 +68,9 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
             TransMemory tm =
                     (TransMemory) getSession().byNaturalId(TransMemory.class)
                             .using("slug", slug).load();
-            return Optional.fromNullable(tm);
+            return Optional.ofNullable(tm);
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**

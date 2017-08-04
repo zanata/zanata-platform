@@ -21,7 +21,9 @@
 package org.zanata.rest.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -40,19 +42,25 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.rest.dto.LanguageTeamSearchResult;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.LocaleMember;
+import org.zanata.rest.dto.SourceLocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.rest.dto.LocalesResults;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.LocaleService;
 import com.google.common.collect.Lists;
+import org.zanata.service.RequestService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.AllJavaLocales;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -74,10 +82,14 @@ public class LocalesService implements LocalesResource {
     @Inject
     private LocaleDAO localeDAO;
     @Inject
+    private DocumentDAO documentDAO;
+    @Inject
     private ResourceUtils resourceUtils;
     @Inject
     @AllJavaLocales
     private List<LocaleId> allJavaLocales;
+    @Inject
+    RequestService requestService;
 
     @Transactional(readOnly = true)
     @Override
@@ -89,7 +101,8 @@ public class LocalesService implements LocalesResource {
         int totalCount;
         int validatedPageSize = validatePageSize(sizePerPage);
         int offset = (validatePage(page) - 1) * validatedPageSize;
-        if (identity != null && identity.hasRole("admin")) {
+        boolean isAdmin = identity != null && identity.hasRole("admin");
+        if (isAdmin) {
             locales = localeServiceImpl.getAllLocales(offset, validatedPageSize,
                     filter, convertToSortField(fields));
             totalCount = localeServiceImpl.getLocalesTotalCount(filter);
@@ -104,6 +117,21 @@ public class LocalesService implements LocalesResource {
                 .collect(Collectors.toList());
         LocalesResults localesResults =
                 new LocalesResults(totalCount, localesRefs);
+
+        if (isAdmin) {
+            List<LocaleId> localeIds = localeDAO.findAll().stream()
+                    .map(hLocale -> hLocale.getLocaleId()).collect(Collectors.toList());
+            // Map all requests to localeIds, to prevent multiple requests
+            Map<LocaleId, Long> allRequests =
+                    requestService.getPendingLanguageRequests(
+                            localeIds.toArray(new LocaleId[localeIds.size()]))
+                            .stream().collect(Collectors.groupingBy(languageRequest ->
+                            languageRequest.getLocale().getLocaleId(), Collectors.counting()));
+            for (LanguageTeamSearchResult searchResult : localesRefs) {
+                searchResult.setRequestCount(firstNonNull(allRequests.get(
+                        searchResult.getLocaleDetails().getLocaleId()), 0L));
+            }
+        }
         return Response.ok(localesResults).build();
     }
 
@@ -176,6 +204,29 @@ public class LocalesService implements LocalesResource {
                 .collect(Collectors.toList());
         Object entity = new GenericEntity<List<LocaleDetails>>(localesRefs){};
         return Response.ok(entity).build();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    @CheckRole("admin")
+    public Response getSourceLocales() {
+        identity.checkPermission("read-source-language");
+        Map<HLocale, Integer> locales = localeDAO.getAllSourceLocalesAndDocCount();
+
+        List<SourceLocaleDetails> results = new ArrayList<>();
+
+        for (Map.Entry<HLocale, Integer> entry: locales.entrySet()) {
+            LocaleDetails details = LocaleService.convertHLocaleToDTO(entry.getKey());
+            results.add(new SourceLocaleDetails(entry.getValue(), details));
+        }
+        if (results.size() > 1) {
+            // Adding total doc count to the result set
+            int count = documentDAO.getTotalDocCount();
+            results.add(new SourceLocaleDetails(count, null));
+        }
+        return Response
+                .ok(new GenericEntity<List<SourceLocaleDetails>>(results) {
+                }).build();
     }
 
     @Transactional

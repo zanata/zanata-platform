@@ -83,8 +83,8 @@ public interface RequestService extends Serializable {
         LocaleId localeId);
 
     /**
-     *
-     * @param Get outstanding language requests on languages
+     * Get outstanding language requests on languages
+     * @param localeIds array of locales to get requests for
      */
     List<LanguageRequest> getPendingLanguageRequests(
         LocaleId... localeIds);

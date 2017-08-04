@@ -19,19 +19,19 @@ import com.google.common.collect.Maps;
 public class ExportTranslationsTest extends TMXStreamingOutputTest {
     @Test
     public void exportAllLocales() throws Exception {
-        StreamingOutput output = streamSourceContents(null);
+        StreamingOutput output = streamSourceContents(null, null);
         checkAllLocales(output);
     }
 
     @Test
     public void exportFrench() throws Exception {
-        StreamingOutput output = streamSourceContents(LocaleId.FR);
+        StreamingOutput output = streamSourceContents(LocaleId.EN_US, LocaleId.FR);
         checkFrench(output);
     }
 
     @Test
     public void exportGerman() throws Exception {
-        StreamingOutput output = streamSourceContents(LocaleId.DE);
+        StreamingOutput output = streamSourceContents(LocaleId.EN_US, LocaleId.DE);
         checkGerman(output);
     }
 
@@ -46,9 +46,9 @@ public class ExportTranslationsTest extends TMXStreamingOutputTest {
     }
 
     private TMXStreamingOutput<ITextFlow> streamSourceContents(
-            LocaleId targetLocale) {
+            LocaleId srcLocale, LocaleId targetLocale) {
         return TMXStreamingOutput.testInstance(createTestData(),
-                new TranslationsTMXExportStrategy(targetLocale));
+                new TranslationsTMXExportStrategy(srcLocale, targetLocale));
     }
 
     private @Nonnull
