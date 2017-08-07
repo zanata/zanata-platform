@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class XMLEntityValidationTests {
+public class XMLEntityValidationTest {
     private XmlEntityValidation xmlEntityValidation;
 
     private ValidationMessages messages;

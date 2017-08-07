@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author David Mason, damason@redhat.com
  *
  */
-public class HistoryTokenTests {
+public class HistoryTokenTest {
     private HistoryToken token;
 
     @Before
