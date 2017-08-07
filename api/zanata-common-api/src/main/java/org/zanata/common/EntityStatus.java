@@ -20,13 +20,24 @@
  */
 package org.zanata.common;
 
+import com.webcohesion.enunciate.metadata.Label;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * The possible state of various entities in the system.
+ */
 @XmlType(name = "entityStatusType")
 @XmlEnum(String.class)
+@Label("Status")
 public enum EntityStatus {
-    ACTIVE("jsf.Active"), READONLY("jsf.ReadOnly"), OBSOLETE("jsf.Obsolete");
+    /** Regular state for most entities. Means it is readable and writeable */
+    ACTIVE("jsf.Active"),
+    /** Same as active, but cannot be modified */
+    READONLY("jsf.ReadOnly"),
+    /** Removed from the system. An object in this state cannot be accessed. */
+    OBSOLETE("jsf.Obsolete");
 
     public static EntityStatus valueOf(char initial) {
         switch (initial) {

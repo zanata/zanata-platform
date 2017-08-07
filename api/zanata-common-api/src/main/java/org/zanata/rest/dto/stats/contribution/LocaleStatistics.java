@@ -2,16 +2,21 @@ package org.zanata.rest.dto.stats.contribution;
 
 import java.io.Serializable;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
 
 /**
+ * Contains translation statistics for a single locale.
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "locale", "translation-stats", "review-stats" })
+@Label("Locale Statistics")
 public class LocaleStatistics implements Serializable {
     private static final long serialVersionUID = 711345550950903773L;
 
@@ -36,16 +41,26 @@ public class LocaleStatistics implements Serializable {
 
     private BaseContributionStatistic reviewStats;
 
+    /**
+     * Locale code for for the stats
+     */
     @JsonProperty("locale")
+    @DocumentationExample(value = "es-ES", value2 = "ja")
     public LocaleId getLocale() {
         return locale;
     }
 
+    /**
+     * Contains translation statistics only.
+     */
     @JsonProperty("translation-stats")
     public BaseContributionStatistic getTranslationStats() {
         return translationStats;
     }
 
+    /**
+     * Contains review statistics only.
+     */
     @JsonProperty("review-stats")
     public BaseContributionStatistic getReviewStats() {
         return reviewStats;

@@ -8,6 +8,7 @@ import {
   glossaryToggleNewEntryModal,
   glossaryCreateNewEntry
 } from '../../actions/glossary-actions'
+import update from 'immutability-helper'
 
 class NewEntryModal extends Component {
   static propTypes = {
@@ -26,17 +27,13 @@ class NewEntryModal extends Component {
   }
 
   handleContentChanged = (e) => {
-    const { entry } = this.state
-    const { srcTerm } = entry
-    this.setState({
-      entry: {
-        ...entry,
-        srcTerm: {
-          ...srcTerm,
-          content: e.target.value
-        }
-      }
-    })
+    const content = e.target.value
+    this.setState(prevState => ({
+      entry: update(prevState.entry,
+        {srcTerm:
+          {content: {$set: content}}
+        })
+    }))
   }
 
   handlePosChanged = (e) => {

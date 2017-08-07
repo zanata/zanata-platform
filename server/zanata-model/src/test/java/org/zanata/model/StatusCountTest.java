@@ -23,8 +23,7 @@ package org.zanata.model;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -37,11 +36,10 @@ public class StatusCountTest {
 
         StatusCount other = new StatusCount(ContentState.New, 1L);
 
-        assertThat(statusCount.canEqual(other), equalTo(true));
-        assertThat(statusCount.equals(other), equalTo(true));
-        assertThat(statusCount.hashCode(), equalTo(other.hashCode()));
-        System.out.println(statusCount.hashCode());
-        assertThat(statusCount.toString(),
-                equalTo("StatusCount(status=New, count=1)"));
+        assertThat(statusCount.canEqual(other)).isTrue();
+        assertThat(statusCount.equals(other)).isTrue();
+        assertThat(statusCount.hashCode()).isEqualTo(other.hashCode());
+        assertThat(statusCount.toString()).
+                isEqualTo("StatusCount(status=New, count=1)");
     }
 }

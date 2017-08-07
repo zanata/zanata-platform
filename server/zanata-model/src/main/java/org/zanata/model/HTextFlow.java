@@ -519,7 +519,8 @@ public class HTextFlow extends HTextContainer implements Serializable,
                 + ", comment=" + this.getComment() + ")";
     }
 
-    protected void setPos(final Integer pos) {
+    @VisibleForTesting
+    public void setPos(final Integer pos) {
         this.pos = pos;
     }
 

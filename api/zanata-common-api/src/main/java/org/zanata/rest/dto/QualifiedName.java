@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -11,7 +13,7 @@ import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 
 /**
- * Object Glossary qualified name. Usage:
+ * Describes a qualified system name. Usage:
  * {@link GlossaryEntry#getQualifiedName()}
  * {@link org.zanata.rest.service.GlossaryResource}
  *
@@ -20,6 +22,7 @@ import org.zanata.rest.MediaTypes;
 @XmlRootElement(name = "qualifiedName")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Qualified Name")
 public class QualifiedName implements Serializable, HasMediaType {
     private static final long serialVersionUID = 934216980812012602L;
     private String name;
@@ -34,6 +37,7 @@ public class QualifiedName implements Serializable, HasMediaType {
     @XmlElement(name = "name", required = false,
         namespace = Namespaces.ZANATA_API)
     @JsonProperty("name")
+    @DocumentationExample("global/default")
     public String getName() {
         return name;
     }

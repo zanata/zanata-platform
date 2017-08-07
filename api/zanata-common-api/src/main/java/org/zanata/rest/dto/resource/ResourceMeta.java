@@ -13,7 +13,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ResourceType;
-import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.HasCollectionSample;
 
 @XmlType(name = "resourceMetaType")

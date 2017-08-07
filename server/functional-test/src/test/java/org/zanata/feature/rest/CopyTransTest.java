@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.rest;
 
-import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
@@ -28,7 +27,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.ZanataRestCaller;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.util.ZanataRestCaller.*;
 
 /**
@@ -65,8 +63,6 @@ public class CopyTransTest {
         restCaller.asyncPushSource(projectSlug, iterationSlug, sourceResource, false);
         restCaller.asyncPushTarget(projectSlug, iterationSlug, docId,
                 new LocaleId("pl"), transResource, "import", false);
-
-        assertThat(true, Matchers.is(true));
 
         // create another version
         restCaller.createProjectAndVersion(projectSlug, "2", projectType);
@@ -109,8 +105,6 @@ public class CopyTransTest {
         restCaller.asyncPushTarget(projectSlug, iterationSlug, docId,
                 localeId, transResource, "auto", false);
         restCaller.runCopyTrans(projectSlug, iterationSlug, docId);
-
-        assertThat(true, Matchers.is(true));
 
         // create some obsolete text flows
         Resource updatedSource = buildSourceResource(docId);

@@ -37,10 +37,7 @@ import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertHeaderPresent;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
@@ -82,7 +79,8 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderPresent(response, HttpHeaders.ETAG);
             }
         }.run();
@@ -102,28 +100,29 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, Project.class);
 
                 Project project = jaxbUnmarshal(entityString, Project.class);
-                assertThat(project.getId(), is("sample-project"));
-                assertThat(project.getDescription(), is("An example Project"));
-                assertThat(project.getStatus(), is(EntityStatus.ACTIVE));
-                assertThat(project.getName(), is("Sample Project"));
+                assertThat(project.getId()).isEqualTo("sample-project");
+                assertThat(project.getDescription()).isEqualTo("An example Project");
+                assertThat(project.getStatus()).isEqualTo(EntityStatus.ACTIVE);
+                assertThat(project.getName()).isEqualTo("Sample Project");
                 // assertThat(project.getType(),
                 // is(ProjectType.IterationProject));
-                assertThat(project.getIterations().size(), is(3));
+                assertThat(project.getIterations().size()).isEqualTo(3);
 
                 // Iteration 1
                 ProjectIteration iteration = project.getIterations().get(0);
-                assertThat(iteration.getId(), is("1.0"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.0");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
 
                 // Iteration 2
                 iteration = project.getIterations().get(1);
-                assertThat(iteration.getId(), is("1.1"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.1");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
             }
         }.run();
     }
@@ -142,7 +141,7 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(404));
+                assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
     }
@@ -162,7 +161,7 @@ public class ProjectRawRestITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 // Obsolete projects are not found
-                assertThat(response.getStatus(), is(404));
+                assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
     }
@@ -182,7 +181,7 @@ public class ProjectRawRestITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 // Retired projects can be read
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
             }
         }.run();
     }
@@ -201,28 +200,29 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Project.class);
 
                 Project project = jsonUnmarshal(entityString, Project.class);
-                assertThat(project.getId(), is("sample-project"));
-                assertThat(project.getDescription(), is("An example Project"));
-                assertThat(project.getStatus(), is(EntityStatus.ACTIVE));
-                assertThat(project.getName(), is("Sample Project"));
+                assertThat(project.getId()).isEqualTo("sample-project");
+                assertThat(project.getDescription()).isEqualTo("An example Project");
+                assertThat(project.getStatus()).isEqualTo(EntityStatus.ACTIVE);
+                assertThat(project.getName()).isEqualTo("Sample Project");
                 // assertThat(project.getType(),
                 // is(ProjectType.IterationProject));
-                assertThat(project.getIterations().size(), is(3));
+                assertThat(project.getIterations().size()).isEqualTo(3);
 
                 // Iteration 1
                 ProjectIteration iteration = project.getIterations().get(0);
-                assertThat(iteration.getId(), is("1.0"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.0");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
 
                 // Iteration 2
                 iteration = project.getIterations().get(1);
-                assertThat(iteration.getId(), is("1.1"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.1");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
             }
         }.run();
     }
@@ -256,7 +256,8 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(201)); // Created
+                // Created
+                assertThat(response.getStatus()).isEqualTo(201);
             }
         }.run();
     }
@@ -289,7 +290,7 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(404));
+                assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
     }
@@ -324,8 +325,8 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(
-                        Response.Status.BAD_REQUEST.getStatusCode()));
+                assertThat(response.getStatus()).isEqualTo(
+                        Response.Status.BAD_REQUEST.getStatusCode());
             }
         }.run();
     }
@@ -360,8 +361,8 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(
-                        Response.Status.BAD_REQUEST.getStatusCode()));
+                assertThat(response.getStatus()).isEqualTo(
+                        Response.Status.BAD_REQUEST.getStatusCode());
             }
         }.run();
     }
@@ -395,7 +396,8 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(201)); // Created
+                // Created
+                assertThat(response.getStatus()).isEqualTo(201);
             }
         }.run();
     }
@@ -412,15 +414,13 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
 
-                assertThat(entityString,
-                        containsString("sample-project"));
-                assertThat(entityString,
-                        containsString("retired-project"));
-                assertThat(entityString,
-                        not(containsString("obsolete-project")));
+                assertThat(entityString)
+                        .contains("sample-project", "retired-project")
+                        .doesNotContain("obsolete-project");
             }
         }.run();
     }
@@ -438,15 +438,13 @@ public class ProjectRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
 
-                assertThat(entityString,
-                        containsString("sample-project"));
-                assertThat(entityString,
-                        containsString("retired-project"));
-                assertThat(entityString,
-                        not(containsString("obsolete-project")));
+                assertThat(entityString)
+                        .contains("sample-project", "retired-project")
+                        .doesNotContain("obsolete-project");
             }
         }.run();
     }

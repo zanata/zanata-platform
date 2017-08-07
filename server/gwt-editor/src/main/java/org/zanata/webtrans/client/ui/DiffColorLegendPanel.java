@@ -85,7 +85,7 @@ public class DiffColorLegendPanel extends PopupPanel {
         case TM:
             searchOnlyLabel.setText(messages.searchOnly());
             tmOnlyLabel.setText(messages.tmOnly());
-            matchLabel.setText(messages.noColor());
+            matchLabel.setText(messages.matching());
 
             searchOnlyDescription.setText(messages.tmInsertTagDesc());
             tmOnlyDescription.setText(messages.tmDelTagDesc());

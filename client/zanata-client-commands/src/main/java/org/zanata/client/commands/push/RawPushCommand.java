@@ -47,7 +47,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 
 import com.google.common.collect.ImmutableMap;
@@ -714,7 +713,9 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
         @Override
         public void close() throws IOException {
-            fileStream.close();
+            if (fileStream != null) {
+                fileStream.close();
+            }
         }
 
         public int totalChunks() {
