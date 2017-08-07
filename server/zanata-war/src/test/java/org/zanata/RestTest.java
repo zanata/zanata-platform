@@ -95,7 +95,7 @@ public abstract class RestTest {
     };
 
     @ArquillianResource
-    protected URL deploymentUrl;
+    private URL deploymentUrl;
 
     /**
      * Implement this in a subclass.
@@ -142,7 +142,9 @@ public abstract class RestTest {
     }
 
     @Rule
-    public final TestName testName = new TestName();
+    public TestName testName() {
+        return new TestName();
+    }
 
     @Before
     public void signalBeforeTest() {
@@ -152,7 +154,7 @@ public abstract class RestTest {
         try {
             webTarget
                     .queryParam("c", this.getClass().getName())
-                    .queryParam("m", testName.getMethodName())
+                    .queryParam("m", testName().getMethodName())
                     .request().build("post").invoke();
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,7 +169,7 @@ public abstract class RestTest {
         try {
             webTarget
                     .queryParam("c", this.getClass().getName())
-                    .queryParam("m", testName.getMethodName())
+                    .queryParam("m", testName().getMethodName())
                     .request().build("post").invoke();
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,8 +192,8 @@ public abstract class RestTest {
     /**
      * @return The artifact's base deployment Url.
      */
-    public String getDeploymentUrl() {
-        return deploymentUrl.toString();
+    public URL getDeploymentUrl() {
+        return deploymentUrl;
     }
 
     /**

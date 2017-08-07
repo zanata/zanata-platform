@@ -22,10 +22,8 @@ package org.zanata.arquillian;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -34,7 +32,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.google.common.base.Joiner;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -52,11 +49,14 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrate
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.*;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.COMPILE;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.TEST;
+import static org.zanata.arquillian.ArquillianUtil.addClassesWithDependencies;
+import static org.zanata.arquillian.ArquillianUtil.addClassesWithSupertypes;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package
@@ -65,6 +65,7 @@ import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.*;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+//@ArquillianSuiteDeployment
 public class Deployments {
     private static final Logger log =
             LoggerFactory.getLogger(Deployments.class);
@@ -104,8 +105,26 @@ public class Deployments {
                 .asFile();
     }
 
-    @Deployment(name = "zanata.war")
-    public static Archive<?> createDeployment() {
+    /*
+    @Deployment(name = "VersionService", testable = false, order = 1)
+    public static WebArchive createDeploymentVersion() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class);
+        addClassesWithSupertypes(war, VersionService.class);
+        addClassWithDependencies(war, VersionService.class);
+
+//                    .addAsResource(
+//                            EmptyAsset.INSTANCE,
+//                            "beans.xml")
+//                    .addAsWebInfResource(
+//                            EmptyAsset.INSTANCE,
+//                            "beans.xml")
+        //war.getContent().forEach((path, node) -> System.out.println(path));
+        return war;
+    }
+    */
+
+    @Deployment(name = "zanata.war", order = 9999)
+    public static WebArchive createDeployment() {
         WebArchive archive =
                 ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
         // TODO add org.zanata packages on classpath first, exclude any libraries with colliding classes

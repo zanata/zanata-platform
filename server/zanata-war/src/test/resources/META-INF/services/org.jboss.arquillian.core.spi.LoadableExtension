@@ -1,1 +1,2 @@
 org.zanata.arquillian.ArquillianSuiteExtension
+org.zanata.arquillian.lifecycle.LifecycleExtension

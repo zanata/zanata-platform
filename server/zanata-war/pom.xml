@@ -1273,6 +1273,13 @@
       </exclusions>
     </dependency>
 
+    <!--<dependency>-->
+      <!--<groupId>org.eu.ingwar.tools</groupId>-->
+      <!--<artifactId>arquillian-suite-extension</artifactId>-->
+      <!--<version>1.1.4</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+
     <dependency>
       <groupId>org.fedorahosted.openprops</groupId>
       <artifactId>openprops</artifactId>
@@ -1301,6 +1308,13 @@
           <artifactId>plexus-utils</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-dependency-analyzer</artifactId>
+      <version>1.7</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Solr dependencies -->
@@ -1567,6 +1581,77 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.wildfly.extras.creaper</groupId>
+      <artifactId>creaper-core</artifactId>
+      <version>1.6.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.extras.creaper</groupId>
+      <artifactId>creaper-commands</artifactId>
+      <version>1.6.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.groovy</groupId>
+          <artifactId>groovy</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.groovy</groupId>
+          <artifactId>groovy-xml</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- These dependencies are needed for creaper-core to manage WildFly 10 (EAP 7)
+         See https://github.com/wildfly-extras/creaper#wildfly-10-based-on-wildfly-core-2 -->
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller-client</artifactId>
+      <version>2.2.0.Final</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-cli</artifactId>
+      <version>2.2.0.Final</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- see https://issues.jboss.org/browse/WFCORE-1580 -->
+    <!-- not required if the dependency on wildfly-patching below is also added -->
+    <!--<dependency>-->
+        <!--<groupId>org.jboss.logmanager</groupId>-->
+        <!--<artifactId>jboss-logmanager</artifactId>-->
+        <!--<version>2.0.4.Final</version>-->
+    <!--</dependency>-->
+
+    <!-- Dependencies for creaper-commands: -->
+    <dependency>
+        <groupId>org.wildfly.core</groupId>
+        <artifactId>wildfly-patching</artifactId>
+        <version>2.2.0.Final</version>
+    </dependency>
+
+
     <!-- Currently only needed for our override of Arquillian's
     ManagementClient -->
     <dependency>
@@ -1827,6 +1912,14 @@
       <version>1.27</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.diffplug.durian</groupId>
+      <artifactId>durian</artifactId>
+      <version>3.4.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
