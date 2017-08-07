@@ -24,18 +24,17 @@ package org.zanata.client.commands;
 import java.io.File;
 import java.util.EnumMap;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.zanata.client.commands.FileMappingRuleHandler.*;
-
+import com.google.common.base.Optional;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.common.ProjectType;
 
-import com.google.common.base.Optional;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders;
+import static org.zanata.client.commands.FileMappingRuleHandler.isRuleValid;
 
 public class FileMappingRuleHandlerTest {
 
@@ -59,14 +58,13 @@ public class FileMappingRuleHandlerTest {
     @Test
     public void willReturnTransFileRelativePath() {
         assertThat(getTransFile("pot/message.pot", "fr",
-                "{path}/../{locale}/{filename}.po", ProjectType.Podir),
+                "{path}/../{locale}/{filename}.po"),
                 Matchers.equalTo("fr/message.po"));
         assertThat(getTransFile("./message.pot", "fr",
-                "{path}/{locale_with_underscore}.po", ProjectType.Gettext),
+                "{path}/{locale_with_underscore}.po"),
                 Matchers.equalTo("fr.po"));
         assertThat(getTransFile("a/path/message.odt", "de-DE",
-                "{path}/{locale_with_underscore}_{filename}.{extension}",
-                        ProjectType.File),
+                "{path}/{locale_with_underscore}_{filename}.{extension}"),
                 Matchers.equalTo("a/path/de_DE_message.odt"));
     }
 
@@ -75,17 +73,15 @@ public class FileMappingRuleHandlerTest {
         FileMappingRuleHandler handler =
                 new FileMappingRuleHandler(
                         new FileMappingRule(null,
-                                "{path}/{locale_with_underscore}.po"),
-                        ProjectType.Gettext, opts);
+                                "{path}/{locale_with_underscore}.po"), opts);
         assertThat(handler.getRelativeTransFilePathForSourceDoc(
                 DocNameWithExt.from("message.pot"),
                 new LocaleMapping("zh"), Optional.<String>absent()), Matchers.equalTo("zh.po"));
     }
 
-    private String getTransFile(String sourceFile, String locale, String rule,
-            ProjectType projectType) {
+    private String getTransFile(String sourceFile, String locale, String rule) {
         FileMappingRuleHandler handler = new FileMappingRuleHandler(
-            new FileMappingRule("**/*", rule), projectType, opts);
+            new FileMappingRule("**/*", rule), opts);
         return handler.getRelativeTransFilePathForSourceDoc(
                 DocNameWithExt.from(sourceFile),
                 new LocaleMapping(locale), Optional.<String>absent());
@@ -120,8 +116,7 @@ public class FileMappingRuleHandlerTest {
         opts.setSrcDir(new File("."));
         FileMappingRuleHandler handler = new FileMappingRuleHandler(
                 new FileMappingRule("**/*.odt",
-                        "{locale}/{filename}.{extension}"), ProjectType.File,
-                opts);
+                        "{locale}/{filename}.{extension}"), opts);
         assertThat(handler.isApplicable(
                 DocNameWithExt.from("test/doc.odt")), equalTo(true));
         assertThat(handler.isApplicable(

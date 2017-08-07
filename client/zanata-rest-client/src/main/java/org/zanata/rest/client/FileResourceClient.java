@@ -148,6 +148,7 @@ public class FileResourceClient {
                 .request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get();
     }
 
+    @SuppressWarnings("all")
     private static class MultipartFormLiteral implements MultipartForm {
 
         @Override
