@@ -1,3 +1,4 @@
+/* global document */
 import React from 'react'
 import Icons from '../app/components/Icons'
 import { addLocaleData, IntlProvider } from 'react-intl'
@@ -5,20 +6,23 @@ import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@storybook/react'
 import './storybook.less'
 
-// fonts are included in index.html for the app, but storybook does not use that
-var fontLink = document.createElement('link')
-fontLink.setAttribute('href', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css') // eslint-disable-line max-len
-fontLink.setAttribute('rel', 'stylesheet')
-fontLink.setAttribute('type', 'text/css')
-fontLink.setAttribute('async', '')
-document.getElementsByTagName('head')[0].appendChild(fontLink)
+// Storyshots test runs this file too, with no document available.
+if (typeof document !== 'undefined') {
+  // fonts are included in index.html for the app, but storybook does not use that
+  var fontLink = document.createElement('link')
+  fontLink.setAttribute('href', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css') // eslint-disable-line max-len
+  fontLink.setAttribute('rel', 'stylesheet')
+  fontLink.setAttribute('type', 'text/css')
+  fontLink.setAttribute('async', '')
+  document.getElementsByTagName('head')[0].appendChild(fontLink)
 
-var lessLink = document.createElement('link')
-lessLink.setAttribute('href', '//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js') // eslint-disable-line max-len
-lessLink.setAttribute('rel', 'stylesheet')
-lessLink.setAttribute('type', 'text/css')
-lessLink.setAttribute('async', '')
-document.getElementsByTagName('head')[0].appendChild(lessLink)
+  var lessLink = document.createElement('link')
+  lessLink.setAttribute('href', '//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js') // eslint-disable-line max-len
+  lessLink.setAttribute('rel', 'stylesheet')
+  lessLink.setAttribute('type', 'text/css')
+  lessLink.setAttribute('async', '')
+  document.getElementsByTagName('head')[0].appendChild(lessLink)
+}
 
 // Set up locale data so formats etc. will work properly
 addLocaleData({

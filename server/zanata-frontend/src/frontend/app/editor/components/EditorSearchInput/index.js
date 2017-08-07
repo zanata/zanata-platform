@@ -127,16 +127,24 @@ class EditorSearchInput extends React.Component {
     this.focusInput()
   }
 
-  focusInput = () => {
-    // TODO different approach for React 0.14
+  setInput = (input) => {
+    this.input = input
+    // Since the input component is now loaded, make sure it focuses if needed.
+    if (this.state.focused) {
+      this.focusInput()
+    }
+  }
 
+  focusInput = () => {
     // may not need to actually set focused=true, mainly using for
     // callback, which gets around issues with the component not being
     // properly in the DOM yet
     this.setState({
       focused: true
     }, () => {
-      this.refs.input.focus()
+      if (this.input) {
+        this.input.focus()
+      }
     })
   }
 
@@ -186,7 +194,7 @@ class EditorSearchInput extends React.Component {
             <Icon name="search" title="Search"
               className="n1" />
           </span>
-          <input ref="input"
+          <input ref={this.setInput}
             type="search"
             placeholder="Search source and target text"
             maxLength="1000"

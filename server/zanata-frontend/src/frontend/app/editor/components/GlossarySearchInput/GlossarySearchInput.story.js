@@ -25,14 +25,14 @@ const eventTarget = decorateAction([
  */
 storiesOf('GlossarySearchInput', module)
     .add('empty', () => (
-        <GlossarySearchInput
-          text=""
-          onTextChange={onTextChange} />
+      <GlossarySearchInput
+        text=""
+        onTextChange={onTextChange} />
     ))
     .add('with text', () => {
       return (
         <GlossarySearchInput
           text={'some text'}
-          onTextChange={eventTarget('onTextChange')}/>
+          onTextChange={eventTarget('onTextChange')} />
       )
     })
