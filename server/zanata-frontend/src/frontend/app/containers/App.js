@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 /**
  * TODO: use react-ally to identify accessibility issue
  * import a11y from 'react-a11y'
@@ -6,7 +7,7 @@ import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { Nav, Icons } from '../components'
-import { getContextPath } from '../utils/UrlHelper'
+import { serverUrl, links as configLinks } from '../config'
 
 /**
  * TODO: use react-ally to identify accessibility issue in dev mode
@@ -14,6 +15,12 @@ import { getContextPath } from '../utils/UrlHelper'
  */
 
 class App extends Component {
+  static propTypes = {
+    children: PropTypes.node,
+    activePath: PropTypes.string,
+    loading: PropTypes.bool
+  }
+
   render () {
     const {
       children,
@@ -22,9 +29,9 @@ class App extends Component {
     } = this.props
 
     const links = {
-      'context': getContextPath(),
-      '/login': window.config.links.loginUrl,
-      '/signup': window.config.links.registerUrl
+      'context': serverUrl,
+      '/login': configLinks.loginUrl,
+      '/signup': configLinks.registerUrl
     }
     return (
       <div className='view H(100vh)! Fld(c) Fld(r)--sm'>
@@ -40,18 +47,14 @@ class App extends Component {
   }
 }
 
-App.propTypes = {
-  children: PropTypes.node,
-  activePath: PropTypes.string,
-  loading: PropTypes.bool
-}
-
-function mapStateToProps (state) {
+// FIXME checking if ownProps will work here, as react-router-redux should pass
+//       location info in to routed components that way.
+function mapStateToProps (state, { location }) {
   const exploreLoading = state.explore.loading
   const isExploreLoading = exploreLoading.Project ||
     exploreLoading.LanguageTeam || exploreLoading.Person || exploreLoading.Group
   return {
-    activePath: state.routing.location.pathname,
+    activePath: location.pathname,
     loading: state.common.loading || state.profile.loading ||
       isExploreLoading || state.glossary.statsLoading
   }

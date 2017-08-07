@@ -1,10 +1,10 @@
-import React, {PropTypes, Component} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {
   Button, InputGroup, FormGroup, FormControl,
   Badge, Pagination
-}
-  from 'react-bootstrap'
+} from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {debounce, find} from 'lodash'
 import Entry from './Entry'
@@ -24,37 +24,56 @@ import {
 } from '../../actions/languages-actions'
 
 class Languages extends Component {
+  static propTypes = {
+    page: PropTypes.number,
+    notification: PropTypes.object,
+    permission: PropTypes.object,
+    user: PropTypes.object,
+    searchText: PropTypes.string,
+    size: PropTypes.number,
+    sort: PropTypes.object,
+    results: PropTypes.array,
+    totalCount: PropTypes.number,
+    loading: PropTypes.bool,
+    deleting: PropTypes.bool,
+    handleInitLoad: PropTypes.func,
+    handleDelete: PropTypes.func,
+    handleOnUpdatePageSize: PropTypes.func,
+    handleOnUpdateSort: PropTypes.func,
+    handleOnUpdateSearch: PropTypes.func,
+    handlePageChanged: PropTypes.func,
+    handleOnDisplayNewLanguage: PropTypes.func
+  }
+
   constructor (props) {
     super(props)
     this.state = {
       searchText: props.searchText
     }
-    this.resetSearchText = ::this.resetSearchText
-
-    this.debounceHandleUpdateSearch = debounce(
-        this.debounceHandleUpdateSearch, 200)
+    // Debounce works when you call it once, then use the returned function
+    // multiple times.
+    // Do not extract this to a function like `() => { debounce(...) }` since
+    // that would make a new debounced function instance on every call.
+    this.handleUpdateSearch = debounce(props.handleOnUpdateSearch, 200)
   }
 
   componentDidMount () {
     this.props.handleInitLoad()
   }
 
-  debounceHandleUpdateSearch () {
-    this.props.handleOnUpdateSearch(this.state.searchText)
-  }
-
-  resetSearchText (localeId) {
+  resetSearchText = (localeId) => {
     this.setState({
       searchText: ''
     })
     this.props.handleDelete(localeId)
   }
 
-  onUpdateSearch (event) {
+  onUpdateSearch = (event) => {
+    const searchText = event.target.value || ''
     this.setState({
-      searchText: event.target.value || ''
+      searchText
     })
-    this.debounceHandleUpdateSearch()
+    this.handleUpdateSearch(searchText)
   }
 
   render () {
@@ -100,7 +119,7 @@ class Languages extends Component {
             </h2>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary btn-sm'
+                <Button bsStyle='primary' bsSize='small'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
@@ -116,7 +135,7 @@ class Languages extends Component {
                 <InputGroup>
                   <FormControl type='text'
                     value={this.state.searchText}
-                    onChange={::this.onUpdateSearch} />
+                    onChange={this.onUpdateSearch} />
                   <InputGroup.Addon>
                     <Icon name='search'
                       className='s1'
@@ -146,7 +165,7 @@ class Languages extends Component {
                   <div className='show-items pull-right col-xs-5
                     col-sm-3 col-md-2 col-lg-2'>
                     <span>Show</span>
-                    <FormControl inline componentClass='select'
+                    <FormControl componentClass='select'
                       onChange={handleOnUpdatePageSize} value={size}
                       id='page-size-options'>
                     {pageSizeOption.map(function (value, i) {
@@ -197,29 +216,8 @@ class Languages extends Component {
   }
 }
 
-Languages.propTypes = {
-  page: PropTypes.number,
-  notification: PropTypes.object,
-  permission: PropTypes.object,
-  user: PropTypes.object,
-  searchText: PropTypes.string,
-  size: PropTypes.number,
-  sort: PropTypes.object,
-  results: PropTypes.array,
-  totalCount: PropTypes.number,
-  loading: PropTypes.bool,
-  deleting: PropTypes.bool,
-  handleInitLoad: PropTypes.func,
-  handleDelete: PropTypes.func,
-  handleOnUpdatePageSize: PropTypes.func,
-  handleOnUpdateSort: PropTypes.func,
-  handleOnUpdateSearch: PropTypes.func,
-  handlePageChanged: PropTypes.func,
-  handleOnDisplayNewLanguage: PropTypes.func
-}
-
-const mapStateToProps = (state) => {
-  let urlSort = state.routing.location.query.sort
+const mapStateToProps = (state, { location }) => {
+  let urlSort = location.query.sort
   if (urlSort) {
     urlSort = find(sortOption, function (sort) {
       return sort.value === urlSort
@@ -240,9 +238,9 @@ const mapStateToProps = (state) => {
     deleting
   } = state.languages
   return {
-    searchText: state.routing.location.query.search || '',
-    page: parseInt(state.routing.location.query.page) || 1,
-    size: parseInt(state.routing.location.query.size) || pageSizeOption[0],
+    searchText: location.query.search || '',
+    page: parseInt(location.query.page) || 1,
+    size: parseInt(location.query.size) || pageSizeOption[0],
     sort: urlSort,
     results: locales.results,
     totalCount: locales.totalCount,

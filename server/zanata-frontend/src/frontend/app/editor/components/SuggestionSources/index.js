@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SuggestionContents from '../SuggestionContents'
 import SuggestionDetailsSummary from '../SuggestionDetailsSummary'
 
@@ -6,8 +7,8 @@ import SuggestionDetailsSummary from '../SuggestionDetailsSummary'
  * Display all the source strings for a suggestion, with
  * optional diff against a set of search strings.
  */
-const SuggestionSources = React.createClass({
-  propTypes: {
+class SuggestionSources extends React.Component {
+  static propTypes = {
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string.isRequired,
@@ -18,9 +19,9 @@ const SuggestionSources = React.createClass({
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
     showDetail: PropTypes.func.isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const sourceContents = this.props.suggestion.sourceContents
     const diffWith = this.props.showDiff ? this.props.search : undefined
     return (
@@ -35,6 +36,6 @@ const SuggestionSources = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SuggestionSources

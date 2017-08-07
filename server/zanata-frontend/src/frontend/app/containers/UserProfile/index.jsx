@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isEmpty, map } from 'lodash'
@@ -11,11 +12,28 @@ import {
 import RecentContributions from './RecentContributions'
 import { Notification, Icon, LoaderText } from '../../components'
 import { getLanguageUrl } from '../../utils/UrlHelper'
+import { isLoggedIn } from '../../config'
 
 /**
  * Root component for user profile page
  */
 class UserProfile extends Component {
+  static propTypes = {
+    params: PropTypes.object,
+    user: PropTypes.object,
+    notification: PropTypes.object,
+    loading: PropTypes.bool,
+    matrixForAllDays: PropTypes.array,
+    wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
+    wordCountsForEachDayFilteredByContentState: PropTypes.array,
+    contentStateOption: PropTypes.string,
+    selectedDay: PropTypes.string,
+    dateRange: PropTypes.object,
+    handleInitLoad: PropTypes.func,
+    handleDateRangeChanged: PropTypes.func,
+    handleFilterChanged: PropTypes.func,
+    handleSelectedDayChanged: PropTypes.func.isRequired
+  }
 
   componentDidMount () {
     const paramUsername = this.props.params.username
@@ -56,8 +74,6 @@ class UserProfile extends Component {
       })
       : undefined
 
-    const isLoggedIn = window.config.permission.isLoggedIn
-
     return (
       <div className='page'>
         {notification &&
@@ -86,34 +102,34 @@ class UserProfile extends Component {
                     </div>
                   }
                   <ul className='large-font-list'>
-                    <span tagName='li' className='flex-center'
+                    <li className='flex-center'
                       id='profile-username'>
                       <Icon name='user'
                         className='s0'
                         title='Username' />
                       {username}
+                    </li>
                       {email &&
                         (<span className='profile-email'>
                           {email}
                         </span>)
                       }
-                    </span>
                     {languageTeams &&
-                    (<span tagName='li'
+                    (<li
                       id='profile-languages'>
                       <Icon name='language'
                         className='s0 langicon pull-left'
                         title='Spoken languages' />
                       {languageTeams}
-                    </span>)}
+                    </li>)}
                     {roles && isLoggedIn &&
-                     (<span className='flex-center' tagName='li'
+                     (<li className='flex-center'
                        id='profile-roles'
                        title='Roles'>
                        <Icon name='users'
                          className='s0' />
                        <span>{roles}</span>
-                     </span>)}
+                     </li>)}
                   </ul>
                 </div>
               </div>
@@ -137,23 +153,6 @@ class UserProfile extends Component {
       </div>
     )
   }
-}
-
-UserProfile.propTypes = {
-  params: PropTypes.object,
-  user: PropTypes.object,
-  notification: PropTypes.object,
-  loading: PropTypes.bool,
-  matrixForAllDays: PropTypes.array,
-  wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
-  wordCountsForEachDayFilteredByContentState: PropTypes.array,
-  contentStateOption: PropTypes.string,
-  selectedDay: PropTypes.string,
-  dateRange: PropTypes.object,
-  handleInitLoad: PropTypes.func,
-  handleDateRangeChanged: PropTypes.func,
-  handleFilterChanged: PropTypes.func,
-  handleSelectedDayChanged: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

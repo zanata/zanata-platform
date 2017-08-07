@@ -35,8 +35,8 @@ import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.TransFilterDisplay;
 import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.QueryParser;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.inject.Inject;
 

@@ -2,6 +2,7 @@ import { CALL_API } from 'redux-api-middleware'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
 import { getJsonHeaders, buildAPIRequest } from './common-actions'
 import { isEmpty, includes, clamp } from 'lodash'
+import { apiUrl } from '../config'
 
 export const SEARCH_PROJECT_REQUEST = 'SEARCH_PROJECT_REQUEST'
 export const SEARCH_PROJECT_SUCCESS = 'SEARCH_PROJECT_SUCCESS'
@@ -22,7 +23,7 @@ export const SEARCH_GROUP_FAILURE = 'SEARCH_GROUP_FAILURE'
 export const SIZE_PER_PAGE = 20
 
 const getEndpoint = (type, page, searchText) => {
-  return window.config.baseUrl + window.config.apiRoot + '/search/' +
+  return apiUrl + '/search/' +
     type + '?' +
     'sizePerPage=' + SIZE_PER_PAGE +
     '&page=' + (page || '1') +
@@ -167,15 +168,15 @@ const queryPageType = {
 
 export const searchTextChanged = (searchText) => {
   return (dispatch, getState) => {
-    if (getState().routing.location !== searchText) {
-      replaceRouteQuery(getState().routing.location, {
+    if (getState().routing.locationBeforeTransitions !== searchText) {
+      replaceRouteQuery(getState().routing.locationBeforeTransitions, {
         q: searchText,
         projectPage: null,
         groupPage: null,
         personPage: null,
         languageTeamPage: null
       })
-      const query = getState().routing.location.query
+      const query = getState().routing.locationBeforeTransitions.query
       const projectPage = query.projectPage
       const groupPage = query.groupPage
       const personPage = query.personPage
@@ -196,8 +197,8 @@ export const updateSearchPage = (type, currentPage, totalPage, next) => {
   return (dispatch, getState) => {
     let queryObj = {}
     queryObj[pageType] = newPage
-    replaceRouteQuery(getState().routing.location, queryObj)
-    const query = getState().routing.location.query
+    replaceRouteQuery(getState().routing.locationBeforeTransitions, queryObj)
+    const query = getState().routing.locationBeforeTransitions.query
 
     const searchText = query.q
     const { projectPage, groupPage, personPage, languageTeamPage } = query
@@ -228,7 +229,7 @@ export const updateSearchPage = (type, currentPage, totalPage, next) => {
 
 export const searchPageInitialLoad = () => {
   return (dispatch, getState) => {
-    const query = getState().routing.location.query
+    const query = getState().routing.locationBeforeTransitions.query
     const searchText = query.q
     const { projectPage, groupPage, personPage, languageTeamPage } = query
     search(dispatch, searchText, {projectPage,

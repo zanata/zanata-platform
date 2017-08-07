@@ -1,4 +1,5 @@
-import React, {PropTypes, Component} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import { Modal, Icon } from '../../components'
@@ -20,6 +21,15 @@ import {
 } from '../../actions/languages-actions'
 
 class NewLanguageModal extends Component {
+  static propTypes = {
+    show: PropTypes.bool,
+    saving: PropTypes.bool,
+    searchResults: PropTypes.array,
+    handleOnClose: PropTypes.func,
+    handleOnSave: PropTypes.func,
+    loadSuggestion: PropTypes.func
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -36,16 +46,19 @@ class NewLanguageModal extends Component {
     }
   }
 
-  handleCancel () {
+  handleCancel = () => {
     this.resetFields()
     this.props.handleOnClose()
   }
 
-  resetFields () {
+  resetFields = () => {
     this.setState({
       details: {
         enabledByDefault: true,
-        enabled: true
+        enabled: true,
+        displayName: '',
+        nativeName: '',
+        pluralForms: ''
       },
       validFields: true,
       suggestions: [],
@@ -53,25 +66,25 @@ class NewLanguageModal extends Component {
     })
   }
 
-  updateField (field, e) {
-    this.setState({
+  updateField = (field, e) => {
+    this.setState(prevState => ({
       details: {
-        ...this.state.details,
+        ...prevState.details,
         [field]: e.target.value
       }
-    })
+    }))
   }
 
-  updateCheckbox (field) {
-    this.setState({
+  updateCheckbox = (field) => {
+    this.setState(prevState => ({
       details: {
-        ...this.state.details,
-        [field]: !this.state.details[field]
+        ...prevState.details,
+        [field]: !prevState.details[field]
       }
-    })
+    }))
   }
 
-  validateDetails () {
+  validateDetails = () => {
     const displayName = this.state.details.displayName
     const query = this.state.query
     if (isEmpty(displayName) && isEmpty(query)) {
@@ -97,11 +110,11 @@ class NewLanguageModal extends Component {
   onSuggestionsClearRequested = () => {
   }
 
-  getSuggestionValue (selectedLocale) {
+  getSuggestionValue = (selectedLocale) => {
     return selectedLocale.localeId
   }
 
-  renderSuggestion (suggestion) {
+  renderSuggestion = (suggestion) => {
     return (
       <span name='new-language-displayName'>
         <span className='text-light'>
@@ -225,7 +238,7 @@ class NewLanguageModal extends Component {
               <Button bsStyle='link'
                 id='btn-new-language-cancel' className='btn-left'
                 disabled={saving}
-                onClick={() => this.handleCancel()}>
+                onClick={this.handleCancel}>
                 Close
               </Button>
               <Button
@@ -233,7 +246,7 @@ class NewLanguageModal extends Component {
                   (isEmpty(details.localeId) && isEmpty(query))}
                 id='btn-new-language-save'
                 bsStyle='primary'
-                onClick={() => this.validateDetails()}>
+                onClick={this.validateDetails}>
                 Save
               </Button>
             </Row>
@@ -243,15 +256,6 @@ class NewLanguageModal extends Component {
     )
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
   }
-}
-
-NewLanguageModal.propTypes = {
-  show: PropTypes.bool,
-  saving: PropTypes.bool,
-  searchResults: PropTypes.array,
-  handleOnClose: PropTypes.func,
-  handleOnSave: PropTypes.func,
-  loadSuggestion: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

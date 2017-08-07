@@ -1,18 +1,18 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import NavItem from './NavItem'
 import { getDswid } from '../../utils/UrlHelper'
-import {remove} from 'lodash'
+import { remove } from 'lodash'
+import { allowRegister, isLoggedIn, isAdmin, user } from '../../config'
 
 const dswid = getDswid()
 
 /**
  * Item properties:
  *
- * - link: path to use for JSF pages, or when internalLink is not specified
- *         OR a key in props.links to look up the path to use.
- *         (FIXME inconsistent and error-prone, split this into 2 properties)
- * - internalLink: path to use when the Nav component is part of the main
- *                 frontend app
+ * - link: URL path for the page.
+ * - jsPage: indicator for ReactJS page. Force to use href for their links.
+ *
  */
 const items = [
   {
@@ -26,7 +26,7 @@ const items = [
   {
     icon: 'search',
     link: '/explore' + dswid,
-    internalLink: '/explore',
+    jsPage: true,
     title: 'Explore',
     auth: 'public',
     id: 'nav_search'
@@ -59,7 +59,7 @@ const items = [
     small: true,
     icon: 'user',
     link: '/profile' + dswid,
-    internalLink: '/profile',
+    jsPage: true,
     title: 'Profile',
     auth: 'loggedin',
     id: 'nav_profile'
@@ -67,7 +67,7 @@ const items = [
   {
     icon: 'glossary',
     link: '/glossary' + dswid,
-    internalLink: '/glossary',
+    jsPage: true,
     title: 'Glossary',
     auth: 'loggedin',
     id: 'nav_glossary'
@@ -75,7 +75,7 @@ const items = [
   {
     icon: 'language',
     link: '/languages' + dswid,
-    internalLink: '/languages',
+    jsPage: true,
     title: 'Languages',
     auth: 'loggedin',
     id: 'nav_language'
@@ -122,14 +122,12 @@ const Nav = ({
   ...props
 }) => {
   let auth = 'loggedout'
-  if (window.config.permission.isLoggedIn === true) {
-    auth = window.config.permission.isAdmin === true ? 'admin' : 'loggedin'
+  if (isLoggedIn) {
+    auth = isAdmin ? 'admin' : 'loggedin'
   }
   const admin = (auth === 'admin')
-
-  const username = window.config.user ? window.config.user.username : ''
-
-  if (!window.config.allowRegister) {
+  const username = user ? user.username : ''
+  if (!allowRegister) {
     // we don't allow public registration
     remove(items, item => item.id === 'nav_sign_up')
   }
@@ -151,14 +149,12 @@ const Nav = ({
               : (links.context + item.link)
           } else {
             // react pages, /app/index.xhtml
-            link = item.internalLink
-              ? item.internalLink
-              : (links[item.link]
-                    ? (links.context + links[item.link])
-                    : (links.context + item.link))
+            link = links[item.link]
+                ? (links.context + links[item.link])
+                : (links.context + item.link)
           }
 
-          const useHref = isJsfPage || !item.internalLink
+          const useHref = isJsfPage || !item.jsPage
           let linkWithoutDswid = link.replace(dswid, '')
 
           /**

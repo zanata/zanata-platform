@@ -21,8 +21,6 @@
 
 package org.zanata.client.commands;
 
-import java.io.File;
-
 import com.google.common.collect.ImmutableSet;
 import org.kohsuke.args4j.Option;
 import org.zanata.client.config.LocaleList;

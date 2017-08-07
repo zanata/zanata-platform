@@ -20,16 +20,16 @@
  */
 package org.zanata.feature.glossary;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.workflow.ClientWorkFlow;
 import java.io.File;
 import java.util.List;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.MavenHome.mvn;
 
 /**
@@ -49,8 +49,7 @@ public class GlossaryAdminTest extends ZanataTestCase {
      * the number of glossary entries per language matches the number of entries
      * pushed from each of the test cases mentioned in the Setup.
      */
-    @Feature(summary = "A user can push glossaries to Zanata",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181711)
+    @Trace(summary = "A user can push glossaries to Zanata")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testGlossaryView() {
         // Push a glossary
@@ -60,6 +59,6 @@ public class GlossaryAdminTest extends ZanataTestCase {
         List<String> result = clientWorkFlow.callWithTimeout(projectRootPath,
                 mvn() + " -e -U --batch-mode zanata:glossary-push -Dglossary.lang=hi -Dzanata.file=compendium.csv -Dzanata.userConfig="
                         + userConfigPath);
-        assertThat(clientWorkFlow.isPushSuccessful(result), Matchers.is(true));
+        assertThat(clientWorkFlow.isPushSuccessful(result)).isTrue();
     }
 }

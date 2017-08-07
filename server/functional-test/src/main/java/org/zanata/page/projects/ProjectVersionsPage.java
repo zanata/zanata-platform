@@ -20,7 +20,10 @@
  */
 package org.zanata.page.projects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -28,8 +31,6 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Predicate;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -59,7 +60,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public VersionLanguagesPage gotoVersion(final String versionId) {
         log.info("Click Version {}", versionId);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(driver -> {
             getDriver().findElement(By.id("versions_tab")).click();
             List<WebElement> versionLinks =
                     getDriver().findElement(By.id("versions_form"))
@@ -98,7 +99,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
         log.info("Wait for number of displayed versions to be {}", expected);
         waitForPageSilence();
         waitForAMoment().withMessage("Waiting for versions").until(
-                (Predicate<WebDriver>) webDriver -> getNumberOfDisplayedVersions() == expected);
+                it -> getNumberOfDisplayedVersions() == expected);
         assertThat(getNumberOfDisplayedVersions()).isEqualTo(expected);
         assertThat(getVersions()).hasSize(expected);
         return new ProjectVersionsPage(getDriver());

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { GLOSSARY_TAB } from '../../reducers/ui-reducer'
 import TransUnitStatus from '../TransUnitStatus'
@@ -19,13 +20,21 @@ import {
 } from '../../actions/phrases-actions'
 import { togglePhraseSuggestions } from '../../actions/suggestions-actions'
 
+const transUnitClassByStatus = {
+  untranslated: 'TransUnit--neutral',
+  needswork: 'TransUnit--unsure',
+  translated: 'TransUnit--success',
+  approved: 'TransUnit--highlight',
+  rejected: 'TransUnit--warning'
+}
+
 /**
  * Single row in the editor displaying a whole phrase.
  * Including source, translation, metadata and editing
  * facilities.
  */
-const TransUnit = React.createClass({
-  propTypes: {
+class TransUnit extends React.Component {
+  static propTypes = {
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
@@ -44,28 +53,21 @@ const TransUnit = React.createClass({
     //   'approved'
     // ])
     selected: PropTypes.bool.isRequired
-  },
+  }
 
-  getInitialState: () => {
-    return {
+  constructor (props) {
+    super(props)
+    this.state = {
       saveDropdownKey: {}
     }
-  },
+  }
 
-  transUnitClassByStatus: {
-    untranslated: 'TransUnit--neutral',
-    needswork: 'TransUnit--unsure',
-    translated: 'TransUnit--success',
-    approved: 'TransUnit--highlight',
-    rejected: 'TransUnit--warning'
-  },
-
-  selectPhrase () {
+  selectPhrase = () => {
     const { phrase, selectPhrase } = this.props
     selectPhrase(phrase.id)
-  },
+  }
 
-  render: function () {
+  render () {
     // TODO different display if isLoading (need to add or infer isLoading)
 
     const displayStatus = this.props.phrase.inProgressSave
@@ -73,7 +75,7 @@ const TransUnit = React.createClass({
       : this.props.phrase.status
 
     const className = cx('TransUnit',
-      this.transUnitClassByStatus[displayStatus],
+      transUnitClassByStatus[displayStatus],
       {
         'is-focused': this.props.selected,
         'is-first': this.props.isFirstPhrase
@@ -118,7 +120,7 @@ const TransUnit = React.createClass({
       </div>
     )
   }
-})
+}
 
 /**
  * Get the count of available glossary terms for this phrase.

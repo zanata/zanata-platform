@@ -1,3 +1,5 @@
+import { serverUrl } from '../config'
+
 /**
  * @returns dswid from url query
  */
@@ -8,20 +10,11 @@ export function getDswid () {
 }
 
 /**
- * @returns context path
- *
- * Should be /zanata or ''
- */
-export function getContextPath () {
-  return window.config.baseUrl || ''
-}
-
-/**
  * @returns string of project url
  * e.g. https://translate.zanata.org/project/view/zanata-server?dswid=-805
  */
 export function getProjectUrl (project) {
-  return getContextPath() + '/project/view/' + project.id + getDswid()
+  return serverUrl + '/project/view/' + project.id + getDswid()
 }
 
 /**
@@ -29,11 +22,20 @@ export function getProjectUrl (project) {
  *
  */
 export function getLanguageUrl (localeId) {
-  return window.config.baseUrl + '/language/view/' + localeId
+  return serverUrl + '/language/view/' + localeId
+}
+
+/**
+ * @returns string of project version languages settings url
+ * e.g. https://translate.zanata.org/iteration/view/meikai/
+ *      ver1/settings/languages?dswid=4384
+ */
+export function getVersionLanguageSettingsUrl (projectID, versionID) {
+  return serverUrl + '/iteration/view/' + projectID + '/' + versionID +
+    '/settings/languages' + getDswid()
 }
 
 export default {
   getDswid,
-  getContextPath,
   getProjectUrl
 }

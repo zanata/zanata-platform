@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { includes } from 'lodash'
 import DeleteEntry from './DeleteEntry'
 import { Loader, Icon }
@@ -7,6 +8,14 @@ import { Label } from 'react-bootstrap'
 import { getLanguageUrl } from '../../utils/UrlHelper'
 
 class Entry extends Component {
+  static propTypes = {
+    userLanguageTeams: PropTypes.object,
+    locale: PropTypes.object.isRequired,
+    permission: PropTypes.object.isRequired,
+    isDeleting: PropTypes.bool,
+    handleDelete: PropTypes.func
+  }
+
   constructor () {
     super()
     this.state = {
@@ -14,7 +23,7 @@ class Entry extends Component {
     }
   }
 
-  setShowingDeleteEntryModal (showing) {
+  setShowingDeleteEntryModal = (showing) => {
     this.setState({
       showDeleteModal: showing
     })
@@ -65,8 +74,14 @@ class Entry extends Component {
         </td>
         <td>
           <span className='text-muted'>
-            <Icon name='user' title='user' className='s1 usericon' />
-            {locale.memberCount}
+            <Icon name='user' className='s1 usericon' />
+            {locale.memberCount} &nbsp;
+            {permission.canAddLocale &&
+              <span>
+                <Icon name='comment' className='s1 usericon' />
+                {locale.requestCount}
+              </span>
+            }
           </span>
         </td>
         {permission.canDeleteLocale &&
@@ -86,14 +101,6 @@ class Entry extends Component {
     )
     /* eslint-disable react/jsx-no-bind */
   }
-}
-
-Entry.propTypes = {
-  userLanguageTeams: PropTypes.object,
-  locale: PropTypes.object.isRequired,
-  permission: PropTypes.object.isRequired,
-  isDeleting: PropTypes.bool,
-  handleDelete: PropTypes.func
 }
 
 export default Entry

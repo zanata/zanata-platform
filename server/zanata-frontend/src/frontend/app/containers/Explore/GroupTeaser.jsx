@@ -1,5 +1,7 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Link, Icon } from '../../components'
+import { serverUrl } from '../../config'
 
 const statusIcons = {
   ACTIVE: '',
@@ -29,7 +31,7 @@ const GroupTeaser = ({
       <Icon name='users' className='usersicon-muted n1' />
     </div>
   ) : undefined
-  const link = window.config.baseUrl + '/version-group/view/' + details.id
+  const link = serverUrl + '/version-group/view/' + details.id
   const className = status !== statusIcons.ACTIVE
                   ? 'text-muted-bold'
                   : 'text-bold'

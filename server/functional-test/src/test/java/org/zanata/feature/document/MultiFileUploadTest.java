@@ -24,7 +24,7 @@ import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.DocumentType;
 import org.zanata.common.ProjectType;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
@@ -36,7 +36,6 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,9 +70,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Feature(bugzilla = 980670,
-            summary = "The administrator can upload raw files for translation",
-            tcmsTestCaseIds = { 377743 }, tcmsTestPlanIds = { 5316 })
+    @Trace(summary = "The administrator can upload raw files for translation")
     public void uploadFileTypeDocument() throws Exception {
         File testFile = new TestFileGenerator()
                 .generateTestFileWithContent("testtxtfile", ".txt", testString);
@@ -140,10 +137,11 @@ public class MultiFileUploadTest extends ZanataTestCase {
         assertThat(versionDocumentsTab.getErrors().isEmpty());
     }
 
+    @SuppressWarnings("deprecation")
+    // TODO: Replace ProjectType.getSupportedSourceFileTypes
     private VersionDocumentsTab createAndAddToQueue(VersionDocumentsTab versionDocumentsTab) {
         List<DocumentType> projectTypes = ProjectType
                 .getSupportedSourceFileTypes(ProjectType.File);
-        List<String> types = Collections.emptyList();
         for (DocumentType documentType : projectTypes) {
             for (String extension : documentType.getSourceExtensions()) {
                 log.info("[addAllTypesTOTheQueue]: Test {}", extension);

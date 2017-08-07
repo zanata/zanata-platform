@@ -47,7 +47,10 @@
         <h:outputLabel for="name">#{msgs['jsf.ProjectName']}</h:outputLabel>
         <zanata:decorate id="name" componentId="nameField">
           <h:inputText id="name" required="true" maxlength="80"
-            value="#{projectHome.instance.name}">
+            value="#{projectHome.instance.name}"
+            valueChangeListener="#{projectHome.onProjectNameChange}">
+            <f:validateLength minimum="1"/>
+            <a4j:ajax event="blur" render="nameField" execute="@this"/>
           </h:inputText>
         </zanata:decorate>
       </div>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>server</artifactId>
+    <groupId>org.zanata</groupId>
+    <version>4.3.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>gwt-test</artifactId>
+
+  <packaging>takari-jar</packaging>
+
+  <!-- Should be the same as zanata-server/pom.xml -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
+    <url>https://github.com/zanata/zanata</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>gwt-shared</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

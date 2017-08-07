@@ -24,10 +24,7 @@ package org.zanata.rest.client;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.hamcrest.Matchers;
 import org.zanata.rest.dto.VersionInfo;
-
-import static org.junit.Assert.assertThat;
 
 /**
  * @author Patrick Huang
@@ -40,6 +37,8 @@ public class MockServerTestUtil {
                 "admin",
                 "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
                 "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected String getUrlPrefix() {
                 return "";
@@ -55,12 +54,5 @@ public class MockServerTestUtil {
                 "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
                 "3.6.0-SNAPSHOT", "unknown", "unknown"), true,
                 true);
-    }
-
-    // FIXME this method doesn't verify anything!
-    @Deprecated
-    static void verifyServerRespondSuccessStatus() {
-        assertThat("server returns successful status code", true, Matchers
-                .is(true));
     }
 }

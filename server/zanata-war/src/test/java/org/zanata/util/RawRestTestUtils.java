@@ -23,13 +23,13 @@ package org.zanata.util;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.rest.dto.DTOUtil;
 
 /**
@@ -39,31 +39,53 @@ import org.zanata.rest.dto.DTOUtil;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class RawRestTestUtils {
-    public static void assertJaxbUnmarshal(ClientResponse response,
+    public static void assertJaxbUnmarshal(Response response,
             Class<?> jaxbType) {
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(jaxbType);
             Unmarshaller um = jc.createUnmarshaller();
-            um.unmarshal(new StringReader((String) response
-                    .getEntity(String.class)));
+            String entity = response.readEntity(String.class);
+            um.unmarshal(new StringReader(entity));
         } catch (JAXBException e) {
             throw new AssertionError(e);
         }
     }
 
-    public static void assertJsonUnmarshal(ClientResponse response,
+    public static void assertJaxbUnmarshal(String entityString,
+            Class<?> jaxbType) {
+        JAXBContext jc;
+        try {
+            jc = JAXBContext.newInstance(jaxbType);
+            Unmarshaller um = jc.createUnmarshaller();
+            um.unmarshal(new StringReader(entityString));
+        } catch (JAXBException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static void assertJsonUnmarshal(Response response,
             Class<?> jsonType) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.readValue((String) response.getEntity(String.class),
-                    jsonType);
+            String entity = response.readEntity(String.class);
+            mapper.readValue(entity, jsonType);
         } catch (IllegalStateException | IOException e) {
             throw new AssertionError(e);
         }
     }
 
-    public static void assertHeaderPresent(ClientResponse response,
+    public static void assertJsonUnmarshal(String entityString,
+            Class<?> jsonType) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.readValue(entityString, jsonType);
+        } catch (IllegalStateException | IOException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static void assertHeaderPresent(Response response,
             String headerName) {
         if (!response.getHeaders().containsKey(headerName)) {
             throw new AssertionError("Expected Http header '" + headerName
@@ -71,7 +93,7 @@ public class RawRestTestUtils {
         }
     }
 
-    public static void assertHeaderValue(ClientResponse response,
+    public static void assertHeaderValue(Response response,
             String headerName, String headerValue) {
         assertHeaderPresent(response, headerName);
 
@@ -83,16 +105,16 @@ public class RawRestTestUtils {
     }
 
     public static <T> T
-            jaxbUnmarshal(ClientResponse response, Class<T> jaxbType) {
+            jaxbUnmarshal(Response response, Class<T> jaxbType) {
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(jaxbType);
             Unmarshaller um = jc.createUnmarshaller();
             // um.setEventHandler( new
             // javax.xml.bind.helpers.DefaultValidationEventHandler() );
-            T result =
-                    (T) um.unmarshal(new StringReader((String) response
-                            .getEntity(String.class)));
+            String entity = response.readEntity(String.class);
+            @SuppressWarnings("unchecked")
+            T result = (T) um.unmarshal(new StringReader(entity));
             return result;
         } catch (JAXBException e) {
             throw new AssertionError(e);
@@ -100,11 +122,26 @@ public class RawRestTestUtils {
     }
 
     public static <T> T
-            jsonUnmarshal(ClientResponse response, Class<T> jsonType) {
+    jaxbUnmarshal(String entityString, Class<T> jaxbType) {
+        JAXBContext jc;
+        try {
+            jc = JAXBContext.newInstance(jaxbType);
+            Unmarshaller um = jc.createUnmarshaller();
+            // um.setEventHandler( new
+            // javax.xml.bind.helpers.DefaultValidationEventHandler() );
+            @SuppressWarnings("unchecked")
+            T result = (T) um.unmarshal(new StringReader(entityString));
+            return result;
+        } catch (JAXBException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static <T> T
+            jsonUnmarshal(String entityString, Class<T> jsonType) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue((String) response.getEntity(String.class),
-                    jsonType);
+            return mapper.readValue(entityString, jsonType);
         } catch (IllegalStateException | IOException e) {
             throw new AssertionError(e);
         }

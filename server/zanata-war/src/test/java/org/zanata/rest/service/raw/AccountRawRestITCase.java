@@ -20,21 +20,22 @@
  */
 package org.zanata.rest.service.raw;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Account;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
@@ -57,15 +58,14 @@ public class AccountRawRestITCase extends RestTest {
     public void xmlGetUnavailable() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/NOT_AVAILABLE"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.NOT_FOUND.getStatusCode()));
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(Status.NOT_FOUND.getStatusCode());
             }
         }.run();
     }
@@ -76,24 +76,25 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("accounts/u/admin"), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200));
-                assertJaxbUnmarshal(response, Account.class);
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, Account.class);
 
-                Account account = jaxbUnmarshal(response, Account.class);
-                assertThat(account.getUsername(), is("admin"));
-                assertThat(account.getPasswordHash(),
-                        is("Eyox7xbNQ09MkIfRyH+rjg=="));
-                assertThat(account.getEmail(), is("root@localhost"));
-                assertThat(account.getApiKey(),
-                        is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-                assertThat(account.getRoles().size(), is(1)); // 1 roles
+                Account account = jaxbUnmarshal(entityString, Account.class);
+                assertThat(account.getUsername()).isEqualTo("admin");
+                assertThat(account.getPasswordHash()).isEqualTo("Eyox7xbNQ09MkIfRyH+rjg==");
+                assertThat(account.getEmail()).isEqualTo("root@localhost");
+                assertThat(account.getApiKey()).isEqualTo("b6d7044e9ee3b2447c28fb7c50d86d98");
+                // 1 role
+                assertThat(account.getRoles().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -104,24 +105,25 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/admin"), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200));
-                assertJsonUnmarshal(response, Account.class);
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, Account.class);
 
-                Account account = jsonUnmarshal(response, Account.class);
-                assertThat(account.getUsername(), is("admin"));
-                assertThat(account.getPasswordHash(),
-                        is("Eyox7xbNQ09MkIfRyH+rjg=="));
-                assertThat(account.getEmail(), is("root@localhost"));
-                assertThat(account.getApiKey(),
-                        is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-                assertThat(account.getRoles().size(), is(1)); // 1 role
+                Account account = jsonUnmarshal(entityString, Account.class);
+                assertThat(account.getUsername()).isEqualTo("admin");
+                assertThat(account.getPasswordHash()).isEqualTo("Eyox7xbNQ09MkIfRyH+rjg==");
+                assertThat(account.getEmail()).isEqualTo("root@localhost");
+                assertThat(account.getApiKey()).isEqualTo("b6d7044e9ee3b2447c28fb7c50d86d98");
+                // 1 role
+                assertThat(account.getRoles().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -137,15 +139,21 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML,
-                        jaxbMarhsal(account).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode()));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
             }
         }.run();
     }
@@ -161,15 +169,22 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON,
-                        jsonMarshal(account).getBytes());
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode()));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
             }
         }.run();
     }
@@ -184,15 +199,21 @@ public class AccountRawRestITCase extends RestTest {
 
         new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON,
-                        jsonMarshal(account).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.UNAUTHORIZED.getStatusCode()));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }

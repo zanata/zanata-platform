@@ -122,8 +122,10 @@ boolean resolveAllFuncTests() {
   if (paramVal == null) {
     echo "allFuncTests param is null; using default value."
   }
-  def result = paramVal ?: false
+  // paramVal may be a String, so compare as Strings
+  def result = (paramVal ?: false).toString().equals("true")
   echo "allFuncTests: $result"
+
   return result
 }
 
@@ -169,7 +171,6 @@ timestamps {
         stage('Checkout') {
           // notify methods send instant messages about the build progress
           notify.started()
-
           // Shallow Clone does not work with RHEL7, which uses git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
           checkout scm
@@ -259,6 +260,12 @@ timestamps {
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
 
+          if (env.BRANCH_NAME == 'master') {
+            step([$class: 'MasterCoverageAction'])
+          } else if (env.BRANCH_NAME.startsWith('PR-')) {
+            step([$class: 'CompareCoverageAction'])
+          }
+
           // ref: https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
           step([$class: 'CheckStylePublisher',
                 pattern: '**/target/checkstyle-result.xml',
@@ -271,21 +278,19 @@ timestamps {
           // TODO reduce unstableTotal thresholds as bugs are eliminated
           step([$class: 'FindBugsPublisher',
                 pattern: '**/findbugsXml.xml',
-                unstableTotalAll: '467',
-                unstableTotalHigh: '47',
-                unstableTotalNormal: '420',
-                unstableTotalLow: '0'])
+                unstableTotalAll: '0'])
 
           step([$class: 'WarningsPublisher',
                 consoleParsers: [
-                        [parserName: 'Java Compiler (javac)'],    // 400 warnings
+                        [parserName: 'Java Compiler (javac)'],
+                        [parserName: 'kotlin'],
 //                        [parserName: 'JavaDoc'],
 //                        [parserName: 'Maven'], // ~279 warnings, but too variable
                         // TODO check integration test warnings (EAP and WildFly)
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '400',
+                unstableTotalAll: '1209',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
@@ -429,6 +434,9 @@ void integrationTests(String appserver) {
         -DskipShade \
          */
 
+        // retain traceability report
+        archive(includes: "server/functional-test/target/**/traceability.json")
+
         if (mvnResult != 0) {
           notify.testResults(appserver, 'UNSTABLE', 'Failed maven build for integration tests')
           currentBuild.result = 'UNSTABLE'
@@ -443,9 +451,11 @@ void integrationTests(String appserver) {
 
         echo "Capturing JUnit results"
         if (setJUnitPrefix(appserver, failsafeTestReports)) {
-          junit(testResults: "**/${failsafeTestReports}"
-                  // TODO enable after https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed
-                  // , testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+          junit(testResults: "**/${failsafeTestReports}",
+                  // NB: if this is enabled, make sure (a) max history in Jenkins
+                  // Configuration is small (eg 3) or
+                  // (b) https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed.
+                  testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
           )
           // Reduce workspace size
           sh "git clean -fdx"

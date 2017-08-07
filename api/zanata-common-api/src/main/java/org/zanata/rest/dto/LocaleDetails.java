@@ -29,10 +29,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.LocaleId;
 
 @XmlType(name = "localeDetailsType")
@@ -40,6 +41,7 @@ import org.zanata.common.LocaleId;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"localeId", "displayName", "alias", "nativeName", "enabled", "enabledByDefault", "pluralForms"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Locale Details")
 public class LocaleDetails implements Serializable {
 
     private static final long serialVersionUID = -8133147543880728788L;
@@ -68,9 +70,13 @@ public class LocaleDetails implements Serializable {
         this.pluralForms = pluralForms;
     }
 
+    /**
+     * Unique locale identifier
+     */
     @XmlAttribute(name = "localeId", required = true)
     @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
     @NotNull
+    @DocumentationExample(value = "es-ES", value2 = "ja")
     public LocaleId getLocaleId() {
       return localeId;
     }
@@ -79,7 +85,11 @@ public class LocaleDetails implements Serializable {
       this.localeId = localeId;
     }
 
+    /**
+     * Locale's display name (in English)
+     */
     @XmlAttribute(name = "displayName", required = true)
+    @DocumentationExample(value = "Spanish (Spain)", value2 = "Japanese")
     public String getDisplayName() {
       return displayName;
     }
@@ -88,7 +98,11 @@ public class LocaleDetails implements Serializable {
       this.displayName = displayName;
     }
 
+    /**
+     * An alternative name (if present) for this locale
+     */
     @XmlAttribute(name = "alias", required = false)
+    @DocumentationExample(value = "es", value2 = "ja-JP")
     public String getAlias() {
       return alias;
     }
@@ -98,6 +112,7 @@ public class LocaleDetails implements Serializable {
     }
 
     @XmlAttribute(name = "nativeName", required = false)
+    @DocumentationExample(value = "Español", value2 = "日本語")
     public String getNativeName() {
         return nativeName;
     }
@@ -106,6 +121,9 @@ public class LocaleDetails implements Serializable {
         this.nativeName = nativeName;
     }
 
+    /**
+     * Indicates whether the locale is enabled in the system or not.
+     */
     @XmlAttribute(name = "enabled", required = true)
     @NotNull
     public boolean isEnabled() {
@@ -116,6 +134,11 @@ public class LocaleDetails implements Serializable {
         this.enabled = enabled;
     }
 
+    /**
+     * Indicates whether the locale will be used automatically by the system.
+     * e.g. when creating a new project, 'enabled by default' locales will
+     * automatically be added to the project unless specifically indicating so.
+     */
     @XmlAttribute(name = "enabledByDefault", required = true)
     @NotNull
     public boolean isEnabledByDefault() {
@@ -126,7 +149,12 @@ public class LocaleDetails implements Serializable {
         this.enabledByDefault = enabledByDefault;
     }
 
+    /**
+     * A string describing the formula for the locale's plural forms
+     */
     @XmlAttribute(name = "pluralForms", required = false)
+    @DocumentationExample(value = "nplurals=2; plural=(n != 1)",
+            value2 = "nplurals=1; plural=0")
     public String getPluralForms() {
         return pluralForms;
     }

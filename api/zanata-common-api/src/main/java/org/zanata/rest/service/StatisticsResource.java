@@ -29,8 +29,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.zanata.rest.dto.ProjectStatisticsMatrix;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
@@ -69,18 +70,18 @@ public interface StatisticsResource extends RestResource {
      *            Locale statistics to be fetched. If this is empty, all locale
      *            statistics will be returned. This parameter may be specified
      *            multiple times if multiple locales are to be fetched.
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response containing translation statistics for the
-     *         specified parameters.<br>
-     *         NOT FOUND(404) - If a project iteration could not be found for
-     *         the given parameters.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @GET
     @Path("/proj/{projectSlug}/iter/{iterationSlug}")
     @TypeHint(ContainerTranslationStatistics.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Contains translation statistics" +
+                    " for the specified parameters"),
+            @ResponseCode(code = 404, condition = "A project iteration could " +
+                    "not be found for the given parameters"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
     public
             ContainerTranslationStatistics
             getStatistics(
@@ -106,18 +107,18 @@ public interface StatisticsResource extends RestResource {
      *            Locale statistics to be fetched. If this is empty, all locale
      *            statistics will be returned. This parameter may be specified
      *            multiple times if multiple locales are to be fetched.
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response containing translation statistics for the
-     *         specified parameters.<br>
-     *         NOT FOUND(404) - If a document could not be found for the given
-     *         parameters.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @GET
     @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.*}")
     @TypeHint(ContainerTranslationStatistics.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Contains translation statistics" +
+                    " for the specified parameters"),
+            @ResponseCode(code = 404, condition = "A document could " +
+                    "not be found for the given parameters"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
     public
             ContainerTranslationStatistics
             getStatistics(
@@ -139,23 +140,21 @@ public interface StatisticsResource extends RestResource {
      *            username of contributor
      * @param dateRange
      *            date range from..to (yyyy-mm-dd..yyyy-mm-dd)
-     *
      * @param includeAutomatedEntry
      *            whether to include automatic entries of translation into statistic
-     *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response containing contribution statistics for the
-     *         specified parameters.<br>
-     *         BAD REQUEST(400) - If dateRange param is invalid.<br>
-     *         NOT FOUND(404) - If a version or user could not be found.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @GET
     @Path("/project/{projectSlug}/version/{versionSlug}/contributor/{username}/{dateRange}")
     @TypeHint(ContributionStatistics.class)
     @Produces({ MediaType.APPLICATION_JSON })
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Contains contribution statistics" +
+                    " for the specified parameters"),
+            @ResponseCode(code = 404, condition = "A project version could " +
+                    "not be found for the given parameters"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
     public
             ContributionStatistics getContributionStatistics(
                     @PathParam("projectSlug") String projectSlug,

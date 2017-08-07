@@ -1,20 +1,20 @@
 import cx from 'classnames'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * Checkbox that appears as a slider-style switch
  */
-const ToggleSwitch = React.createClass({
-
-  propTypes: {
+class ToggleSwitch extends React.Component {
+  static propTypes = {
     id: PropTypes.string,
     className: PropTypes.string,
     isChecked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     return (
       <span className={cx('Switch', this.props.className)}>
         <input className="Switch-checkbox"
@@ -28,6 +28,6 @@ const ToggleSwitch = React.createClass({
       </span>
     )
   }
-})
+}
 
 export default ToggleSwitch

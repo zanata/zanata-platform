@@ -1,12 +1,13 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SuggestionContents from './SuggestionContents'
 import SuggestionTranslationDetails from './SuggestionTranslationDetails'
 
 /**
  * Show all translations for a suggestion, with translation metadata.
  */
-const SuggestionTranslations = React.createClass({
-  propTypes: {
+class SuggestionTranslations extends React.Component {
+  static propTypes = {
     copySuggestion: PropTypes.func.isRequired,
     suggestion: PropTypes.shape({
       copying: PropTypes.bool.isRequired,
@@ -20,9 +21,9 @@ const SuggestionTranslations = React.createClass({
         PropTypes.string).isRequired,
       targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
     })
-  },
+  }
 
-  render: function () {
+  render () {
     return (
       <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
         <SuggestionContents
@@ -32,6 +33,6 @@ const SuggestionTranslations = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SuggestionTranslations

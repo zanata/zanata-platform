@@ -3,15 +3,15 @@ import ControlsHeader from '../ControlsHeader'
 import NavHeader from '../NavHeader'
 import ProgressBar from '../../components/ProgressBar'
 import { connect } from 'react-redux'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import ZanataLogoLoader from '../ZanataLogoLoader'
 
 /**
  * Header for navigation and control of the editor
  */
-const EditorHeader = React.createClass({
-
-  propTypes: {
+class EditorHeader extends React.Component {
+  static propTypes = {
     navHeaderVisible: PropTypes.bool.isRequired,
     counts: PropTypes.shape({
       total: PropTypes.number,
@@ -21,17 +21,16 @@ const EditorHeader = React.createClass({
       rejected: PropTypes.number,
       untranslated: PropTypes.number
     })
-  },
+  }
 
-  render: function () {
+  render () {
     const className = cx('Header', 'Editor-header',
         { 'is-minimised': !this.props.navHeaderVisible })
     return (
       <div id="editor-header">
         <ZanataLogoLoader />
         <header role="banner"
-          className={className}
-          focus-on="editor-header">
+          className={className}>
           <NavHeader />
           <ControlsHeader />
           <ProgressBar
@@ -41,7 +40,7 @@ const EditorHeader = React.createClass({
       </div>
     )
   }
-})
+}
 
 function mapStateToProps (state) {
   return {

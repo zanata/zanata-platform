@@ -4,15 +4,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
+ * Contains information about translations contributed by a single user.
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "username", "contributions" })
+@Label("Contribution Statistics")
 public class ContributionStatistics implements Serializable {
 
     private static final long serialVersionUID = -6328249224235406066L;
@@ -29,7 +34,11 @@ public class ContributionStatistics implements Serializable {
         this.contributions = contributions;
     }
 
+    /**
+     * User name responsible for the contributions.
+     */
     @JsonProperty("username")
+    @DocumentationExample("bart")
     public String getUsername() {
         return username;
     }

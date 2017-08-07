@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Icon } from '../../../components'
 import cx from 'classnames'
 import { Row } from 'react-bootstrap'
@@ -6,8 +7,8 @@ import { Row } from 'react-bootstrap'
 /**
  * Display metadata for suggestion source.
  */
-const SuggestionDetailsSummary = React.createClass({
-  propTypes: {
+class SuggestionDetailsSummary extends React.Component {
+  static propTypes = {
     onClick: PropTypes.func,
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
@@ -21,9 +22,9 @@ const SuggestionDetailsSummary = React.createClass({
         documentName: PropTypes.string
       }))
     })
-  },
+  }
 
-  render: function () {
+  render () {
     const { matchDetails } = this.props.suggestion
     const topMatch = matchDetails[0]
     const isTextFlow = topMatch.type === 'LOCAL_PROJECT'
@@ -89,6 +90,6 @@ const SuggestionDetailsSummary = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SuggestionDetailsSummary

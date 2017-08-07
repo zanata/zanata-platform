@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.2.2-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-frontend</artifactId>
   <name>Zanata frontend</name>
@@ -132,6 +132,7 @@
                   <include>editor.min.js</include>
                   <include>editor.css</include>
                   <include>editor.css.map</include>
+                  <include>intl-polyfill.min.js</include>
                   <include>frontend.min.js</include>
                   <include>frontend.legacy.min.js</include>
                   <include>frontend.css</include>

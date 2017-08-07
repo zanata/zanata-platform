@@ -3,20 +3,20 @@ import { Icon } from '../../../components'
 import KeyCombinations from '../../components/KeyCombinations'
 import { chain, each, map } from 'lodash'
 import { connect } from 'react-redux'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { SHORTCUTS } from '../../actions/key-shortcuts-actions'
 import { toggleKeyboardShortcutsModal } from '../../actions/header-actions'
 
 /**
  * Modal showing a summary of the available key shortcuts.
  */
-const KeyShortcutCheatSheet = React.createClass({
-
-  propTypes: {
+class KeyShortcutCheatSheet extends React.Component {
+  static propTypes = {
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     className: PropTypes.string
-  },
+  }
 
   /**
    * Convert a shortcut with sequence keys to an array of simple shortcuts.
@@ -24,7 +24,7 @@ const KeyShortcutCheatSheet = React.createClass({
    *
    * Map this then use flatten to get a flat list of normal and sequence keys.
    */
-  expandSequences (shortcut) {
+  expandSequences = (shortcut) => {
     const { sequenceKeys } = shortcut.keyConfig
     if (sequenceKeys) {
       const prefix = shortcut.keyConfig.keys[0] + ' '
@@ -39,9 +39,9 @@ const KeyShortcutCheatSheet = React.createClass({
       return shortcuts
     }
     return shortcut
-  },
+  }
 
-  renderShortcut (shortcut) {
+  renderShortcut = (shortcut) => {
     const { keys } = shortcut.keyConfig
     return (
       <li className="Grid" key={keys.join()}>
@@ -53,7 +53,7 @@ const KeyShortcutCheatSheet = React.createClass({
         </div>
       </li>
     )
-  },
+  }
 
   render () {
     const { onClose, show } = this.props
@@ -84,7 +84,7 @@ const KeyShortcutCheatSheet = React.createClass({
       </div>
     )
   }
-})
+}
 
 function mapStateToProps (state) {
   return {

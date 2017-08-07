@@ -60,13 +60,14 @@ public class ProjectIterationClient {
                 .path("iterations").path("i").path(versionSlug);
     }
 
-    public void put(ProjectIteration projectVersion) {
+    public Response put(ProjectIteration projectVersion) {
         Response response = webResource().request()
                 .put(Entity.xml(projectVersion));
         if (response.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
             throw new RuntimeException(response.getStatusInfo().toString());
         }
         response.close();
+        return response;
     }
 
     public String sampleConfiguration() {

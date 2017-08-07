@@ -30,7 +30,6 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import com.google.common.base.Throwables;
 
 /**
  * This will start up a jetty server and host stubbed Zanata rest resources. All
@@ -65,7 +64,7 @@ public class StubbingServerRule implements TestRule {
         try {
             server.start();
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

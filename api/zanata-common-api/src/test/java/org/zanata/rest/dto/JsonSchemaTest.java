@@ -1,11 +1,9 @@
 package org.zanata.rest.dto;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.Serializable;
 import java.util.Arrays;
 
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
@@ -16,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.common.TransUnitCount;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -27,7 +24,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
@@ -104,9 +100,9 @@ public class JsonSchemaTest {
         });
     }
 
-    private Class dtoClass;
+    private Class<Serializable> dtoClass;
 
-    public JsonSchemaTest(Class input) {
+    public JsonSchemaTest(Class<Serializable> input) {
         dtoClass = input;
     }
 

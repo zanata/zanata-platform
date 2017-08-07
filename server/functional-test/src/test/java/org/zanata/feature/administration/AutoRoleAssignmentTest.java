@@ -22,7 +22,7 @@ package org.zanata.feature.administration;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.RoleAssignmentsPage;
@@ -37,9 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class AutoRoleAssignmentTest extends ZanataTestCase {
 
-    @Feature(summary = "The administrator can create a rule to assign roles " +
-            "at user sign in",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The administrator can create a rule to assign roles " +
+            "at user sign in")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createAutoRoleAssignment() throws Exception {
         RoleAssignmentsPage roleAssignmentsPage = new LoginWorkFlow()

@@ -22,6 +22,7 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,11 +43,12 @@ public class UnorderedListWidget extends ComplexPanel {
 
     public void add(Widget widget) {
         // ComplexPanel requires the two-arg add() method
-        super.add(widget, getElement());
+        super.add(widget, (Element) getElement());
     }
 
     public void addOnTop(Widget widget) {
         // ComplexPanel requires the two-arg add() method
-        super.insert(widget, getElement(), 0, true);
+        super.insert(widget, (Element) getElement(),
+                0, true);
     }
 }

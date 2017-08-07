@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.Charsets;
 import org.fedorahosted.openprops.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,8 @@ public class PropWriter {
     private static final Logger log = LoggerFactory.getLogger(PropWriter.class);
 
     public static enum CHARSET {
-        UTF8(Charsets.UTF_8),
-        Latin1(Charsets.ISO_8859_1);
+        UTF8(StandardCharsets.UTF_8),
+        Latin1(StandardCharsets.ISO_8859_1);
 
         private final Charset alias;
 
@@ -142,8 +142,8 @@ public class PropWriter {
         BufferedOutputStream out =
                 new BufferedOutputStream(new FileOutputStream(file));
         try {
-            if (charset.alias.equals(Charsets.UTF_8)) {
-                Writer writer = new OutputStreamWriter(out, Charsets.UTF_8.displayName());
+            if (charset.alias.equals(StandardCharsets.UTF_8)) {
+                Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8.displayName());
                 props.store(writer, null);
             } else {
                 props.store(out, null);

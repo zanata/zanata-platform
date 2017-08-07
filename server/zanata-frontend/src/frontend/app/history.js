@@ -20,6 +20,7 @@
  */
 import { useRouterHistory } from 'react-router'
 import { createHistory } from 'history'
+import { appUrl } from './config'
 
 /**
  * Creates a history object used by the router.
@@ -28,5 +29,5 @@ import { createHistory } from 'history'
  * extend it.
  */
 export const history = useRouterHistory(createHistory)({
-  basename: window.config.baseUrl
+  basename: appUrl
 })

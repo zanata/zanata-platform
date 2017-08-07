@@ -70,8 +70,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.FileResource;
 
-import com.google.common.base.Throwables;
-
 /**
  * Test rule to set up push and/or pull commands which will interact with
  * mockito mocked REST clients.
@@ -154,7 +152,7 @@ public class MockServerRule extends ExternalResource {
             opts.setUrl(uri.toURL());
             return uri;
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -175,17 +173,17 @@ public class MockServerRule extends ExternalResource {
                 Collections.<ResourceMeta>emptyList());
         // this assumes async push is always success
         when(
-                asyncClient.startSourceDocCreationOrUpdate(
-                        anyString(),
-                        eq(pushOpts.getProj()), eq(pushOpts.getProjectVersion()),
+                asyncClient.startSourceDocCreationOrUpdateWithDocId(
+                        eq(pushOpts.getProj()),
+                        eq(pushOpts.getProjectVersion()),
                         any(Resource.class), anySetOf(String.class),
-                        eq(false)))
+                        anyString()))
                 .thenReturn(running);
         when(
-                asyncClient.startTranslatedDocCreationOrUpdate(
-                        docIdCaptor.capture(), eq(pushOpts.getProj()),
+                asyncClient.startTranslatedDocCreationOrUpdateWithDocId(
+                        eq(pushOpts.getProj()),
                         eq(pushOpts.getProjectVersion()), localeIdCaptor.capture(),
-                        transResourceCaptor.capture(),
+                        transResourceCaptor.capture(), docIdCaptor.capture(),
                         extensionCaptor.capture(), eq(pushOpts.getMergeType()),
                         eq(pushOpts.isMyTrans())))
                 .thenReturn(running);
@@ -221,17 +219,18 @@ public class MockServerRule extends ExternalResource {
     }
 
     public void verifyPushSource() {
-        verify(asyncClient).startSourceDocCreationOrUpdate(
-                docIdCaptor.capture(), eq(pushOpts.getProj()),
+        verify(asyncClient).startSourceDocCreationOrUpdateWithDocId(
+                eq(pushOpts.getProj()),
                 eq(pushOpts.getProjectVersion()), resourceCaptor.capture(),
-                extensionCaptor.capture(), eq(false));
+                extensionCaptor.capture(), docIdCaptor.capture());
     }
 
     public void verifyPushTranslation() {
-        verify(asyncClient).startTranslatedDocCreationOrUpdate(
-                docIdCaptor.capture(), eq(pushOpts.getProj()),
+        verify(asyncClient).startTranslatedDocCreationOrUpdateWithDocId(
+                eq(pushOpts.getProj()),
                 eq(pushOpts.getProjectVersion()), localeIdCaptor.capture(),
-                transResourceCaptor.capture(), extensionCaptor.capture(),
+                transResourceCaptor.capture(), docIdCaptor.capture(),
+                extensionCaptor.capture(),
                 eq(pushOpts.getMergeType()), eq(pushOpts.isMyTrans()));
     }
 
@@ -272,8 +271,9 @@ public class MockServerRule extends ExternalResource {
                         eq(getPullOpts().getCreateSkeletons()), anyString()))
                 .thenReturn(transResourceResponse);
         when(transResourceResponse.getStatus()).thenReturn(200);
+
         when(transResourceResponse.getStringHeaders()).thenReturn(
-                new MultivaluedMapImpl());
+                new MultivaluedMapImpl<>());
         when(transResourceResponse.readEntity(TranslationsResource.class))
                 .thenReturn(transResourceOnServer);
         return new PullCommand(pullOpts, clientFactory);
@@ -365,7 +365,7 @@ public class MockServerRule extends ExternalResource {
                 eq(pullOpts.getProjectVersion()), anyString(), anyString(),
                 anyString())).thenReturn(downloadTransResponse);
         when(downloadTransResponse.getStatus()).thenReturn(200);
-        when(downloadTransResponse.getHeaders()).thenReturn(new MultivaluedMapImpl());
+        when(downloadTransResponse.getHeaders()).thenReturn(new MultivaluedMapImpl<>());
         when(downloadTransResponse.getStatusInfo()).thenReturn(
                 Response.Status.OK);
         when(downloadTransResponse.readEntity(InputStream.class))

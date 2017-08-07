@@ -1,6 +1,7 @@
 import { chain } from 'lodash'
 import cx from 'classnames'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
@@ -9,15 +10,16 @@ import {
   STATUS_REJECTED
 } from '../../utils/status-util'
 
-const ProgressItem = React.createClass({
-  propTypes: {
+class ProgressItem extends React.Component {
+  static propTypes = {
     state: PropTypes.string.isRequired,
     /* left position of this part of the bar (percentage of full bar width) */
     start: PropTypes.number.isRequired,
     /* width of this part of the bar (percentage of full bar width) */
     width: PropTypes.number.isRequired
-  },
-  render: function () {
+  }
+
+  render () {
     const className = cx('Progressbar-item', 'Progressbar-' + this.props.state)
     const style = {
       marginLeft: this.props.start + '%',
@@ -27,14 +29,13 @@ const ProgressItem = React.createClass({
       <span className={className} style={style} />
     )
   }
-})
+}
 
 /**
  * Bar showing translation progress
  */
-const ProgressBar = React.createClass({
-
-  propTypes: {
+class ProgressBar extends React.Component {
+  static propTypes = {
     size: PropTypes.string,
     counts: PropTypes.shape({
       // TODO better to derive total from the others rather than duplicate
@@ -45,22 +46,20 @@ const ProgressBar = React.createClass({
       rejected: PropTypes.number,
       untranslated: PropTypes.number
     }).isRequired
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      counts: {
-        total: 0,
-        approved: 0,
-        translated: 0,
-        needswork: 0,
-        rejected: 0,
-        untranslated: 0
-      }
+  static defaultProps = {
+    counts: {
+      total: 0,
+      approved: 0,
+      translated: 0,
+      needswork: 0,
+      rejected: 0,
+      untranslated: 0
     }
-  },
+  }
 
-  render: function () {
+  render () {
     const className = cx('Progressbar', {
       'Progressbar--sm': this.props.size === 'small',
       'Progressbar--lg': this.props.size === 'large'
@@ -110,6 +109,6 @@ const ProgressBar = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default ProgressBar

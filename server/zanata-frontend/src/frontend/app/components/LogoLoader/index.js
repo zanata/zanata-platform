@@ -1,11 +1,12 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 
 /**
 * Zanata logo that can be inverted and animated.
 */
-const LogoLoader = React.createClass({
-  propTypes: {
+class LogoLoader extends React.Component {
+  static propTypes = {
     /**
      * Toggle whether the logo is invert or not for styling.
      */
@@ -14,7 +15,7 @@ const LogoLoader = React.createClass({
      * Toggle whether the is loading or not. Default is 'false'
      */
     loading: PropTypes.bool.isRequired
-  },
+  }
 
   render () {
     const {
@@ -53,6 +54,6 @@ const LogoLoader = React.createClass({
     )
     /* eslint-enable max-len */
   }
-})
+}
 
 export default LogoLoader

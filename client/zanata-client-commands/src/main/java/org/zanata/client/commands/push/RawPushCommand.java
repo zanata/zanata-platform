@@ -47,7 +47,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 
 import com.google.common.collect.ImmutableMap;
@@ -656,7 +655,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             } finally {
                 fileStream.close();
             }
-            @SuppressWarnings("UnnecessaryLocalVariable")
+            //noinspection UnnecessaryLocalVariable
             String md5hash = new String(Hex.encodeHex(md.digest()));
             return md5hash;
         } catch (NoSuchAlgorithmException | IOException e) {
@@ -683,6 +682,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private List<FileTypeInfo> fileTypeInfoListWorkaround() {
         return ProjectType.fileProjectSourceDocTypes().stream()
                 .sorted((a, b) -> a.toString().compareTo(b.toString()))

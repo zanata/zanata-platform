@@ -19,7 +19,8 @@
  * site: http://www.fsf.org.
  */
 
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Icon } from '../../components'
 import IconButton from '../components/IconButton'
 import IconButtonToggle from '../components/IconButtonToggle'
@@ -30,9 +31,8 @@ import ToggleSwitch from '../components/ToggleSwitch'
  * Header of the suggestions panel, with some controls and
  * the search input.
  */
-const SuggestionsHeader = React.createClass({
-
-  propTypes: {
+class SuggestionsHeader extends React.Component {
+  static propTypes = {
     searchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
     showDiff: PropTypes.bool.isRequired,
     onDiffChange: PropTypes.func.isRequired,
@@ -50,24 +50,22 @@ const SuggestionsHeader = React.createClass({
       searchStrings: PropTypes.arrayOf(PropTypes.string).isRequired,
       suggestions: PropTypes.array.isRequired
     }).isRequired
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      search: {
-        text: ''
-      }
+  static defaultProps = {
+    search: {
+      text: ''
     }
-  },
+  }
 
-  setSearchInput (ref) {
+  setSearchInput = (ref) => {
     this.searchInput = ref
-  },
+  }
 
   /**
    * Need to access refs to focus after the clear is complete
    */
-  clearAndFocus: function () {
+  clearAndFocus = () => {
     // debugger
     if (this.searchInput) {
       // FIXME getting stack overflow here
@@ -76,9 +74,9 @@ const SuggestionsHeader = React.createClass({
       this.searchInput.clearSearch()
       this.searchInput.focusInput()
     }
-  },
+  }
 
-  render: function () {
+  render () {
     const textSearchSelected = this.props.searchType === 'text'
     const showSearch = textSearchSelected || !this.props.phraseSelected
     const searchInput = showSearch
@@ -143,6 +141,6 @@ const SuggestionsHeader = React.createClass({
       </nav>
     )
   }
-})
+}
 
 export default SuggestionsHeader

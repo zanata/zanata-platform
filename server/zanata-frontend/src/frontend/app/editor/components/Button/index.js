@@ -1,26 +1,24 @@
 import cx from 'classnames'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * Button that can be disabled.
  */
-const Button = React.createClass({
-
-  propTypes: {
+class Button extends React.Component {
+  static propTypes = {
     title: PropTypes.string,
     onClick: PropTypes.func,
     disabled: PropTypes.bool,
     children: PropTypes.node,
     className: PropTypes.string
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      disabled: false
-    }
-  },
+  static defaultProps = {
+    disabled: false
+  }
 
-  render: function () {
+  render () {
     const className = cx(this.props.className,
       { 'is-disabled': this.props.disabled })
 
@@ -34,6 +32,6 @@ const Button = React.createClass({
       </button>
     )
   }
-})
+}
 
 export default Button

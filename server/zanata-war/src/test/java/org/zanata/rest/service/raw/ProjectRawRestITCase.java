@@ -20,13 +20,14 @@
  */
 package org.zanata.rest.service.raw;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.EntityStatus;
@@ -36,10 +37,7 @@ import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertHeaderPresent;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
@@ -74,12 +72,15 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+            protected void onResponse(Response response) {
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderPresent(response, HttpHeaders.ETAG);
             }
         }.run();
@@ -91,34 +92,37 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
-                assertJaxbUnmarshal(response, Project.class);
+            protected void onResponse(Response response) {
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, Project.class);
 
-                Project project = jaxbUnmarshal(response, Project.class);
-                assertThat(project.getId(), is("sample-project"));
-                assertThat(project.getDescription(), is("An example Project"));
-                assertThat(project.getStatus(), is(EntityStatus.ACTIVE));
-                assertThat(project.getName(), is("Sample Project"));
+                Project project = jaxbUnmarshal(entityString, Project.class);
+                assertThat(project.getId()).isEqualTo("sample-project");
+                assertThat(project.getDescription()).isEqualTo("An example Project");
+                assertThat(project.getStatus()).isEqualTo(EntityStatus.ACTIVE);
+                assertThat(project.getName()).isEqualTo("Sample Project");
                 // assertThat(project.getType(),
                 // is(ProjectType.IterationProject));
-                assertThat(project.getIterations().size(), is(3));
+                assertThat(project.getIterations().size()).isEqualTo(3);
 
                 // Iteration 1
                 ProjectIteration iteration = project.getIterations().get(0);
-                assertThat(iteration.getId(), is("1.0"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.0");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
 
                 // Iteration 2
                 iteration = project.getIterations().get(1);
-                assertThat(iteration.getId(), is("1.1"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.1");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
             }
         }.run();
     }
@@ -129,14 +133,15 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/do-not-exist-project"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(404));
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
     }
@@ -147,15 +152,16 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/obsolete-project"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 // Obsolete projects are not found
-                assertThat(response.getStatus(), is(404));
+                assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
     }
@@ -166,15 +172,16 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/retired-project"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 // Retired projects can be read
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
             }
         }.run();
     }
@@ -185,34 +192,37 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
-                assertJsonUnmarshal(response, Project.class);
+            protected void onResponse(Response response) {
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, Project.class);
 
-                Project project = jsonUnmarshal(response, Project.class);
-                assertThat(project.getId(), is("sample-project"));
-                assertThat(project.getDescription(), is("An example Project"));
-                assertThat(project.getStatus(), is(EntityStatus.ACTIVE));
-                assertThat(project.getName(), is("Sample Project"));
+                Project project = jsonUnmarshal(entityString, Project.class);
+                assertThat(project.getId()).isEqualTo("sample-project");
+                assertThat(project.getDescription()).isEqualTo("An example Project");
+                assertThat(project.getStatus()).isEqualTo(EntityStatus.ACTIVE);
+                assertThat(project.getName()).isEqualTo("Sample Project");
                 // assertThat(project.getType(),
                 // is(ProjectType.IterationProject));
-                assertThat(project.getIterations().size(), is(3));
+                assertThat(project.getIterations().size()).isEqualTo(3);
 
                 // Iteration 1
                 ProjectIteration iteration = project.getIterations().get(0);
-                assertThat(iteration.getId(), is("1.0"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.0");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
 
                 // Iteration 2
                 iteration = project.getIterations().get(1);
-                assertThat(iteration.getId(), is("1.1"));
-                assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
+                assertThat(iteration.getId()).isEqualTo("1.1");
+                assertThat(iteration.getStatus()).isEqualTo(EntityStatus.ACTIVE);
             }
         }.run();
     }
@@ -231,14 +241,23 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/test-project"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
-                        jaxbMarhsal(project).getBytes());
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(201)); // Created
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(project), MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                // Created
+                assertThat(response.getStatus()).isEqualTo(201);
             }
         }.run();
     }
@@ -257,14 +276,21 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/my,new,project"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
-                        jaxbMarhsal(project).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(404));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(project), MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
     }
@@ -285,15 +311,22 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/my-new-project"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
-                        jaxbMarhsal(project).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getResponseStatus(), is(
-                        Response.Status.BAD_REQUEST));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(project), MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(
+                        Response.Status.BAD_REQUEST.getStatusCode());
             }
         }.run();
     }
@@ -314,15 +347,22 @@ public class ProjectRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/test-project"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
-                        jaxbMarhsal(project).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getResponseStatus(), is(
-                        Response.Status.BAD_REQUEST));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(project), MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isEqualTo(
+                        Response.Status.BAD_REQUEST.getStatusCode());
             }
         }.run();
     }
@@ -342,14 +382,22 @@ public class ProjectRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/test-project-json"), "PUT",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
-                        jsonMarshal(project).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(201)); // Created
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(project), MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                // Created
+                assertThat(response.getStatus()).isEqualTo(201);
             }
         }.run();
     }
@@ -359,20 +407,20 @@ public class ProjectRawRestITCase extends RestTest {
     public void getAllXml() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
-                assertThat((String) response.getEntity(String.class),
-                        containsString("sample-project"));
-                assertThat((String) response.getEntity(String.class),
-                        containsString("retired-project"));
-                assertThat((String) response.getEntity(String.class),
-                        not(containsString("obsolete-project")));
+            protected void onResponse(Response response) {
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+
+                assertThat(entityString)
+                        .contains("sample-project", "retired-project")
+                        .doesNotContain("obsolete-project");
             }
         }.run();
     }
@@ -382,20 +430,21 @@ public class ProjectRawRestITCase extends RestTest {
     public void getAllJson() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
-                assertThat((String) response.getEntity(String.class),
-                        containsString("sample-project"));
-                assertThat((String) response.getEntity(String.class),
-                        containsString("retired-project"));
-                assertThat((String) response.getEntity(String.class),
-                        not(containsString("obsolete-project")));
+            protected void onResponse(Response response) {
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+
+                assertThat(entityString)
+                        .contains("sample-project", "retired-project")
+                        .doesNotContain("obsolete-project");
             }
         }.run();
     }

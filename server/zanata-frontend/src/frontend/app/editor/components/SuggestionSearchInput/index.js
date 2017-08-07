@@ -22,54 +22,53 @@
 import cx from 'classnames'
 import { Icon } from '../../../components'
 import IconButton from '../IconButton'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * Styled text input that displays result count.
  */
-const SuggestionSearchInput = React.createClass({
-
-  propTypes: {
+class SuggestionSearchInput extends React.Component {
+  static propTypes = {
     text: PropTypes.string.isRequired,
     onTextChange: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     resultCount: PropTypes.number,
     hasSearch: PropTypes.bool.isRequired,
     clearSearch: PropTypes.func.isRequired
-  },
+  }
 
-  clearSearch: function () {
-    this.props.clearSearch()
-    this.focusInput()
-  },
+  static defaultProps = {
+    focused: false
+  }
 
-  getDefaultProps: () => {
-    return {
-      focused: false
-    }
-  },
-
-  getInitialState: () => {
-    return {
+  constructor (props) {
+    super(props)
+    this.state = {
       // FIXME one other component is interested in this state
       //       just deal with that when I get to it
       focused: false
     }
-  },
+  }
 
-  onFocus: function () {
+  clearSearch = () => {
+    this.props.clearSearch()
+    this.focusInput()
+  }
+
+  onFocus = () => {
     this.setState({
       focused: true
     })
-  },
+  }
 
-  onBlur: function () {
+  onBlur = () => {
     this.setState({
       focused: false
     })
-  },
+  }
 
-  focusInput: function () {
+  focusInput = () => {
     // TODO different approach for React 0.14
 
     // may not need to actually set focused=true, mainly using for
@@ -80,13 +79,13 @@ const SuggestionSearchInput = React.createClass({
     }, () => {
       this.refs.input.focus()
     })
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount () {
     this.focusInput()
-  },
+  }
 
-  loadingResultsElement: function () {
+  loadingResultsElement = () => {
     return (
       <span onClick={this.focusInput}
         className="Editor-suggestionsSearchLoader">
@@ -94,18 +93,18 @@ const SuggestionSearchInput = React.createClass({
         Loading…
       </span>
     )
-  },
+  }
 
-  resultCountElement: function () {
+  resultCountElement = () => {
     return (
       <span onClick={this.focusInput}
         className="Editor-suggestionsSearchResults">
         {this.props.resultCount} results
       </span>
     )
-  },
+  }
 
-  resultsElement: function () {
+  resultsElement = () => {
     if (!this.props.loading && !this.props.hasSearch) {
       return undefined
     }
@@ -119,9 +118,9 @@ const SuggestionSearchInput = React.createClass({
         {innerElement}
       </span>
     )
-  },
+  }
 
-  clearButtonElement: function () {
+  clearButtonElement = () => {
     if (!this.props.hasSearch) {
       return undefined
     }
@@ -133,9 +132,9 @@ const SuggestionSearchInput = React.createClass({
           onClick={this.clearSearch} />
       </span>
     )
-  },
+  }
 
-  render: function () {
+  render () {
     return (
       <div className={cx('InputGroup InputGroup--outlined InputGroup--rounded',
                          { 'is-focused': this.state.focused })}>
@@ -157,6 +156,6 @@ const SuggestionSearchInput = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SuggestionSearchInput

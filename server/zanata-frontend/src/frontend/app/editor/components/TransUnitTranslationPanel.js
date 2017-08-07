@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import TransUnitTranslationHeader from './TransUnitTranslationHeader'
@@ -10,9 +11,8 @@ import { phraseTextSelectionRange } from '../actions/phrases-actions'
 /**
  * Panel to display and edit translations of a phrase.
  */
-const TransUnitTranslationPanel = React.createClass({
-
-  propTypes: {
+class TransUnitTranslationPanel extends React.Component {
+  static propTypes = {
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     // the key of the currently open dropdown (may be undefined if none is open)
@@ -40,7 +40,7 @@ const TransUnitTranslationPanel = React.createClass({
     toggleGlossary: PropTypes.func.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired
-  },
+  }
 
   componentWillMount () {
     // will be set by refs, initialize here to avoid need for null checks
@@ -48,7 +48,7 @@ const TransUnitTranslationPanel = React.createClass({
     // indicates when a textarea should be focused but was not rendered yet
     // so should focus as soon as the rendered textarea is available
     this.shouldFocus = false
-  },
+  }
 
   componentDidMount () {
     const { selected, phrase } = this.props
@@ -63,7 +63,7 @@ const TransUnitTranslationPanel = React.createClass({
         this.shouldFocus = true
       }
     }
-  },
+  }
 
   componentDidUpdate (prevProps) {
     const { phrase } = this.props
@@ -85,13 +85,13 @@ const TransUnitTranslationPanel = React.createClass({
         this.shouldFocus = true
       }
     }
-  },
+  }
 
-  setTextArea (index, ref) {
+  setTextArea = (index, ref) => {
     this.textareas[index] = ref
-  },
+  }
 
-  render: function () {
+  render () {
     const {
       onSelectionChange,
       phrase,
@@ -177,10 +177,10 @@ const TransUnitTranslationPanel = React.createClass({
       </div>
     )
   }
-})
+}
 
-const TranslationItem = React.createClass({
-  propTypes: {
+class TranslationItem extends React.Component {
+  static propTypes = {
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     isPlural: PropTypes.bool.isRequired,
@@ -197,23 +197,23 @@ const TranslationItem = React.createClass({
     setTextArea: PropTypes.func.isRequired,
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string
-  },
+  }
 
-  setTextArea: function (ref) {
+  setTextArea = (ref) => {
     this.props.setTextArea(this.props.index, ref)
-  },
+  }
 
-  _onChange: function (event) {
+  _onChange = (event) => {
     const { index, phrase, textChanged } = this.props
     textChanged(phrase.id, index, event)
-  },
+  }
 
-  setFocusedPlural: function () {
+  setFocusedPlural = () => {
     const { index, phrase, selectPhrasePluralIndex } = this.props
     selectPhrasePluralIndex(phrase.id, index)
-  },
+  }
 
-  render: function () {
+  render () {
     const {
       dropdownIsOpen,
       index,
@@ -259,7 +259,7 @@ const TranslationItem = React.createClass({
       </div>
     )
   }
-})
+}
 
 function mapStateToProps (state, ownProps) {
   // TODO put all the branch-specific stuff here for a start

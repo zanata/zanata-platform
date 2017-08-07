@@ -1,12 +1,20 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import { LoaderText, Icon } from '../../components'
 import { Button, Tooltip, Overlay } from 'react-bootstrap'
 
 class DeleteEntryModal extends Component {
+  static propTypes = {
+    entry: PropTypes.object,
+    show: PropTypes.bool,
+    isDeleting: PropTypes.bool,
+    handleDeleteEntryDisplay: PropTypes.func.isRequired,
+    handleDeleteEntry: PropTypes.func.isRequired
+  }
 
-  handleDeleteEntry (entryId) {
-    this.props.handleDeleteEntry(entryId)
+  handleDeleteEntry = (entryId) => {
+    this.props.handleDeleteEntry(this.props.entry.id)
     setTimeout(() => {
       this.props.handleDeleteEntryDisplay(false)
     }, 200)
@@ -69,14 +77,6 @@ class DeleteEntryModal extends Component {
     )
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-DeleteEntryModal.propTypes = {
-  entry: React.PropTypes.object,
-  show: React.PropTypes.bool,
-  isDeleting: React.PropTypes.bool,
-  handleDeleteEntryDisplay: PropTypes.func.isRequired,
-  handleDeleteEntry: React.PropTypes.func.isRequired
 }
 
 export default DeleteEntryModal

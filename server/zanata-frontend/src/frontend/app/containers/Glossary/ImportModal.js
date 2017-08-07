@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { isEmpty, includes } from 'lodash'
 import { Button, ButtonGroup } from 'react-bootstrap'
@@ -18,11 +19,24 @@ import {
 } from '../../actions/glossary-actions'
 
 class ImportModal extends Component {
-  getUploadFileExtension (file) {
+  static propTypes = {
+    transLocales: PropTypes.array,
+    srcLocale: PropTypes.object,
+    file: PropTypes.object,
+    show: PropTypes.bool,
+    status: PropTypes.number,
+    transLocale: PropTypes.object,
+    handleImportFile: PropTypes.func,
+    handleImportFileChange: PropTypes.func,
+    handleImportFileDisplay: PropTypes.func,
+    handleImportFileLocaleChange: PropTypes.func
+  }
+
+  getUploadFileExtension = (file) => {
     return file ? file.name.split('.').pop() : ''
   }
 
-  isSupportedFile (extension) {
+  isSupportedFile = (extension) => {
     return includes(FILE_TYPES, extension)
   }
 
@@ -122,19 +136,6 @@ class ImportModal extends Component {
       </Modal>)
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-ImportModal.propTypes = {
-  transLocales: PropTypes.array,
-  srcLocale: PropTypes.object,
-  file: PropTypes.object,
-  show: PropTypes.bool,
-  status: PropTypes.number,
-  transLocale: PropTypes.object,
-  handleImportFile: PropTypes.func,
-  handleImportFileChange: PropTypes.func,
-  handleImportFileDisplay: PropTypes.func,
-  handleImportFileLocaleChange: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

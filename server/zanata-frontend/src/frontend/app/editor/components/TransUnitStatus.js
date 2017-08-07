@@ -1,25 +1,25 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import Icon from '../../components'
 import cx from 'classnames'
+
+const statusNames = {
+  untranslated: 'Untranslated',
+  needswork: 'Needs Work',
+  translated: 'Translated',
+  approved: 'Approved'
+}
 
 /**
  * Status indicator showing the state of the translations
  * and some other metadata about a phrase.
  */
-const TransUnitStatus = React.createClass({
-
-  propTypes: {
+class TransUnitStatus extends React.Component {
+  static propTypes = {
     phrase: PropTypes.object.isRequired
-  },
+  }
 
-  statusNames: {
-    untranslated: 'Untranslated',
-    needswork: 'Needs Work',
-    translated: 'Translated',
-    approved: 'Approved'
-  },
-
-  render: function () {
+  render () {
     const phrase = this.props.phrase
     const className = cx('TransUnit-status', {
       // loading if there is an in-progress save object
@@ -59,7 +59,7 @@ const TransUnitStatus = React.createClass({
     return (
       <div className={className}>
         <span className="u-hiddenVisually">
-          {this.statusNames[phrase.status]}
+          {statusNames[phrase.status]}
         </span>
         <ul className="TransUnit-metaData">
           {comments}
@@ -68,6 +68,6 @@ const TransUnitStatus = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default TransUnitStatus

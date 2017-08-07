@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
 import { DateRange } from 'react-date-range'
@@ -11,8 +12,8 @@ const STATS_MAX_DAYS = 365
 /**
  * User profile statistics root page
  */
-var RecentContributions = React.createClass({
-  propTypes: {
+class RecentContributions extends React.Component {
+  static propTypes = {
     matrixForAllDays: PropTypes.array,
     dateRange: PropTypes.object,
     wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
@@ -21,23 +22,24 @@ var RecentContributions = React.createClass({
     selectedDay: PropTypes.string,
     handleDateRangeChanged: PropTypes.func,
     handleFilterChanged: PropTypes.func,
-    handleSelectedDayChanged: PropTypes.func
-  },
+    handleSelectedDayChanged: PropTypes.func.isRequired
+  }
 
-  getInitialState: function () {
-    return {
-      dateRange: this.props.dateRange,
+  constructor (props) {
+    super(props)
+    this.state = {
+      dateRange: props.dateRange,
       showDateRange: false
     }
-  },
+  }
 
-  onToggleShowDateRange: function () {
-    this.setState({
-      showDateRange: !this.state.showDateRange
-    })
-  },
+  onToggleShowDateRange = () => {
+    this.setState(prevState => ({
+      showDateRange: !prevState.showDateRange
+    }))
+  }
 
-  onDateRangeChanged: function (dateRange) {
+  onDateRangeChanged = (dateRange) => {
     // adjust dateRange to be in STATS_MAX_DAYS
     const adjustedDateRange =
       utilsDate.keepDateInRange(
@@ -45,9 +47,9 @@ var RecentContributions = React.createClass({
     this.setState({
       dateRange: adjustedDateRange
     })
-  },
+  }
 
-  render: function () {
+  render () {
     const {
       dateRange,
       matrixForAllDays,
@@ -62,7 +64,7 @@ var RecentContributions = React.createClass({
 
     const displayDateRange =
       utilsDate.shortDate(this.state.dateRange.startDate) +
-      ' ... ' + utilsDate.shortDate(this.state.dateRange.endDate)
+      ' to ' + utilsDate.shortDate(this.state.dateRange.endDate)
 
     /* eslint-disable react/jsx-no-bind */
     return (
@@ -98,7 +100,7 @@ var RecentContributions = React.createClass({
                       onClick={() => this.onToggleShowDateRange()}>
                       Cancel
                     </Button>
-                    <Button bStyle='primary'
+                    <Button bsStyle='primary'
                       onClick={
                       () => handleDateRangeChanged(this.state.dateRange)}>
                       Apply
@@ -127,6 +129,6 @@ var RecentContributions = React.createClass({
     )
     /* eslint-enable react/jsx-no-bind */
   }
-})
+}
 
 export default RecentContributions

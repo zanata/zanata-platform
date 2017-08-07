@@ -1,4 +1,5 @@
 import { createAction } from 'redux-actions'
+import { auth } from '../config'
 
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE'
 export const clearMessage = createAction(CLEAR_MESSAGE)
@@ -20,9 +21,9 @@ export const DEFAULT_LOCALE = {
 
 export const getHeaders = () => {
   let headers = {}
-  if (window.config.auth) {
-    headers['x-auth-token'] = window.config.auth.token
-    headers['x-auth-user'] = window.config.auth.user
+  if (auth) {
+    headers['x-auth-token'] = auth.token
+    headers['x-auth-user'] = auth.user
   }
   return headers
 }
@@ -30,6 +31,7 @@ export const getHeaders = () => {
 export const getJsonHeaders = () => {
   let headers = getHeaders()
   headers['Accept'] = 'application/json'
+  headers['Content-Type'] = 'application/json'
   return headers
 }
 

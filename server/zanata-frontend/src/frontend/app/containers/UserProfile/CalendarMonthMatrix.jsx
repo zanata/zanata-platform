@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import moment from 'moment'
 import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
@@ -21,8 +22,7 @@ const CalendarMonthMatrix = ({
   selectedDay,
   selectedContentState,
   dateRange,
-  handleSelectedDayChanged,
-  ...props
+  handleSelectedDayChanged
 }) => {
   if (matrixData.length === 0) {
     return <table><tbody><tr><td>Loading</td></tr></tbody></table>
@@ -38,7 +38,8 @@ const CalendarMonthMatrix = ({
   for (var i = firstDay.weekday() - 1; i >= 0; i--) {
     // for the first week, we pre-fill missing week days
     days.push(
-      <DayMatrix key={firstDay.weekday(i).format()} />
+      <DayMatrix key={firstDay.weekday(i).format()}
+        handleSelectedDayChanged={handleSelectedDayChanged} />
     )
   }
 
@@ -77,7 +78,7 @@ const CalendarMonthMatrix = ({
   let header = utilsDate.getDateRangeLabel(dateRange)
   header = header ? header + '\'s Activity'
     : utilsDate.formatDate(dateRange.startDate, utilsDate.dateRangeDisplayFmt) +
-      ' … ' +
+      ' to ' +
       utilsDate.formatDate(dateRange.endDate, utilsDate.dateRangeDisplayFmt)
   /* eslint-disable react/jsx-no-bind */
   return (

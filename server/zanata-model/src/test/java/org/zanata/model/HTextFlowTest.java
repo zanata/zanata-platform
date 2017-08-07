@@ -21,11 +21,9 @@
 
 package org.zanata.model;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-
-import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -37,20 +35,20 @@ public class HTextFlowTest {
         HTextFlow textFlow = new HTextFlow();
 
         textFlow.setContents("a", "b");
-        assertThat(textFlow.getContents(), contains("a", "b"));
+        assertThat(textFlow.getContents()).contains("a", "b");
 
         textFlow.setContents("a");
-        assertThat(textFlow.getContents(), contains("a"));
+        assertThat(textFlow.getContents()).contains("a");
         // check that content1 is nulled out (after having been non-null
         // earlier)
-        assertThat(textFlow.getContent1(), Matchers.nullValue());
+        assertThat(textFlow.getContent1()).isNull();
 
         // set original value
         textFlow.setContents("a", "b");
-        assertThat(textFlow.getContents(), contains("a", "b"));
+        assertThat(textFlow.getContents()).contains("a", "b");
 
         // set same value
         textFlow.setContents("a", "b");
-        assertThat(textFlow.getContents(), contains("a", "b"));
+        assertThat(textFlow.getContents()).contains("a", "b");
     }
 }

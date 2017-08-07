@@ -23,22 +23,21 @@ package org.zanata.rest.service.raw;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertHeaderValue;
 
@@ -67,21 +66,26 @@ public class FileRawRestITCase extends RestTest {
                 getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.queryParameter("docId", "my/path/document.txt");
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("docId", "my/path/document.txt")
+                        .request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+            protected void onResponse(Response response) {
+                // Ok
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderValue(response, "Content-Disposition",
                         "attachment; filename=\"document.txt.po\"");
                 assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
                         MediaType.TEXT_PLAIN);
-                assertPoFileCorrect((String) response.getEntity(String.class));
-                assertPoFileContainsTranslations(
-                        (String) response.getEntity(String.class),
-                        "hello world", "");
+
+                String entityString = response.readEntity(String.class);
+
+                assertPoFileCorrect(entityString);
+                assertPoFileContainsTranslations(entityString, "hello world",
+                        "");
             }
         }.run();
     }
@@ -93,20 +97,24 @@ public class FileRawRestITCase extends RestTest {
                 getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.queryParameter("docId", "my/path/document-2.txt");
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("docId", "my/path/document-2.txt")
+                        .request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+            protected void onResponse(Response response) {
+                // Ok
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderValue(response, "Content-Disposition",
                         "attachment; filename=\"document-2.txt.po\"");
                 assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
                         MediaType.TEXT_PLAIN);
-                assertPoFileCorrect((String) response.getEntity(String.class));
+                String entityString = response.readEntity(String.class);
+                assertPoFileCorrect(entityString);
                 assertPoFileContainsTranslations(
-                        (String) response.getEntity(String.class), "mssgId1",
+                        entityString, "mssgId1",
                         "mssgTrans1", "mssgId2", "mssgTrans2", "mssgId3",
                         "mssgTrans3");
             }
@@ -123,20 +131,11 @@ public class FileRawRestITCase extends RestTest {
             if (message.isHeader()) {
                 // assert that expected headers are present (with values if
                 // needed)
-                assertThat(message.getMsgstr(), containsString("MIME-Version:"));
-                assertThat(message.getMsgstr(), containsString("Content-Type:"));
-                assertThat(message.getMsgstr(),
-                        containsString("Content-Transfer-Encoding:"));
-                assertThat(message.getMsgstr(),
-                        containsString("Last-Translator:"));
-                assertThat(message.getMsgstr(),
-                        containsString("PO-Revision-Date:"));
-                assertThat(message.getMsgstr(),
-                        containsString("Language-Team:"));
-                assertThat(message.getMsgstr(),
-                        containsString("X-Generator: Zanata")); // Generator is
-                                                                // Zanata
-                assertThat(message.getMsgstr(), containsString("Plural-Forms:"));
+                assertThat(message.getMsgstr())
+                        .contains("MIME-Version:", "Content-Type:",
+                                "Content-Transfer-Encoding:",
+                                "Last-Translator:", "PO-Revision-Date:",
+                                "X-Generator: Zanata", "Plural-Forms:");
             }
         }
     }

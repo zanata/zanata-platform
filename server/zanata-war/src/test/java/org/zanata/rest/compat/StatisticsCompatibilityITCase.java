@@ -29,11 +29,7 @@ import org.zanata.apicompat.rest.dto.stats.TranslationStatistics;
 import org.zanata.apicompat.rest.service.StatisticsResource;
 import org.zanata.provider.DBUnitProvider;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a
@@ -88,25 +84,24 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
         int wordStatCount = 0;
         int mssgStatCount = 0;
 
-        assertThat(stats.getStats().size(), greaterThan(0));
-        assertThat(stats.getDetailedStats().size(), greaterThan(0)); // Has
-                                                                     // document
-                                                                     // stats
+        assertThat(stats.getStats().size()).isGreaterThan(0);
+        // Has document stats
+        assertThat(stats.getDetailedStats().size()).isGreaterThan(0);
         for (TranslationStatistics langStats : stats.getStats()) {
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated()
                             + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
-            assertThat(langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
+                            + langStats.getTranslatedAndApproved());
+            assertThat(langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved());
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getFuzzy()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getFuzzy()
                             + langStats.getRejected()
                             + langStats.getTranslatedOnly()
-                            + langStats.getApproved()));
+                            + langStats.getApproved());
             // MatcherAssert.assertThat( 100,
             // Matchers.equalTo( asStats.getPercentNeedReview() +
             // asStats.getPercentUntranslated() + asStats.getPercentTranslated()
@@ -119,8 +114,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                             : 0);
         }
 
-        assertThat("Word and Message level stat count should match",
-                wordStatCount == mssgStatCount);
+        assertThat(wordStatCount).isEqualTo(mssgStatCount)
+                .as("Word and Message level stat count should match");
     }
 
     @Test
@@ -133,22 +128,22 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
         int wordStatCount = 0;
         int mssgStatCount = 0;
 
-        assertThat(stats.getStats().size(), greaterThan(0));
+        assertThat(stats.getStats().size()).isGreaterThan(0);
         for (TranslationStatistics langStats : stats.getStats()) {
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated()
                             + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
-            assertThat(langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
+                            + langStats.getTranslatedAndApproved());
+            assertThat(langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved());
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getFuzzy()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getFuzzy()
                             + langStats.getRejected()
                             + langStats.getTranslatedOnly()
-                            + langStats.getApproved()));
+                            + langStats.getApproved());
             // MatcherAssert.assertThat( 100,
             // Matchers.equalTo( asStats.getPercentNeedReview() +
             // asStats.getPercentUntranslated() + asStats.getPercentTranslated()
@@ -161,8 +156,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                             : 0);
         }
 
-        assertThat("Word and Message level stat count should match",
-                wordStatCount == mssgStatCount);
+        assertThat(wordStatCount).isEqualTo(mssgStatCount)
+                .as("Word and Message level stat count should match");
     }
 
     @Test
@@ -172,33 +167,31 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                 statsResource.getStatistics("sample-project", "1.0", true,
                         false, new String[] { "as" });
 
-        assertThat(stats.getStats().size(), is(1)); // Just one locale and no
-                                                    // word level stats
-        assertThat(stats.getDetailedStats().size(), greaterThan(0)); // Has
-                                                                     // document
-                                                                     // stats
+        // Just one locale and no word level stats
+        assertThat(stats.getStats().size()).isEqualTo(1);
+        // Has document stats
+        assertThat(stats.getDetailedStats().size()).isGreaterThan(0);
         for (TranslationStatistics langStats : stats.getStats()) {
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated()
                             + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
-            assertThat(langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
+                            + langStats.getTranslatedAndApproved());
+            assertThat(langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved());
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getFuzzy()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getFuzzy()
                             + langStats.getRejected()
                             + langStats.getTranslatedOnly()
-                            + langStats.getApproved()));
+                            + langStats.getApproved());
             // MatcherAssert.assertThat( 100,
             // Matchers.equalTo( asStats.getPercentNeedReview() +
             // asStats.getPercentUntranslated() + asStats.getPercentTranslated()
             // ));
-            assertThat("Shouldn't have returned word level stats",
-                    langStats.getUnit(),
-                    not(TranslationStatistics.StatUnit.WORD));
+            assertThat(langStats.getUnit())
+                    .isNotEqualTo(TranslationStatistics.StatUnit.WORD);
         }
     }
 
@@ -209,22 +202,23 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                 statsResource.getStatistics("sample-project", "1.0",
                         "my/path/document.txt", true, new String[] { "as" });
 
-        assertThat(stats.getStats().size(), is(2)); // Just one locale
+        // Just one locale
+        assertThat(stats.getStats().size()).isEqualTo(2);
         for (TranslationStatistics langStats : stats.getStats()) {
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated()
                             + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
-            assertThat(langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getDraft()
-                            + langStats.getTranslatedAndApproved()));
+                            + langStats.getTranslatedAndApproved());
+            assertThat(langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved());
             assertThat(
-                    langStats.getTotal(),
-                    equalTo(langStats.getUntranslated() + langStats.getFuzzy()
+                    langStats.getTotal())
+                    .isEqualTo(langStats.getUntranslated() + langStats.getFuzzy()
                             + langStats.getRejected()
                             + langStats.getTranslatedOnly()
-                            + langStats.getApproved()));
+                            + langStats.getApproved());
             // MatcherAssert.assertThat( 100,
             // Matchers.equalTo( asStats.getPercentNeedReview() +
             // asStats.getPercentUntranslated() + asStats.getPercentTranslated()

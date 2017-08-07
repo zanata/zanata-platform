@@ -28,6 +28,7 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;

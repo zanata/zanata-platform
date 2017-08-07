@@ -21,13 +21,13 @@
 package org.zanata.page.projectversion;
 
 import java.util.List;
-import com.google.common.base.Predicate;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.page.webtrans.EditorPage;
-import com.google.common.base.Function;
+
 import com.google.common.base.Preconditions;
 
 /**
@@ -62,7 +62,7 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     public VersionLanguagesPage clickLocale(final String locale) {
         log.info("Click locale {}", locale);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(it -> {
             new BasePage(getDriver()).waitForPageSilence();
             for (WebElement localeRow : getLanguageTabLocaleList()) {
                 // Top <a>
@@ -84,7 +84,7 @@ public class VersionLanguagesPage extends VersionBasePage {
     public EditorPage clickDocument(final String docName) {
         log.info("Click document {}", docName);
         WebElement document = waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
+                .until(webDriver -> {
                     for (WebElement document1 : getLanguageTabDocumentList()) {
                         if (existingElement(document1, documentListItemTitle)
                                 .getText().equals(docName)) {
@@ -103,28 +103,21 @@ public class VersionLanguagesPage extends VersionBasePage {
     }
 
     public VersionLanguagesPage clickDownloadTranslatedPo(String documentName) {
-        WebElement document = waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
-                    for (WebElement doc : getLanguageTabDocumentList()) {
-                        if (existingElement(doc, documentListItemTitle)
-                                .getText().equals(documentName)) {
-                            return doc;
-                        }
-                    }
-                    return null;
-                });
-        document.findElement(By.className("dropdown__toggle")).click();
-        slightPause();
-        clickLinkAfterAnimation(document
-                .findElement(By.linkText("Download translated [offline .po]")));
-        slightPause();
-        return new VersionLanguagesPage(getDriver());
+        String linkText = "Download translated [offline .po]";
+        return clickDownloadWithLinkText(documentName, linkText);
     }
 
     public VersionLanguagesPage clickDownloadTranslatedFile(final String documentName,
                                                             final String format) {
+        String linkText = "Download translated [." + format + "]";
+        return clickDownloadWithLinkText(documentName, linkText);
+    }
+
+    private VersionLanguagesPage clickDownloadWithLinkText(
+            String documentName,
+            String linkText) {
         WebElement document = waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
+                .until(it -> {
                     for (WebElement doc : getLanguageTabDocumentList()) {
                         if (existingElement(doc, documentListItemTitle)
                                 .getText().equals(documentName)) {
@@ -136,7 +129,7 @@ public class VersionLanguagesPage extends VersionBasePage {
         document.findElement(By.className("dropdown__toggle")).click();
         slightPause();
         clickLinkAfterAnimation(document
-                .findElement(By.linkText("Download translated [." + format + "]")));
+                .findElement(By.linkText(linkText)));
         slightPause();
         return new VersionLanguagesPage(getDriver());
     }
@@ -145,7 +138,7 @@ public class VersionLanguagesPage extends VersionBasePage {
         log.info("Query stats for {}", localeId);
         gotoLanguageTab();
         return refreshPageUntil(this,
-                (Function<WebDriver, String>) webDriver -> {
+                "Find the stats for locale " + localeId, it -> {
                     String figure = null;
                     List<WebElement> localeList = getLanguageTabLocaleList();
                     for (WebElement locale : localeList) {
@@ -159,7 +152,7 @@ public class VersionLanguagesPage extends VersionBasePage {
                     Preconditions.checkState(figure != null,
                             "can not find statistics for locale: %s", localeId);
                     return figure;
-                }, "Find the stats for locale " + localeId);
+                });
     }
 
     public String getVersionID() {

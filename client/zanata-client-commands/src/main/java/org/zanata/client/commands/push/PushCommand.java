@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,6 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.AsyncProcessClient;
 import org.zanata.rest.client.CopyTransClient;
@@ -396,8 +394,6 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         for (final String localDocName : docsToPush) {
             try {
                 final String qualifiedDocName = qualifiedDocName(localDocName);
-                final String docUri =
-                        RestUtil.convertToDocumentURIId(qualifiedDocName);
                 final Resource srcDoc;
                 if (strat.isTransOnly()) {
                     srcDoc = null;
@@ -407,7 +403,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                     debug(srcDoc);
 
                     if (pushSource()) {
-                        pushSrcDocToServer(docUri, srcDoc, extensions);
+                        pushSrcDocToServer(qualifiedDocName, srcDoc, extensions);
                     }
                 }
 
@@ -427,7 +423,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                                 localDocName, locale);
                                         return;
                                     }
-                                    pushTargetDocToServer(docUri, locale,
+                                    pushTargetDocToServer(qualifiedDocName, locale,
                                             qualifiedDocName, targetDoc,
                                             extensions);
                                 }
@@ -553,20 +549,17 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         }
     }
 
-    private void pushSrcDocToServer(final String docUri, final Resource srcDoc,
+    private void pushSrcDocToServer(final String docId, final Resource srcDoc,
             final StringSet extensions) {
         if (!getOpts().isDryRun()) {
             log.info("pushing source doc [name={} size={}] to server",
                     srcDoc.getName(), srcDoc.getTextFlows().size());
 
             ConsoleUtils.startProgressFeedback();
-            // NB: Copy trans is set to false as using copy trans in this manner
-            // is deprecated.
-            // see PushCommand.copyTransForDocument
             ProcessStatus status =
-                    asyncProcessClient.startSourceDocCreationOrUpdate(docUri,
+                    asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
                             getOpts().getProj(), getOpts().getProjectVersion(),
-                            srcDoc, extensions, false);
+                            srcDoc, extensions, docId);
 
             boolean waitForCompletion = true;
 
@@ -594,12 +587,16 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                         // try to submit the process again
                         status =
                                 asyncProcessClient
-                                        .startSourceDocCreationOrUpdate(docUri,
+                                        .startSourceDocCreationOrUpdateWithDocId(
                                                 getOpts().getProj(), getOpts()
                                                         .getProjectVersion(),
-                                                srcDoc, extensions, false);
+                                                srcDoc, extensions, docId);
                         ConsoleUtils
                                 .setProgressFeedbackMessage("Waiting for other clients ...");
+                        break;
+                    case Cancelled:
+                        waitForCompletion = false;
+                        ConsoleUtils.setProgressFeedbackMessage("Process is cancelled");
                         break;
                 }
 
@@ -668,7 +665,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         return targetDocList;
     }
 
-    private void pushTargetDocToServer(final String docUri,
+    private void pushTargetDocToServer(final String docId,
             LocaleMapping locale, final String localDocName,
             TranslationsResource targetDoc, final StringSet extensions) {
         if (!getOpts().isDryRun()) {
@@ -681,12 +678,13 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             ConsoleUtils.startProgressFeedback();
 
             ProcessStatus status =
-                    asyncProcessClient.startTranslatedDocCreationOrUpdate(
-                            docUri, getOpts().getProj(), getOpts()
-                                    .getProjectVersion(),
-                            new LocaleId(locale.getLocale()), targetDoc,
-                            extensions, getOpts().getMergeType(),
-                            getOpts().isMyTrans());
+                    asyncProcessClient
+                            .startTranslatedDocCreationOrUpdateWithDocId(
+                                    getOpts().getProj(), getOpts()
+                                            .getProjectVersion(),
+                                    new LocaleId(locale.getLocale()), targetDoc,
+                                    docId, extensions, getOpts().getMergeType(),
+                                    getOpts().isMyTrans());
 
             boolean waitForCompletion = true;
 
@@ -715,15 +713,20 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                         // try to submit the process again
                         status =
                                 asyncProcessClient
-                                        .startTranslatedDocCreationOrUpdate(docUri,
+                                        .startTranslatedDocCreationOrUpdateWithDocId(
                                                 getOpts().getProj(), getOpts()
                                                         .getProjectVersion(),
-                                                new LocaleId(locale.getLocale()),
-                                                targetDoc, extensions,
+                                                new LocaleId(
+                                                        locale.getLocale()),
+                                                targetDoc, docId, extensions,
                                                 getOpts().getMergeType(),
                                                 getOpts().isMyTrans());
                         ConsoleUtils
                                 .setProgressFeedbackMessage("Waiting for other clients ...");
+                        break;
+                    case Cancelled:
+                        waitForCompletion = false;
+                        ConsoleUtils.setProgressFeedbackMessage("Process is cancelled");
                         break;
                 }
 
@@ -751,8 +754,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
     private void deleteSourceDocFromServer(String qualifiedDocName) {
         if (!getOpts().isDryRun()) {
             log.info("deleting resource {} from server", qualifiedDocName);
-            String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-            sourceDocResourceClient.deleteResource(docUri);
+            sourceDocResourceClient.deleteResource(qualifiedDocName);
         } else {
             log.info(
                     "deleting resource {} from server (skipped due to dry run)",

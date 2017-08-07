@@ -20,21 +20,24 @@
  */
 package org.zanata.rest.compat;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
-import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.rest.MediaTypes;
 import org.zanata.apicompat.rest.dto.ProjectIteration;
+import org.zanata.rest.ResourceRequest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.*;
 
@@ -64,21 +67,23 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-            };
-
-            @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-                assertJsonUnmarshal(response, ProjectIteration.class);
-
-                ProjectIteration it =
-                        jsonUnmarshal(response, ProjectIteration.class);
-                assertThat(it.getId(), is("1.0"));
             }
 
+            @Override
+            protected void onResponse(Response response)
+                    throws IOException {
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, ProjectIteration.class);
+
+                ProjectIteration it =
+                        jsonUnmarshal(entityString, ProjectIteration.class);
+                assertThat(it.getId()).isEqualTo("1.0");
+            }
         }.run();
     }
 
@@ -88,20 +93,23 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
                 "GET") {
-            @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
-                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-            };
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-                assertJaxbUnmarshal(response, ProjectIteration.class);
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, ProjectIteration.class);
 
                 ProjectIteration it =
-                        jaxbUnmarshal(response, ProjectIteration.class);
-                assertThat(it.getId(), is("1.0"));
+                        jaxbUnmarshal(entityString, ProjectIteration.class);
+                assertThat(it.getId()).isEqualTo("1.0");
             }
 
         }.run();
@@ -118,16 +126,24 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
                         + newIteration.getId()), "PUT",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(
-                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON,
-                        jsonMarshal(newIteration));
-            };
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(newIteration),
+                                MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                // 201
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.CREATED.getStatusCode());
             }
 
         }.run();
@@ -137,20 +153,22 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/"
                         + newIteration.getId()),
                 "GET") {
+
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-            };
+            }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-                assertJsonUnmarshal(response, ProjectIteration.class);
-
+            protected void onResponse(Response response) {
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, ProjectIteration.class);
                 ProjectIteration it =
-                        jsonUnmarshal(response, ProjectIteration.class);
-                assertThat(it.getId(), is("new-iteration"));
+                        jsonUnmarshal(entityString, ProjectIteration.class);
+                assertThat(it.getId()).isEqualTo("new-iteration");
             }
 
         }.run();
@@ -167,16 +185,23 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
                         + newIteration.getId()), "PUT",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(
-                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
-                        jaxbMarhsal(newIteration));
-            };
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(newIteration),
+                                MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                // 201
+                assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
             }
 
         }.run();
@@ -187,19 +212,21 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
                         + newIteration.getId()),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-            };
+            }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-                assertJaxbUnmarshal(response, ProjectIteration.class);
+            protected void onResponse(Response response) {
+                // 200
+                assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, ProjectIteration.class);
 
                 ProjectIteration it =
-                        jaxbUnmarshal(response, ProjectIteration.class);
-                assertThat(it.getId(), is("new-iteration"));
+                        jaxbUnmarshal(entityString, ProjectIteration.class);
+                assertThat(it.getId()).isEqualTo("new-iteration");
             }
 
         }.run();

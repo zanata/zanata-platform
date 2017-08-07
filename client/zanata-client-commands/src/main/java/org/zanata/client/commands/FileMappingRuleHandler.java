@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.util.FileUtil;
-import org.zanata.common.ProjectType;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -56,12 +55,10 @@ public class FileMappingRuleHandler {
     private static final Logger log =
             LoggerFactory.getLogger(FileMappingRuleHandler.class);
     private final FileMappingRule mappingRule;
-    private final ProjectType projectType;
     private final ConfigurableProjectOptions opts;
 
-    public FileMappingRuleHandler(FileMappingRule rule, ProjectType projectType,
+    public FileMappingRuleHandler(FileMappingRule rule,
             ConfigurableProjectOptions opts) {
-        this.projectType = projectType;
         this.opts = opts;
         this.mappingRule = rule;
     }

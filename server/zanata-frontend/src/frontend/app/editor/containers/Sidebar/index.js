@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactSidebar from 'react-sidebar'
 import SidebarContent from '../SidebarContent'
 
@@ -11,10 +12,15 @@ const defaultState = {
  * displays content from SidebarContent.
  */
 class Sidebar extends Component {
+  static propTypes = {
+    open: PropTypes.bool.isRequired,
+    setSidebarVisible: PropTypes.func.isRequired,
+    // The main content display should be passed as children to this component
+    children: PropTypes.any
+  }
+
   constructor () {
     super()
-    this.setOpen = ::this.setOpen
-    this.close = ::this.close
     this.state = defaultState
   }
 
@@ -32,21 +38,19 @@ class Sidebar extends Component {
   // }
   //
   // mediaQueryChanged () {
-  //   this.setState({docked: this.state.mql.matches})
+  //   this.setState(prevState => ({docked: prevState.mql.matches}))
   // }
 
-  setOpen (open) {
+  setOpen = (open) => {
     this.props.setSidebarVisible(open)
   }
 
-  close () {
+  close = () => {
     this.props.setSidebarVisible(false)
   }
 
   render () {
-    const content = <SidebarContent
-      close={this.close}
-    />
+    const content = <SidebarContent close={this.close} />
 
     return (
       <ReactSidebar
@@ -56,18 +60,17 @@ class Sidebar extends Component {
         pullRight
         onSetOpen={this.setOpen}
         shadow
+        styles={{
+          content: {
+            // prevents unwanted padding to the right from default 'scroll'
+            overflowY: 'auto'
+          }
+        }}
         sidebarClassName="sidebar-editor">
         {this.props.children}
       </ReactSidebar>
     )
   }
-}
-
-Sidebar.propTypes = {
-  open: PropTypes.bool.isRequired,
-  setSidebarVisible: PropTypes.func.isRequired,
-  /* The main content display should be passed as children to this component */
-  children: PropTypes.any
 }
 
 export default Sidebar

@@ -1,5 +1,6 @@
 import cx from 'classnames'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SuggestionsHeader from './SuggestionsHeader'
 import SuggestionsBody from './SuggestionsBody'
 import SuggestionDetailsModal from './SuggestionDetailsModal'
@@ -22,8 +23,8 @@ const SEARCH_TYPE_TEXT = 'text'
 /**
  * Panel to search for and display suggestions.
  */
-const SuggestionsPanel = React.createClass({
-  propTypes: {
+class SuggestionsPanel extends React.Component {
+  static propTypes = {
     searchToggle: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     changeSearchText: PropTypes.func.isRequired,
@@ -36,13 +37,13 @@ const SuggestionsPanel = React.createClass({
     search: PropTypes.shape({
       suggestions: PropTypes.array.isRequired
     }).isRequired
-  },
+  }
 
-  hideDetail () {
+  hideDetail = () => {
     this.props.showDetail(undefined)
-  },
+  }
 
-  render: function () {
+  render () {
     if (!this.props.showPanel) {
       return DO_NOT_RENDER
     }
@@ -84,7 +85,7 @@ const SuggestionsPanel = React.createClass({
       </aside>
     )
   }
-})
+}
 
 function mapStateToProps (state) {
   const { search, searchType, searchByPhrase, textSearch } = state.suggestions

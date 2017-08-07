@@ -25,7 +25,6 @@ import java.net.URI;
 import java.util.List;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -50,14 +49,17 @@ public class GlossaryClient {
         baseUri = factory.getBaseUri();
     }
 
-    public void post(List<GlossaryEntry> glossaryEntries, LocaleId localeId,
+    public Response post(List<GlossaryEntry> glossaryEntries, LocaleId localeId,
             String qualifiedName) {
 
         Entity<List<GlossaryEntry>> entity = Entity.json(glossaryEntries);
 
-        webResource().path("entries").queryParam("locale", localeId.getId())
+        Response response = webResource().path("entries")
+                .queryParam("locale", localeId.getId())
                 .queryParam("qualifiedName", qualifiedName)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(entity).close();
+                .request(MediaType.APPLICATION_JSON_TYPE).post(entity);
+        response.close();
+        return response;
     }
 
     public Response downloadFile(String fileType,

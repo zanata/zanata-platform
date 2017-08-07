@@ -22,16 +22,14 @@ package org.zanata.page;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 /**
@@ -79,13 +77,7 @@ public class CorePage extends AbstractPage {
 
     protected void clickAndExpectErrors(WebElement button) {
         clickElement(button);
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() > 0;
-            }
-        }, "errors > 0");
+        refreshPageUntil(this, "errors > 0", it -> getErrors().size() > 0);
     }
 
     public List<String> getErrors() {
@@ -111,9 +103,9 @@ public class CorePage extends AbstractPage {
     public List<String> getErrors(final int expectedNumber) {
         log.info("Query page errors, expecting {}", expectedNumber);
         refreshPageUntil(this,
-                (Predicate<WebDriver>) webDriver -> getErrors()
-                        .size() == expectedNumber,
-                "errors = " + expectedNumber);
+                "errors = " + expectedNumber,
+                it -> getErrors().size() == expectedNumber
+        );
         return getErrors();
     }
 
@@ -128,7 +120,7 @@ public class CorePage extends AbstractPage {
         String msg = "expected error: " + expected;
         logWaiting(msg);
         waitForAMoment().withMessage(msg)
-                .until((Predicate<WebDriver>) webDriver -> getErrors()
+                .until(webDriver -> getErrors()
                         .contains(expected));
         return getErrors();
     }
@@ -148,7 +140,7 @@ public class CorePage extends AbstractPage {
         String msg = "notification " + notification;
         logWaiting(msg);
         return waitForAMoment().withMessage(msg)
-                .until((Function<WebDriver, Boolean>) driver -> {
+                .until(driver -> {
                     List<WebElement> messages =
                             getDriver().findElement(By.id("messages"))
                                     .findElements(By.tagName("li"));

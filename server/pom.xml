@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.2.2-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.1.1</kotlin.version>
+    <kotlin.version>1.1.2-4</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -32,6 +32,7 @@
     <infinispan.version>8.1.0.Final</infinispan.version>
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
+    <weld.spi.version>2.3.Final </weld.spi.version>
     <groovy.version>2.4.7</groovy.version>
     <icu4j.version>56.1</icu4j.version>
     <guava.version>21.0</guava.version>
@@ -75,7 +76,7 @@
     <hibernate.search.version>5.5.1.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
-    <hibernate.validator.version>5.2.3.Final</hibernate.validator.version>
+    <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
 
     <!-- controls concordion output location-->
     <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
@@ -266,7 +267,17 @@
 
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-reflect</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-stdlib</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-runtime</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
@@ -285,14 +296,21 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>2.6.2</version>
+        <version>2.8.9</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.nhaarman</groupId>
+        <artifactId>mockito-kotlin-kt1.1</artifactId>
+        <version>1.5.0</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.objenesis</groupId>
         <artifactId>objenesis</artifactId>
-        <version>2.4</version>
+        <version>2.5</version>
       </dependency>
 
       <dependency>
@@ -454,14 +472,14 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.5.2</version>
+        <version>3.8.0</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.atteo.classindex</groupId>
         <artifactId>classindex</artifactId>
-        <version>3.3</version>
+        <version>3.4</version>
       </dependency>
 
       <dependency>
@@ -621,6 +639,13 @@
         </exclusions>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-spi</artifactId>
+        <scope>provided</scope>
+        <version>${weld.spi.version}</version>
+      </dependency>
+
       <!-- Liquibase Dependencies -->
       <!-- If the Liquibase version is being updated, please refer to
       any changelog files that run 'on change' and make sure that they still run
@@ -637,11 +662,10 @@
         <version>2.2.1</version>
       </dependency>
 
-      <!-- zanata assets -->
       <dependency>
         <groupId>org.zanata</groupId>
-        <artifactId>zanata-assets</artifactId>
-        <version>${zanata.assets.version}</version>
+        <artifactId>services</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
@@ -830,6 +854,34 @@
 
       <dependency>
         <groupId>org.zanata</groupId>
+        <artifactId>zanata-model-test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>gwt-shared</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>gwt-shared</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>gwt-test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
         <artifactId>zanata-liquibase</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -854,6 +906,30 @@
           <exclusion>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-core</artifactId>
+        <version>1.3.15.Final</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-servlet</artifactId>
+        <version>1.3.15.Final</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -890,6 +966,14 @@
         <artifactId>jackson-core</artifactId>
         <version>${jackson2.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>2.0.15</version>
+        <scope>provided</scope>
+      </dependency>
+
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
@@ -1753,7 +1837,7 @@
     </pluginRepository>
     <pluginRepository>
       <id>arturbosch-code-analysis</id>
-      <name>arturbosch-code-analysis (for detekt)</name>
+      <name>arturbosch-code-analysis (for detekt, also available in jcenter)</name>
       <url>https://dl.bintray.com/arturbosch/code-analysis/</url>
       <layout>default</layout>
       <releases>
@@ -1887,23 +1971,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <!--
-            Compiler plugin uses Java compiler API since version 3.0.
-            Usage of compiler API is much better than forking javac executable.
-            Compiler API is much faster as it's run in same process.
-            And most importatly ALL compiler messages are printed by maven.
-            When standalone javac executable is run maven parses it's output and
-            some messages are lost in the process!!!
-          -->
-          <forceJavacCompilerUse>false</forceJavacCompilerUse>
-          <useIncrementalCompilation>true</useIncrementalCompilation>
-          <fork>false</fork>
-          <compilerArgs>
-            <arg>-Xlint:-processing</arg>
-            <arg>-Xlint:all</arg>
-          </compilerArgs>
-        </configuration>
         <executions>
           <!-- Replacing default-compile as it is treated specially by Maven.
                We need kotlin-maven-plugin to compile first. -->
@@ -1917,17 +1984,11 @@
             <id>default-testCompile</id>
             <phase>none</phase>
           </execution>
-          <execution>
-            <id>java-compile</id>
-            <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
-          </execution>
-          <execution>
-            <id>java-test-compile</id>
-            <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
-          </execution>
         </executions>
+        <configuration>
+          <!-- Ignore maven.compiler.compilerId=jdt -->
+          <compilerId>javac</compilerId>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -1959,6 +2020,9 @@
             <goals> <goal>testCompile</goal> </goals>
           </execution>
         </executions>
+        <configuration>
+          <compilerId>jdt</compilerId>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -2055,45 +2119,7 @@
               </target>
             </configuration>
           </execution>
-          <execution>
-            <!-- This can be run separately with mvn antrun:run@detekt -->
-            <id>detekt</id>
-            <!-- Disabled until config-resource option is released (1.0.0.M7?).
-                 https://gitlab.com/arturbosch/detekt/merge_requests/2 -->
-            <!--<phase>verify</phase>-->
-            <configuration>
-              <target name="detekt">
-                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
-                  classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
-                  <arg value="--config-resource"/>
-                  <arg value="zanata-build-tools/detekt.yml"/>
-                  <arg value="--project"/>
-                  <arg value="${basedir}/src"/>
-                  <arg value="--filters"/>
-                  <arg value=".*test.*"/>
-                </java>
-              </target>
-            </configuration>
-            <goals><goal>run</goal></goals>
-          </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>build-tools</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>io.gitlab.arturbosch.detekt</groupId>
-            <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M6</version>
-          </dependency>
-          <dependency>
-            <groupId>io.gitlab.arturbosch.detekt</groupId>
-            <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M6</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
 
@@ -2313,6 +2339,62 @@
     </profile>
 
     <profile>
+      <id>staticAnalysis</id>
+      <activation>
+        <property>
+          <name>staticAnalysis</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--<version>1.8</version>-->
+            <executions>
+              <execution>
+                <!-- This can be run separately with mvn antrun:run@detekt -DstaticAnalysis -->
+                <id>detekt</id>
+                <phase>verify</phase>
+                <configuration>
+                  <target name="detekt">
+                    <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
+                        classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                      <arg value="--config-resource"/>
+                      <arg value="zanata-build-tools/detekt.yml"/>
+                      <arg value="--project"/>
+                      <arg value="${basedir}/src"/>
+                      <arg value="--filters"/>
+                      <arg value=".*test.*"/>
+                    </java>
+                  </target>
+                </configuration>
+                <goals><goal>run</goal></goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.zanata</groupId>
+                <artifactId>build-tools</artifactId>
+                <version>${project.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>io.gitlab.arturbosch.detekt</groupId>
+                <artifactId>detekt-cli</artifactId>
+                <version>1.0.0.M11</version>
+              </dependency>
+              <dependency>
+                <groupId>io.gitlab.arturbosch.detekt</groupId>
+                <artifactId>detekt-formatting</artifactId>
+                <version>1.0.0.M11</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
       <id>victims</id>
       <activation>
         <property>
@@ -2403,11 +2485,15 @@
   <modules>
     <module>zanata-liquibase</module>
     <module>zanata-model</module>
+    <module>zanata-model-test</module>
     <module>zanata-war</module>
     <module>zanata-test-war</module>
     <module>functional-test</module>
     <!-- <module>zanata-dist</module> -->
+    <module>gwt-shared</module>
+    <module>gwt-test</module>
     <module>gwt-editor</module>
     <module>security-common</module>
+    <module>services</module>
   </modules>
 </project>

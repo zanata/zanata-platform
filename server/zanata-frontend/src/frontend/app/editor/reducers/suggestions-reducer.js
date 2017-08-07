@@ -1,4 +1,4 @@
-import updateObject from 'react-addons-update'
+import updateObject from 'immutability-helper'
 
 import {
   DIFF_SETTING_CHANGED,

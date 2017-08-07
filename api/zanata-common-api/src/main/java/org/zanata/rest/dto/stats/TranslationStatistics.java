@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -53,12 +55,12 @@ import org.zanata.common.TransUnitWords;
 @JsonPropertyOrder({ "total", "untranslated", "needReview", "translated",
         "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale",
         "lastTranslated" })
+@Label("Translation Statistics")
 public class TranslationStatistics implements Serializable {
     private static final long serialVersionUID = 1L;
     private StatUnit unit;
     private BaseTranslationCount translationCount;
     private String locale;
-    private double remainingHours;
     private String lastTranslated;
 
     private @Nullable
@@ -91,26 +93,28 @@ public class TranslationStatistics implements Serializable {
         translationCount = wordCount;
         this.unit = StatUnit.WORD;
         this.locale = locale;
-
-        countRemainingHours();
     }
 
     /**
      * Calculate remaining hours if StatUnit equals to 'WORD'.
      */
-    private void countRemainingHours() {
+    @XmlTransient
+    @JsonIgnore
+    public @Nullable Double getRemainingHours() {
         if (unit.equals(StatUnit.WORD)) {
             double untransHours = translationCount.getUntranslated() / 250.0;
             double fuzzyHours = translationCount.getNeedReview() / 500.0;
 
-            remainingHours = untransHours + fuzzyHours;
+            return untransHours + fuzzyHours;
         }
+        return null;
     }
 
     /**
      * Number of untranslated elements.
      */
     @XmlAttribute
+    @DocumentationExample("25")
     public long getUntranslated() {
         return translationCount.getUntranslated();
     }
@@ -147,6 +151,7 @@ public class TranslationStatistics implements Serializable {
      * @return
      */
     @XmlAttribute
+    @DocumentationExample("50")
     public long getFuzzy() {
         return translationCount.getNeedReview();
     }
@@ -179,6 +184,7 @@ public class TranslationStatistics implements Serializable {
      * @return number of translated but not yet approved elements.
      */
     @XmlAttribute
+    @DocumentationExample("30")
     public long getTranslatedOnly() {
         return translationCount.getTranslated();
     }
@@ -191,6 +197,7 @@ public class TranslationStatistics implements Serializable {
      * @return Number of approved elements.
      */
     @XmlAttribute
+    @DocumentationExample("80")
     public long getApproved() {
         return translationCount.getApproved();
     }
@@ -200,6 +207,7 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlAttribute
+    @DocumentationExample("10")
     public long getRejected() {
         return translationCount.getRejected();
     }
@@ -242,6 +250,7 @@ public class TranslationStatistics implements Serializable {
      * Locale for the translation statistics.
      */
     @XmlAttribute
+    @DocumentationExample("es-ES")
     public String getLocale() {
         return locale;
     }
@@ -250,7 +259,11 @@ public class TranslationStatistics implements Serializable {
         this.locale = locale;
     }
 
+    /**
+     * Last translation information. Includes date and user.
+     */
     @XmlAttribute
+    @DocumentationExample("31/12/15 23:59 by homer")
     public String getLastTranslated() {
         return lastTranslated;
     }
@@ -316,32 +329,16 @@ public class TranslationStatistics implements Serializable {
         }
     }
 
-    public void setRemainingHours(double remainingHours) {
-        this.remainingHours = remainingHours;
-    }
-
-    // TODO Should consolidate with countRemainingHours() as it might return 0
-    // or null for StatUnit.MESSAGE
-    @XmlTransient
-    @JsonIgnore
-    @Deprecated
-    public double getRemainingHours() {
-        return remainingHours;
-    }
-
     public void add(TranslationStatistics other) {
         translationCount.add(other.translationCount);
-        countRemainingHours();
     }
 
     public void increment(ContentState state, long count) {
         translationCount.increment(state, (int) count);
-        countRemainingHours();
     }
 
     public void decrement(ContentState state, long count) {
         translationCount.decrement(state, (int) count);
-        countRemainingHours();
     }
 
     @Override
@@ -350,7 +347,6 @@ public class TranslationStatistics implements Serializable {
         sb.append("unit=").append(unit);
         sb.append(", translationCount=").append(translationCount);
         sb.append(", locale='").append(locale).append('\'');
-        sb.append(", remainingHours=").append(remainingHours);
         sb.append(", lastTranslated='").append(lastTranslated).append('\'');
         sb.append(", lastTranslatedDate=").append(lastTranslatedDate);
         sb.append(", lastTranslatedBy='").append(lastTranslatedBy).append('\'');
@@ -358,6 +354,7 @@ public class TranslationStatistics implements Serializable {
         return sb.toString();
     }
 
+    @Label("Stats Unit")
     public enum StatUnit {
         /** Statistics are measured in words. */
         WORD,

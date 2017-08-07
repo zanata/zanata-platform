@@ -1,24 +1,22 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * Gravatar icon that links to the dashboard page
  */
-const DashboardLink = React.createClass({
-
-  propTypes: {
+class DashboardLink extends React.Component {
+  static propTypes = {
     dashboardUrl: PropTypes.string.isRequired,
     name: PropTypes.string,
     gravatarUrl: PropTypes.string
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      // default "mystery man" icon
-      gravatarUrl: 'http://www.gravatar.com/avatar/?d=mm'
-    }
-  },
+  static defaultProps = {
+    // default "mystery man" icon
+    gravatarUrl: 'http://www.gravatar.com/avatar/?d=mm'
+  }
 
-  render: function () {
+  render () {
     return (
       <a href={this.props.dashboardUrl}
         className="u-sizeHeight-2 u-sizeWidth-1_1-2 u-inlineBlock"
@@ -28,6 +26,6 @@ const DashboardLink = React.createClass({
       </a>
     )
   }
-})
+}
 
 export default DashboardLink

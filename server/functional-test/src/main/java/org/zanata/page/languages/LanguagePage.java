@@ -24,14 +24,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.util.Checkbox;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
 /**
@@ -53,6 +51,9 @@ public class LanguagePage extends BasePage {
     private By addUserSearchButton = By.id("searchForm:searchBtn");
     private By personTable = By.id("resultForm:searchResults");
     private By addSelectedButton = By.id("addSelectedBtn");
+    private By requestToJoinLanguage = By.xpath(".//button[contains(text(),'Request To Join')]");
+    private By cancelRequest = By.xpath(".//span[contains(text(),'Cancel request')]");
+    private By leaveLanguageTeam = By.xpath(".//span[contains(text(),'Leave Team')]");
     public static final int IS_TRANSLATOR_COLUMN = 0;
     public static final int IS_REVIEWER_COLUMN = 1;
     public static final int IS_COORDINATOR_COLUMN = 2;
@@ -124,13 +125,8 @@ public class LanguagePage extends BasePage {
         log.info("Click Join");
         clickElement(joinLanguageTeamButton);
         // we need to wait for this join to finish before returning the page
-        waitForAMoment().until(new Function<WebDriver, Boolean>() {
-
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return driver.findElements(joinLanguageTeamButton).isEmpty();
-            }
-        });
+        waitForAMoment().until(driver ->
+                driver.findElements(joinLanguageTeamButton).isEmpty());
         return new LanguagePage(getDriver());
     }
 
@@ -175,7 +171,7 @@ public class LanguagePage extends BasePage {
         permissionToAdd.add(TeamPermission.Translator);
         for (final TeamPermission permission : permissionToAdd) {
             log.info("Set checked as {}", permission.name());
-            waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            waitForAMoment().until(it -> {
                 WebElement inputDiv = getSearchedForUser(username)
                         .findElement(By.className("list--horizontal"))
                         .findElements(By.tagName("li"))
@@ -195,15 +191,15 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage confirmAdded(final String personUsername) {
         // we need to wait for the page to refresh
-        refreshPageUntil(this, (Predicate<WebDriver>) driver -> {
-            return getMemberUsernames().contains(personUsername);
-        }, "Wait for names to contain " + personUsername);
+        refreshPageUntil(this, "Wait for names to contain " + personUsername,
+                it -> getMemberUsernames().contains(personUsername)
+        );
         return new LanguagePage(getDriver());
     }
 
     private WebElement getSearchedForUser(final String username) {
         return waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
+                .until(it -> {
                     WebElement list = readyElement(personTable)
                             .findElement(By.className("list--slat"));
                     List<WebElement> rows =
@@ -241,4 +237,23 @@ public class LanguagePage extends BasePage {
             this.columnIndex = columnIndex;
         }
     }
+
+    public RequestToJoinPopup requestToJoin() {
+        log.info("Click Request To Join");
+        clickElement(requestToJoinLanguage);
+        return new RequestToJoinPopup(getDriver());
+    }
+
+    public LanguagePage leaveTeam() {
+        log.info("Click Leave Team");
+        clickElement(leaveLanguageTeam);
+        return new LanguagePage(getDriver());
+    }
+
+    public LanguagePage cancelRequest() {
+        log.info("Click Cancel Request");
+        clickElement(cancelRequest);
+        return new LanguagePage(getDriver());
+    }
+
 }

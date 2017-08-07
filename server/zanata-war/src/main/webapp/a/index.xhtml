@@ -20,7 +20,8 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
     <meta http-equiv="cleartype" content="on"/>
 
-    <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
+    <link type="image/x-icon" rel="shortcut icon"
+        href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
     <link type="text/css" rel="stylesheet" href="#{request.contextPath}/frontend.css"/>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
   </h:head>
@@ -28,8 +29,9 @@
   <h:body class="bodystyle">
     <ds:windowId/>
     <div id="config"
-      data-base-url="#{request.contextPath}"
-      data-api-root="/rest"
+      data-app-url="#{request.contextPath}"
+      data-server-url="#{request.contextPath}"
+      data-api-server-url="#{request.contextPath}/rest"
       data-user="#{authenticatedAccountHome.getUser()}"
       data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
       data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",

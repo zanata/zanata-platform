@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import dateUtils from '../../utils/DateHelper'
 
 const CalendarPeriodHeading = ({
@@ -9,7 +10,7 @@ const CalendarPeriodHeading = ({
   const period = selectedDay
     ? dateUtils.formatDate(selectedDay, dateUtils.dateSingleDisplayFmt)
     : dateUtils.formatDate(dateRange.startDate, dateUtils.dateRangeDisplayFmt) +
-      ' … ' +
+      ' to ' +
       dateUtils.formatDate(dateRange.endDate, dateUtils.dateRangeDisplayFmt)
 
   return (

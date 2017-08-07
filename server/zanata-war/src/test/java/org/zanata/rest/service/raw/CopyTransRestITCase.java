@@ -20,16 +20,19 @@
  */
 package org.zanata.rest.service.raw;
 
+import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.RestTest;
@@ -37,7 +40,6 @@ import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.service.ResourceTestObjectFactory;
 
 /**
  * @author Carlos Munoz <a
@@ -67,22 +69,27 @@ public class CopyTransRestITCase extends RestTest {
     @Before
     public void setUp() throws Exception {
         // push a fresh new document because copyTrans is async and may affect other tests
-        resource = new ResourceTestObjectFactory().getTextFlowTest();
+        resource = getTestDocWithTextFlow();
         new ResourceRequest(
                 getRestEndpointUrl("projects/p/sample-project/iterations/i/1.0/r/"),
                 "POST", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(
-                    ClientRequest request) {
-                request.queryParameter("copyTrans", Boolean.FALSE);
-                request.body(MediaType.APPLICATION_XML_TYPE,
-                        jaxbMarhsal(resource));
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("copyTrans", Boolean.FALSE).request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
+                Response response = builder.buildPost(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(201);
-                response.releaseConnection();
             }
         }.run();
     }
@@ -100,13 +107,16 @@ public class CopyTransRestITCase extends RestTest {
 
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(200);
-                assertJaxbUnmarshal(response, CopyTransStatus.class);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, CopyTransStatus.class);
             }
         }.run();
     }
@@ -122,11 +132,13 @@ public class CopyTransRestITCase extends RestTest {
                 "POST", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
@@ -144,11 +156,13 @@ public class CopyTransRestITCase extends RestTest {
                 "POST") {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(401);
             }
         }.run();
@@ -165,11 +179,13 @@ public class CopyTransRestITCase extends RestTest {
                 "GET") {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(401);
             }
         }.run();

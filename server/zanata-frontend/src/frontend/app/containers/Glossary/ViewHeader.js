@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {debounce, isEmpty} from 'lodash'
 import {
@@ -29,7 +30,43 @@ import {getProjectUrl} from '../../utils/UrlHelper'
  * Header for glossary page
  */
 class ViewHeader extends Component {
-  currentLocaleCount () {
+  static propTypes = {
+    title: PropTypes.string,
+    project: PropTypes.object,
+    results: PropTypes.object,
+    termCount: PropTypes.number.isRequired,
+    statsLoading: PropTypes.bool,
+    transLocales: PropTypes.arrayOf(
+      PropTypes.shape({
+        count: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired
+      })
+    ).isRequired,
+    filterText: PropTypes.string,
+    selectedTransLocale: PropTypes.string,
+    permission: PropTypes.shape({
+      canAddNewEntry: PropTypes.bool,
+      canUpdateEntry: PropTypes.bool,
+      canDeleteEntry: PropTypes.bool
+    }).isRequired,
+    sort: PropTypes.shape({
+      src_content: PropTypes.bool,
+      part_of_speech: PropTypes.bool
+    }).isRequired,
+    deleteAll: PropTypes.object,
+    handleTranslationLocaleChange: PropTypes.func,
+    handleFilterFieldUpdate: PropTypes.func,
+    handleImportFileDisplay: PropTypes.func,
+    handleNewEntryDisplay: PropTypes.func,
+    handleDeleteAllEntriesDisplay: PropTypes.func,
+    handleDeleteAllEntries: PropTypes.func,
+    handleSortColumn: PropTypes.func,
+    handleSearchCancelClick: PropTypes.func,
+    handleExportFileDisplay: PropTypes.func
+  }
+
+  currentLocaleCount = () => {
     if (this.props.filterText && this.props.results) {
       return this.props.results
         .filter(result => result.glossaryTerms.length >= 2).length
@@ -40,7 +77,7 @@ class ViewHeader extends Component {
     }
   }
 
-  localeOptionsRenderer (op) {
+  localeOptionsRenderer = (op) => {
     return (
       <span className='locale-options'>
         <span className='locale-options-label' title={op.label}>
@@ -56,7 +93,7 @@ class ViewHeader extends Component {
     )
   }
 
-  handleClearSearch () {
+  handleClearSearch = () => {
     if (this.searchInput !== null) {
       this.searchInput._onClear()
     }
@@ -124,9 +161,7 @@ class ViewHeader extends Component {
             <Button bsStyle='link'
               title='Cancel search'
               disabled={isEmpty(filterText)}
-              onClick={(e) => {
-                this.handleClearSearch()
-              }}>
+              onClick={this.handleClearSearch}>
               <Icon name='cross' className='s1' />
             </Button>
 
@@ -170,116 +205,83 @@ class ViewHeader extends Component {
                     <div className='glossary-button'>
                       <DeleteAllEntriesModal show={deleteAll.show}
                         isDeleting={deleteAll.isDeleting}
-                        handleDeleteAllEntriesDisplay={(display) =>
-                           handleDeleteAllEntriesDisplay(display)}
+                        handleDeleteAllEntriesDisplay={
+                          handleDeleteAllEntriesDisplay}
                         handleDeleteAllEntries={handleDeleteAllEntries} />
                     </div>)}
           </div>
         )}>
         <div className='glossary-table'>
           <table>
-            <tr className='tr-flex1'>
-              <td className='td-3'
-                onClick={() => handleSortColumn('src_content')}>
-                <Button bsStyle='link' type='button'>
-                  <Row>
-                    {'src_content' in sort
-                      ? (sort.src_content === true)
-                        ? <Icon name='chevron-down' className='s1' />
-                        : <Icon name='chevron-up' className='s1' />
-                      : ''}
-                    <Icon name='glossary' className='s1 glossaryicon-neutral' />
-                    <span>
-                    English (United States)
-                    </span>
-                    <span className='muted-left'>{termCount}</span>
-                  </Row>
-                </Button>
-              </td>
-              <td
-                className='lang-select td-3'>
-                <Select
-                  name='language-selection'
-                  placeholder={statsLoading
-                    ? 'Loading…' : 'Select a language…'}
-                  className='input-flex'
-                  isLoading={statsLoading}
-                  value={selectedTransLocale}
-                  options={transLocales}
-                  pageSize={20}
-                  optionRenderer={this.localeOptionsRenderer}
-                  onChange={handleTranslationLocaleChange}
-                />
-                {selectedTransLocale &&
-                (<span className='hidden-xs'>
-                  <Row>
-                    <Icon name='translate' className='s1
-                      translateicon-neutral' />
-                    <span className='text-neutral'>
-                    {currentLocaleCount}
-                    </span>
-                  </Row>
-                </span>
-                )}
-              </td>
-              <td className='hidesmall td-1'
-                onClick={() => handleSortColumn('part_of_speech')}>
-                <Button bsStyle='link' type='button'>
-                  <Row>
-                    {'part_of_speech' in sort
-                      ? (sort.part_of_speech === true)
-                        ? <Icon name='chevron-down' className='s1' />
-                        : <Icon name='chevron-up' className='s1' />
-                      : ''}
-                    <span className='left-rq'>
-                    Part of Speech
-                    </span>
-                  </Row>
-                </Button>
-              </td>
-              <td className='td-1' />
-            </tr>
+            <tbody>
+              <tr className='tr-flex1'>
+                <td className='td-3'
+                  onClick={() => handleSortColumn('src_content')}>
+                  <Button bsStyle='link' type='button'>
+                    <Row>
+                      {'src_content' in sort
+                        ? (sort.src_content === true)
+                          ? <Icon name='chevron-down' className='s1' />
+                          : <Icon name='chevron-up' className='s1' />
+                        : ''}
+                      <Icon name='glossary'
+                        className='s1 glossaryicon-neutral' />
+                      <span>
+                      English (United States)
+                      </span>
+                      <span className='muted-left'>{termCount}</span>
+                    </Row>
+                  </Button>
+                </td>
+                <td
+                  className='lang-select td-3'>
+                  <Select
+                    name='language-selection'
+                    placeholder={statsLoading
+                      ? 'Loading…' : 'Select a language…'}
+                    className='input-flex'
+                    isLoading={statsLoading}
+                    value={selectedTransLocale}
+                    options={transLocales}
+                    pageSize={20}
+                    optionRenderer={this.localeOptionsRenderer}
+                    onChange={handleTranslationLocaleChange}
+                  />
+                  {selectedTransLocale &&
+                  (<span className='hidden-xs'>
+                    <Row>
+                      <Icon name='translate' className='s1
+                        translateicon-neutral' />
+                      <span className='text-neutral'>
+                      {currentLocaleCount}
+                      </span>
+                    </Row>
+                  </span>
+                  )}
+                </td>
+                <td className='hidesmall td-1'
+                  onClick={() => handleSortColumn('part_of_speech')}>
+                  <Button bsStyle='link' type='button'>
+                    <Row>
+                      {'part_of_speech' in sort
+                        ? (sort.part_of_speech === true)
+                          ? <Icon name='chevron-down' className='s1' />
+                          : <Icon name='chevron-up' className='s1' />
+                        : ''}
+                      <span className='left-rq'>
+                      Part of Speech
+                      </span>
+                    </Row>
+                  </Button>
+                </td>
+                <td className='td-1' />
+              </tr>
+            </tbody>
           </table>
         </div>
       </Header>
     )
   }
-}
-
-ViewHeader.propTypes = {
-  title: PropTypes.string,
-  project: PropTypes.object,
-  results: PropTypes.object,
-  termCount: PropTypes.number.isRequired,
-  statsLoading: PropTypes.bool,
-  transLocales: PropTypes.arrayOf(
-    PropTypes.shape({
-      count: PropTypes.number.isRequired,
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  filterText: PropTypes.string,
-  selectedTransLocale: PropTypes.string,
-  permission: PropTypes.shape({
-    canAddNewEntry: PropTypes.bool,
-    canUpdateEntry: PropTypes.bool,
-    canDeleteEntry: PropTypes.bool
-  }).isRequired,
-  sort: PropTypes.shape({
-    src_content: PropTypes.bool,
-    part_of_speech: PropTypes.bool
-  }).isRequired,
-  deleteAll: PropTypes.object,
-  handleTranslationLocaleChange: PropTypes.func,
-  handleFilterFieldUpdate: PropTypes.func,
-  handleImportFileDisplay: PropTypes.func,
-  handleNewEntryDisplay: PropTypes.func,
-  handleDeleteAllEntriesDisplay: PropTypes.func,
-  handleDeleteAllEntries: PropTypes.func,
-  handleSortColumn: PropTypes.func,
-  handleSearchCancelClick: PropTypes.func,
-  handleExportFileDisplay: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -293,7 +295,8 @@ const mapStateToProps = (state) => {
     deleteAll,
     project
   } = state.glossary
-  const query = state.routing.location.query
+  // FIXME probably out of date, needs the one that was passed as props
+  const query = state.routing.locationBeforeTransitions.query
   return {
     termCount,
     statsLoading,

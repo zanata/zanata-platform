@@ -97,7 +97,7 @@ public class ZanataRestCaller {
             restClientFactory = new RestClientFactory(new URI(baseUrl),
                     username, apiKey, versionInfo, true, false);
         } catch (URISyntaxException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -136,9 +136,9 @@ public class ZanataRestCaller {
     }
 
     public void putSourceDocResource(String projectSlug, String iterationSlug,
-            String idNoSlash, Resource resource, boolean copytrans) {
+            String id, Resource resource, boolean copytrans) {
         restClientFactory.getSourceDocResourceClient(projectSlug, iterationSlug)
-                .putResource(idNoSlash, resource, Collections.emptySet(),
+                .putResource(id, resource, Collections.emptySet(),
                         copytrans);
     }
 
@@ -160,9 +160,9 @@ public class ZanataRestCaller {
     }
 
     public void postTargetDocResource(String projectSlug, String iterationSlug,
-            String idNoSlash, LocaleId localeId,
+            String docId, LocaleId localeId,
             TranslationsResource translationsResource, String mergeType) {
-        asyncPushTarget(projectSlug, iterationSlug, idNoSlash, localeId,
+        asyncPushTarget(projectSlug, iterationSlug, docId, localeId,
                 translationsResource, mergeType, false);
     }
 
@@ -204,9 +204,10 @@ public class ZanataRestCaller {
         AsyncProcessClient asyncProcessClient =
                 restClientFactory.getAsyncProcessClient();
         ProcessStatus processStatus =
-                asyncProcessClient.startSourceDocCreationOrUpdate(
-                        sourceResource.getName(), projectSlug, iterationSlug,
-                        sourceResource, Sets.newHashSet(), false);
+                asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
+                        projectSlug, iterationSlug,
+                        sourceResource, Sets.newHashSet(),
+                        sourceResource.getName());
         processStatus = waitUntilFinished(asyncProcessClient, processStatus.getUrl());
         log.info("finished async source push ({}-{}): {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
@@ -249,9 +250,9 @@ public class ZanataRestCaller {
         AsyncProcessClient asyncProcessClient =
                 restClientFactory.getAsyncProcessClient();
         ProcessStatus processStatus =
-                asyncProcessClient.startTranslatedDocCreationOrUpdate(docId,
+                asyncProcessClient.startTranslatedDocCreationOrUpdateWithDocId(
                         projectSlug, iterationSlug, localeId, transResource,
-                        Collections.<String> emptySet(), mergeType,
+                        docId, Collections.<String> emptySet(), mergeType,
                         assignCreditToUploader);
         processStatus = waitUntilFinished(asyncProcessClient, processStatus.getUrl());
         log.info("finished async translation({}-{}) push: {}", projectSlug,

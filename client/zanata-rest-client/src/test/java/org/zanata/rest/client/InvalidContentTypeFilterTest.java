@@ -27,8 +27,6 @@ public class InvalidContentTypeFilterTest {
                     "    <link type=\"text/css\" rel=\"stylesheet\" class=\"user\" href=\"/javax.faces.resource/jars/assets/css/zanata.css\" />\n" +
                     "    <link type=\"text/css\" rel=\"stylesheet\" href=\"/javax.faces.resource/jars/assets/css/style.min.css\" />";
 
-    private String text = "    <title>Zanata: Home</title>  \n";
-
     @Test
     public void testPatternMatch() {
         Pattern pattern = Pattern.compile(".*<title>(.*)</title>.*",

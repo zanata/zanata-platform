@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { EditableText, Icon, LoaderText, Modal } from '../../components'
 import { Button, ButtonGroup } from 'react-bootstrap'
@@ -7,7 +8,19 @@ import { Button, ButtonGroup } from 'react-bootstrap'
  * Popup windows to display a glossary entry
  */
 class EntryModal extends Component {
-  generateTermInfo (term) {
+  static propTypes = {
+    entry: PropTypes.object,
+    show: PropTypes.bool,
+    isSaving: PropTypes.bool,
+    canUpdate: PropTypes.bool,
+    selectedTransLocale: PropTypes.string,
+    handleResetTerm: PropTypes.func,
+    handleEntryModalDisplay: PropTypes.func,
+    handleUpdateTerm: PropTypes.func,
+    handleTermFieldUpdate: PropTypes.func
+  }
+
+  generateTermInfo = (term) => {
     if (term) {
       const person = term.lastModifiedBy
       const date = term.lastModifiedDate
@@ -86,7 +99,7 @@ class EntryModal extends Component {
             <label className='text-bold'>Part of speech</label>
             <EditableText
               editable={!transSelected}
-              editing={true}
+              editing
               className='text-state-classes'
               maxLength={255}
               placeholder='Add part of speech…'
@@ -99,7 +112,7 @@ class EntryModal extends Component {
             <label className='text-bold'>Description</label>
             <EditableText
               editable={!transSelected}
-              editing={true}
+              editing
               maxLength={255}
               placeholder='Add a description…'
               emptyReadOnlyText='No description'
@@ -111,8 +124,8 @@ class EntryModal extends Component {
             <div className='modal-section'>
               <label className='text-bold'>Translation</label>
               <EditableText
-                editable={true}
-                editing={true}
+                editable
+                editing
                 maxLength={255}
                 placeholder='Add a translation…'
                 emptyReadOnlyText='No translation'
@@ -154,7 +167,7 @@ class EntryModal extends Component {
 
             {isSaving
               ? (<Button bsStyle='primary'
-                type='button' disabled={true}>
+                type='button' disabled>
                 <LoaderText loading loadingText='Updating'>Update</LoaderText>
               </Button>)
               : (<Button bsStyle='primary'
@@ -169,18 +182,6 @@ class EntryModal extends Component {
     )
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value*/
   }
-}
-
-EntryModal.propTypes = {
-  entry: PropTypes.object,
-  show: PropTypes.bool,
-  isSaving: PropTypes.bool,
-  canUpdate: PropTypes.bool,
-  selectedTransLocale: PropTypes.string,
-  handleResetTerm: PropTypes.func,
-  handleEntryModalDisplay: PropTypes.func,
-  handleUpdateTerm: PropTypes.func,
-  handleTermFieldUpdate: PropTypes.func
 }
 
 export default EntryModal

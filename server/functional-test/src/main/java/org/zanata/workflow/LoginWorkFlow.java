@@ -20,18 +20,14 @@
  */
 package org.zanata.workflow;
 
-import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.InactiveAccountPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.dashboard.DashboardBasePage;
-import java.util.List;
 
 public class LoginWorkFlow extends AbstractWebWorkFlow {
     private static final org.slf4j.Logger log =
@@ -80,7 +76,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
         basePage.deleteCookiesAndRefresh();
         basePage.clickSignInLink().enterUsername(username)
                 .enterPassword(password).clickSignIn().waitForAMoment()
-                .withMessage("login").until((Predicate<WebDriver>) driver1 -> {
+                .withMessage("login").until(driver1 -> {
                     // only enable this if you temporarily disable implicit
                     // waits:
                     // fail-fast logic

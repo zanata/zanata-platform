@@ -426,7 +426,7 @@ public interface WebTransMessages extends Messages {
     String noMatch();
 
     @DefaultMessage("Matching")
-    String noColor();
+    String matching();
 
     /**
      * Used for color legend in search and replace view

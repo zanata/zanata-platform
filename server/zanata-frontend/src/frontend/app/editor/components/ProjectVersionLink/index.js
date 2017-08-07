@@ -1,29 +1,27 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * Link to open the version page.
  * Label is project + version name
  */
-const ProjectVersionLink = React.createClass({
-
-  propTypes: {
+class ProjectVersionLink extends React.Component {
+  static propTypes = {
     project: PropTypes.shape({
       name: PropTypes.string
     }).isRequired,
     version: PropTypes.string,
     url: PropTypes.string
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      project: {
-        name: 'Loading... '
-      },
-      versionSlug: 'Loading... '
-    }
-  },
+  static defaultProps = {
+    project: {
+      name: 'Loading... '
+    },
+    versionSlug: 'Loading... '
+  }
 
-  render: function () {
+  render () {
     // TODO use project slug if name is not defined
     return (
       <a href={this.props.url}
@@ -38,6 +36,6 @@ const ProjectVersionLink = React.createClass({
       </a>
     )
   }
-})
+}
 
 export default ProjectVersionLink

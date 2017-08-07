@@ -43,7 +43,7 @@ public class AllowAnonymousAccessRule extends ExternalResource {
         try {
             allowAnonymousUser(false);
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 }

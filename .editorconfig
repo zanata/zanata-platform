@@ -75,7 +75,7 @@ indent_size = unset
 insert_final_newline = unset
 trim_trailing_whitespace = false
 
-[{*.xml,*.xhtml,*.html}]
+[{*.xml,*.xhtml,*.html,*.xlf}]
 indent_style = space
 indent_size = 2
 continuation_indent_size = 4

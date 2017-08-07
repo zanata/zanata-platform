@@ -1,7 +1,5 @@
-import React, {
-  Component,
-  PropTypes
-} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Row } from 'react-bootstrap'
 import { TextInput } from '../../components'
 
@@ -11,6 +9,35 @@ import { TextInput } from '../../components'
  */
 
 class EditableText extends Component {
+  static propTypes = {
+    /**
+     * String value for this text field
+     */
+    children: PropTypes.string,
+    /**
+     * Toggle whether the text field is in editable or not. Default is 'false'
+     */
+    editable: PropTypes.bool,
+    /**
+     * Toggle whether the text field is in editing mode or not.
+     * Default is 'false'
+     */
+    editing: PropTypes.bool,
+    /**
+     * Placeholder
+     */
+    placeholder: PropTypes.string,
+    /**
+     * String to display if it is editable and children is
+     * empty and there is not placeholder
+     */
+    emptyReadOnlyText: PropTypes.string,
+    /**
+     * Tooltip
+     */
+    title: PropTypes.string
+  }
+
   constructor () {
     super()
     this.state = {
@@ -18,13 +45,13 @@ class EditableText extends Component {
     }
   }
 
-  handleClick () {
+  handleClick = () => {
     this.setState({
       focus: true
     })
   }
 
-  handleBlur () {
+  handleBlur = () => {
     this.setState({
       focus: false
     })
@@ -48,7 +75,7 @@ class EditableText extends Component {
         <TextInput className={cssClass}
           {...props}
           autoFocus={this.state.focus}
-          onBlur={::this.handleBlur}
+          onBlur={this.handleBlur}
           placeholder={placeholder}
           value={children}
         />
@@ -58,39 +85,10 @@ class EditableText extends Component {
     const text = children || emptyText
     return (
       <Row className='text-input text-state-classes text'
-        onClick={::this.handleClick} title={title}>
+        onClick={this.handleClick} title={title}>
         {text}
       </Row>
       ) }
  }
-
-EditableText.propTypes = {
-      /**
-       * String value for this text field
-       */
-  children: PropTypes.string,
-      /**
-       * Toggle whether the text field is in editable or not. Default is 'false'
-       */
-  editable: PropTypes.bool,
-      /**
-       * Toggle whether the text field is in editing mode or not.
-       * Default is 'false'
-       */
-  editing: PropTypes.bool,
-      /**
-       * Placeholder
-       */
-  placeholder: PropTypes.string,
-      /**
-       * String to display if it is editable and children is
-       * empty and there is not placeholder
-       */
-  emptyReadOnlyText: PropTypes.string,
-      /**
-       * Tooltip
-       */
-  title: PropTypes.string
-}
 
 export default EditableText

@@ -20,8 +20,8 @@
  */
 package org.zanata.page.administration;
 
-import com.google.common.base.Predicate;
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -99,7 +99,7 @@ public class ManageSearchPage extends BasePage {
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
         clickElement(performButton);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(it -> {
             // The Abort button will display
             return readyElement(cancelButton).isDisplayed();
         });

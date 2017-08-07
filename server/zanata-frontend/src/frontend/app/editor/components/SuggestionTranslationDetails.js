@@ -1,13 +1,14 @@
 import Button from './Button'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SuggestionMatchPercent from './SuggestionMatchPercent'
 import SuggestionUpdateMessage from './SuggestionUpdateMessage'
 
 /**
  * Display metadata and copy button for the translations of a suggestion.
  */
-const SuggestionTranslationDetails = React.createClass({
-  propTypes: {
+class SuggestionTranslationDetails extends React.Component {
+  static propTypes = {
     copySuggestion: PropTypes.func.isRequired,
     suggestion: PropTypes.shape({
       copying: PropTypes.bool.isRequired,
@@ -18,14 +19,14 @@ const SuggestionTranslationDetails = React.createClass({
       })),
       similarityPercent: PropTypes.number
     })
-  },
+  }
 
-  user: function (suggestion) {
+  user = (suggestion) => {
     const topMatch = suggestion.matchDetails[0]
     return topMatch.lastModifiedBy || 'Anonymous'
-  },
+  }
 
-  lastChanged: function (suggestion) {
+  lastChanged = (suggestion) => {
     const topMatch = suggestion.matchDetails[0]
     if (topMatch.type === 'IMPORTED_TM') {
       return topMatch.lastChanged
@@ -35,9 +36,9 @@ const SuggestionTranslationDetails = React.createClass({
     }
     console.error('match type not recognized for looking up date: ' +
                   topMatch.type)
-  },
+  }
 
-  render: function () {
+  render () {
     const { copySuggestion, suggestion } = this.props
     const { copying, matchType, similarityPercent } = suggestion
     const label = copying ? 'Copied' : 'Copy Translation'
@@ -76,6 +77,6 @@ const SuggestionTranslationDetails = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SuggestionTranslationDetails

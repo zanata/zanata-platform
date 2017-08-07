@@ -1,8 +1,5 @@
 package org.zanata.dao;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -14,6 +11,8 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.provider.DBUnitProvider.DataSetOperation;
 import org.zanata.security.ZanataIdentity;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LocaleMemberDAOITCase extends ArquillianTest {
 
@@ -45,8 +44,8 @@ public class LocaleMemberDAOITCase extends ArquillianTest {
         HLocale locale = entityManager.find(HLocale.class, new Long(1));
         HAccount account = entityManager.find(HAccount.class, new Long(1));
 
-        assertThat(locale, notNullValue());
-        assertThat(account, notNullValue());
+        assertThat(locale).isNotNull();
+        assertThat(account).isNotNull();
 
         HLocaleMember newMember =
                 new HLocaleMember(account.getPerson(), locale, true, true, true);
@@ -64,8 +63,8 @@ public class LocaleMemberDAOITCase extends ArquillianTest {
         HLocale locale = entityManager.find(HLocale.class, new Long(1));
         HAccount account = entityManager.find(HAccount.class, new Long(1));
 
-        assertThat(locale, notNullValue());
-        assertThat(account, notNullValue());
+        assertThat(locale).isNotNull();
+        assertThat(account).isNotNull();
 
         HLocaleMember newMember =
                 new HLocaleMember(account.getPerson(), locale, true, true, true);

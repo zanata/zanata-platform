@@ -1,13 +1,14 @@
 import TextDiff from '../TextDiff'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 
 /**
  * Display all content strings (singular or plurals) for a suggestion.
  * May show a diff against a set of provided strings.
  */
-const SuggestionContents = React.createClass({
-  propTypes: {
+class SuggestionContents extends React.Component {
+  static propTypes = {
     plural: PropTypes.bool.isRequired,
     contents: PropTypes.arrayOf(
       PropTypes.string
@@ -16,9 +17,9 @@ const SuggestionContents = React.createClass({
     compareTo: PropTypes.arrayOf(
       PropTypes.string
     )
-  },
+  }
 
-  pluralFormLabel: function (index) {
+  pluralFormLabel = (index) => {
     if (this.props.plural) {
       // FIXME translate the text. Either:
       //    - get it from Angular Gettext
@@ -30,12 +31,12 @@ const SuggestionContents = React.createClass({
         </span>
       )
     }
-  },
+  }
 
   /* Simple or diff content, depending whether props.compareTo
    * is present.
    */
-  contentDiv: function (content, index) {
+  contentDiv = (content, index) => {
     const compareTo = this.props.compareTo
     const className = cx(
       'TransUnit-text',
@@ -53,9 +54,9 @@ const SuggestionContents = React.createClass({
       : <div className={className}>
           {content}
       </div>
-  },
+  }
 
-  render: function () {
+  render () {
     const contents = this.props.contents.map((content, index) => {
       return (
         <div key={index} className="TransUnit-item">
@@ -73,6 +74,6 @@ const SuggestionContents = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SuggestionContents

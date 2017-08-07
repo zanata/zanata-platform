@@ -24,20 +24,20 @@ package org.zanata.rest.service.raw;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.ProjectType;
@@ -73,16 +73,15 @@ public class AnonymousUserRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET",
             getUnAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-
-                assertThat(response.getStatus(),
-                    is(Status.UNAUTHORIZED.getStatusCode()));
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }
@@ -93,15 +92,15 @@ public class AnonymousUserRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET",
             getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                     MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                    is(Status.OK.getStatusCode()));
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.OK.getStatusCode());
             }
         }.run();
     }
@@ -115,26 +114,35 @@ public class AnonymousUserRawRestITCase extends RestTest {
                 "PUT", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaType.APPLICATION_JSON_TYPE, "false");
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), greaterThan(200));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity("false",
+                                MediaType.APPLICATION_JSON_TYPE);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                     MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                    is(Status.UNAUTHORIZED.getStatusCode()));
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }
@@ -148,27 +156,36 @@ public class AnonymousUserRawRestITCase extends RestTest {
                 "PUT", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaType.APPLICATION_JSON_TYPE, "true");
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), greaterThan(200));
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity("true",
+                                MediaType.APPLICATION_JSON_TYPE);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
 
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.OK.getStatusCode()));
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.OK.getStatusCode());
             }
         }.run();
     }
@@ -182,16 +199,23 @@ public class AnonymousUserRawRestITCase extends RestTest {
                         "This is a Test project");
         new ResourceRequest(getRestEndpointUrl("/projects/p/test-project"), "PUT") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
-                        jaxbMarhsal(project).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(project),
+                                MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
 
-                assertThat(response.getStatus(),
-                    is(Status.UNAUTHORIZED.getStatusCode()));
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }
@@ -201,6 +225,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
             @Override
             public Map<String, Object> getDefaultHeaders() {
                 return new HashMap<String, Object>() {
+                    private static final long serialVersionUID = 1L;
                     {
                         put("X-Auth-User", ADMIN);
                         put("X-Auth-Token", invalidAPI);

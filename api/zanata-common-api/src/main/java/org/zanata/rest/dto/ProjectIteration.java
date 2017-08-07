@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -39,12 +41,16 @@ import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
+/**
+ * Represents a Project version (or iteration).
+ */
 @XmlType(name = "projectIterationType", propOrder = { "links", "status",
         "projectType" })
 @XmlRootElement(name = "project-iteration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = Inclusion.NON_NULL)
 @JsonPropertyOrder({ "id", "links", "status", "projectType" })
+@Label("Project Version")
 public class ProjectIteration implements Serializable,
         HasCollectionSample<ProjectIteration>, HasMediaType {
 
@@ -64,7 +70,11 @@ public class ProjectIteration implements Serializable,
         this.id = id;
     }
 
+    /**
+     * Version identifier (slug)
+     */
     @XmlAttribute(name = "id", required = true)
+    @DocumentationExample("my-iteration")
     public String getId() {
         return id;
     }
@@ -107,8 +117,13 @@ public class ProjectIteration implements Serializable,
         this.status = status;
     }
 
+    /**
+     * The type of project version. This type could be overriding the project's
+     * original type.
+     */
     @XmlElement(name = "projectType", required = false,
             namespace = Namespaces.ZANATA_OLD)
+    @DocumentationExample("Podir")
     public String getProjectType() {
         return projectType;
     }

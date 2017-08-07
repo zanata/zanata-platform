@@ -1,7 +1,6 @@
 package org.zanata.client.integration;
 
 import java.io.File;
-import java.util.Set;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -77,7 +76,7 @@ public class PushPullGettextITCase {
         String docId = mockServerRule.getDocIdCaptor().getValue();
         assertThat(docId, equalTo("tar"));
         assertThat(mockServerRule.getExtensionCaptor().getValue(),
-                Matchers.<Set> equalTo(new StringSet("gettext;comment")));
+                Matchers.equalTo(new StringSet("gettext;comment")));
 
         Resource resource = mockServerRule.getResourceCaptor().getValue();
         assertThat(resource.getTextFlows(), hasSize(2));

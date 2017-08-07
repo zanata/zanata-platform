@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
@@ -27,6 +28,45 @@ import Entry from './Entry'
  * Root component for Glossary page
  */
 class Glossary extends Component {
+  static propTypes = {
+    /**
+     * Object of glossary id with term
+     */
+    terms: PropTypes.object,
+    project: PropTypes.object,
+    params: PropTypes.object,
+    termIds: PropTypes.array,
+    termCount: PropTypes.number,
+    termsLoading: PropTypes.bool,
+    transLocales: PropTypes.array,
+    srcLocale: PropTypes.object,
+    filterText: PropTypes.string,
+    selectedTerm: PropTypes.object,
+    selectedTransLocale: PropTypes.string,
+    permission: PropTypes.object,
+    location: PropTypes.object,
+    saving: PropTypes.object,
+    deleting: PropTypes.object,
+    notification: PropTypes.object,
+    goPreviousPage: PropTypes.func,
+    goFirstPage: PropTypes.func,
+    goLastPage: PropTypes.func,
+    goNextPage: PropTypes.func,
+    handleInitLoad: PropTypes.func,
+    handleSelectTerm: PropTypes.func,
+    handleTermFieldUpdate: PropTypes.func,
+    handleDeleteTerm: PropTypes.func,
+    handleResetTerm: PropTypes.func,
+    handleUpdateTerm: PropTypes.func,
+    handlePageSizeChange: PropTypes.func,
+    page: PropTypes.string,
+    gotoPreviousPage: PropTypes.func,
+    gotoFirstPage: PropTypes.func,
+    gotoLastPage: PropTypes.func,
+    gotoNextPage: PropTypes.func,
+    pageSize: PropTypes.string
+  }
+
   componentDidMount () {
     const paramProjectSlug = this.props.params.projectSlug
     const projectSlug = (!paramProjectSlug || paramProjectSlug === 'undefined')
@@ -45,6 +85,19 @@ class Glossary extends Component {
     }
   }
 
+  /**
+   * Function passed to react-list to delegate rendering of an item.
+   *
+   * Arguments are the overall index of the item, and the local (page?) index of
+   * the item.
+   *
+   * This is not in the API for the latest version of react-list,which is
+   * now released under a stable version number).
+   *
+   * Best practice is to use an arrow function here so that React will auto-bind
+   * this function, but this stops working properly unless binding is done
+   * inline in the JSX. Hope you have a good garbage collector.
+   */
   renderItem (index, key) {
     const {
       handleSelectTerm,
@@ -217,46 +270,7 @@ class Glossary extends Component {
   }
 }
 
-Glossary.propTypes = {
-  /**
-   * Object of glossary id with term
-   */
-  terms: PropTypes.object,
-  project: PropTypes.object,
-  params: PropTypes.object,
-  termIds: PropTypes.array,
-  termCount: PropTypes.number,
-  termsLoading: PropTypes.bool,
-  transLocales: PropTypes.array,
-  srcLocale: PropTypes.object,
-  filterText: PropTypes.string,
-  selectedTerm: PropTypes.object,
-  selectedTransLocale: PropTypes.string,
-  permission: PropTypes.object,
-  location: PropTypes.object,
-  saving: PropTypes.object,
-  deleting: PropTypes.object,
-  notification: PropTypes.object,
-  goPreviousPage: PropTypes.func,
-  goFirstPage: PropTypes.func,
-  goLastPage: PropTypes.func,
-  goNextPage: PropTypes.func,
-  handleInitLoad: PropTypes.func,
-  handleSelectTerm: PropTypes.func,
-  handleTermFieldUpdate: PropTypes.func,
-  handleDeleteTerm: PropTypes.func,
-  handleResetTerm: PropTypes.func,
-  handleUpdateTerm: PropTypes.func,
-  handlePageSizeChange: PropTypes.func,
-  page: PropTypes.string,
-  gotoPreviousPage: PropTypes.func,
-  gotoFirstPage: PropTypes.func,
-  gotoLastPage: PropTypes.func,
-  gotoNextPage: PropTypes.func,
-  pageSize: PropTypes.string
-}
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, { location }) => {
   const {
     selectedTerm,
     stats,
@@ -271,7 +285,7 @@ const mapStateToProps = (state) => {
     notification,
     project
   } = state.glossary
-  const query = state.routing.location.query
+  const query = location.query
   return {
     terms,
     termIds,

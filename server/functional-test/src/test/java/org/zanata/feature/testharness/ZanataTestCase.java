@@ -20,6 +20,7 @@
  */
 package org.zanata.feature.testharness;
 
+import org.assertj.core.util.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
@@ -31,11 +32,14 @@ import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
+import org.openqa.selenium.WebDriver;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.util.AllowAnonymousAccessRule;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -49,6 +53,8 @@ public class ZanataTestCase {
 
     public static final int MAX_SHORT_TEST_DURATION = 180000;
     public static final int MAX_LONG_TEST_DURATION = 600000;
+    private static String mainWindowHandle;
+
     @ClassRule
     public static ExternalResource javascriptLogging = new ExternalResource() {
 
@@ -59,6 +65,17 @@ public class ZanataTestCase {
 
         @Override
         protected void after() {
+            // Close all windows other than the original one
+            WebDriver driverRef = WebDriverFactory.INSTANCE.getDriver();
+            Set<String> windows = driverRef.getWindowHandles();
+            for (String windowHandle : windows) {
+                if (!windowHandle.equals(mainWindowHandle)) {
+                    log.info("Closing {}", windowHandle);
+                    driverRef.switchTo().window(windowHandle);
+                    driverRef.close();
+                }
+            }
+            driverRef.switchTo().window(mainWindowHandle);
             WebDriverFactory.INSTANCE.unregisterLogListener();
             // uncomment this if you need a fresh browser between test runs
             // WebDriverFactory.INSTANCE.killWebDriver();
@@ -91,6 +108,7 @@ public class ZanataTestCase {
         WebDriverFactory.INSTANCE.testEntry();
         zanataRestCaller.signalBeforeTest(getClass().getName(),
                 testName.getMethodName());
+        mainWindowHandle = WebDriverFactory.INSTANCE.getDriver().getWindowHandle();
     }
 
     @After

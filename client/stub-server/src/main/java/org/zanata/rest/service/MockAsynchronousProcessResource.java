@@ -40,6 +40,7 @@ public class MockAsynchronousProcessResource implements
     private static final long serialVersionUID = 8841332691985560066L;
 
     @Override
+    // TODO: remove this test when parent method is removed
     public ProcessStatus startSourceDocCreation(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
@@ -50,6 +51,14 @@ public class MockAsynchronousProcessResource implements
     public ProcessStatus startSourceDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
+        return startSourceDocCreationOrUpdateWithDocId(projectSlug,
+                iterationSlug, resource, extensions, idNoSlash);
+    }
+
+    @Override
+    public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, Resource resource,
+            Set<String> extensions, String docId) {
         ProcessStatus processStatus = new ProcessStatus();
         processStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Running);
         processStatus.setPercentageComplete(50);
@@ -62,6 +71,17 @@ public class MockAsynchronousProcessResource implements
             String projectSlug, String iterationSlug, LocaleId locale,
             TranslationsResource translatedDoc, Set<String> extensions,
             String merge, @DefaultValue("false") boolean myTrans) {
+        return startTranslatedDocCreationOrUpdateWithDocId(projectSlug,
+                iterationSlug, locale, translatedDoc, idNoSlash, extensions,
+                merge, myTrans);
+    }
+
+    @Override
+    public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, LocaleId locale,
+            TranslationsResource translatedDoc, String docId,
+            Set<String> extensions,
+            String merge, boolean assignCreditToUploader) {
         ProcessStatus processStatus = new ProcessStatus();
         processStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Running);
         processStatus.setPercentageComplete(50);

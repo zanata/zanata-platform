@@ -28,13 +28,14 @@
     <meta name="author" content=""/>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
     <meta http-equiv="cleartype" content="on"/>
-
-    <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
     <link rel="stylesheet" href="#{request.contextPath}/frontend.css" type="text/css"/>
-    <link rel="icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
+    <link type="image/x-icon" rel="shortcut icon"
+        href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
+    <link type="image/x-icon" rel="icon"
+        href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
 
     <!--[if gt IE 8]><!-->
-    <link type="text/css" rel="stylesheet" href="#{assets['css/style.min.css']}"/>
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/assets/css/style.css"/>
     <!--<![endif]-->
 
     <!--[if (lt IE 9) & (!IEMobile)]>
@@ -85,8 +86,9 @@
     </a4j:outputPanel>
 
     <div id="config"
-      data-base-url="#{request.contextPath}"
-      data-api-root="/rest"
+      data-app-url="#{request.contextPath}"
+      data-server-url="#{request.contextPath}"
+      data-api-server-url="#{request.contextPath}/rest"
       data-user="#{authenticatedAccountHome.getUser()}"
       data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
       data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
@@ -105,7 +107,7 @@
             <ui:insert name="center_content"/>
           </div>
         </main>
-
+        <div id="jsfReactRoot" />
       </div>
     </div>
 

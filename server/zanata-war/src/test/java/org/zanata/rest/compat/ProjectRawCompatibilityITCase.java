@@ -22,30 +22,28 @@ package org.zanata.rest.compat;
 
 import java.io.IOException;
 import java.util.List;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.apicompat.common.ProjectType;
-import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.common.Namespaces;
 import org.zanata.apicompat.rest.MediaTypes;
 import org.zanata.apicompat.rest.dto.Project;
+import org.zanata.rest.ResourceRequest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertHeaderPresent;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
@@ -87,12 +85,15 @@ public class ProjectRawCompatibilityITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"),
                 "HEAD") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+            protected void onResponse(Response response)
+                    throws IOException {
+                // Ok
+                assertThat(response.getStatus()).isEqualTo(200);
                 assertHeaderPresent(response, HttpHeaders.ETAG);
             }
         }.run();
@@ -105,22 +106,24 @@ public class ProjectRawCompatibilityITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"),
                 "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
-                assertJsonUnmarshal(response, Project.class);
-                Project project = jsonUnmarshal(response, Project.class);
+            protected void onResponse(Response response) {
+                // Ok
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, Project.class);
+                Project project = jsonUnmarshal(entityString, Project.class);
 
                 // Assert correct parsing of all properties
-                assertThat(project.getId(), is("sample-project"));
-                assertThat(project.getName(), is("Sample Project"));
-                assertThat(project.getDescription(), is("An example Project"));
-                assertThat(project.getIterations().size(), is(3));
+                assertThat(project.getId()).isEqualTo("sample-project");
+                assertThat(project.getName()).isEqualTo("Sample Project");
+                assertThat(project.getDescription()).isEqualTo("An example Project");
+                assertThat(project.getIterations().size()).isEqualTo(3);
             }
         }.run();
     }
@@ -131,14 +134,15 @@ public class ProjectRawCompatibilityITCase extends RestTest {
         // No client method for Json Get, so testing raw compatibility
         new ResourceRequest(getRestEndpointUrl("/projects/"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+            protected void onResponse(Response response) {
+                // Ok
+                assertThat(response.getStatus()).isEqualTo(200);
                 List<Project> projects = jsonParse(response);
                 Project sampleProject = null;
 
@@ -150,10 +154,10 @@ public class ProjectRawCompatibilityITCase extends RestTest {
                 }
 
                 // Assertions on individual project
-                assertThat(sampleProject, notNullValue());
-                assertThat(sampleProject.getId(), is("sample-project"));
-                assertThat(sampleProject.getName(), is("Sample Project"));
-                assertThat(sampleProject.getLinks().size(), is(1));
+                assertThat(sampleProject).isNotNull();
+                assertThat(sampleProject.getId()).isEqualTo("sample-project");
+                assertThat(sampleProject.getName()).isEqualTo("Sample Project");
+                assertThat(sampleProject.getLinks().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -166,16 +170,18 @@ public class ProjectRawCompatibilityITCase extends RestTest {
         // for this endpoint. Hence, just testing the server portion
         new ResourceRequest(getRestEndpointUrl("/projects/"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
-                assertJaxbUnmarshal(response, Projects.class);
-                Projects projects = jaxbUnmarshal(response, Projects.class);
+            protected void onResponse(Response response) {
+                // Ok
+                assertThat(response.getStatus()).isEqualTo(200);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, Projects.class);
+                Projects projects = jaxbUnmarshal(entityString, Projects.class);
                 Project sampleProject = null;
 
                 // find sample project
@@ -186,10 +192,10 @@ public class ProjectRawCompatibilityITCase extends RestTest {
                 }
 
                 // Assertions on individual project
-                assertThat(sampleProject, notNullValue());
-                assertThat(sampleProject.getId(), is("sample-project"));
-                assertThat(sampleProject.getName(), is("Sample Project"));
-                assertThat(sampleProject.getLinks().size(), is(1));
+                assertThat(sampleProject).isNotNull();
+                assertThat(sampleProject.getId()).isEqualTo("sample-project");
+                assertThat(sampleProject.getName()).isEqualTo("Sample Project");
+                assertThat(sampleProject.getLinks().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -200,38 +206,41 @@ public class ProjectRawCompatibilityITCase extends RestTest {
         // No client method for Json Put, so testing raw compatibility
         new ResourceRequest(getRestEndpointUrl("/projects/p/new-project"),
                 "PUT", getAuthorizedEnvironment()) {
+
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
                 // New Project
                 Project p =
                         new Project("new-project", "New Project",
                                 ProjectType.Podir.toString(),
                                 "This is a New Sample Project");
-
-                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
-                        jsonMarshal(p));
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(p),
+                                MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+            protected void onResponse(Response response) {
+                // 201
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.CREATED.getStatusCode());
             }
         }.run();
     }
 
-    private List<Project> jsonParse(ClientResponse response) {
+    private List<Project> jsonParse(Response response) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue((String) response.getEntity(String.class),
+            return mapper.readValue(response.readEntity(String.class),
                     new TypeReference<List<Project>>() {
                     });
-        } catch (JsonParseException e) {
-            throw new AssertionError(e);
-        } catch (JsonMappingException e) {
-            throw new AssertionError(e);
-        } catch (IllegalStateException e) {
-            throw new AssertionError(e);
         } catch (IOException e) {
             throw new AssertionError(e);
         }

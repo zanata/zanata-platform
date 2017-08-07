@@ -50,6 +50,7 @@ public class ContentTypeTypeDescriptor extends
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <X> X
             unwrap(ContentType value, Class<X> type, WrapperOptions options) {
         if (value == null) {

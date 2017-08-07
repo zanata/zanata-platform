@@ -28,10 +28,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
+import org.zanata.rest.dto.SourceLocaleDetails;
 
 /**
  * REST interface for configured version locales.
@@ -41,6 +44,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Version Locales")
 public interface ProjectIterationLocalesResource extends RestResource {
+    @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH
             + "/locales";
 
@@ -48,6 +52,10 @@ public interface ProjectIterationLocalesResource extends RestResource {
      * Returns list of active locales for a single project-version.
      *
      * This may be the list of locales inherited from the project.
+     *
+     * This also returns locale aliases.
+     *
+     * @see ProjectVersionResource#getLocales(String, String)
      *
      * @return
      *    OK 200 containing the list of LocaleDetails
@@ -59,5 +67,22 @@ public interface ProjectIterationLocalesResource extends RestResource {
             MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_JSON,
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response get();
+
+    /**
+     * Returns list of active source locales of all documents for a single project-version.
+     *
+     * @return
+     *    OK 200 containing the list of SourceLocaleDetails
+     *    NOT FOUND 404 if the project does not exist
+     */
+    @GET
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Content contains a list of source locale details"),
+            @ResponseCode(code = 404, condition = "The project version is not found"),
+    })
+    @TypeHint(SourceLocaleDetails[].class)
+    @Path("/source")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSourceLocales();
 
 }

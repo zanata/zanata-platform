@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.2.2-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -14,7 +14,7 @@
 
   <properties>
     <allow.deploy.skip>true</allow.deploy.skip>
-    <selenium.version>2.45.0</selenium.version>
+    <selenium.version>3.4.0</selenium.version>
 
     <!--Cargo Settings -->
     <cargo.host>localhost</cargo.host>
@@ -27,7 +27,8 @@
     <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-    <context.path>zanata</context.path>
+    <!-- This can be empty (root context) or a value with a trailing slash -->
+    <context.path></context.path>
 
     <!-- this may be changed by the MYSQL_PORT profile -->
     <mysql.port>13306</mysql.port>
@@ -57,7 +58,7 @@
      -->
     <mysql.lower_case_table_names>0</mysql.lower_case_table_names>
 
-    <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
+    <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}</zanata.instance.url>
     <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
     <zanata.translatorkey>d83882201764f7d339e97c4b087f0806</zanata.translatorkey>
     <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
@@ -92,12 +93,12 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.3.6</version>
+        <version>4.5.3</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.3.3</version>
+        <version>4.4.6</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -143,7 +144,7 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
-      <artifactId>zanata-war</artifactId>
+      <artifactId>services</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -254,11 +255,23 @@
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
       <version>${selenium.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-firefox-driver</artifactId>
       <version>${selenium.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -276,6 +289,12 @@
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-support</artifactId>
       <version>${selenium.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -329,17 +348,6 @@
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -412,6 +420,10 @@
       <artifactId>validation-api</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -480,7 +492,17 @@
 
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
+      <artifactId>findbugs-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.jcip</groupId>
+      <artifactId>jcip-annotations</artifactId>
     </dependency>
 
     <dependency>
@@ -713,10 +735,10 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>zanata-test-war</artifactId>
                   <type>war</type>
-                  <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
+                  <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}info?dswid=1</pingURL>
                   <pingTimeout>600000</pingTimeout>
                   <properties>
-                    <context>${context.path}</context>
+                    <context>/${context.path}</context>
                   </properties>
                 </deployable>
               </deployables>
@@ -781,11 +803,12 @@
               <properties>
                 <property>
                   <name>listener</name>
-                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger</value>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger,org.zanata.util.TestTracing</value>
                 </property>
               </properties>
               <systemPropertyVariables>
                 <maven.home>${maven.home}</maven.home>
+                <traceLocation>${project.build.directory}/test-classes/traceability</traceLocation>
               </systemPropertyVariables>
             </configuration>
           </plugin>
