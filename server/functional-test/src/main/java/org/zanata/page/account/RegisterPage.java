@@ -23,7 +23,6 @@ package org.zanata.page.account;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.CorePage;
-import org.zanata.page.utility.HomePage;
 import java.util.Map;
 
 /**

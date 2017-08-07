@@ -27,7 +27,6 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
-import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**

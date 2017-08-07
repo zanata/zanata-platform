@@ -37,7 +37,6 @@ import com.google.common.collect.*;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.*;
-import com.google.gwt.user.client.Event.*;
 import com.google.gwt.view.client.*;
 import com.google.inject.*;
 
@@ -68,8 +67,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
     private final EventWrapper event;
     private final TimerFactory timers;
 
-    // TODO unregister when user changes attention shortcut
-    private HandlerRegistration attentionShortcutHandle;
     private transient ShortcutContext modalContext;
     private transient Set<ShortcutContext> copyOfCurrentContexts = Collections
             .emptySet();
@@ -201,7 +198,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
                         .setContext(ShortcutContext.Application)
                         .setKeyEvent(KeyEvent.KEY_DOWN)
                         .setHandler(event1 -> setAttentionMode(true)).build();
-        attentionShortcutHandle = register(attentionKeyShortcut);
+        register(attentionKeyShortcut);
 
         KeyShortcut cancelAttentionShortcut =
                 KeyShortcut.Builder.builder()

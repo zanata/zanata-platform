@@ -44,7 +44,6 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.util.FacesNavigationUtil;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 /**
  * JSF backed bean for OAuth authorization page.

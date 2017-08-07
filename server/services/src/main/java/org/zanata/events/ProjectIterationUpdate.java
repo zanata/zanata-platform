@@ -20,7 +20,6 @@
  */
 package org.zanata.events;
 
-import org.zanata.common.LocaleId;
 import org.zanata.model.HProjectIteration;
 // TODO use HProjectIteration with a discriminator instead?
 

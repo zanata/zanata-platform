@@ -2,7 +2,6 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.zanata.model.LanguageRequest;
 import org.zanata.model.Request;
 
 import javax.enterprise.context.RequestScoped;

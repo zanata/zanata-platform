@@ -26,7 +26,6 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.groups.VersionGroupPage;
-import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -110,14 +109,5 @@ public class VersionGroupUrlTest extends ZanataTestCase {
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
                 .saveGroup();
-    }
-
-    private void createProject() {
-        // create another project and version
-        String projectSlug = "base";
-        String iterationSlug = "master";
-        String projectType = "gettext";
-        new ZanataRestCaller().createProjectAndVersion(projectSlug,
-                iterationSlug, projectType);
     }
 }

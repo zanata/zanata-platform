@@ -38,7 +38,6 @@ import org.zanata.dao.VersionGroupDAO;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
 import org.zanata.seam.security.IdentityManager;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.common.EntityStatus;
@@ -56,8 +55,6 @@ import org.zanata.ui.AbstractListFilter;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
-import org.zanata.util.IServiceLocator;
-import org.zanata.util.ServiceLocator;
 import javax.annotation.Nullable;
 
 @Named("dashboardAction")

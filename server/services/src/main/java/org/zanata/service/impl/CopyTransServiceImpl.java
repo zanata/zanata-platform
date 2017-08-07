@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyTransTaskHandle;

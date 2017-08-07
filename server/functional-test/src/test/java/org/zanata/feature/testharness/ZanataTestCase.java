@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.testharness;
 
-import org.assertj.core.util.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
@@ -38,7 +37,6 @@ import org.zanata.util.AllowAnonymousAccessRule;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
-import java.util.List;
 import java.util.Set;
 
 /**

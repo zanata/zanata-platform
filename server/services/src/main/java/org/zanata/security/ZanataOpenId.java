@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-import com.google.common.base.Throwables;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.openid4java.OpenIDException;

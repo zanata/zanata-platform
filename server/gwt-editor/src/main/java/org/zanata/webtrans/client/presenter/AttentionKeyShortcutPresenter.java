@@ -24,7 +24,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
-import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 import org.zanata.webtrans.client.view.AttentionKeyShortcutDisplay;
 
 import com.google.inject.Inject;

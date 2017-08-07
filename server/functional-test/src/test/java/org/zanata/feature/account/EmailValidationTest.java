@@ -37,8 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class EmailValidationTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(EmailValidationTest.class);
 
     private RegisterPage registerPage;
 

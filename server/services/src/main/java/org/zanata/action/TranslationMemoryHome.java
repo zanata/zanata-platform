@@ -26,8 +26,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.seam.framework.EntityHome;

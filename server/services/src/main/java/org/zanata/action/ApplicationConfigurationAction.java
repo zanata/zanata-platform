@@ -31,7 +31,6 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.zanata.ApplicationConfiguration;
-import org.zanata.rest.editor.dto.BuildInfo;
 import org.zanata.util.UrlUtil;
 
 /**

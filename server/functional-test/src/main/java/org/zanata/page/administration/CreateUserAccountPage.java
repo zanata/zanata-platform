@@ -68,7 +68,6 @@ public class CreateUserAccountPage extends BasePage {
         return new CreateUserAccountPage(getDriver());
     }
 
-    @SuppressWarnings("unused")
     public boolean isRoleChecked(String role) {
         log.info("Query is role {} checked", role);
         return readyElement(By.id(roleIdPrefix.concat(roleMap.get(role))))
@@ -81,14 +80,12 @@ public class CreateUserAccountPage extends BasePage {
         return new ManageUserPage(getDriver());
     }
 
-    @SuppressWarnings("unused")
     public CreateUserAccountPage saveUserExpectFailure() {
         log.info("Click Save");
         clickElement(saveButton);
         return new CreateUserAccountPage(getDriver());
     }
 
-    @SuppressWarnings("unused")
     public ManageUserPage cancelEditUser() {
         log.info("Click Cancel");
         clickElement(cancelButton);

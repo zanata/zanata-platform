@@ -26,8 +26,6 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import java.util.ArrayList;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;

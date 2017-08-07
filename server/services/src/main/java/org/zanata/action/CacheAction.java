@@ -20,7 +20,6 @@
  */
 package org.zanata.action;
 
-import com.google.common.base.Throwables;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;

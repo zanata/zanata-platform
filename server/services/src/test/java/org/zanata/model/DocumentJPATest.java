@@ -15,7 +15,6 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.security.ZanataIdentity;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;

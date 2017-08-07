@@ -1,7 +1,5 @@
 package org.zanata.rest.service;
 
-import java.util.Date;
-import java.util.TimeZone;
 import org.jboss.resteasy.spi.BadRequestException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -9,7 +7,6 @@ import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.zanata.exception.InvalidDateParamException;
-import org.zanata.util.DateUtil;
 
 /**
  * @author Patrick Huang

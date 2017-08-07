@@ -53,7 +53,6 @@ public class UserConfigHolderTest {
         assertThat(propertiesMap).containsEntry("showError", "false");
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, String> getPropertiesMap()
             throws IllegalAccessException, InvocationTargetException,
             NoSuchMethodException {

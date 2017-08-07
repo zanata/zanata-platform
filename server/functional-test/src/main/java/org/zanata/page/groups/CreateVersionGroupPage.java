@@ -40,7 +40,6 @@ public class CreateVersionGroupPage extends BasePage {
     private By groupDescriptionField =
             By.id("group-form:description:input:description");
     private By saveButton = By.id("group-form:group-create-new");
-    private By createNewButton = By.id("group-form:group-create-new");
 
     public CreateVersionGroupPage(WebDriver driver) {
         super(driver);

@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,7 +15,6 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Mockito.verify;
@@ -34,7 +32,6 @@ public class EditorTranslatorsTest {
     private UserSessionService sessionService;
     @Mock
     private Identity identity;
-    private List<ToggleEditor> editors;
     @Mock
     private ToggleEditor editor1;
     @Mock
@@ -47,7 +44,6 @@ public class EditorTranslatorsTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        editors = Lists.newArrayList(editor1, editor2);
 
         editorTranslators = new EditorTranslators(sessionService, identity);
     }

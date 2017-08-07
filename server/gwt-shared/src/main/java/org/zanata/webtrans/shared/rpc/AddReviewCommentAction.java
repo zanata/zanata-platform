@@ -36,7 +36,6 @@ public class AddReviewCommentAction extends
     private DocumentId documentId;
     private TransUnitId transUnitId;
 
-    @SuppressWarnings("unused")
     public AddReviewCommentAction() {
     }
 

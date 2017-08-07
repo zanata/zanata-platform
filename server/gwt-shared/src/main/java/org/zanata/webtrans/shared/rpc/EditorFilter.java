@@ -21,11 +21,9 @@
 package org.zanata.webtrans.shared.rpc;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**

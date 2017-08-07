@@ -2,7 +2,6 @@ package org.zanata.email;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static javax.mail.Message.RecipientType.BCC;
-import static javax.mail.Message.RecipientType.TO;
 
 import java.io.Serializable;
 import java.io.StringWriter;

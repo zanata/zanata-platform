@@ -1,6 +1,5 @@
 package org.zanata.security;
 
-import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.hibernate.Session;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.ContextController;

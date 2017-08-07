@@ -25,15 +25,9 @@ package org.zanata.ui;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang.StringUtils;
-import org.zanata.model.HDocument;
-import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
