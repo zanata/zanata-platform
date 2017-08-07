@@ -20,8 +20,7 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 import javax.ws.rs.client.Invocation;
@@ -56,7 +55,7 @@ public class AsyncProcessRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(403));
+                assertThat(response.getStatus()).isEqualTo(403);
             }
         }.run();
     }
@@ -74,7 +73,7 @@ public class AsyncProcessRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
             }
         }.run();
     }

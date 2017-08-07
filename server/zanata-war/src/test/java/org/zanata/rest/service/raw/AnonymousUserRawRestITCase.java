@@ -24,9 +24,7 @@ package org.zanata.rest.service.raw;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
@@ -82,9 +80,8 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-
-                assertThat(response.getStatus(),
-                    is(Status.UNAUTHORIZED.getStatusCode()));
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }
@@ -102,8 +99,8 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                    is(Status.OK.getStatusCode()));
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.OK.getStatusCode());
             }
         }.run();
     }
@@ -132,7 +129,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), greaterThan(200));
+                assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
@@ -144,8 +141,8 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                    is(Status.UNAUTHORIZED.getStatusCode()));
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }
@@ -174,7 +171,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), greaterThan(200));
+                assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
 
@@ -187,8 +184,8 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        is(Status.OK.getStatusCode()));
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.OK.getStatusCode());
             }
         }.run();
     }
@@ -217,9 +214,8 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-
-                assertThat(response.getStatus(),
-                    is(Status.UNAUTHORIZED.getStatusCode()));
+                assertThat(response.getStatus())
+                        .isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }

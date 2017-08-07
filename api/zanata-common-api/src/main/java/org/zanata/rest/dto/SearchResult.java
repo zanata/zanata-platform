@@ -38,7 +38,8 @@ public abstract class SearchResult implements Serializable {
         Project,
         LanguageTeam,
         Person,
-        Group;
+        Group,
+        ProjectVersion
 
     }
 

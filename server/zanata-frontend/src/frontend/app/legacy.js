@@ -58,3 +58,6 @@ render(
   ,
   document.getElementById('root')
 )
+
+import mountReactToJsf from './jsf'
+mountReactToJsf()

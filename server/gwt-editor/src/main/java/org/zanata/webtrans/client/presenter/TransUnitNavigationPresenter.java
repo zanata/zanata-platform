@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 
 import com.google.inject.Inject;
 

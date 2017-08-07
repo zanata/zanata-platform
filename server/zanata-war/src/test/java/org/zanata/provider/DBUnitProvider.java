@@ -185,10 +185,12 @@ public abstract class DBUnitProvider {
             }
 
             // Load the base dataset file
-            InputStream input =
+            try (InputStream input =
                     Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream(dataSetLocation);
-            try {
+                            .getResourceAsStream(dataSetLocation)) {
+                if (input == null) {
+                    throw new RuntimeException("missing resource: " + dataSetLocation);
+                }
                 FlatXmlDataSetBuilder dataSetBuilder =
                         new FlatXmlDataSetBuilder();
                 dataSetBuilder.setColumnSensing(true);
@@ -275,8 +277,8 @@ public abstract class DBUnitProvider {
         try {
             con.getConnection()
                     .prepareStatement("set referential_integrity FALSE")
-                    .execute(); // HSQL
-            // DB
+                    // HSQLDB
+                    .execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -294,8 +296,8 @@ public abstract class DBUnitProvider {
         try {
             con.getConnection()
                     .prepareStatement("set referential_integrity TRUE")
-                    .execute(); // HSQL
-            // DB
+                    // HSQLDB
+                    .execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

@@ -8,14 +8,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.zanata.client.TestUtils.fileFromClasspath;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.zanata.client.TestUtils;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.config.LocaleList;
@@ -179,14 +177,14 @@ public class PushCommandTest {
         mockStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Finished);
         mockStatus.setMessages(new ArrayList<String>());
         when(
-                asyncProcessClient.startSourceDocCreationOrUpdate(
-                        eq("RPM"), anyString(), anyString(),
-                        any(Resource.class), eq(extensionSet), eq(false)))
+                asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
+                        anyString(), anyString(), any(Resource.class),
+                        eq(extensionSet), eq("RPM")))
                 .thenReturn(mockStatus);
         when(
-                asyncProcessClient.startSourceDocCreationOrUpdate(
-                        eq("sub,RPM"), anyString(), anyString(),
-                        any(Resource.class), eq(extensionSet), eq(false)))
+                asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
+                        anyString(), anyString(), any(Resource.class),
+                        eq(extensionSet), eq("sub/RPM")))
                 .thenReturn(mockStatus);
         when(asyncProcessClient.getProcessStatus(anyString()))
                 .thenReturn(mockStatus);
@@ -208,10 +206,11 @@ public class PushCommandTest {
             }
             when(
                     asyncProcessClient
-                            .startTranslatedDocCreationOrUpdate(eq("RPM"),
+                            .startTranslatedDocCreationOrUpdateWithDocId(
                                     anyString(), anyString(),
                                     eq(expectedLocale),
                                     any(TranslationsResource.class),
+                                    eq("RPM"),
                                     eq(extensionSet), eq("auto"), eq(false))).
                                     thenReturn(mockStatus);
             // when(mockTranslationResources.putTranslations(eq("RPM"),

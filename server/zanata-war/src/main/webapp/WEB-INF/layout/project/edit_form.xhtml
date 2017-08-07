@@ -47,7 +47,10 @@
         <h:outputLabel for="name">#{msgs['jsf.ProjectName']}</h:outputLabel>
         <zanata:decorate id="name" componentId="nameField">
           <h:inputText id="name" required="true" maxlength="80"
-            value="#{projectHome.instance.name}">
+            value="#{projectHome.instance.name}"
+            valueChangeListener="#{projectHome.onProjectNameChange}">
+            <f:validateLength minimum="1"/>
+            <a4j:ajax event="blur" render="nameField" execute="@this"/>
           </h:inputText>
         </zanata:decorate>
       </div>
@@ -91,9 +94,9 @@
     class="heading--secondary l--push-all-0">#{msgs['jsf.ProjectType']}</h3>
 
   <p>#{msgs['jsf.ProjectType.title']} <a
-    href="http://zanata.org/help/projects/create-project/" target="_blank"
+    href="http://docs.zanata.org/en/release/user-guide/projects/create-project/" target="_blank"
     title="#{msgs['jsf.project.projectType.Description']}">
-    <i class="i i--help"></i>
+    <i class="i i--question"/>
   </a>
   </p>
 

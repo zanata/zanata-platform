@@ -66,30 +66,58 @@ public class MockSourceDocResource implements SourceDocResource {
 
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
+       return getResourceWithDocId(idNoSlash, extensions);
+    }
+
+    @Override
+    public Response getResourceWithDocId(String docId, Set<String> extensions) {
         MockResourceUtil.validateExtensions(extensions);
-        return Response.ok(new Resource(idNoSlash)).build();
+        return Response.ok(new Resource(docId)).build();
     }
 
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copyTrans) {
+        return putResourceWithDocId(resource, idNoSlash, extensions, copyTrans);
+    }
+
+    @Override
+    public Response putResourceWithDocId(Resource resource, String docId,
+            Set<String> extensions, boolean copytrans) {
         MockResourceUtil.validateExtensions(extensions);
         return Response.ok(resource.getName()).build();
     }
 
     @Override
     public Response deleteResource(String idNoSlash) {
+        return deleteResourceWithDocId(idNoSlash);
+    }
+
+    @Override
+    public Response deleteResourceWithDocId(String docId) {
         return Response.ok().build();
     }
 
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
+        return getResourceMetaWithDocId(idNoSlash, extensions);
+    }
+
+    @Override
+    public Response getResourceMetaWithDocId(String docId,
+            Set<String> extensions) {
         return MockResourceUtil.notUsedByClient();
     }
 
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta resourceMeta,
             Set<String> extensions) {
+        return putResourceMetaWithDocId(resourceMeta, idNoSlash, extensions);
+    }
+
+    @Override
+    public Response putResourceMetaWithDocId(ResourceMeta messageBody,
+            String docId, Set<String> extensions) {
         return MockResourceUtil.notUsedByClient();
     }
 }

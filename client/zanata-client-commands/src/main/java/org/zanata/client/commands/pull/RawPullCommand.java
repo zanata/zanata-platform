@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
@@ -232,9 +231,9 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
     private void pullDocForLocale(RawPullStrategy strat,
             String qualifiedDocName, String localDocName, String fileExtension,
             LocaleMapping locMapping, LocaleId locale) throws IOException {
+        Response response = null;
         try {
-            Response response =
-                    fileResourceClient.downloadTranslationFile(getOpts()
+            response = fileResourceClient.downloadTranslationFile(getOpts()
                                     .getProj(), getOpts()
                                     .getProjectVersion(), locale.getId(),
                             fileExtension, qualifiedDocName);
@@ -263,6 +262,10 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                         locale, qualifiedDocName);
             } else {
                 throw e;
+            }
+        } finally {
+            if (response != null) {
+                response.close();
             }
         }
     }

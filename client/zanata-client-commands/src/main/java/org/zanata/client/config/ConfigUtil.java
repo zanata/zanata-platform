@@ -47,7 +47,6 @@ public class ConfigUtil {
      * @param url
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static String findPrefix(SubnodeConfiguration config, URL url) {
         String suffix = ".url";
         DataConfiguration dataConfig = new DataConfiguration(config);

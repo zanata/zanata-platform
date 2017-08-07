@@ -4,7 +4,10 @@ import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.ModelEntityBase;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,12 +27,12 @@ public class HPoTargetHeaderTest {
 
         HDocument docA = new HDocument();
         docA.setName("DocA");
-        docA.setId(123456789L);
+        setId(docA, 123456789L);
         docA.setCreationDate(now);
         docA.setLastChanged(now);
         HDocument docB = new HDocument();
         docB.setName("DocB");
-        docB.setId(987654321L);
+        setId(docB, 987654321L);
         docB.setCreationDate(now);
         docB.setLastChanged(now);
         assertThat(docA.equals(docB)).isFalse();
@@ -61,9 +64,24 @@ public class HPoTargetHeaderTest {
         HPoTargetHeader bravo = new HPoTargetHeader();
         bravo.setCreationDate(now);
         bravo.setLastChanged(now);
-        bravo.setId(987654321L);
+        setId(bravo, 987654321L);
         assertThat(alpha.hashCode()).isNotEqualTo(bravo.hashCode());
-        alpha.setId(987654321L);
+        setId(alpha, 987654321L);
         assertThat(alpha.hashCode()).isEqualTo(bravo.hashCode());
     }
+
+    // Better to duplicate this method (EntityTestData.setId) than to add
+    // another module (or add this to zanata-model's public API!)
+    @SuppressWarnings("Duplicates")
+    private static void setId(ModelEntityBase entity, Long id) {
+        try {
+            Method setIdMethod = ModelEntityBase.class
+                    .getDeclaredMethod("setId", Long.class);
+            setIdMethod.setAccessible(true);
+            setIdMethod.invoke(entity, id);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

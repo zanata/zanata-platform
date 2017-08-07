@@ -93,8 +93,7 @@ import org.zanata.util.DeltaSpikeWindowIdParam;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.arquillian.ArquillianUtil.addClassesWithDependencies;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
@@ -333,8 +332,7 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        is(Status.NOT_FOUND.getStatusCode()));
+                assertThat(response.getStatus()).isEqualTo(Status.NOT_FOUND.getStatusCode());
             }
         }.run();
     }
@@ -353,18 +351,17 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, Account.class);
 
                 Account account = jaxbUnmarshal(entityString, Account.class);
-                assertThat(account.getUsername(), is("admin"));
-                assertThat(account.getPasswordHash(),
-                        is("Eyox7xbNQ09MkIfRyH+rjg=="));
-                assertThat(account.getEmail(), is("root@localhost"));
-                assertThat(account.getApiKey(),
-                        is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-                assertThat(account.getRoles().size(), is(1)); // 1 roles
+                assertThat(account.getUsername()).isEqualTo("admin");
+                assertThat(account.getPasswordHash()).isEqualTo("Eyox7xbNQ09MkIfRyH+rjg==");
+                assertThat(account.getEmail()).isEqualTo("root@localhost");
+                assertThat(account.getApiKey()).isEqualTo("b6d7044e9ee3b2447c28fb7c50d86d98");
+                // 1 role
+                assertThat(account.getRoles().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -383,18 +380,17 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200));
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Account.class);
 
                 Account account = jsonUnmarshal(entityString, Account.class);
-                assertThat(account.getUsername(), is("admin"));
-                assertThat(account.getPasswordHash(),
-                        is("Eyox7xbNQ09MkIfRyH+rjg=="));
-                assertThat(account.getEmail(), is("root@localhost"));
-                assertThat(account.getApiKey(),
-                        is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-                assertThat(account.getRoles().size(), is(1)); // 1 role
+                assertThat(account.getUsername()).isEqualTo("admin");
+                assertThat(account.getPasswordHash()).isEqualTo("Eyox7xbNQ09MkIfRyH+rjg==");
+                assertThat(account.getEmail()).isEqualTo("root@localhost");
+                assertThat(account.getApiKey()).isEqualTo("b6d7044e9ee3b2447c28fb7c50d86d98");
+                // 1 role
+                assertThat(account.getRoles().size()).isEqualTo(1);
             }
         }.run();
     }
@@ -424,8 +420,7 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode()));
+                assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
             }
         }.run();
     }
@@ -456,8 +451,7 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode()));
+                assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
             }
         }.run();
     }
@@ -486,8 +480,7 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(),
-                        is(Status.UNAUTHORIZED.getStatusCode()));
+                assertThat(response.getStatus()).isEqualTo(Status.UNAUTHORIZED.getStatusCode());
             }
         }.run();
     }

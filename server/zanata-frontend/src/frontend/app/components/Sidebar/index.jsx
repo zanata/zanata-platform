@@ -17,8 +17,8 @@ class Sidebar extends Component {
   }
 
   toggleDisplay () {
-    this.setState({display: !this.state.display})
-    this.setState({arrow: !this.state.arrow})
+    this.setState(prevState => ({display: !prevState.display}))
+    this.setState(prevState => ({arrow: !prevState.arrow}))
   }
   /* eslint-disable react/jsx-no-bind, no-return-assign */
   render () {

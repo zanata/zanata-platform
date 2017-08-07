@@ -25,8 +25,9 @@ class COMPONENT_NAME_HERE extends Component {
   }
 
   onClick = () => {
-    const clicks = this.state.clicks + 1
-    this.setState({ clicks })
+    this.setState(prevState => ({
+      clicks: prevState.clicks + 1
+    }))
     this.props.onClick(`The cow says ${this.props.noise}`)
   }
 

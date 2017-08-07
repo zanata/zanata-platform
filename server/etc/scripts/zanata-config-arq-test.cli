@@ -3,6 +3,7 @@
 # run cli in offline (embeded server) mode, pipe std out to local script terminal
 embed-server --std-out=echo --server-config=standalone-full.xml
 
+batch
 # ==== add datasource ====
 data-source add --name=zanataDatasource \
     --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=h2 \
@@ -12,3 +13,5 @@ data-source add --name=zanataDatasource \
     --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.JDBC4ValidConnectionChecker \
     --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter \
     --use-ccm=true
+
+run-batch

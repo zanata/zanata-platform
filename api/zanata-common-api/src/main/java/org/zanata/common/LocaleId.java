@@ -51,7 +51,6 @@ public class LocaleId implements Serializable {
         return id.hashCode();
     }
 
-    @SuppressWarnings("null")
     @Override
     @JsonValue
     public @Nonnull
@@ -63,7 +62,6 @@ public class LocaleId implements Serializable {
         return new LocaleId(localeName.replace('_', '-'));
     }
 
-    @SuppressWarnings("null")
     public @Nonnull
     String toJavaName() {
         return id.replace('-', '_');
@@ -74,7 +72,6 @@ public class LocaleId implements Serializable {
      *
      * @return
      */
-    @SuppressWarnings("null")
     public @Nonnull
     String getId() {
         return id;

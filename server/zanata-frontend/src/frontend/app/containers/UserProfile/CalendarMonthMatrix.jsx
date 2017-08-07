@@ -78,7 +78,7 @@ const CalendarMonthMatrix = ({
   let header = utilsDate.getDateRangeLabel(dateRange)
   header = header ? header + '\'s Activity'
     : utilsDate.formatDate(dateRange.startDate, utilsDate.dateRangeDisplayFmt) +
-      ' … ' +
+      ' to ' +
       utilsDate.formatDate(dateRange.endDate, utilsDate.dateRangeDisplayFmt)
   /* eslint-disable react/jsx-no-bind */
   return (

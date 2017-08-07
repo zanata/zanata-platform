@@ -38,7 +38,7 @@ class Sidebar extends Component {
   // }
   //
   // mediaQueryChanged () {
-  //   this.setState({docked: this.state.mql.matches})
+  //   this.setState(prevState => ({docked: prevState.mql.matches}))
   // }
 
   setOpen = (open) => {

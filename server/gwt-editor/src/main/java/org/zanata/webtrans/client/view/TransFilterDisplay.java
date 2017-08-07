@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.webtrans.client.presenter.UserConfigHolder.ConfigurationState;
+import org.zanata.webtrans.shared.ui.UserConfigHolder.ConfigurationState;
 import org.zanata.webtrans.client.ui.EditorSearchFieldListener;
 
 /**

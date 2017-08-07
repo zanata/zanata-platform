@@ -1,11 +1,18 @@
 package org.zanata.rest.dto;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
+
 import java.net.URI;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * A single link to reference a URI
+ */
 @XmlType(name = "linkType")
+@Label("Link")
 public class Link {
 
     private URI href;
@@ -30,7 +37,11 @@ public class Link {
         this.type = type;
     }
 
+    /**
+     * The URI reference by this link
+     */
     @XmlAttribute(name = "href", required = true)
+    @DocumentationExample(value = "http://alink.com")
     public URI getHref() {
         return href;
     }
@@ -39,6 +50,9 @@ public class Link {
         this.href = href;
     }
 
+    /**
+     * The relationship this link holds to its parent object
+     */
     @XmlAttribute(name = "rel", required = false)
     public String getRel() {
         return rel;
@@ -48,6 +62,9 @@ public class Link {
         this.rel = rel;
     }
 
+    /**
+     * The type of link
+     */
     @XmlAttribute(name = "type", required = true)
     public String getType() {
         return type;

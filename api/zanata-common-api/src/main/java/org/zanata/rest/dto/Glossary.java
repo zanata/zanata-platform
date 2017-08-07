@@ -36,7 +36,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
-import org.zanata.rest.dto.resource.LocaleList;
 
 /**
  *
