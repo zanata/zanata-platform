@@ -12,7 +12,6 @@ import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
 public class GettextDirStrategyPullTest {

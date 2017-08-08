@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
 import org.zanata.webtrans.shared.model.Locale;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 
 /**
  *

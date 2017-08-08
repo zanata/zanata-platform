@@ -44,7 +44,6 @@ import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 

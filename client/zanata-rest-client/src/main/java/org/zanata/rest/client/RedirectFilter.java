@@ -25,10 +25,6 @@ import java.net.URI;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
-import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Resteasy does not support following redirect. https://issues.jboss.org/browse/RESTEASY-1075
@@ -38,8 +34,6 @@ import org.slf4j.LoggerFactory;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class RedirectFilter implements ClientResponseFilter {
-    private static final Logger log =
-            LoggerFactory.getLogger(RedirectFilter.class);
 
     @Override
     public void filter(ClientRequestContext requestContext,

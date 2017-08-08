@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 import static com.jayway.awaitility.Awaitility.waitAtMost;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
@@ -24,9 +25,8 @@ import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.ResourceTestObjectFactory;
 import org.zanata.rest.service.ResourceTestUtil;
-import org.zanata.rest.service.TranslationsResourceTestObjectFactory;
+import org.zanata.test.TranslationsResourceTestData;
 import com.jayway.awaitility.Duration;
 
 /**
@@ -44,10 +44,6 @@ public class AsyncResourceRestITCase extends RestTest {
             "org/zanata/test/model/ProjectsData.dbunit.xml";
     private static final String ACCOUNT_DATA_DBUNIT_XML =
             "org/zanata/test/model/AccountData.dbunit.xml";
-    private ResourceTestObjectFactory resourceTestFactory =
-            new ResourceTestObjectFactory();
-    private TranslationsResourceTestObjectFactory translationTestFactory =
-            new TranslationsResourceTestObjectFactory();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -69,8 +65,8 @@ public class AsyncResourceRestITCase extends RestTest {
     @Test
     @RunAsClient
     @Deprecated
-    public void testPutGetResourceWithExtensionDeprecate() throws Exception {
-        final Resource resource = resourceTestFactory.getTextFlowTest();
+    public void testPutGetResourceWithExtensionDeprecated() throws Exception {
+        final Resource resource = getTestDocWithTextFlow();
         final AtomicReference<String> processId = new AtomicReference<>(null);
         new ResourceRequest(
                 getRestEndpointUrl(
@@ -127,7 +123,7 @@ public class AsyncResourceRestITCase extends RestTest {
                 assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 Resource get = jaxbUnmarshal(entityString, Resource.class);
-                Resource base = resourceTestFactory.getTextFlowTest();
+                Resource base = getTestDocWithTextFlow();
                 ResourceTestUtil.clearRevs(base);
                 ResourceTestUtil.clearRevs(get);
                 log.debug("expect:" + base.toString());
@@ -140,7 +136,7 @@ public class AsyncResourceRestITCase extends RestTest {
     @Test
     @RunAsClient
     public void testPutGetResourceWithExtension() throws Exception {
-        final Resource resource = resourceTestFactory.getTextFlowTest();
+        final Resource resource = getTestDocWithTextFlow();
         final AtomicReference<String> processId = new AtomicReference<>(null);
         new ResourceRequest(
                 getRestEndpointUrl(
@@ -197,7 +193,7 @@ public class AsyncResourceRestITCase extends RestTest {
                 assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 Resource get = jaxbUnmarshal(entityString, Resource.class);
-                Resource base = resourceTestFactory.getTextFlowTest();
+                Resource base = getTestDocWithTextFlow();
                 ResourceTestUtil.clearRevs(base);
                 ResourceTestUtil.clearRevs(get);
                 log.debug("expect:" + base.toString());
@@ -212,7 +208,7 @@ public class AsyncResourceRestITCase extends RestTest {
     @Deprecated
     public void testPutGetTranslationWithExtensionDeprecate() throws Exception {
         final TranslationsResource resource =
-                translationTestFactory.getTextFlowTargetCommentTest();
+                TranslationsResourceTestData.getTestTextFlowTargetComment();
         final AtomicReference<String> processId = new AtomicReference<>(null);
         new ResourceRequest(
                 getRestEndpointUrl(
@@ -256,7 +252,7 @@ public class AsyncResourceRestITCase extends RestTest {
     @RunAsClient
     public void testPutGetTranslationWithExtension() throws Exception {
         final TranslationsResource resource =
-                translationTestFactory.getTextFlowTargetCommentTest();
+                TranslationsResourceTestData.getTestTextFlowTargetComment();
         final AtomicReference<String> processId = new AtomicReference<>(null);
         new ResourceRequest(
                 getRestEndpointUrl(

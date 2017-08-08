@@ -1,6 +1,6 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action } from '@kadira/storybook-addon-actions'
+import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import RealEditorSearchInput from '.'
 
 // Simple wrapper component to handle text updates for the story
