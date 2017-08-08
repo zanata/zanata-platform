@@ -34,6 +34,7 @@ public class LanguageTeamSearchResult extends SearchResult {
     private static final long serialVersionUID = 3410996397191527671L;
     private LocaleDetails localeDetails;
     private long memberCount;
+    private long requestCount;
 
     public LanguageTeamSearchResult() {
         this.setType(SearchResultType.LanguageTeam);
@@ -55,5 +56,14 @@ public class LanguageTeamSearchResult extends SearchResult {
 
     public void setMemberCount(final long memberCount) {
         this.memberCount = memberCount;
+    }
+
+    @JsonProperty("requestCount")
+    public long getRequestCount() {
+        return this.requestCount;
+    }
+
+    public void setRequestCount(final long requestCount) {
+        this.requestCount = requestCount;
     }
 }

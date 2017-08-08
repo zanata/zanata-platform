@@ -14,6 +14,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;

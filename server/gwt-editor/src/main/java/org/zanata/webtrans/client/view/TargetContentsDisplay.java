@@ -27,7 +27,7 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;

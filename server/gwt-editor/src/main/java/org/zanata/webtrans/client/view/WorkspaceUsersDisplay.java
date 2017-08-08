@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.ui.HasManageUserPanel;
+import org.zanata.webtrans.shared.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;

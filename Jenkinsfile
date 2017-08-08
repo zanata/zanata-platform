@@ -21,7 +21,7 @@ PullRequests.ensureJobDescription(env, manager, steps)
 @Field
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps)
+notify = new Notifier(env, steps, currentBuild, 'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile')
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -48,6 +48,10 @@ node {
         numToKeepStr: '20',        // keep records for at most X builds
         artifactDaysToKeepStr: '', // keep artifacts no more than X days
         artifactNumToKeepStr: '4'] // keep artifacts for at most X builds
+    ],
+    [
+      $class: 'GithubProjectProperty',
+      projectUrlStr: 'https://github.com/zanata/zanata-platform'
     ],
     [
       $class: 'ParametersDefinitionProperty',
@@ -210,7 +214,7 @@ timestamps {
 
           def surefireTestReports = 'target/surefire-reports/TEST-*.xml'
 
-          setJUnitPrefix("UNIT", surefireTestReports)
+          setJUnitPrefix('UNIT', surefireTestReports)
           // gather surefire results; mark build as unstable in case of failures
           junit(testResults: "**/${surefireTestReports}")
 
@@ -235,7 +239,7 @@ timestamps {
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
-          notify.testResults("UNIT", currentBuild.result)
+          notify.testResults('UNIT', currentBuild.result)
 
           // TODO publish coverage for jest (cobertura format)
           // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
@@ -286,7 +290,7 @@ timestamps {
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '1366',
+                unstableTotalAll: '1209',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
@@ -312,7 +316,7 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.failed()
+        notify.error(e)
         currentBuild.result = 'FAILURE'
         // abort the rest of the pipeline
         throw e
@@ -350,13 +354,12 @@ timestamps {
         // run integration test tasks in parallel
         parallel tasks
 
-        // if the build is *still* green after running integration tests:
-        if (currentBuild.result == null) {
-          echo 'marking build as successful'
-          currentBuild.result = 'SUCCESS'
+        node() {
+            // when build is *still* green after running integration tests
+            // GitHubCommitStatusSetter need to be inside a node
+            notify.finish()
+            currentBuild.result = (currentBuild.result) ?: 'SUCCESS'
         }
-
-        // TODO notify finish
         // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
         // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
         // http://stackoverflow.com/a/39535424/14379
@@ -435,12 +438,15 @@ void integrationTests(String appserver) {
         archive(includes: "server/functional-test/target/**/traceability.json")
 
         if (mvnResult != 0) {
+          notify.testResults(appserver, 'UNSTABLE', 'Failed maven build for integration tests')
           currentBuild.result = 'UNSTABLE'
 
           // gather db/app logs and screenshots to help debugging
           archive(
                   includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
                   excludes: '**/BACKUP-*.log')
+        } else {
+          notify.testResults(appserver, 'SUCCESS')
         }
 
         echo "Capturing JUnit results"
@@ -454,10 +460,10 @@ void integrationTests(String appserver) {
           // Reduce workspace size
           sh "git clean -fdx"
         } else {
-          currentBuild.result = 'FAILED'
+          notify.error("No integration test result for $appserver")
+          currentBuild.result = 'FAILURE'
           error "no integration test results for $appserver"
         }
-        notify.testResults(appserver.toUpperCase(), currentBuild.result)
       }
     }
   }

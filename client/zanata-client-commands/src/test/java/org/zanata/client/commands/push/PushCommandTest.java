@@ -8,14 +8,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.zanata.client.TestUtils.fileFromClasspath;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.zanata.client.TestUtils;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.config.LocaleList;

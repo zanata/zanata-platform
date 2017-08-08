@@ -34,7 +34,6 @@ import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.LocaleId;
 
 @XmlType(name = "localeDetailsType")

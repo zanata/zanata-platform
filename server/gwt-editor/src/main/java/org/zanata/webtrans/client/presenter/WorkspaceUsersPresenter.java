@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import org.zanata.webtrans.client.events.KeyShortcutEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -10,12 +8,11 @@ import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
-import org.zanata.webtrans.client.ui.HasManageUserPanel;
+import org.zanata.webtrans.shared.ui.HasManageUserPanel;
 import org.zanata.webtrans.client.view.WorkspaceUsersDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
-import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.KeyCodes;

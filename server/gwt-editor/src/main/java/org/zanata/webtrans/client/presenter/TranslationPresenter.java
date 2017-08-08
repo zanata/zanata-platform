@@ -38,6 +38,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;

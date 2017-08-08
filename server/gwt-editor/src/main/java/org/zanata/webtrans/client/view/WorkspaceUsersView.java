@@ -1,7 +1,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.ui.HasManageUserPanel;
+import org.zanata.webtrans.shared.ui.HasManageUserPanel;
 import org.zanata.webtrans.client.ui.UnorderedListWidget;
 import org.zanata.webtrans.client.ui.UserPanel;
 import org.zanata.webtrans.shared.model.Person;
@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 

@@ -50,8 +50,6 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     private static final String DEF_MERGE_TYPE = "AUTO";
     private static final String DEF_PUSH_TYPE = "source";
 
-    private ImmutableList<String> includes = ImmutableList.of();
-    private ImmutableList<String> excludes = ImmutableList.of();
     private ImmutableList<String> fileTypes = ImmutableList.of();
     private boolean listFileTypes = false;
     private boolean defaultExcludes = DEF_EXCLUDES;

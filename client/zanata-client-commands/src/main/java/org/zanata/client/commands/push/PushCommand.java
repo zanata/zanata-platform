@@ -29,7 +29,6 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.AsyncProcessClient;
 import org.zanata.rest.client.CopyTransClient;
