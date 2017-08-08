@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
+import { storiesOf } from '@storybook/react'
 import { Grid, Row, Col } from 'react-bootstrap'
 
 storiesOf('Foundation', module)
