@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client;
 
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;

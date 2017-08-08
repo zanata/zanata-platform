@@ -1,7 +1,6 @@
 package org.zanata.client;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,14 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.client.ProjectClient;
-import org.zanata.rest.client.ProjectIterationClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
 /**

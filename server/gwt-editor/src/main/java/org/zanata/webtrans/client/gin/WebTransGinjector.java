@@ -8,7 +8,7 @@ import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.HistoryEventHandlerService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;

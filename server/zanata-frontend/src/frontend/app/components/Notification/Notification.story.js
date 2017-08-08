@@ -1,6 +1,6 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action, decorateAction } from '@kadira/storybook-addon-actions'
+import { storiesOf } from '@storybook/react'
+import { action, decorateAction } from '@storybook/addon-actions'
 import Notification from './component'
 
 storiesOf('Notification', module)

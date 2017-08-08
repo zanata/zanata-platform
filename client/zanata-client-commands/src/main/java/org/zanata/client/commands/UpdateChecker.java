@@ -46,7 +46,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidator;
 import static org.zanata.client.commands.Messages.get;

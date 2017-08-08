@@ -102,4 +102,11 @@ jms-queue add --queue-address=MailsQueue --durable=true --entries=["java:/jms/qu
 /socket-binding-group=standard-sockets/socket-binding=txn-recovery-environment:write-attribute(name="port", value=${jboss.txn.recovery.port,env.JBOSS_TXN_RECOVERY_PORT:4812})
 /socket-binding-group=standard-sockets/socket-binding=txn-status-manager:write-attribute(name="port", value=${jboss.txn.status.port,env.JBOSS_TXN_STATUS_PORT:4813})
 
+
+# ==== disable CORBA ====
+/socket-binding-group=standard-sockets/socket-binding=iiop:remove
+/socket-binding-group=standard-sockets/socket-binding=iiop-ssl:remove
+/subsystem=iiop-openjdk:remove()
+/extension=org.wildfly.iiop-openjdk:remove()
+
 run-batch

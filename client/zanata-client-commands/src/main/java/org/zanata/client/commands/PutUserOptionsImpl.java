@@ -2,8 +2,6 @@ package org.zanata.client.commands;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import static org.zanata.client.commands.Messages.get;
@@ -22,9 +20,6 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     private String userRoles;
     private String userLangs;
     private String userEnabled = "auto";
-
-    private static final Logger log = LoggerFactory
-            .getLogger(PutUserCommand.class);
 
     @Override
     public String getCommandName() {

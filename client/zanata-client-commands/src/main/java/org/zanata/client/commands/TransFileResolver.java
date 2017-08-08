@@ -21,18 +21,17 @@
 
 package org.zanata.client.commands;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ProjectType;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkState;
 import static org.zanata.client.commands.Messages.get;
@@ -128,7 +127,7 @@ public class TransFileResolver {
             ProjectType projectType, Optional<String> translationFileExtension) {
         FileMappingRule rule = PROJECT_TYPE_FILE_MAPPING_RULES.get(projectType);
         checkState(rule != null, get("no.default.mapping"), projectType);
-        String relativePath = new FileMappingRuleHandler(rule, projectType, opts)
+        String relativePath = new FileMappingRuleHandler(rule, opts)
                 .getRelativeTransFilePathForSourceDoc(docNameWithExt,
                         localeMapping, translationFileExtension);
         return new File(opts.getTransDir(), relativePath);
@@ -142,7 +141,7 @@ public class TransFileResolver {
         // so such a rule should be the last.
         for (FileMappingRule rule : fileMappingRules) {
             FileMappingRuleHandler handler = new FileMappingRuleHandler(rule,
-                    getProjectType(), opts);
+                    opts);
             if (handler.isApplicable(docNameWithExt)) {
                 String relativePath = handler
                         .getRelativeTransFilePathForSourceDoc(

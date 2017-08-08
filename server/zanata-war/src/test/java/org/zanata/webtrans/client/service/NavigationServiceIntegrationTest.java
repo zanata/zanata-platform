@@ -20,12 +20,16 @@
  */
 package org.zanata.webtrans.client.service;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.customware.gwt.presenter.client.EventBus;
 import org.hibernate.transform.ResultTransformer;
+import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
+import org.jglue.cdiunit.AdditionalClasspaths;
 import org.jglue.cdiunit.ContextController;
 import org.jglue.cdiunit.ProducesAlternative;
 import org.junit.Before;
@@ -43,19 +47,20 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.webtrans.shared.model.GetTransUnitActionContext;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
-import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.presenter.TransUnitsTablePresenter;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
@@ -67,6 +72,7 @@ import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -78,21 +84,29 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
+import static org.zanata.test.EntityTestData.makeHTextFlow;
+import static org.zanata.webtrans.test.GWTTestData.documentInfo;
+import static org.zanata.webtrans.test.GWTTestData.extractFromEvents;
+import static org.zanata.webtrans.test.GWTTestData.workspaceId;
 // This test uses mockito to simulate an RPC call environment
 
 @RunWith(CdiUnitRunner.class)
+@AdditionalClasspaths(CDI11Bootstrap.class)
 public class NavigationServiceIntegrationTest {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(NavigationServiceIntegrationTest.class);
 
-    private static final WorkspaceId WORKSPACE_ID = TestFixture.workspaceId();
+    private static final WorkspaceId WORKSPACE_ID = workspaceId();
     private static final HLocale LOCALE =
             new HLocale(WORKSPACE_ID.getLocaleId());
     // @formatter:off
-    private static final List<HTextFlow> TEXT_FLOWS = ImmutableList.<HTextFlow>builder().add(TestFixture.makeHTextFlow(0, LOCALE, ContentState.New), TestFixture.makeHTextFlow(1, LOCALE, ContentState.New), TestFixture.makeHTextFlow(2, LOCALE, ContentState.NeedReview), TestFixture.makeHTextFlow(3, LOCALE, ContentState.Approved), TestFixture.makeHTextFlow(4, LOCALE, ContentState.NeedReview), TestFixture.makeHTextFlow(5, LOCALE, ContentState.New)).build();
+    private static final List<HTextFlow> TEXT_FLOWS = ImmutableList.of(
+            makeHTextFlow(0, LOCALE, ContentState.New),
+            makeHTextFlow(1, LOCALE, ContentState.New),
+            makeHTextFlow(2, LOCALE, ContentState.NeedReview),
+            makeHTextFlow(3, LOCALE, ContentState.Approved),
+            makeHTextFlow(4, LOCALE, ContentState.NeedReview),
+            makeHTextFlow(5, LOCALE, ContentState.New));
     // @formatter:on
-    private static final DocumentInfo DOCUMENT =
-            TestFixture.documentInfo(1, "");
+    private static final DocumentInfo DOCUMENT = documentInfo(1, "");
     @Inject
     private ContextController contextController;
     @Inject
@@ -129,7 +143,8 @@ public class NavigationServiceIntegrationTest {
     @Captor
     private ArgumentCaptor<GetTransUnitList> actionCaptor;
     @Captor
-    private ArgumentCaptor<AsyncCallback<GetTransUnitListResult>> asyncCallbackCaptor;
+    private ArgumentCaptor<AsyncCallback<GetTransUnitListResult>>
+            asyncCallbackCaptor;
     private GetTransUnitActionContext context;
     @Mock
     private TableEditorMessages messages;
@@ -181,16 +196,16 @@ public class NavigationServiceIntegrationTest {
         int maxSize = Math.min(startIndex + count, hTextFlows.size());
         when(textFlowDAO.getTextFlowsByDocumentId(documentId.getId(),
                 startIndex, count))
-                        .thenReturn(hTextFlows.subList(startIndex, maxSize));
+                .thenReturn(hTextFlows.subList(startIndex, maxSize));
         when(localeServiceImpl.validateLocaleByProjectIteration(
                 any(LocaleId.class), anyString(), anyString()))
-                        .thenReturn(hLocale);
+                .thenReturn(hLocale);
         when(resourceUtils.getNumPlurals(any(HDocument.class),
                 any(HLocale.class))).thenReturn(1);
         // trans unit navigation index handler
         when(textFlowDAO.getNavigationByDocumentId(eq(documentId), eq(hLocale),
                 isA(ResultTransformer.class), isA(FilterConstraints.class)))
-                        .thenReturn(hTextFlows);
+                .thenReturn(hTextFlows);
     }
 
     private void verifyDispatcherAndCallOnSuccess() {
@@ -204,11 +219,11 @@ public class NavigationServiceIntegrationTest {
         service.requestTransUnitsAndUpdatePageIndex(context.withCount(6), true);
         assertThat(getTransUnitListResult.getDocumentId())
                 .isEqualTo(DOCUMENT.getId());
-        assertThat(TestFixture.asIds(getTransUnitListResult.getUnits()))
+        assertThat(getIntIds(getTransUnitListResult.getUnits()))
                 .contains(0, 1, 2, 3, 4, 5);
         GetTransUnitsNavigationResult navigationResult =
                 getTransUnitListResult.getNavigationIndex();
-        assertThat(TestFixture.asLongs(navigationResult.getIdIndexList()))
+        assertThat(getLongIds(navigationResult.getIdIndexList()))
                 .contains(0L, 1L, 2L, 3L, 4L, 5L);
         assertThat(navigationResult.getTransIdStateList())
                 .containsEntry(new TransUnitId(0L), ContentState.New);
@@ -240,7 +255,7 @@ public class NavigationServiceIntegrationTest {
     }
 
     private List<Integer> getPageDataModelAsIds() {
-        return TestFixture.asIds(pageModel.getData());
+        return getIntIds(pageModel.getData());
     }
 
     @Test
@@ -360,15 +375,25 @@ public class NavigationServiceIntegrationTest {
                 .showDataForCurrentPage(service.getCurrentPageValues());
         verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
         TableRowSelectedEvent tableRowSelectedEvent =
-                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                extractFromEvents(eventCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
         TransUnitId firstItem = new TransUnitId(TEXT_FLOWS.get(0).getId());
         assertThat(tableRowSelectedEvent.getSelectedId()).isEqualTo(firstItem);
         // behaviour on GetTransUnitNavigation success
         PageCountChangeEvent pageCountChangeEvent =
-                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                extractFromEvents(eventCaptor.getAllValues(),
                         PageCountChangeEvent.class);
         assertThat(pageCountChangeEvent.getPageCount()).isEqualTo(2);
         inOrder.verify(eventBus).fireEvent(LoadingEvent.FINISH_EVENT);
     }
+
+    private static List<Integer> getIntIds(List<TransUnit> transUnits) {
+        return Lists.newArrayList(Collections2.transform(transUnits,
+                from -> (int) from.getId().getId()));
+    }
+
+    private static List<Long> getLongIds(List<TransUnitId> transUnitIds) {
+        return Lists.transform(transUnitIds, TransUnitId::getId);
+    }
+
 }

@@ -1,0 +1,14 @@
+#tmx-export-modal .modal-header {
+  padding-bottom: 0 !important;
+}
+
+
+#tmx-export-modal .modal-body {
+  padding-top: 0 !important;
+}
+
+#tmx-export-modal {
+  visibility: visible;
+  opacity: inherit;
+  backface-visibility: hidden;
+}

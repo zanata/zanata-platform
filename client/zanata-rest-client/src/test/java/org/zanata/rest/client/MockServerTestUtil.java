@@ -24,12 +24,7 @@ package org.zanata.rest.client;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.hamcrest.Matchers;
 import org.zanata.rest.dto.VersionInfo;
-
-import javax.ws.rs.core.Response;
-
-import static org.junit.Assert.assertThat;
 
 /**
  * @author Patrick Huang

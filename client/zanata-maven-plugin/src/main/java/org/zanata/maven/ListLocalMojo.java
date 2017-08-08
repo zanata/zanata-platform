@@ -1,6 +1,5 @@
 package org.zanata.maven;
 
-import org.apache.maven.plugins.annotations.Mojo;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.ListLocalCommand;
 

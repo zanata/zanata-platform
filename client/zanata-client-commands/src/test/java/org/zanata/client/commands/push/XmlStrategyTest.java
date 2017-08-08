@@ -34,7 +34,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.client.TempTransFileRule;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;

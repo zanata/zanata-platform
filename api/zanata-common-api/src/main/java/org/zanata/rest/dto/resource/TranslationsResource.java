@@ -17,7 +17,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
-import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.HasSample;
 import org.zanata.rest.dto.Links;

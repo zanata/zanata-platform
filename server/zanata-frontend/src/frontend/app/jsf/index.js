@@ -15,6 +15,9 @@ import rootReducer from '../reducers'
 import {
   toggleTMMergeModal
 } from '../actions/version-actions'
+import {
+  showExportTMXModal
+} from '../actions/tmx-actions'
 
 const logger = createLogger({
   predicate: (getState, action) =>
@@ -47,6 +50,8 @@ const enhancedHistory = syncHistoryWithStore(history, store)
 export default function mountReactComponent () {
   // Attaching to window object so modal can be triggered from the JSF page
   window.toggleTMMergeModal = () => store.dispatch(toggleTMMergeModal())
+  window.toggleTMXExportModal = (show) =>
+    store.dispatch(showExportTMXModal(show))
   const mountPoint = document.getElementById('jsfReactRoot')
 
   render(<JsfRoot store={store} history={enhancedHistory} />, mountPoint)

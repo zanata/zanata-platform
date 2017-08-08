@@ -57,12 +57,14 @@ public interface TranslationMemoryResource extends RestResource {
     @GET
     @Path("all")
     public Response getAllTranslationMemory(
+            @QueryParam("srcLocale") @Nullable LocaleId srcLocale,
             @QueryParam("locale") @Nullable LocaleId locale);
 
     @GET
     @Path("projects/{projectSlug}")
     public Response getProjectTranslationMemory(
             @PathParam("projectSlug") @Nonnull String projectSlug,
+            @QueryParam("srcLocale") @Nullable LocaleId srcLocale,
             @QueryParam("locale") @Nullable LocaleId locale);
 
     @GET
@@ -70,6 +72,7 @@ public interface TranslationMemoryResource extends RestResource {
     public Response getProjectIterationTranslationMemory(
             @PathParam("projectSlug") @Nonnull String projectSlug,
             @PathParam("iterationSlug") @Nonnull String iterationSlug,
+            @QueryParam("srcLocale") @Nullable LocaleId srcLocale,
             @QueryParam("locale") @Nullable LocaleId locale);
 
     @GET
