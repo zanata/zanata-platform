@@ -24,8 +24,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.kohsuke.args4j.Option;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;

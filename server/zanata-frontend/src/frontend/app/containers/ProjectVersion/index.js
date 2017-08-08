@@ -2,10 +2,15 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import TMMergeModal from './TMMergeModal'
+import TMXExportModal from '../../components/TMX/TMXExportModal'
 
 import {
   toggleTMMergeModal
 } from '../../actions/version-actions'
+
+import {
+  showExportTMXModal
+} from '../../actions/tmx-actions'
 
 /**
  * Root component for Project Version Page
@@ -13,6 +18,7 @@ import {
 class ProjectVersion extends Component {
   static propTypes = {
     toggleTMMergeModal: PropTypes.func.isRequired,
+    toggleTMXExportModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
       project: PropTypes.string.isRequired,
       version: PropTypes.string.isRequired
@@ -26,6 +32,8 @@ class ProjectVersion extends Component {
         <div className='center-block'>
           <TMMergeModal projectSlug={params.project}
             versionSlug={params.version} />
+          <TMXExportModal project={params.project}
+            version={params.version} />
         </div>
       </div>
     )
@@ -36,6 +44,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     toggleTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
+    },
+    toggleTMXExportModal: (show) => {
+      dispatch(showExportTMXModal(show))
     }
   }
 }

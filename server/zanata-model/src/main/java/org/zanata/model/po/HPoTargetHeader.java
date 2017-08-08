@@ -27,6 +27,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.NaturalId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * @author sflaniga@redhat.com
@@ -60,6 +61,11 @@ public class HPoTargetHeader extends PoHeaderBase {
 
     public void setDocument(final HDocument document) {
         this.document = document;
+    }
+
+    @VisibleForTesting
+    protected void setId(Long id) {
+        super.setId(id);
     }
 
     @Override

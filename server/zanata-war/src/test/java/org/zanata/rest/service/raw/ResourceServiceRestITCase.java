@@ -1,5 +1,12 @@
 package org.zanata.rest.service.raw;
 
+import static org.zanata.test.ResourceTestData.getTestDocMetaWithPoHeader;
+import static org.zanata.test.ResourceTestData.getTestDocWithPoHeader;
+import static org.zanata.test.ResourceTestData.getTestDocWithPotEntryHeader;
+import static org.zanata.test.ResourceTestData.getTestDocMeta;
+import static org.zanata.test.ResourceTestData.getTestDocWithTextFlowComment;
+import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
+import static org.zanata.test.ResourceTestData.getTestDocWith2TextFlows;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -13,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.service.ResourceTestObjectFactory;
 import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.util.RawRestTestUtils;
 
@@ -25,15 +31,12 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     private final Logger log = LoggerFactory
             .getLogger(ResourceServiceRestITCase.class);
 
-    private static final ResourceTestObjectFactory resourceTestFactory =
-            new ResourceTestObjectFactory();
-
     private static final List<Resource> data = ImmutableList
             .<Resource> builder().add(
-                    resourceTestFactory.getPotEntryHeaderTest(),
-                    resourceTestFactory.getTextFlowCommentTest(),
-                    resourceTestFactory.getPoHeaderTest(),
-                    resourceTestFactory.getTextFlowTest())
+                    getTestDocWithPotEntryHeader(),
+                    getTestDocWithTextFlowComment(),
+                    getTestDocWithPoHeader(),
+                    getTestDocWithTextFlow())
             .build();
 
     private Resource sr;
@@ -85,7 +88,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResource(sr.getName(),
                         new StringSet("gettext;comment")));
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
@@ -102,7 +105,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResourceWithDocId(sr.getName(),
                         new StringSet("gettext;comment")));
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
@@ -118,7 +121,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                 "gettext;comment"), false);
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResourceWithDocId(sr.getName(), null));
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
@@ -131,7 +134,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @SuppressWarnings("deprecation")
     public void testPutGetResourceDeprecated() {
         getSourceDocResource().putResource(sr.getName(), sr, null, false);
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResource(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
@@ -144,7 +147,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     public void testPutGetResource() {
         getSourceDocResource()
                 .putResourceWithDocId(sr, sr.getName(), null, false);
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
@@ -156,7 +159,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testPostGetResource() {
         getSourceDocResource().post(sr, null, true);
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
@@ -201,7 +204,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResource(sr.getName(), null));
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
@@ -217,7 +220,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResourceWithDocId(sr.getName(),
                         new StringSet("gettext;comment")));
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         String expected = RawRestTestUtils.jaxbMarhsal(base);
@@ -234,7 +237,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResourceWithDocId(sr.getName(), null));
-        Resource base = resourceTestFactory.getTextFlowTest();
+        Resource base = getTestDocWithTextFlow();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         log.debug("expect:" + base.toString());
@@ -247,10 +250,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @SuppressWarnings("deprecation")
     public void testPutGetResourceMetaDeprecated() {
         log.debug("test put get resource meta service");
-        Resource res = resourceTestFactory.getTextFlowTest();
+        Resource res = getTestDocWithTextFlow();
         getSourceDocResource().putResource(res.getName(), res, new StringSet(
                 "gettext;comment"), false);
-        ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
+        ResourceMeta sr = getTestDocMetaWithPoHeader();
         getSourceDocResource().putResourceMeta(sr.getName(), sr, new StringSet(
                 "gettext;comment"));
         log.debug("get resource meta");
@@ -268,10 +271,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testPutGetResourceMeta() {
         log.debug("test put get resource meta service");
-        Resource res = resourceTestFactory.getTextFlowTest();
+        Resource res = getTestDocWithTextFlow();
         getSourceDocResource().putResourceWithDocId(res, res.getName(), new StringSet(
                 "gettext;comment"), false);
-        ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
+        ResourceMeta sr = getTestDocMetaWithPoHeader();
         getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(), new StringSet(
                 "gettext;comment"));
         log.debug("get resource meta");
@@ -289,11 +292,11 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testPutNoExtensionGetResourceMeta() {
         log.debug("test put get resource meta service");
-        Resource res = resourceTestFactory.getTextFlowTest();
+        Resource res = getTestDocWithTextFlow();
         getSourceDocResource()
                 .putResourceWithDocId(res, res.getName(), null, false);
-        ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
-        ResourceMeta base = resourceTestFactory.getResourceMeta();
+        ResourceMeta sr = getTestDocMetaWithPoHeader();
+        ResourceMeta base = getTestDocMeta();
         getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(), null);
         log.debug("get resource meta");
         Response resourceGetResponse =
@@ -311,10 +314,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @SuppressWarnings("deprecation")
     public void testPutGetNoExtensionResourceMetaDeprecated() {
         log.debug("test put get resource meta service");
-        Resource res = resourceTestFactory.getTextFlowTest();
+        Resource res = getTestDocWithTextFlow();
         getSourceDocResource().putResource(res.getName(), res, null, false);
-        ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
-        ResourceMeta base = resourceTestFactory.getResourceMeta();
+        ResourceMeta sr = getTestDocMetaWithPoHeader();
+        ResourceMeta base = getTestDocMeta();
         getSourceDocResource().putResourceMeta(sr.getName(), sr, new StringSet(
                 "gettext;comment"));
         log.debug("get resource meta");
@@ -329,12 +332,13 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @Test
     @RunAsClient
     public void testPutGetNoExtensionResourceMeta() {
+        Resource rs1 = getTestDocWith2TextFlows();
         log.debug("test put get resource meta service");
-        Resource res = resourceTestFactory.getTextFlowTest();
+        Resource res = getTestDocWithTextFlow();
         getSourceDocResource()
                 .putResourceWithDocId(res, res.getName(), null, false);
-        ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
-        ResourceMeta base = resourceTestFactory.getResourceMeta();
+        ResourceMeta sr = getTestDocMetaWithPoHeader();
+        ResourceMeta base = getTestDocMeta();
         getSourceDocResource()
                 .putResourceMetaWithDocId(sr, sr.getName(), new StringSet(
                         "gettext;comment"));
@@ -351,14 +355,14 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     @SuppressWarnings("deprecation")
     public void testDeleteResourceDeprecated() {
-        Resource rs1 = resourceTestFactory.getTextFlowTest2();
+        Resource rs1 = getTestDocWith2TextFlows();
         getSourceDocResource().post(rs1, null, true);
         Response resourceGetResponse =
                 getSourceDocResource().deleteResource(rs1.getName());
         assertThat(resourceGetResponse.getStatus())
                 .isEqualTo(Status.OK.getStatusCode());
 
-        Resource rs2 = resourceTestFactory.getTextFlowTest();
+        Resource rs2 = getTestDocWithTextFlow();
         Response resourceGetResponse2 =
                 getSourceDocResource().deleteResource(rs2.getName());
         assertThat(resourceGetResponse2.getStatus())
@@ -368,14 +372,14 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @Test
     @RunAsClient
     public void testDeleteResource() {
-        Resource rs1 = resourceTestFactory.getTextFlowTest2();
+        Resource rs1 = getTestDocWith2TextFlows();
         getSourceDocResource().post(rs1, null, true);
         Response resourceGetResponse =
                 getSourceDocResource().deleteResourceWithDocId(rs1.getName());
         assertThat(resourceGetResponse.getStatus())
                 .isEqualTo(Status.OK.getStatusCode());
 
-        Resource rs2 = resourceTestFactory.getTextFlowTest();
+        Resource rs2 = getTestDocWithTextFlow();
         Response resourceGetResponse2 =
                 getSourceDocResource().deleteResourceWithDocId(rs2.getName());
         assertThat(resourceGetResponse2.getStatus())

@@ -3,7 +3,7 @@ package org.zanata.webtrans.client.view;
 import com.google.gwt.user.client.ui.IsWidget;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.rpc.NavOption;

@@ -52,10 +52,6 @@
 
   <ui:fragment
     rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
-    <zanata:confirm-modal id="exportTMXModal"
-      title="#{msgs['jsf.ExportTMXProject']}"
-      message="#{msgs['jsf.ConfirmExportTMXProject']}"
-      onresponse="onExportTMXResponse" />
     <zanata:confirm-modal id="exportTMXVersionModal"
       title="#{msgs['jsf.iteration.ExportTMXIter']}"
       message="#{msgs['jsf.ConfirmExportTMXIter']}"
@@ -71,12 +67,6 @@
           window.open("#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/" + selectedVersion);
         }
         zanata.modal.hide('#exportTMXVersionModal');
-      }
-      function onExportTMXResponse(exp) {
-        if (exp) {
-          window.open("#{request.contextPath}/rest/tm/projects/#{projectHome.slug}");
-        }
-        zanata.modal.hide('#exportTMXModal');
       }
     </script>
 
@@ -239,9 +229,9 @@
           href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/about"
           class="js-url-mod" data-content="#about">
           <i class="i i--info"></i>
-              <span class="is-hidden--s i__text--right">
-                #{msgs['jsf.project.About']}
-              </span>
+            <span class="is-hidden--s i__text--right">
+              #{msgs['jsf.project.About']}
+            </span>
         </a>
       </li>
       <ui:fragment
@@ -257,10 +247,9 @@
               role="content" aria-labelledby="dropdownContent">
               <li>
                 <a href="#" id="exportTMXProjectLink" class="i__item--right"
-                  title="#{msgs['jsf.iteration.ExportTMXProjectInfo']}"
-                  data-toggle="modal" data-target="#exportTMXModal">
+                  onclick="toggleTMXExportModal(true); return false">
                   #{msgs['jsf.ExportTMXProject']}<i
-                  class="i i--export i__item__icon"></i>
+                    class="i i--export i__item__icon"></i>
                 </a>
               </li>
             </ul>
@@ -271,9 +260,9 @@
             href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings"
             class="js-url-mod" data-content="#settings"
             title="#{msgs['jsf.project.ProjectSettings']}">
-                    <span class="is-hidden--s i__text--left">
-                      #{msgs['jsf.Settings']}
-                    </span>
+            <span class="is-hidden--s i__text--left">
+              #{msgs['jsf.Settings']}
+            </span>
             <i class="i i--settings"></i>
           </a>
         </li>

@@ -144,16 +144,15 @@
           </h:link>
         </li>
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <h:outputLink id="exportTMXAllLink" styleClass="bg--pop-high bg--highest--hover bx--block"
-            onclick="return confirm('#{msgs['jsf.ConfirmExportTMXAll']}')"
-            value="#{request.contextPath}/rest/tm/all">
+          <a href="#" id="exportTMXAllLink" class="bg--pop-high bg--highest--hover bx--block"
+            onclick="toggleTMXExportModal(true); return false">
             <div class="l--pad-all-half">
               <i class="i i--export gamma"></i>
               <span class="l--pad-left-1 zeta">
                 #{msgs['jsf.ExportTMXAll']}
               </span>
             </div>
-          </h:outputLink>
+          </a>
         </li>
 
       </ul>

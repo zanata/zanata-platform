@@ -29,9 +29,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
-import org.zanata.rest.dto.ResultList;
 import org.zanata.rest.service.GlossaryResource;
 import org.zanata.rest.service.StubbingServerRule;
 

@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service.raw;
 
+import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
@@ -39,7 +40,6 @@ import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.service.ResourceTestObjectFactory;
 
 /**
  * @author Carlos Munoz <a
@@ -69,7 +69,7 @@ public class CopyTransRestITCase extends RestTest {
     @Before
     public void setUp() throws Exception {
         // push a fresh new document because copyTrans is async and may affect other tests
-        resource = new ResourceTestObjectFactory().getTextFlowTest();
+        resource = getTestDocWithTextFlow();
         new ResourceRequest(
                 getRestEndpointUrl("projects/p/sample-project/iterations/i/1.0/r/"),
                 "POST", getAuthorizedEnvironment()) {
