@@ -20,6 +20,7 @@ const RejectTranslationModal = ({
           Reject translation</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          Reason: Blah
 
         </Modal.Body>
       </Modal>
