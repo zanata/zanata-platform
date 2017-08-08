@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf, action } from '@storybook/react'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
 import { Table, Col } from 'react-bootstrap'
