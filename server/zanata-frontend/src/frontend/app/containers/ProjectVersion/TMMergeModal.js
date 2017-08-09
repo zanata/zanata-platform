@@ -6,7 +6,7 @@ import {arrayMove} from 'react-sortable-hoc'
 import {Button, Panel, Row, InputGroup,
   Col, FormControl, Checkbox, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels
+  Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels, Link
 } from '../../components'
 import ProjectVersionPanels from './ProjectVersionPanels'
 import {ProjectVersionVertical} from './project-version-displays'
@@ -31,6 +31,9 @@ import {getVersionLanguageSettingsUrl} from '../../utils/UrlHelper'
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
 const DO_NOT_RENDER = undefined
+/* eslint-disable max-len */
+const docLink = 'http://docs.zanata.org/en/release/user-guide/versions/version-tm-merge/'
+/* eslint-enable max-len */
 
 /*
  * Component to display TM merge options
@@ -109,6 +112,9 @@ const MergeOptions = (
       <p className="intro">
         Copy existing translations from similar documents
         in other projects and versions into this project version.
+        <Link useHref link={docLink} target="_blank">
+          <span title='help'><Icon name='help' className='s0' /></span>
+        </Link>
       </p>
       <Col xs={12} className='vmerge-row'>
         <Col xs={4}>
