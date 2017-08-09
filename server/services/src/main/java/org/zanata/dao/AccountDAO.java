@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import org.zanata.model.HAccount;
 import org.zanata.util.PasswordUtil;
-import com.google.common.base.Strings;
 
 @RequestScoped
 public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {

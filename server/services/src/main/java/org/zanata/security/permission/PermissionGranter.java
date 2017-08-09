@@ -23,7 +23,6 @@ package org.zanata.security.permission;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
 import com.google.common.collect.Lists;

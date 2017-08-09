@@ -14,7 +14,6 @@ public class ProjectIterationId implements IsSerializable, Serializable {
     private ProjectType projectType;
 
     // for GWT
-    @SuppressWarnings("unused")
     public ProjectIterationId() {
     }
 

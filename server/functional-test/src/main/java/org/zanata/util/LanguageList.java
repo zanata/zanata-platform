@@ -20,8 +20,6 @@
  */
 package org.zanata.util;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;

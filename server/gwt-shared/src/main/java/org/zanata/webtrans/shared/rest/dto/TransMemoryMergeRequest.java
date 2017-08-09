@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.shared.rest.dto;
 
-import java.util.List;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.auth.EditorClientId;

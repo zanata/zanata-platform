@@ -29,7 +29,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;

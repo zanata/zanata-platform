@@ -31,9 +31,6 @@ import static org.zanata.util.SampleDataResourceClient.*;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class SampleProjectRule extends ExternalResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(SampleProjectRule.class);
-
     @Override
     public void before() throws Throwable {
         deleteExceptEssentialData();

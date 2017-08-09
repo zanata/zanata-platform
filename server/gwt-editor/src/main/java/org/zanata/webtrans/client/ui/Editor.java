@@ -11,7 +11,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;

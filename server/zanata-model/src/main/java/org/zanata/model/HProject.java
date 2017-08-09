@@ -20,15 +20,10 @@
  */
 package org.zanata.model;
 
-import static org.zanata.model.LocaleRole.Glossarist;
 import static org.zanata.security.EntityAction.DELETE;
 import static org.zanata.security.EntityAction.INSERT;
 import static org.zanata.security.EntityAction.UPDATE;
-import static org.zanata.model.LocaleRole.Coordinator;
-import static org.zanata.model.LocaleRole.Reviewer;
-import static org.zanata.model.LocaleRole.Translator;
 import static org.zanata.model.ProjectRole.Maintainer;
-import static org.zanata.model.ProjectRole.TranslationMaintainer;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;

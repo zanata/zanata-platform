@@ -23,7 +23,6 @@ package org.zanata.async;
 import com.google.common.base.Optional;
 import org.zanata.util.ServiceLocator;
 
-import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;

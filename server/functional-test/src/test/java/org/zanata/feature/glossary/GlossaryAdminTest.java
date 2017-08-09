@@ -38,9 +38,6 @@ import static org.zanata.util.MavenHome.mvn;
  */
 @Category(DetailedTest.class)
 public class GlossaryAdminTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(GlossaryAdminTest.class);
-
     private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
 
     /**

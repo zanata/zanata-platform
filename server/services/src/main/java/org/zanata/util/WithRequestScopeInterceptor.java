@@ -1,9 +1,6 @@
 package org.zanata.util;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Priority;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;

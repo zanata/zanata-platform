@@ -24,7 +24,6 @@ import org.hibernate.Session;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 
 @Named("accountActivationKeyDAO")

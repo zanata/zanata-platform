@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.view;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 
 /**
  *

@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.Date;
-import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 

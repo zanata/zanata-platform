@@ -20,7 +20,6 @@
  */
 package org.zanata.ui.ajax.commandbutton;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.richfaces.renderkit.RenderKitUtils;
 
 import javax.faces.component.UIComponent;

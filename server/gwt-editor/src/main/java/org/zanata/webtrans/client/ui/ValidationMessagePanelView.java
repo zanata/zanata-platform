@@ -24,7 +24,6 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationDisplayRules;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Maps;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;

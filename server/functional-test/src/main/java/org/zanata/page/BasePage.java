@@ -48,10 +48,8 @@ public class BasePage extends CorePage {
     private static final By NAV = By.id("nav");
     private static final By languagesLink = By.id("nav_language");
     private static final By exploreLink = By.id("nav_search");
-    private static final By glossaryLink = By.id("nav_glossary");
     private static final By BY_SIGN_IN = By.id("nav_login");
     private static final By BY_SIGN_OUT = By.id("nav_logout");
-    private static final By BY_PROFILE = By.id("nav_profile");
     private static final By BY_DASHBOARD_LINK = By.id("nav_dashboard");
     private static final By BY_ADMINISTRATION_LINK = By.id("nav_admin");
     private static final By registrationLink = By.id("nav_sign_up");

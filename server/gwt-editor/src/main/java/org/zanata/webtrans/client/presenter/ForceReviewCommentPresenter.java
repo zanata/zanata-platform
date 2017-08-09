@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.presenter;
 
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEventHandler;
-import org.zanata.webtrans.client.events.KeyShortcutEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;

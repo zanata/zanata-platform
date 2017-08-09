@@ -34,7 +34,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.lucene.search.BooleanQuery;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;

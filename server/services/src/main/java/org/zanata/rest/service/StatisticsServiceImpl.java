@@ -74,7 +74,6 @@ import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.util.DateUtil;
-import org.zanata.util.StatisticsUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;

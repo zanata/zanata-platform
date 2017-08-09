@@ -26,7 +26,6 @@ import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 
-import javax.annotation.Nullable;
 import java.io.InputStream;
 
 /**

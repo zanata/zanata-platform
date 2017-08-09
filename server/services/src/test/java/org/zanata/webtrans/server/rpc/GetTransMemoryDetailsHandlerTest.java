@@ -25,7 +25,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.TranslationMemoryServiceImpl;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.test.EntityTestData;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
