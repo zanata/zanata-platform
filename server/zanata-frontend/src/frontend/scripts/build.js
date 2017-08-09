@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 const c = require('cli-color')
 const webpack = require('webpack')
-const prodConfig = require('../webpack.prod.config.js')
-const draftConfig = require('../webpack.draft.config.js')
+const createConfig = require('../webpack.config.js')
 
 // execute icon scripts to generate required files
 require('./createIconsComponent')
@@ -14,7 +13,10 @@ console.log(isDraft
   ? c.bgYellow(' DRAFT BUILD - do not deploy! ')
   : c.bgCyan(' PRODUCTION BUILD '))
 
-const config = isDraft ? draftConfig : prodConfig
+/* equivalent of command-line `webpack --env.buildtype=draft` or
+ * `webpack --env.buildtype=prod`
+ */
+const config = createConfig({ buildtype: isDraft ? 'draft' : 'prod' })
 webpack(config, (err, stats) => {
   if (err) {
     console.error(err.stack || err)
@@ -31,14 +33,16 @@ webpack(config, (err, stats) => {
     console.warn(stats.toJson().warnings)
   }
 
-  // stats options: https://webpack.github.io/docs/node.js-api.html#stats
+  // stats options: https://webpack.js.org/configuration/stats/
   // This set of options appears to generate the same output as the CLI with
   // only the --display-error-details flag set.
   const statsOptions = {
     colors: true,
     cached: false,
     chunks: false,
-    modules: true,
+    // prevents some extract-text-webpack-plugin output
+    children: false,
+    modules: false,
     cachedAssets: false,
     exclude: ['node_modules', 'bower_components', 'components'],
     errorDetails: true

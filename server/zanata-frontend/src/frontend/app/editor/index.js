@@ -121,6 +121,9 @@ if (window.Intl) {
   runApp()
 } else {
   // Intl not present, so polyfill it.
+  // FIXME must test this, may require an additional polyfill to be available
+  // eslint-disable-next-line max-len
+  // see https://webpack.js.org/guides/migrating/#require-ensure-and-amd-require-are-asynchronous
   require.ensure([], (require) => {
     // This is 'require' on purpose, do not change to 'import'
     require('intl')
