@@ -14,21 +14,19 @@ const RejectTranslationModal = ({
   isOpen
 }) => {
   return (
-      <Modal show={show}
-             onHide={close}
-             key="reject-translation-modal"
-             className="suggestions-modal">
-        <Modal.Header>
-          <Modal.Title><small><span className="pull-left">
-          Reject translation</span></small></Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Reason:
-          <Dropdown
-              onToggle={toggleDropdown()}
-              isOpen={true}
-              enabled={true}
-              className="Dropdown--right u-sMV-1-2">
+    <Modal show={show}
+      onHide={close}
+      key="reject-translation-modal"
+      className="suggestions-modal">
+      <Modal.Header>
+        <Modal.Title><small><span className="pull-left">
+        Reject translation</span></small></Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Reason:
+        <Dropdown enabled isOpen
+          onToggle={toggleDropdown()}
+          className="Dropdown--right u-sMV-1-2">
           <Dropdown.Button>
             <a className="Dropdown-item">
               Dropdown button
@@ -43,8 +41,8 @@ const RejectTranslationModal = ({
             </ul>
           </Dropdown.Content>
         </Dropdown>
-        </Modal.Body>
-      </Modal>
+      </Modal.Body>
+    </Modal>
   )
 }
 
