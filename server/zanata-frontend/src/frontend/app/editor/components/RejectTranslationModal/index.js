@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Button from '../Button'
 import Dropdown from '../Dropdown'
+import { Row } from 'react-bootstrap'
 import { Modal } from '../../../components'
 /**
  * TODO add a concise description of this component
@@ -18,7 +20,8 @@ export class RejectTranslationModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      dropdownOpen: false
+      dropdownOpen: false,
+      dropdownOpen2: false
     }
   }
 
@@ -27,6 +30,13 @@ export class RejectTranslationModal extends Component {
       dropdownOpen: !prevState.dropdownOpen
     }))
   }
+
+  toggleDropdown2 = () => {
+    this.setState(prevState => ({
+      dropdownOpen2: !prevState.dropdownOpen2
+    }))
+  }
+
 
   render () {
     const {
@@ -49,22 +59,58 @@ export class RejectTranslationModal extends Component {
           Reason:
           <Dropdown enabled isOpen={this.state.dropdownOpen}
             onToggle={this.toggleDropdown}
-            className="Dropdown--right u-sMV-1-2">
+            className="dropdown-menu">
             <Dropdown.Button>
-              <a className="Dropdown-item">
-                Dropdown button
+            <a className="Dropdown-item">
+               Other
+              <span className="Dropdown-toggleIcon"></span>
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
               <ul>
-                <li onClick={this.toggleDropdown}>Cat</li>
-                <li onClick={this.toggleDropdown}>Dog</li>
-                <li onClick={this.toggleDropdown}>Honey Badger</li>
-                <li onClick={this.toggleDropdown}>Walrus</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>Translation Errors</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>Language Quality</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>Consistency</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>Style Guide & Glossary Violations</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>Format</li>
               </ul>
             </Dropdown.Content>
           </Dropdown>
+          Priority:
+          <Dropdown enabled isOpen={this.state.dropdownOpen2}
+                    onToggle={this.toggleDropdown2}
+                    className="dropdown-menu">
+            <Dropdown.Button>
+              <a className="Dropdown-item">
+                Minor
+                <span className="Dropdown-toggleIcon"></span>
+              </a>
+            </Dropdown.Button>
+            <Dropdown.Content>
+              <ul>
+                <li className="Dropdown-item" onClick={this.toggleDropdown2}>Major</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown2}>Critical</li>
+              </ul>
+            </Dropdown.Content>
+          </Dropdown>
+          <input ref="input"
+                 type="comment"
+                 placeholder="Provide a comment for why this translation has been rejected"
+                 maxLength="1000"
+                 className="InputGroup-input u-sizeLineHeight-1_1-4" />
         </Modal.Body>
+        <Modal.Footer>
+          <span>
+            <Row>
+              <Button className="Button Button--large">
+                Cancel
+              </Button>
+              <Button className="Button Button--large u-rounded Button--primary">
+                Reject translation
+              </Button>
+            </Row>
+          </span>
+        </Modal.Footer>
       </Modal>
     )
   }
