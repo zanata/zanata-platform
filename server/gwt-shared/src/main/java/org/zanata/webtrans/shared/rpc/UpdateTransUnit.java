@@ -8,8 +8,6 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Objects;
-
 public class UpdateTransUnit extends
         AbstractWorkspaceAction<UpdateTransUnitResult> {
     private static final long serialVersionUID = 1L;

@@ -25,8 +25,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -92,7 +90,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryDisplay>
                 this));
 
         display.setListener(this);
-        glossaryDetailsPresenter.setGlossaryListener(this);
     }
 
     @Override

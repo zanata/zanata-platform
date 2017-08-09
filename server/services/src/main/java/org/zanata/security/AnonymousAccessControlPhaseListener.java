@@ -30,10 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.jsf.api.listener.phase.JsfPhaseListener;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.exception.NotLoggedInException;
-import org.zanata.util.FacesNavigationUtil;
 
 /**
  * This JSF phase listener will check permissions if the anonymous user is not

@@ -43,14 +43,12 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
@@ -67,7 +65,6 @@ public class ZanataRestCaller {
             EnumSet.of(Failed,
                     ProcessStatusCode.Finished,
                     ProcessStatusCode.NotAccepted);
-    private final String username;
     private final String apiKey;
     private final String baseUrl;
 
@@ -88,7 +85,6 @@ public class ZanataRestCaller {
      *            user api key
      */
     public ZanataRestCaller(String username, String apiKey) {
-        this.username = username;
         this.apiKey = apiKey;
         this.baseUrl =
                 PropertiesHolder.getProperty(Constants.zanataInstance.value());

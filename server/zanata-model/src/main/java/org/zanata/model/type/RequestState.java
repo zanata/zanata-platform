@@ -20,8 +20,6 @@
  */
 package org.zanata.model.type;
 
-import org.hibernate.MappingException;
-
 /**
  * Request state with single char
  *

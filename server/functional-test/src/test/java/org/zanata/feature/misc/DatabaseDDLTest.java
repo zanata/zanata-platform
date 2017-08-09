@@ -163,6 +163,7 @@ public class DatabaseDDLTest {
         private final String parent;
         private final String child;
         // we ignore foreign key name in equal and hashcode method
+        @SuppressWarnings("unused")
         private final String fkName;
 
         ParentAndChild(Object parent, Object child, Object fkName) {

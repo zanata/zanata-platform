@@ -18,9 +18,6 @@ import com.google.common.collect.Lists;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModalNavigationStateHolderTest {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(ModalNavigationStateHolderTest.class);
-
     private ModalNavigationStateHolder navigationStateHolder;
     // @formatter:off
     private final List<TransUnit> tuList = Lists.newArrayList(

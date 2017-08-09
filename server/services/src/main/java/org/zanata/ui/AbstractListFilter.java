@@ -23,8 +23,6 @@ package org.zanata.ui;
 
 import java.io.Serializable;
 import java.util.List;
-import com.google.common.collect.Lists;
-
 /**
  * Helper class to assist with the paging of data.
  *

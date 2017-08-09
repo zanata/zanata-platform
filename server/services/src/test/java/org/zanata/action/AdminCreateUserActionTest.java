@@ -1,12 +1,9 @@
 package org.zanata.action;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.deltaspike.core.spi.scope.window.WindowContext;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

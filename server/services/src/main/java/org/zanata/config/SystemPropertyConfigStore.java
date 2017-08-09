@@ -21,7 +21,6 @@
 package org.zanata.config;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,6 @@ import java.util.stream.Stream;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 import static java.util.stream.Collectors.toSet;
 

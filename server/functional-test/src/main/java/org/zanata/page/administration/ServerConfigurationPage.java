@@ -36,8 +36,6 @@ public class ServerConfigurationPage extends BasePage {
     private By urlField = By.id("serverConfigForm:url:input:url");
     public static final By registerUrlField =
             By.id("serverConfigForm:register:input:registerUrl");
-    private By emailDomainField =
-            By.id("serverConfigForm:emailDomainField:emailDomain");
     private By adminEmailField =
             By.id("serverConfigForm:adminEmail:input:adminEml");
     public static final By fromEmailField =

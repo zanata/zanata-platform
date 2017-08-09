@@ -26,8 +26,6 @@ import javax.ws.rs.QueryParam;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.ReindexStatus;

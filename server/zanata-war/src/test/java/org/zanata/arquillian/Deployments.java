@@ -22,11 +22,8 @@ package org.zanata.arquillian;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -34,10 +31,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
-import com.google.common.base.Joiner;
-import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -47,8 +41,6 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -57,7 +49,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrate
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

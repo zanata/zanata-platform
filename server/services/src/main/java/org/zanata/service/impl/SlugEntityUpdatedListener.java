@@ -10,7 +10,6 @@ import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.events.ProjectUpdate;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.SlugEntityBase;
 
 /**
  * This class is a hibernate event listener which listens on post commit events

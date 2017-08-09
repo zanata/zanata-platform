@@ -22,7 +22,6 @@ package org.zanata.rest.service;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.WebApplicationException;
 import javax.inject.Inject;
 import javax.inject.Named;

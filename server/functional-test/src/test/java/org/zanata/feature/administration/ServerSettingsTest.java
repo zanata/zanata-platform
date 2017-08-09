@@ -41,9 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(TestPlan.DetailedTest.class)
 public class ServerSettingsTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ServerSettingsTest.class);
-
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 

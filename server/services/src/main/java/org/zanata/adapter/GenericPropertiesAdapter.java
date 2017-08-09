@@ -37,7 +37,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.FileUtil;
 
 import javax.annotation.Nonnull;
-import javax.ejb.Local;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;

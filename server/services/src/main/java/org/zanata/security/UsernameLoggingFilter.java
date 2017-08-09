@@ -16,9 +16,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.log4j.MDC;
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import javax.inject.Named;
 import org.zanata.servlet.MDCInsertingServletFilter;
 
 /**

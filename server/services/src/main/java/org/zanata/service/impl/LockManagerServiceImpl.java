@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HAccount;

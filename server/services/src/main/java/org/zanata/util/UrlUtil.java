@@ -32,7 +32,6 @@ import java.net.URLEncoder;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,7 +40,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.servlet.annotations.ContextPath;
-import com.google.common.base.Throwables;
 import org.zanata.servlet.annotations.ServerPath;
 
 /**

@@ -6,8 +6,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TextFlow;
 
-import java.util.Date;
-
 /**
  * TextFlow with added fields needed by the editor.
  *

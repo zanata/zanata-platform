@@ -49,7 +49,6 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import javax.annotation.Nullable;
 import javax.mail.internet.InternetAddress;
-import javax.validation.constraints.NotNull;
 
 import com.google.common.collect.Lists;
 import static org.zanata.email.Addresses.getAddresses;

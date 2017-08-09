@@ -53,7 +53,6 @@ public class TransMemoryMergeStartOrEnd implements SessionEventData {
                 new Date(endTime.getTime()) : null;
     }
 
-    @SuppressWarnings("unused")
     public TransMemoryMergeStartOrEnd() {
     }
 

@@ -29,19 +29,13 @@ public class GlossaryDetailsPresenter extends
 
     private final CachingDispatchAsync dispatcher;
 
-    private final UserWorkspaceContext userWorkspaceContext;
-
-    private GlossaryDisplay.Listener glossaryListener;
-
     @Inject
     public GlossaryDetailsPresenter(final GlossaryDetailsDisplay display,
             final EventBus eventBus, final UiMessages messages,
-            final CachingDispatchAsync dispatcher,
-            final UserWorkspaceContext userWorkspaceContext) {
+            final CachingDispatchAsync dispatcher) {
         super(display, eventBus);
         this.dispatcher = dispatcher;
         this.messages = messages;
-        this.userWorkspaceContext = userWorkspaceContext;
     }
 
     @Override
@@ -109,10 +103,6 @@ public class GlossaryDetailsPresenter extends
 
     @Override
     public void onRevealDisplay() {
-    }
-
-    public void setGlossaryListener(GlossaryDisplay.Listener glossaryListener) {
-        this.glossaryListener = glossaryListener;
     }
 
     /**

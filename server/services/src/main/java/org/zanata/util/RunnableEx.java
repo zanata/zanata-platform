@@ -20,8 +20,6 @@
  */
 package org.zanata.util;
 
-import com.google.common.base.Throwables;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
