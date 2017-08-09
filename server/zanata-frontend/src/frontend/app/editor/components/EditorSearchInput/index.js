@@ -204,7 +204,7 @@ export class EditorSearchInput extends Component {
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={showAdvanced && this.state.focused}>
+        <Panel collapsible expanded={showAdvanced}>
           <ul>
             {advancedFields}
           </ul>
