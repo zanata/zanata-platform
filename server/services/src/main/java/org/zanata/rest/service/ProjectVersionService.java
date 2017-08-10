@@ -56,8 +56,6 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.util.StringUtil;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
