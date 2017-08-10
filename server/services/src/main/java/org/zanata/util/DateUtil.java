@@ -5,6 +5,7 @@ package org.zanata.util;
 
 import java.util.Date;
 import java.util.Locale;
+import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Period;
