@@ -52,89 +52,94 @@ describe('EditorSearchInputTest', () => {
             >Hide advanced</span>
         </div>
         <Panel collapsible expanded>
-          <ul>
-            <li className="inline-search-list"
-              title="exact Resource ID for a string">
-              Resource ID:
-              <div className="InputGroup--outlined InputGroup--wide
-                InputGroup--rounded">
-                <input type="text"
-                  onChange={callback}
-                  placeholder="exact Resource ID for a string"
-                  className="InputGroup-input"
-                  value="para-0001" />
-              </div>
-            </li>
-            <li className="inline-search-list" title="username">
-              Last modified by:
-              <div className="InputGroup--outlined InputGroup--wide
-                InputGroup--rounded">
-                <input type="text"
-                  onChange={callback}
-                  placeholder="username"
-                  className="InputGroup-input"
-                  value="cdickens" />
-              </div>
-            </li>
-            <li className="inline-search-list"
-              title="date in format yyyy/mm/dd">
-              Last modified before:
-              <div className="InputGroup--outlined InputGroup--wide
-                InputGroup--rounded">
-                <input type="text"
-                  onChange={callback}
-                  placeholder="date in format yyyy/mm/dd"
-                  className="InputGroup-input"
-                  value="1859-12-31" />
-              </div>
-            </li>
-            <li className="inline-search-list"
-              title="date in format yyyy/mm/dd">
-              Last modified after:
-              <div className="InputGroup--outlined InputGroup--wide
-                InputGroup--rounded">
-                <input type="text"
-                  onChange={callback}
-                  placeholder="date in format yyyy/mm/dd"
-                  className="InputGroup-input"
-                  value="1859-01-01" />
-              </div>
-            </li>
-            <li className="inline-search-list" title="source comment text">
-              Source comment:
-              <div className="InputGroup--outlined InputGroup--wide
-                InputGroup--rounded">
-                <input type="text"
-                  onChange={callback}
-                  placeholder="source comment text"
-                  className="InputGroup-input"
-                  value="England and France" />
-              </div>
-            </li>
-            <li className="inline-search-list" title="translation comment text">
-              Translation comment:
-              <div className="InputGroup--outlined InputGroup--wide
-                InputGroup--rounded">
-                <input type="text"
-                  onChange={callback}
-                  placeholder="translation comment text"
-                  className="InputGroup-input"
-                  value="blurst of times?! You stupid monkey!" />
-              </div>
-            </li>
-            <li className="inline-search-list"
-              title="exact Message Context for a string">
-              msgctxt (gettext):
-              <div className="InputGroup--outlined InputGroup--wide
-                InputGroup--rounded">
-                <input type="text"
-                  onChange={callback}
-                  placeholder="exact Message Context for a string"
-                  className="InputGroup-input"
-                  value="chapter01.txt" />
-              </div>
-            </li>
-          </ul>
+          <table>
+            <tbody>
+              <tr className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
+                title="exact Resource ID for a string">
+                <td className="u-sPR-1-4">Resource ID:</td>
+                <td className="u-sizeWidthFull">
+                  <input type="text"
+                    onChange={callback}
+                    placeholder="exact Resource ID for a string"
+                    className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4
+                      u-sizeFull"
+                    value="para-0001" />
+                </td>
+              </tr>
+              <tr className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
+                title="username">
+                <td className="u-sPR-1-4">Last modified by:</td>
+                <td className="u-sizeWidthFull">
+                  <input type="text"
+                    onChange={callback}
+                    placeholder="username"
+                    className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4
+                      u-sizeFull"
+                    value="cdickens" />
+                </td>
+              </tr>
+              <tr className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
+                title="date in format yyyy/mm/dd">
+                <td className="u-sPR-1-4">Last modified before:</td>
+                <td className="u-sizeWidthFull">
+                  <input type="text"
+                    onChange={callback}
+                    placeholder="date in format yyyy/mm/dd"
+                    className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4
+                      u-sizeFull"
+                    value="1859-12-31" />
+                </td>
+              </tr>
+              <tr className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
+                title="date in format yyyy/mm/dd">
+                <td className="u-sPR-1-4">Last modified after:</td>
+                <td className="u-sizeWidthFull">
+                  <input type="text"
+                    onChange={callback}
+                    placeholder="date in format yyyy/mm/dd"
+                    className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4
+                      u-sizeFull"
+                    value="1859-01-01" />
+                </td>
+              </tr>
+              <tr className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
+                title="source comment text">
+                <td className="u-sPR-1-4">Source comment:</td>
+                <td className="u-sizeWidthFull">
+                  <input type="text"
+                    onChange={callback}
+                    placeholder="source comment text"
+                    className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4
+                      u-sizeFull"
+                    value="England and France" />
+                </td>
+              </tr>
+              <tr className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
+                title="translation comment text">
+                <td className="u-sPR-1-4">Translation comment:</td>
+                <td className="u-sizeWidthFull">
+                  <input type="text"
+                    onChange={callback}
+                    placeholder="translation comment text"
+                    className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4
+                      u-sizeFull"
+                    value="blurst of times?! You stupid monkey!" />
+                </td>
+              </tr>
+              <tr className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
+                title="exact Message Context for a string">
+                <td className="u-sPR-1-4">msgctxt (gettext):</td>
+                <td className="u-sizeWidthFull">
+                  <input type="text"
+                    onChange={callback}
+                    placeholder="exact Message Context for a string"
+                    className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4
+                      u-sizeFull"
+                    value="chapter01.txt" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
             onClick={callback}>
             Clear all
