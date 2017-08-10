@@ -58,15 +58,6 @@ export const fetchVersionLocales = (project, version) => {
 export const fetchProjectPage = (projectSearchTerm) => {
   // used for success/failure to ensure the most recent results are used
   const timestamp = Date.now()
-  // empty search term should return nothing
-  if (!projectSearchTerm) {
-    return {
-      type: PROJECT_PAGE_SUCCESS,
-      meta: {timestamp},
-      payload: []
-    }
-  }
-  // making the call to server
   const endpoint =
       `${apiUrl}/search/projects?q=${projectSearchTerm}&includeVersion=true`
   const apiTypes = [
@@ -85,6 +76,17 @@ export const fetchProjectPage = (projectSearchTerm) => {
   ]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
+// convert merge option to MergeRule enum value
+const toMergeRule = (isIgnoreCheck, isAcceptAsFuzzy) => {
+  if (isIgnoreCheck) {
+    return 'IGNORE_CHECK'
+  } else if (isAcceptAsFuzzy) {
+    return 'FUZZY'
+  } else {
+    return 'REJECT'
   }
 }
 
@@ -127,10 +129,12 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const {
     selectedLanguage: {localeId},
     matchPercentage,
-    differentProject,
     differentDocId,
     differentContext,
     fromImportedTM,
+    ignoreDifferentDocId,
+    ignoreDifferentContext,
+    importedTMCopyAsTranslated,
     fromAllProjects,
     selectedVersions
   } = mergeOptions
@@ -140,10 +144,9 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const body = {
     localeId: localeId,
     thresholdPercent: matchPercentage,
-    differentProjectRule: differentProject,
-    differentDocumentRule: differentDocId,
-    differentContextRule: differentContext,
-    importedMatchRule: fromImportedTM,
+    differentDocumentRule: toMergeRule(ignoreDifferentDocId, differentDocId),
+    differentContextRule: toMergeRule(ignoreDifferentContext, differentContext),
+    importedMatchRule: toMergeRule(importedTMCopyAsTranslated, fromImportedTM),
     internalTMSource: internalTMSource
   }
   const apiRequest = buildAPIRequest(
