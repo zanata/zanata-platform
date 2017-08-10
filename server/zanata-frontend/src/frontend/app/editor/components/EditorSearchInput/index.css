@@ -25,9 +25,18 @@
 
 /* advanced search panel */
 
-.InputEditorSearch .panel.panel-default {
+.InputEditorSearch .panel {
   margin-bottom: 0.5em !important;
   position: absolute;
+}
+
+.InputEditorSearch .panel-body {
+  /* bootstrap panel cannot use utility class u-bgHigher directly */
+  background-color: var(--u-bg-color-lighter);
+}
+
+.InputEditorSearch .panel-body input {
+  box-shadow: var(--default-box-shadow-inset)
 }
 
 .InputEditorSearch .help-icon button {
