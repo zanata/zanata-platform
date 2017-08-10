@@ -51,7 +51,7 @@ describe('EditorSearchInputTest', () => {
           <span className="InputGroup-addon btn-xs advsearch btn-link"
             >Hide advanced</span>
         </div>
-        <Panel collapsible expanded={false}>
+        <Panel collapsible expanded>
           <ul>
             <li className="inline-search-list"
               title="exact Resource ID for a string">
