@@ -27,6 +27,8 @@ import {
 } from '../../utils/prop-types-util.js'
 import {isProcessEnded} from '../../utils/EnumValueUtils'
 import {getVersionLanguageSettingsUrl} from '../../utils/UrlHelper'
+import {TMMergeOptionsCallbackPropType, TMMergeOptionsValuePropType}
+  from './TMMergeOptionsCommon'
 
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
@@ -47,6 +49,9 @@ const MergeOptions = (
     onContextCheckboxChange,
     onDocIdCheckboxChange,
     onImportedCheckboxChange,
+    onIgnoreDifferentDocIdChange,
+    onIgnoreDifferentContextChange,
+    onImportedTMCopyRuleChange,
     onPercentSelection,
     onLanguageSelection,
     onProjectSearchChange,
@@ -129,7 +134,14 @@ const MergeOptions = (
         fromImportedTM={mergeOptions.fromImportedTM}
         onDocIdCheckboxChange={onDocIdCheckboxChange}
         onContextCheckboxChange={onContextCheckboxChange}
-        onImportedCheckboxChange={onImportedCheckboxChange} />
+        onImportedCheckboxChange={onImportedCheckboxChange}
+        ignoreDifferentDocId={mergeOptions.ignoreDifferentDocId}
+        ignoreDifferentContext={mergeOptions.ignoreDifferentContext}
+        importedTMCopyAsTranslated={mergeOptions.importedTMCopyAsTranslated}
+        onIgnoreDifferentDocIdChange={onIgnoreDifferentDocIdChange}
+        onIgnoreDifferentContextChange={onIgnoreDifferentContextChange}
+        onImportedTMCopyRuleChange={onImportedTMCopyRuleChange}
+      />
       <Col xs={12} className='vmerge-row'>
         <Col xs={2}>
           <span className='vmerge-title text-info' id="languages-dd">
@@ -187,17 +199,12 @@ MergeOptions.propTypes = {
   fetchingLocale: PropTypes.bool.isRequired,
   mergeOptions: PropTypes.shape({
     matchPercentage: PropTypes.number.isRequired,
-    differentDocId: PropTypes.bool.isRequired,
-    differentContext: PropTypes.bool.isRequired,
-    fromImportedTM: PropTypes.bool.isRequired,
     fromAllProjects: PropTypes.bool.isRequired,
     selectedLanguage: LocaleType,
     selectedVersions: PropTypes.arrayOf(FromProjectVersionType),
-    projectSearchTerm: PropTypes.string
+    projectSearchTerm: PropTypes.string,
+    ...TMMergeOptionsValuePropType
   }).isRequired,
-  onDocIdCheckboxChange: PropTypes.func.isRequired,
-  onContextCheckboxChange: PropTypes.func.isRequired,
-  onImportedCheckboxChange: PropTypes.func.isRequired,
   onFromAllProjectsChange: PropTypes.func.isRequired,
   onPercentSelection: PropTypes.func.isRequired,
   onLanguageSelection: PropTypes.func.isRequired,
@@ -206,7 +213,8 @@ MergeOptions.propTypes = {
   onVersionCheckboxChange: PropTypes.func.isRequired,
   onAllVersionCheckboxChange: PropTypes.func.isRequired,
   onDragMoveEnd: PropTypes.func.isRequired,
-  removeProjectVersion: PropTypes.func.isRequired
+  removeProjectVersion: PropTypes.func.isRequired,
+  ...TMMergeOptionsCallbackPropType
 }
 
 /**
@@ -241,6 +249,9 @@ class TMMergeModal extends Component {
     differentDocId: false,
     differentContext: false,
     fromImportedTM: false,
+    ignoreDifferentDocId: false,
+    ignoreDifferentContext: false,
+    importedTMCopyAsTranslated: false,
     fromAllProjects: false,
     selectedLanguage: undefined,
     selectedVersions: [],
@@ -413,6 +424,21 @@ class TMMergeModal extends Component {
       fromImportedTM: !prevState.fromImportedTM
     }))
   }
+  onIgnoreDifferentDocIdChange = () => {
+    this.setState(prevState => ({
+      ignoreDifferentDocId: !prevState.ignoreDifferentDocId
+    }))
+  }
+  onIgnoreDifferentContextChange = () => {
+    this.setState(prevState => ({
+      ignoreDifferentContext: !prevState.ignoreDifferentContext
+    }))
+  }
+  onImportedTMCopyRuleChange = () => {
+    this.setState(prevSTate => ({
+      importedTMCopyAsTranslated: !prevSTate.importedTMCopyAsTranslated
+    }))
+  }
   // internal TM can come from all projects
   onFromAllProjectsChange = () => {
     this.setState(prevState => ({
@@ -456,6 +482,9 @@ class TMMergeModal extends Component {
           onDocIdCheckboxChange={this.onDocIdCheckboxChange}
           onContextCheckboxChange={this.onContextCheckboxChange}
           onImportedCheckboxChange={this.onImportedCheckboxChange}
+          onIgnoreDifferentDocIdChange={this.onIgnoreDifferentDocIdChange}
+          onIgnoreDifferentContextChange={this.onIgnoreDifferentContextChange}
+          onImportedTMCopyRuleChange={this.onImportedTMCopyRuleChange}
           onFromAllProjectsChange={this.onFromAllProjectsChange}
           onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
           onVersionCheckboxChange={this.onVersionCheckboxChange}

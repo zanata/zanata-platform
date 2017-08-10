@@ -4,6 +4,9 @@ import {
   Col, Panel, Checkbox, ListGroup, ListGroupItem, Label
 } from 'react-bootstrap'
 
+import {TMMergeOptionsValuePropType, TMMergeOptionsCallbackPropType}
+  from './TMMergeOptionsCommon'
+
 const CopyLabel = (props) => {
   return props.copy
       ? (<Label bsStyle='warning'>
@@ -24,13 +27,23 @@ export const ProjectVersionOptions = (props) => {
     fromImportedTM,
     onDocIdCheckboxChange,
     onContextCheckboxChange,
-    onImportedCheckboxChange
+    onImportedCheckboxChange,
+    ignoreDifferentContext,
+    ignoreDifferentDocId,
+    importedTMCopyAsTranslated,
+    onIgnoreDifferentDocIdChange,
+    onIgnoreDifferentContextChange,
+    onImportedTMCopyRuleChange
   } = props
   return (
     <Col xs={12}>
       <Panel className='tm-panel'>
         <ListGroup fill>
           <ListGroupItem>
+            <Checkbox checked={ignoreDifferentDocId}
+              onChange={onIgnoreDifferentDocIdChange}>
+              Ignore this check
+            </Checkbox>
             <Checkbox onChange={onDocIdCheckboxChange}
               checked={differentDocId}>
               Different DocID
@@ -39,6 +52,10 @@ export const ProjectVersionOptions = (props) => {
             </Checkbox>
           </ListGroupItem>
           <ListGroupItem>
+            <Checkbox checked={ignoreDifferentContext}
+              onChange={onIgnoreDifferentContextChange}>
+              Ignore this check
+            </Checkbox>
             <Checkbox onChange={onContextCheckboxChange}
               checked={differentContext}>
               Different Context
@@ -50,6 +67,10 @@ export const ProjectVersionOptions = (props) => {
         <span />
         <ListGroup fill>
           <ListGroupItem >
+            <Checkbox checked={importedTMCopyAsTranslated}
+              onChange={onImportedTMCopyRuleChange}>
+              Ignore this check
+            </Checkbox>
             <Checkbox onChange={onImportedCheckboxChange}
               checked={fromImportedTM}>
               Match from Imported TM
@@ -62,10 +83,6 @@ export const ProjectVersionOptions = (props) => {
   )
 }
 ProjectVersionOptions.propTypes = {
-  differentDocId: PropTypes.bool.isRequired,
-  differentContext: PropTypes.bool.isRequired,
-  fromImportedTM: PropTypes.bool.isRequired,
-  onDocIdCheckboxChange: PropTypes.func.isRequired,
-  onContextCheckboxChange: PropTypes.func.isRequired,
-  onImportedCheckboxChange: PropTypes.func.isRequired
+  ...TMMergeOptionsValuePropType,
+  ...TMMergeOptionsCallbackPropType
 }
