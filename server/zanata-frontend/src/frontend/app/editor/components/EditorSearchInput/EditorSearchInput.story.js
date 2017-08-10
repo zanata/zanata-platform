@@ -54,14 +54,14 @@ class EditorSearchInput extends React.Component {
 }
 
 const blankSearch = {
-  text: '',
-  resourceId: '',
-  lastModifiedBy: '',
-  lastModifiedBefore: '',
-  lastModifiedAfter: '',
+  searchString: '',
+  resId: '',
+  lastModifiedByUser: '',
+  changedBefore: '',
+  changedAfter: '',
   sourceComment: '',
-  translationComment: '',
-  msgctxt: ''
+  transComment: '',
+  msgContext: ''
 }
 
 storiesOf('EditorSearchInput', module)
@@ -77,7 +77,7 @@ storiesOf('EditorSearchInput', module)
     <EditorSearchInput
       search={{
         ...blankSearch,
-        text: 'it was the'
+        searchString: 'it was the'
       }}
       updateSearch={action('updateSearch')}
       showAdvanced={false}
@@ -88,7 +88,7 @@ storiesOf('EditorSearchInput', module)
     <EditorSearchInput
       search={{
         ...blankSearch,
-        text: 'it was the worst'
+        searchString: 'it was the worst'
       }}
       updateSearch={action('updateSearch')}
       showAdvanced
@@ -98,14 +98,14 @@ storiesOf('EditorSearchInput', module)
   .add('advanced search', () => (
     <EditorSearchInput
       search={{
-        text: 'it was the worst of',
-        resourceId: 'para-0001',
-        lastModifiedBy: 'cdickens',
-        lastModifiedBefore: '1859-12-31',
-        lastModifiedAfter: '1859-01-01',
+        searchString: 'it was the worst of',
+        resId: 'para-0001',
+        lastModifiedByUser: 'cdickens',
+        changedBefore: '1859-12-31',
+        changedAfter: '1859-01-01',
         sourceComment: 'England and France',
-        translationComment: 'blurst of times?! You stupid monkey!',
-        msgctxt: 'chapter01.txt'
+        transComment: 'blurst of times?! You stupid monkey!',
+        msgContext: 'chapter01.txt'
       }}
       updateSearch={action('updateSearch')}
       showAdvanced
