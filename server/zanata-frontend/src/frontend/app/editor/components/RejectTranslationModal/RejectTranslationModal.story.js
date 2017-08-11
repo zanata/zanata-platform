@@ -21,9 +21,6 @@ storiesOf('RejectTranslationModal', module)
           </div>
         </div>
     ))
-    .add('Default', () => (
-        <RejectTranslationModal show />
-    ))
-    .add('Other', () => (
+  .add('default', () => (
     <RejectTranslationModal show />
   ))
