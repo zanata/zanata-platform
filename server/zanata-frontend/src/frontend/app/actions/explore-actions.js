@@ -27,7 +27,7 @@ const getEndpoint = (type, page, searchText) => {
     type + '?' +
     'sizePerPage=' + SIZE_PER_PAGE +
     '&page=' + (page || '1') +
-    (searchText ? '&q=' + searchText : '')
+    (searchText ? '&q=' + encodeURIComponent(searchText) : '')
 }
 
 const handleCallbacks = (callbacks, dispatch, searchText, pages) => {

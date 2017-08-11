@@ -65,7 +65,11 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
         val query = session
                 .createQuery(buildResultSearchQuery(filter, sortFields, onlyActive))
         if (StringUtils.isNotBlank(filter)) {
-            query.setString("query", "%" + filter!!.toLowerCase() + "%")
+            val escapeFilter = filter!!
+                    .replace("!", "!!")
+                    .replace("%", "!%")
+                    .replace("_", "!_")
+            query.setString("query", "%$escapeFilter%")
         }
         query.setFirstResult(offset).comment = "LocaleDAO.find"
 
@@ -142,7 +146,11 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
         val query = session
                 .createQuery(buildCountSearchQuery(filter, null, onlyActive))
         if (StringUtils.isNotBlank(filter)) {
-            query.setString("query", "%" + filter!!.toLowerCase() + "%")
+            val escapeFilter = filter!!
+                    .replace("!", "!!")
+                    .replace("%", "!%")
+                    .replace("_", "!_")
+            query.setString("query", "%$escapeFilter%")
         }
         query.comment = "LocaleDAO.countByFind"
         val totalCount = query.uniqueResult() ?: return 0
@@ -177,9 +185,9 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
         var joinQuery = false
         if (StringUtils.isNotBlank(filter)) {
             joinQuery = true
-            queryBuilder.append(" lower(localeId) like :query")
-                    .append(" or lower(displayName) like :query")
-                    .append(" or lower(nativeName) like :query")
+            queryBuilder.append(" lower(localeId) like lower(:query) escape '!'")
+                    .append(" or lower(displayName) like lower(:query) escape '!'")
+                    .append(" or lower(nativeName) like lower(:query) escape '!'")
         }
         if (onlyActive) {
             if (joinQuery) {
