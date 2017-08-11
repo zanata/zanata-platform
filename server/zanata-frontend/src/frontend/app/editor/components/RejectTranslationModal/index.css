@@ -35,6 +35,7 @@ a.Dropdown-item span.s0 {
 
 .InputGroup--outlined.commenting {
   margin-top: 2rem;
+  max-width: 100%;
   border-radius: var(--TM-input-border-radius);
   border: var(--TM-input-border);
   padding: var(--TM-default-margin);
