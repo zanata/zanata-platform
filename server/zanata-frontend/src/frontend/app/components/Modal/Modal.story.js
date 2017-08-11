@@ -1,8 +1,6 @@
 import React from 'react'
-// import ReactDOM from 'react-dom'
-// import Draggable from 'react-draggable'
-import {storiesOf} from '@storybook/react'
-import {action} from '@storybook/addon-actions'
+import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import {
   Button,
   Row,
