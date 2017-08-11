@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, InputGroup,
+import {Alert, Button, Panel, Row, InputGroup,
   Col, FormControl, Checkbox, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {
   Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels
