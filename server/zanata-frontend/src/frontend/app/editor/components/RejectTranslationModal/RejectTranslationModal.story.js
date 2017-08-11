@@ -21,6 +21,13 @@ storiesOf('RejectTranslationModal', module)
           </div>
         </div>
     ))
-  .add('default', () => (
-    <RejectTranslationModal show />
-  ))
+    .add('Translation errors', () => (
+        <RejectTranslationModal show criteria="Translation errors" priority="Critical" />
+    ))
+    .add('Style Guide and Glossary Violations', () => (
+        <RejectTranslationModal show criteria="Style Guide and Glossary Violations" priority="Minor" />
+    ))
+
+    .add('Other', () => (
+        <RejectTranslationModal show criteria="Other" priority="Major" />
+    ))
