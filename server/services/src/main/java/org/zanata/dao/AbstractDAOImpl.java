@@ -3,12 +3,14 @@ package org.zanata.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 
 /**
  * Based on code from http://community.jboss.org/wiki/GenericDataAccessObjects
@@ -137,5 +139,24 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
         }
         return crit.list();
     }
+
+    protected static final String[] SPECIAL_CHARS = { "!", "%", "_" };
+    protected static final String ESCAPE_PREFIX = "!";
+
+    /**
+     * This is to handle special character search in hibernate by prefixing
+     * the character with {@link #ESCAPE_PREFIX}.
+     *
+     * The HQL MUST USE [escape '!'] as part of the query.
+     * e.g. from HProject where name LIKE :name escape '!'
+     *
+     */
+    protected String escapeQuery(@NotNull String query) {
+        for (String sp : SPECIAL_CHARS) {
+            query = query.replace(sp, ESCAPE_PREFIX + sp);
+        }
+        return query;
+    }
+
 
 }
