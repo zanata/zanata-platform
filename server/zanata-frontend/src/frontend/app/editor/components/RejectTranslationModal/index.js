@@ -56,6 +56,7 @@ export class RejectTranslationModal extends Component {
           Reject translation</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <span>
           Reason:
           <Dropdown enabled isOpen={this.state.dropdownOpen}
             onToggle={this.toggleDropdown}
@@ -76,7 +77,9 @@ export class RejectTranslationModal extends Component {
               </ul>
             </Dropdown.Content>
           </Dropdown>
-          Priority:
+          </span>
+          <span className="priority-dd">
+            Priority:
           <Dropdown enabled isOpen={this.state.dropdownOpen2}
                     onToggle={this.toggleDropdown2}
                     className="dropdown-menu">
@@ -93,11 +96,13 @@ export class RejectTranslationModal extends Component {
               </ul>
             </Dropdown.Content>
           </Dropdown>
-          <input ref="input"
+          </span>
+          <textarea ref="input"
                  type="comment"
                  placeholder="Provide a comment for why this translation has been rejected"
-                 maxLength="1000"
-                 className="InputGroup-input u-sizeLineHeight-1_1-4" />
+                 cols="50"
+                 rows="10"
+                 className="InputGroup-input is-focused InputGroup--outlined" />
         </Modal.Body>
         <Modal.Footer>
           <span>
