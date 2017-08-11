@@ -4,6 +4,7 @@ import Button from '../Button'
 import Dropdown from '../Dropdown'
 import { Row } from 'react-bootstrap'
 import { Modal } from '../../../components'
+import { Icon } from '../../../components'
 /**
  * TODO add a concise description of this component
  */
@@ -14,7 +15,24 @@ export class RejectTranslationModal extends Component {
     key: PropTypes.string,
     onHide: PropTypes.func,
     toggleDropdown: PropTypes.func.isRequired,
-    isOpen: PropTypes.bool.isRequired
+    isOpen: PropTypes.bool.isRequired,
+    criteria: PropTypes.oneOf(
+        [
+          'Minor',
+          'Major',
+          'Critical'
+        ]
+    ).isRequired,
+    priority: PropTypes.oneOf(
+        [
+          'Translation errors',
+          'Language quality',
+          'Consistency',
+          'Style Guide and Glossary Violations',
+          'Format',
+          'Other'
+        ]
+    ).isRequired
   }
 
   constructor (props) {
@@ -44,8 +62,12 @@ export class RejectTranslationModal extends Component {
       key,
       className,
       onHide,
-      isOpen
+      isOpen,
+      criteria,
+      priority
     } = this.props
+
+
     return (
       <Modal show={show}
         onHide={close}
@@ -60,10 +82,11 @@ export class RejectTranslationModal extends Component {
           Reason:
           <Dropdown enabled isOpen={this.state.dropdownOpen}
             onToggle={this.toggleDropdown}
-            className="dropdown-menu">
+            className="dropdown-menu criteria">
             <Dropdown.Button>
             <a className="Dropdown-item">
-               Other
+              {this.props.criteria}
+              <Icon className="s0" name="chevron-down" />
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
@@ -73,6 +96,7 @@ export class RejectTranslationModal extends Component {
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>Consistency</li>
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>Style Guide & Glossary Violations</li>
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>Format</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>Other</li>
               </ul>
             </Dropdown.Content>
           </Dropdown>
@@ -81,32 +105,36 @@ export class RejectTranslationModal extends Component {
             Priority:
           <Dropdown enabled isOpen={this.state.dropdownOpen2}
                     onToggle={this.toggleDropdown2}
-                    className="dropdown-menu">
+                    className="dropdown-menu priority">
             <Dropdown.Button>
               <a className="Dropdown-item">
-                Minor
-                <span className="Dropdown-toggleIcon"></span>
+                {this.props.priority}
+                <Icon className="s0" name="chevron-down" />
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
               <ul>
-                <li className="Dropdown-item" onClick={this.toggleDropdown2}>Major</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown2}>Critical</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown2}>
+                  <span>Minor</span></li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown2}>
+                    <span className="u-textWarning">Major</span></li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown2}>
+                    <span className="u-textDanger">Critical</span></li>
               </ul>
             </Dropdown.Content>
           </Dropdown>
           </span>
           <textarea ref="input"
-                 type="comment"
-                 placeholder="Provide a comment for why this translation has been rejected"
-                 cols="50"
-                 rows="10"
-                 className="InputGroup-input is-focused InputGroup--outlined" />
+             type="comment"
+             placeholder="Provide a comment for why this translation has been rejected"
+             cols="50"
+             rows="10"
+             className="InputGroup-input is-focused InputGroup--outlined commenting" />
         </Modal.Body>
         <Modal.Footer>
           <span>
             <Row>
-              <Button className="Button Button--large">
+              <Button className="Button Button--large u-rounded Button--secondary">
                 Cancel
               </Button>
               <Button className="Button Button--large u-rounded Button--primary">

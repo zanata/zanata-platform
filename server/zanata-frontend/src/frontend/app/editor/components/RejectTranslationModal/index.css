@@ -1,11 +1,50 @@
+:root {
+  --TM-input-border:            solid 1px rgb(99, 156, 173);
+  --TM-input-border-radius:     8px;
+  --TM-large-spacing:           6rem;
+  --TM-default-margin:          0.75rem;
+  --TM-small-margin:            0.375rem;
+}
+
 .priority-dd {
-  margin-left: 6rem;
+  margin-left: var(--TM-large-spacing);
 }
 
 .InputGroup--outlined {
+  border: var(--TM-input-border);
+}
+
+.Dropdown {
+  margin-left: var(--TM-default-margin);
+  border-radius: var(--TM-input-border-radius);
+  border: var(--TM-input-border);
+}
+
+a.Dropdown-item span.s0 {
+  vertical-align: middle;
+  margin-left: var(--TM-small-margin);
+ }
+
+.dropdown-menu.criteria {
+  max-width: 17rem;
+}
+
+.dropdown-menu.priority {
+  max-width:  6rem;
+}
+
+.InputGroup--outlined.commenting {
   margin-top: 2rem;
-  border-radius: 8px;
-  border: solid 1px rgb(99, 156, 173);
-  padding: 0.75rem;
-  min-height: 6rem;
+  border-radius: var(--TM-input-border-radius);
+  border: var(--TM-input-border);
+  padding: var(--TM-default-margin);
+  min-height: var(--TM-large-spacing);
+}
+
+.modal-footer .Button--primary {
+  margin-left: var(--TM-default-margin);
+}
+
+.Dropdown-item:hover > u-textPrimary {
+  color: #fff;
 }
