@@ -3,10 +3,12 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Alert, Button, Panel, Row, InputGroup,
-  Col, FormControl, Checkbox, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels
+  Alert, Button, Panel, Row, InputGroup, Col, FormControl
+} from 'react-bootstrap'
+import {
+  Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels,
+  TriCheckbox
 } from '../../components'
 import ProjectVersionPanels from './ProjectVersionPanels'
 import {ProjectVersionVertical} from './project-version-displays'
@@ -164,14 +166,13 @@ const MergeOptions = (
       </Col>
       <Col xs={12} className='vmerge-boxes'>
         <Panel>
-          <ListGroup fill>
-            <ListGroupItem>
-              <Checkbox onChange={onFromAllProjectsChange}
-                checked={mergeOptions.fromAllProjects}>
+          <div className='checkbox'>
+            <label>
+              <TriCheckbox onChange={onFromAllProjectsChange}
+                checked={mergeOptions.fromAllProjects} />
                 Search TM from all projects
-              </Checkbox>
-            </ListGroupItem>
-          </ListGroup>
+            </label>
+          </div>
         </Panel>
       </Col>
       {fromVersionsPanel}

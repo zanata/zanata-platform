@@ -31,8 +31,6 @@ import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
-import org.zanata.webtrans.client.events.KeyShortcutEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
@@ -86,7 +84,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     private final History history;
     private final Window window;
     private final Window.Location windowLocation;
-    private final TargetContentsPresenter targetContentsPresenter;
     private final UserWorkspaceContext userWorkspaceContext;
     private final WebTransMessages messages;
     private final LocaleId localeId;
@@ -114,8 +111,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             final SearchResultsPresenter searchResultsPresenter,
             final UserWorkspaceContext userWorkspaceContext,
             final WebTransMessages messages, final History history,
-            final Window window, final Window.Location windowLocation,
-            TargetContentsPresenter targetContentsPresenter) {
+            final Window window, final Window.Location windowLocation) {
         super(display, eventBus);
         this.userWorkspaceContext = userWorkspaceContext;
         this.attentionKeyShortcutPresenter = attentionKeyShortcutPresenter;
@@ -128,7 +124,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         this.sideMenuPresenter = sideMenuPresenter;
         this.window = window;
         this.windowLocation = windowLocation;
-        this.targetContentsPresenter = targetContentsPresenter;
 
         localeId =
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId()

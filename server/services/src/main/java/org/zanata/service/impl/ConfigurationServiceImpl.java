@@ -20,10 +20,7 @@
  */
 package org.zanata.service.impl;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang.StringUtils.join;
-
-import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

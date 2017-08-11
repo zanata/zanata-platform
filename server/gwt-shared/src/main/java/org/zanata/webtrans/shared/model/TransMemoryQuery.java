@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
-import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

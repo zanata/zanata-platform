@@ -39,10 +39,15 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class TraceEntry {
+    @SuppressWarnings("unused")
     private String testName;
+    @SuppressWarnings("unused")
     private String summary;
+    @SuppressWarnings("unused")
     private String testResult;
+    @SuppressWarnings("unused")
     private List<Integer> testIds;
+    @SuppressWarnings("unused")
     private List<Integer> planIds;
 
     @SuppressWarnings("unused")

@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.zanata.action.DashboardAction;
 import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.exception.ZanataServiceException;

@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
-import com.google.common.base.Throwables;
 import org.zanata.util.IServiceLocator;
 
 import static com.google.common.base.Strings.nullToEmpty;
@@ -76,7 +75,6 @@ public class EmailQueueMessageReceiver implements MessageListener {
 
     private IServiceLocator serviceLocator;
 
-    @SuppressWarnings("unused")
     public EmailQueueMessageReceiver() {
     }
 

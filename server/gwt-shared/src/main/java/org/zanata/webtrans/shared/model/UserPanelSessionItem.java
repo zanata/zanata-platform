@@ -13,7 +13,6 @@ public class UserPanelSessionItem implements IsSerializable {
         this.person = person;
     }
 
-    @SuppressWarnings("unused")
     protected UserPanelSessionItem() {
     }
 

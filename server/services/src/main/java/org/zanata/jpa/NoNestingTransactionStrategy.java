@@ -28,7 +28,6 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy;
 import org.apache.deltaspike.jpa.impl.transaction.context.EntityManagerEntry;
-import com.google.common.base.Throwables;
 
 /**
  * @author Sean Flanigan

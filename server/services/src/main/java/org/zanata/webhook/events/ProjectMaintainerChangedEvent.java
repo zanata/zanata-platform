@@ -1,6 +1,5 @@
 package org.zanata.webhook.events;
 
-import java.util.Date;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.zanata.events.WebhookEventType;
 import org.zanata.model.ProjectRole;

@@ -21,7 +21,6 @@
 package org.zanata.rest.search.dto;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.EntityStatus;
 import org.zanata.rest.dto.SearchResult;

@@ -10,8 +10,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.zanata.model.HAccount;
-import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.MediaTypes;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.rest.service.RestResource;

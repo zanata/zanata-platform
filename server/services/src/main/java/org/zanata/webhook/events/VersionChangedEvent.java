@@ -20,11 +20,7 @@
  */
 package org.zanata.webhook.events;
 
-import java.util.Date;
-import java.util.Map;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 import org.zanata.events.WebhookEventType;
 import org.zanata.model.type.WebhookType;
 

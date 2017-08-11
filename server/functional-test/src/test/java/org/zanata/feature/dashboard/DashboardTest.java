@@ -41,9 +41,6 @@ import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
 @Category(DetailedTest.class)
 public class DashboardTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(DashboardTest.class);
-
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
     private DashboardBasePage dashboard;

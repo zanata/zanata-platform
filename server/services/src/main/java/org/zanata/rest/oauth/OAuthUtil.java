@@ -32,7 +32,6 @@ import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

@@ -42,7 +42,6 @@ public class TMMergeInProgress implements SessionEventData {
         this.documentId = documentId;
     }
 
-    @SuppressWarnings("unused")
     public TMMergeInProgress() {
     }
 

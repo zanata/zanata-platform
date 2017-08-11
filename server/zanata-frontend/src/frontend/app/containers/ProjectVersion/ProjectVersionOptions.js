@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  Col, Panel, Checkbox, ListGroup, ListGroupItem, Label
+  Col, Panel, ListGroup, ListGroupItem, Label
 } from 'react-bootstrap'
+import {TriCheckbox} from '../../components'
 
 const CopyLabel = (props) => {
   return props.copy
@@ -31,30 +32,36 @@ export const ProjectVersionOptions = (props) => {
       <Panel className='tm-panel'>
         <ListGroup fill>
           <ListGroupItem>
-            <Checkbox onChange={onDocIdCheckboxChange}
-              checked={differentDocId}>
-              Different DocID
-              <small> Document name and path</small>
-              <CopyLabel copy={differentDocId} />
-            </Checkbox>
+            <div className='checkbox'>
+              <label>
+                <TriCheckbox onChange={onDocIdCheckboxChange}
+                  checked={differentDocId} /> Different DocID
+                <small> Document name and path</small>
+                <CopyLabel copy={differentDocId} />
+              </label>
+            </div>
           </ListGroupItem>
           <ListGroupItem>
-            <Checkbox onChange={onContextCheckboxChange}
-              checked={differentContext}>
-              Different Context
-              <small> resId, msgctxt</small>
-              <CopyLabel copy={differentContext} />
-            </Checkbox>
+            <div className='checkbox'>
+              <label>
+                <TriCheckbox onChange={onContextCheckboxChange}
+                  checked={differentContext} /> Different Context
+                <small> resId, msgctxt</small>
+                <CopyLabel copy={differentContext} />
+              </label>
+            </div>
           </ListGroupItem>
         </ListGroup>
         <span />
         <ListGroup fill>
           <ListGroupItem >
-            <Checkbox onChange={onImportedCheckboxChange}
-              checked={fromImportedTM}>
-              Match from Imported TM
-              <CopyLabel copy={fromImportedTM} />
-            </Checkbox>
+            <div className='checkbox'>
+              <label>
+                <TriCheckbox onChange={onImportedCheckboxChange}
+                  checked={fromImportedTM} /> Match from Imported TM
+                <CopyLabel copy={fromImportedTM} />
+              </label>
+            </div>
           </ListGroupItem>
         </ListGroup>
       </Panel>

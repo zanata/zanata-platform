@@ -21,7 +21,6 @@ public final class EditorClientId implements Identifier<String>, IsSerializable,
     private String httpSessionId;
     private long editorClientNum;
 
-    @SuppressWarnings("unused")
     public EditorClientId() {
     }
 
@@ -77,7 +76,6 @@ public final class EditorClientId implements Identifier<String>, IsSerializable,
         return httpSessionId;
     }
 
-    @SuppressWarnings("unused")
     // we need this getter so that restyGWT can correctly marshal/unmarshal the field
     public long getEditorClientNum() {
         return editorClientNum;

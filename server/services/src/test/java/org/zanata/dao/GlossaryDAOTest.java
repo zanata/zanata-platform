@@ -128,6 +128,14 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    public void testGetEntriesByFilter() {
+        List<HGlossaryEntry> result = dao.getEntriesByLocale(LocaleId.EN_US, 0,
+                2, "test data content 1", null,
+                GlossaryUtil.GLOBAL_QUALIFIED_NAME);
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
     public void testSrcTermDateUpdatedWhenEntryModified() {
         HGlossaryEntry entry = dao.getEntryByContentHash("hash",
             GlossaryUtil.GLOBAL_QUALIFIED_NAME);
