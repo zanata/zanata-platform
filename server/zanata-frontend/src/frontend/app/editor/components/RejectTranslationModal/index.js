@@ -64,7 +64,6 @@ export class RejectTranslationModal extends Component {
             <Dropdown.Button>
             <a className="Dropdown-item">
                Other
-              <span className="Dropdown-toggleIcon"></span>
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
