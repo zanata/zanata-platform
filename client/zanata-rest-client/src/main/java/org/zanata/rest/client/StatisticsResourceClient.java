@@ -27,6 +27,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.service.StatisticsResource;
@@ -67,6 +68,14 @@ public class StatisticsResourceClient implements StatisticsResource {
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,
             @DefaultValue("false") boolean includeWordStats, String[] locales) {
+        return getStatisticsWithDocId(projectSlug, iterationSlug, docId,
+                includeWordStats, locales);
+    }
+
+    @Override
+    public ContainerTranslationStatistics getStatisticsWithDocId(
+            String projectSlug, String iterationSlug, String docId,
+            boolean includeWordStats, String[] locales) {
         WebTarget webResource =
                 factory.getClient().target(baseUri).path("stats")
                         .path("proj")
@@ -74,11 +83,27 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .path("iter")
                         .path(iterationSlug)
                         .path("doc")
-                        .path(docId)
+                        .queryParam("docId", docId)
                         .queryParam("word", String.valueOf(includeWordStats))
                         .queryParam("locale", (Object[]) locales);
-        return webResource.request(MediaType.APPLICATION_XML_TYPE)
-                .get(ContainerTranslationStatistics.class);
+        Response response =
+                webResource.request(MediaType.APPLICATION_XML_TYPE).get();
+        if (RestUtil.isNotFound(response)) {
+            response.close();
+            webResource =
+                    factory.getClient().target(baseUri).path("stats")
+                            .path("proj")
+                            .path(projectSlug)
+                            .path("iter")
+                            .path(iterationSlug)
+                            .path("doc")
+                            .path(docId)
+                            .queryParam("word", String.valueOf(includeWordStats))
+                            .queryParam("locale", (Object[]) locales);
+            return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                    .get(ContainerTranslationStatistics.class);
+        }
+        return response.readEntity(ContainerTranslationStatistics.class);
     }
 
     @Override
