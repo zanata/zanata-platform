@@ -144,10 +144,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
                 .setComment("GlossaryDAO.getEntriesByLocale");
 
         if (StringUtils.isNotBlank(filter)) {
-            String escapeFilter = filter
-                    .replace("!", "!!")
-                    .replace("%", "!%")
-                    .replace("_", "!_");
+            String escapeFilter = escapeQuery(filter);
             query.setParameter("filter", "%" + escapeFilter + "%");
         }
         query.setFirstResult(offset).setMaxResults(maxResults);

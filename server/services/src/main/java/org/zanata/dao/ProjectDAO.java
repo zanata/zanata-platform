@@ -326,7 +326,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
             //escape special character search
 
             String escaped = QueryParser.escape(searchString);
-            escaped = wildcard ? escaped + "*" : escaped;
+            escaped = wildcard && !StringUtils.endsWith(searchQuery, "*") ?
+                    escaped + "*" : escaped;
             query.add(parser.parse(escaped), BooleanClause.Occur.MUST);
         }
         return query.build();
