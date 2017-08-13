@@ -14607,6 +14607,313 @@ exports[`Frontend Storyshots Tooltip default 1`] = `
 </div>
 `;
 
+exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
+<div>
+  <h3>
+    Checkbox group with tri-state control
+  </h3>
+  <ul
+    className="list-group"
+  >
+    <li
+      className="list-group-item"
+    >
+      <input
+        checked={false}
+        className="tri-checkbox"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <label>
+        Fruits
+      </label>
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <input
+        checked={false}
+        className="tri-checkbox"
+        name="リンゴ"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      リンゴ
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <input
+        checked={false}
+        className="tri-checkbox"
+        name="apple"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      apple
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <input
+        checked={false}
+        className="tri-checkbox"
+        name="梨"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      梨
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <input
+        checked={false}
+        className="tri-checkbox"
+        name="pear"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      pear
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`Frontend Storyshots TriCheckbox default 1`] = `
+<div>
+  <h2>
+    Setting Intermediate
+  </h2>
+  <div>
+    <input
+      checked={false}
+      className=""
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <button
+      onClick={[Function]}
+    >
+      Make intermediate
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Frontend Storyshots TriCheckbox truth table 1`] = `
+<div>
+  <h2>
+    Truth Table
+  </h2>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <tbody>
+      <tr>
+        <th>
+          checked
+        </th>
+        <th>
+          intermediate
+        </th>
+        <th>
+          expected
+        </th>
+        <th>
+          appearance
+        </th>
+      </tr>
+      <tr>
+        <td>
+          false
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          unchecked
+        </td>
+        <td>
+          <div>
+            <input
+              checked={false}
+              className=""
+              onChange={[Function]}
+              type="checkbox"
+            />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          false
+        </td>
+        <td>
+          true
+        </td>
+        <td>
+          intermediate
+        </td>
+        <td>
+          <div>
+            <input
+              checked={false}
+              className=""
+              onChange={[Function]}
+              type="checkbox"
+            />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          true
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          checked
+        </td>
+        <td>
+          <div>
+            <input
+              checked={true}
+              className=""
+              onChange={[Function]}
+              type="checkbox"
+            />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          true
+        </td>
+        <td>
+          true
+        </td>
+        <td>
+          intermediate
+        </td>
+        <td>
+          <div>
+            <input
+              checked={true}
+              className=""
+              onChange={[Function]}
+              type="checkbox"
+            />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
+
+exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
+<div>
+  <h2>
+    Passing custom styles through props
+  </h2>
+  <div
+    className="col-xs-4"
+  >
+    <h3>
+      unstyled
+    </h3>
+    <div>
+      <input
+        checked={true}
+        className=""
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+    <div>
+      <input
+        checked={false}
+        className=""
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+    <div>
+      <input
+        checked={false}
+        className=""
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+  </div>
+  <div
+    className="col-xs-4"
+  >
+    <h3>
+      default style
+    </h3>
+    <div>
+      <input
+        checked={true}
+        className="tri-checkbox"
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+    <div>
+      <input
+        checked={false}
+        className="tri-checkbox"
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+    <div>
+      <input
+        checked={false}
+        className="tri-checkbox"
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+  </div>
+  <div
+    className="col-xs-4"
+  >
+    <h3>
+      s1 class
+    </h3>
+    <div>
+      <input
+        checked={true}
+        className="tri-checkbox s1"
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+    <div>
+      <input
+        checked={false}
+        className="tri-checkbox s1"
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+    <div>
+      <input
+        checked={false}
+        className="tri-checkbox s1"
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Frontend Storyshots Well default 1`] = `
 <div
   className="well"
