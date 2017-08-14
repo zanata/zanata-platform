@@ -559,7 +559,7 @@ input.text-input:focus {
   border-color: @color-light;
 }
 
-input.text-input::placeholder {
+input.text-input::placeholder, textarea.text-input::placeholder {
   color: hsl(195, 32%, 80%);
 }
 
@@ -1364,8 +1364,8 @@ form.rejections {
 }
 
 form.rejections input.text-input::placeholder,
-form.rejections input.text-input::-moz-placeholder {
-  color: #546677;
+form.rejections textarea.text-input::placeholder {
+  color: #546677 !important;
 }
 
 form.rejections .form-group {
