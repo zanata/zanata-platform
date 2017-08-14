@@ -16,14 +16,20 @@ export class RejectTranslationModal extends Component {
     onHide: PropTypes.func,
     toggleDropdown: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
-    criteria: PropTypes.oneOf(
+    priority: PropTypes.oneOf(
         [
           'Minor',
           'Major',
           'Critical'
         ]
     ).isRequired,
-    priority: PropTypes.oneOf(
+    textState: PropTypes.oneOf (
+        [
+            'u-textWarning',
+            'u-textDanger'
+        ]
+    ),
+    criteria: PropTypes.oneOf(
         [
           'Translation errors',
           'Language quality',
@@ -64,7 +70,8 @@ export class RejectTranslationModal extends Component {
       onHide,
       isOpen,
       criteria,
-      priority
+      priority,
+      textState
     } = this.props
 
 
@@ -74,19 +81,18 @@ export class RejectTranslationModal extends Component {
         key="reject-translation-modal"
         className="suggestions-modal">
         <Modal.Header>
-          <Modal.Title><small><span className="pull-left">
-          Reject translation</span></small></Modal.Title>
+          <Modal.Title>Reject translation</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <span>
-          Reason:
+            Reason:
           <Dropdown enabled isOpen={this.state.dropdownOpen}
             onToggle={this.toggleDropdown}
             className="dropdown-menu criteria">
             <Dropdown.Button>
             <a className="Dropdown-item">
               {this.props.criteria}
-              <Icon className="s0" name="chevron-down" />
+              <Icon className="n1" name="chevron-down" />
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
@@ -102,14 +108,14 @@ export class RejectTranslationModal extends Component {
           </Dropdown>
           </span>
           <span className="priority-dd">
-            Priority:
+            <Icon name="warning" className="s2 u-textWarning" /> Priority:
           <Dropdown enabled isOpen={this.state.dropdownOpen2}
                     onToggle={this.toggleDropdown2}
                     className="dropdown-menu priority">
             <Dropdown.Button>
               <a className="Dropdown-item">
-                {this.props.priority}
-                <Icon className="s0" name="chevron-down" />
+                <span className={textState}>{this.props.priority}</span>
+                <Icon className="n1" name="chevron-down" />
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
@@ -129,7 +135,7 @@ export class RejectTranslationModal extends Component {
              placeholder="Provide a comment for why this translation has been rejected"
              cols="50"
              rows="10"
-             className="InputGroup-input is-focused InputGroup--outlined commenting" />
+             className='InputGroup-input is-focused InputGroup--outlined commenting' />
         </Modal.Body>
         <Modal.Footer>
           <span>
