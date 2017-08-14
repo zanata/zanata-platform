@@ -60,6 +60,7 @@ export default (state = defaultState, action) => {
       const projectSlug = action.data.projectInfo.id
       const projectName = action.data.projectInfo.name
       const name = action.data.myInfo.name
+      // FIXME server is providing myInfo.imageUrl not gravatarHash
       const gravatarHash = action.data.myInfo.gravatarHash
 
       return updateObject(state, {

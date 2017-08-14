@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Tab } from 'react-bootstrap'
 import ActivitySelectList from '../components/ActivitySelectList'
 import LanguageSelectList from '../components/LanguageSelectList'
@@ -9,8 +10,22 @@ import ActivityFeedItem from '../components/ActivityFeedItem'
 class ActivityTab extends React.Component {
 
   static propTypes = {
+    activityItems: PropTypes.arrayOf(PropTypes.shape({
+      type: PropTypes.oneOf(['comment', 'revision']).isRequired,
+
+      content: PropTypes.string.isRequired,
+      lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
+      // TODO damason define type for status
+      status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
+        'untranslated']),
+      user: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        imageUrl: PropTypes.string.isRequired
+      }).isRequired
+    })).isRequired,
     // eventKey prop to use for the bootstrap Tab
     eventKey: PropTypes.number.isRequired,
+    postComment: PropTypes.func.isRequired,
     selectActivityTypeFilter: PropTypes.func.isRequired,
     selectLanguageFilter: PropTypes.func.isRequired,
     selectedActivites: ActivitySelectList.idType,
@@ -19,13 +34,14 @@ class ActivityTab extends React.Component {
 
   render () {
     const {
+      activityItems,
       eventKey,
+      postComment,
       selectActivityTypeFilter,
       selectLanguageFilter,
       selectedActivites,
       selectedLanguages
     } = this.props
-    const lastModifiedTime = new Date()
 
     return (
       <Tab eventKey={eventKey} title="">
@@ -36,54 +52,85 @@ class ActivityTab extends React.Component {
         <div className="sidebar-activity">
           <LanguageSelectList selectItem={selectLanguageFilter}
             selected={selectedLanguages} />
-          <CommentBox />
-          <ActivityFeedItem
-            icon="refresh"
-            username="Reviewdude"
-            status="u-textHighlight"
-            message="approved a translation"
-            wellStatus="well-approved"
-            content="নাম"
-            lastModifiedTime={lastModifiedTime}
-          />
-          <ActivityFeedItem
-            icon="refresh"
-            username="Kathryn"
-            status="u-textSuccess"
-            message="created a translated revision"
-            wellStatus="well-translated"
-            content="নাম"
-            lastModifiedTime={lastModifiedTime}
-          />
-          <ActivityFeedItem
-            icon="comment"
-            username="Kathryn"
-            message="commented on a translation"
-            content="I have no idea what I am doing"
-            lastModifiedTime={lastModifiedTime}
-          />
-          <ActivityFeedItem
-            icon="refresh"
-            username="Kathryn"
-            status="u-textUnsure"
-            message="created a fuzzy translation"
-            wellStatus="well-fuzzy"
-            content="নাম"
-            lastModifiedTime={lastModifiedTime}
-          />
-          <ActivityFeedItem
-            icon="refresh"
-            username="Reviewdude"
-            status="u-textWarning"
-            message="rejected a translation"
-            wellStatus="well-rejected"
-            content="নাম"
-            lastModifiedTime={lastModifiedTime}
-          />
+          <CommentBox postComment={postComment} />
+          {activityItems.map((item, index) => (
+            <ActivityFeedItem key={index} {...item} />))}
         </div>
       </Tab>
     )
   }
 }
 
-export default ActivityTab
+function mapStateToProps (state) {
+  // FIXME dummy data
+  const lastModifiedTime = new Date()
+  return {
+    activityItems: [
+      {
+        type: 'revision',
+        content: 'নাম',
+        lastModifiedTime,
+        status: 'approved',
+        user: {
+          name: 'Reviewdude',
+          imageUrl:
+            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+        }
+      }, {
+        type: 'revision',
+        content: 'নাম',
+        lastModifiedTime,
+        status: 'translated',
+        user: {
+          name: 'Kathryn',
+          imageUrl:
+            'https://gravatar.com/avatar/7e5aaf4eee27288eab09561fa201675a'
+        }
+      }, {
+        type: 'comment',
+        content: 'I have no idea what I am doing',
+        lastModifiedTime,
+        user: {
+          name: 'Kathryn',
+          imageUrl:
+            'https://gravatar.com/avatar/7e5aaf4eee27288eab09561fa201675a'
+        }
+      }, {
+        type: 'revision',
+        content: 'নাম',
+        lastModifiedTime,
+        status: 'fuzzy',
+        user: {
+          name: 'Kathryn',
+          imageUrl:
+            'https://gravatar.com/avatar/7e5aaf4eee27288eab09561fa201675a'
+        }
+      }, {
+        type: 'revision',
+        content: 'নাম',
+        lastModifiedTime,
+        status: 'rejected',
+        user: {
+          name: 'Reviewdude',
+          imageUrl:
+            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+        }
+      }
+    ],
+    selectedActivites: 'all',
+    selectedLanguages: 'current'
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  // FIXME dummy actions
+  return {
+    postComment: (e) => console.log('postComment: ' + e),
+    selectActivityTypeFilter:
+      (e) => console.log('selectActivityTypeFilter: ' + e),
+    selectLanguageFilter:
+      (e) => console.log('selectLanguageFilter: ' + e)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ActivityTab)

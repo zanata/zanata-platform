@@ -26,58 +26,56 @@ import ActivityFeedItem from '.'
 /*
  * See .storybook/README.md for info on the component storybook.
  */
-const lastModifiedTime = new Date()
+
+const lastModifiedTime = new Date(2016, 11, 16, 2, 19)
+const user = {
+  username: 'damason',
+  name: 'David Mason',
+  imageUrl:
+    'http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
+}
 
 storiesOf('ActivityFeedItem', module)
-    .add('comment', () => {
-      return <ActivityFeedItem
-          content={'What in the world does this mean?'}
-          icon={'comment'}
-          lastModifiedTime={lastModifiedTime}
-          message={'commented on a translation'}
-          username={'Kathryn '} />
-    })
+    .add('comment', () => (
+      <ActivityFeedItem
+        type="comment"
+        content={'What in the world does this mean?'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
+      ))
 
-    .add('translated', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
-          lastModifiedTime={lastModifiedTime}
-          message={'created a translation revision'}
-          status={'u-textSuccess'}
-          username={'Kathryn'}
-          wellStatus={'well-translated'} />
-    })
+    .add('translated', () => (
+      <ActivityFeedItem
+        type="revision"
+        status="translated"
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
+    ))
 
-    .add('fuzzy', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
-          lastModifiedTime={lastModifiedTime}
-          message={'created a fuzzy revision'}
-          status={'u-textUnsure'}
-          username={'Kathryn'}
-          wellStatus={'well-fuzzy'} />
-    })
+    .add('fuzzy', () => (
+      <ActivityFeedItem
+        type="revision"
+        status="fuzzy"
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
+    ))
 
-    .add('approved', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
-          lastModifiedTime={lastModifiedTime}
-          message={'approved a translation'}
-          status={'u-textHighlight'}
-          username={'Kathryn'}
-          wellStatus={'well-approved'} />
-    })
+    .add('approved', () => (
+      <ActivityFeedItem
+        type="revision"
+        status="approved"
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
+    ))
 
-    .add('rejected', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
-          lastModifiedTime={lastModifiedTime}
-          message={'rejected a translation'}
-          status={'u-textWarning'}
-          username={'Kathryn'}
-          wellStatus={'well-rejected'} />
-    })
+    .add('rejected', () => (
+      <ActivityFeedItem
+        type="revision"
+        status="rejected"
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
+    ))

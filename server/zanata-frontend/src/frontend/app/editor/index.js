@@ -3,7 +3,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { baseUrl } from './config'
 import { locale, formats } from './config/intl'
+
+import { chain } from 'lodash'
+import { enUS } from './config/en-us.json'
+console.dir(enUS)
+
 import { addLocaleData, IntlProvider } from 'react-intl'
+import enLocaleData from 'react-intl/locale-data/en.js'
 import { createStore, applyMiddleware } from 'redux'
 import { apiMiddleware } from 'redux-api-middleware'
 import { Provider } from 'react-redux'
@@ -50,9 +56,14 @@ function runApp () {
   //     addLocaleData(window.ReactIntlLocaleData[lang])
   //   })
   // }
-  addLocaleData({
-    locale: 'en-US'
-  })
+  // addLocaleData({
+  //   locale: 'en-US'
+  // })
+
+  console.log('EN LOCALE DATA HERE')
+  console.dir(enLocaleData)
+
+  addLocaleData([...enLocaleData])
 
   // example uses createHistory, but the latest bundles history with
   // react-router and has some defaults, so now I am just using one of those.
@@ -103,8 +114,15 @@ function runApp () {
   //       first doc and language in the list and goes ahead.
   //   Should be able to do better than that.
 
+  const transformedMessages = chain(enUS)
+    .keyBy(({ id }) => id)
+    .mapValues(({ defaultMessage }) => defaultMessage)
+    .value()
+  console.dir(transformedMessages)
+
   ReactDOM.render(
-    <IntlProvider locale={locale} formats={formats}>
+    <IntlProvider locale={locale} formats={formats}
+      messages={transformedMessages}>
       <Provider store={store}>
         <Router history={enhancedHistory}>
           {/* The ** is docId, captured as params.splat by react-router. */}

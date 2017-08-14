@@ -8,6 +8,7 @@ const SelectButtonList = ({ items, selected, className, selectItem }) => (
     {items.map(({ id, icon, label }) => (
       <SelectButton
         id={id}
+        key={id}
         icon={icon}
         buttonName={label}
         className={className}
@@ -20,11 +21,11 @@ const SelectButtonList = ({ items, selected, className, selectItem }) => (
 )
 
 SelectButtonList.propTypes = {
-  items: PropTypes.shape({
+  items: PropTypes.arrayOf(PropTypes.shape({
     icon: PropTypes.oneOf(['clock', 'comment', 'refresh', 'language']),
     buttonName: PropTypes.string,
     className: PropTypes.string
-  }).isRequired,
+  })).isRequired,
   selected: PropTypes.string.isRequired,
   className: PropTypes.string,
   selectItem: PropTypes.func.isRequired
