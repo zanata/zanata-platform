@@ -205,11 +205,7 @@ export class EditorSearchInput extends Component {
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
         <Panel collapsible expanded={showAdvanced}>
-          <table>
-            <tbody>
-              {advancedFields}
-            </tbody>
-          </table>
+          {advancedFields}
           <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
             onClick={this.clearAllAdvancedFields}>
             Clear all
@@ -239,19 +235,16 @@ class AdvancedField extends Component {
     const { id, field, value } = this.props
     const { label, description } = field
     return (
-      <tr key={id} className="u-sMH-3-4 u-sMV-1-8 .u-sizeFull"
-        title={description}>
-        <td className="u-sPR-1-4">{label + ':'}</td>
-        <td className="u-sizeWidthFull">
-          <input ref={id}
-            type="text"
-            placeholder={description}
-            className="u-bgHighest u-inputFlat u-sP-1-2 u-sMV-1-4 u-sizeFull"
-            value={value}
-            onChange={this.updateSearch}
-            />
-        </td>
-      </tr>
+      <div key={id} title={description} className="u-sPB-1-2">
+        <label className="u-textSecondary u-sPB-1-4">{label}</label>
+        <input ref={id}
+          type="text"
+          placeholder={description}
+          className="u-bgHighest u-sizeFull u-inputFlat
+            u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+          value={value}
+          onChange={this.updateSearch} />
+      </div>
     )
   }
 }
