@@ -42,10 +42,15 @@ object ArquillianUtil {
     @JvmOverloads
     @JvmStatic
     fun <T: ClassContainer<T>> T.addClassesWithDependencies(vararg classes: Class<*>, filter: ClassNameFilter = IN_ZANATA): T {
-        val allClasses = findAllClassDependencies(*classes, filter = filter) //.toTypedArray()
+        val allClasses = findAllClassDependencyChains(*classes, filter = filter) //.toTypedArray()
         log.info("Adding classes with dependencies: {} ({} total)", classes, allClasses.size)
 
-        allClasses.forEach { clazz ->
+        // uncomment if you want to see the classes and how they were referenced
+//        allClasses.values.forEach{
+//            println(it.reverse().map { it.simpleName }.joinToString("/"))
+//        }
+
+        allClasses.keys.forEach { clazz ->
             val asset = ClassAsset(clazz)
             val filename = clazz.name.replace('.','/')
             addAsResource(asset, BasicPath("$filename.class"))

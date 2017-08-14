@@ -25,8 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.ws.rs.core.Response;
 
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
@@ -38,16 +42,20 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
-import org.zanata.util.ServiceLocator;
+
+import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 /**
  * Provides basic test utilities to test raw REST APIs and compatibility.
@@ -58,6 +66,8 @@ import org.zanata.util.ServiceLocator;
 @RunWith(Arquillian.class)
 @Exclude
 public abstract class RestTest {
+    private static final Logger log = LoggerFactory.getLogger(RestTest.class);
+
     // Admin credentials
     protected static final String ADMIN = "admin";
     protected static final String ADMIN_KEY =
@@ -90,7 +100,7 @@ public abstract class RestTest {
     private DBUnitProvider dbUnitProvider = new DBUnitProvider() {
         @Override
         protected IDatabaseConnection getConnection() {
-            return RestTest.getConnection();
+            return RestTest.this.getConnection();
         }
     };
 
@@ -120,17 +130,26 @@ public abstract class RestTest {
      */
     @RemoteBefore
     public void prepareDataBeforeTest() {
+        log.info("Executing prepareDataBeforeTest()");
         addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                getDataSetToClear(),
                 DatabaseOperation.DELETE_ALL));
         prepareDBUnitOperations();
         addAfterTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                getDataSetToClear(),
                 DatabaseOperation.DELETE_ALL));
         dbUnitProvider.prepareDataBeforeTest();
         // Clear the hibernate cache
-        ServiceLocator.instance().getEntityManagerFactory().getCache()
-                .evictAll();
+        entityManagerFactory().getCache().evictAll();
+    }
+
+    private EntityManagerFactory entityManagerFactory() {
+        return CDI.current().select(EntityManagerFactory.class).get();
+    }
+
+    @NotNull
+    protected String getDataSetToClear() {
+        return "org/zanata/test/model/ClearAllTables.dbunit.xml";
     }
 
     /**
@@ -138,55 +157,56 @@ public abstract class RestTest {
      */
     @RemoteAfter
     public void cleanDataAfterTest() {
+        log.info("Executing cleanDataAfterTest()");
         dbUnitProvider.cleanDataAfterTest();
     }
 
     @Rule
-    public TestName testName() {
-        return new TestName();
-    }
+    public TestName testName = new TestName();
 
     @Before
-    public void signalBeforeTest() {
+    public void signalBeforeTest() throws Exception {
         ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
                 .target(getRestEndpointUrl() + "test/remote/signal/before");
         // test resources allow anonymous access
-        try {
-            webTarget
-                    .queryParam("c", this.getClass().getName())
-                    .queryParam("m", testName().getMethodName())
-                    .request().build("post").invoke();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Response response = webTarget
+                .queryParam("c", this.getClass().getName())
+                .queryParam("m", testName.getMethodName())
+                .request().build("post").invoke();
+        if (response.getStatusInfo().getFamily() != SUCCESSFUL) {
+            throw new Exception("bad response: " + response.getStatusInfo());
         }
     }
 
     @After
-    public void signalAfterTest() {
+    public void signalAfterTest() throws Exception {
         ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
                 .target(getRestEndpointUrl() + "test/remote/signal/after");
         // test resources allow anonymous access
-        try {
-            webTarget
-                    .queryParam("c", this.getClass().getName())
-                    .queryParam("m", testName().getMethodName())
-                    .request().build("post").invoke();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Response response = webTarget
+                .queryParam("c", this.getClass().getName())
+                .queryParam("m", testName.getMethodName())
+                .request().build("post").invoke();
+        if (response.getStatusInfo().getFamily() != SUCCESSFUL) {
+            throw new Exception("bad response: " + response.getStatusInfo());
         }
     }
 
-    private static IDatabaseConnection getConnection() {
+    private IDatabaseConnection getConnection() {
         try {
-            DataSource dataSource =
-                    (DataSource) new InitialContext().lookup(
-                            "java:jboss/datasources/zanataDatasource");
+            DataSource dataSource = getDataSource();
             DatabaseConnection dbConn =
                     new DatabaseConnection(dataSource.getConnection());
+//            dbConn.getConfig().setProperty(DatabaseConfig.FEATURE_CASE_SENSITIVE_TABLE_NAMES, false);
             return dbConn;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected DataSource getDataSource() throws NamingException {
+        return (DataSource) new InitialContext().lookup(
+                "java:jboss/datasources/zanataDatasource");
     }
 
     /**

@@ -191,16 +191,6 @@
         <configuration>
           <sourceJar>true</sourceJar>
           <testJar>true</testJar>
-
-          <!-- Recompile all sources if any source is recompiled! Hurts
-               incremental build performance.
-               Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=447546
-               If this proves too expensive, we could remove
-               org.atteo.classindex, return null in JaxRSApplication and
-               just let RESTEasy scan for @Path and @Provider classes at runtime.
-           -->
-          <proc>procEX</proc>
-          <annotationProcessors>org.zanata.util.JaxRSClassIndexProcessor</annotationProcessors>
         </configuration>
       </plugin>
 
@@ -329,7 +319,7 @@
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.6</version>
     </dependency>
 
     <dependency>
@@ -992,8 +982,7 @@
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
-      <version>0.9.10</version>
-      <scope>test</scope>
+      <version>0.9.11</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.code.findbugs</groupId>
@@ -1061,6 +1050,26 @@
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api</artifactId>
       <version>${shrinkwrap.resolver.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-api-javaee</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -1469,7 +1478,18 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-dependency-analyzer</artifactId>
+      <version>1.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.extras.creaper</groupId>
+      <artifactId>creaper-commands</artifactId>
+      <version>1.6.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

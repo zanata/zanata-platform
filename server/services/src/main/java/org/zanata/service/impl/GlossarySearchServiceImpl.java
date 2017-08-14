@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
@@ -42,10 +44,12 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
+import org.zanata.rest.service.GlossaryService;
 import org.zanata.rest.service.ProjectService;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
+import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.util.GlossaryUtil;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
@@ -64,13 +68,15 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
     private GlossaryDAO glossaryDAO;
     private LocaleService localeServiceImpl;
     private UrlUtil urlUtil;
+    private String contextPath;
 
     @Inject
     public GlossarySearchServiceImpl(GlossaryDAO glossaryDAO,
-            LocaleService localeServiceImpl, UrlUtil urlUtil) {
+            LocaleService localeServiceImpl, UrlUtil urlUtil, @ContextPath String contextPath) {
         this.glossaryDAO = glossaryDAO;
         this.localeServiceImpl = localeServiceImpl;
         this.urlUtil = urlUtil;
+        this.contextPath = contextPath;
     }
 
     @SuppressWarnings("unused")
@@ -176,6 +182,30 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         return item;
     }
 
+    /**
+     * Get glossary url with dswid parameter
+     */
+    @VisibleForTesting
+    String glossaryUrl(String qualifiedName, String filter,
+            LocaleId localeId) {
+        String url = contextPath;
+        if (GlossaryService.isProjectGlossary(qualifiedName)) {
+            String projectSlug = GlossaryService.getProjectSlug(qualifiedName);
+            url = url + "/glossary/project/" + projectSlug;
+        } else {
+            url = url + "/glossary";
+        }
+        boolean hasFilter = StringUtils.isNotBlank(filter);
+        if (hasFilter) {
+            url += "?filter=" + urlUtil.encodeString(filter);
+        }
+        if (localeId != null) {
+            String prefix = hasFilter ? "&" : "?";
+            url += prefix + "locale=" + localeId;
+        }
+        return url;
+    }
+
     @Override
     public ArrayList<GlossaryDetails> lookupDetails(
             @Nonnull LocaleId locale,
@@ -191,7 +221,7 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
             HGlossaryTerm hGlossaryTerm = entry.getGlossaryTerms().get(hLocale);
             String srcContent = srcTerm.getContent();
             String qualifiedName = entry.getGlossary().getQualifiedName();
-            String url = urlUtil.glossaryUrl(qualifiedName, srcContent,
+            String url = glossaryUrl(qualifiedName, srcContent,
                     hLocale.getLocaleId());
             items.add(new GlossaryDetails(entry.getId(), srcContent,
                     hGlossaryTerm.getContent(), entry.getDescription(),

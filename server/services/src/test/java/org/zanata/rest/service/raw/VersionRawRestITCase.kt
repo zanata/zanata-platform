@@ -31,8 +31,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap
 import org.jboss.shrinkwrap.api.spec.WebArchive
 import org.jboss.shrinkwrap.resolver.api.maven.Maven
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.zanata.RestTest
 import org.zanata.arquillian.ArquillianUtil.addClassesWithDependencies
+import org.zanata.arquillian.LifecycleArquillian
 import org.zanata.provider.DBUnitProvider
 import org.zanata.rest.JaxRSApplication
 import org.zanata.rest.MediaTypes
@@ -45,6 +47,7 @@ import javax.ws.rs.client.Invocation
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.Response
 
+@RunWith(LifecycleArquillian::class)
 class VersionRawRestITCase : RestTest() {
 
     companion object {

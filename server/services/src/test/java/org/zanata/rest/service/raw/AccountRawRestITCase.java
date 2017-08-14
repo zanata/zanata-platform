@@ -21,75 +21,64 @@
 package org.zanata.rest.service.raw;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.deltaspike.servlet.impl.produce.ServletObjectProducer;
-import org.atteo.classindex.ClassIndex;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.descriptor.api.Descriptors;
+import org.jboss.shrinkwrap.descriptor.api.beans10.BeansDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.JBossDeploymentStructureDescriptor;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jglue.cdiunit.AdditionalClasses;
-import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
-import org.junit.After;
-import org.junit.Before;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wildfly.extras.creaper.commands.datasources.AddDataSource;
-import org.wildfly.extras.creaper.commands.foundation.online.CliFile;
-import org.wildfly.extras.creaper.commands.infinispan.cache.AddLocalCache;
+import org.wildfly.extras.creaper.commands.logging.AddLogger;
+import org.wildfly.extras.creaper.commands.logging.ChangeConsoleLogHandler;
+import org.wildfly.extras.creaper.commands.logging.LogLevel;
 import org.wildfly.extras.creaper.commands.messaging.AddQueue;
 import org.wildfly.extras.creaper.commands.security.AddLoginModule;
 import org.wildfly.extras.creaper.commands.security.AddSecurityDomain;
-import org.wildfly.extras.creaper.commands.security.RemoveSecurityDomain;
-import org.wildfly.extras.creaper.commands.security.realms.AddLocalAuthentication;
 import org.wildfly.extras.creaper.core.ManagementClient;
-import org.wildfly.extras.creaper.core.offline.OfflineCommand;
 import org.wildfly.extras.creaper.core.offline.OfflineManagementClient;
 import org.wildfly.extras.creaper.core.offline.OfflineOptions;
-import org.wildfly.extras.creaper.core.online.ManagementProtocol;
-import org.wildfly.extras.creaper.core.online.OnlineManagementClient;
-import org.wildfly.extras.creaper.core.online.OnlineOptions;
+import org.zanata.H2DocumentHistoryTrigger;
 import org.zanata.RestTest;
 import org.zanata.arquillian.LifecycleArquillian;
-import org.zanata.arquillian.lifecycle.api.AfterStart;
-import org.zanata.arquillian.lifecycle.api.BeforeDeploy;
 import org.zanata.arquillian.lifecycle.api.BeforeSetup;
-import org.zanata.arquillian.lifecycle.api.BeforeStart;
-import org.zanata.dao.GlossaryDAO;
 import org.zanata.database.WrappedDatasourceConnectionProvider;
+import org.zanata.exception.handler.AccessDeniedExceptionHandler;
 import org.zanata.i18n.MessagesFactory;
 import org.zanata.jpa.EntityManagerFactoryProducer;
 import org.zanata.jpa.EntityManagerProducer;
+import org.zanata.model.HLocaleMember;
+import org.zanata.rest.AccessDeniedExceptionMapper;
 import org.zanata.rest.JaxRSApplication;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.ZanataRestSecurityInterceptor;
 import org.zanata.rest.dto.Account;
+import org.zanata.rest.helper.RemoteTestSignalerImpl;
 import org.zanata.rest.service.AccountService;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.zanata.security.AuthenticatedAccountSessionScopeHolder;
 import org.zanata.security.SmartEntitySecurityListener;
-import org.zanata.service.impl.ConfigurationServiceImpl;
-import org.zanata.service.impl.GlossarySearchServiceImpl;
-import org.zanata.service.impl.GravatarServiceImpl;
-import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.ContextPathProducer;
 import org.zanata.servlet.SessionIdProducer;
-import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.faces.FacesContextProducer;
 import org.zanata.util.DeltaSpikeWindowIdParam;
+import org.zanata.util.HashUtil;
+import org.zanata.util.SynchronizationInterceptor;
+import org.zanata.util.WithRequestScopeInterceptor;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -103,67 +92,56 @@ import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-//@RunWith(LifecycleArquillian.class)
-@RunWith(CdiUnitRunner.class)
-@AdditionalClasses({
-        AccountService.class,
-        ContextPathProducer.class,
-        ConfigurationServiceImpl.class,
-        DeltaSpikeWindowIdParam.class,
-        EntityManagerFactoryProducer.class,
-        EntityManagerProducer.class,
-        FacesContextProducer.class,
-        GravatarServiceImpl.class,
-        GlossarySearchServiceImpl.class,
-        LocaleServiceImpl.class,
-        MessagesFactory.class,
-        SessionIdProducer.class,
-        SmartEntitySecurityListener.class,
-//        WindowContextProducer.class,
-        ServletObjectProducer.class,
-        ZanataJpaIdentityStore.class,
-        GlossaryDAO.class,
-        AuthenticatedAccountSessionScopeHolder.class,
-//        WindowBeanHolder.class,
-        WrappedDatasourceConnectionProvider.class })
-@SupportDeltaspikeCore
+@RunWith(LifecycleArquillian.class)
 public class AccountRawRestITCase extends RestTest {
-
-    static {
-//        StackDumper.dumpWhenSysOutContains("interface org.zanata.servlet.annotations.AllJavaLocales");
-    }
-
     private static final Logger log = LoggerFactory.getLogger(AccountRawRestITCase.class);
 
-    public static Collection<Class> classesWithDependencies() {
-        return asList(
+    public static Class<?>[] classesWithDependencies() {
+        return new Class<?>[]{
+                AccountRawRestITCase.class,
                 AccountService.class,
-                ContextPathProducer.class,
-                ConfigurationServiceImpl.class,
-                DeltaSpikeWindowIdParam.class,
-                EntityManagerFactoryProducer.class,
-                EntityManagerProducer.class,
-                FacesContextProducer.class,
-                GravatarServiceImpl.class,
-                GlossarySearchServiceImpl.class,
-                LocaleServiceImpl.class,
-                MessagesFactory.class,
-                SessionIdProducer.class,
+                HLocaleMember.class,
+                WithRequestScopeInterceptor.class,
+                SynchronizationInterceptor.class,
+                WrappedDatasourceConnectionProvider.class,
                 SmartEntitySecurityListener.class,
-                WrappedDatasourceConnectionProvider.class
-        );
+                EntityManagerProducer.class,
+                EntityManagerFactoryProducer.class,
+                SessionIdProducer.class,
+                ContextPathProducer.class,
+                ServerPathAlt.class,
+                DeltaSpikeWindowIdParam.class,
+                FacesContextProducer.class,
+                MessagesFactory.class,
+                H2DocumentHistoryTrigger.class,
+                HashUtil.class,
+                AccessDeniedExceptionMapper.class,
+                AccessDeniedExceptionHandler.class,
+                RemoteTestSignalerImpl.class,
+                ZanataRestSecurityInterceptor.class,
+        };
     }
 
-    @Deployment(name = "AccountService", testable = false)
+    @Deployment(name = "AccountService")
     public static WebArchive createDeployment()  {
         File[] libs = Maven.resolver()
                 .loadPomFromFile("pom.xml")
                 .resolve("com.google.guava:guava",
                         "com.google.gwt:gwt-servlet",
                         "com.ibm.icu:icu4j",
+                        "io.javaslang:javaslang",
+                        "net.sf.okapi.steps:okapi-step-tokenization",
                         "net.sourceforge.openutils:openutils-log4j",
+                        "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
+                        "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
                         "org.apache.deltaspike.modules:deltaspike-security-module-api",
+                        "org.apache.deltaspike.modules:deltaspike-security-module-impl",
                         "org.apache.deltaspike.modules:deltaspike-servlet-module-impl",
+                        "org.apache.oltu.oauth2:org.apache.oltu.oauth2.authzserver",
+                        "org.assertj:assertj-core",
+                        "org.codehaus.jackson:jackson-mapper-asl",
+                        "org.dbunit:dbunit",
+                        "org.reflections:reflections",
                         "org.jetbrains.kotlin:kotlin-stdlib"
                 )
                 .withTransitivity()
@@ -171,46 +149,58 @@ public class AccountRawRestITCase extends RestTest {
         if (log.isInfoEnabled()) {
             log.info("Found {} libs: {}", libs.length, asList(libs));
         }
+
+        // beans.xml:
+//        BeansDescriptor beansXml = Descriptors.importAs(BeansDescriptor.class)
+//                .fromStream(AccountRawRestITCase.class.getResourceAsStream("/META-INF/beans.xml"))
+//                .getOrCreateAlternatives()
+//                .clazz(ServerPathAlt.class.getName())
+//                .up();
+        BeansDescriptor beansXml = Descriptors.create(BeansDescriptor.class)
+                .getOrCreateInterceptors().clazz(
+                        "org.zanata.util.WithRequestScopeInterceptor",
+                        "org.zanata.util.SynchronizationInterceptor",
+                        "org.apache.deltaspike.security.impl.extension.SecurityInterceptor")
+                .up()
+                .getOrCreateAlternatives().clazz(ServerPathAlt.class.getName())
+                .up();
+
+        // jboss-deployment-structure.xml:
+        // We need to exclude jackson2 and include jackson1, plus we need the H2 database.
+        // NB if it weren't for exclusions, we could just use:
+        // war.addAsManifestResource(new StringAsset("Dependencies: com.h2database.h2 optional"), "MANIFEST.MF")
+        JBossDeploymentStructureDescriptor jbossDeployXml =
+                Descriptors.create(JBossDeploymentStructureDescriptor.class)
+                        .getOrCreateDeployment()
+                        .getOrCreateExclusions()
+                        .createModule().name("org.jboss.resteasy.resteasy-jackson2-provider").up()
+                        .up()
+                        .getOrCreateDependencies()
+                        .createModule().name("com.h2database.h2").optional(true).up()
+                        .createModule().name("org.jboss.resteasy.resteasy-jackson-provider").services("import").up()
+                        .up().up();
         WebArchive war = ShrinkWrap
                 .create(WebArchive.class, "AccountService.war")
                 .addAsLibraries(libs)
-                .addClasses(JaxRSApplication.class, ClassIndex.class)
-//                    .addAsResource(
-//                            EmptyAsset.INSTANCE,
-//                            "beans.xml")
-//                    .addAsWebInfResource(
-//                            EmptyAsset.INSTANCE,
-//                            "beans.xml")
+                .addClasses(JaxRSApplication.class)
+                .addAsWebInfResource(new StringAsset(beansXml.exportAsString()), "beans.xml")
                 .addAsResource("arquillian/persistence.xml", "META-INF/persistence.xml")
                 .addAsResource("META-INF/orm.xml")
+                .addAsResource("org/zanata/test/model/AccountData.dbunit.xml")
+                .addAsResource("import.sql")
+                .addAsWebInfResource(new StringAsset(jbossDeployXml.exportAsString()), jbossDeployXml.getDescriptorName())
                 ;
         // NB: this only adds Zanata dependencies. For other dependencies, you
         // should add it to the libraries above (unless it's part of the
         // platform).
-        addClassesWithDependencies(war,
-                classesWithDependencies().toArray(new Class[0])
-//                AccountService.class,
-//                ContextPathProducer.class,
-//                ConfigurationServiceImpl.class,
-//                DeltaSpikeWindowIdParam.class,
-//                EntityManagerFactoryProducer.class,
-//                EntityManagerProducer.class,
-//                FacesContextProducer.class,
-//                GravatarServiceImpl.class,
-//                GlossarySearchServiceImpl.class,
-//                LocaleServiceImpl.class,
-//                MessagesFactory.class,
-//                SessionIdProducer.class,
-//                SmartEntitySecurityListener.class,
-//                WrappedDatasourceConnectionProvider.class
-        );
+        addClassesWithDependencies(war, classesWithDependencies());
 //            war.content.forEach { path, _ -> println(path) }
         return war;
     }
 
     @BeforeSetup
     public static void beforeSetup() throws Exception {
-        System.out.println("beforeSetup");
+        log.info("beforeSetup");
         String jbossHome = System.getProperty("jboss.home");
         if (jbossHome == null) {
             throw new RuntimeException(
@@ -247,6 +237,19 @@ public class AccountRawRestITCase extends RestTest {
 //                        .replaceExisting()
                         .build(),
                 */
+
+                new ChangeConsoleLogHandler.Builder("CONSOLE")
+                        .level(LogLevel.DEBUG)
+                        .build(),
+                new AddLogger.Builder("org.hibernate.SQL")
+                        .replaceExisting()
+                        .level(LogLevel.DEBUG)
+                        .build(),
+                new AddLogger.Builder("org.hibernate.tool.hbm2ddl")
+                        .replaceExisting()
+                        .level(LogLevel.DEBUG)
+                        .build(),
+
                 new AddQueue.Builder("MailsQueue")
                         .durable(true)
                         .jndiEntries(
@@ -281,15 +284,10 @@ public class AccountRawRestITCase extends RestTest {
 
                 );
     }
-//
-//    @BeforeStart
-//    public static void beforeStart() throws Exception {
-//        System.out.println("beforeStart");
-//    }
-//
+
 //    @AfterStart
 //    public static void afterStart() throws Exception {
-//        System.out.println("afterStart");
+//        log.info("afterStart");
 //        OnlineManagementClient client = ManagementClient.online(OnlineOptions
 //                .standalone()
 //                .hostAndPort("localhost", 9990)
@@ -297,27 +295,18 @@ public class AccountRawRestITCase extends RestTest {
 //                .build());
 //        client.apply(new CliFile(new File("../etc/scripts/zanata-config-arq-test.cli")));
 //    }
-//
-//    @BeforeDeploy
-//    public static void beforeDeploy() throws Exception {
-//        System.out.println("beforeDeploy");
-//    }
+
+    @NotNull
+    @Override
+    protected String getDataSetToClear() {
+        return "org/zanata/test/model/AccountData.dbunit.xml";
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/AccountData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
-    }
-
-    @Before
-    public void before() {
-        prepareDataBeforeTest();
-    }
-
-    @After
-    public void after() {
-        cleanDataAfterTest();
     }
 
     @Test

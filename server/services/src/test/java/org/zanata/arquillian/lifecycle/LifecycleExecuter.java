@@ -19,6 +19,9 @@ package org.zanata.arquillian.lifecycle;
 
 import java.lang.reflect.Method;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jboss.arquillian.container.spi.event.container.AfterDeploy;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.container.spi.event.container.AfterUnDeploy;
@@ -30,16 +33,20 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.test.spi.TestClass;
 
 /**
- * LifecycleExecuter
- *
+ * LifecycleExecuter uses Arquillian lifecycle event observers to provide
+ * various observable deployment events (see the annotations in the package
+ * org.zanata.arquillian.lifecycle.api)
+ * @see org.zanata.arquillian.lifecycle.api
+ * @see org.zanata.arquillian.LifecycleArquillian
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
+ * @author <a href="mailto:sflaniga@redhat.com">Sean Flanigan</a>
  */
 public class LifecycleExecuter
 {
     // Yes, this is nasty.
     // See https://developer.jboss.org/thread/273201 if you want to try 27
     // classes and interfaces instead.
-    private static TestClass currentTestClass;
+    private static @Nullable TestClass currentTestClass;
 
     public static void withTestClass(TestClass testClass, Runnable runnable) {
         currentTestClass = new TestClass(testClass.getJavaClass());
@@ -50,24 +57,32 @@ public class LifecycleExecuter
         }
     }
 
+    private static @Nonnull TestClass getCurrentTestClass() {
+        if (currentTestClass == null) {
+            throw new RuntimeException(
+                    "currentTestClass has not been set. See withTestClass.");
+        }
+        return currentTestClass;
+    }
+
     public void executeBeforeSetup(@Observes BeforeSetup event)
     {
         execute(
-                currentTestClass.getMethods(
+                getCurrentTestClass().getMethods(
                         org.zanata.arquillian.lifecycle.api.BeforeSetup.class));
     }
 
     public void executeBeforeStart(@Observes BeforeStart event)
     {
         execute(
-                currentTestClass.getMethods(
+                getCurrentTestClass().getMethods(
                         org.zanata.arquillian.lifecycle.api.BeforeStart.class));
     }
 
     public void executeAfterStart(@Observes AfterStart event)
     {
         execute(
-                currentTestClass.getMethods(
+                getCurrentTestClass().getMethods(
                         org.zanata.arquillian.lifecycle.api.AfterStart.class));
     }
 
@@ -101,20 +116,16 @@ public class LifecycleExecuter
 
    private void execute(Method[] methods)
    {
-      if(methods == null)
-      {
-         return;
-      }
-      for(Method method : methods)
-      {
-         try
-         {
-            method.invoke(null);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Could not execute lifecycle method: " + method, e);
-         }
-      }
+       if (methods == null) {
+           return;
+       }
+       for (Method method : methods) {
+           try {
+               method.invoke(null);
+           } catch (Exception e) {
+               throw new RuntimeException(
+                       "Could not execute lifecycle method: " + method, e);
+           }
+       }
    }
 }

@@ -60,8 +60,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.COMPILE;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.TEST;
-import static org.zanata.arquillian.ArquillianUtil.addClassesWithDependencies;
-import static org.zanata.arquillian.ArquillianUtil.addClassesWithSupertypes;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package

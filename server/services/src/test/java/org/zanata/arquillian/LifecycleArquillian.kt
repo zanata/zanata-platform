@@ -6,6 +6,9 @@ import org.junit.runner.notification.RunNotifier
 import org.zanata.arquillian.lifecycle.LifecycleExecuter
 
 /**
+ * Based on the Arquillian test runner, but also tells LifecycleExecuter the
+ * identity of the currently executing test class so that all the events in
+ * [org.zanata.arquillian.lifecycle.api] will work properly.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 class LifecycleArquillian(testClass: Class<*>) : Arquillian(testClass) {
