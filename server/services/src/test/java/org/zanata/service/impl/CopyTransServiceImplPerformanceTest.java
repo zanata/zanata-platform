@@ -1,8 +1,5 @@
 package org.zanata.service.impl;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.naming.Context;
@@ -42,17 +39,8 @@ import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.ZanataEntities;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.zanata.service.EntityManagerFactoryRule.mySqlPassword;
-import static org.zanata.service.EntityManagerFactoryRule.mySqlUrl;
-import static org.zanata.service.EntityManagerFactoryRule.mySqlUsername;
 
 /**
  * This is a JUnit test that will setup large data and test the performance of
@@ -186,24 +174,6 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
             em.close();
         }
         em = null;
-    }
-    // This method will ensure database schema is up to date
-
-    private static void runLiquibase() throws Exception {
-        when(jndiContext
-                .lookup("java:global/zanata/files/document-storage-directory"))
-                        .thenReturn("/tmp/doc");
-        Connection conn = DriverManager.getConnection(mySqlUrl(),
-                mySqlUsername(), mySqlPassword());
-        Statement statement = conn.createStatement();
-        statement.executeUpdate("drop schema zanata_unit_test");
-        statement.executeUpdate("create schema zanata_unit_test");
-        statement.executeUpdate("use zanata_unit_test");
-        Database database = DatabaseFactory.getInstance()
-                .findCorrectDatabaseImplementation(new JdbcConnection(conn));
-        Liquibase liquibase = new Liquibase("db/db.changelog.xml",
-                new ClassLoaderResourceAccessor(), database);
-        liquibase.update("");
     }
 
     private HLocale makeLocale(LocaleId localeId) {

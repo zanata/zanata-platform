@@ -329,6 +329,7 @@ public class UserSettingsAction implements Serializable {
         private static final long serialVersionUID = 1L;
         private HCredentials newCredentials;
 
+        @SuppressWarnings("unused")
         public CredentialsCreationCallback() {
         }
 

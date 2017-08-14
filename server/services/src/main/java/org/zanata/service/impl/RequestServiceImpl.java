@@ -213,15 +213,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
     /**
-     * Return true if request have been processed (validTo is not null)
-     *
-     * @param request
-     */
-    private boolean isRequestProcessed(Request request) {
-        return request.getValidTo() != null;
-    }
-
-    /**
      * Builder for languageRequest TODO: use @Builder in LanguageRequest but
      * issue with @NoArgsConstructor and @AllArgsConstructor
      */
