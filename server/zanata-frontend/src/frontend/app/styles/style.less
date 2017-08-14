@@ -1355,6 +1355,35 @@ table td {
   margin-left: 4rem;
 }
 
+form.rejections {
+  display: inline-flex;
+  align-items: flex-start;
+  width: 100%;
+  flex-direction: row;
+  margin-bottom: 2rem;
+}
+
+form.rejections input.text-input::placeholder,
+form.rejections input.text-input::-moz-placeholder {
+  color: #546677;
+}
+
+form.rejections .form-group {
+  padding-right: 1rem;
+}
+
+.form-group.flex-grow1 {
+  flex-grow: 1;
+}
+
+.form-group.flex-grow2 {
+  flex-grow: 2;
+}
+
+form.rejections .editicon {
+  vertical-align: sub;
+}
+
 .locale-options {
   display: flex;
   display: -webkit-flex;
