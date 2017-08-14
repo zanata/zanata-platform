@@ -119,8 +119,9 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
                     .createQuery(
                         "from HPerson as p " +
                             "where lower(p.account.username) like :name " +
-                            "or lower(p.name) like :name");
-            query.setParameter("name", "%" + name.toLowerCase() + "%");
+                            "or lower(p.name) like lower(:name) escape '!'");
+            String escapeName = escapeQuery(name);
+            query.setParameter("name", "%" + escapeName + "%");
             query.setCacheable(false);
             query.setFirstResult(firstResult);
             if(maxResult != -1) {
