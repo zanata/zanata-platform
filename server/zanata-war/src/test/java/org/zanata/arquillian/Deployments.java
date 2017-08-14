@@ -139,10 +139,6 @@ public class Deployments {
                         .as(GenericArchive.class),
                 "/WEB-INF/classes", archivePathFilter);
 
-        // JaxRSClassIndexProcessor generated class index
-        File jaxRsPathIndex = concatenatePathClassIndice();
-        archive.addAsResource(jaxRsPathIndex,
-                "META-INF/annotations/javax.ws.rs.Path");
         archive.addAsResource(
                 new ClassLoaderAsset("arquillian/persistence.xml"),
                 "META-INF/persistence.xml");
@@ -157,48 +153,6 @@ public class Deployments {
         archive.delete("/WEB-INF/classes/arquillian.xml");
         // Note: see the main method if you want to see or extract the contents of the deployment
         return archive;
-    }
-
-    /**
-     * There are two copy of generated class index file from
-     * JaxRSClassIndexProcessor, one for production under target/classes and one
-     * for test under target/test-classes. Here we concatenate the content of
-     * the two and generate a new one for arquillian archive to use.
-     *
-     * @return class index file with concatenated content
-     */
-    private static File concatenatePathClassIndice() {
-        try {
-            Enumeration<URL> resources =
-                    Thread.currentThread().getContextClassLoader()
-                            .getResources(
-                                    "META-INF/annotations/javax.ws.rs.Path");
-            if (!resources.hasMoreElements()) {
-                throw new IllegalStateException(
-                        "cannot find any annotation index files (javax.ws.rs.Path)");
-            }
-            ImmutableList.Builder<String> builder = ImmutableList.builder();
-            forEachRemaining(resources, url -> {
-                File file = new File(url.getPath());
-                if (file.exists() && file.canRead()) {
-                    try {
-                        Files.lines(Paths.get(url.toURI()), UTF_8)
-                                .forEach(builder::add);
-                    } catch (URISyntaxException | IOException e) {
-                        log.error("error handling file: {}", file, e);
-                    }
-                }
-            });
-            List<String> pathClasses = builder.build();
-            log.debug("all javax.ws.rs.Path classes: {}", pathClasses);
-            File concatenatedIndex = File.createTempFile(
-                    "javax.ws.rs.Path-concatenated", ".tmp");
-            concatenatedIndex.deleteOnExit();
-            Files.write(concatenatedIndex.toPath(), pathClasses, UTF_8);
-            return concatenatedIndex;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static boolean notUnitTest(ArchivePath object) {
