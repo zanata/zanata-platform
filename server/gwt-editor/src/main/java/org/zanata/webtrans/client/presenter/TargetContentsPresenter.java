@@ -67,6 +67,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
+import org.zanata.webtrans.shared.ui.UserConfigHolder;
 import org.zanata.webtrans.shared.util.Finds;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;

@@ -20,15 +20,13 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -69,12 +67,13 @@ public class ProjectsRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 Project[] projects = jsonUnmarshal(entityString, Project[].class);
-                Assertions.assertThat(projects.length).isGreaterThan(0);
+                assertThat(projects.length).isGreaterThan(0);
                 for (Project project : projects) {
-                    Assertions.assertThat(project.getStatus()).isNotEqualTo(
+                    assertThat(project.getStatus()).isNotEqualTo(
                             EntityStatus.OBSOLETE);
                 }
             }

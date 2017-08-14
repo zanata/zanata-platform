@@ -19,6 +19,7 @@ class Notification extends Component {
   getSeverityClass = (severity) => {
     switch (severity) {
       case 'warn':
+        return 'warning'
       case 'error':
         return 'danger'
       default:

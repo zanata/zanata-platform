@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +32,6 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
-import org.dbunit.dataset.datatype.DataType;
-import org.dbunit.dataset.datatype.DataTypeException;
-import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
@@ -185,10 +181,12 @@ public abstract class DBUnitProvider {
             }
 
             // Load the base dataset file
-            InputStream input =
+            try (InputStream input =
                     Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream(dataSetLocation);
-            try {
+                            .getResourceAsStream(dataSetLocation)) {
+                if (input == null) {
+                    throw new RuntimeException("missing resource: " + dataSetLocation);
+                }
                 FlatXmlDataSetBuilder dataSetBuilder =
                         new FlatXmlDataSetBuilder();
                 dataSetBuilder.setColumnSensing(true);
@@ -275,8 +273,8 @@ public abstract class DBUnitProvider {
         try {
             con.getConnection()
                     .prepareStatement("set referential_integrity FALSE")
-                    .execute(); // HSQL
-            // DB
+                    // HSQLDB
+                    .execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -294,8 +292,8 @@ public abstract class DBUnitProvider {
         try {
             con.getConnection()
                     .prepareStatement("set referential_integrity TRUE")
-                    .execute(); // HSQL
-            // DB
+                    // HSQLDB
+                    .execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

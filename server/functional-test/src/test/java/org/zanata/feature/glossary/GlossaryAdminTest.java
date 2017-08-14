@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.glossary;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Trace;
@@ -29,7 +28,8 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.workflow.ClientWorkFlow;
 import java.io.File;
 import java.util.List;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.MavenHome.mvn;
 
 /**
@@ -38,9 +38,6 @@ import static org.zanata.util.MavenHome.mvn;
  */
 @Category(DetailedTest.class)
 public class GlossaryAdminTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(GlossaryAdminTest.class);
-
     private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
 
     /**
@@ -59,6 +56,6 @@ public class GlossaryAdminTest extends ZanataTestCase {
         List<String> result = clientWorkFlow.callWithTimeout(projectRootPath,
                 mvn() + " -e -U --batch-mode zanata:glossary-push -Dglossary.lang=hi -Dzanata.file=compendium.csv -Dzanata.userConfig="
                         + userConfigPath);
-        assertThat(clientWorkFlow.isPushSuccessful(result), Matchers.is(true));
+        assertThat(clientWorkFlow.isPushSuccessful(result)).isTrue();
     }
 }

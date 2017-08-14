@@ -139,7 +139,7 @@ public class UserEndToEndTest extends ZanataTestCase {
         ProjectVersionsPage projectVersionsPage = successfullyCreateAProject(createProjectPage);
 
         // Adds a language to their project
-        ProjectLanguagesTab projectLanguagesTab = addLanguageToProject(projectVersionsPage);
+        addLanguageToProject(projectVersionsPage);
 
         // Adds a translator to the project
         ProjectPeoplePage projectPeoplePage = addTranslatorToProject(projectVersionsPage);

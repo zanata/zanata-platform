@@ -22,8 +22,8 @@
   <suppress checks="MagicNumberCheck" files="Test\.java$" />
   <suppress checks="NewlineAtEndOfFile" files="\.properties$" />
   <suppress checks="RegexpSingleline" files="\.properties$" />
-  <!-- TODO fix violations and remove this: -->
-  <suppress checks="TrailingComment" files="[/\\]zanata-war[/\\]src[/\\]" />
-  <!-- TODO fix violations and remove this: -->
-  <suppress checks="WhitespaceAround" files="[/\\]zanata-war[/\\]src[/\\]" />
+  <!-- TODO fix violations and remove these: -->
+  <suppress checks="TrailingComment" files="[/\\]services[/\\]src[/\\]" />
+  <!-- TODO fix violations and remove these: -->
+  <suppress checks="WhitespaceAround" files="[/\\]services[/\\]src[/\\]" />
 </suppressions>

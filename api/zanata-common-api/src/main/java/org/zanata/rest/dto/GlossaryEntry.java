@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -39,7 +40,8 @@ import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 
 /**
- *
+ * A single glossary entry representing a single translated term in multiple
+ * locales.
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
@@ -48,6 +50,7 @@ import org.zanata.rest.MediaTypes;
         "description", "sourceReference", "glossaryTerms", "termsCount", "qualifiedName" })
 @JsonPropertyOrder({ "id", "pos", "description", "srcLang", "sourceReference", "glossaryTerms", "termsCount", "qualifiedName" })
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Glossary Entry")
 public class GlossaryEntry implements Serializable, HasMediaType {
     /**
     *
@@ -78,8 +81,12 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         this.id = id;
     }
 
+    /**
+     * Unique identifier
+     */
     @XmlElement(name = "id", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("id")
+    @DocumentationExample(value = "444555", value2 = "444556")
     public Long getId() {
         return id;
     }
@@ -88,8 +95,12 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         this.id = id;
     }
 
+    /**
+     * Glossary entry's part of speech
+     */
     @XmlElement(name = "pos", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("pos")
+    @DocumentationExample(value = "verb", value2 = "noun")
     public String getPos() {
         return pos;
     }
@@ -108,8 +119,13 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         this.description = description;
     }
 
+    /**
+     * Number of translated terms. A term is the glossary entry's representation
+     * for a specific locale
+     */
     @XmlElement(name = "termsCount", namespace = Namespaces.ZANATA_API)
     @JsonProperty("termsCount")
+    @DocumentationExample("2")
     public int getTermsCount() {
         return termsCount;
     }
@@ -118,6 +134,9 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         this.termsCount = termsCount;
     }
 
+    /**
+     * The full list of glossary terms
+     */
     @XmlElement(name = "glossary-term", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("glossaryTerms")
     public List<GlossaryTerm> getGlossaryTerms() {
@@ -131,9 +150,13 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         this.glossaryTerms = glossaryTerms;
     }
 
+    /**
+     * The source locale for this specific entry
+     */
     @XmlAttribute(name = "src-lang")
     @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
     @JsonProperty("srcLang")
+    @DocumentationExample("en-US")
     public LocaleId getSrcLang() {
         return srcLang;
     }

@@ -54,7 +54,6 @@ public class SourceDocResourceClientTest {
     @Test
     public void testGetResourceMeta() {
         List<ResourceMeta> resourceMeta = client.getResourceMeta(null);
-
         assertThat(resourceMeta, Matchers.hasSize(2));
     }
 
@@ -62,7 +61,6 @@ public class SourceDocResourceClientTest {
     public void testGetResource() {
         Resource resource = client.getResource("test",
                 Sets.newHashSet("gettext", "comment"));
-
         assertThat(resource.getName(), Matchers.equalTo("test"));
     }
 

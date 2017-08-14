@@ -1,0 +1,209 @@
+/* Modal specific css */
+
+.vmerge-searchinput.form-control {
+  height: inherit !important;
+}
+
+.vmerge-boxes .list-group-item:last-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.vmerge-target {
+  margin-left: 1em;
+}
+
+.vmerge-target ul {
+  list-style-type: none;
+  margin-top: 0.5em;
+  font-size: 1.1em;
+  margin-bottom: 0;
+  line-height:2em;
+  margin-left: 1rem;
+}
+
+.vmerge-boxes .panel-group {
+  margin-bottom: 0;
+}
+
+.vmerge-row {
+  margin-bottom: 1.75em;
+}
+
+.vmerge-ddown {
+  font-weight: 500;
+}
+
+.vmerge-title {
+  font-weight: 600;
+  font-size: 1em;
+  margin-bottom: 0.375rem;
+}
+
+.vmerge-title .text-muted {
+  margin-left: 1em;
+}
+
+.vmerge-searchbox .input-group-addon {
+  color: @color-muted;
+  height: 2rem;
+}
+
+.vmerge-boxes .info-icon  {
+  vertical-align: sub;
+  color: @color-light;
+  margin-left: 0.75em;
+}
+
+.vmerge-boxes li.v.list-group-item .checkbox {
+  margin-left: 2rem;
+}
+
+.s0.icon-locked  {
+  color: @color-warning;
+  vertical-align: middle;
+  margin-left: 0.375em;
+}
+
+.vmerge-adjtitle {
+  color: @color-light;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.vmerge-adjsub {
+  font-size: 0.85em;
+}
+
+.vmerge-searchbox {
+  margin-bottom: 1em;
+}
+
+.modal-body .dropdown .dropdown-menu > li > a {
+  font-size: 1em;
+}
+
+.tm-panel .checkbox .label {
+  font-size: 0.875rem;
+  margin-left: 1rem;
+  padding: 0.375rem;
+}
+
+.tm-panel .checkbox small {
+  color: @color-muted;
+}
+
+.panel-title {
+   font-size: 1.1rem !important;
+   margin: 0 !important;
+}
+
+.react-draggable.list-group-item span.text-muted {
+  margin-left: 1em !important;
+}
+
+.drag-handle {
+  top : 50% !important;
+  right: 3% !important;
+  -ms-transform: translate(3%, -50%);
+  transform    : translate(3%, -50%);
+  padding: 0.75rem !important;
+  cursor: ns-resize !important;
+}
+
+.rm-version-btn {
+  top : 50% !important;
+  right: 3% !important;
+  -ms-transform: translate(3%, -50%);
+  transform    : translate(3%, -50%);
+  padding: 0.75rem !important;
+  color: red !important;
+}
+
+.sortable-helper {
+  z-index: 10000 !important;
+}
+
+.new-zanata .button.btn-primary {
+  color: #fff !important;
+  border-color: @color-neutral !important;
+  background-color: @color-light !important;
+}
+
+.new-zanata .button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+  background-color: transparent !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.new-zanata #TM-merge-modal ul {
+  margin: 0;
+  padding: 0;
+}
+
+.new-zanata  #TM-merge-modal ul, .new-zanata #TM-merge-modal ul li {
+  list-style-type: none !important;
+}
+
+.new-zanata #TM-merge-modal input[type=text] {
+  margin: 0;
+}
+
+.new-zanata #TM-merge-modal label {
+  color: @color-dark;
+  font-weight: 500;
+}
+
+#TM-merge-modal .progress-bar {
+  height: 100% !important;
+}
+
+#TM-merge-modal .panel-group .panel-heading {
+  border-bottom: 1px solid #cdd4dc !important;
+}
+
+#TM-merge-modal .modal-body .intro {
+  margin-bottom: 1rem !important;
+}
+
+#TM-merge-modal .modal-header {
+  padding-bottom: 0 !important;
+}
+
+#TM-merge-modal .modal-body {
+  padding-top: 0 !important;
+}
+
+#TM-merge-modal {
+  visibility: visible;
+  opacity: inherit;
+  backface-visibility: hidden;
+}
+
+.tmx-icon {
+  margin-right: 0.375rem;
+}
+
+.vmerge-title .text-info {
+  margin-right: 1rem;
+}
+
+li.v input.checkbox {
+  margin-left: 1rem;
+}
+
+#languages-dd {
+  display: inline-flex;
+  align-items: center;
+}
+
+#languages-dd span.s1 {
+  margin-right: 0.375rem;
+}
+
+.s0.icon-locked {
+  color: #FFA800 !important;
+  vertical-align: middle;
+  margin-left: 0.375em;
+}

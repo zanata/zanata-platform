@@ -1,0 +1,235 @@
+/*
+ * Copyright 2014, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+package org.zanata.service.impl;
+
+import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import org.junit.Test;
+import org.zanata.common.ContentState;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.common.ContentState.Approved;
+import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.common.ContentState.New;
+import static org.zanata.common.ContentState.Translated;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
+import static org.zanata.service.impl.CopyTransWorkFactory.MatchRulePair;
+
+/**
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ */
+public class CopyTransWorkTest {
+    private final List<ContentState> validTranslatedStates = ImmutableList.of(
+            Translated, Approved);
+
+    @Test
+    public void basicDetermineContentState() {
+        // An empty rule list should not change the state
+        for (ContentState state : validTranslatedStates) {
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.<MatchRulePair> newArrayList(),
+                    true, state)).isEqualTo(state);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.<MatchRulePair> newArrayList(),
+                    false, state)).isEqualTo(Translated);
+        }
+    }
+
+    @Test
+    public void contentStateWithIgnoreRule() {
+        // If the rule is IGNORE, the state should not change no matter what the
+        // result is
+        for (ContentState state : validTranslatedStates) {
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(true), IGNORE)), true, state
+                    )).isEqualTo(state);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(false), IGNORE)), true, state
+                    )).isEqualTo(state);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(true), IGNORE)), false, state
+                    )).isEqualTo(Translated);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(false), IGNORE)), false, state
+                    )).isEqualTo(Translated);
+        }
+    }
+
+    @Test
+    public void contentStateWithRejectRule() {
+        // If the rule is Reject, then the match should be rejected only when
+        // the evaluation fails
+        for (ContentState state : validTranslatedStates) {
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(true), REJECT)), true, state
+                    )).isEqualTo(state);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(false), REJECT)), true, state
+                    )).isEqualTo(New);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(true), REJECT)), false, state
+                    )).isEqualTo(Translated);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(false), REJECT)), false, state
+                    )).isEqualTo(New);
+        }
+    }
+
+    @Test
+    public void contentStateWithDowngradeRule() {
+        // If the rule is downgrade, then the match should be downgraded when
+        // the evaluation fails
+        for (ContentState state : validTranslatedStates) {
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(new MatchRulePair(
+                            Suppliers.ofInstance(true), DOWNGRADE_TO_FUZZY)),
+                    true, state
+                    )).isEqualTo(state);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(
+                            new MatchRulePair(
+                                    Suppliers.ofInstance(false),
+                                    DOWNGRADE_TO_FUZZY)), true,
+                    state
+                    ))
+                    .isEqualTo(NeedReview);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(
+                            new MatchRulePair(
+                                    Suppliers.ofInstance(true),
+                                    DOWNGRADE_TO_FUZZY)), false,
+                    state
+                    ))
+                    .isEqualTo(Translated);
+            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                    Lists.newArrayList(
+                            new MatchRulePair(
+                                    Suppliers.ofInstance(false),
+                                    DOWNGRADE_TO_FUZZY)), false,
+                    state
+                    ))
+                    .isEqualTo(NeedReview);
+        }
+    }
+
+    @Test
+    public void failedRejectionRule() {
+        // A single rejection should reject the whole translation no matter what
+        // the other rules say
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                DOWNGRADE_TO_FUZZY),
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                REJECT)
+                ),
+                true, Translated
+                )).isEqualTo(New);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(new MatchRulePair(Suppliers.ofInstance(true),
+                        IGNORE), new MatchRulePair(Suppliers.ofInstance(false),
+                        REJECT)), false, Translated)).isEqualTo(New);
+
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(new MatchRulePair(Suppliers.ofInstance(false),
+                        REJECT), new MatchRulePair(Suppliers.ofInstance(false),
+                        DOWNGRADE_TO_FUZZY)), true, Translated)).isEqualTo(New);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(new MatchRulePair(Suppliers.ofInstance(false),
+                        REJECT), new MatchRulePair(Suppliers.ofInstance(true),
+                        IGNORE)), false, Translated)).isEqualTo(New);
+    }
+
+    @Test
+    public void failedDowngradeRule() {
+        // A failed Downgrade rule should cause the content state to be fuzzy in
+        // all cases, except if a rejection is encountered
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                DOWNGRADE_TO_FUZZY),
+                        new MatchRulePair(Suppliers.ofInstance(true),
+                                REJECT)
+                ),
+                true, Translated
+                )).isEqualTo(NeedReview);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                DOWNGRADE_TO_FUZZY),
+                        new MatchRulePair(Suppliers.ofInstance(true),
+                                REJECT)
+                ),
+                false, Translated
+                )).isEqualTo(NeedReview);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                DOWNGRADE_TO_FUZZY),
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                IGNORE)
+                ),
+                true, Approved
+                )).isEqualTo(NeedReview);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
+                .newArrayList(
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                DOWNGRADE_TO_FUZZY),
+                        new MatchRulePair(Suppliers.ofInstance(false),
+                                IGNORE)
+                ),
+                true, Approved
+                )).isEqualTo(NeedReview);
+    }
+
+    @Test
+    public void determineContentStateFromRuleListBasics() {
+        // Tests the expected content state when approval is/is not required,
+        // and NO rules are evaluated
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                Lists.<MatchRulePair> newArrayList(),
+                true, Translated)).isEqualTo(Translated);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                Lists.<MatchRulePair> newArrayList(),
+                false, Translated)).isEqualTo(Translated);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                Lists.<MatchRulePair> newArrayList(),
+                true, Approved)).isEqualTo(Approved);
+        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
+                Lists.<MatchRulePair> newArrayList(),
+                false, Approved)).isEqualTo(Translated);
+    }
+
+}

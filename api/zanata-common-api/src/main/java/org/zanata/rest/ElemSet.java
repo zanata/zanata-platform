@@ -87,6 +87,7 @@ public abstract class ElemSet<T> implements Set<T> {
     }
 
     @Override
+    @SuppressWarnings("all")
     public <T> T[] toArray(T[] a) {
         return impl.toArray(a);
     }

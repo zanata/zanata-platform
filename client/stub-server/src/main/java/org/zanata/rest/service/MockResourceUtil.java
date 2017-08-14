@@ -23,8 +23,6 @@ package org.zanata.rest.service;
 
 import java.util.Set;
 
-import javax.ws.rs.core.Response;
-
 import com.google.common.base.Preconditions;
 
 /**

@@ -21,7 +21,6 @@
 package org.zanata.util;
 
 import org.junit.rules.ExternalResource;
-import com.google.common.base.Throwables;
 
 import static org.zanata.util.SampleDataResourceClient.allowAnonymousUser;
 

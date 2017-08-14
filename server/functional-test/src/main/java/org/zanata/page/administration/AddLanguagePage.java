@@ -32,7 +32,6 @@ public class AddLanguagePage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AddLanguagePage.class);
     private By saveButton = By.id("btn-new-language-save");
-    private By cancelButton = By.id("btn-new-language-cancel");
     private By localeId = By.className("react-autosuggest__input");
     private By suggestList =
             By.className("react-autosuggest__suggestions-list");

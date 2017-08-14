@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -18,6 +20,7 @@ import org.zanata.common.Namespaces;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "locale", "numberOfTerms"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Glossary Locale Info")
 public class GlossaryLocaleInfo implements Serializable {
     private static final long serialVersionUID = 7486128063191358182L;
     private LocaleDetails locale;
@@ -42,8 +45,12 @@ public class GlossaryLocaleInfo implements Serializable {
         this.locale = locale;
     }
 
+    /**
+     * Number of terms available for the glossary in this locale
+     */
     @XmlElement(name = "numberOfTerms", required = false,
         namespace = Namespaces.ZANATA_API)
+    @DocumentationExample("2")
     public int getNumberOfTerms() {
         return numberOfTerms;
     }

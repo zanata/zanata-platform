@@ -223,7 +223,6 @@
               styleClass="button--link l--float-right reveal__target"
               action="#{versionGroupHome.removeMaintainer(maintainer)}"
               onbegin="jQuery('#remove-maintainer-#{status.index}').addClass('is-hidden')"
-              execute="@this"
               render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form"
               title="#{msgs['jsf.group.RemoveMaintainer.title']}">
               <span class="is-sr-only">#{msgs['jsf.group.RemoveMaintainer.sr.label']}</span>

@@ -42,9 +42,6 @@ public class DashboardBasePage extends BasePage {
     private By settingsAccountTab = By.id("account_tab");
     private By settingsProfileTab = By.id("profile_tab");
     private By settingsClientTab = By.id("client_tab");
-    private By todaysActivityTab = By.id("activity-today_tab");
-    private By thisWeeksActivityTab = By.id("activity-week_tab");
-    private By thisMonthsActivityTab = By.id("activity-month_tab");
     private By profileOverview = By.id("profile-overview");
     public static final String EMAIL_SENT =
             "You will soon receive an email with a link to activate your email account change.";

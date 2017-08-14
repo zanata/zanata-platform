@@ -9,6 +9,15 @@
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
   <packaging>war</packaging>
+
+  <!-- Should be the same as zanata-server/pom.xml -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
+    <url>https://github.com/zanata/zanata</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <properties>
     <gwt.module>org.zanata.webtrans.Application</gwt.module>
     <!-- Enable draft-mode and PRETTY style by default. The
@@ -25,6 +34,19 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>gwt-shared</artifactId>
+    </dependency>
+
+    <!-- For GWT compilation -->
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>gwt-shared</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -171,6 +193,24 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>gwt-test</artifactId>
+      <version>4.3.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

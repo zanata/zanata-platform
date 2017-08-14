@@ -1,7 +1,6 @@
 package org.zanata.client.integration;
 
 import java.io.File;
-import java.util.Set;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;

@@ -20,20 +20,16 @@
  */
 package org.zanata.feature.versionGroup;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.groups.VersionGroupPage;
-import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests relating to custom urls handled in the page.
@@ -53,7 +49,7 @@ public class VersionGroupUrlTest extends ZanataTestCase {
 
     @Before
     public void before() {
-        Assertions.assertThat(
+        assertThat(
                 new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
                 .isEqualTo("admin")
                 .as("Admin is logged in");
@@ -66,7 +62,7 @@ public class VersionGroupUrlTest extends ZanataTestCase {
     }
 
     private void testBasicGroupUrl(VersionGroupPage versionGroupPage) {
-        assertThat(versionGroupPage.isLanguagesTabActive(), is(true));
+        assertThat(versionGroupPage.isLanguagesTabActive()).isTrue();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -81,26 +77,26 @@ public class VersionGroupUrlTest extends ZanataTestCase {
 
     private void testLanguageTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickLanguagesTab();
-        assertThat(versionGroupPage.getUrl(),
-                containsString("/version-group/view/test-group/languages"));
+        assertThat(versionGroupPage.getUrl())
+                .contains("/version-group/view/test-group/languages");
     }
 
     private void testProjectTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickProjectsTab();
-        assertThat(versionGroupPage.getUrl(),
-                containsString("/version-group/view/test-group/projects"));
+        assertThat(versionGroupPage.getUrl()).
+                contains("/version-group/view/test-group/projects");
     }
 
     private void testMaintainersTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickMaintainersTab();
-        assertThat(versionGroupPage.getUrl(),
-                containsString("/version-group/view/test-group/maintainers"));
+        assertThat(versionGroupPage.getUrl()).
+                contains("/version-group/view/test-group/maintainers");
     }
 
     private void testSettingsTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickSettingsTab();
-        assertThat(versionGroupPage.getUrl(),
-                containsString("/version-group/view/test-group/settings"));
+        assertThat(versionGroupPage.getUrl()).
+                contains("/version-group/view/test-group/settings");
     }
 
     private VersionGroupPage createVersionGroup() {
@@ -113,14 +109,5 @@ public class VersionGroupUrlTest extends ZanataTestCase {
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
                 .saveGroup();
-    }
-
-    private void createProject() {
-        // create another project and version
-        String projectSlug = "base";
-        String iterationSlug = "master";
-        String projectType = "gettext";
-        new ZanataRestCaller().createProjectAndVersion(projectSlug,
-                iterationSlug, projectType);
     }
 }

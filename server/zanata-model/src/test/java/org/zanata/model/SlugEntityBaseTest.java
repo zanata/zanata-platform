@@ -20,14 +20,11 @@
  */
 package org.zanata.model;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang
@@ -92,23 +89,23 @@ public class SlugEntityBaseTest {
         entity.setVersionNum(2);
         entity.setCreationDate(now);
         entity.setLastChanged(now);
-        assertThat(entity.toString(),
-                containsString("[id=1,versionNum=2], slug=abc)"));
+        assertThat(entity.toString()).
+                contains("[id=1,versionNum=2], slug=abc)");
         SlugEntityBase other = new SlugClass("abc");
         other.setCreationDate(now);
         other.setLastChanged(now);
-        assertThat(entity.equals(other), equalTo(false));
+        assertThat(entity.equals(other)).isFalse();
         other.setId(entity.getId());
         other.setVersionNum(entity.getVersionNum());
-        assertThat(entity, equalTo(other));
-        assertThat(entity.hashCode(), equalTo(other.hashCode()));
+        assertThat(entity).isEqualTo(other);
+        assertThat(entity.hashCode()).isEqualTo(other.hashCode());
     }
 
     @Test
     public void changeToDeletedSlug() {
         SlugEntityBase slugEntityBase = new SlugClass("abc");
         String newSlug = slugEntityBase.changeToDeletedSlug();
-        Assertions.assertThat(newSlug).isEqualTo("abc" + DELETED_SUFFIX);
+        assertThat(newSlug).isEqualTo("abc" + DELETED_SUFFIX);
     }
 
     @Test
@@ -117,7 +114,7 @@ public class SlugEntityBaseTest {
         SlugEntityBase slugEntityBase =
                 new SlugClass("abcdefghijklmnopqrstuvwxyz1234567890");
         String newSlug = slugEntityBase.changeToDeletedSlug();
-        Assertions.assertThat(newSlug)
+        assertThat(newSlug)
                 .isEqualTo("abcdefghijklmnopqrstuvwxyz1" + DELETED_SUFFIX)
                 .hasSize(40);
     }

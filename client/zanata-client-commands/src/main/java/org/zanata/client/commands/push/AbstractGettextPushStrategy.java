@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
