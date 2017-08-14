@@ -577,10 +577,6 @@ public class SeamTextParser extends antlr.LLkParser implements
             builder.append(string);
     }
 
-    private static boolean hasMultiple(String string, char c) {
-        return string.indexOf(c) != string.lastIndexOf(c);
-    }
-
     private void beginCapture() {
         builder = new StringBuilder();
     }
