@@ -537,7 +537,7 @@ input.text-input, textarea.text-input {
   border: 2px solid rgb(189, 212, 220);
   border-radius: @border-radius-text-input;
   box-sizing: border-box;
-  color: inherit;
+  color: @color-dark;
   font-family: inherit;
   font-weight: inherit;
   font-size: 1rem;
@@ -1353,6 +1353,35 @@ table td {
 
 #messages {
   margin-left: 4rem;
+}
+
+form.rejections {
+  display: inline-flex;
+  align-items: flex-start;
+  width: 100%;
+  flex-direction: row;
+  margin-bottom: 2rem;
+}
+
+form.rejections input.text-input::placeholder,
+form.rejections input.text-input::-moz-placeholder {
+  color: #546677;
+}
+
+form.rejections .form-group {
+  padding-right: 1rem;
+}
+
+.form-group.flex-grow1 {
+  flex-grow: 1;
+}
+
+.form-group.flex-grow2 {
+  flex-grow: 2;
+}
+
+form.rejections .editicon {
+  vertical-align: sub;
 }
 
 .locale-options {
@@ -2773,6 +2802,10 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
 
 button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown-toggle > span.caret, button.btn.btn-primary.dropdown-toggle > span.caret, button.btn.btn-success.dropdown-toggle > span.caret, button.btn.btn-warning.dropdown-toggle > span.caret {
   color: #fff;
+}
+
+.control-label {
+  color: @color-dark;
 }
 
 .has-success .control-label, .checkbox.has-success, .radio.has-success {
@@ -5207,6 +5240,10 @@ button.list-group-item {
 
 .btn-link-end {
   margin-right: @spacing-rq;
+}
+
+.btn-left {
+  margin-right: 1.5rem;
 }
 
 .lineclamp {
