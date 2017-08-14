@@ -14,7 +14,12 @@
   display: inline-flex;
   margin-top: 0.25em;
   font-size: 0.875em;
-  width: 80%;
+}
+
+.InputEditorSearch > div {
+  /* to contain nested .panel width */
+  position: relative;
+  width: 100%;
 }
 
 .InputGroup--wide {
@@ -28,6 +33,7 @@
 .InputEditorSearch .panel {
   margin-bottom: 0.5em !important;
   position: absolute;
+  width: 100%;
 }
 
 .InputEditorSearch .panel-body {
