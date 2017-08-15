@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * @see org.jboss.arquillian.container.spi.event.container.AfterDeploy
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

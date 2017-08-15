@@ -1,4 +1,4 @@
-package org.zanata.arquillian
+package org.zanata.arquillian.lifecycle
 
 import org.jboss.arquillian.junit.Arquillian
 import org.jboss.arquillian.test.spi.TestClass

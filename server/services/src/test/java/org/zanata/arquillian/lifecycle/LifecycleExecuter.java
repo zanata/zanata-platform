@@ -37,11 +37,11 @@ import org.jboss.arquillian.test.spi.TestClass;
  * various observable deployment events (see the annotations in the package
  * org.zanata.arquillian.lifecycle.api)
  * @see org.zanata.arquillian.lifecycle.api
- * @see org.zanata.arquillian.LifecycleArquillian
+ * @see LifecycleArquillian
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @author <a href="mailto:sflaniga@redhat.com">Sean Flanigan</a>
  */
-public class LifecycleExecuter
+class LifecycleExecuter
 {
     // Yes, this is nasty.
     // See https://developer.jboss.org/thread/273201 if you want to try 27

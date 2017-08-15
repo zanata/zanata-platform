@@ -20,8 +20,8 @@ private typealias VList<T> = javaslang.collection.List<T>
 private object Classes
 private val log = LoggerFactory.getLogger(Classes::class.java)
 
-fun findAllClassDependencies(vararg classes: Class<*>, filter: ClassNameFilter): Set<Class<*>> {
-    return findAllClassDependencyChains(*classes, filter = filter).keys
+fun findAllClassDependencies(classes: List<Class<*>>, filter: ClassNameFilter): Set<Class<*>> {
+    return findAllClassDependencyChains(classes, filter = filter).keys
 }
 
 /**
@@ -32,7 +32,7 @@ fun findAllClassDependencies(vararg classes: Class<*>, filter: ClassNameFilter):
  * `Seq<Class>` representing the dependency chain which led to that `Class`
  * (in reverse, with the `Class` in question at the *front*).
  */
-fun findAllClassDependencyChains(vararg classes: Class<*>, filter: ClassNameFilter): Map<Class<*>, Seq<Class<*>>> {
+fun findAllClassDependencyChains(classes: List<Class<*>>, filter: ClassNameFilter): Map<Class<*>, Seq<Class<*>>> {
     var nextDeps = mutableSetOf<VList<Class<*>>>()
     val analysedDeps = mutableMapOf<Class<*>, VList<Class<*>>>()
 
@@ -122,7 +122,7 @@ private fun findDirectClassDependencies(clazz: Class<*>): Set<String> {
 }
 
 fun main(args: Array<String>) {
-    findAllClassDependencyChains(TransUnitUpdateInfo::class.java, filter = IN_ZANATA).values.forEach {
+    findAllClassDependencyChains(listOf(TransUnitUpdateInfo::class.java), filter = IN_ZANATA).values.forEach {
         println(it.reverse().map { it.simpleName }.joinToString("/"))
     }
 }

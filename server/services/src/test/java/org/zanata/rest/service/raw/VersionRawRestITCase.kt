@@ -34,7 +34,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.zanata.RestTest
 import org.zanata.arquillian.ArquillianUtil.addClassesWithDependencies
-import org.zanata.arquillian.LifecycleArquillian
+import org.zanata.arquillian.lifecycle.LifecycleArquillian
 import org.zanata.provider.DBUnitProvider
 import org.zanata.rest.JaxRSApplication
 import org.zanata.rest.MediaTypes

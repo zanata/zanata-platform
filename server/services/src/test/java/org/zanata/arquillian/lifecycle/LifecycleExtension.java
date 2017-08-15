@@ -20,9 +20,13 @@ package org.zanata.arquillian.lifecycle;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
- * LifecycleExtension.
- * From https://github.com/arquillian/arquillian-showcase/tree/master/extensions/lifecycle
- *
+ * This Arquillian extension enables observable events for various stages
+ * in the Arquillian deployment lifecycle. See the annotations in the
+ * package org.zanata.arquillian.lifecycle.api.
+ * <p>
+ * Adapted from https://github.com/arquillian/arquillian-showcase/tree/b6b25da/extensions/lifecycle
+ * @see org.zanata.arquillian.lifecycle.api
+ * @see LifecycleExecuter
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  */
 public class LifecycleExtension implements LoadableExtension

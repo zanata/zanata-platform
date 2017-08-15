@@ -1,11 +1,18 @@
 package org.zanata.arquillian
 
 import org.jboss.shrinkwrap.api.asset.ClassAsset
+import org.jboss.shrinkwrap.api.asset.StringAsset
 import org.jboss.shrinkwrap.api.container.ClassContainer
+import org.jboss.shrinkwrap.api.container.ResourceContainer
+import org.jboss.shrinkwrap.api.spec.WebArchive
+import org.jboss.shrinkwrap.descriptor.api.Descriptor
+import org.jboss.shrinkwrap.descriptor.api.beans10.BeansDescriptor
 import org.jboss.shrinkwrap.impl.base.path.BasicPath
 import org.slf4j.LoggerFactory
 
 /**
+ * This object contains extension methods for Arquillian ClassContainer
+ * (including WebArchive).
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 object ArquillianUtil {
@@ -38,11 +45,16 @@ object ArquillianUtil {
         return this
     }
 
-    // ie supertypes, annotations, fields, method signature types
+    /**
+     * ClassContainer extension method which can add a list of classes and
+     * the transitive set of classes they reference (based on analysis of
+     * byte code). This includes supertypes, annotations, fields, method
+     * signature types and method bodies.
+     */
     @JvmOverloads
     @JvmStatic
-    fun <T: ClassContainer<T>> T.addClassesWithDependencies(vararg classes: Class<*>, filter: ClassNameFilter = IN_ZANATA): T {
-        val allClasses = findAllClassDependencyChains(*classes, filter = filter) //.toTypedArray()
+    fun <T: ClassContainer<T>> T.addClassesWithDependencies(classes: List<Class<*>>, filter: ClassNameFilter = IN_ZANATA): T {
+        val allClasses = findAllClassDependencyChains(classes, filter = filter) //.toTypedArray()
         log.info("Adding classes with dependencies: {} ({} total)", classes, allClasses.size)
 
         // uncomment if you want to see the classes and how they were referenced
@@ -59,4 +71,21 @@ object ArquillianUtil {
         return this
     }
 
+    @JvmStatic
+    fun <T: ResourceContainer<T>> T.addPersistenceConfig(): T {
+        addAsResource("arquillian/persistence.xml", "META-INF/persistence.xml")
+        addAsResource("META-INF/orm.xml")
+        addAsResource("import.sql")
+        return this
+    }
+
+    @JvmStatic
+    fun WebArchive.addWebInfXml(xmlDescriptor: Descriptor): WebArchive {
+        // contents of XML file
+        val stringAsset = StringAsset(xmlDescriptor.exportAsString())
+        // eg beans.xml, jboss-deployment-structure.xml:
+        val path = xmlDescriptor.descriptorName
+        addAsWebInfResource(stringAsset, path)
+        return this
+    }
 }
