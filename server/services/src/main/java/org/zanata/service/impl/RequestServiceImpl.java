@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
@@ -58,11 +59,13 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(RequestServiceImpl.class);
+    private static final long serialVersionUID = -4686555353716532575L;
 
     @Inject
     private RequestDAO requestDAO;
     @Inject
     private LanguageRequestDAO languageRequestDAO;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<RequestUpdatedEvent> requestUpdatedEvent;
     @Inject

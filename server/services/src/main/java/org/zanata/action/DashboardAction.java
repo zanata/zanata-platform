@@ -192,6 +192,7 @@ public class DashboardAction implements Serializable {
     public static class ProjectFilter extends AbstractListFilter<HProject>
             implements Serializable {
 
+        private static final long serialVersionUID = -2473428615946542483L;
         @Inject
         @Authenticated
         private HAccount authenticatedAccount;
@@ -218,6 +219,7 @@ public class DashboardAction implements Serializable {
     public static class GroupFilter extends AbstractListFilter<HIterationGroup>
             implements Serializable {
 
+        private static final long serialVersionUID = 5698872972627107893L;
         @Inject
         @Authenticated
         private HAccount authenticatedAccount;

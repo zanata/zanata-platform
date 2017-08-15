@@ -44,6 +44,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 @Named("securityServiceImpl")
 @RequestScoped
 public class SecurityServiceImpl implements SecurityService {
+    private static final long serialVersionUID = -7329512537723813134L;
     @Inject
     private ProjectDAO projectDAO;
 

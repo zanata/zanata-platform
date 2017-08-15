@@ -26,6 +26,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -54,6 +55,8 @@ import static org.zanata.hibernate.search.IndexFieldLabels.FULL_SLUG_FIELD;
 
 @RequestScoped
 public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
+    private static final long serialVersionUID = 6188033047151363778L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @FullText
     private FullTextEntityManager entityManager;
 

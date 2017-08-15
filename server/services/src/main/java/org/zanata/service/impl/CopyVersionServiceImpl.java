@@ -73,6 +73,7 @@ import com.google.common.collect.Maps;
 public class CopyVersionServiceImpl implements CopyVersionService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CopyVersionServiceImpl.class);
+    private static final long serialVersionUID = 6627946519267202976L;
 
     // Document batch size
     protected static final int DOC_BATCH_SIZE = 2;

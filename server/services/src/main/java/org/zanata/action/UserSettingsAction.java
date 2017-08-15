@@ -83,6 +83,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 public class UserSettingsAction implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(UserSettingsAction.class);
+    private static final long serialVersionUID = 1937219523042662641L;
 
     @Inject
     private EmailService emailServiceImpl;

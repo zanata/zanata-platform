@@ -43,6 +43,8 @@ import com.google.common.collect.Lists;
 @Named("versionGroupDAO")
 @RequestScoped
 public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
+    private static final long serialVersionUID = -3405353569468388836L;
+
     public VersionGroupDAO() {
         super(HIterationGroup.class);
     }

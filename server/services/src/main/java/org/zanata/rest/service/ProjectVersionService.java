@@ -23,6 +23,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
@@ -74,6 +75,7 @@ import com.google.common.collect.Lists;
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Transactional
 public class ProjectVersionService implements ProjectVersionResource {
+    private static final long serialVersionUID = -6323736463512112239L;
     @Inject
     private TextFlowDAO textFlowDAO;
     @Inject
@@ -84,6 +86,7 @@ public class ProjectVersionService implements ProjectVersionResource {
     private ProjectIterationDAO projectIterationDAO;
     @Inject
     private LocaleService localeServiceImpl;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private Request request;
     @Inject
@@ -98,6 +101,7 @@ public class ProjectVersionService implements ProjectVersionResource {
     private UserService userService;
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private UriInfo uri;
     @Inject

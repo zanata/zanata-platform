@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
  */
 @Alternative
 public class GoogleOpenIdProvider extends GenericOpenIdProvider {
+    private static final long serialVersionUID = -3986304579830374757L;
     private static final Pattern GOOGLE_OPENID_PATTERN = Pattern
             .compile("https://www.google.com/accounts/o8/id\\?id=(.*)");
 

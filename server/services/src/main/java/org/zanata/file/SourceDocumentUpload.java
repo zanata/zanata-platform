@@ -71,6 +71,7 @@ public class SourceDocumentUpload implements Serializable {
             org.slf4j.LoggerFactory.getLogger(SourceDocumentUpload.class);
 
     private static final HLocale NULL_LOCALE = null;
+    private static final long serialVersionUID = 130062917705942914L;
     @Inject
     private DocumentUploadUtil util;
     @Inject

@@ -50,6 +50,7 @@ public class EmailBuilder implements Serializable {
     // Warning: The full message may contain sensitive information
     private static final boolean LOG_FULL_MESSAGES = false;
     private static final VelocityEngine velocityEngine = makeVelocityEngine();
+    private static final long serialVersionUID = 7906997500076971623L;
 
     public EmailBuilder() {
     }

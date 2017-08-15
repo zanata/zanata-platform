@@ -7,6 +7,8 @@ package org.zanata.exception;
  * @author Shane Bryzak
  */
 public class LockTimeoutException extends Exception {
+    private static final long serialVersionUID = 7008592409909366676L;
+
     public LockTimeoutException() {
         super();
     }

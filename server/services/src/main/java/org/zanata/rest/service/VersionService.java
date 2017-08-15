@@ -14,6 +14,7 @@ import org.zanata.util.VersionUtility;
 @Path(VersionResource.SERVICE_PATH)
 public class VersionService implements VersionResource {
 
+    private static final long serialVersionUID = -7379405952512823733L;
     private VersionInfo version;
 
     @PostConstruct

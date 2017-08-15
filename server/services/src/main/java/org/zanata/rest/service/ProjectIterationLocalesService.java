@@ -50,6 +50,7 @@ import java.util.Map;
 @Path(ProjectIterationLocalesService.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class ProjectIterationLocalesService implements ProjectIterationLocalesResource {
+    private static final long serialVersionUID = -555714019539459014L;
     @PathParam("projectSlug")
     String projectSlug;
 

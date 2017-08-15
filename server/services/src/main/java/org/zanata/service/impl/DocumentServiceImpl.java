@@ -30,6 +30,8 @@ import com.google.common.collect.Lists;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
@@ -82,6 +84,7 @@ import javax.enterprise.event.Observes;
 public class DocumentServiceImpl implements DocumentService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(DocumentServiceImpl.class);
+    private static final long serialVersionUID = -6683110078451115926L;
 
     @Inject
     private ZanataIdentity identity;
@@ -112,6 +115,7 @@ public class DocumentServiceImpl implements DocumentService {
     private WebhookServiceImpl webhookServiceImpl;
     @Inject
     private Messages msgs;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<DocumentUploadedEvent> documentUploadedEvent;
 

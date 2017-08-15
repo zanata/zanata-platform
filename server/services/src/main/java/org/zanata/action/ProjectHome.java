@@ -227,6 +227,9 @@ public class ProjectHome extends SlugHome<HProject>
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
 
+                private static final long serialVersionUID =
+                        8259700829800303578L;
+
                 @Override
                 protected List<HPerson> fetchAll() {
                     return getInstanceMaintainers();
@@ -1187,6 +1190,7 @@ public class ProjectHome extends SlugHome<HProject>
     public static class ProjectMaintainersAutocomplete
             extends MaintainerAutocomplete {
 
+        private static final long serialVersionUID = -6765972032876700000L;
         @Inject
         private ProjectHome projectHome;
         @Inject

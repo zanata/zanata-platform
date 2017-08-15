@@ -55,6 +55,7 @@ import org.zanata.rest.dto.Project;
 @Transactional(readOnly = true)
 public class ProjectsService implements ProjectsResource {
 
+    private static final long serialVersionUID = 851866433537828355L;
     @Inject
     private Session session;
 

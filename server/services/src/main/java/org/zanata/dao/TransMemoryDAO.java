@@ -25,6 +25,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -49,9 +50,11 @@ import org.zanata.model.tm.TransMemoryUnit;
 @RequestScoped
 public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
 
+    private static final long serialVersionUID = -6140351094748357541L;
     @Inject @FullText
     private FullTextSession session;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private UserTransaction userTransaction;
 

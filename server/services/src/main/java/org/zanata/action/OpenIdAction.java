@@ -21,6 +21,7 @@ import org.zanata.util.UrlUtil;
 @ViewScoped
 public class OpenIdAction implements Serializable {
 
+    private static final long serialVersionUID = 1681443557491913852L;
     @Inject
     private ZanataIdentity identity;
 

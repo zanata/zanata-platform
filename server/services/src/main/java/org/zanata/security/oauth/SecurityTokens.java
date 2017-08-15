@@ -60,6 +60,7 @@ import com.google.common.collect.Maps;
  */
 @ApplicationScoped
 public class SecurityTokens implements Serializable, Introspectable {
+    private static final long serialVersionUID = -3730853500496535652L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private OAuthIssuerImpl oAuthIssuer =
             new OAuthIssuerImpl(new MD5Generator());

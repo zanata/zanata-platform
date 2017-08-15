@@ -34,6 +34,7 @@ import com.google.common.collect.Lists;
  */
 public abstract class InMemoryListFilter<T> extends AbstractListFilter<T> {
 
+    private static final long serialVersionUID = 7292653663517218864L;
     private List<T> elements;
 
     @Override

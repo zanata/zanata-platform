@@ -59,6 +59,7 @@ import com.google.common.base.Throwables;
 public class TMXParser implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TMXParser.class);
+    private static final long serialVersionUID = 2306366217250866918L;
 
     // Batch size to commit in a new transaction for long files
     private static final int BATCH_SIZE = 100;

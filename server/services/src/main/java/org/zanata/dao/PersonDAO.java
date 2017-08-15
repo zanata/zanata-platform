@@ -36,6 +36,8 @@ import org.zanata.model.HProject;
 @RequestScoped
 public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
 
+    private static final long serialVersionUID = -7523118638634663058L;
+
     public PersonDAO() {
         super(HPerson.class);
     }

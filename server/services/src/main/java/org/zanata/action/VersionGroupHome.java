@@ -100,6 +100,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
 
+                private static final long serialVersionUID =
+                        6521717110985363677L;
+
                 @Override
                 protected List<HPerson> fetchAll() {
                     return getInstanceMaintainers();
@@ -291,6 +294,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     public static class GroupMaintainerAutocomplete
             extends MaintainerAutocomplete {
 
+        private static final long serialVersionUID = 1150630837852918989L;
         @Inject
         private VersionGroupHome versionGroupHome;
         @Inject
@@ -331,6 +335,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     public static class VersionAutocomplete
             extends AbstractAutocomplete<HProjectIteration> {
 
+        private static final long serialVersionUID = 8022275695197571957L;
         @Inject
         private ProjectIterationDAO projectIterationDAO;
         @Inject
@@ -384,6 +389,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     @ViewScoped
     public static class GroupLocaleAutocomplete extends LocaleAutocomplete {
 
+        private static final long serialVersionUID = -4325912450531279919L;
         @Inject
         private VersionGroupHome versionGroupHome;
         @Inject

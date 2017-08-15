@@ -47,6 +47,7 @@ public class FileSystemPersistService implements FilePersistService {
             org.slf4j.LoggerFactory.getLogger(FileSystemPersistService.class);
 
     private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
+    private static final long serialVersionUID = 674922015890996446L;
     @Inject
     private ApplicationConfiguration appConfig;
     @Inject

@@ -42,6 +42,7 @@ import org.zanata.exception.NotLoggedInException;
 @ApplicationScoped
 @JsfPhaseListener
 public class AnonymousAccessControlPhaseListener implements PhaseListener {
+    private static final long serialVersionUID = 7857787462325457761L;
     private Provider<Boolean> allowAnonymousAccessProvider;
     private ZanataIdentity identity;
 

@@ -139,6 +139,9 @@ public class ProjectHomeAction extends AbstractSortAction
     private AbstractListFilter<HProjectIteration> versionFilter =
             new InMemoryListFilter<HProjectIteration>() {
 
+                private static final long serialVersionUID =
+                        7931445158995457207L;
+
                 @Override
                 protected List<HProjectIteration> fetchAll() {
                     return getProjectVersions();
@@ -723,6 +726,7 @@ public class ProjectHomeAction extends AbstractSortAction
 
     public final class PeopleFilterComparator
             extends InMemoryListFilter<HPerson> implements Comparator<HPerson> {
+        private static final long serialVersionUID = 3905373873256076410L;
         private final ProjectRolePredicate projectRolePredicate =
                 new ProjectRolePredicate();
         private final ProjectLocalePredicate projectLocalePredicate =

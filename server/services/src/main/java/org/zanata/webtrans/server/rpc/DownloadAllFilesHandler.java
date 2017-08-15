@@ -52,6 +52,7 @@ public class DownloadAllFilesHandler extends
         AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult>
         implements Serializable {
 
+    private static final long serialVersionUID = -7396110455459731753L;
     @Inject
     private ZanataIdentity identity;
 

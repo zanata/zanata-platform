@@ -32,6 +32,8 @@ import org.zanata.model.HPersonEmailValidationKey;
 public class PersonEmailValidationKeyDAO extends
         AbstractDAOImpl<HPersonEmailValidationKey, Long> {
 
+    private static final long serialVersionUID = 7591703747072663897L;
+
     public PersonEmailValidationKeyDAO() {
         super(HPersonEmailValidationKey.class);
     }

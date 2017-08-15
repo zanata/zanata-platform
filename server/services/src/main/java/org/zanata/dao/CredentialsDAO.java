@@ -29,6 +29,8 @@ import org.zanata.model.security.HCredentials;
  */
 @RequestScoped
 public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
+    private static final long serialVersionUID = -6077698271378139636L;
+
     public CredentialsDAO() {
         super(HCredentials.class);
     }
