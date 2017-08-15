@@ -29,17 +29,11 @@ import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.DocumentDAO;
 import org.zanata.exception.FileFormatAdapterException;
-import org.zanata.file.GlobalDocumentId;
-import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.ResourceUtils;
-import org.zanata.util.ServiceLocator;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
-import javax.inject.Inject;
 
 import static org.zanata.adapter.AdapterUtils.readStream;
 
@@ -54,9 +48,6 @@ import static org.zanata.adapter.AdapterUtils.readStream;
 public class GettextAdapter implements FileFormatAdapter {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(GettextAdapter.class);
-
-    @Inject
-    private DocumentDAO documentDAO;
 
     @Override
     public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
@@ -111,17 +102,5 @@ public class GettextAdapter implements FileFormatAdapter {
             throw new FileFormatAdapterException(
                     "Unable to generate translated file", e);
         }
-    }
-
-    private HDocument getDocument(GlobalDocumentId documentId) {
-        return documentDAO.getByGlobalId(documentId);
-    }
-
-    private DocumentDAO getDocumentDAO() {
-        return ServiceLocator.instance().getInstance(DocumentDAO.class);
-    }
-
-    private ResourceUtils getResourceUtils() {
-        return ServiceLocator.instance().getInstance(ResourceUtils.class);
     }
 }

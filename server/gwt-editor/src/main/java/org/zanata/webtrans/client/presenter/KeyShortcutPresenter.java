@@ -238,14 +238,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
         }
     }
 
-    private List<KeyShortcut> listAttentionShortcuts() {
-        ArrayList<KeyShortcut> shortcuts = new ArrayList<KeyShortcut>();
-        for (Keys key : attentionKeyManager.ensureShortcutMap().keySet()) {
-            shortcuts.addAll(attentionKeyManager.ensureShortcutMap().get(key));
-        }
-        return shortcuts;
-    }
-
     public void setContextActive(ShortcutContext context, boolean active) {
         if (active) {
             ensureActiveContexts().add(context);

@@ -143,18 +143,22 @@ public class WebHook implements Serializable {
         return this.name;
     }
 
+    @SuppressWarnings("unused")
     private void setId(final Long id) {
         this.id = id;
     }
 
+    @SuppressWarnings("unused")
     private void setProject(final HProject project) {
         this.project = project;
     }
 
+    @SuppressWarnings("unused")
     private void setUrl(final String url) {
         this.url = url;
     }
 
+    @SuppressWarnings("unused")
     private void setTypes(final Set<WebhookType> types) {
         this.types = types;
     }
@@ -162,10 +166,12 @@ public class WebHook implements Serializable {
     /**
      * Secret key used to generate webhook header in hmac-sha1 encryption.
      */
+    @SuppressWarnings("unused")
     private void setSecret(final String secret) {
         this.secret = secret;
     }
 
+    @SuppressWarnings("unused")
     private void setName(final String name) {
         this.name = name;
     }
