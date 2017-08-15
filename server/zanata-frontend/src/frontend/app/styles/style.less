@@ -1355,35 +1355,6 @@ table td {
   margin-left: 4rem;
 }
 
-form.rejections {
-  display: inline-flex;
-  align-items: flex-start;
-  width: 100%;
-  flex-direction: row;
-  margin-bottom: 2rem;
-}
-
-form.rejections input.text-input::placeholder,
-form.rejections textarea.text-input::placeholder {
-  color: #546677 !important;
-}
-
-form.rejections .form-group {
-  padding-right: 1rem;
-}
-
-.form-group.flex-grow1 {
-  flex-grow: 1;
-}
-
-.form-group.flex-grow2 {
-  flex-grow: 2;
-}
-
-form.rejections .editicon {
-  vertical-align: sub;
-}
-
 .locale-options {
   display: flex;
   display: -webkit-flex;
@@ -2770,7 +2741,7 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
 }
 
 .btn-info:active, .btn-info:hover {
-  background-color: #4995cf;
+  background-color: @color-dark;
   color: #fff;
 }
 
@@ -6612,6 +6583,52 @@ table.tmx-table .badge .n1 {
 
 .panel__header a#new-version-link  i.i.i--add:not(.i--large) {
   color: @color-light;
+}
+
+
+form.rejections {
+  display: inline-flex;
+  align-items: flex-start;
+  width: 100%;
+  flex-direction: row;
+  margin-bottom: 2rem;
+}
+
+form.rejections input.text-input::placeholder,
+form.rejections textarea.text-input::placeholder {
+  color: #546677 !important;
+}
+
+form.rejections .form-group {
+  padding-right: 1rem;
+}
+
+form.rejections .control-label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.form-group.flex-grow1 {
+  flex-grow: 1;
+}
+
+.form-group.flex-grow2 {
+  flex-grow: 2;
+}
+
+form.rejections .editicon,
+.rejection-btns .s1 {
+  vertical-align: sub;
+}
+
+form.rejections button#dropdown-basic {
+  font-weight: 400;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+form.rejections button, form.rejections input, form.rejections textarea {
+  line-height: 1.5rem;
 }
 
 // @screen-xs variable depreciated

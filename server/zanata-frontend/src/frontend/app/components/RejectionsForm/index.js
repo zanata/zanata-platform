@@ -20,6 +20,7 @@ class RejectionsForm extends Component {
     subcatPlaceholder: PropTypes.string.isRequired,
     criteriaPlaceholder: PropTypes.string.isRequired,
     editable: PropTypes.boolean,
+    editing: PropTypes.boolean,
     className: PropTypes.string
   }
 
@@ -31,7 +32,7 @@ class RejectionsForm extends Component {
         <Form className='rejections' inline>
           <FormGroup className='flex-grow1' controlId='formInlineCriteria'>
             <ControlLabel>Review Criteria</ControlLabel><br/>
-            <TextInput editable={this.props.editable}  type='text' placeholder={this.props.criteriaPlaceholder}/>
+            <TextInput className={this.props.focusClass} editable={this.props.editable} type='text' placeholder={this.props.criteriaPlaceholder}/>
           </FormGroup>
           <FormGroup className='flex-grow2' controlId='formInlineSubCat'>
             <ControlLabel>Sub-categories</ControlLabel><br/>
@@ -49,7 +50,7 @@ class RejectionsForm extends Component {
           </FormGroup>
           <FormGroup controlId='formInlineButtonEdit'>
             <ControlLabel>&nbsp;</ControlLabel><br/>
-            <Button bsStyle='primary' className={this.props.className}  bsSize='small'>
+            <Button bsStyle='primary' className={this.props.className}>
               <Icon name='edit' className='s0 editicon'/>
             </Button>
           </FormGroup>
