@@ -494,55 +494,6 @@ public class CopyTransServiceImplParameterizedTest {
             return this.matchState;
         }
 
-        public void setContextMismatchAction(
-                final HCopyTransOptions.ConditionRuleAction contextMismatchAction) {
-            this.contextMismatchAction = contextMismatchAction;
-        }
-
-        public void setProjectMismatchAction(
-                final HCopyTransOptions.ConditionRuleAction projectMismatchAction) {
-            this.projectMismatchAction = projectMismatchAction;
-        }
-
-        public void setDocumentMismatchAction(
-                final HCopyTransOptions.ConditionRuleAction documentMismatchAction) {
-            this.documentMismatchAction = documentMismatchAction;
-        }
-
-        public void setContextMatches(final Boolean contextMatches) {
-            this.contextMatches = contextMatches;
-        }
-
-        public void setProjectMatches(final Boolean projectMatches) {
-            this.projectMatches = projectMatches;
-        }
-
-        public void setDocumentMatches(final Boolean documentMatches) {
-            this.documentMatches = documentMatches;
-        }
-
-        public void setRequireTranslationReview(
-                final Boolean requireTranslationReview) {
-            this.requireTranslationReview = requireTranslationReview;
-        }
-
-        public void setExpectedTranslationState(
-                final ContentState expectedTranslationState) {
-            this.expectedTranslationState = expectedTranslationState;
-        }
-
-        public void setExpectUntranslated(final boolean expectUntranslated) {
-            this.expectUntranslated = expectUntranslated;
-        }
-
-        public void setExpectedContents(final String[] expectedContents) {
-            this.expectedContents = expectedContents;
-        }
-
-        public void setMatchState(final ContentState matchState) {
-            this.matchState = matchState;
-        }
-
         @Override
         public boolean equals(final Object o) {
             if (o == this)

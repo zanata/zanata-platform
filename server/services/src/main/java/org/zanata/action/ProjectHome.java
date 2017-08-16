@@ -1183,11 +1183,6 @@ public class ProjectHome extends SlugHome<HProject>
         // Disable the default message from Seam
     }
 
-    private boolean checkViewObsolete() {
-        return identity != null
-                && identity.hasPermission("HProject", "view-obsolete");
-    }
-
     @ViewScoped
     public static class ProjectMaintainersAutocomplete
             extends MaintainerAutocomplete {

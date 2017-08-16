@@ -6,7 +6,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
-import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
