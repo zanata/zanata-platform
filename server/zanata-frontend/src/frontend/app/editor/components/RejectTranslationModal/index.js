@@ -29,16 +29,7 @@ export class RejectTranslationModal extends Component {
             'u-textDanger'
         ]
     ),
-    criteria: PropTypes.oneOf(
-        [
-          'Translation errors',
-          'Language quality',
-          'Consistency',
-          'Style Guide and Glossary Violations',
-          'Format',
-          'Other'
-        ]
-    ).isRequired
+    criteria: PropTypes.object
   }
 
   constructor (props) {
@@ -84,8 +75,10 @@ export class RejectTranslationModal extends Component {
           <Modal.Title>Reject translation</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <span>
-            Reason:
+          <div className="flex">
+          <span id="criteriatitle">
+            Criteria
+          </span>
           <Dropdown enabled isOpen={this.state.dropdownOpen}
             onToggle={this.toggleDropdown}
             className="dropdown-menu criteria">
@@ -97,18 +90,25 @@ export class RejectTranslationModal extends Component {
             </Dropdown.Button>
             <Dropdown.Content>
               <ul>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>Translation Errors</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>Language Quality</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>Consistency</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>Style Guide & Glossary Violations</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>Format</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>Other</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                  <strong>Translation Errors</strong> (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                  <strong>Language Quality</strong> (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring,
+                  readability, word choice, not natural, too literal, style and tone, etc)
+                </li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                  <strong>Consistency</strong> (inconsistent style or vocabulary, brand inconsistency, etc.)</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}><strong>Style Guide & Glossary Violations</strong></li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                  <strong>Format</strong> (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                  <strong>Other</strong> (reason may be in comment section/history if necessary)</li>
               </ul>
             </Dropdown.Content>
           </Dropdown>
-          </span>
           <span className="priority-dd">
-            <Icon name="warning" className="s2 u-textWarning" /> Priority:
+            <Icon name="warning" className="s2 u-textWarning" />
+            <span id="prioritytitle">Priority</span>
           <Dropdown enabled isOpen={this.state.dropdownOpen2}
                     onToggle={this.toggleDropdown2}
                     className="dropdown-menu priority">
@@ -130,6 +130,7 @@ export class RejectTranslationModal extends Component {
             </Dropdown.Content>
           </Dropdown>
           </span>
+          </div>
           <textarea ref="input"
              type="comment"
              placeholder="Provide a comment for why this translation has been rejected"

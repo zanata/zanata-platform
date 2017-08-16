@@ -9,12 +9,20 @@
   --TM-dropdown-text-color:     #03a6d7;
 }
 
+.flex {
+  flex-direction: row;
+  align-items: center;
+}
+
+#prioritytitle, #criteriatitle {
+  margin-right: var(--TM-default-margin);
+}
 .modal-body {
   color: var(--TM-text-color);
 }
 
 .priority-dd {
-  margin-left: var(--TM-large-spacing);
+  margin-left: 1.5rem;
 }
 
 .InputGroup--outlined {
@@ -22,23 +30,22 @@
 }
 
 .Dropdown {
-  margin-left: var(--TM-default-margin);
   border-radius: var(--TM-input-border-radius);
   border: var(--TM-input-border);
+}
+
+.criteria {
+  flex-grow: 2;
+}
+
+.criteria strong {
+  font-weight: 600;
 }
 
 a.Dropdown-item span.s0 {
   vertical-align: var(--TM-icon-vert-alignment);
   margin-left: var(--TM-small-margin);
  }
-
-.dropdown-menu.criteria {
-  max-width: 17rem;
-}
-
-.dropdown-menu.priority {
-  max-width:  6rem;
-}
 
 .InputGroup--outlined.commenting {
   margin-top: 2rem;
