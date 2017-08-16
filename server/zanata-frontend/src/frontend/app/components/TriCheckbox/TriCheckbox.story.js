@@ -9,9 +9,10 @@ class TriCheckbox extends Component {
   static propTypes = {
     className: PropTypes.string,
     checked: PropTypes.bool.isRequired,
-    indeterminate: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
-    useDefaultStyle: PropTypes.bool.isRequired
+    // these 2 are .isRequired in the real component but have default values
+    indeterminate: PropTypes.bool,
+    useDefaultStyle: PropTypes.bool
   }
   constructor (props) {
     super(props)
@@ -168,7 +169,7 @@ storiesOf('TriCheckbox', module)
   ))
   .add('with custom styles', () => (
     <div>
-      <h2> Passing custom styles through props </h2>
+      <h2>Passing custom styles through props</h2>
       <Col xs={4}>
         <h3>unstyled</h3>
         <TriCheckbox
