@@ -17,7 +17,6 @@ class RejectionsForm extends Component {
       'text-warning',
       'text-danger'
     ]).isRequired,
-    subcatPlaceholder: PropTypes.string.isRequired,
     criteriaPlaceholder: PropTypes.string.isRequired,
     editable: PropTypes.boolean,
     editing: PropTypes.boolean,
@@ -31,13 +30,8 @@ class RejectionsForm extends Component {
     return (
         <Form className='rejections' inline>
           <FormGroup className='flex-grow1' controlId='formInlineCriteria'>
-            <ControlLabel>Review Criteria</ControlLabel><br/>
-            <TextInput className={this.props.focusClass} editable={this.props.editable} type='text' placeholder={this.props.criteriaPlaceholder}/>
-          </FormGroup>
-          <FormGroup className='flex-grow2' controlId='formInlineSubCat'>
-            <ControlLabel>Sub-categories</ControlLabel><br/>
-            <TextInput multiline={true} editable={this.props.editable} numberOfLines={2} type='text'
-                       placeholder={this.props.subcatPlaceholder} />
+            <ControlLabel>Review Criteria (subcategories)</ControlLabel><br/>
+            <TextInput multiline={true}  editable={this.props.editable} type='text' numberOfLines={2} placeholder={this.props.criteriaPlaceholder}/>
           </FormGroup>
           <FormGroup controlId='formInlinePriority'>
             <ControlLabel>Priority</ControlLabel><br/>
