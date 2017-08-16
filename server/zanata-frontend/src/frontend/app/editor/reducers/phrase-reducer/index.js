@@ -1,18 +1,22 @@
 import updateObject from 'immutability-helper'
+import phraseFilterReducer, { defaultState as defaultFilterState }
+  from './phrase-filter-reducer'
+import { composeReducers, subReducer } from 'redux-sac'
 import {
   CLAMP_PAGE,
   UPDATE_PAGE
-} from '../actions/controls-header-actions'
-import { COPY_GLOSSARY_TERM } from '../actions/glossary-action-types'
+} from '../../actions/controls-header-actions'
+import { COPY_GLOSSARY_TERM } from '../../actions/glossary-action-types'
 import {
   CANCEL_EDIT,
   COPY_FROM_ALIGNED_SOURCE,
   COPY_FROM_SOURCE,
-  FETCHING_PHRASE_DETAIL,
-  FETCHING_PHRASE_LIST,
+  PHRASE_DETAIL_REQUEST,
+  PHRASE_LIST_REQUEST,
+  PHRASE_LIST_SUCCESS,
+  PHRASE_LIST_FAILURE,
   PENDING_SAVE_INITIATED,
-  PHRASE_LIST_FETCHED,
-  PHRASE_DETAIL_FETCHED,
+  PHRASE_DETAIL_SUCCESS,
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
   SAVE_FINISHED,
@@ -21,16 +25,19 @@ import {
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
   UNDO_EDIT
-} from '../actions/phrases-action-types'
-import { COPY_SUGGESTION } from '../actions/suggestions-action-types'
+} from '../../actions/phrases-action-types'
+import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
 import {
-  calculateMaxPageIndex,
-  calculateMaxPageIndexFromState,
-  getFilteredPhrasesFromState
-} from '../utils/filter-paging-util'
-import { replaceRange } from '../utils/string-utils'
-import { SET_SAVE_AS_MODE } from '../actions/key-shortcuts-actions'
-import { MOVE_NEXT, MOVE_PREVIOUS } from '../actions/phrase-navigation-actions'
+  getFilteredPhrases,
+  getHasAdvancedFilter,
+  getMaxPageIndex
+} from '../../selectors'
+import { hasAdvancedFilter } from '../../utils/filter-util'
+import { replaceRange } from '../../utils/string-utils'
+import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
+import { MOVE_NEXT, MOVE_PREVIOUS
+} from '../../actions/phrase-navigation-actions'
+import { findIndex } from 'lodash'
 
 // FIXME this reducer is too big. See if it can be split up.
 
@@ -42,10 +49,14 @@ function clamp (number, lower, upper) {
 
 const defaultState = {
   fetchingList: false,
+  fetchingFilteredList: false,
+  filteredListTimestamp: new Date(0),
   fetchingDetail: false,
   saveAsMode: false,
   // expected shape: { [docId1]: [{ id, resId, status }, ...], [docId2]: [...] }
   inDoc: {},
+  inDocFiltered: {},
+
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
   selectedPhraseId: undefined,
@@ -58,16 +69,17 @@ const defaultState = {
   paging: {
     countPerPage: 20,
     pageIndex: 0
-  }
+  },
+  filter: defaultFilterState
 }
 
-const phraseReducer = (state = defaultState, action) => {
+export const phraseReducer = (state = defaultState, action) => {
   switch (action.type) {
     case CLAMP_PAGE:
       return update({
         paging: {
           pageIndex: {$set: clamp(state.paging.pageIndex, 0,
-            calculateMaxPageIndexFromState(action.getState()))}
+            getMaxPageIndex(action.getState()))}
         }
       })
 
@@ -109,40 +121,73 @@ const phraseReducer = (state = defaultState, action) => {
         return copyFromSuggestion(phrase, suggestion)
       }})
 
-    case FETCHING_PHRASE_DETAIL:
+    case PHRASE_DETAIL_REQUEST:
       return update({
         fetchingDetail: {$set: true}
       })
 
-    case FETCHING_PHRASE_LIST:
-      return update({
-        fetchingList: {$set: true}
-      })
+    case PHRASE_LIST_REQUEST:
+      if (action.meta.filter) {
+        return update({
+          fetchingFilteredList: {$set: true}
+        })
+      } else {
+        return update({
+          fetchingList: {$set: true}
+        })
+      }
 
     case PENDING_SAVE_INITIATED:
       return updatePhrase(action.phraseId, {
         pendingSave: {$set: undefined}
       })
 
-    case PHRASE_LIST_FETCHED:
-    // select the first phrase if there is one
-      const selectedPhraseId = action.phraseList.length &&
-        action.phraseList[0].id
-      return update({
-        fetchingList: {$set: false},
-        inDoc: {[action.docId]: {$set: action.phraseList}},
-        selectedPhraseId: {$set: selectedPhraseId},
-        docStatus: {$set: action.statusList}
+    case PHRASE_LIST_SUCCESS:
+      if (action.meta.filter) {
+        if (action.meta.timestamp > state.filteredListTimestamp) {
+          return update({
+            fetchingFilteredList: {$set: false},
+            filteredListTimestamp: {$set: action.meta.timestamp},
+            inDocFiltered: {
+              [action.payload.docId]: {$set: action.payload.phraseList}
+            }
+          })
+        } else {
+          // stale search, ignore results
+          return state
+        }
+      } else {
+        const showingFiltered = getHasAdvancedFilter({ phrases: state })
+        const selectedPhraseId = showingFiltered
+          // this list not visible, keep same value
+          ? state.selectedPhraseId
+          // list is showing, select a visible phrase
+          : decideSelectedPhrase(state, action.payload.phraseList)
+        return update({
+          fetchingList: {$set: false},
+          inDoc: {[action.payload.docId]: {$set: action.payload.phraseList}},
+          selectedPhraseId: {$set: selectedPhraseId}
+        })
+      }
 
-      })
+    case PHRASE_LIST_FAILURE:
+      if (action.meta.filter) {
+        return update({
+          fetchingFilteredList: {$set: false}
+        })
+      } else {
+        return update({
+          fetchingList: {$set: false}
+        })
+      }
 
-    case PHRASE_DETAIL_FETCHED:
+    case PHRASE_DETAIL_SUCCESS:
       // TODO this shallow merge will lose data from other locales
       //      ideally replace source and locale that was looked up, leaving
       //      others unchanged (depending on caching policy)
       return update({
         fetchingDetail: {$set: false},
-        detail: {$merge: action.phrases}
+        detail: {$merge: action.payload}
       })
 
     case PHRASE_TEXT_SELECTION_RANGE:
@@ -242,17 +287,9 @@ const phraseReducer = (state = defaultState, action) => {
 
   function updatePageIndex (newPageIndex) {
     const oldPageIndex = state.paging.pageIndex
-
-    if (oldPageIndex !== newPageIndex) {
-      return update({
-        paging: {
-          pageIndex: {
-            $set: newPageIndex
-          }
-        }
-      })
-    }
-    return state
+    return oldPageIndex === newPageIndex
+      ? state
+      : update({ paging: { pageIndex: {$set: newPageIndex} } })
   }
 
   /**
@@ -265,9 +302,10 @@ const phraseReducer = (state = defaultState, action) => {
   */
   function changeSelectedIndex (indexUpdateCallback) {
     const { docId } = action.getState().context
-    const { inDoc, selectedPhraseId } = state
-    // FIXME looks like this may not work properly for filtered phrase list.
-    const phrases = inDoc[docId]
+    const { inDoc, inDocFiltered, filter, selectedPhraseId } = state
+    const phrases = hasAdvancedFilter(filter.advanced)
+      ? inDocFiltered[docId] : inDoc[docId]
+
     const currentIndex = phrases.findIndex(x => x.id === selectedPhraseId)
 
     const newIndex = indexUpdateCallback(currentIndex)
@@ -282,17 +320,20 @@ const phraseReducer = (state = defaultState, action) => {
 
   /**
   * Select a given phrase and ensure the correct page is showing.
+  *
+  * CAUTION: this calculates max page index from the previous state,
+  *   so do not use this after updating page index.
   */
   function selectPhrase (state, phraseId) {
     const { countPerPage, pageIndex } = state.paging
-    const phrases = getFilteredPhrasesFromState(action.getState())
+    const phrases = getFilteredPhrases(action.getState())
 
     const phraseIndex = phrases.findIndex(x => x.id === phraseId)
     const desiredPageIndex = phraseIndex === -1
       // Just go to valid page nearest current page when selected phrase is
       // invisible. Ideal would be page that shows the phrase nearest the
       // selected one in the unfiltered document, but that is complicated.
-      ? clamp(pageIndex, 0, calculateMaxPageIndex(phrases, countPerPage))
+      ? clamp(pageIndex, 0, getMaxPageIndex(action.getState()))
       : Math.floor(phraseIndex / countPerPage)
 
     return updateObject(state, {
@@ -371,4 +412,31 @@ function insertTextAtRange (phrase, text, {start, end}) {
   })
 }
 
-export default phraseReducer
+/* Decide which phrase should be selected out of a given phrase list
+ *
+ * Considers which phrase was selected and which page is showing.
+ * Does not filter the list, so pass in filtered phrase list if that is showing.
+ */
+function decideSelectedPhrase (state, phraseList) {
+  const { selectedPhraseId, paging: { countPerPage, pageIndex } } = state
+
+  const selectedPhraseIndex =
+    findIndex(phraseList, ({ id }) => id === selectedPhraseId)
+
+  if (selectedPhraseIndex > -1) {
+    // A present phrase is already selected, just may be wrong page number
+    // TODO set page number? Would need to return full state
+    return selectedPhraseId
+  }
+
+  const maxPageIndex = Math.ceil(phraseList.length / countPerPage) - 1
+  const clampedPageIndex = Math.min(pageIndex, maxPageIndex)
+
+  const firstIndex = clampedPageIndex * countPerPage
+  return phraseList[firstIndex].id
+}
+
+export default composeReducers(
+  phraseReducer,
+  subReducer('filter', phraseFilterReducer)
+)

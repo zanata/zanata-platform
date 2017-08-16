@@ -38,38 +38,6 @@ function getServiceUrl () {
   return serviceUrl
 }
 
-export function fetchPhraseList (projectSlug, versionSlug, localeId, docId) {
-  // FIXME damason check that arguments are all defined
-  const encodedId = encode(docId)
-  const statusListUrl =
-    `${baseRestUrl}/project/${projectSlug}/version/${versionSlug}/doc/${encodedId}/status/${localeId}` // eslint-disable-line max-len
-
-  return fetch(statusListUrl, {
-    credentials: 'include',
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    mode: 'cors'
-  })
-}
-
-export function fetchPhraseDetail (localeId, phraseIds) {
-  const phraseDetailUrl =
-    `${baseRestUrl}/source+trans/${localeId}?ids=${phraseIds.join(',')}`
-
-  return fetch(phraseDetailUrl, {
-    credentials: 'include',
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    mode: 'cors'
-  })
-}
-
 export function fetchStatistics (_projectSlug, _versionSlug,
                                           _docId, _localeId) {
   const statsUrl =

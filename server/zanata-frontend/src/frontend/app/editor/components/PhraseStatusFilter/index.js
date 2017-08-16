@@ -1,6 +1,7 @@
 import FilterToggle from '../FilterToggle'
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
@@ -8,16 +9,18 @@ import {
   STATUS_APPROVED,
   STATUS_REJECTED
 } from '../../utils/status-util'
+import {
+  resetStatusFilter,
+  updateStatusFilter
+} from '../../actions/phrases-filter-actions'
 
 /**
  * Panel with controls to filter the list of trans units
  */
-class TransUnitFilter extends React.Component {
+export class PhraseStatusFilter extends Component {
   static propTypes = {
-    actions: PropTypes.shape({
-      resetFilter: PropTypes.func.isRequired,
-      onFilterChange: PropTypes.func.isRequired
-    }).isRequired,
+    resetFilter: PropTypes.func.isRequired,
+    onFilterChange: PropTypes.func.isRequired,
 
     filter: PropTypes.shape({
       all: PropTypes.bool.isRequired,
@@ -56,19 +59,14 @@ class TransUnitFilter extends React.Component {
     }
   }
 
-  componentWillMount () {
-    const { onFilterChange } = this.props.actions
-    this.filterApproved = onFilterChange.bind(undefined, STATUS_APPROVED)
-    this.filterRejected = onFilterChange.bind(undefined, STATUS_REJECTED)
-    this.filterTranslated = onFilterChange.bind(undefined, STATUS_TRANSLATED)
-    this.filterNeedsWork = onFilterChange.bind(undefined, STATUS_NEEDS_WORK)
-    this.filterUntranslated =
-      onFilterChange.bind(undefined, STATUS_UNTRANSLATED)
-  }
+  filterApproved = () => this.props.onFilterChange(STATUS_APPROVED)
+  filterRejected = () => this.props.onFilterChange(STATUS_REJECTED)
+  filterTranslated = () => this.props.onFilterChange(STATUS_TRANSLATED)
+  filterNeedsWork = () => this.props.onFilterChange(STATUS_NEEDS_WORK)
+  filterUntranslated = () => this.props.onFilterChange(STATUS_UNTRANSLATED)
 
   render () {
-    const { resetFilter } = this.props.actions
-    const gettextCatalog = this.props.gettextCatalog
+    const { gettextCatalog, resetFilter } = this.props
 
     return (
       <ul className="u-listHorizontal u-sizeHeight-1">
@@ -143,10 +141,28 @@ class TransUnitFilter extends React.Component {
           </button>
         </li>
   */}
-
       </ul>
     )
   }
 }
 
-export default TransUnitFilter
+const mapStateToProps = ({
+  // TODO move counts to a more appropriate place in state
+  headerData: { context: { selectedDoc: { counts } } },
+  phrases: { filter: { status } },
+  ui: { gettextCatalog }}) => {
+  return {
+    counts,
+    filter: status,
+    gettextCatalog
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    resetFilter: () => dispatch(resetStatusFilter()),
+    onFilterChange: (status) => dispatch(updateStatusFilter(status))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PhraseStatusFilter)
