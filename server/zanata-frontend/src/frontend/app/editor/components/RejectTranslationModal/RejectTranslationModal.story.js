@@ -23,16 +23,15 @@ storiesOf('RejectTranslationModal', module)
     ))
     .add('Translation errors [critical]', () => (
         <RejectTranslationModal show
-         criteria={<span><strong>Translation Errors</strong> (terminology,
-         mistranslated addition, omission, un-localized, do not translate, etc)</span>}
+         criteria="Translation Errors (terminology, mistranslated addition, omission, un-localized, do not translate, etc)"
          priority="Critical"  textState="u-textDanger" />
     ))
     .add('Style Guide and Glossary Violations [minor]', () => (
-        <RejectTranslationModal show criteria={<span><strong>Style Guide and Glossary Violations</strong></span>} priority="Minor" />
+        <RejectTranslationModal show criteria="Style Guide and Glossary Violations" priority="Minor" />
     ))
 
     .add('Other [major]', () => (
         <RejectTranslationModal show
-         criteria={<span><strong>Other</strong> (reason may be in comment section/history if necessary)</span>}
+         criteria="Other (reason may be in comment section/history if necessary)"
          priority="Major" textState="u-textWarning" />
     ))

@@ -29,7 +29,7 @@ export class RejectTranslationModal extends Component {
             'u-textDanger'
         ]
     ),
-    criteria: PropTypes.object
+    criteria: PropTypes.string.isRequired
   }
 
   constructor (props) {
@@ -91,18 +91,18 @@ export class RejectTranslationModal extends Component {
             <Dropdown.Content>
               <ul>
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>
-                  <strong>Translation Errors</strong> (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)</li>
+                  Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)</li>
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>
-                  <strong>Language Quality</strong> (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring,
+                  Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring,
                   readability, word choice, not natural, too literal, style and tone, etc)
                 </li>
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>
-                  <strong>Consistency</strong> (inconsistent style or vocabulary, brand inconsistency, etc.)</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}><strong>Style Guide & Glossary Violations</strong></li>
+                  Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)</li>
+                <li className="Dropdown-item" onClick={this.toggleDropdown}>Style Guide & Glossary Violations</li>
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>
-                  <strong>Format</strong> (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)</li>
+                  Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)</li>
                 <li className="Dropdown-item" onClick={this.toggleDropdown}>
-                  <strong>Other</strong> (reason may be in comment section/history if necessary)</li>
+                  Other (reason may be in comment section/history if necessary)</li>
               </ul>
             </Dropdown.Content>
           </Dropdown>
