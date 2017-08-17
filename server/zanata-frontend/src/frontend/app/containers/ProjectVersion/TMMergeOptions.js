@@ -20,7 +20,7 @@ CopyLabel.propTypes = {
   copy: PropTypes.bool.isRequired
 }
 
-export const ProjectVersionOptions = (props) => {
+const TMMergeOptions = (props) => {
   const {
     differentDocId,
     differentContext,
@@ -82,7 +82,8 @@ export const ProjectVersionOptions = (props) => {
     </Col>
   )
 }
-ProjectVersionOptions.propTypes = {
+TMMergeOptions.propTypes = {
   ...TMMergeOptionsValuePropType,
   ...TMMergeOptionsCallbackPropType
 }
+export default TMMergeOptions
