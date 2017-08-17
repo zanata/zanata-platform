@@ -74,6 +74,61 @@ class UserProfile extends Component {
       })
       : undefined
 
+    let content
+    if (user.loading || loading) {
+      content = (<div className='user-profile'>
+        <LoaderText className='loader-text s8' loading />
+      </div>)
+    } else if (isEmpty(username)) {
+      content = <div className='flex-c profile-wrapper'></div>
+    } else {
+      content = (<div className='flex-c profile-wrapper'>
+        <div className='details' id='profile-overview'>
+          <img className='details-avatar'
+            src={user.imageUrl ? user.imageUrl : ''} alt={username} />
+          <div className='flex-c details-text'>
+            {name &&
+              <div className='username h2 ellipsis' id='profile-displayname'>
+              {name}
+              </div>
+            }
+            <ul className='large-font-list'>
+              <li className='flex-center' id='profile-username'>
+                <Icon name='user' className='s0' title='Username' />
+                {username}
+              </li>
+              {email &&
+              (<span className='profile-email'>{email}</span>)}
+              {languageTeams &&
+              (<li id='profile-languages'>
+                <Icon name='language' className='s0 langicon pull-left'
+                  title='Spoken languages' />
+                {languageTeams}
+              </li>)}
+              {roles && isLoggedIn &&
+              (<li className='flex-center' id='profile-roles' title='Roles'>
+                <Icon name='users' className='s0' />
+                <span>{roles}</span>
+              </li>)}
+            </ul>
+          </div>
+        </div>
+        {isLoggedIn &&
+        (<RecentContributions
+          matrixForAllDays={matrixForAllDays}
+          wordCountsForSelectedDayFilteredByContentState={
+            wordCountsForSelectedDayFilteredByContentState}
+          wordCountsForEachDayFilteredByContentState={
+            wordCountsForEachDayFilteredByContentState}
+          contentStateOption={contentStateOption}
+          selectedDay={selectedDay}
+          dateRange={dateRange}
+          handleDateRangeChanged={handleDateRangeChanged}
+          handleFilterChanged={handleFilterChanged}
+          handleSelectedDayChanged={handleSelectedDayChanged} />)
+        }
+      </div>)
+    }
     return (
       <div className='page'>
         {notification &&
@@ -85,70 +140,7 @@ class UserProfile extends Component {
         )}
         <Helmet title='User Profile' />
         <div className='wide-view-theme profile-page' >
-          {user.loading || loading
-            ? (<div className='user-profile'>
-              <LoaderText className='loader-text s8' loading />
-            </div>)
-            : (<div className='flex-c profile-wrapper'>
-              <div className='details' id='profile-overview'>
-                <img className='details-avatar'
-                  src={user.imageUrl ? user.imageUrl : ''}
-                  alt={username} />
-                <div className='flex-c details-text'>
-                  {name &&
-                    <div className='username h2 ellipsis'
-                      id='profile-displayname'>
-                      {name}
-                    </div>
-                  }
-                  <ul className='large-font-list'>
-                    <li className='flex-center'
-                      id='profile-username'>
-                      <Icon name='user'
-                        className='s0'
-                        title='Username' />
-                      {username}
-                    </li>
-                      {email &&
-                        (<span className='profile-email'>
-                          {email}
-                        </span>)
-                      }
-                    {languageTeams &&
-                    (<li
-                      id='profile-languages'>
-                      <Icon name='language'
-                        className='s0 langicon pull-left'
-                        title='Spoken languages' />
-                      {languageTeams}
-                    </li>)}
-                    {roles && isLoggedIn &&
-                     (<li className='flex-center'
-                       id='profile-roles'
-                       title='Roles'>
-                       <Icon name='users'
-                         className='s0' />
-                       <span>{roles}</span>
-                     </li>)}
-                  </ul>
-                </div>
-              </div>
-              {isLoggedIn &&
-              (<RecentContributions
-                matrixForAllDays={matrixForAllDays}
-                wordCountsForSelectedDayFilteredByContentState={
-                      wordCountsForSelectedDayFilteredByContentState}
-                wordCountsForEachDayFilteredByContentState={
-                      wordCountsForEachDayFilteredByContentState}
-                contentStateOption={contentStateOption}
-                selectedDay={selectedDay}
-                dateRange={dateRange}
-                handleDateRangeChanged={handleDateRangeChanged}
-                handleFilterChanged={handleFilterChanged}
-                handleSelectedDayChanged={handleSelectedDayChanged} />)
-              }
-            </div>)
-          }
+          {content}
         </div>
       </div>
     )
