@@ -3,14 +3,11 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
+import {Button, Panel, Row, Col} from 'react-bootstrap'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels,
-  TriCheckbox
-} from '../../components'
-import ProjectVersionPanels from './ProjectVersionPanels'
-import {ProjectVersionVertical} from './project-version-displays'
-import {ProjectVersionOptions} from './ProjectVersionOptions'
+  Icon, Modal, LoaderText, SelectableDropdown} from '../../components'
+import {ProjectVersionHorizontal} from './project-version-displays'
+import TMMergeProjectTMOptions from './TMMergeProjectTMOptions'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
 import {
@@ -25,10 +22,14 @@ import {
 import {
   ProjectType, LocaleType, FromProjectVersionType, processStatusType
 } from '../../utils/prop-types-util.js'
-import {isProcessEnded} from '../../utils/EnumValueUtils'
+import {isProcessEnded, IGNORE_CHECK, FUZZY} from '../../utils/EnumValueUtils'
 import {getVersionLanguageSettingsUrl} from '../../utils/UrlHelper'
-import {TMMergeOptionsCallbackPropType, TMMergeOptionsValuePropType}
-  from './TMMergeOptionsCommon'
+import {
+  TMMergeOptionsCallbackPropType,
+  TMMergeOptionsValuePropType
+} from './TMMergeOptionsCommon'
+import TMMergeProjectSources from './TMMergeProjectSources'
+import TMMergeImportedTM from './TMMergeImportedTM'
 
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
@@ -46,12 +47,10 @@ const MergeOptions = (
     fetchingProject,
     fetchingLocale,
     mergeOptions,
-    onContextCheckboxChange,
-    onDocIdCheckboxChange,
-    onImportedCheckboxChange,
-    onIgnoreDifferentDocIdChange,
-    onIgnoreDifferentContextChange,
-    onImportedTMCopyRuleChange,
+    onDifferentProjectChange,
+    onDifferentContextChange,
+    onDifferentDocIdChange,
+    onImportedTMChange,
     onPercentSelection,
     onLanguageSelection,
     onProjectSearchChange,
@@ -62,106 +61,26 @@ const MergeOptions = (
     onDragMoveEnd,
     removeProjectVersion
   }) => {
-  const noResults = (projectVersions.length === 0) ? 'No results' : ''
-  const fromVersionsPanel = mergeOptions.fromAllProjects ? DO_NOT_RENDER : (
-    <Col xs={12} className='vmerge-boxes'>
-      <Panel>
-        <Col xs={3}>
-          <div className='vmerge-title'>
-            <span className='text-info'>From</span>
-            <span>Source</span>
-          </div>
-        </Col>
-        <Col xs={9} className='vmerge-searchbox'>
-          <InputGroup>
-            <InputGroup.Addon>
-              <Icon name='search' className='s0' title='search' />
-            </InputGroup.Addon>
-            <FormControl type='text'
-              value={mergeOptions.projectSearchTerm}
-              className='vmerge-searchinput'
-              onChange={onProjectSearchChange}
-              onKeyDown={flushProjectSearch}
-            />
-          </InputGroup>
-        </Col>
-        <Col xs={6}>
-          <span className='vmerge-adjtitle vmerge-title'>
-            Select source project versions to merge
-          </span>
-          <div>
-            <LoaderText loading={fetchingProject}
-              loadingText={'Fetching Projects'} />
-            <span className="text-muted">{noResults}</span>
-          </div>
-          <ProjectVersionPanels projectVersions={projectVersions}
-            selectedVersions={mergeOptions.selectedVersions}
-            onVersionCheckboxChange={onVersionCheckboxChange}
-            onAllVersionCheckboxChange={onAllVersionCheckboxChange}
-          />
-        </Col>
-        <Col xs={6}>
-          <DraggableVersionPanels
-            selectedVersions={mergeOptions.selectedVersions}
-            onDraggableMoveEnd={onDragMoveEnd}
-            removeVersion={removeProjectVersion} />
-        </Col>
-      </Panel>
-    </Col>
-  )
+  const localesSelection = fetchingLocale
+    ? DO_NOT_RENDER
+    : (
+    <span>
+      <SelectableDropdown
+        id='language-dropdown-basic' className='vmerge-ddown'
+        onSelectDropdownItem={onLanguageSelection}
+        selectedValue={mergeOptions.selectedLanguage}
+        valueToDisplay={localeToDisplay}
+        values={locales} />
+      <LoaderText loading={fetchingLocale}
+        loadingText={'Fetching Locales'} />
+    </span>
+    )
   return (
     <div>
       <p className="intro">
         Copy existing translations from similar documents
         in other projects and versions into this project version.
       </p>
-      <Col xs={12} className='vmerge-row'>
-        <Col xs={4}>
-          <span className='vmerge-title text-info'>TM match threshold</span>
-        </Col>
-        <Col xs={5}>
-          <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
-            id='percent-dropdown-basic' className='vmerge-ddown'
-            onSelectDropdownItem={onPercentSelection}
-            selectedValue={mergeOptions.matchPercentage}
-            valueToDisplay={percentValueToDisplay}
-            values={[80, 90, 100]} />
-        </Col>
-      </Col>
-      <ProjectVersionOptions
-        differentDocId={mergeOptions.differentDocId}
-        differentContext={mergeOptions.differentContext}
-        fromImportedTM={mergeOptions.fromImportedTM}
-        onDocIdCheckboxChange={onDocIdCheckboxChange}
-        onContextCheckboxChange={onContextCheckboxChange}
-        onImportedCheckboxChange={onImportedCheckboxChange}
-        ignoreDifferentDocId={mergeOptions.ignoreDifferentDocId}
-        ignoreDifferentContext={mergeOptions.ignoreDifferentContext}
-        importedTMCopyAsTranslated={mergeOptions.importedTMCopyAsTranslated}
-        onIgnoreDifferentDocIdChange={onIgnoreDifferentDocIdChange}
-        onIgnoreDifferentContextChange={onIgnoreDifferentContextChange}
-        onImportedTMCopyRuleChange={onImportedTMCopyRuleChange}
-      />
-      <Col xs={12} className='vmerge-row'>
-        <Col xs={2}>
-          <span className='vmerge-title text-info' id="languages-dd">
-            <Icon name="language" className="s1" />
-            Language
-          </span>
-        </Col>
-        {fetchingLocale ? undefined : <Col xs={6}>
-          <SelectableDropdown
-            id='language-dropdown-basic' className='vmerge-ddown'
-            onSelectDropdownItem={onLanguageSelection}
-            selectedValue={mergeOptions.selectedLanguage}
-            valueToDisplay={localeToDisplay}
-            values={locales} />
-        </Col>}
-        <Col xs={6}>
-          <LoaderText loading={fetchingLocale}
-            loadingText={'Fetching Locales'} />
-        </Col>
-      </Col>
       <Col xs={12} className='vmerge-boxes'>
         <Panel>
           <div className='vmerge-target'>
@@ -169,23 +88,42 @@ const MergeOptions = (
               <span className='text-info'>To</span>
               <span>Target</span>
             </div>
-            <ProjectVersionVertical projectSlug={projectSlug}
-              versionSlug={versionSlug} />
+            <Panel>
+              <ProjectVersionHorizontal projectSlug={projectSlug}
+                versionSlug={versionSlug} />
+              <span className='vmerge-title text-info' id="languages-dd">
+                <Icon name="language" className="s1" />
+              </span>
+              {localesSelection}
+            </Panel>
           </div>
         </Panel>
       </Col>
-      <Col xs={12} className='vmerge-boxes'>
-        <Panel>
-          <div className='checkbox'>
-            <label>
-              <TriCheckbox onChange={onFromAllProjectsChange}
-                checked={mergeOptions.fromAllProjects} />
-                Search TM from all projects
-            </label>
-          </div>
-        </Panel>
+      <Col xs={12} className='vmerge-row'>
+        For every potential translation:
       </Col>
-      {fromVersionsPanel}
+      <Col xs={12} className='vmerge-row'>
+        <span className='vmerge-title text-info'>If text is less than </span>
+        <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
+          id='percent-dropdown-basic' className='vmerge-ddown'
+          onSelectDropdownItem={onPercentSelection}
+          selectedValue={mergeOptions.matchPercentage}
+          valueToDisplay={percentValueToDisplay}
+          values={[80, 90, 100]} />
+        <span className='vmerge-title text-info'> similar, don't use it.</span>
+      </Col>
+      <TMMergeProjectSources {...{projectVersions, fetchingProject,
+        mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
+        flushProjectSearch, onAllVersionCheckboxChange, onVersionCheckboxChange,
+        onDragMoveEnd, removeProjectVersion}}
+      />
+      <TMMergeProjectTMOptions {...mergeOptions}
+        onDifferentDocIdChange={onDifferentDocIdChange}
+        onDifferentContextChange={onDifferentContextChange}
+        onDifferentProjectChange={onDifferentProjectChange}
+      />
+      <TMMergeImportedTM fromImportedTM={mergeOptions.fromImportedTM}
+        onImportedTMChange={onImportedTMChange} />
     </div>
   )
 }
@@ -245,12 +183,10 @@ class TMMergeModal extends Component {
   }
   defaultState = {
     matchPercentage: 100,
-    differentDocId: false,
-    differentContext: false,
-    fromImportedTM: false,
-    ignoreDifferentDocId: false,
-    ignoreDifferentContext: false,
-    importedTMCopyAsTranslated: false,
+    differentProject: IGNORE_CHECK,
+    differentDocId: FUZZY,
+    differentContext: FUZZY,
+    fromImportedTM: FUZZY,
     fromAllProjects: false,
     selectedLanguage: undefined,
     selectedVersions: [],
@@ -405,48 +341,35 @@ class TMMergeModal extends Component {
       this.pushAllProjectVersions(diff)
     }
   }
-  // Different DocID Checkbox handling
-  onDocIdCheckboxChange = () => {
-    this.setState((prevState, props) => ({
-      differentDocId: !prevState.differentDocId
-    }))
-  }
-  // Different Context Checkbox handling
-  onContextCheckboxChange = () => {
-    this.setState((prevState, props) => ({
-      differentContext: !prevState.differentContext
-    }))
-  }
-  // Match from Imported TM Checkbox handling
-  onImportedCheckboxChange = () => {
-    this.setState((prevState, props) => ({
-      fromImportedTM: !prevState.fromImportedTM
-    }))
-  }
-  onIgnoreDifferentDocIdChange = () => {
-    this.setState(prevState => ({
-      ignoreDifferentDocId: !prevState.ignoreDifferentDocId
-    }))
-  }
-  onIgnoreDifferentContextChange = () => {
-    this.setState(prevState => ({
-      ignoreDifferentContext: !prevState.ignoreDifferentContext
-    }))
-  }
-  onImportedTMCopyRuleChange = () => {
-    this.setState(prevSTate => ({
-      importedTMCopyAsTranslated: !prevSTate.importedTMCopyAsTranslated
-    }))
-  }
   // internal TM can come from all projects
   onFromAllProjectsChange = () => {
     this.setState(prevState => ({
       fromAllProjects: !prevState.fromAllProjects
     }))
   }
+  onDifferentProjectChange = (value) => {
+    this.setState(prevState => ({
+      differentProject: value
+    }))
+  }
+  onDifferentDocIdChange = (value) => {
+    this.setState(prevState => ({
+      differentDocId: value
+    }))
+  }
+  onDifferentContextChange = (value) => {
+    this.setState(prevState => ({
+      differentContext: value
+    }))
+  }
+  onImportedTMChange = (value) => {
+    this.setState(prevState => ({
+      fromImportedTM: value
+    }))
+  }
   submitForm = () => {
-    this.props.startMergeProcess(this.props.projectSlug,
-      this.props.versionSlug, this.state)
+    const {projectSlug, versionSlug} = this.props
+    this.props.startMergeProcess(projectSlug, versionSlug, this.state)
   }
   render () {
     const {
@@ -478,12 +401,10 @@ class TMMergeModal extends Component {
           fetchingProject, fetchingLocale}}
           mergeOptions={this.state}
           onPercentSelection={this.onPercentSelection}
-          onDocIdCheckboxChange={this.onDocIdCheckboxChange}
-          onContextCheckboxChange={this.onContextCheckboxChange}
-          onImportedCheckboxChange={this.onImportedCheckboxChange}
-          onIgnoreDifferentDocIdChange={this.onIgnoreDifferentDocIdChange}
-          onIgnoreDifferentContextChange={this.onIgnoreDifferentContextChange}
-          onImportedTMCopyRuleChange={this.onImportedTMCopyRuleChange}
+          onDifferentProjectChange={this.onDifferentProjectChange}
+          onDifferentDocIdChange={this.onDifferentDocIdChange}
+          onDifferentContextChange={this.onDifferentContextChange}
+          onImportedTMChange={this.onImportedTMChange}
           onFromAllProjectsChange={this.onFromAllProjectsChange}
           onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
           onVersionCheckboxChange={this.onVersionCheckboxChange}
@@ -497,7 +418,7 @@ class TMMergeModal extends Component {
     const hasTMSource = this.state.fromAllProjects ||
       this.state.fromImportedTM || this.state.selectedVersions.length > 0
     const modalFooter = processStatus
-    ? undefined
+    ? DO_NOT_RENDER
     : (
       <span>
         <Row>

@@ -1,100 +1,73 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
-  Col, Radio, OverlayTrigger, Tooltip
+  Col, Panel, ListGroup, ToggleButtonGroup, ToggleButton
 } from 'react-bootstrap'
-import Icon from '../../components/Icon'
+
 import {TMMergeOptionsValuePropType,
   TMMergeOptionsCallbackPropType, CopyLabel} from './TMMergeOptionsCommon'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 
-const copyAsFuzzyTooltip = (
-  <Tooltip id='copy-as-fuzzy-project' title='Copy as fuzzy - Project'>
-    Can only copy as translated if the context is the same. Otherwise it will
-    always use fuzzy.
-  </Tooltip>)
-
-const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
+const MetaDataCheckOption = ({name, value, callback, hasReject}) => {
   const reject = hasReject && (
-    <Radio checked={value === REJECT} validationState="error"
-      onChange={callback(REJECT)} disabled={disabled}>
-      <span>I don't want it</span><br />
+    <ToggleButton value={REJECT}> I don't want it
       <CopyLabel type={REJECT} value={value} />
-    </Radio>
+    </ToggleButton>
   )
-  return <Col xs={12} md={4}>
-    If the translation is from a different&nbsp;
-    <span className="import-type">{name}</span>
-    <Radio checked={value === IGNORE_CHECK} validationState='success'
-      onChange={callback(IGNORE_CHECK)} disabled={disabled}>
-      <span>I don't mind at all</span><br />
-      <CopyLabel type={IGNORE_CHECK} value={value} />
-    </Radio>
-    <Radio checked={value === FUZZY} onChange={callback(FUZZY)}
-      validationState='warning' disabled={disabled}>
-      <span>I will need to review it</span><br />
-      <CopyLabel type={FUZZY} value={value} />
-      <OverlayTrigger placement='right' overlay={copyAsFuzzyTooltip}>
-        <a className="btn-link tooltip-btn" role="button">
-          <Icon name="info" className="s0 info-icon" />
-        </a>
-      </OverlayTrigger>
-    </Radio>
-    {reject}
-  </Col>
+  return <ListGroup fill>
+    If the translation is from a different
+    <span className="text-bold"> {name}</span>
+    <ToggleButtonGroup
+      type="radio" name="radio"
+      value={value}
+      onChange={callback}>
+      <ToggleButton value={IGNORE_CHECK}> I don't mind at all
+        <CopyLabel type={IGNORE_CHECK} value={value} />
+      </ToggleButton>
+      <ToggleButton value={FUZZY}> I will need to review it
+        <CopyLabel type={FUZZY} value={value} />
+      </ToggleButton>
+      {reject}
+    </ToggleButtonGroup>
+  </ListGroup>
 }
 MetaDataCheckOption.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.oneOf([IGNORE_CHECK, FUZZY, REJECT]).isRequired,
   callback: PropTypes.func.isRequired,
-  hasReject: PropTypes.bool,
-  disabled: PropTypes.bool.isRequired
+  hasReject: PropTypes.bool
 }
 
 class TMMergeProjectTMOptions extends Component {
   static propTypes = {
     ...TMMergeOptionsValuePropType,
-    ...TMMergeOptionsCallbackPropType,
-    disableDifferentProjectOption: PropTypes.bool.isRequired,
-    disabled: PropTypes.bool.isRequired
+    ...TMMergeOptionsCallbackPropType
   }
-  onDifferentProjectChange = (value) => () => {
+  onDifferentProjectChange = (value) => {
     this.props.onDifferentProjectChange(value)
   }
-  onDifferentDocIdChange = (value) => () => {
+  onDifferentDocIdChange = (value) => {
     this.props.onDifferentDocIdChange(value)
   }
-  onDifferentContextChange = (value) => () => {
+  onDifferentContextChange = (value) => {
     this.props.onDifferentContextChange(value)
   }
   render () {
     const {
       differentProject,
       differentDocId,
-      differentContext,
-      disableDifferentProjectOption,
-      disabled
+      differentContext
     } = this.props
-    const diffProjectOption = disableDifferentProjectOption
-      ? (<Col xs={12} md={4}>
-        If the translation is from a different&nbsp;
-        <span className="import-type">project</span>
-        <Radio checked validationState="error" disabled>
-          <span>I don't want it</span><br />
-          <CopyLabel type={REJECT} value={REJECT} />
-        </Radio>
-      </Col>)
-      : <MetaDataCheckOption name="project" disabled={disabled}
-        value={differentProject} callback={this.onDifferentProjectChange} />
     return (
-      <Col xs={12} className="validations">
-        {diffProjectOption}
-        <MetaDataCheckOption name="document" value={differentDocId}
-          disabled={disabled}
-          callback={this.onDifferentDocIdChange} hasReject />
-        <MetaDataCheckOption name="context" value={differentContext}
-          disabled={disabled}
-          callback={this.onDifferentContextChange} hasReject />
+      <Col xs={12}>
+        <Panel className='tm-panel'>
+          <MetaDataCheckOption name="project"
+            value={differentProject} callback={this.onDifferentProjectChange} />
+          <MetaDataCheckOption name="document" value={differentDocId}
+            callback={this.onDifferentDocIdChange} hasReject />
+          <MetaDataCheckOption name="context" value={differentContext}
+            callback={this.onDifferentContextChange} hasReject />
+        </Panel>
       </Col>
     )
   }
