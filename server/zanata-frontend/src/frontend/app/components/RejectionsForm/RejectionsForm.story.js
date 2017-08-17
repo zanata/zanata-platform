@@ -52,7 +52,7 @@ storiesOf('RejectionsForm', module)
             <Icon name='plus' className='s1' /> Add review criteria
           </Button>
           <Button bsStyle='info'>
-           <Icon name='refresh' className='s1' /> Revert to default
+           <Icon name='tick' className='s1' /> Save changes
           </Button>
         </div>
       </div>
