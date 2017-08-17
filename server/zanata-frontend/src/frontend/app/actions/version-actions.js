@@ -79,17 +79,6 @@ export const fetchProjectPage = (projectSearchTerm) => {
   }
 }
 
-// convert merge option to MergeRule enum value
-const toMergeRule = (isIgnoreCheck, isAcceptAsFuzzy) => {
-  if (isIgnoreCheck) {
-    return 'IGNORE_CHECK'
-  } else if (isAcceptAsFuzzy) {
-    return 'FUZZY'
-  } else {
-    return 'REJECT'
-  }
-}
-
 // convert project version to string representation
 const toProjectVersionString = (projectVersion) => {
   return `${projectVersion.projectSlug}/${projectVersion.version.id}`
@@ -129,12 +118,10 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const {
     selectedLanguage: {localeId},
     matchPercentage,
+    differentProject,
     differentDocId,
     differentContext,
     fromImportedTM,
-    ignoreDifferentDocId,
-    ignoreDifferentContext,
-    importedTMCopyAsTranslated,
     fromAllProjects,
     selectedVersions
   } = mergeOptions
@@ -144,9 +131,10 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const body = {
     localeId: localeId,
     thresholdPercent: matchPercentage,
-    differentDocumentRule: toMergeRule(ignoreDifferentDocId, differentDocId),
-    differentContextRule: toMergeRule(ignoreDifferentContext, differentContext),
-    importedMatchRule: toMergeRule(importedTMCopyAsTranslated, fromImportedTM),
+    differentProjectRule: differentProject,
+    differentDocumentRule: differentDocId,
+    differentContextRule: differentContext,
+    importedMatchRule: fromImportedTM,
     internalTMSource: internalTMSource
   }
   const apiRequest = buildAPIRequest(

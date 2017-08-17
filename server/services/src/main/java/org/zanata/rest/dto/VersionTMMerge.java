@@ -32,13 +32,14 @@ import org.zanata.webtrans.shared.rpc.MergeRule;
 public class VersionTMMerge implements HasTMMergeCriteria {
     private LocaleId localeId;
     private int thresholdPercent;
+    private MergeRule differentProjectRule;
     private MergeRule differentDocumentRule;
     private MergeRule differentContextRule;
     private MergeRule importedMatchRule;
     private InternalTMSource internalTMSource;
 
     public VersionTMMerge(LocaleId localeId, int thresholdPercent,
-            MergeRule differentDocumentRule,
+            MergeRule differentProjectRule, MergeRule differentDocumentRule,
             MergeRule differentContextRule,
             MergeRule importedMatchRule,
             InternalTMSource internalTMSource) {
@@ -48,6 +49,7 @@ public class VersionTMMerge implements HasTMMergeCriteria {
         this.differentContextRule = differentContextRule;
         this.importedMatchRule = importedMatchRule;
         this.internalTMSource = internalTMSource;
+        this.differentProjectRule = differentProjectRule;
     }
 
     @SuppressWarnings("unused")
@@ -65,8 +67,7 @@ public class VersionTMMerge implements HasTMMergeCriteria {
 
     @Override
     public MergeRule getDifferentProjectRule() {
-        // TM merge for version always accept TM from different project
-        return MergeRule.IGNORE_CHECK;
+        return differentProjectRule;
     }
 
     @Override
