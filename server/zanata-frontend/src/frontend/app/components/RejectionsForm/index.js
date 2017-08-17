@@ -30,13 +30,14 @@ class RejectionsForm extends Component {
     return (
         <Form className='rejections' inline>
           <FormGroup className='flex-grow1' controlId='formInlineCriteria'>
-            <ControlLabel>Review Criteria (subcategories)</ControlLabel><br/>
-            <TextInput multiline={true}  editable={this.props.editable} type='text' numberOfLines={2} placeholder={this.props.criteriaPlaceholder}/>
+            <ControlLabel>Criteria</ControlLabel><br/>
+            <TextInput multiline={true}  editable={this.props.editable}
+             type='text' numberOfLines={2} placeholder={this.props.criteriaPlaceholder}/>
           </FormGroup>
           <FormGroup controlId='formInlinePriority'>
             <ControlLabel>Priority</ControlLabel><br/>
             <DropdownButton bsStyle='default' title={title}
-                            id='dropdown-basic'>
+               id='dropdown-basic'>
               <MenuItem><span className='text-info'>Minor</span></MenuItem>
               <MenuItem><span className='text-warning'>Major</span></MenuItem>
               <MenuItem><span className='text-danger'>Critical</span></MenuItem>
