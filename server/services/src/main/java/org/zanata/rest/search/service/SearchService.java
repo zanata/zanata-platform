@@ -73,6 +73,7 @@ import com.google.common.collect.Maps;
 @Transactional(readOnly = true)
 public class SearchService implements RestResource {
 
+    private static final long serialVersionUID = 8924030399679653241L;
     @Inject
     private ProjectDAO projectDAO;
 

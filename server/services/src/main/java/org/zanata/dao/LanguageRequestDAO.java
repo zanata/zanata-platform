@@ -18,6 +18,8 @@ import java.util.List;
 @RequestScoped
 public class LanguageRequestDAO extends AbstractDAOImpl<LanguageRequest, Long> {
 
+    private static final long serialVersionUID = -5920379184507917679L;
+
     public LanguageRequestDAO() {
         super(LanguageRequest.class);
     }

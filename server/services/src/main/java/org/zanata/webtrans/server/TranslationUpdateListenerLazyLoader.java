@@ -37,6 +37,7 @@ import org.zanata.util.ServiceLocator;
  */
 public class TranslationUpdateListenerLazyLoader implements
         PostUpdateEventListener, PostInsertEventListener {
+    private static final long serialVersionUID = 6952192572591990010L;
     private TranslationUpdateListener delegate;
 
     @SuppressFBWarnings("DC_DOUBLECHECK")

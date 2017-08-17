@@ -52,6 +52,8 @@ import com.google.common.collect.Sets;
 public class TextFlowTargetHistoryDAO extends
         AbstractDAOImpl<HTextFlowTargetHistory, Long> {
 
+    private static final long serialVersionUID = -2556266468897519199L;
+
     public TextFlowTargetHistoryDAO() {
         super(HTextFlowTargetHistory.class);
     }

@@ -18,6 +18,7 @@ import java.util.Date;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class EditorTextFlowTarget extends TextFlowTarget {
 
+    private static final long serialVersionUID = 6861528105976043809L;
     private Date lastModifiedTime;
 
     public EditorTextFlowTarget() {

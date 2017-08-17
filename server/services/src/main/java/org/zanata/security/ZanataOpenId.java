@@ -74,6 +74,7 @@ import java.util.List;
 public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ZanataOpenId.class);
+    private static final long serialVersionUID = 275020888578950801L;
 
     @Inject
     private ZanataIdentity identity;

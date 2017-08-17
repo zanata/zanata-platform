@@ -42,6 +42,7 @@ import org.zanata.ui.faces.FacesMessages;
 @Transactional
 public class MergeTransAction extends CopyAction implements Serializable {
 
+    private static final long serialVersionUID = 3200057182420160982L;
     private String targetProjectSlug;
     private String targetVersionSlug;
     private String sourceProjectSlug;

@@ -33,6 +33,7 @@ import com.google.common.base.MoreObjects;
  */
 public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> implements
         UserTriggeredTaskHandle {
+    private static final long serialVersionUID = 1704257523049053603L;
     private String triggeredBy;
     private String mergeTarget;
 

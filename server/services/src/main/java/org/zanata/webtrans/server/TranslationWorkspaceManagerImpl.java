@@ -15,7 +15,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.async.Async;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.events.ProjectUpdate;
@@ -23,7 +22,6 @@ import org.zanata.events.ServerStarted;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.GravatarService;
-import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -55,15 +53,13 @@ public class TranslationWorkspaceManagerImpl
         implements TranslationWorkspaceManager {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslationWorkspaceManagerImpl.class);
+    private static final long serialVersionUID = 813472688064842668L;
 
     @Inject
     private GravatarService gravatarServiceImpl;
-    @Inject
-    private ProjectIterationDAO projectIterationDAO;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
-    @Inject
-    private LocaleService localeServiceImpl;
     @Inject
     private ValidationService validationServiceImpl;
     @Inject
@@ -71,6 +67,7 @@ public class TranslationWorkspaceManagerImpl
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
     private Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private EventRegistry eventRegistry;
 
     @PostConstruct

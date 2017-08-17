@@ -63,6 +63,7 @@ import com.google.common.base.Optional;
 public class TranslationDocumentUpload implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationDocumentUpload.class);
+    private static final long serialVersionUID = -6742570568201128740L;
 
     @Inject
     private DocumentUploadUtil util;

@@ -28,6 +28,7 @@ import javax.transaction.UserTransaction;
  */
 public class TransactionPhaseListener implements PhaseListener {
     private static final Logger log = LoggerFactory.getLogger(TransactionPhaseListener.class);
+    private static final long serialVersionUID = -7636918546870793519L;
 
     public void beforePhase(PhaseEvent event) {
         // Always starting before RESTORE_VIEW

@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TransUnits implements Map<String, TransUnit>, Serializable {
+    private static final long serialVersionUID = -1673303379808359454L;
     private Map<String, TransUnit> map =
             new HashMap<String, TransUnit>();
 

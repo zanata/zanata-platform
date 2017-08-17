@@ -39,6 +39,7 @@ import org.zanata.util.HashUtil;
 @RequestScoped
 @Transactional
 public class EmailChangeService implements Serializable {
+    private static final long serialVersionUID = 6886188161123473570L;
     @Inject
     PersonEmailValidationKeyDAO personEmailValidationKeyDAO;
 

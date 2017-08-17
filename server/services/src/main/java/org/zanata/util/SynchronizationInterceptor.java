@@ -25,6 +25,7 @@ public class SynchronizationInterceptor implements Serializable {
 
     private static final long defaultTimeout = SysProperties
             .getLong(SysProperties.LOCK_TIMEOUT, Synchronized.DEFAULT_TIMEOUT);
+    private static final long serialVersionUID = -2174542471736615766L;
     private final ReentrantLock lock = new ReentrantLock(true);
 
     @AroundInvoke
