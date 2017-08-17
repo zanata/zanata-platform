@@ -48,6 +48,9 @@ class RejectionsForm extends Component {
             <Button bsStyle='primary' className={this.props.className}>
               <Icon name='edit' className='s0 editicon'/>
             </Button>
+            <Button bsStyle='danger' className={this.props.className}>
+              <Icon name='trash' className='s0 editicon'/>
+            </Button>
           </FormGroup>
         </Form>
     )
