@@ -86,7 +86,6 @@ public class ProjectService implements ProjectResource {
     @Inject
     ETagUtils eTagUtils;
 
-    @SuppressWarnings("null")
     @Nonnull
     public String getProjectSlug() {
         return projectSlug;

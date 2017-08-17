@@ -58,7 +58,6 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
         this.request = request;
     }
 
-    @SuppressWarnings("unused")
     AnonymousAccessControlPhaseListener() {
     }
 

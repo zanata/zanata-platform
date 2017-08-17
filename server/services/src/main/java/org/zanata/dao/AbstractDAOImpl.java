@@ -60,7 +60,6 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
      * See {@link org.hibernate.Session#get(Class, Serializable)} and
      * {@link org.hibernate.Session#load(Class, Serializable)} for documentation.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public T findById(ID id, boolean lock) {
         T entity;

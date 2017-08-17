@@ -51,7 +51,6 @@ public abstract class StreamingDAO<T> implements Serializable {
      * @return a CloseableIterator
      */
     StreamingEntityIterator<T> createIterator() {
-        @SuppressWarnings("null")
         @Nonnull
         Session session =
                 sessionFactory.openSession();

@@ -38,7 +38,6 @@ public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest {
     }
 
     // FIXME this test only works if resources-dev is on the classpath
-    @SuppressWarnings("deprecation")
     @Test
     public void ensureHistoryIsRecorded() {
         Session session = getSession();

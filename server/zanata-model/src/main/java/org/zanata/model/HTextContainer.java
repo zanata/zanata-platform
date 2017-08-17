@@ -76,7 +76,6 @@ import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 public abstract class HTextContainer implements HasContents, Serializable {
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
     @Field(name = IndexFieldLabels.CONTENT, bridge = @FieldBridge(
             impl = StringListBridge.class))
     @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)

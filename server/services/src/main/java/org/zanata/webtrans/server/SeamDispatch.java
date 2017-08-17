@@ -167,7 +167,7 @@ public class SeamDispatch implements Dispatch, Serializable {
         return handler.execute(action, ctx);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     private <A extends Action<R>, R extends Result> ActionHandler<A, R>
             findHandler(A action) throws UnsupportedActionException {
         Instance<AbstractActionHandler<?, ?>> handler = actionHandlers

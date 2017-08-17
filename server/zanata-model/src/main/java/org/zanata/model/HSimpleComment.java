@@ -95,7 +95,6 @@ public class HSimpleComment implements Serializable {
 
     public static class EntityListener {
 
-        @SuppressWarnings("unused")
         @PrePersist
         private void onPersist(HSimpleComment hsc) {
             if (hsc.lastChanged == null) {
@@ -103,7 +102,6 @@ public class HSimpleComment implements Serializable {
             }
         }
 
-        @SuppressWarnings("unused")
         @PreUpdate
         private void onUpdate(HSimpleComment hsc) {
             hsc.lastChanged = new Date();
