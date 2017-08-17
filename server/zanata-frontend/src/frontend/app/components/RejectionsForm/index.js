@@ -8,9 +8,9 @@ import { Icon, TextInput } from '../../components'
 class RejectionsForm extends Component {
   static PropTypes = {
     priority: PropTypes.oneOf([
-      'Minor',
-      'Major',
-      'Critical'
+      'MINOR',
+      'MAJOR',
+      'CRITICAL'
     ]).isRequired,
     textState: PropTypes.oneOf([
       'text-info',
@@ -24,6 +24,9 @@ class RejectionsForm extends Component {
   }
 
   render() {
+    const MINOR = 'minor'
+    const MAJOR = 'major'
+    const CRITICAL = 'critical'
     const title = (
         <span className={this.props.textState}>{this.props.priority}</span>
     )
