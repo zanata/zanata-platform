@@ -43,12 +43,10 @@ public class TextFlowTargetReviewCommentsDAO extends
         AbstractDAOImpl<HTextFlowTargetReviewComment, Long> {
     private static final long serialVersionUID = -8679512509179391126L;
 
-    @SuppressWarnings("unused")
     public TextFlowTargetReviewCommentsDAO() {
         super(HTextFlowTargetReviewComment.class);
     }
 
-    @SuppressWarnings("unused")
     public TextFlowTargetReviewCommentsDAO(Session session) {
         super(HTextFlowTargetReviewComment.class, session);
     }

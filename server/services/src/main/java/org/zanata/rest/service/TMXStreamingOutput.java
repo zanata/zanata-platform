@@ -121,7 +121,6 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
         int tuCount = 0;
         try {
             log.info("streaming output started for: {}", jobName);
-            @SuppressWarnings("null")
             PeekingIterator<T> iter = Iterators.peekingIterator(tuIter);
             // Fetch the first result, so that we can fail fast, before
             // writing any output. This should enable RESTEasy to return an

@@ -48,13 +48,11 @@ public class ProjectIterationService implements ProjectIterationResource {
     @Inject
     private ProjectVersionService projectVersionService;
 
-    @SuppressWarnings("null")
     @Nonnull
     public String getProjectSlug() {
         return projectSlug;
     }
 
-    @SuppressWarnings("null")
     @Nonnull
     public String getIterationSlug() {
         return iterationSlug;

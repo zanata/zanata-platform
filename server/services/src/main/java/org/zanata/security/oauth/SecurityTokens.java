@@ -80,7 +80,6 @@ public class SecurityTokens implements Serializable, Introspectable {
     private Cache<String, String> usernameByAccessTokens;
     private long tokenExpiresInSeconds;
 
-    @SuppressWarnings("unused")
     protected SecurityTokens() {
     }
 

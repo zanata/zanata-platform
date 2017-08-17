@@ -272,7 +272,6 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         query.append("  and tft.textFlow.obsolete = false ");
         query.append("group by tft.state, tft.locale");
         // calculate unit counts
-        @SuppressWarnings("unchecked")
         Query hQuery =
                 session.createQuery(query.toString()).setParameter("id", docId)
                         .setComment(

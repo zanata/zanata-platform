@@ -73,7 +73,6 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         this.urlUtil = urlUtil;
     }
 
-    @SuppressWarnings("unused")
     public GlossarySearchServiceImpl() {
     }
 
