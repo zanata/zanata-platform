@@ -38,10 +38,6 @@
   flex-grow: 2;
 }
 
-.criteria strong {
-  font-weight: 600;
-}
-
 a.Dropdown-item span.s0 {
   vertical-align: var(--TM-icon-vert-alignment);
   margin-left: var(--TM-small-margin);
