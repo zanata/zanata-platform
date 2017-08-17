@@ -458,10 +458,6 @@ public class TranslationFinderTest {
             return this.matchingDocument;
         }
 
-        public void setMatch(final String match) {
-            this.match = match;
-        }
-
         @Override
         public boolean equals(final Object o) {
             if (o == this)

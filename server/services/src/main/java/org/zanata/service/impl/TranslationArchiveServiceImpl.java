@@ -69,6 +69,7 @@ public class TranslationArchiveServiceImpl
         implements TranslationArchiveService {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslationArchiveServiceImpl.class);
+    private static final long serialVersionUID = 1929063191914482238L;
 
     @Inject
     private DocumentDAO documentDAO;

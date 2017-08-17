@@ -212,6 +212,9 @@ public class VersionHomeAction extends AbstractSortAction
     private final AbstractListFilter<HIterationGroup> groupFilter =
             new InMemoryListFilter<HIterationGroup>() {
 
+                private static final long serialVersionUID =
+                        -8985475801770776976L;
+
                 @Override
                 protected List<HIterationGroup> fetchAll() {
                     return getGroups();
@@ -228,6 +231,9 @@ public class VersionHomeAction extends AbstractSortAction
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
 
+                private static final long serialVersionUID =
+                        -1089546989875020588L;
+
                 @Override
                 protected List<HLocale> fetchAll() {
                     return getSupportedLocale();
@@ -243,6 +249,9 @@ public class VersionHomeAction extends AbstractSortAction
             };
     private final AbstractListFilter<HLocale> documentsTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
+
+                private static final long serialVersionUID =
+                        -3659763109918732037L;
 
                 @Override
                 protected List<HLocale> fetchAll() {
@@ -302,6 +311,7 @@ public class VersionHomeAction extends AbstractSortAction
 
     public static class CopyVersionHandler extends CopyAction
             implements Serializable {
+        private static final long serialVersionUID = 7720904735608930337L;
         private String projectSlug;
         private String versionSlug;
         @Inject
@@ -1003,6 +1013,8 @@ public class VersionHomeAction extends AbstractSortAction
 
     private class DocumentFilter extends InMemoryListFilter<HDocument> {
 
+        private static final long serialVersionUID = -4675800292403066019L;
+
         @Override
         protected List<HDocument> fetchAll() {
             return getDocuments(documentDAO);
@@ -1018,6 +1030,7 @@ public class VersionHomeAction extends AbstractSortAction
 
     private class SourceDocumentFilter extends InMemoryListFilter<HDocument> {
 
+        private static final long serialVersionUID = 5939911285844999856L;
         private DocumentDAO documentDAO =
                 ServiceLocator.instance().getInstance(DocumentDAO.class);
 

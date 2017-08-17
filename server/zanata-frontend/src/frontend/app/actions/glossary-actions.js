@@ -117,7 +117,7 @@ const getGlossaryTerms = (state) => {
   const srcQuery = '?srcLocale=' + (src || DEFAULT_LOCALE.localeId)
   const localeQuery = locale ? `&transLocale=${locale}` : ''
   const pageQuery = `&page=${page}&sizePerPage=${pageSize}`
-  const filterQuery = filter ? `&filter=${filter}` : ''
+  const filterQuery = filter ? ('&filter=' + encodeURIComponent(filter)) : ''
   const sortQuery = sort
     ? `&sort=${GlossaryHelper.convertSortToParam(sort)}` : ''
   const qualifiedNameQuery = '&qualifiedName=' + qualifiedName

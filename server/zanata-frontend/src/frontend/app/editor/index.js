@@ -8,21 +8,14 @@ import { chain } from 'lodash'
 import { enUS } from './config/en-us.json'
 console.dir(enUS)
 
+import createStoreWithMiddleware from './middlewares'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import enLocaleData from 'react-intl/locale-data/en.js'
-import { createStore, applyMiddleware } from 'redux'
-import { apiMiddleware } from 'redux-api-middleware'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
-import newContextFetchMiddleware from './middlewares/new-context-fetch'
-import searchSelectedPhraseMiddleware
-  from './middlewares/selected-phrase-searches'
-import getStateInActions from './middlewares/getstate-in-actions'
-import titleUpdateMiddleware from './middlewares/title-update'
-import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
 import rootReducer from './reducers'
+import addWatchers from './watchers'
 
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
@@ -65,44 +58,10 @@ function runApp () {
 
   addLocaleData([...enLocaleData])
 
-  // example uses createHistory, but the latest bundles history with
-  // react-router and has some defaults, so now I am just using one of those.
-  // const history = createHistory()
   const history = browserHistory
   history.basename = baseUrl
-
-  const loggerMiddleware = createLogger({
-    predicate: (getState, action) =>
-      process.env && (process.env.NODE_ENV === 'development'),
-    actionTransformer: (action) => {
-      if (typeof action.type !== 'symbol') {
-        console.warn('You should use a Symbol for this action type: ' +
-          String(action.type))
-      }
-      return {
-        ...action,
-        // allow symbol action type to be printed properly in logs
-        type: String(action.type)
-      }
-    }
-  })
-
-  // const reduxRouterMiddleware = syncHistory(history)
-  const createStoreWithMiddleware =
-    applyMiddleware(
-      titleUpdateMiddleware,
-      newContextFetchMiddleware,
-      searchSelectedPhraseMiddleware,
-      // reduxRouterMiddleware,
-      thunk,
-      apiMiddleware,
-      // must run after thunk because it fails with thunks
-      getStateInActions,
-      loggerMiddleware
-    )(createStore)
-
   const store = createStoreWithMiddleware(rootReducer)
-  // reduxRouterMiddleware.listenForReplays(store)
+  addWatchers(store)
 
   const enhancedHistory = syncHistoryWithStore(history, store)
 
@@ -139,6 +98,9 @@ if (window.Intl) {
   runApp()
 } else {
   // Intl not present, so polyfill it.
+  // FIXME must test this, may require an additional polyfill to be available
+  // eslint-disable-next-line max-len
+  // see https://webpack.js.org/guides/migrating/#require-ensure-and-amd-require-are-asynchronous
   require.ensure([], (require) => {
     // This is 'require' on purpose, do not change to 'import'
     require('intl')

@@ -23,8 +23,6 @@ package org.zanata.security.openid;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
-import org.openid4java.message.ParameterList;
-
 import javax.enterprise.inject.Alternative;
 
 /**
@@ -35,6 +33,7 @@ import javax.enterprise.inject.Alternative;
  */
 @Alternative
 public class MyOpenIdProvider extends GenericOpenIdProvider {
+    private static final long serialVersionUID = 2572383834864354100L;
     private static final String FEDORA_OPENID_FORMAT =
             "http://{0}.myopenid.com/";
     private static final Pattern FEDORA_OPENID_PATTERN = Pattern

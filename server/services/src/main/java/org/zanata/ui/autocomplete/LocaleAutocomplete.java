@@ -18,6 +18,7 @@ import org.zanata.util.ServiceLocator;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
+    private static final long serialVersionUID = -540662034050685697L;
     protected LocaleService localeServiceImpl = ServiceLocator.instance()
             .getInstance(LocaleServiceImpl.class);
 

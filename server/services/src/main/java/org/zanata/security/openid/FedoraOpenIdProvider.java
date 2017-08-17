@@ -21,7 +21,6 @@
 package org.zanata.security.openid;
 
 import javax.enterprise.inject.Alternative;
-import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
@@ -32,6 +31,7 @@ import java.util.regex.Pattern;
  */
 @Alternative
 public class FedoraOpenIdProvider extends GenericOpenIdProvider {
+    private static final long serialVersionUID = -9082238092005289181L;
     private static final Pattern FEDORA_OPENID_PATTERN = Pattern
             .compile("http://((.+).)?id.fedoraproject.org/");
 

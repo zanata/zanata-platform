@@ -4,8 +4,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import net.customware.gwt.dispatch.shared.Action;
-import net.customware.gwt.dispatch.shared.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

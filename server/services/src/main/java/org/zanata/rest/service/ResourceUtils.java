@@ -84,6 +84,7 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 public class ResourceUtils implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ResourceUtils.class);
+    private static final long serialVersionUID = -969189290416018542L;
 
     /**
      * Newline character used for multi-line comments

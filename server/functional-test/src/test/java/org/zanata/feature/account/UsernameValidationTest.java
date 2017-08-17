@@ -35,8 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class UsernameValidationTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(UsernameValidationTest.class);
 
     @Trace(
             summary = "The user must enter acceptable username characters to register")

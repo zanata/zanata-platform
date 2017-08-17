@@ -3,8 +3,6 @@ package org.zanata.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import javax.persistence.EntityManager;
 
@@ -18,7 +16,6 @@ import org.junit.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
-import com.google.common.collect.Lists;
 
 
 public class ProjectDAOJPATest extends ZanataJpaTest {

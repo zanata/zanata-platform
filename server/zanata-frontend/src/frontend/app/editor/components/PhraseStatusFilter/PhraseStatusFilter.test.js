@@ -1,42 +1,45 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
-import TransUnitFilter from '.'
+import { PhraseStatusFilter } from '.'
 import FilterToggle from '../FilterToggle'
 import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
-import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
+import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
 
-describe('TransUnitFilterTest', () => {
+const callback = () => {}
+
+describe('PhraseStatusFilterTest', () => {
   it('FilterToggle markup', () => {
     const doStuff = () => {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <FilterToggle id="government-issued"
-                    className="soClassy"
-                    isChecked={true}
-                    onChange={doStuff}
-                    title="titalic"
-                    count="12"
-                    withDot={true}/>
+        className="soClassy"
+        isChecked
+        onChange={doStuff}
+        title="titalic"
+        count="12"
+        withDot />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="Toggle u-round soClassy">
         <input className="Toggle-checkbox"
-               type="checkbox"
-               id="government-issued"
-               checked={true}
-               onChange={doStuff}/>
-        <span className="Toggle-fakeCheckbox"/>
+          type="checkbox"
+          id="government-issued"
+          checked
+          onChange={doStuff} />
+        <span className="Toggle-fakeCheckbox" />
         <label className="Toggle-label"
-               htmlFor="government-issued"
-               title="titalic">
-            <Row>
-              <Icon name="dot" className="n1"/>
-              12
-              <span className="u-hiddenVisually">titalic</span>
-            </Row>
+          htmlFor="government-issued"
+          title="titalic">
+          <Row>
+            <Icon name="dot" className="n1" />
+            12
+            <span className="u-hiddenVisually">titalic</span>
+          </Row>
         </label>
       </div>
     )
@@ -47,24 +50,24 @@ describe('TransUnitFilterTest', () => {
     const doStuff = () => {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <FilterToggle id="government-issued"
-                    className="soClassy"
-                    isChecked={false}
-                    onChange={doStuff}
-                    title="titalic"
-                    count="17"
-                    withDot={false}/>
+        className="soClassy"
+        isChecked={false}
+        onChange={doStuff}
+        title="titalic"
+        count="17"
+        withDot={false} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="Toggle u-round soClassy">
         <input className="Toggle-checkbox"
-               type="checkbox"
-               id="government-issued"
-               checked={false}
-               onChange={doStuff}/>
-        <span className="Toggle-fakeCheckbox"/>
+          type="checkbox"
+          id="government-issued"
+          checked={false}
+          onChange={doStuff} />
+        <span className="Toggle-fakeCheckbox" />
         <label className="Toggle-label"
-               htmlFor="government-issued"
-               title="titalic">
+          htmlFor="government-issued"
+          title="titalic">
           <Row>
             17
             <span className="u-hiddenVisually">titalic</span>
@@ -75,13 +78,11 @@ describe('TransUnitFilterTest', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('TransUnitFilter markup', () => {
+  it('PhraseStatusFilter markup', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <TransUnitFilter
-        actions={{
-          resetFilter: () => {},
-          onFilterChange: () => {}
-        }}
+      <PhraseStatusFilter
+        resetFilter={callback}
+        onFilterChange={callback}
         filter={{
           all: true,
           approved: false,
@@ -98,7 +99,7 @@ describe('TransUnitFilterTest', () => {
           rejected: 5,
           untranslated: 6
         }}
-        gettextCatalog={mockGettextCatalog}/>
+        gettextCatalog={mockGettextCatalog} />
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
@@ -110,8 +111,8 @@ describe('TransUnitFilterTest', () => {
             isChecked
             title="Total Phrases"
             count={1}
-            onChange={() => {}}
-            withDot={false}/>
+            onChange={callback}
+            withDot={false} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -120,7 +121,7 @@ describe('TransUnitFilterTest', () => {
             isChecked={false}
             title="Approved"
             count={2}
-            onChange={() => {}}/>
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -129,7 +130,7 @@ describe('TransUnitFilterTest', () => {
             isChecked
             title="Translated"
             count={3}
-            onChange={() => {}}/>
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -138,7 +139,7 @@ describe('TransUnitFilterTest', () => {
             isChecked={false}
             title="Needs Work"
             count={4}
-            onChange={() => {}}/>
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -147,7 +148,7 @@ describe('TransUnitFilterTest', () => {
             isChecked
             title="Rejected"
             count={5}
-            onChange={() => {}}/>
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -156,14 +157,14 @@ describe('TransUnitFilterTest', () => {
             isChecked={false}
             title="Untranslated"
             count={6}
-            onChange={() => {}}/>
+            onChange={callback} />
         </li>
       </ul>
     )
     expect(actual).toEqual(expected)
   })
 
-  it('TransUnitFilter events', () => {
+  it('PhraseStatusFilter events', () => {
     let filterReset = false
     const resetFilter = () => {
       filterReset = true
@@ -175,11 +176,9 @@ describe('TransUnitFilterTest', () => {
     }
 
     const filterComponent = TestUtils.renderIntoDocument(
-      <TransUnitFilter
-        actions={{
-          resetFilter: resetFilter,
-          onFilterChange: onFilterChange
-        }}
+      <PhraseStatusFilter
+        resetFilter={resetFilter}
+        onFilterChange={onFilterChange}
         filter={{
           all: true,
           approved: false,
@@ -196,7 +195,7 @@ describe('TransUnitFilterTest', () => {
           rejected: 5,
           untranslated: 6
         }}
-        gettextCatalog={mockGettextCatalog}/>
+        gettextCatalog={mockGettextCatalog} />
     )
     const [all, approved, translated, needsWork, untranslated] =
       TestUtils.scryRenderedDOMComponentsWithTag(filterComponent, 'input')
@@ -204,8 +203,8 @@ describe('TransUnitFilterTest', () => {
     TestUtils.Simulate.change(needsWork, {'target': {'checked': true}})
 
     expect(filterChangeType).toEqual('needswork',
-      'should call filter toggle action with correct type when specific status ' +
-      'is changed')
+      'should call filter toggle action with correct type when specific ' +
+      'status is changed')
 
     TestUtils.Simulate.change(all, {'target': {'checked': true}})
     expect(filterReset).toEqual(true,

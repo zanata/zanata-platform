@@ -31,6 +31,7 @@ import java.io.Serializable;
  */
 @GroupedConversationScoped
 public class OpenIdProviderTypeHolder implements Serializable {
+    private static final long serialVersionUID = -7841390198802783825L;
     private @Nullable OpenIdProviderType openIdProviderType;
 
     public @Nullable OpenIdProviderType get() {

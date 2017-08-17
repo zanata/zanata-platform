@@ -31,6 +31,8 @@ import org.zanata.common.LocaleId;
  */
 public class DuplicateGlossaryEntryException extends RuntimeException {
 
+    private static final long serialVersionUID = -7974089324141736891L;
+
     public DuplicateGlossaryEntryException(LocaleId srcLocale,
             String sourceContent, String pos, String description) {
         super("Duplicate glossary entry in locale:" + srcLocale

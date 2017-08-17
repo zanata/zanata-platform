@@ -118,6 +118,9 @@ public class LanguageAction implements Serializable {
     private AbstractListFilter<HLocaleMember> membersFilter =
             new InMemoryListFilter<HLocaleMember>() {
 
+                private static final long serialVersionUID =
+                        2623778070221385071L;
+
                 @Override
                 protected List<HLocaleMember> fetchAll() {
                     return localeMemberDAO

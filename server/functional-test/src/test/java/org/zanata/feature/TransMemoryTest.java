@@ -23,7 +23,6 @@ package org.zanata.feature;
 
 import org.junit.Test;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.Constants;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -44,8 +43,7 @@ public class TransMemoryTest extends ZanataTestCase {
         languageWorkFlow.addLanguageAndJoin("zh-CN");
 
         ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-        ProjectBasePage projectPage =
-                projectWorkFlow.createNewSimpleProject("trans-memory",
+        projectWorkFlow.createNewSimpleProject("trans-memory",
                         "trans memory test");
         projectWorkFlow.createNewProjectVersion("trans memory test", "master");
 
@@ -64,8 +62,7 @@ public class TransMemoryTest extends ZanataTestCase {
         languageWorkFlow.addLanguageAndJoin("zh-CN");
 
         ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-        ProjectBasePage projectPage =
-                projectWorkFlow.createNewSimpleProject("trans-memory-v2",
+        projectWorkFlow.createNewSimpleProject("trans-memory-v2",
                         "trans memory test v2");
         projectWorkFlow.createNewProjectVersion("trans memory test v2",
                 "master");

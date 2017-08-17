@@ -35,7 +35,6 @@ public class RequestToJoinPopup extends BasePage {
     private By messageField = By.id(
             "joinLanguageForm:requestToJoinLanguageMessage:input:request-join-message");
     private By sendButton = By.id("request-join-language-send-button");
-    private By cancelButton = By.id("request-join-language-cancel-button");
 
     public RequestToJoinPopup(WebDriver driver) {
         super(driver);

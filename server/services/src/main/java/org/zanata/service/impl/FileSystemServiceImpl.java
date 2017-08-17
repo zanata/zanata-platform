@@ -42,6 +42,7 @@ import org.zanata.service.FileSystemService;
 @Named("fileSystemServiceImpl")
 @RequestScoped
 public class FileSystemServiceImpl implements FileSystemService {
+    private static final long serialVersionUID = 829630909431691575L;
     private static final File STAGING_DIR = new File(
             System.getProperty("java.io.tmpdir"));
 

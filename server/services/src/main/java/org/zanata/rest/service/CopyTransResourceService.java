@@ -26,7 +26,6 @@ import javax.ws.rs.Path;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Throwables;
 import org.zanata.action.CopyTransManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
@@ -44,6 +43,7 @@ import org.zanata.security.ZanataIdentity;
 @Path(CopyTransResource.SERVICE_PATH)
 // Not @Transactional, because we use CopyTransWorkFactory.runCopyTransInNewTx
 public class CopyTransResourceService implements CopyTransResource {
+    private static final long serialVersionUID = -2012807139460738732L;
     @Inject
     private ZanataIdentity identity;
 

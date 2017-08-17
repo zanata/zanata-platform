@@ -9,7 +9,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GlossarySearchService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import net.customware.gwt.dispatch.server.ExecutionContext;

@@ -26,6 +26,7 @@ import java.util.Map;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
@@ -61,6 +62,8 @@ import org.zanata.webtrans.shared.rpc.LuceneQuery;
 @Named("glossaryDAO")
 @RequestScoped
 public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
+    private static final long serialVersionUID = -11578921177910314L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @FullText
     private FullTextEntityManager entityManager;
 
@@ -125,7 +128,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
                 .append("and term.glossaryEntry.glossary.qualifiedName =:qualifiedName");
 
         if (!StringUtils.isBlank(filter)) {
-            queryString.append(" and lower(term.content) like lower(:filter)");
+            queryString.append(" and lower(term.content) like lower(:filter) escape '!'");
         }
         if (sortFields != null && !sortFields.isEmpty()) {
             queryString.append(" ORDER BY ");
@@ -143,8 +146,9 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
                 .setCacheable(true)
                 .setComment("GlossaryDAO.getEntriesByLocale");
 
-        if (!StringUtils.isBlank(filter)) {
-            query.setParameter("filter", "%" + filter + "%");
+        if (StringUtils.isNotBlank(filter)) {
+            String escapeFilter = escapeQuery(filter);
+            query.setParameter("filter", "%" + escapeFilter + "%");
         }
         query.setFirstResult(offset).setMaxResults(maxResults);
         return query.list();

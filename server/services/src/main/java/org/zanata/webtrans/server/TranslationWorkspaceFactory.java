@@ -39,6 +39,7 @@ import java.io.Serializable;
  */
 public class TranslationWorkspaceFactory implements Serializable {
 
+    private static final long serialVersionUID = 1046141105089444565L;
     private final ProjectIterationDAO projectIterationDAO;
     private final LocaleService localeServiceImpl;
 

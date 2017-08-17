@@ -84,8 +84,6 @@ public class AppPresenterTest {
     private ContainerTranslationStatistics selectedDocumentStats;
     @Captor
     private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
-    @Mock
-    private TargetContentsPresenter targetContentsPresenter;
 
     @Before
     public void beforeMethod() {
@@ -107,7 +105,7 @@ public class AppPresenterTest {
                         attentionKeyShortcutPresenter, keyShortcutPresenter,
                         translationPresenter, documentListPresenter,
                         searchResultPresenter, userWorkspace, messages,
-                        history, window, location, targetContentsPresenter);
+                        history, window, location);
 
         verify(display).setListener(presenter);
     }

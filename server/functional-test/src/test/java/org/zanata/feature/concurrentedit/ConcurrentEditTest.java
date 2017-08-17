@@ -42,9 +42,6 @@ import static org.zanata.util.ZanataRestCaller.*;
  */
 @Category(DetailedTest.class)
 public class ConcurrentEditTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ConcurrentEditTest.class);
-
     private ZanataRestCaller restCaller;
 
     @Before

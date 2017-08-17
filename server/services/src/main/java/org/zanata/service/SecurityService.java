@@ -27,11 +27,13 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import java.io.Serializable;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public interface SecurityService {
+public interface SecurityService extends Serializable {
 
     /**
      * This will check permission for performing an action upon translations

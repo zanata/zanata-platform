@@ -74,7 +74,6 @@ import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.util.DateUtil;
-import org.zanata.util.StatisticsUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
@@ -95,6 +94,7 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
 public class StatisticsServiceImpl implements StatisticsResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(StatisticsServiceImpl.class);
+    private static final long serialVersionUID = 4936614337971433129L;
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;

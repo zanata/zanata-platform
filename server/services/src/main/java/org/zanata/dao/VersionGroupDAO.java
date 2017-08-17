@@ -29,7 +29,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
@@ -44,6 +43,8 @@ import com.google.common.collect.Lists;
 @Named("versionGroupDAO")
 @RequestScoped
 public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
+    private static final long serialVersionUID = -3405353569468388836L;
+
     public VersionGroupDAO() {
         super(HIterationGroup.class);
     }
@@ -139,13 +140,14 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         }
         StringBuilder sb = new StringBuilder();
         sb.append("from HIterationGroup ")
-                .append("where (lower(slug) LIKE :searchTerm OR lower(name) LIKE :searchTerm) ");
+                .append("where (lower(slug) LIKE lower(:searchTerm) escape '!' OR lower(name) LIKE lower(:searchTerm) escape '!') ");
         if (statuses != null && statuses.length >= 1) {
             sb.append("AND status in :statuses ");
         }
         sb.append("order by name asc");
         Query query = getSession().createQuery(sb.toString());
-        query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
+        String escapeSearchTerm = escapeQuery(searchTerm);
+        query.setParameter("searchTerm", "%" + escapeSearchTerm + "%");
         query.setFirstResult(firstResult);
         if(maxResult != -1) {
             query.setMaxResults(maxResult);

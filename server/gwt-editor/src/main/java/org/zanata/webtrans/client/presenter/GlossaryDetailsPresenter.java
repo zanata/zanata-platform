@@ -6,10 +6,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
-import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
-import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 
@@ -29,19 +27,13 @@ public class GlossaryDetailsPresenter extends
 
     private final CachingDispatchAsync dispatcher;
 
-    private final UserWorkspaceContext userWorkspaceContext;
-
-    private GlossaryDisplay.Listener glossaryListener;
-
     @Inject
     public GlossaryDetailsPresenter(final GlossaryDetailsDisplay display,
             final EventBus eventBus, final UiMessages messages,
-            final CachingDispatchAsync dispatcher,
-            final UserWorkspaceContext userWorkspaceContext) {
+            final CachingDispatchAsync dispatcher) {
         super(display, eventBus);
         this.dispatcher = dispatcher;
         this.messages = messages;
-        this.userWorkspaceContext = userWorkspaceContext;
     }
 
     @Override
@@ -109,10 +101,6 @@ public class GlossaryDetailsPresenter extends
 
     @Override
     public void onRevealDisplay() {
-    }
-
-    public void setGlossaryListener(GlossaryDisplay.Listener glossaryListener) {
-        this.glossaryListener = glossaryListener;
     }
 
     /**

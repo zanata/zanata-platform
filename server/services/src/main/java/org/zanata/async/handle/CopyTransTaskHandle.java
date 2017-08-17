@@ -30,6 +30,7 @@ import org.zanata.async.UserTriggeredTaskHandle;
 public class CopyTransTaskHandle extends AsyncTaskHandle<Void> implements
         UserTriggeredTaskHandle {
 
+    private static final long serialVersionUID = -5896877101976333925L;
     private String triggeredBy;
     private boolean prepared;
 

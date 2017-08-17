@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HAccount;
@@ -43,6 +42,7 @@ import org.zanata.util.ServiceLocator;
 @Named("lockManagerServiceImpl")
 @ApplicationScoped
 public class LockManagerServiceImpl implements LockManagerService {
+    private static final long serialVersionUID = 9100776788798773866L;
     /**
      * Maps locks to their owners' usernames
      */

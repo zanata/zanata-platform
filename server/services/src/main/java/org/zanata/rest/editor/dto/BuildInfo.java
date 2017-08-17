@@ -34,6 +34,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonPropertyOrder({ "version", "buildTimestamp", "scmDescribe"})
 public class BuildInfo extends JsonObject {
 
+    private static final long serialVersionUID = -3370655858574815183L;
     private final String version;
     private final String buildTimestamp;
     private final String scmDescribe;

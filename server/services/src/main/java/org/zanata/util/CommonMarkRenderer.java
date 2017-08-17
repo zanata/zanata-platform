@@ -44,6 +44,7 @@ import java.net.URL;
 public class CommonMarkRenderer implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CommonMarkRenderer.class);
+    private static final long serialVersionUID = -5617611738128905105L;
 
     private static final String VER =
             Dependencies.getVersion("org.webjars.bower:commonmark:jar");

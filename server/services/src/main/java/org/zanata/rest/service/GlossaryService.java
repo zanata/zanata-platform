@@ -82,6 +82,7 @@ public class GlossaryService implements GlossaryResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(GlossaryService.class);
 
+    private static final long serialVersionUID = -3052284922608257034L;
     public static final String PROJECT_QUALIFIER_PREFIX = "project/";
     private static final int REQUESTED_MAX_RESULTS_UPPER_LIMIT = 1000;
 

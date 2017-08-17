@@ -14,6 +14,7 @@ import org.zanata.util.ServiceLocator;
 public abstract class MaintainerAutocomplete extends
         AbstractAutocomplete<HPerson> {
 
+    private static final long serialVersionUID = -4245346746883339439L;
     protected PersonDAO personDAO = ServiceLocator.instance().getInstance(
             PersonDAO.class);
 

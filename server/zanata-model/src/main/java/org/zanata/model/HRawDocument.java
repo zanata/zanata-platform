@@ -28,8 +28,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
-import com.google.common.base.Objects;
-// is this necessary?
 
 @Entity
 public class HRawDocument extends ModelEntityBase implements Serializable {

@@ -39,6 +39,7 @@ import com.google.common.base.Optional;
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(DocumentDAO.class);
+    private static final long serialVersionUID = -2202234119056531154L;
 
     public DocumentDAO() {
         super(HDocument.class);

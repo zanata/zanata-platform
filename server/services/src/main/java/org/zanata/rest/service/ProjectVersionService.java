@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import static org.zanata.common.EntityStatus.ACTIVE;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
+import static org.zanata.util.DateUtil.parseQueryDate;
 import static org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService.TextFlowResultTransformer;
 
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
@@ -24,11 +24,11 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -47,6 +47,7 @@ import org.zanata.model.ModelEntityBase;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.RestUtil;
+import org.zanata.rest.dto.FilterFields;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.ProjectIteration;
@@ -76,6 +77,7 @@ import com.google.common.collect.Lists;
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Transactional
 public class ProjectVersionService implements ProjectVersionResource {
+    private static final long serialVersionUID = -6323736463512112239L;
     @Inject
     private TextFlowDAO textFlowDAO;
     @Inject
@@ -86,6 +88,7 @@ public class ProjectVersionService implements ProjectVersionResource {
     private ProjectIterationDAO projectIterationDAO;
     @Inject
     private LocaleService localeServiceImpl;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private Request request;
     @Inject
@@ -100,6 +103,7 @@ public class ProjectVersionService implements ProjectVersionResource {
     private UserService userService;
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private UriInfo uri;
     @Inject
@@ -305,7 +309,8 @@ public class ProjectVersionService implements ProjectVersionResource {
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
             @PathParam("docId") String noSlashDocId,
-            @DefaultValue("en-US") @PathParam("localeId") String localeId) {
+            @DefaultValue("en-US") @PathParam("localeId") String localeId,
+            FilterFields filterFields) {
         if (StringUtils.isEmpty(noSlashDocId)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -321,18 +326,29 @@ public class ProjectVersionService implements ProjectVersionResource {
         }
         TextFlowResultTransformer resultTransformer =
                 new TextFlowResultTransformer(hLocale);
-        FilterConstraints filterConstraints =
-                FilterConstraints.builder().build();
+
+        FilterConstraints.Builder filterConstraints = FilterConstraints.builder();
+        if (filterFields != null) {
+            filterConstraints
+                .filterBy(filterFields.getSearchString())
+                .resourceIdIs(filterFields.getResId())
+                .targetChangedBefore(parseQueryDate(filterFields.getChangedBefore()))
+                .targetChangedAfter(parseQueryDate(filterFields.getChangedAfter()))
+                .lastModifiedBy(filterFields.getLastModifiedByUser())
+                .sourceCommentContains(filterFields.getSourceComment())
+                .targetCommentContains(filterFields.getTransComment())
+                .msgContext(filterFields.getMsgContext());
+        }
+
         List<HTextFlow> textFlows = textFlowDAO.getNavigationByDocumentId(
                 new DocumentId(document.getId(), document.getDocId()), hLocale,
-                resultTransformer, filterConstraints);
+                resultTransformer, filterConstraints.build());
         List<TransUnitStatus> statusList =
                 Lists.newArrayListWithExpectedSize(textFlows.size());
         for (HTextFlow textFlow : textFlows) {
             ContentState state =
                     textFlow.getTargets().get(hLocale.getId()).getState();
-            statusList.add(new TransUnitStatus(textFlow.getId(),
-                    textFlow.getResId(), state));
+            statusList.add(new TransUnitStatus(textFlow.getId(), textFlow.getResId(), state));
         }
         Object entity = new GenericEntity<List<TransUnitStatus>>(statusList){};
         return Response.ok(entity).build();

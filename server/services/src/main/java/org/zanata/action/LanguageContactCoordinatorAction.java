@@ -50,6 +50,7 @@ import org.zanata.ui.faces.FacesMessages;
 public class LanguageContactCoordinatorAction implements Serializable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(LanguageContactCoordinatorAction.class);
+    private static final long serialVersionUID = -4071108974519011187L;
 
     @Inject
     @Authenticated

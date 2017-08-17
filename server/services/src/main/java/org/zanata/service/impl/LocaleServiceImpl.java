@@ -67,6 +67,7 @@ import com.ibm.icu.util.ULocale;
 public class LocaleServiceImpl implements LocaleService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(LocaleServiceImpl.class);
+    private static final long serialVersionUID = -3041992791764092814L;
     private LocaleDAO localeDAO;
     private ProjectDAO projectDAO;
     private ProjectIterationDAO projectIterationDAO;
