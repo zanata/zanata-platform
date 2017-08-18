@@ -43,7 +43,8 @@ import org.zanata.ui.faces.FacesMessages;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Named("languageContactCoordinatorAction")
+@Named("\n" +
+        "LoginAction.java:58,")
 @ViewScoped
 @Model
 @Transactional
@@ -70,8 +71,6 @@ public class LanguageContactCoordinatorAction implements Serializable {
 
     @Inject
     private Messages msgs;
-
-    private String receiver;
 
     private String message;
 

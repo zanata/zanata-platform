@@ -82,8 +82,6 @@ import javax.enterprise.event.Observes;
 @RequestScoped
 @Transactional
 public class DocumentServiceImpl implements DocumentService {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(DocumentServiceImpl.class);
     private static final long serialVersionUID = -6683110078451115926L;
 
     @Inject

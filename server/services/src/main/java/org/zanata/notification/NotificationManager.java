@@ -36,9 +36,6 @@ import org.zanata.events.LanguageTeamPermissionChangedEvent;
  */
 @ApplicationScoped
 public class NotificationManager {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(NotificationManager.class);
-
     public void onLanguageTeamPermissionChanged(
             @Observes final LanguageTeamPermissionChangedEvent event,
             @InVMJMS final QueueSession queueSession,
