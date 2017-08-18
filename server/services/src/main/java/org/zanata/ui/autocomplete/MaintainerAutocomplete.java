@@ -22,7 +22,7 @@ public abstract class MaintainerAutocomplete extends
 
     @Override
     public List<HPerson> suggest() {
-        List<HPerson> personList = personDAO.findAllContainingName(getQuery());
+        List<HPerson> personList = personDAO.findAllEnabledContainingName(getQuery());
         return FilterUtil.filterOutPersonList(getMaintainers(), personList);
     }
 }

@@ -150,7 +150,7 @@ public class UserService implements UserResource {
         if (StringUtils.isBlank(username)) {
             return null;
         }
-        HAccount account = accountDAO.getByUsername(username);
+        HAccount account = accountDAO.getEnabledByUsername(username);
         if (account == null) {
             return null;
         }

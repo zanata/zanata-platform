@@ -219,8 +219,8 @@ public class SearchService implements RestResource {
 
         int offset = (validatePage(page) - 1) * validatePageSize(sizePerPage);
 
-        int totalCount = personDAO.findAllContainingNameSize(query);
-        List<SearchResult> results = personDAO.findAllContainingName(query,
+        int totalCount = personDAO.findAllEnabledContainingNameSize(query);
+        List<SearchResult> results = personDAO.findAllEnabledContainingName(query,
                 validatePageSize(sizePerPage), offset)
             .stream().map(p -> {
                 PersonSearchResult result = new PersonSearchResult();

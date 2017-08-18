@@ -303,7 +303,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
 
     @Override
     public List<HPerson> suggest() {
-        return getPersonDAO().findAllContainingName(getQuery());
+        return getPersonDAO().findAllEnabledContainingName(getQuery());
     }
 
     private PersonDAO getPersonDAO() {
