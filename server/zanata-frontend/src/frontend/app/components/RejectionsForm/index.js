@@ -5,6 +5,10 @@ import { Icon, TextInput } from '../../components'
 /**
  * Reject Translations Administration panel
  */
+const MINOR = 'minor'
+const MAJOR = 'major'
+const CRITICAL = 'critical'
+
 class RejectionsForm extends Component {
   static PropTypes = {
     priority: PropTypes.oneOf([
@@ -24,9 +28,6 @@ class RejectionsForm extends Component {
   }
 
   render() {
-    const MINOR = 'minor'
-    const MAJOR = 'major'
-    const CRITICAL = 'critical'
     const title = (
         <span className={this.props.textState}>{this.props.priority}</span>
     )
