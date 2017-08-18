@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import TMMergeModal from './TMMergeModal'
+import TMMergeModalNew from './TMMergeModalNew'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 
 import {
