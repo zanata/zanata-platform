@@ -11,7 +11,7 @@
   },
   {
     "id": "ActivityFeedItem.approved",
-    "description": "Title for an item in the activity feed showing a reviewer\n               approved the translation. The inserted section is from\n               ActivityFeedItem.approved.approvedTranslation",
+    "description": "Title for an item in the activity feed showing a reviewer approved the translation. The inserted section is from ActivityFeedItem.approved.approvedTranslation",
     "defaultMessage": "{name} has {approvedTranslation}"
   },
   {
@@ -21,7 +21,7 @@
   },
   {
     "id": "ActivityFeedItem.rejected",
-    "description": "Title for an item in the activity feed showing a reviewer\n               rejected the translation. The inserted section is from\n               ActivityFeedItem.rejected.rejectedTranslation",
+    "description": "Title for an item in the activity feed showing a reviewer rejected the translation. The inserted section is from ActivityFeedItem.rejected.rejectedTranslation",
     "defaultMessage": "{name} has {rejectedTranslation}"
   },
   {
@@ -31,7 +31,7 @@
   },
   {
     "id": "ActivityFeedItem.translated",
-    "description": "Title for an item in the activity feed showing a translator added\n               a translation. The inserted section is from\n               ActivityFeedItem.translated.translatedRevision",
+    "description": "Title for an item in the activity feed showing a translator added a translation. The inserted section is from ActivityFeedItem.translated.translatedRevision",
     "defaultMessage": "{name} has {translatedRevision}"
   },
   {
@@ -41,7 +41,7 @@
   },
   {
     "id": "ActivityFeedItem.fuzzy",
-    "description": "Title for an item in the activity feed showing a translator saved\n               a fuzzy translation (a translation that still needs to be\n               edited). The inserted section is from\n               ActivityFeedItem.fuzzy.fuzzyRevision",
+    "description": "Title for an item in the activity feed showing a translator saved a fuzzy translation (a translation that still needs to be edited). The inserted section is from ActivityFeedItem.fuzzy.fuzzyRevision",
     "defaultMessage": "{name} has {fuzzyRevision}"
   },
   {
@@ -51,7 +51,7 @@
   },
   {
     "id": "ActivityFeedItem.deleted",
-    "description": "Title for an item in the activity feed showing a translator has\n               deleted the translation. The inserted section is from\n               ActivityFeedItem.deleted.deletedTranslation",
+    "description": "Title for an item in the activity feed showing a translator has deleted the translation. The inserted section is from ActivityFeedItem.deleted.deletedTranslation",
     "defaultMessage": "{name} has {deletedTranslation}"
   }
 ]

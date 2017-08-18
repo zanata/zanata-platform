@@ -1,5 +1,4 @@
-module.exports = {
-  "enUS": [
+[
     {
       "id": "ActivityFeedItem.comment",
       "description": "Title for a comment in the activity feed.",
@@ -56,4 +55,3 @@ module.exports = {
       "defaultMessage": "{name} has {deletedTranslation}"
     }
   ]
-}

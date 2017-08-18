@@ -1,6 +1,5 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action, decorateAction } from '@kadira/storybook-addon-actions'
+import { storiesOf, action } from '@storybook/react'
 import SelectButtonList from '.'
 
 const items = [
@@ -22,16 +21,15 @@ const items = [
 ]
 
 storiesOf('SelectButtonList', module)
-    .add('default', () => {
-      return <SelectButtonList items={items}
-              selectItem={action('selectItem')}
-              className="Button--secondary" />
-    })
+  .add('default', () => (
+    <SelectButtonList items={items}
+      selectItem={action('selectItem')}
+      className="Button--secondary" />
+  ))
 
-storiesOf('SelectButtonList', module)
-    .add('first button active', () => {
-      return <SelectButtonList items={items}
-                               selectItem={action('selectItem')}
-                               selected="all"
-                               className="Button--secondary" />
-    })
+  .add('first button active', () => (
+    <SelectButtonList items={items}
+      selectItem={action('selectItem')}
+      selected="all"
+      className="Button--secondary" />
+  ))

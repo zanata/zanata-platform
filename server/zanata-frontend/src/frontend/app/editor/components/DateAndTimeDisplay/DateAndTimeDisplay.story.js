@@ -1,11 +1,7 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
+import { storiesOf } from '@storybook/react'
 import DateAndTimeDisplay from '.'
 
-/*
- * TODO add stories showing the range of states
- *      for DateAndTimeDisplay
- */
 storiesOf('DateAndTimeDisplay', module)
   .add('default', () => (
     <DateAndTimeDisplay dateTime={new Date()} />

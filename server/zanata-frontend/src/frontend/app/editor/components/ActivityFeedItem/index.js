@@ -82,9 +82,9 @@ class ActivityFeedItem extends Component {
         return (
           <FormattedMessage id="ActivityFeedItem.approved"
             description={
-              `Title for an item in the activity feed showing a reviewer
-               approved the translation. The inserted section is from
-               ActivityFeedItem.approved.approvedTranslation`}
+              'Title for an item in the activity feed showing a reviewer ' +
+              'approved the translation. The inserted section is from ' +
+              'ActivityFeedItem.approved.approvedTranslation'}
             defaultMessage="{name} has {approvedTranslation}"
             values={{
               name,
@@ -105,9 +105,9 @@ class ActivityFeedItem extends Component {
         return (
           <FormattedMessage id="ActivityFeedItem.rejected"
             description={
-              `Title for an item in the activity feed showing a reviewer
-               rejected the translation. The inserted section is from
-               ActivityFeedItem.rejected.rejectedTranslation`}
+              'Title for an item in the activity feed showing a reviewer ' +
+              'rejected the translation. The inserted section is from ' +
+              'ActivityFeedItem.rejected.rejectedTranslation'}
             defaultMessage="{name} has {rejectedTranslation}"
             values={{
               name,
@@ -129,9 +129,9 @@ class ActivityFeedItem extends Component {
         return (
           <FormattedMessage id="ActivityFeedItem.translated"
             description={
-              `Title for an item in the activity feed showing a translator added
-               a translation. The inserted section is from
-               ActivityFeedItem.translated.translatedRevision`}
+              'Title for an item in the activity feed showing a ' +
+              'translator added a translation. The inserted section is from ' +
+              'ActivityFeedItem.translated.translatedRevision'}
             defaultMessage="{name} has {translatedRevision}"
             values={{
               name,
@@ -152,10 +152,10 @@ class ActivityFeedItem extends Component {
         return (
           <FormattedMessage id="ActivityFeedItem.fuzzy"
             description={
-              `Title for an item in the activity feed showing a translator saved
-               a fuzzy translation (a translation that still needs to be
-               edited). The inserted section is from
-               ActivityFeedItem.fuzzy.fuzzyRevision`}
+              'Title for an item in the activity feed showing a ' +
+              'translator saved a fuzzy translation (a translation that ' +
+              'still needs to be edited). The inserted section is from ' +
+              'ActivityFeedItem.fuzzy.fuzzyRevision'}
             defaultMessage="{name} has {fuzzyRevision}"
             values={{
               name,
@@ -176,9 +176,9 @@ class ActivityFeedItem extends Component {
         return (
           <FormattedMessage id="ActivityFeedItem.deleted"
             description={
-              `Title for an item in the activity feed showing a translator has
-               deleted the translation. The inserted section is from
-               ActivityFeedItem.deleted.deletedTranslation`}
+              'Title for an item in the activity feed showing a ' +
+              'translator has deleted the translation. The inserted ' +
+              'section is from ActivityFeedItem.deleted.deletedTranslation'}
             defaultMessage="{name} has {deletedTranslation}"
             values={{
               name,

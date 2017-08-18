@@ -124,6 +124,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   // FIXME dummy actions
+  /* eslint-disable no-console */
   return {
     postComment: (e) => console.log('postComment: ' + e),
     selectActivityTypeFilter:
@@ -131,6 +132,7 @@ function mapDispatchToProps (dispatch) {
     selectLanguageFilter:
       (e) => console.log('selectLanguageFilter: ' + e)
   }
+  /* eslint-enable no-console */
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityTab)

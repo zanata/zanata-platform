@@ -1,6 +1,5 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action } from '@kadira/storybook-addon-actions'
+import { storiesOf, action } from '@storybook/react'
 import LanguageSelectList from '.'
 
 /*
@@ -29,7 +28,6 @@ import LanguageSelectList from '.'
  */
 
 storiesOf('LanguageSelectList', module)
-    .add('default', () =>
-        <LanguageSelectList selected="current"
-                           selectItem={action('selectItem')} />
-    )
+  .add('default', () =>
+    <LanguageSelectList selected="current" selectItem={action('selectItem')} />
+  )

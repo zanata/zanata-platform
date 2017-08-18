@@ -1,6 +1,5 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action } from '@kadira/storybook-addon-actions'
+import { storiesOf, action } from '@storybook/react'
 import ActivitySelectList from '.'
 
 /*
@@ -29,6 +28,6 @@ import ActivitySelectList from '.'
  */
 
 storiesOf('ActivitySelectList', module)
-    .add('default', () => <ActivitySelectList selected="all"
-                           selectItem={action('selectItem')}
-    />)
+    .add('default', () => (
+      <ActivitySelectList selected="all" selectItem={action('selectItem')} />
+    ))

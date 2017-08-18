@@ -3,11 +3,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { baseUrl } from './config'
 import { locale, formats } from './config/intl'
-
-import { chain } from 'lodash'
-import { enUS } from './config/en-us.json'
-console.dir(enUS)
-
 import createStoreWithMiddleware from './middlewares'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import enLocaleData from 'react-intl/locale-data/en.js'
@@ -53,9 +48,6 @@ function runApp () {
   //   locale: 'en-US'
   // })
 
-  console.log('EN LOCALE DATA HERE')
-  console.dir(enLocaleData)
-
   addLocaleData([...enLocaleData])
 
   const history = browserHistory
@@ -73,15 +65,11 @@ function runApp () {
   //       first doc and language in the list and goes ahead.
   //   Should be able to do better than that.
 
-  const transformedMessages = chain(enUS)
-    .keyBy(({ id }) => id)
-    .mapValues(({ defaultMessage }) => defaultMessage)
-    .value()
-  console.dir(transformedMessages)
-
+  // TODO when translations are available, load user locale translations with
+  //   require.ensure and pass to IntlProvider as messages={...}
+  // defaultLocale will use the default messages with no errors
   ReactDOM.render(
-    <IntlProvider locale={locale} formats={formats}
-      messages={transformedMessages}>
+    <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
       <Provider store={store}>
         <Router history={enhancedHistory}>
           {/* The ** is docId, captured as params.splat by react-router. */}

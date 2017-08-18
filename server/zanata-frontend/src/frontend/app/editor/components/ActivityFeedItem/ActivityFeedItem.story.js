@@ -1,7 +1,3 @@
-import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import ActivityFeedItem from '.'
-
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
@@ -23,6 +19,10 @@ import ActivityFeedItem from '.'
  * site: http://www.fsf.org.
  */
 
+import React from 'react'
+import { storiesOf } from '@storybook/react'
+import ActivityFeedItem from '.'
+
 /*
  * See .storybook/README.md for info on the component storybook.
  */
@@ -36,46 +36,46 @@ const user = {
 }
 
 storiesOf('ActivityFeedItem', module)
-    .add('comment', () => (
-      <ActivityFeedItem
-        type="comment"
-        content={'What in the world does this mean?'}
-        lastModifiedTime={lastModifiedTime}
-        user={user} />
-      ))
-
-    .add('translated', () => (
-      <ActivityFeedItem
-        type="revision"
-        status="translated"
-        content={'নাম'}
-        lastModifiedTime={lastModifiedTime}
-        user={user} />
+  .add('comment', () => (
+    <ActivityFeedItem
+      type="comment"
+      content={'What in the world does this mean?'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
     ))
 
-    .add('fuzzy', () => (
-      <ActivityFeedItem
-        type="revision"
-        status="fuzzy"
-        content={'নাম'}
-        lastModifiedTime={lastModifiedTime}
-        user={user} />
-    ))
+  .add('translated', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="translated"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))
 
-    .add('approved', () => (
-      <ActivityFeedItem
-        type="revision"
-        status="approved"
-        content={'নাম'}
-        lastModifiedTime={lastModifiedTime}
-        user={user} />
-    ))
+  .add('fuzzy', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="fuzzy"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))
 
-    .add('rejected', () => (
-      <ActivityFeedItem
-        type="revision"
-        status="rejected"
-        content={'নাম'}
-        lastModifiedTime={lastModifiedTime}
-        user={user} />
-    ))
+  .add('approved', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="approved"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))
+
+  .add('rejected', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="rejected"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))

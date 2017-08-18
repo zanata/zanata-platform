@@ -1,6 +1,5 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action } from '@kadira/storybook-addon-actions'
+import { storiesOf, action } from '@storybook/react'
 import CommentBox from '.'
 
 /*
