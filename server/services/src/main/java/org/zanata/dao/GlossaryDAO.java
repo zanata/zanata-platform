@@ -302,9 +302,9 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
                 new TermQuery(new Term(IndexFieldLabels.GLOSSARY_QUALIFIED_NAME,
                         qualifiedName));
 
-        BooleanQuery booleanQuery = new BooleanQuery();
-        booleanQuery.add(textQuery, BooleanClause.Occur.MUST);
-        booleanQuery.add(qualifiedNameQuery, BooleanClause.Occur.MUST);
+        BooleanQuery booleanQuery = new BooleanQuery.Builder()
+                .add(textQuery, BooleanClause.Occur.MUST)
+                .add(qualifiedNameQuery, BooleanClause.Occur.MUST).build();
 
         FullTextQuery ftQuery =
                 entityManager.createFullTextQuery(booleanQuery,

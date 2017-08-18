@@ -1315,6 +1315,7 @@ public class ResourceUtils implements Serializable {
      * @param apiVersion
      * @todo merge with {@link #transferToTextFlowTargetExtensions}
      */
+    @SuppressWarnings("deprecation")
     public void transferToTextFlowTarget(HTextFlowTarget from,
             TextFlowTarget to, Optional<String> apiVersion) {
         if (from.getTextFlow().isPlural()) {
