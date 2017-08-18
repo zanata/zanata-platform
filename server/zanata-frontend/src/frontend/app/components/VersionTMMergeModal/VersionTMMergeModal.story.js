@@ -12,7 +12,10 @@ import {
   InputGroup,
   FormControl,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Label,
+  Checkbox,
+  Radio
 } from 'react-bootstrap'
 
 storiesOf('VersionTMMergeModal', module)
@@ -30,7 +33,7 @@ storiesOf('VersionTMMergeModal', module)
           </Modal.Header>
           <Modal.Body>
             <p className="intro">
-              Copy existing translations from similar documents
+              Copy existing <strong>translations</strong> from similar documents
               in other projects and versions into this project version.
             </p>
             <Col xs={12} className='vmerge-boxes'>
@@ -79,13 +82,25 @@ storiesOf('VersionTMMergeModal', module)
             </Col>
             <Col xs={12} className='vmerge-boxes'>
               <Panel>
-                <Col xs={3}>
+                <Col xs={12}>
                   <div className='vmerge-title'>
                     <span className='text-info'>From </span>
                     <span>Project Source</span>
                   </div>
                 </Col>
-                <Col xs={9} className='vmerge-searchbox'>
+                <Col xs={12}>
+                  Select TM from
+                  <Radio inline>
+                    this project
+                  </Radio>
+                  <Radio inline>
+                    all projects
+                  </Radio>
+                  <Radio inline checked>
+                    some projects
+                  </Radio>
+                </Col>
+                <Col xs={12} className='vmerge-searchbox'>
                   <InputGroup>
                     <InputGroup.Addon>
                       <Icon name='search' className='s0' title='search'/>
@@ -95,17 +110,30 @@ storiesOf('VersionTMMergeModal', module)
                     />
                   </InputGroup>
                 </Col>
+                <Col xs={12}>
+                  Selected projects: <Label>Project A <Icon name="cross"
+                                                            className="n1"/></Label>
+                </Col>
                 <Col xs={6}>
           <span className='vmerge-adjtitle vmerge-title'>
             Select source project versions to merge
           </span>
                   <Panel header={
                     <h3>
-                      <span className="check-box"></span>
+                      <ListGroup>
+                        <ListGroupItem className='list-group-item'
+                                       title='target project'>
+                          <Checkbox checked inline><Icon name='project'
+                                                         className='s0 tmx-icon'/>
+                            Projectname</Checkbox>
+                        </ListGroupItem>
+                      </ListGroup>
                     </h3>}>
                     <ListGroup fill>
-                      <ListGroupItem className='v'>
-                        <span className="check-box"></span>Version
+                      <ListGroupItem className='v' title='target version'>
+                        <Checkbox checked inline><Icon name='version'
+                                                       className='s0 tmx-icon'/>
+                          Versionname</Checkbox>
 
                       </ListGroupItem>
                     </ListGroup>
@@ -129,8 +157,63 @@ storiesOf('VersionTMMergeModal', module)
                     </ListGroupItem>
                   </ListGroup>
                 </Col>
+                <Col xs={12}>
+                  <Col xs={12} md={4}>
+                    If the translation is from a different project
+                    <Radio validationState='success'>
+                      I don't mind at all <Label bsStyle="success">Copy as translated</Label>
+                    </Radio>
+                    <Radio validationState='warning'>
+                      I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                    </Radio>
+                  </Col>
+                  <Col xs={12} md={4}>
+                    If the translation is from a different document
+                    <Radio validationState='success'>
+                      I don't mind at all <Label bsStyle="success">Copy as translated</Label>
+                    </Radio>
+                    <Radio validationState='warning'>
+                      I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                    </Radio>
+                    <Radio validationState='error'>
+                      I don't want it <Label bsStyle="danger">Discard</Label>
+                    </Radio>
+                  </Col>
+                  <Col xs={12} md={4}>
+                    If the translation is from a different context
+                    <Radio validationState='success'>
+                      I don't mind at all <Label bsStyle="success">Copy as translated</Label>
+                    </Radio>
+                    <Radio validationState='warning'>
+                      I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                    </Radio>
+                    <Radio validationState='error'>
+                      I don't want it <Label bsStyle="danger">Discard</Label>
+                    </Radio>
+                  </Col>
+                </Col>
               </Panel>
             </Col>
+            <Col xs={12} className='vmerge-boxes'>
+              <Panel>
+                <Col xs={12}>
+                  <div className='vmerge-title'>
+                    <span className='text-info'>From </span>
+                    <span>TM Source</span>
+                  </div>
+                </Col>
+                <Col xs={12} md={8}>
+                  No projects, documents or context for TMX
+                  <Radio validationState='success'>
+                    I don't mind at all <Label bsStyle="success">Copy as translated</Label>
+                  </Radio>
+                  <Radio validationState='warning'>
+                    I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                  </Radio>
+                </Col>
+              </Panel>
+            </Col>
+
           </Modal.Body>
           <Modal.Footer>
           <span className='bootstrap pull-right'>
