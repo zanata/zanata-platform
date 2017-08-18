@@ -26,7 +26,7 @@ SelectButtonList.propTypes = {
     buttonName: PropTypes.string,
     className: PropTypes.string
   })).isRequired,
-  selected: PropTypes.string.isRequired,
+  selected: PropTypes.string,
   className: PropTypes.string,
   selectItem: PropTypes.func.isRequired
 }

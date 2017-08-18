@@ -4,7 +4,7 @@ import DateAndTimeDisplay from '.'
 
 storiesOf('DateAndTimeDisplay', module)
   .add('default', () => (
-    <DateAndTimeDisplay dateTime={new Date()} />
+    <DateAndTimeDisplay dateTime={new Date(2016, 11, 16, 2, 18)} />
   ))
   .add('styling examples', () => (
     <ul>
