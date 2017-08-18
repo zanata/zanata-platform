@@ -10,7 +10,8 @@ import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from './GlossaryTab'
-import ActivityTab from './ActivityTab'
+// Use this when the activity tab is activated
+// import ActivityTab from './ActivityTab'
 
 class SidebarContent extends React.Component {
   static propTypes = {
@@ -115,13 +116,14 @@ class SidebarContent extends React.Component {
         <span className="hide-md">Glossary{glossaryCountDisplay}</span>
       </span>
     )
-    // ToDo damason comment out activity tab until backend completed
-    const activityTitle = (
-      <span>
-        <Icon name="clock" className="s1 gloss-tab-svg" />
-        <span className="hide-md">Activity</span>
-      </span>
-    )
+
+    // Use this when activity tab is activated
+    // const activityTitle = (
+    //   <span>
+    //     <Icon name="clock" className="s1 gloss-tab-svg" />
+    //     <span className="hide-md">Activity</span>
+    //   </span>
+    // )
 
     return (
       <div>
@@ -137,9 +139,10 @@ class SidebarContent extends React.Component {
         <div className="sidebar-wrapper">
           {this.sidebarDetails()}
         </div>
-        <Tabs id="sidebartabs" defaultActiveKey={2}>
+        <Tabs id="sidebartabs" defaultActiveKey={1}>
           <GlossaryTab eventKey={1} title={glossaryTitle} />
-          <ActivityTab eventKey={2} title={activityTitle} />
+          {/* Use this when activity tab is activated
+            <ActivityTab eventKey={2} title={activityTitle} /> */}
         </Tabs>
       </div>
     )
