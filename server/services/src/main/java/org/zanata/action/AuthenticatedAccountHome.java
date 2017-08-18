@@ -45,11 +45,7 @@ import java.io.Serializable;
 @Transactional
 public class AuthenticatedAccountHome extends EntityHome<HAccount>
         implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(AuthenticatedAccountHome.class);
 
-    /**
-     */
     private static final long serialVersionUID = 1L;
     @Inject
     @Authenticated

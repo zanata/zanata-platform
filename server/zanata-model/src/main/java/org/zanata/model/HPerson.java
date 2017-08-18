@@ -53,6 +53,7 @@ public class HPerson extends ModelEntityBase implements Serializable {
     private String name;
     private HAccount account;
     private String email;
+    @SuppressWarnings("unused")
     private Set<HProject> maintainerProjects;
     private Set<HIterationGroup> maintainerVersionGroups;
     private Set<HLocaleMember> languageTeamMemberships;

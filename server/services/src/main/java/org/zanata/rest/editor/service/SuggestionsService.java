@@ -36,8 +36,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
@@ -62,9 +60,6 @@ import com.google.common.base.Joiner;
 @Path(SuggestionsResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class SuggestionsService implements SuggestionsResource {
-    private static final Logger log =
-            LoggerFactory.getLogger(SuggestionsService.class);
-
     public static final String SEARCH_TYPES = Joiner.on(", ").join(SearchType.values());
     private static final long serialVersionUID = 1476086661647147017L;
 

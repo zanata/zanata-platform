@@ -48,9 +48,6 @@ import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class StatisticsRawRestITCase extends RestTest {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(StatisticsRawRestITCase.class);
-
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DataSetOperation(

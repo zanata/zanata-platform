@@ -5,7 +5,6 @@ import javax.servlet.annotation.WebServlet;
 
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.DispatchService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -30,14 +29,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @RemoteServiceRelativePath("seam/resource/gwt")
 public class GwtDispatchService extends RemoteServiceServlet
         implements DispatchService {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(GwtDispatchService.class);
     private static final long serialVersionUID = 6778090735163524352L;
 
     @Inject
     private SeamDispatch dispatch;
-    @Inject
-    private ZanataIdentity identity;
 
     @Override
     public Result execute(final Action<?> action) throws Exception {
