@@ -12,9 +12,9 @@ const CRITICAL = 'critical'
 class RejectionsForm extends Component {
   static PropTypes = {
     priority: PropTypes.oneOf([
-      'MINOR',
-      'MAJOR',
-      'CRITICAL'
+      MINOR,
+      MAJOR,
+      CRITICAL
     ]).isRequired,
     textState: PropTypes.oneOf([
       'text-info',
