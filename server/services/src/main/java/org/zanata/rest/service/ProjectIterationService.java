@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.rest.dto.ProjectIteration;
-
+@SuppressWarnings("deprecation")
 @RequestScoped
 @Named("projectIterationService")
 @Path(ProjectIterationResource.SERVICE_PATH)

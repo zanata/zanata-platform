@@ -168,13 +168,18 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         return super.persist();
     }
 
+    @SuppressWarnings("deprecation")
+    private void setMessage(String message) {
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                message);
+    }
+
     @Override
     @Transactional
     public String update() {
         identity.checkPermission(getInstance(), "update");
         String state = super.update();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.get("jsf.group.settings.updated"));
+        setMessage(msgs.get("jsf.group.settings.updated"));
         return state;
     }
     // TODO ask camunoz if this is still needed
@@ -205,9 +210,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         identity.checkPermission(getInstance(), "update");
         getInstance().getActiveLocales().remove(locale);
         update();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.LanguageRemoveFromGroup",
-                        locale.retrieveDisplayName()));
+        setMessage(msgs.format("jsf.LanguageRemoveFromGroup",
+                locale.retrieveDisplayName()));
     }
 
     @Transactional
@@ -215,24 +219,21 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         identity.checkPermission(getInstance(), "update");
         getInstance().getProjectIterations().remove(version);
         update();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.VersionRemoveFromGroup", version.getSlug(),
-                        version.getProject().getSlug()));
+        setMessage(msgs.format("jsf.VersionRemoveFromGroup", version.getSlug(),
+                version.getProject().getSlug()));
     }
 
     @Transactional
     public void removeMaintainer(HPerson maintainer) {
         identity.checkPermission(getInstance(), "update");
         if (getInstance().getMaintainers().size() <= 1) {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.get("jsf.group.NeedAtLeastOneMaintainer"));
+            setMessage(msgs.get("jsf.group.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().removeMaintainer(maintainer);
             maintainerFilter.reset();
             super.update();
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.format("jsf.MaintainerRemoveFromGroup",
-                            maintainer.getName()));
+            setMessage(msgs.format("jsf.MaintainerRemoveFromGroup",
+                    maintainer.getName()));
             if (maintainer.equals(authenticatedAccount.getPerson())) {
                 urlUtil.redirectToInternal(
                         urlUtil.groupUrl(getInstance().getSlug()));
@@ -316,6 +317,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
          */
         @Override
         @Transactional
+        @SuppressWarnings("deprecation")
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
@@ -370,6 +372,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
         @Override
         @Transactional
+        @SuppressWarnings("deprecation")
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
@@ -434,6 +437,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
         @Override
         @Transactional
+        @SuppressWarnings("deprecation")
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
