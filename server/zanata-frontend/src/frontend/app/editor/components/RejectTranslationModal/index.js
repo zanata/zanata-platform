@@ -14,7 +14,7 @@ export class RejectTranslationModal extends Component {
     className: PropTypes.string,
     key: PropTypes.string,
     onHide: PropTypes.func,
-    toggleDropdown: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func,
     isOpen: PropTypes.bool.isRequired,
     priority: PropTypes.oneOf(
         [
