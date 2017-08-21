@@ -55,7 +55,6 @@ import org.zanata.rest.search.dto.PersonSearchResult;
 import org.zanata.rest.search.dto.ProjectSearchResult;
 import org.zanata.rest.search.dto.ProjectVersionSearchResult;
 import org.zanata.rest.search.dto.SearchResults;
-import org.zanata.rest.service.RestResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
@@ -71,7 +70,7 @@ import com.google.common.collect.Maps;
 @Path("/search")
 @Produces(APPLICATION_JSON)
 @Transactional(readOnly = true)
-public class SearchService implements RestResource {
+public class SearchService {
 
     @Inject
     private ProjectDAO projectDAO;

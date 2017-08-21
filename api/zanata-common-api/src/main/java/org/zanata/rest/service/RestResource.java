@@ -28,7 +28,9 @@ import java.io.Serializable;
  *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @deprecated REST Resource implementations are discovered by the presence of
+ * {@code @Path} only (not inherited), as per spec.
  */
+@Deprecated
 public interface RestResource extends Serializable {
 }
