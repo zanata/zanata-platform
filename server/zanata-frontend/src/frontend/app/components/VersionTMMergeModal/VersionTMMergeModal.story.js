@@ -41,8 +41,8 @@ storiesOf('VersionTMMergeModal', module)
               <Panel>
                 <div className='vmerge-target'>
                   <div className='vmerge-title'>
-                    <span className='text-info'>To</span>
-                    <span>Target</span>
+                    <span>To</span>
+                    Target
                   </div>
                   <ul>
                     <li className='list-group-item' title='target project'>
@@ -50,10 +50,9 @@ storiesOf('VersionTMMergeModal', module)
                         Project</span>
                       <span><Icon name='version' className='s0 tmx-icon'/>
                         Version</span>
-                      <span className='vmerge-title text-info'
+                      <span className='vmerge-title'
                             id="languages-dd">
                       <Icon name="language" className="s1"/>
-                      Language
                          <DropdownButton bsStyle='default' title='Assamese'
                                          id='language-dropdown-basic'
                                          className='vmerge-ddown'>
@@ -67,9 +66,8 @@ storiesOf('VersionTMMergeModal', module)
               </Panel>
             </Col>
             <Col xs={12} className='vmerge-row'>
-              <h3>For every potential translation:</h3>
-              <span
-                  className='vmerge-title text-info'>If text is less than </span>
+              <p className="lead">For every potential translation:</p>
+              <span>If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
                               id='language-dropdown-basic'
                               className='vmerge-ddown'>
@@ -85,8 +83,8 @@ storiesOf('VersionTMMergeModal', module)
               <Panel>
                 <Col xs={12}>
                   <div className='vmerge-title'>
-                    <span className='text-info'>From </span>
-                    <span>Project Source</span>
+                    <span>From </span>
+                    Project Source
                   </div>
                 </Col>
                 <Col xs={12}>
@@ -138,6 +136,18 @@ storiesOf('VersionTMMergeModal', module)
                           Versionname</Checkbox>
 
                       </ListGroupItem>
+                      <ListGroupItem className='v' title='target version'>
+                        <Checkbox checked inline><Icon name='version'
+                                                       className='s0 tmx-icon'/>
+                          Versionname</Checkbox>
+
+                      </ListGroupItem>
+                      <ListGroupItem className='v' title='target version'>
+                        <Checkbox checked inline><Icon name='version'
+                                                       className='s0 tmx-icon'/>
+                          Versionname</Checkbox>
+
+                      </ListGroupItem>
                     </ListGroup>
                   </Panel>
                  </div>
@@ -148,6 +158,16 @@ storiesOf('VersionTMMergeModal', module)
           </span><br/>
                   <span className="text-muted vmerge-adjsub">(best first)</span>
                   <ListGroup fill>
+                    <ListGroupItem className='v'>
+                      <Icon name='menu' className='n1 drag-handle'/>
+                      <span className='text-muted'> Version1
+                       </span> <Icon name='locked' className='s0 icon-locked'/>
+                      {" "}
+                      <Button bsSize='xsmall' className='close rm-version-btn'>
+                        <Icon name='cross' className='n2 crossicon'
+                              title='remove version'/>
+                      </Button>
+                    </ListGroupItem>
                     <ListGroupItem className='v'>
                       <Icon name='menu' className='n1 drag-handle'/>
                       <span className='text-muted'> Version1
@@ -201,8 +221,8 @@ storiesOf('VersionTMMergeModal', module)
               <Panel>
                 <Col xs={12}>
                   <div className='vmerge-title'>
-                    <span className='text-info'>From </span>
-                    <span>TM Source</span>
+                    <span>From </span>
+                    TM Source
                   </div>
                 </Col>
                 <Col xs={12} md={8}>
