@@ -1,13 +1,14 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Form, FormGroup, ControlLabel, DropdownButton, MenuItem, Button }
   from 'react-bootstrap'
 import { Icon, TextInput } from '../../components'
 /**
  * Reject Translations Administration panel
  */
-const MINOR = 'minor'
-const MAJOR = 'major'
-const CRITICAL = 'critical'
+const MINOR = 'Minor'
+const MAJOR = 'Major'
+const CRITICAL = 'Critical'
 
 class RejectionsForm extends Component {
   static PropTypes = {

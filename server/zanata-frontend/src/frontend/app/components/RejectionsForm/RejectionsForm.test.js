@@ -8,26 +8,26 @@ import ReactDOMServer from 'react-dom/server'
 import RejectionsForm from '.'
 
 describe('RejectionsForm Test', () => {
-  it('read-only', () => {
+  it('read-only (minor priority)', () => {
     <RejectionsForm
         editable={false}
         criteriaPlaceholder='Criteria here'
         priority='Minor' textState='text-info'/>
   })
-  it('editable', () => {
+  it('editable (minor priority)', () => {
     <RejectionsForm
         className='active'
         editable={true}
         criteriaPlaceholder='Criteria here'
         priority='Minor' textState='text-info'/>
   })
-  it('major', () => {
+  it('major priority', () => {
     <RejectionsForm
         editable={false}
         criteriaPlaceholder='Criteria here'
         priority='Major' textState='text-warning'/>
   })
-  it('critical', () => {
+  it('critical priority', () => {
     <RejectionsForm
         editable={false}
         criteriaPlaceholder='Criteria here'
