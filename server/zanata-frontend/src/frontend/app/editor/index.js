@@ -44,9 +44,6 @@ function runApp () {
   //     addLocaleData(window.ReactIntlLocaleData[lang])
   //   })
   // }
-  // addLocaleData({
-  //   locale: 'en-US'
-  // })
 
   addLocaleData([...enLocaleData])
 

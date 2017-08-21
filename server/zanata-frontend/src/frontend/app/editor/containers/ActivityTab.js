@@ -62,7 +62,8 @@ class ActivityTab extends React.Component {
 }
 
 function mapStateToProps (state) {
-  // FIXME dummy data
+  // Dummy data. Kept for structure reference.
+  // FIXME delete when the component is wired into the app.
   const lastModifiedTime = new Date()
   return {
     activityItems: [
