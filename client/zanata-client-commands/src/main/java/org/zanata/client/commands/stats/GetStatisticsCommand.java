@@ -94,7 +94,7 @@ public class GetStatisticsCommand extends
             // Otherwise, stats for the single document
             containerStats =
                     client
-                            .getStatistics(getOpts().getProj(), getOpts()
+                            .getStatisticsWithDocId(getOpts().getProj(), getOpts()
                                     .getProjectVersion(), getOpts()
                                     .getDocumentId(), getOpts()
                                     .getIncludeWordLevelStats(), localeListArg);
