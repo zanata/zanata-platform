@@ -26,6 +26,7 @@ storiesOf('VersionTMMergeModal', module)
     ))
     .add('default', () => (
         <Modal
+            id="TM-merge-modal"
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
@@ -118,9 +119,10 @@ storiesOf('VersionTMMergeModal', module)
           <span className='vmerge-adjtitle vmerge-title'>
             Select source project versions to merge
           </span>
+                 <div className="panel-group proj-select">
                   <Panel header={
                     <h3>
-                      <ListGroup>
+                      <ListGroup className="checkbox">
                         <ListGroupItem className='list-group-item'
                                        title='target project'>
                           <Checkbox checked inline><Icon name='project'
@@ -138,6 +140,7 @@ storiesOf('VersionTMMergeModal', module)
                       </ListGroupItem>
                     </ListGroup>
                   </Panel>
+                 </div>
                 </Col>
                 <Col xs={6}>
                    <span className="vmerge-adjtitle vmerge-title">

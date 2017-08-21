@@ -13,6 +13,14 @@
   margin-left: 1em;
 }
 
+.proj-select .list-group-item {
+  border: none;
+}
+
+.proj-select .panel-heading {
+  padding: 0;
+}
+
 .vmerge-target ul {
   list-style-type: none;
   margin-top: 0.5em;
@@ -55,7 +63,7 @@
   margin-left: 0.75em;
 }
 
-.vmerge-boxes li.v.list-group-item .checkbox {
+.vmerge-boxes li.v.list-group-item label.checkbox-inline {
   margin-left: 2rem;
 }
 
@@ -69,6 +77,11 @@
   color: @color-light;
   font-style: italic;
   font-weight: 500;
+}
+
+.vmerge-target ul {
+  padding-left: 0;
+  margin-left: 0;
 }
 
 .vmerge-adjsub {
@@ -94,7 +107,7 @@
 }
 
 .panel-title {
-   font-size: 1.1rem !important;
+   font-size: 1rem !important;
    margin: 0 !important;
 }
 
