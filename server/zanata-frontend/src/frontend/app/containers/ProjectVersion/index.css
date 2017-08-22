@@ -281,5 +281,8 @@ li.list-group-item.to  .item .tmx-icon {
   font-size: 1.1rem;
 }
 
+.tooltip-btn {
+  padding: 0;
+}
 
 
