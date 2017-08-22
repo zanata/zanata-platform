@@ -93,6 +93,21 @@ public class SampleDataResourceClient {
         createRequest("/project").put(EMPTY_ENTITY).close();
     }
 
+    public static void setRateLimit(int active, int concurrent)
+            throws Exception {
+        new ResteasyClientBuilder().build()
+                .target(
+                        PropertiesHolder.getProperty(Constants.zanataInstance
+                                .value()) + "rest/test/data/sample/rateLimit")
+                .queryParam("active", active)
+                .queryParam("concurrent", concurrent)
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("X-Auth-Token",
+                        PropertiesHolder.getProperty(Constants.zanataApiKey
+                                .value()))
+                .put(EMPTY_ENTITY).close();
+    }
+
     public static void makeSampleLanguages() throws Exception {
         createRequest("/languages").put(EMPTY_ENTITY).close();
     }

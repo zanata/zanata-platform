@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link, Icon } from '../../components'
-import { serverUrl } from '../../config'
+import { getLanguageUrl } from '../../utils/UrlHelper'
 
 /**
  * Entry of Language team search results
@@ -11,7 +11,7 @@ const LanguageTeamTeaser = ({
   details,
   ...props
 }) => {
-  const link = serverUrl + '/language/view/' + details.id
+  const link = getLanguageUrl(details.id)
   return (
     <div className='team-teaser-view' name={name}>
       <div className='flex-row'>
