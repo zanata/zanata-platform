@@ -112,6 +112,10 @@ public class Deployments {
                                 // JavaMelody's ServletFilter/Listener
                                 // interferes with test deployments.
                                 "net.bull.javamelody:javamelody-core"
+                                // We shouldn't need apicompat interfaces in
+                                // the server, but we will also need to
+                                // exclude the tests which refer to them.
+//                                "org.zanata:zanata-common-api:jar:compat:?"
                         ),
                         TransitiveStrategy.INSTANCE))
                 .asFile();

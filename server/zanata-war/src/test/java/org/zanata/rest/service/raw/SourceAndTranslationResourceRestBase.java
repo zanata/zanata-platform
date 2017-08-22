@@ -57,8 +57,8 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             "/projects/p/sample-project/iterations/i/1.0/r/";
     protected static final String BASE_PATH =
             "/projects/p/sample-project/iterations/i/1.0/resource";
-    private SourceDocResource sourceDocResource;
-    private TranslatedDocResource translatedDocResource;
+    private SourceDocClient sourceDocResource;
+    private TranslatedDocClient translatedDocResource;
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -95,21 +95,21 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         return jaxbUnmarshal(response, TranslationsResource.class);
     }
 
-    public SourceDocResource getSourceDocResource() {
+    public SourceDocClient getSourceDocResource() {
         if (sourceDocResource == null) {
-            sourceDocResource = new TestSourceDocResource();
+            sourceDocResource = new SourceDocClient();
         }
         return sourceDocResource;
     }
 
-    public TranslatedDocResource getTransResource() {
+    public TranslatedDocClient getTransResource() {
         if (translatedDocResource == null) {
-            translatedDocResource = new TestTranslatedDocResource();
+            translatedDocResource = new TranslatedDocClient();
         }
         return translatedDocResource;
     }
 
-    private class TestSourceDocResource implements SourceDocResource {
+    public class SourceDocClient implements SourceDocResource {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -419,7 +419,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         }
     }
 
-    private class TestTranslatedDocResource implements TranslatedDocResource {
+    public class TranslatedDocClient implements TranslatedDocResource {
         private static final long serialVersionUID = 1L;
 
         @Override
