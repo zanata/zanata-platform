@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { baseUrl } from './config'
+import { appUrl, serverUrl } from '../config'
 import { locale, formats } from './config/intl'
 import createStoreWithMiddleware from './middlewares'
 import { addLocaleData, IntlProvider } from 'react-intl'
@@ -17,7 +17,7 @@ import NeedSlugMessage from './containers/NeedSlugMessage'
 
 // Set the path that webpack will try to load extra chunks from
 // This is needed to load intl-polyfill
-__webpack_public_path__ = baseUrl || '/' // eslint-disable-line
+__webpack_public_path__ = serverUrl || '/' // eslint-disable-line
 
 import './index.css'
 
@@ -48,7 +48,7 @@ function runApp () {
   addLocaleData([...enLocaleData])
 
   const history = browserHistory
-  history.basename = baseUrl
+  history.basename = appUrl
   const store = createStoreWithMiddleware(rootReducer)
   addWatchers(store)
 

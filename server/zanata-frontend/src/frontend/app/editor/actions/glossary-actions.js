@@ -18,7 +18,7 @@ import {
   GLOSSARY_DETAILS_FAILURE
 } from './glossary-action-types'
 
-import { baseRestUrl } from '../api'
+import { apiUrl } from '../../config'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 
 /* Call as search text changes to trigger a glossary search when the text stops
@@ -96,7 +96,7 @@ function findGlossaryTerms (searchText) {
     const projectSlug = headerData.context.projectVersion.project.slug
 
     const glossaryUrl =
-      `${baseRestUrl}/glossary/search?srcLocale=${srcLocale}&transLocale=${transLocale}&project=${projectSlug}&searchText=${encodeURIComponent(searchText)}&maxResults=${MAX_GLOSSARY_TERMS}` // eslint-disable-line max-len
+      `${apiUrl}/glossary/search?srcLocale=${srcLocale}&transLocale=${transLocale}&project=${projectSlug}&searchText=${encodeURIComponent(searchText)}&maxResults=${MAX_GLOSSARY_TERMS}` // eslint-disable-line max-len
 
     dispatch({
       [CALL_API_ENHANCED]: {
@@ -155,7 +155,7 @@ function getGlossaryDetails (term) {
 
     const termIdsQuery = 'termIds=' + sourceIdList.join('&termIds=')
     const glossaryDetailsUrl =
-      `${baseRestUrl}/glossary/details/${transLocale}?${termIdsQuery}`
+      `${apiUrl}/glossary/details/${transLocale}?${termIdsQuery}`
 
     dispatch({
       [CALL_API_ENHANCED]: {

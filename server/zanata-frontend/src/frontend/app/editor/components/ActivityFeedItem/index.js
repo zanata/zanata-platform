@@ -23,8 +23,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
 import Icon from '../../../components/Icon'
+import Link from '../../../components/Link'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import { Well } from 'react-bootstrap'
+import { profileUrl } from '../../api'
 
 const statusToWellClass = {
   approved: 'well-approved',
@@ -46,15 +48,17 @@ class ActivityFeedItem extends Component {
       'untranslated']),
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
       imageUrl: PropTypes.string.isRequired
     }).isRequired
   }
 
   getMessage = () => {
     const { user, type, status } = this.props
-    // TODO make this link to user profile or something (with user.username)
-    //      /profile/view/username
-    const name = <a>{user.name}</a>
+    // Uses href because editor app is separate from frontend app
+    const name = (
+      <Link useHref link={profileUrl(user.username)}>{user.name}</Link>
+    )
 
     if (type === 'comment') {
       return (
@@ -199,8 +203,10 @@ class ActivityFeedItem extends Component {
       <div className="revision-box">
         <p>
           <Icon name={isComment ? 'comment' : 'refresh'} className="s0" />
-          {/* TODO use component for avatar image */}
-          <img className="u-round activity-avatar" src={user.imageUrl} />
+          <Link useHref link={profileUrl(user.username)}>
+            {/* TODO use component for avatar image */}
+            <img className="u-round activity-avatar" src={user.imageUrl} />
+          </Link>
           {this.getMessage()}
         </p>
         <Well className={isComment ? '' : statusToWellClass[status]}>

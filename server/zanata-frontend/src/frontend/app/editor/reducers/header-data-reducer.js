@@ -9,7 +9,7 @@ import {
 } from '../actions/header-action-types'
 import updateObject from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
-import { dashboardUrl, serviceUrl } from '../api'
+import { dashboardUrl, projectPageUrl } from '../api'
 
 const defaultState = {
   user: {
@@ -41,10 +41,6 @@ const defaultState = {
     },
     selectedLocale: ''
   }
-}
-
-const projectPage = (projectSlug, versionSlug) => {
-  return `${serviceUrl}/iteration/view/${projectSlug}/${versionSlug}`
 }
 
 const gravatarUrl = (hash, size) => {
@@ -90,7 +86,7 @@ export default (state = defaultState, action) => {
               $set: versionSlug
             },
             url: {
-              $set: projectPage(projectSlug, versionSlug)
+              $set: projectPageUrl(projectSlug, versionSlug)
             },
             docs: {
               $set: docs
