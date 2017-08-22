@@ -23,6 +23,7 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -86,24 +87,27 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .queryParam("docId", docId)
                         .queryParam("word", String.valueOf(includeWordStats))
                         .queryParam("locale", (Object[]) locales);
-        Response response =
-                webResource.request(MediaType.APPLICATION_XML_TYPE).get();
-        if (RestUtil.isNotFound(response)) {
-            response.close();
-            webResource =
-                    factory.getClient().target(baseUri).path("stats")
-                            .path("proj")
-                            .path(projectSlug)
-                            .path("iter")
-                            .path(iterationSlug)
-                            .path("doc")
-                            .path(docId)
-                            .queryParam("word", String.valueOf(includeWordStats))
-                            .queryParam("locale", (Object[]) locales);
+        try {
             return webResource.request(MediaType.APPLICATION_XML_TYPE)
                     .get(ContainerTranslationStatistics.class);
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                // fallback to old endpoint
+                webResource =
+                        factory.getClient().target(baseUri).path("stats")
+                                .path("proj")
+                                .path(projectSlug)
+                                .path("iter")
+                                .path(iterationSlug)
+                                .path("doc")
+                                .path(docId)
+                                .queryParam("word", String.valueOf(includeWordStats))
+                                .queryParam("locale", (Object[]) locales);
+                return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                        .get(ContainerTranslationStatistics.class);
+            }
+            throw e;
         }
-        return response.readEntity(ContainerTranslationStatistics.class);
     }
 
     @Override
