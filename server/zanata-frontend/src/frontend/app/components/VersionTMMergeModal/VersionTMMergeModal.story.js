@@ -15,7 +15,8 @@ import {
   ListGroupItem,
   Label,
   Checkbox,
-  Radio
+  Radio,
+  Accordion
 } from 'react-bootstrap'
 
 storiesOf('VersionTMMergeModal', module)
@@ -37,6 +38,14 @@ storiesOf('VersionTMMergeModal', module)
               Copy existing <strong>translations</strong> from similar documents
               in other projects and versions into this project version.
             </p>
+            <Accordion>
+              <Panel header={
+                <p>Matching phrases are found in the selected projects and imported TM, filtered using the active
+                conditions, then the best matching translation is copied to the target project-version. <a href="">more..</a></p>
+                } eventKey="1">
+                <p><img src="http://i.imgur.com/ezA992G.png" alt="Version TM Merge workflow" /></p>
+              </Panel>
+            </Accordion>
             <Col xs={12} className='vmerge-boxes'>
               <Panel>
                 <div className='vmerge-target'>
@@ -46,12 +55,12 @@ storiesOf('VersionTMMergeModal', module)
                   </div>
                   <ul>
                     <li className='list-group-item to' title='target project'>
-                      <span><Icon name='project' className='s0 tmx-icon'/>
+                      <span className="item"><Icon name='project' className='s1 tmx-icon'/>
                         Project</span>
-                      <span><Icon name='version' className='s0 tmx-icon'/>
+                      <span className="item"><Icon name='version' className='s1 tmx-icon'/>
                         Version</span>
-                      <span id="languages-dd">
-                      <Icon name="language" className="s1"/>
+                      <span className="item" id="languages-dd">
+                      <Icon name="language" className="s1 tmx-icon"/>
                          <DropdownButton bsStyle='default' title='Assamese'
                                          id='language-dropdown-basic'
                                          className='vmerge-ddown'>

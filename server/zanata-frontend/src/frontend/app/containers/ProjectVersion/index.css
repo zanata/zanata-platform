@@ -114,6 +114,7 @@
 .panel-title {
   font-size: 1rem !important;
   margin: 0 !important;
+  font-weight: 400;
 }
 
 .react-draggable.list-group-item span.text-muted {
@@ -264,3 +265,20 @@ li.v span.text-muted {
   font-weight: 500;
   margin-left: 2.5rem;
 }
+
+li.list-group-item.to .item {
+  vertical-align:  -webkit-baseline-middle;
+  vertical-align: -moz-middle-with-baseline;
+  margin-right: 1.5rem;
+}
+
+li.list-group-item.to  .item .tmx-icon {
+  vertical-align: -webkit-baseline-middle;
+  vertical-align: -moz-middle-with-baseline;
+}
+
+.panel-name {
+  font-size: 1.1rem;
+}
+
+
