@@ -30,7 +30,7 @@ storiesOf('VersionTMMergeModal', module)
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
-            <Modal.Title>Version TM Merge</Modal.Title>
+            <Modal.Title><span className="text-new-blue">Version TM Merge</span></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p className="intro">
@@ -42,16 +42,15 @@ storiesOf('VersionTMMergeModal', module)
                 <div className='vmerge-target'>
                   <div className='vmerge-title'>
                     <span>To</span>
-                    Target
+                    <span className="panel-name">Target</span>
                   </div>
                   <ul>
-                    <li className='list-group-item' title='target project'>
+                    <li className='list-group-item to' title='target project'>
                       <span><Icon name='project' className='s0 tmx-icon'/>
                         Project</span>
                       <span><Icon name='version' className='s0 tmx-icon'/>
                         Version</span>
-                      <span className='vmerge-title'
-                            id="languages-dd">
+                      <span id="languages-dd">
                       <Icon name="language" className="s1"/>
                          <DropdownButton bsStyle='default' title='Assamese'
                                          id='language-dropdown-basic'
@@ -67,7 +66,7 @@ storiesOf('VersionTMMergeModal', module)
             </Col>
             <Col xs={12} className='vmerge-row'>
               <p className="lead">For every potential translation:</p>
-              <span>If text is less than </span>
+              <span className="text-new-blue">If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
                               id='language-dropdown-basic'
                               className='vmerge-ddown'>
@@ -77,18 +76,18 @@ storiesOf('VersionTMMergeModal', module)
                           eventKey='1'>90%</MenuItem>
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>80%</MenuItem>
-              </DropdownButton>&nbsp;similar, don't use it.
+              </DropdownButton><span className="text-new-blue"> &nbsp;similar, don't use it.</span>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
               <Panel>
                 <Col xs={12}>
                   <div className='vmerge-title'>
                     <span>From </span>
-                    Project Source
+                    <span className="panel-name">Project Source</span>
                   </div>
                 </Col>
-                <Col xs={12}>
-                  Select TM from
+                <Col xs={12} className="select-source">
+                  <span>Select TM from</span>
                   <Radio inline>
                     this project
                   </Radio>
@@ -109,7 +108,7 @@ storiesOf('VersionTMMergeModal', module)
                     />
                   </InputGroup>
                 </Col>
-                <Col xs={12}>
+                <Col xs={12} className="select-project">
                   Selected projects: <Label>Project A <Icon name="cross"
                                                             className="n1"/></Label>
                 </Col>
@@ -125,7 +124,7 @@ storiesOf('VersionTMMergeModal', module)
                                        title='target project'>
                           <Checkbox checked inline><Icon name='project'
                                                          className='s0 tmx-icon'/>
-                            Projectname</Checkbox>
+                            Project A</Checkbox>
                         </ListGroupItem>
                       </ListGroup>
                     </h3>}>
@@ -133,19 +132,19 @@ storiesOf('VersionTMMergeModal', module)
                       <ListGroupItem className='v' title='target version'>
                         <Checkbox checked inline><Icon name='version'
                                                        className='s0 tmx-icon'/>
-                          Versionname</Checkbox>
+                          Version 1 <Icon name='locked' className='s0 icon-locked'/></Checkbox>
 
                       </ListGroupItem>
                       <ListGroupItem className='v' title='target version'>
                         <Checkbox checked inline><Icon name='version'
                                                        className='s0 tmx-icon'/>
-                          Versionname</Checkbox>
+                          Version 2 <Icon name='locked' className='s0 icon-locked'/></Checkbox>
 
                       </ListGroupItem>
                       <ListGroupItem className='v' title='target version'>
-                        <Checkbox checked inline><Icon name='version'
+                        <Checkbox inline><Icon name='version'
                                                        className='s0 tmx-icon'/>
-                          Versionname</Checkbox>
+                          Version 3</Checkbox>
 
                       </ListGroupItem>
                     </ListGroup>
@@ -160,8 +159,9 @@ storiesOf('VersionTMMergeModal', module)
                   <ListGroup fill>
                     <ListGroupItem className='v'>
                       <Icon name='menu' className='n1 drag-handle'/>
-                      <span className='text-muted'> Version1
-                       </span> <Icon name='locked' className='s0 icon-locked'/>
+                      Version 1 <Icon name='locked' className='s0 icon-locked'/>
+                      <br /><span className='text-muted'>  Project A
+                       </span>
                       {" "}
                       <Button bsSize='xsmall' className='close rm-version-btn'>
                         <Icon name='cross' className='n2 crossicon'
@@ -170,8 +170,9 @@ storiesOf('VersionTMMergeModal', module)
                     </ListGroupItem>
                     <ListGroupItem className='v'>
                       <Icon name='menu' className='n1 drag-handle'/>
-                      <span className='text-muted'> Version1
-                       </span> <Icon name='locked' className='s0 icon-locked'/>
+                      Version 2 <Icon name='locked' className='s0 icon-locked'/>
+                      <br /><span className='text-muted'>  Project A
+                       </span>
                       {" "}
                       <Button bsSize='xsmall' className='close rm-version-btn'>
                         <Icon name='cross' className='n2 crossicon'
@@ -180,35 +181,35 @@ storiesOf('VersionTMMergeModal', module)
                     </ListGroupItem>
                   </ListGroup>
                 </Col>
-                <Col xs={12}>
+                <Col xs={12} className="validations">
                   <Col xs={12} md={4}>
-                    If the translation is from a different project
+                    If the translation is from a different <span>project</span>
                     <Radio validationState='success'>
                       I don't mind at all <Label bsStyle="success">Copy as translated</Label>
                     </Radio>
                     <Radio validationState='warning'>
-                      I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                      I need to review it <Label bsStyle="warning">Copy as translated</Label>
                     </Radio>
                   </Col>
                   <Col xs={12} md={4}>
-                    If the translation is from a different document
+                    If the translation is from a different <span>document</span>
                     <Radio validationState='success'>
                       I don't mind at all <Label bsStyle="success">Copy as translated</Label>
                     </Radio>
                     <Radio validationState='warning'>
-                      I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                      I need to review it <Label bsStyle="warning">Copy as translated</Label>
                     </Radio>
                     <Radio validationState='error'>
                       I don't want it <Label bsStyle="danger">Discard</Label>
                     </Radio>
                   </Col>
                   <Col xs={12} md={4}>
-                    If the translation is from a different context
+                    If the translation is from a different <span>context</span>
                     <Radio validationState='success'>
                       I don't mind at all <Label bsStyle="success">Copy as translated</Label>
                     </Radio>
                     <Radio validationState='warning'>
-                      I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                      I need to review it <Label bsStyle="warning">Copy as translated</Label>
                     </Radio>
                     <Radio validationState='error'>
                       I don't want it <Label bsStyle="danger">Discard</Label>
@@ -222,7 +223,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12}>
                   <div className='vmerge-title'>
                     <span>From </span>
-                    TM Source
+                    <span className="panel-name">TM Source</span>
                   </div>
                 </Col>
                 <Col xs={12} md={8}>
@@ -231,7 +232,7 @@ storiesOf('VersionTMMergeModal', module)
                     I don't mind at all <Label bsStyle="success">Copy as translated</Label>
                   </Radio>
                   <Radio validationState='warning'>
-                    I will need to review it <Label bsStyle="warning">Copy as translated</Label>
+                    I need to review it <Label bsStyle="warning">Copy as translated</Label>
                   </Radio>
                 </Col>
               </Panel>
@@ -242,7 +243,7 @@ storiesOf('VersionTMMergeModal', module)
           <span className='bootstrap pull-right'>
             <Row>
               <Button bsStyle='link'
-                      className='btn-left'
+                      className='btn-left link-danger'
                       onClick={action('onClick')}>
                 Cancel
               </Button>

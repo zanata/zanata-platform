@@ -24,10 +24,15 @@
 .vmerge-target ul {
   list-style-type: none;
   margin-top: 0.5em;
-  font-size: 1.1em;
   margin-bottom: 0;
-  line-height:2em;
+  line-height: 2em;
   margin-left: 1rem;
+}
+
+#TM-merge-modal .label {
+  font-size: 0.975rem;
+  font-weight: 400;
+  padding: 0.25rem;
 }
 
 .vmerge-boxes .panel-group {
@@ -57,7 +62,7 @@
   height: 2rem;
 }
 
-.vmerge-boxes .info-icon  {
+.vmerge-boxes .info-icon {
   vertical-align: sub;
   color: @color-light;
   margin-left: 0.75em;
@@ -67,7 +72,7 @@
   margin-left: 2rem;
 }
 
-.s0.icon-locked  {
+.s0.icon-locked {
   color: @color-warning;
   vertical-align: middle;
   margin-left: 0.375em;
@@ -107,8 +112,8 @@
 }
 
 .panel-title {
-   font-size: 1rem !important;
-   margin: 0 !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
 }
 
 .react-draggable.list-group-item span.text-muted {
@@ -116,19 +121,19 @@
 }
 
 .drag-handle {
-  top : 50% !important;
+  top: 50% !important;
   right: 3% !important;
   -ms-transform: translate(3%, -50%);
-  transform    : translate(3%, -50%);
+  transform: translate(3%, -50%);
   padding: 0.75rem !important;
   cursor: ns-resize !important;
 }
 
 .rm-version-btn {
-  top : 50% !important;
+  top: 50% !important;
   right: 3% !important;
   -ms-transform: translate(3%, -50%);
-  transform    : translate(3%, -50%);
+  transform: translate(3%, -50%);
   padding: 0.75rem !important;
   color: red !important;
 }
@@ -155,7 +160,7 @@
   padding: 0;
 }
 
-.new-zanata  #TM-merge-modal ul, .new-zanata #TM-merge-modal ul li {
+.new-zanata #TM-merge-modal ul, .new-zanata #TM-merge-modal ul li {
   list-style-type: none !important;
 }
 
@@ -219,4 +224,43 @@ li.v input.checkbox {
   color: #FFA800 !important;
   vertical-align: middle;
   margin-left: 0.375em;
+}
+
+.select-project {
+  padding-bottom: 1.5rem;
+}
+
+.validations {
+  padding-top: 1.5rem;
+}
+
+.validations span {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.radio.has-success label,
+.radio.has-warning label,
+.radio.has-error label {
+  font-weight: 500;
+  font-size: 0.975rem;
+}
+
+.select-source {
+  display: flex;
+  padding-bottom: 0.75rem;
+}
+
+.select-source span {
+  padding-right: 1rem;
+}
+
+p.lead {
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+li.v span.text-muted {
+  font-weight: 500;
+  margin-left: 2.5rem;
 }
