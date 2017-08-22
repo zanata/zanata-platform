@@ -16,8 +16,14 @@ import {
   Label,
   Checkbox,
   Radio,
-  Accordion
+  Accordion,
+  Tooltip,
+  OverlayTrigger
 } from 'react-bootstrap'
+
+const tooltip1 = (<Tooltip id='from-project-source' title='From project source'>
+  Test
+</Tooltip>)
 
 storiesOf('VersionTMMergeModal', module)
     .addDecorator((story) => (
@@ -26,6 +32,7 @@ storiesOf('VersionTMMergeModal', module)
         </div>
     ))
     .add('default', () => (
+
         <Modal
             id="TM-merge-modal"
             show={true}
@@ -93,6 +100,11 @@ storiesOf('VersionTMMergeModal', module)
                   <div className='vmerge-title'>
                     <span>From </span>
                     <span className="panel-name">Project Source</span>
+                    <OverlayTrigger placement='right' overlay={tooltip1}>
+                      <Button bsStyle="link">
+                        <Icon name="info" className="s1 info-icon" />
+                      </Button>
+                    </OverlayTrigger>
                   </div>
                 </Col>
                 <Col xs={12} className="select-source">
