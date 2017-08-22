@@ -180,6 +180,9 @@
             <include>**/*Tests.java</include>
           </includes>
           <runOrder>alphabetical</runOrder>
+          <systemPropertyVariables>
+            <java.util.logging.config.file>${build.testOutputDirectory}/logging-test.properties</java.util.logging.config.file>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
 
