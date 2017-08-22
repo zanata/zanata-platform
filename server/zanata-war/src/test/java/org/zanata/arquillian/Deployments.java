@@ -21,15 +21,9 @@
 package org.zanata.arquillian;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
@@ -49,10 +43,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrate
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.ImmutableList;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.*;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.COMPILE;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.TEST;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package
@@ -71,7 +65,7 @@ public class Deployments {
         ProjectStageProducer.setProjectStage(ProjectStage.IntegrationTest);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Archive<?> archive = Deployments.createDeployment();
         // see what will be in the war
         printArchiveContents(archive);
@@ -83,9 +77,9 @@ public class Deployments {
 
         // OR uncomment this if you want an exploded war directory:
 //        File exploded = new File("/tmp/zanata-arquillian-exploded.war");
-//        exploded.delete();
-//        archive.as(ExplodedExporter.class).exportExplodedInto(
-//                exploded);
+//        org.apache.commons.io.FileUtils.deleteDirectory(exploded);
+//        archive.as(org.jboss.shrinkwrap.api.exporter.ExplodedExporter.class)
+//                .exportExplodedInto(exploded);
     }
 
     private static void printArchiveContents(Archive archive) {
@@ -94,8 +88,8 @@ public class Deployments {
         ArrayList<ArchivePath> paths =
                 new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);
-        System.out.println("Deployment contents:");
-        paths.forEach(it -> System.out.println("  " + it.get()));
+        log.info("Deployment contents:");
+        paths.forEach(it -> log.info("  " + it.get()));
     }
 
     static File[] runtimeAndTestDependenciesFromPom() {
@@ -155,6 +149,9 @@ public class Deployments {
         archive.setWebXML("arquillian/test-web.xml");
         archive.delete("/WEB-INF/classes/arquillian");
         archive.delete("/WEB-INF/classes/arquillian.xml");
+        // Remove log4j.xml to prevent JBoss from activating per-deployment
+        // logging (which breaks stdout and org.zanata logging).
+        archive.delete("/WEB-INF/classes/log4j.xml");
         // Note: see the main method if you want to see or extract the contents of the deployment
         return archive;
     }
