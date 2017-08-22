@@ -16,12 +16,13 @@ import javax.inject.Inject;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
+import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.security.annotations.NoSecurityCheck;
-import org.zanata.util.SampleProjectProfile;
+import org.zanata.util.SampleDataProfile;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
@@ -42,7 +43,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     private static final long serialVersionUID = -7132159610444327773L;
 
     @Inject
-    private SampleProjectProfile sampleProjectProfile;
+    private SampleDataProfile sampleDataProfile;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
@@ -56,7 +57,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
         new RunAsOperationForTest() {
             @Override
             public void execute() {
-                sampleProjectProfile.makeSampleLanguages();
+                sampleDataProfile.makeSampleLanguages();
             }
         }.run();
 
@@ -70,7 +71,8 @@ public class SampleDataResourceImpl implements SampleDataResource {
         new RunAsOperationForTest() {
             @Override
             public void execute() {
-                sampleProjectProfile.makeLanguage(true, new LocaleId(localeId), pluralForms);
+                sampleDataProfile
+                        .makeLanguage(true, new LocaleId(localeId), pluralForms);
             }
         }.run();
 
@@ -81,7 +83,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     public Response makeSampleUsers() {
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.makeSampleUsers();
+                sampleDataProfile.makeSampleUsers();
             }
         }.run();
 
@@ -112,7 +114,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
                 HLocale.class).setParameter("locales", locales).getResultList();
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.addUsersToLanguage(hPerson, hLocales);
+                sampleDataProfile.addUsersToLanguage(hPerson, hLocales);
             }
         }.run();
 
@@ -123,7 +125,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     public Response makeSampleProject() {
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.makeSampleProject();
+                sampleDataProfile.makeSampleProject();
             }
         }.run();
 
@@ -131,10 +133,29 @@ public class SampleDataResourceImpl implements SampleDataResource {
     }
 
     @Override
+    public Response setRateLimit(String active, String concurrent) {
+
+        new RunAsOperationForTest() {
+            public void execute() {
+                HApplicationConfiguration activeConfig =
+                        new HApplicationConfiguration(
+                                HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY,
+                                active);
+                HApplicationConfiguration concurrentConfig =
+                        new HApplicationConfiguration(
+                                HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY,
+                                concurrent);
+                sampleDataProfile.setRateLimit(activeConfig, concurrentConfig);
+            }
+        }.run();
+        return Response.ok().build();
+    }
+
+    @Override
     public Response deleteExceptEssentialData() {
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.deleteExceptEssentialData();
+                sampleDataProfile.deleteExceptEssentialData();
             }
         }.run();
 
@@ -146,7 +167,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
         new RunAsOperationForTest() {
             @Override
             public void execute() {
-                sampleProjectProfile.setAllowAnonymousUserConfig(value);
+                sampleDataProfile.setAllowAnonymousUserConfig(value);
             }
         }.run();
         return Response.ok().build();

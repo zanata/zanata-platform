@@ -53,7 +53,6 @@ public class PersonSearchTest extends ZanataTestCase {
                 .contains("translator")
                 .as("Normal user can see the person listed");
 
-        explorePage.slightPause();
         ProfilePage profilePage = explorePage.clickUserSearchEntry("translator");
 
         assertThat(profilePage.getUsername().trim())

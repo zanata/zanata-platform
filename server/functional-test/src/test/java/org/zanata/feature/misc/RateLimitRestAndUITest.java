@@ -33,6 +33,7 @@ import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
+import org.zanata.util.SampleDataRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import javax.ws.rs.client.Entity;
@@ -70,9 +71,9 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 new LoginWorkFlow().signIn("admin", "admin")
                         .goToAdministration().goToServerConfigPage();
         assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey())
-                .isEqualTo("default is 6");
+                .isEqualTo(String.valueOf(SampleDataRule.CONCURRENT_RATE_LIMIT));
         assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey())
-                .isEqualTo("default is 2");
+                .isEqualTo(String.valueOf(SampleDataRule.ACTIVE_RATE_LIMIT));
         AdministrationPage administrationPage =
                 serverConfigPage.inputMaxConcurrent(5).inputMaxActive(3).save();
         // RHBZ1160651
