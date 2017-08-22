@@ -23,16 +23,16 @@ import {
 } from 'react-bootstrap'
 
 const tooltip1 = (<Tooltip id='from-project-source' title='From project source'>
-  Test
+  Exact text matches from projects are used before exact matches in imported TM. Fuzzy text matches from projects are used before fuzzy matches in imported TM.
 </Tooltip>)
-const tooltip2 = (<Tooltip id='from-project-source' title='From project source'>
-  Test
+const tooltip2 = (<Tooltip id='adjust-priority' title='Adjust priority'>
+  Best match will be chosen based on the priority of selected projects. Exact matches take precendence.
 </Tooltip>)
-const tooltip3 = (<Tooltip id='from-project-source' title='From project source'>
-  Test
+const tooltip3 = (<Tooltip id='copy-as-fuzzy-project' title='Copy as fuzzy - Project'>
+  Can only copy as translated if  the context is the same.  Otherwise it will always use  fuzzy.
 </Tooltip>)
-const tooltip4 = (<Tooltip id='from-project-source' title='From project source'>
-  Test
+const tooltip4 = (<Tooltip id='copy-as-translated-TM' title='Copy as translated - TM'>
+  Less than 100% match still  copies as fuzzy.
 </Tooltip>)
 
 storiesOf('VersionTMMergeModal', module)
@@ -103,11 +103,6 @@ storiesOf('VersionTMMergeModal', module)
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>80%</MenuItem>
               </DropdownButton><span className="text-new-blue"> &nbsp;similar, don't use it.
-             <OverlayTrigger placement='right' overlay={tooltip2}>
-                      <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon" />
-                      </Button>
-                    </OverlayTrigger>
             </span>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
@@ -116,7 +111,7 @@ storiesOf('VersionTMMergeModal', module)
                   <div className='vmerge-title'>
                     <span>From </span>
                     <span className="panel-name">Project Source</span>
-                    <OverlayTrigger placement='right' overlay={tooltip2}>
+                    <OverlayTrigger placement='right' overlay={tooltip1}>
                       <Button bsStyle="link" className="tooltip-btn">
                         <Icon name="info" className="s0 info-icon" />
                       </Button>
@@ -193,7 +188,7 @@ storiesOf('VersionTMMergeModal', module)
           Adjust priority of selected versions
           </span><br/>
                   <span className="text-muted vmerge-adjsub">(best first)
-                   <OverlayTrigger placement='right' overlay={tooltip3}>
+                   <OverlayTrigger placement='right' overlay={tooltip2}>
                       <Button bsStyle="link" className="tooltip-btn">
                         <Icon name="info" className="s0 info-icon" />
                       </Button>
@@ -232,7 +227,7 @@ storiesOf('VersionTMMergeModal', module)
                     </Radio>
                     <Radio validationState='warning'>
                       I need to review it <Label bsStyle="warning">Copy as fuzzy</Label>
-                      <OverlayTrigger placement='right' overlay={tooltip4}>
+                      <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
                           <Icon name="info" className="s0 info-icon" />
                         </Button>
@@ -246,7 +241,7 @@ storiesOf('VersionTMMergeModal', module)
                     </Radio>
                     <Radio validationState='warning'>
                       I need to review it <Label bsStyle="warning">Copy as fuzzy</Label>
-                      <OverlayTrigger placement='right' overlay={tooltip4}>
+                      <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
                           <Icon name="info" className="s0 info-icon" />
                         </Button>
@@ -263,7 +258,7 @@ storiesOf('VersionTMMergeModal', module)
                     </Radio>
                     <Radio validationState='warning'>
                       I need to review it <Label bsStyle="warning">Copy as fuzzy</Label>
-                      <OverlayTrigger placement='right' overlay={tooltip4}>
+                      <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
                           <Icon name="info" className="s0 info-icon" />
                         </Button>
@@ -276,7 +271,7 @@ storiesOf('VersionTMMergeModal', module)
                 </Col>
                 <Col xs={12}>
                   <Well>
-                    <p>Translations which satisfy all conditions will copy as <span className="text-success">translated</span>.</p>
+                    <p>Translations which satisfy all conditions will copy as <span className="text-bold text-success">translated</span>.</p>
                   </Well>
                   </Col>
               </Panel>
@@ -293,14 +288,14 @@ storiesOf('VersionTMMergeModal', module)
                   No projects, documents or context for TMX
                   <Radio validationState='success'>
                     I don't mind at all <Label bsStyle="success">Copy as translated</Label>
-                  </Radio>
-                  <Radio validationState='warning' checked>
-                    I need to review it <Label bsStyle="warning">Copy as fuzzy</Label>
                     <OverlayTrigger placement='right' overlay={tooltip4}>
                       <Button bsStyle="link" className="tooltip-btn">
                         <Icon name="info" className="s0 info-icon" />
                       </Button>
                     </OverlayTrigger>
+                  </Radio>
+                  <Radio validationState='warning' checked>
+                    I need to review it <Label bsStyle="warning">Copy as fuzzy</Label>
                   </Radio>
                 </Col>
               </Panel>

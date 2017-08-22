@@ -64,8 +64,7 @@
 
 .vmerge-boxes .info-icon {
   vertical-align: sub;
-  color: @color-light;
-  margin-left: 0.75em;
+  margin-left: 0.375em;
 }
 
 .vmerge-boxes li.v.list-group-item label.checkbox-inline {
