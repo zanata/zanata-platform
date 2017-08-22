@@ -285,4 +285,14 @@ li.list-group-item.to  .item .tmx-icon {
   padding: 0;
 }
 
+.well {
+  background-color: #fff;
+  border-color:#BDD4DC;
+  text-align: center;
+  margin-top: 2rem;
+}
 
+.well p {
+  padding-top: 1.5rem;
+  font-size: 1.1rem;
+}
