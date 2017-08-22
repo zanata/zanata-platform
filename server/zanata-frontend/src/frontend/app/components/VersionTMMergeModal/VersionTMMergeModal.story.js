@@ -101,8 +101,8 @@ storiesOf('VersionTMMergeModal', module)
                     <span>From </span>
                     <span className="panel-name">Project Source</span>
                     <OverlayTrigger placement='right' overlay={tooltip1}>
-                      <Button bsStyle="link">
-                        <Icon name="info" className="s1 info-icon" />
+                      <Button bsStyle="link" className="tooltip-btn">
+                        <Icon name="info" className="s0 info-icon" />
                       </Button>
                     </OverlayTrigger>
                   </div>
