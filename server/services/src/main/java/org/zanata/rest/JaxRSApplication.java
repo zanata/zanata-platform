@@ -1,6 +1,7 @@
 package org.zanata.rest;
 
 import com.google.common.collect.ImmutableSet;
+import org.jboss.resteasy.util.PickConstructor;
 import org.reflections.Reflections;
 import org.zanata.rest.service.RestResource;
 import javax.enterprise.context.ApplicationScoped;
@@ -40,26 +41,34 @@ public class JaxRSApplication extends javax.ws.rs.core.Application {
     private static Set<Class<?>> buildClassesSet() {
         long start = currentTimeMillis();
         Reflections reflections = new Reflections(PACKAGE_PREFIX);
-        Iterable<Class<? extends RestResource>> resourceClasses =
+        Set<Class<? extends RestResource>> resourceClasses =
                 reflections.getSubTypesOf(RestResource.class);
         log.debug("Indexed RestResource classes: {}", resourceClasses);
-        Iterable<Class<?>> pathClasses = reflections.getTypesAnnotatedWith(Path.class, true);
+        Set<Class<?>> pathClasses = reflections.getTypesAnnotatedWith(Path.class, true);
         log.debug("Indexed @Path classes: {}", pathClasses);
-        Iterable<Class<?>> providerClasses =
+        Set<Class<?>> providerClasses =
                 reflections.getTypesAnnotatedWith(Provider.class, true);
         log.debug("Indexed @Provider classes: {}", providerClasses);
         Stream<Class<?>> concatStream = concat(stream(resourceClasses), concat(
                 stream(pathClasses),
                 stream(providerClasses)));
         ImmutableSet<Class<?>> classes = concatStream
-                .filter(clazz -> !isAbstract(clazz.getModifiers()))
                 .filter(clazz -> !clazz.getName()
                         .startsWith("org.zanata.rest.client."))
+                .filter(JaxRSApplication::canConstruct)
                 .collect(collectingAndThen(toSet(), ImmutableSet::copyOf));
         long timeTaken = currentTimeMillis() - start;
         log.info("Found {} JAX-RS classes in total; took {} ms", classes.size(),
                 timeTaken);
         return classes;
+    }
+
+    private static boolean canConstruct(Class<?> clazz) {
+        return !isAbstract(clazz.getModifiers()) &&
+                // RESTEasy can use no-args constructor, or any constructor
+                // with @Context args. This method should find either, but not
+                // org.zanata.rest.service.raw.SourceAndTranslationResourceRestBase.TestSourceDocResource.
+                PickConstructor.pickPerRequestConstructor(clazz) != null;
     }
 
     private static <T> Stream<T> stream(Iterable<T> iterable) {
