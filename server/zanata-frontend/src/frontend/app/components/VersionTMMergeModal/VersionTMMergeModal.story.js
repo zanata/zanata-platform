@@ -434,7 +434,7 @@ storiesOf('VersionTMMergeModal', module)
                         <ListGroup className="checkbox">
                           <ListGroupItem className='list-group-item'
                                          title='target project'>
-                            <Checkbox checked inline><Icon name='project'
+                            <Checkbox inline><Icon name='project'
                                                            className='s0 tmx-icon'/>
                               Project A</Checkbox>
                           </ListGroupItem>
@@ -442,13 +442,13 @@ storiesOf('VersionTMMergeModal', module)
                       </h3>}>
                       <ListGroup fill>
                         <ListGroupItem className='v' title='target version'>
-                          <Checkbox checked inline><Icon name='version'
+                          <Checkbox inline><Icon name='version'
                                                          className='s0 tmx-icon'/>
                             Version 1 <Icon name='locked' className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
-                          <Checkbox checked inline><Icon name='version'
+                          <Checkbox inline><Icon name='version'
                                                          className='s0 tmx-icon'/>
                             Version 2 <Icon name='locked' className='s0 icon-locked'/></Checkbox>
 
@@ -464,40 +464,8 @@ storiesOf('VersionTMMergeModal', module)
                   </div>
                 </Col>
                 <Col xs={6}>
-                   <span className="vmerge-adjtitle vmerge-title">
-          Adjust priority of selected versions
-          </span><br/>
-                  <span className="text-muted vmerge-adjsub">(best first)
-                   <OverlayTrigger placement='right' overlay={tooltip2}>
-                      <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon" />
-                      </Button>
-                    </OverlayTrigger>
-                  </span>
-                  <ListGroup fill>
-                    <ListGroupItem className='v'>
-                      <Icon name='menu' className='n1 drag-handle'/>
-                      Version 1 <Icon name='locked' className='s0 icon-locked'/>
-                      <br /><span className='text-muted'>  Project A
-                       </span>
-                      {" "}
-                      <Button bsSize='xsmall' className='close rm-version-btn'>
-                        <Icon name='cross' className='n2 crossicon'
-                              title='remove version'/>
-                      </Button>
-                    </ListGroupItem>
-                    <ListGroupItem className='v'>
-                      <Icon name='menu' className='n1 drag-handle'/>
-                      Version 2 <Icon name='locked' className='s0 icon-locked'/>
-                      <br /><span className='text-muted'>  Project A
-                       </span>
-                      {" "}
-                      <Button bsSize='xsmall' className='close rm-version-btn'>
-                        <Icon name='cross' className='n2 crossicon'
-                              title='remove version'/>
-                      </Button>
-                    </ListGroupItem>
-                  </ListGroup>
+                  <span className="no-v text-muted">Please select versions to sort<br />
+                    <Icon name="version" className="s8" /></span>
                 </Col>
                 <Col xs={12} className="validations">
                   <Col xs={12} md={4}>

@@ -295,3 +295,16 @@ li.list-group-item.to  .item .tmx-icon {
   padding-top: 1.5rem;
   font-size: 1.1rem;
 }
+
+.no-v {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.no-v .s8 {
+  margin-top: 1rem;
+}
