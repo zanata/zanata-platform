@@ -23,7 +23,6 @@
 
 .vmerge-target ul {
   list-style-type: none;
-  margin-top: 0.5em;
   margin-bottom: 0;
   line-height: 2em;
   margin-left: 1rem;
@@ -51,6 +50,12 @@
   font-weight: 600;
   font-size: 1em;
   margin-bottom: 0.375rem;
+}
+
+.vmerge-title-flex {
+  display: inline-flex;
+  align-items: baseline;
+  margin-bottom: 1rem;
 }
 
 .vmerge-title .text-muted {
@@ -185,14 +190,6 @@
   margin-bottom: 1rem !important;
 }
 
-#TM-merge-modal .modal-header {
-  padding-bottom: 0 !important;
-}
-
-#TM-merge-modal .modal-body {
-  padding-top: 0 !important;
-}
-
 #TM-merge-modal {
   visibility: visible;
   opacity: inherit;
@@ -266,14 +263,12 @@ li.v span.text-muted {
 }
 
 li.list-group-item.to .item {
-  vertical-align:  -webkit-baseline-middle;
-  vertical-align: -moz-middle-with-baseline;
+  vertical-align: middle;
   margin-right: 1.5rem;
 }
 
-li.list-group-item.to  .item .tmx-icon {
-  vertical-align: -webkit-baseline-middle;
-  vertical-align: -moz-middle-with-baseline;
+li.list-group-item.to .item .tmx-icon {
+  vertical-align: sub;
 }
 
 .panel-name {
@@ -286,7 +281,7 @@ li.list-group-item.to  .item .tmx-icon {
 
 .well {
   background-color: #fff;
-  border-color:#BDD4DC;
+  border-color: #BDD4DC;
   text-align: center;
   margin-top: 2rem;
 }
@@ -309,25 +304,38 @@ li.list-group-item.to  .item .tmx-icon {
   margin-top: 1rem;
 }
 
+.radio.disabled {
+  opacity: 0.5;
+}
+
+.radio input[type=radio] {
+  margin-bottom: 0.75rem;
+}
+
+.btn-link {
+  line-height: inherit;
+}
+
+/* React Toggle Component CSS */
+
 .react-toggle {
   touch-action: pan-x;
-
   display: inline-block;
   position: relative;
   cursor: pointer;
   background-color: transparent;
   border: 0;
   padding: 0;
-
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-tap-highlight-color: transparent;
+  margin-right: 1rem;
+  vertical-align: bottom;
 }
 
 .react-toggle-screenreader-only {
@@ -353,22 +361,22 @@ li.list-group-item.to  .item .tmx-icon {
   height: 24px;
   padding: 0;
   border-radius: 30px;
-  background-color: #4D4D4D;
+  background-color: #A2B3BE;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
   transition: all 0.2s ease;
 }
 
 .react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: #000000;
+  background-color: #A2B3BE;
 }
 
 .react-toggle--checked .react-toggle-track {
-  background-color: #19AB27;
+  background-color: #20718A;
 }
 
 .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: #128D15;
+  background-color: #20718A;
 }
 
 .react-toggle-track-check {
@@ -421,7 +429,6 @@ li.list-group-item.to  .item .tmx-icon {
   left: 1px;
   width: 22px;
   height: 22px;
-  border: 1px solid #4D4D4D;
   border-radius: 50%;
   background-color: #FAFAFA;
 
@@ -436,17 +443,4 @@ li.list-group-item.to  .item .tmx-icon {
 
 .react-toggle--checked .react-toggle-thumb {
   left: 27px;
-  border-color: #19AB27;
-}
-
-.react-toggle--focus .react-toggle-thumb {
-  -webkit-box-shadow: 0px 0px 3px 2px #0099E0;
-  -moz-box-shadow: 0px 0px 3px 2px #0099E0;
-  box-shadow: 0px 0px 2px 3px #0099E0;
-}
-
-.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb {
-  -webkit-box-shadow: 0px 0px 5px 5px #0099E0;
-  -moz-box-shadow: 0px 0px 5px 5px #0099E0;
-  box-shadow: 0px 0px 5px 5px #0099E0;
 }
