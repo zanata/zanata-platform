@@ -21,6 +21,7 @@ import {
   OverlayTrigger,
   Well
 } from 'react-bootstrap'
+import Toggle from 'react-toggle'
 
 const tooltip1 = (<Tooltip id='from-project-source' title='From project source'>
   Exact text matches from projects are used before exact matches in imported TM. Fuzzy text matches from projects are used before fuzzy matches in imported TM.
@@ -109,6 +110,7 @@ storiesOf('VersionTMMergeModal', module)
               <Panel>
                 <Col xs={12}>
                   <div className='vmerge-title'>
+                    <Toggle icons={false} defaultChecked={true} />
                     <span>From </span>
                     <span className="panel-name">Project Source</span>
                     <OverlayTrigger placement='right' overlay={tooltip1}>
@@ -280,6 +282,7 @@ storiesOf('VersionTMMergeModal', module)
               <Panel>
                 <Col xs={12}>
                   <div className='vmerge-title'>
+                    <Toggle icons={false} defaultChecked={true} />
                     <span>From </span>
                     <span className="panel-name">TM Source</span>
                   </div>
