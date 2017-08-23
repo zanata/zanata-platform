@@ -221,7 +221,7 @@ tr.selected > .transUnitCol:last-child {
 }
 
 .transUnitTable > tbody > tr {
-  opacity: 0.9;
+  opacity: 0.65;
 }
 
 .transUnitTable > tbody > tr .fadeElement {
