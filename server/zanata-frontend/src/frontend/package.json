@@ -135,6 +135,6 @@
     "svg-sprite": "1.3.6",
     "text-diff": "1.0.1",
     "webfontloader": "1.6.24",
-    "yarn": "^0.27.5"
+    "yarn": "0.27.5"
   }
 }
