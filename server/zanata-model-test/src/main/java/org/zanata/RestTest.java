@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -131,13 +132,18 @@ public abstract class RestTest {
     @RemoteBefore
     public void prepareDataBeforeTest() {
         log.info("Executing prepareDataBeforeTest()");
-        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
-                getDataSetToClear(),
-                DatabaseOperation.DELETE_ALL));
+        String dataSetToClear = getDataSetToClear();
+        if (dataSetToClear != null) {
+            addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                    dataSetToClear,
+                    DatabaseOperation.DELETE_ALL));
+        }
         prepareDBUnitOperations();
-        addAfterTestOperation(new DBUnitProvider.DataSetOperation(
-                getDataSetToClear(),
-                DatabaseOperation.DELETE_ALL));
+        if (dataSetToClear != null) {
+            addAfterTestOperation(new DBUnitProvider.DataSetOperation(
+                    dataSetToClear,
+                    DatabaseOperation.DELETE_ALL));
+        }
         dbUnitProvider.prepareDataBeforeTest();
         // Clear the hibernate cache
         entityManagerFactory().getCache().evictAll();
@@ -147,7 +153,7 @@ public abstract class RestTest {
         return CDI.current().select(EntityManagerFactory.class).get();
     }
 
-    @NotNull
+    @Nullable
     protected String getDataSetToClear() {
         return "org/zanata/test/model/ClearAllTables.dbunit.xml";
     }
@@ -173,8 +179,9 @@ public abstract class RestTest {
                 .queryParam("c", this.getClass().getName())
                 .queryParam("m", testName.getMethodName())
                 .request().build("post").invoke();
-        if (response.getStatusInfo().getFamily() != SUCCESSFUL) {
-            throw new Exception("bad response: " + response.getStatusInfo());
+        Response.StatusType statusInfo = response.getStatusInfo();
+        if (statusInfo.getFamily() != SUCCESSFUL) {
+            throw new Exception("bad response: " + statusInfo.getStatusCode() + " " + statusInfo);
         }
     }
 

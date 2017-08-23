@@ -5,15 +5,6 @@ import org.jboss.shrinkwrap.descriptor.api.beans10.BeansDescriptor
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.JBossDeploymentStructureDescriptor
 import org.jboss.shrinkwrap.resolver.api.maven.Maven
 import org.slf4j.LoggerFactory
-import org.wildfly.extras.creaper.commands.datasources.AddDataSource
-import org.wildfly.extras.creaper.commands.logging.AddLogger
-import org.wildfly.extras.creaper.commands.logging.ChangeConsoleLogHandler
-import org.wildfly.extras.creaper.commands.logging.LogLevel
-import org.wildfly.extras.creaper.commands.messaging.AddQueue
-import org.wildfly.extras.creaper.commands.security.AddLoginModule
-import org.wildfly.extras.creaper.commands.security.AddSecurityDomain
-import org.wildfly.extras.creaper.core.ManagementClient
-import org.wildfly.extras.creaper.core.offline.OfflineOptions
 import org.zanata.H2DocumentHistoryTrigger
 import org.zanata.database.WrappedDatasourceConnectionProvider
 import org.zanata.i18n.MessagesFactory
@@ -56,6 +47,7 @@ object ArquillianRest {
                 "org.assertj:assertj-core",
                 "org.codehaus.jackson:jackson-mapper-asl",
                 "org.dbunit:dbunit",
+//                "org.hibernate:hibernate-core",
                 "org.reflections:reflections",
                 "org.jetbrains.kotlin:kotlin-stdlib")
     }
@@ -76,7 +68,7 @@ object ArquillianRest {
 
     @JvmStatic
     fun classesWithDependenciesForRest(): List<Class<*>> {
-        return mutableListOf<Class<out Any>>(
+        return listOf<Class<out Any>>(
                 JaxRSApplication::class.java,
                 WithRequestScopeInterceptor::class.java,
                 SynchronizationInterceptor::class.java,
@@ -138,100 +130,5 @@ object ArquillianRest {
                 .createModule().name("org.jboss.resteasy.resteasy-jackson-provider").services("import").up()
                 .up().up()
     }
-
-    @JvmStatic
-    @JvmSuppressWildcards
-    fun beforeSetup() {
-        log.info("beforeSetup")
-        val jbossHome = System.getProperty("jboss.home") ?: throw RuntimeException(
-                "System property jboss.home needs to be set")
-
-        // see also this alternative: https://developer.jboss.org/wiki/AdvancedCLIScriptingWithGroovyRhinoJythonEtc
-
-        val client = ManagementClient.offline(OfflineOptions.standalone()
-                .rootDirectory(File(jbossHome))
-                .configurationFile("standalone-full.xml")
-                .build())
-
-        client.apply(AddDataSource.Builder<AddDataSource.Builder<*>>("zanataDatasource")
-                .enableAfterCreate()
-                .jndiName("java:jboss/datasources/zanataDatasource")
-                .driverName("h2")
-                .connectionUrl("jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1")
-                .usernameAndPassword("sa", "sa")
-                .validateOnMatch(false)
-                .backgroundValidation(false)
-                .validConnectionCheckerClass("org.jboss.jca.adapters.jdbc.extensions.novendor.JDBC4ValidConnectionChecker")
-                .exceptionSorterClass("org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter")
-                .useCcm(true)
-                .replaceExisting()
-                .build(),
-
-                /* online only
-                new AddLocalCache.Builder("zanata")
-                        .jndiName("java:jboss/infinispan/container/zanata")
-                        .statisticsEnabled(true)
-                        .cacheContainer("zanata")
-//                        .replaceExisting()
-                        .build(),
-                */
-
-                ChangeConsoleLogHandler.Builder("CONSOLE")
-                        .level(LogLevel.DEBUG)
-                        .build(),
-                AddLogger.Builder("org.hibernate.SQL")
-                        .replaceExisting()
-                        .level(LogLevel.DEBUG)
-                        .build(),
-                AddLogger.Builder("org.hibernate.tool.hbm2ddl")
-                        .replaceExisting()
-                        .level(LogLevel.DEBUG)
-                        .build(),
-
-                AddQueue.Builder("MailsQueue")
-                        .durable(true)
-                        .jndiEntries(
-                                listOf("java:/jms/queue/MailsQueue"))
-                        .replaceExisting()
-                        .build(),
-
-                AddSecurityDomain.Builder("zanata")
-                        .replaceExisting()
-                        .build(),
-                AddLoginModule.Builder<AddLoginModule.Builder<*>>("org.zanata.security.ZanataCentralLoginModule", "ZanataCentralLoginModule")
-                        .securityDomainName("zanata")
-                        .replaceExisting()
-                        .flag("required")
-                        .build(),
-                AddSecurityDomain.Builder("zanata.internal")
-                        .replaceExisting()
-                        .build(),
-                AddLoginModule.Builder<AddLoginModule.Builder<*>>("org.zanata.security.jaas.InternalLoginModule", "ZanataInternalLoginModule")
-                        .securityDomainName("zanata.internal")
-                        .replaceExisting()
-                        .flag("required")
-                        .build(),
-                AddSecurityDomain.Builder("zanata.openid")
-                        .replaceExisting()
-                        .build(),
-                AddLoginModule.Builder<AddLoginModule.Builder<*>>("org.zanata.security.OpenIdLoginModule", "ZanataOpenIdLoginModule")
-                        .securityDomainName("zanata.openid")
-                        .replaceExisting()
-                        .flag("required")
-                        .build()
-        )
-    }
-
-    // TODO this would allow us to reuse configuration, but
-    // we will need to filter out the embed-server command from the cli file
-//    fun afterStart() {
-//        log.info("afterStart")
-//        val client = ManagementClient.online(OnlineOptions
-//                .standalone()
-//                .hostAndPort("localhost", 9990)
-//                .protocol(ManagementProtocol.HTTP_REMOTING)
-//                .build())
-//        client.apply(CliFile(File("../etc/scripts/zanata-config-arq-test.cli")))
-//    }
 
 }

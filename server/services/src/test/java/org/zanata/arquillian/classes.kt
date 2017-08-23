@@ -105,7 +105,7 @@ private val Class<*>.inputStream: InputStream?
  * sometimes returns Strings which aren't class names).
  */
 private fun findDirectClassDependencies(clazz: Class<*>): Set<String> {
-    log.debug("findClassDependencies({}), clazz")
+    log.debug("findDirectClassDependencies({})", clazz)
     val visitor = DependencyClassFileVisitor()
     clazz.inputStream?.use {
         // NB visitClass doesn't close the InputStream

@@ -40,6 +40,7 @@
       <!-- NB: don't put whitespace around the number -->
       <!-- NB: IntelliJ's Arquillian support expects port 56999 -->
       <!--<property name="managementPort">${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:56999}</property>-->
+      <property name="managementPort">${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090}</property>
       <property name="startupTimeoutInSeconds">${startup.timeout:10}</property>
     </configuration>
   </container>

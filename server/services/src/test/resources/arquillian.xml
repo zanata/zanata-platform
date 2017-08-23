@@ -38,8 +38,9 @@
       <property name="serverConfig">standalone-full.xml</property>
       <property name="managementAddress">127.0.0.1</property>
       <!-- NB: don't put whitespace around the number -->
-      <!-- NB: IntelliJ's Arquillian support expects port 56999 -->
       <!--<property name="managementPort">${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:56999}</property>-->
+      <!--<property name="managementPort">${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:9990}</property>-->
+      <property name="managementPort">${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090}</property>
       <property name="startupTimeoutInSeconds">${startup.timeout:60}</property>
     </configuration>
   </container>

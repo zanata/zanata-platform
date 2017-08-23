@@ -21,22 +21,18 @@
 package org.zanata.rest.service.raw
 
 import org.assertj.core.api.KotlinAssertions.assertThat
-import org.atteo.classindex.ClassIndex
 import org.dbunit.operation.DatabaseOperation
 import org.jboss.arquillian.container.test.api.Deployment
-import org.jboss.arquillian.container.test.api.OperateOnDeployment
+import org.jboss.arquillian.container.test.api.RunAsClient
+import org.jboss.arquillian.junit.Arquillian
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget
-import org.jboss.shrinkwrap.api.Archive
 import org.jboss.shrinkwrap.api.ShrinkWrap
 import org.jboss.shrinkwrap.api.spec.WebArchive
-import org.jboss.shrinkwrap.resolver.api.maven.Maven
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.zanata.RestTest
 import org.zanata.arquillian.ArquillianUtil.addClassesWithDependencies
-import org.zanata.arquillian.lifecycle.LifecycleArquillian
 import org.zanata.provider.DBUnitProvider
-import org.zanata.rest.JaxRSApplication
 import org.zanata.rest.MediaTypes
 import org.zanata.rest.ResourceRequest
 import org.zanata.rest.dto.VersionInfo
@@ -46,47 +42,52 @@ import org.zanata.util.RawRestTestUtils.assertJsonUnmarshal
 import javax.ws.rs.client.Invocation
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.Response
+import org.zanata.arquillian.ArquillianUtil.addWebInfXml
+import org.zanata.arquillian.ArquillianUtil.addPersistenceConfig
+import org.zanata.model.HApplicationConfiguration
+import org.zanata.rest.service.raw.ArquillianRest.beansXmlForRest
+import org.zanata.rest.service.raw.ArquillianRest.classesWithDependenciesForRest
+import org.zanata.rest.service.raw.ArquillianRest.libsForRest
+import org.zanata.rest.service.raw.ArquillianRest.jbossDeploymentStructureForRest
 
-@RunWith(LifecycleArquillian::class)
+// TODO we don't want to add LifecycleArquillian to the deployment
+@RunWith(Arquillian::class)
 class VersionRawRestITCase : RestTest() {
 
     companion object {
         @Deployment(name = "VersionService", testable = false)
         @JvmStatic
-        fun createDeployment(): Archive<*> {
-            val libs = Maven.resolver()
-                    .loadPomFromFile("pom.xml")
-                    .resolve("com.google.guava:guava")
-                    .withoutTransitivity()
-                    .asFile()
+        fun createDeployment(): WebArchive {
+            val classes = listOf(
+                    VersionRawRestITCase::class.java,
+                    VersionService::class.java,
+                    HApplicationConfiguration::class.java
+            )
             val war = ShrinkWrap
                     .create(WebArchive::class.java, "VersionService.war")
-                    .addClassesWithDependencies(VersionService::class.java)
-                    .addClasses(JaxRSApplication::class.java, ClassIndex::class.java)
-                    .addAsLibraries(*libs)
-//                    .addAsResource(
-//                            EmptyAsset.INSTANCE,
-//                            "beans.xml")
-//                    .addAsWebInfResource(
-//                            EmptyAsset.INSTANCE,
-//                            "beans.xml")
+                    .addAsLibraries(*libsForRest(listOf("org.jboss.shrinkwrap:shrinkwrap-api")))
+                    .addWebInfXml(jbossDeploymentStructureForRest())
+                    .addPersistenceConfig()
+                    .addClassesWithDependencies(classes + classesWithDependenciesForRest())
+                    .addWebInfXml(beansXmlForRest(ServerPathAlt::class.java, OAuthAlt::class.java, AnonAccessAlt::class.java))
+                    .addAsResource("org/zanata/test/model/ApplicationConfigurationData.dbunit.xml")
 //            war.content.forEach { path, _ -> println(path) }
             return war
         }
+    }
+
+    override fun getDataSetToClear(): String? {
+        return "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml"
     }
 
     override fun prepareDBUnitOperations() {
         addBeforeTestOperation(DBUnitProvider.DataSetOperation(
                 "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT))
-
-        addAfterTestOperation(DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                DatabaseOperation.DELETE_ALL))
     }
 
     @Test
-    @OperateOnDeployment("VersionService")
+    @RunAsClient
     fun getJson() {
         object : ResourceRequest(getRestEndpointUrl("/version"), "GET") {
             override fun prepareRequest(webTarget: ResteasyWebTarget): Invocation.Builder {
@@ -103,7 +104,7 @@ class VersionRawRestITCase : RestTest() {
     }
 
     @Test
-    @OperateOnDeployment("VersionService")
+    @RunAsClient
     fun getXml() {
         object : ResourceRequest(getRestEndpointUrl("/version"), "GET") {
             override fun prepareRequest(webTarget: ResteasyWebTarget): Invocation.Builder {

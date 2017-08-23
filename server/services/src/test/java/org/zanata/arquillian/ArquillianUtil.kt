@@ -6,7 +6,6 @@ import org.jboss.shrinkwrap.api.container.ClassContainer
 import org.jboss.shrinkwrap.api.container.ResourceContainer
 import org.jboss.shrinkwrap.api.spec.WebArchive
 import org.jboss.shrinkwrap.descriptor.api.Descriptor
-import org.jboss.shrinkwrap.descriptor.api.beans10.BeansDescriptor
 import org.jboss.shrinkwrap.impl.base.path.BasicPath
 import org.slf4j.LoggerFactory
 

@@ -31,15 +31,13 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.RestTest;
-import org.zanata.arquillian.lifecycle.LifecycleArquillian;
-import org.zanata.arquillian.lifecycle.api.BeforeSetup;
 import org.zanata.exception.handler.AccessDeniedExceptionHandler;
 import org.zanata.model.HLocaleMember;
 import org.zanata.rest.AccessDeniedExceptionMapper;
@@ -65,7 +63,7 @@ import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-@RunWith(LifecycleArquillian.class)
+@RunWith(Arquillian.class)
 public class AccountRawRestITCase extends RestTest {
 
     private static List<Class<?>> classesWithDependencies() {
@@ -88,7 +86,10 @@ public class AccountRawRestITCase extends RestTest {
                 .addAsResource("org/zanata/test/model/AccountData.dbunit.xml")
 //                .addAsResource("org/zanata/test/model/ClearAllTables.dbunit.xml")
                 ;
-        addWebInfXml(war, beansXmlForRest(ServerPathAlt.class));
+//        addWebInfXml(war, beansXmlForRest(ServerPathAlt.class));
+//        addWebInfXml(war, beansXmlForRest(ServerPathAlt.class, OAuthAlt.class));
+        addWebInfXml(war, beansXmlForRest(ServerPathAlt.class, OAuthAlt.class, AnonAccessAlt.class));
+
         addWebInfXml(war, jbossDeploymentStructureForRest());
         addPersistenceConfig(war);
         // NB: this only adds Zanata dependencies. For other dependencies, you
@@ -99,12 +100,6 @@ public class AccountRawRestITCase extends RestTest {
         return war;
     }
 
-    @BeforeSetup
-    public static void beforeSetup() throws Exception {
-        ArquillianRest.beforeSetup();
-    }
-
-    @NotNull
     @Override
     protected String getDataSetToClear() {
         // ClearAllTables.dbunit.xml doesn't work because not all entities are in the deployment
