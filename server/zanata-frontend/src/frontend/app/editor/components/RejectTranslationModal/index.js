@@ -8,6 +8,10 @@ import { Icon } from '../../../components'
 /**
  * TODO add a concise description of this component
  */
+const MINOR = 'Minor'
+const MAJOR = 'Major'
+const CRITICAL = 'Critical'
+
 export class RejectTranslationModal extends Component {
   static propTypes = {
     show: PropTypes.bool,
@@ -18,9 +22,9 @@ export class RejectTranslationModal extends Component {
     isOpen: PropTypes.bool.isRequired,
     priority: PropTypes.oneOf(
         [
-          'Minor',
-          'Major',
-          'Critical'
+          MINOR,
+          MAJOR,
+          CRITICAL
         ]
     ).isRequired,
     textState: PropTypes.oneOf (
