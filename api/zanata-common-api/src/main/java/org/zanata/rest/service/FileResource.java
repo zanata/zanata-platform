@@ -50,7 +50,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 @ResourceLabel("Files")
-public interface FileResource extends RestResource {
+public interface FileResource {
     public static final String SERVICE_PATH = "/file";
     @Deprecated
     public static final String FILE_RESOURCE = SERVICE_PATH;

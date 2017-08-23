@@ -54,7 +54,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Project Version")
-public interface ProjectVersionResource extends RestResource {
+public interface ProjectVersionResource {
     public static final String PROJECT_SERVICE_PATH = "/project";
 
     public static final String VERSION_SLUG_TEMPLATE = "/{versionSlug:"

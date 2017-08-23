@@ -45,7 +45,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Copy Trans")
-public interface CopyTransResource extends RestResource {
+public interface CopyTransResource {
     public static final String SERVICE_PATH = "/copytrans";
 
     /**
