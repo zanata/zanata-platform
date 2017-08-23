@@ -22,7 +22,6 @@ package org.zanata.arquillian;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -32,9 +31,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -44,8 +41,6 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -68,7 +63,6 @@ import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.TEST;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-//@ArquillianSuiteDeployment
 public class Deployments {
     private static final Logger log =
             LoggerFactory.getLogger(Deployments.class);
@@ -125,25 +119,7 @@ public class Deployments {
                 .asFile();
     }
 
-    /*
-    @Deployment(name = "VersionService", testable = false, order = 1)
-    public static WebArchive createDeploymentVersion() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class);
-        addClassesWithSupertypes(war, VersionService.class);
-        addClassWithDependencies(war, VersionService.class);
-
-//                    .addAsResource(
-//                            EmptyAsset.INSTANCE,
-//                            "beans.xml")
-//                    .addAsWebInfResource(
-//                            EmptyAsset.INSTANCE,
-//                            "beans.xml")
-        //war.getContent().forEach((path, node) -> System.out.println(path));
-        return war;
-    }
-    */
-
-    @Deployment(name = "zanata.war", order = 9999)
+    @Deployment(name = "zanata-tests.war")
     public static WebArchive createDeployment() {
         WebArchive archive =
                 ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");

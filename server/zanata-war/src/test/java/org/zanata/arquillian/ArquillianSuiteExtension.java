@@ -33,10 +33,9 @@ import org.jboss.arquillian.test.spi.event.suite.Before;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 
 public class ArquillianSuiteExtension implements LoadableExtension {
-    boolean enabled = false;
 
     public void register(ExtensionBuilder builder) {
-        if (enabled) builder.observer(SuiteDeployer.class);
+        builder.observer(SuiteDeployer.class);
     }
 
     public static class SuiteDeployer {
