@@ -9,17 +9,17 @@ import RejectTranslationModal from '.'
 describe('RejectTranslationModal Test', () => {
   it('critical priority', () => {
     <RejectTranslationModal show isOpen={true}
-      criteria="test"
+      criteria="test criteria"
       priority="Critical"  textState="u-textDanger" />
   })
   it('major priority', () => {
     <RejectTranslationModal show isOpen={true}
-      criteria="test"
+      criteria="test criteria"
       priority="Major"  textState="u-textWarning" />
   })
   it('minor priority', () => {
     <RejectTranslationModal show isOpen={true}
-      criteria="test"
+      criteria="test criteria"
       priority="Minor" />
   })
 })
