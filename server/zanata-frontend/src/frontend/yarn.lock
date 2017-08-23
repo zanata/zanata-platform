@@ -7974,9 +7974,9 @@ react-loading@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-0.1.2.tgz#4da95b3d4b55904fd8294c1eb40f8512a6ca04f6"
 
-react-lorem-component@0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/react-lorem-component/-/react-lorem-component-0.12.1.tgz#71a5ef749d3e392e5390c36d28b06f07ff2ec43d"
+react-lorem-component@0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/react-lorem-component/-/react-lorem-component-0.12.2.tgz#a11fd298b044a2cf062905c5398880e46bfecc25"
   dependencies:
     create-react-class "^15.5.3"
     lorem-ipsum "^1.0.3"
