@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -56,7 +57,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Source Documents")
-public interface SourceDocResource {
+public interface SourceDocResource extends Serializable {
     @SuppressWarnings("deprecation")
     String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH;
     String RESOURCE_PATH = "/r";

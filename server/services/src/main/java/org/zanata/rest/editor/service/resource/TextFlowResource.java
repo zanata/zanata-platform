@@ -9,12 +9,14 @@ import javax.ws.rs.core.Response;
 
 import org.zanata.rest.editor.MediaTypes;
 
+import java.io.Serializable;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface TextFlowResource {
+public interface TextFlowResource extends Serializable {
 
     public static final String SERVICE_PATH = "/source";
 

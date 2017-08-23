@@ -36,6 +36,8 @@ import org.zanata.rest.dto.Account;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import java.io.Serializable;
+
 /**
  * Represents user accounts in the system.
  * username: User name that identifies an account
@@ -46,7 +48,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  */
 @Path(AccountResource.SERVICE_PATH)
 @ResourceLabel("User Account")
-public interface AccountResource {
+public interface AccountResource extends Serializable {
     public static final String SERVICE_PATH =
             "/accounts/u/{username:[a-z\\d_]{3,20}}";
 

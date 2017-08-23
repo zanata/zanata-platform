@@ -36,6 +36,8 @@ import org.zanata.rest.dto.LocaleDetails;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.dto.SourceLocaleDetails;
 
+import java.io.Serializable;
+
 /**
  * REST interface for configured version locales.
  * @see {@link ProjectLocalesResource} Project locales
@@ -43,7 +45,7 @@ import org.zanata.rest.dto.SourceLocaleDetails;
 @Path(ProjectIterationLocalesResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Version Locales")
-public interface ProjectIterationLocalesResource {
+public interface ProjectIterationLocalesResource extends Serializable {
     @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH
             + "/locales";

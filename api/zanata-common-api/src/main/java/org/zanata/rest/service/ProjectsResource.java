@@ -36,6 +36,8 @@ import org.zanata.rest.dto.Project;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import java.io.Serializable;
+
 /**
  * API endpoint to get a list of projects.
  *
@@ -47,7 +49,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Project List")
-public interface ProjectsResource {
+public interface ProjectsResource extends Serializable {
     public static final String SERVICE_PATH = "/projects";
 
     /**

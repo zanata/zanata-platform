@@ -13,8 +13,8 @@ export function getDswid () {
  * @returns string of project url (jsf)
  * e.g. https://translate.zanata.org/project/view/zanata-server?dswid=-805
  */
-export function getProjectUrl (project) {
-  return serverUrl + '/project/view/' + project.id + getDswid()
+export function getProjectUrl (projectSlug) {
+  return serverUrl + '/project/view/' + projectSlug + getDswid()
 }
 
 /**

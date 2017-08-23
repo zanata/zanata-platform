@@ -110,8 +110,6 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     }
 
     public class SourceDocClient implements SourceDocResource {
-        private static final long serialVersionUID = 1L;
-
         @Override
         public Response head() {
             return new ResourceRequest(
@@ -180,6 +178,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         }
 
         @Override
+        @Deprecated
         public Response getResource(String idNoSlash,
                 final Set<String> extensions) {
             return new ResourceRequest(
@@ -283,6 +282,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         }
 
         @Override
+        @Deprecated
         public Response deleteResource(String idNoSlash) {
             return new ResourceRequest(
                     getRestEndpointUrl(DEPRECATED_BASE_PATH + idNoSlash),
@@ -316,6 +316,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         }
 
         @Override
+        @Deprecated
         public Response getResourceMeta(String idNoSlash,
                 final Set<String> extensions) {
             return new ResourceRequest(
@@ -420,7 +421,6 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     }
 
     public class TranslatedDocClient implements TranslatedDocResource {
-        private static final long serialVersionUID = 1L;
 
         @Override
         public Response getTranslations(String idNoSlash, LocaleId locale,

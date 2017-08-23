@@ -24,6 +24,7 @@ package org.zanata.rest.service;
 import static org.zanata.rest.service.SourceDocResource.DOCID_RESOURCE_PATH;
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -67,7 +68,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
         @ResponseCode(code = 500,
                 condition = "If there is an unexpected error in the server while performing this operation")
 })
-public interface TranslatedDocResource {
+public interface TranslatedDocResource extends Serializable {
     @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH;
 

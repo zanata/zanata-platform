@@ -26,6 +26,7 @@ import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ import java.util.List;
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
 public interface SuggestionsResource extends
-        TransMemoryMergeResource {
+        TransMemoryMergeResource, Serializable {
 
     String SERVICE_PATH = "/suggestions";
 

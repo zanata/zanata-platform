@@ -19,12 +19,14 @@ import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.LocaleMember;
 import org.zanata.rest.dto.SourceLocaleDetails;
 
+import java.io.Serializable;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface LocalesResource {
+public interface LocalesResource extends Serializable {
 
     public static final String SERVICE_PATH = "/locales";
 

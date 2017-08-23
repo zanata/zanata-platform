@@ -131,7 +131,7 @@ class ViewHeader extends Component {
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
-    const projectUrl = project && getProjectUrl(project)
+    const projectUrl = project && getProjectUrl(project.id)
 
     const projectLink = project && (
       <div className='project-link'>

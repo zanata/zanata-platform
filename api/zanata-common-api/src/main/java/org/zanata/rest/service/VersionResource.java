@@ -34,6 +34,8 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
 
+import java.io.Serializable;
+
 /**
  * Retrieves the system's version.
  */
@@ -41,7 +43,7 @@ import org.zanata.rest.dto.VersionInfo;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("System Version")
-public interface VersionResource {
+public interface VersionResource extends Serializable {
     public static final String SERVICE_PATH = "/version";
 
     /**

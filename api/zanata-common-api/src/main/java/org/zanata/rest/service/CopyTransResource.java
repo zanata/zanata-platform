@@ -35,6 +35,8 @@ import org.zanata.rest.dto.CopyTransStatus;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import java.io.Serializable;
+
 /**
  * Represents the state of a copy trans run. These are special processes which
  * search for and reuse translations.
@@ -45,7 +47,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Copy Trans")
-public interface CopyTransResource {
+public interface CopyTransResource extends Serializable {
     public static final String SERVICE_PATH = "/copytrans";
 
     /**

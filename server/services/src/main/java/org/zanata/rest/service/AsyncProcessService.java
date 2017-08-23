@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -70,7 +71,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 @Path("/process")
 @Produces(MediaType.APPLICATION_JSON)
-public class AsyncProcessService {
+public class AsyncProcessService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject

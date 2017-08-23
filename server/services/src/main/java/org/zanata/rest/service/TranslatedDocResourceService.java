@@ -69,7 +69,6 @@ import com.google.common.base.Optional;
 public class TranslatedDocResourceService implements TranslatedDocResource {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslatedDocResourceService.class);
-    private static final long serialVersionUID = -5855787114970845084L;
 
     // security actions
     // private static final String ACTION_IMPORT_TEMPLATE = "import-template";

@@ -27,11 +27,13 @@ import javax.ws.rs.QueryParam;
 
 import org.zanata.rest.dto.ReindexStatus;
 
+import java.io.Serializable;
+
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface SearchService {
+public interface SearchService extends Serializable {
     /**
      * Requests the start of a system reindex. NOTE: This is not a stable,
      * supported API. It might change from release to release.

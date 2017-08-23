@@ -21,6 +21,7 @@
 
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
@@ -69,7 +70,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
         @ResponseCode(code = 500,
                 condition = "If there is an unexpected error in the server while performing this operation")
 })
-public interface GlossaryResource {
+public interface GlossaryResource extends Serializable {
     public static final String SERVICE_PATH = "/glossary";
 
     /**

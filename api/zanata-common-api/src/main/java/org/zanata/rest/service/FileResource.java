@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -50,7 +51,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 @ResourceLabel("Files")
-public interface FileResource {
+public interface FileResource extends Serializable {
     public static final String SERVICE_PATH = "/file";
     @Deprecated
     public static final String FILE_RESOURCE = SERVICE_PATH;

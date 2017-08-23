@@ -45,6 +45,8 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import java.io.Serializable;
+
 /**
  * Project version resource API, replacing {@link ProjectIterationResource}.
  *
@@ -54,7 +56,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Project Version")
-public interface ProjectVersionResource {
+public interface ProjectVersionResource extends Serializable {
     public static final String PROJECT_SERVICE_PATH = "/project";
 
     public static final String VERSION_SLUG_TEMPLATE = "/{versionSlug:"

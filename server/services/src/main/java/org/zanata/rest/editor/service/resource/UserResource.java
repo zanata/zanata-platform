@@ -13,12 +13,14 @@ import javax.ws.rs.core.Response;
 import org.zanata.rest.editor.MediaTypes;
 import org.zanata.rest.service.GlossaryService;
 
+import java.io.Serializable;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface UserResource {
+public interface UserResource extends Serializable {
 
     String SERVICE_PATH = "/user";
 

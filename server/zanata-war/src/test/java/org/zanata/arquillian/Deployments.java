@@ -23,8 +23,6 @@ package org.zanata.arquillian;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.function.Consumer;
 
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
@@ -82,6 +80,7 @@ public class Deployments {
 //                .exportExplodedInto(exploded);
     }
 
+    @SuppressWarnings("unchecked")
     private static void printArchiveContents(Archive archive) {
         // We could just use archive.toString(verbose=true), but it's
         // nicer to have sorting.
@@ -182,12 +181,5 @@ public class Deployments {
                 context.matches(".*/org/zanata/webtrans/server/locale/.*") ||
                 !context.contains("/org/zanata/webtrans/client") &&
                         !context.contains("/org/zanata/webtrans/server");
-    }
-
-    private static <T> void forEachRemaining(Enumeration<T> enumeration,
-            Consumer<? super T> consumer) {
-        while (enumeration.hasMoreElements()) {
-            consumer.accept(enumeration.nextElement());
-        }
     }
 }

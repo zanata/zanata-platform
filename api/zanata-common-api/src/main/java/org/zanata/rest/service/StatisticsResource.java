@@ -38,6 +38,8 @@ import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import java.io.Serializable;
+
 /**
  * Fetch different translation statistics
  * @author Carlos Munoz <a
@@ -47,7 +49,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Statistics")
-public interface StatisticsResource {
+public interface StatisticsResource extends Serializable {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     public static final String SERVICE_PATH = "/stats";

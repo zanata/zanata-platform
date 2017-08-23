@@ -35,6 +35,8 @@ import org.zanata.rest.dto.ProjectIteration;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import java.io.Serializable;
+
 /**
  * Deprecated. See {@link ProjectVersionResource}
  *
@@ -49,7 +51,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Deprecated
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface ProjectIterationResource {
+public interface ProjectIterationResource extends Serializable {
     public static final String ITERATION_SLUG_TEMPLATE = "{iterationSlug:"
             + RestConstants.SLUG_PATTERN + "}";
     public static final String SERVICE_PATH = ProjectResource.SERVICE_PATH

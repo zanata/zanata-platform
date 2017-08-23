@@ -23,6 +23,7 @@ package org.zanata.rest.search.service;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ import com.google.common.collect.Maps;
 @Path("/search")
 @Produces(APPLICATION_JSON)
 @Transactional(readOnly = true)
-public class SearchService {
+public class SearchService implements Serializable {
 
     private static final long serialVersionUID = 8924030399679653241L;
     @Inject
