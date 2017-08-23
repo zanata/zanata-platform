@@ -294,7 +294,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12}>
                   <Well>
                     <p>Translations which satisfy all conditions will copy as
-                      <span className="text-bold text-success">translated</span>.
+                      <span className="text-bold text-success"> translated</span>.
                     </p>
                   </Well>
                 </Col>
@@ -565,7 +565,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12}>
                   <Well>
                     <p>Translations which satisfy all conditions will copy as
-                      <span className="text-bold text-success">translated</span>.
+                      <span className="text-bold text-success"> translated</span>.
                     </p>
                   </Well>
                 </Col>
@@ -836,7 +836,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12}>
                   <Well>
                     <p>Translations which satisfy all conditions will copy as
-                      <span className="text-bold text-success">translated</span>.
+                      <span className="text-bold text-success"> translated</span>.
                     </p>
                   </Well>
                 </Col>
