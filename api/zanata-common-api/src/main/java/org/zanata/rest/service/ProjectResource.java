@@ -50,7 +50,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Project")
-public interface ProjectResource extends RestResource {
+public interface ProjectResource {
     public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:"
             + RestConstants.SLUG_PATTERN + "}";
     public static final String SERVICE_PATH = "/projects/p/"

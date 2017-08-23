@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.apache.log4j.MDC;
+import org.slf4j.MDC;
 import org.zanata.servlet.MDCInsertingServletFilter;
 
 /**
- * This filter adds the authenticated user name to the log4j
+ * This filter adds the authenticated username to the slf4j
  * mapped diagnostic context so that it can be included in
  * formatted log output if desired, by adding %X{username}
  * to the pattern.
@@ -46,8 +46,11 @@ public class UsernameLoggingFilter implements Filter {
                 MDC.put(MDCInsertingServletFilter.USERNAME, username);
             }
         }
-        filterChain.doFilter(servletRequest, servletResponse);
-        MDC.remove(MDCInsertingServletFilter.USERNAME);
+        try {
+            filterChain.doFilter(servletRequest, servletResponse);
+        } finally {
+            MDC.remove(MDCInsertingServletFilter.USERNAME);
+        }
     }
 
     @Override
