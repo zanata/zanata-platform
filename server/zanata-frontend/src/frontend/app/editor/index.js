@@ -1,10 +1,11 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { baseUrl } from './config'
+import { appUrl, serverUrl } from '../config'
 import { locale, formats } from './config/intl'
 import createStoreWithMiddleware from './middlewares'
 import { addLocaleData, IntlProvider } from 'react-intl'
+import enLocaleData from 'react-intl/locale-data/en.js'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
@@ -16,7 +17,7 @@ import NeedSlugMessage from './containers/NeedSlugMessage'
 
 // Set the path that webpack will try to load extra chunks from
 // This is needed to load intl-polyfill
-__webpack_public_path__ = baseUrl || '/' // eslint-disable-line
+__webpack_public_path__ = serverUrl || '/' // eslint-disable-line
 
 import './index.css'
 
@@ -43,12 +44,11 @@ function runApp () {
   //     addLocaleData(window.ReactIntlLocaleData[lang])
   //   })
   // }
-  addLocaleData({
-    locale: 'en-US'
-  })
+
+  addLocaleData([...enLocaleData])
 
   const history = browserHistory
-  history.basename = baseUrl
+  history.basename = appUrl
   const store = createStoreWithMiddleware(rootReducer)
   addWatchers(store)
 
@@ -62,8 +62,11 @@ function runApp () {
   //       first doc and language in the list and goes ahead.
   //   Should be able to do better than that.
 
+  // TODO when translations are available, load user locale translations with
+  //   require.ensure and pass to IntlProvider as messages={...}
+  // defaultLocale will use the default messages with no errors
   ReactDOM.render(
-    <IntlProvider locale={locale} formats={formats}>
+    <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
       <Provider store={store}>
         <Router history={enhancedHistory}>
           {/* The ** is docId, captured as params.splat by react-router. */}

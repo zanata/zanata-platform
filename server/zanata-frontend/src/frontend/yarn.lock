@@ -7925,6 +7925,16 @@ react-inspector@^2.1.1:
     babel-runtime "^6.23.0"
     is-dom "^1.0.9"
 
+react-intl-aggregate-webpack-plugin@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-intl-aggregate-webpack-plugin/-/react-intl-aggregate-webpack-plugin-0.0.1.tgz#c29958860d7bcdfa6f460dec79f55ae0220488c6"
+  dependencies:
+    mkdirp "^0.5.1"
+
+react-intl-flatten-webpack-plugin@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-intl-flatten-webpack-plugin/-/react-intl-flatten-webpack-plugin-0.0.1.tgz#46daf56ea47c86c9d66b7e79d9b5b1b40883cf42"
+
 react-intl@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-2.3.0.tgz#e1df6af5667fdf01cbe4aab20e137251e2ae5142"
@@ -7964,9 +7974,9 @@ react-loading@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-0.1.2.tgz#4da95b3d4b55904fd8294c1eb40f8512a6ca04f6"
 
-react-lorem-component@0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/react-lorem-component/-/react-lorem-component-0.12.1.tgz#71a5ef749d3e392e5390c36d28b06f07ff2ec43d"
+react-lorem-component@0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/react-lorem-component/-/react-lorem-component-0.12.2.tgz#a11fd298b044a2cf062905c5398880e46bfecc25"
   dependencies:
     create-react-class "^15.5.3"
     lorem-ipsum "^1.0.3"

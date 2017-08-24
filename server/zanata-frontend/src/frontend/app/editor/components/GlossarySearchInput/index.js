@@ -82,7 +82,7 @@ class GlossarySearchInput extends React.Component {
 
   render () {
     return (
-      <div className="inline-flex-search">
+      <div className="inline-search">
         <div className={cx('InputGroup InputGroup--outlined ' +
             'InputGroup--rounded',
           { 'is-focused': this.state.focused })}>

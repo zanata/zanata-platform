@@ -2,6 +2,7 @@
 import React from 'react'
 import Icons from '../app/components/Icons'
 import { addLocaleData, IntlProvider } from 'react-intl'
+import enLocaleData from 'react-intl/locale-data/en.js'
 import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@storybook/react'
 import './storybook.css'
@@ -18,9 +19,7 @@ if (typeof document !== 'undefined') {
 }
 
 // Set up locale data so formats etc. will work properly
-addLocaleData({
-  locale: 'en-US'
-})
+addLocaleData([...enLocaleData])
 
 /*
  * This sets up the context that all the components are expecting to be in.
@@ -32,7 +31,7 @@ addLocaleData({
  *   300, 400 (plain and italic), 600 and 700
  */
 addDecorator((story) => (
-  <IntlProvider locale={locale} formats={formats}>
+  <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
     <div style={{padding: '2em'}}>
       <Icons />
       {story()}
