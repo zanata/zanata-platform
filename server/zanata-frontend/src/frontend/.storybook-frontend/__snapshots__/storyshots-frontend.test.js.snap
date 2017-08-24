@@ -15202,7 +15202,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
 </form>
 `;
 
-exports[`Frontend Storyshots RejectionsForm not editable 1`] = `
+exports[`Frontend Storyshots RejectionsForm read only 1`] = `
 <form
   className="rejections form-inline"
 >

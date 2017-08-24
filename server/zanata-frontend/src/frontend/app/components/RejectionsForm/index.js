@@ -6,9 +6,9 @@ import { Icon, TextInput } from '../../components'
 /**
  * Reject Translations Administration panel
  */
-const MINOR = 'Minor'
-const MAJOR = 'Major'
-const CRITICAL = 'Critical'
+export const MINOR = 'Minor'
+export const MAJOR = 'Major'
+export const CRITICAL = 'Critical'
 
 class RejectionsForm extends Component {
   static PropTypes = {
