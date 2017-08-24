@@ -9,7 +9,7 @@
 
 import watch from './watch'
 import { getPhraseDetailFetchData } from '../selectors'
-import { baseRestUrl } from '../api'
+import { apiUrl } from '../../config'
 import { fill, isEmpty, mapValues } from 'lodash'
 import { getJSON } from 'redux-api-middleware'
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
@@ -43,7 +43,7 @@ export const watchVisiblePhrasesInStore = (store) => {
 
 function fetchPhraseDetail (locale, phraseIds) {
   const phraseDetailUrl =
-    `${baseRestUrl}/source+trans/${locale.id}?ids=${phraseIds.join(',')}`
+    `${apiUrl}/source+trans/${locale.id}?ids=${phraseIds.join(',')}`
   return {
     [CALL_API_ENHANCED]: {
       endpoint: phraseDetailUrl,

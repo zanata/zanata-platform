@@ -10,7 +10,7 @@ import { getLang } from '../selectors'
 import { getJSON } from 'redux-api-middleware'
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
 import { encode } from '../utils/doc-id-util'
-import { baseRestUrl } from '../api'
+import { apiUrl } from '../../config'
 import { transUnitStatusToPhraseStatus } from '../utils/status-util'
 import { hasAdvancedFilter } from '../utils/filter-util'
 import {
@@ -94,7 +94,7 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
   }
   const encodedId = encode(docId)
   const url =
-    `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}` // eslint-disable-line max-len
+    `${apiUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}` // eslint-disable-line max-len
 
   return {
     [CALL_API_ENHANCED]: {
