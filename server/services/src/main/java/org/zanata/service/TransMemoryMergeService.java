@@ -26,12 +26,7 @@ import java.util.concurrent.Future;
 
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
 import org.zanata.rest.dto.VersionTMMerge;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import com.google.common.annotations.VisibleForTesting;
 

@@ -117,8 +117,6 @@ public class GlossaryPresenterTest {
         verify(keyShortcutPresenter).register(isA(KeyShortcut.class));
         verify(display).setListener(presenter);
         verify(glossaryDetailsPresenter).onBind();
-        verify(glossaryDetailsPresenter).setGlossaryListener(presenter);
-
     }
 
     @Test

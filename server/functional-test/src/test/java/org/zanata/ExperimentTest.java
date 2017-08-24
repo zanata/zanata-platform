@@ -30,9 +30,6 @@ import org.zanata.util.SampleProjectRule;
  * Under normal circumstances it will have no active tests in it.
  */
 public class ExperimentTest {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ExperimentTest.class);
-
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 

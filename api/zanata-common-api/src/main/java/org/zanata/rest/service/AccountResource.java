@@ -46,7 +46,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  */
 @Path(AccountResource.SERVICE_PATH)
 @ResourceLabel("User Account")
-public interface AccountResource extends RestResource {
+public interface AccountResource {
     public static final String SERVICE_PATH =
             "/accounts/u/{username:[a-z\\d_]{3,20}}";
 

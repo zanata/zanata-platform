@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-import com.google.common.base.Throwables;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.openid4java.OpenIDException;
@@ -75,6 +74,7 @@ import java.util.List;
 public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ZanataOpenId.class);
+    private static final long serialVersionUID = 275020888578950801L;
 
     @Inject
     private ZanataIdentity identity;

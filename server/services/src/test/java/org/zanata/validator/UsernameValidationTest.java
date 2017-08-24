@@ -23,7 +23,6 @@ package org.zanata.validator;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,8 +33,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Set;
 
 import static org.mockito.Mockito.mock;

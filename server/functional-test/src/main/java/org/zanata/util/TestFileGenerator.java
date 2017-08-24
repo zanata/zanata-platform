@@ -49,8 +49,6 @@ import org.fedorahosted.openprops.Properties;
  *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 public class TestFileGenerator {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(TestFileGenerator.class);
     // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file
     // randomness)
     private static final String longFileName =
@@ -126,9 +124,8 @@ public class TestFileGenerator {
      *             if the file cannot be altered
      */
     public void forceFileSize(File tempFile, long fileSize) {
-        try {
-            RandomAccessFile randomAccessFile =
-                    new RandomAccessFile(tempFile, "rw");
+        try (RandomAccessFile randomAccessFile =
+                new RandomAccessFile(tempFile, "rw")) {
             randomAccessFile.setLength(fileSize);
         } catch (IOException e) {
             throw new RuntimeException("Unable to set the test file length");
@@ -164,7 +161,6 @@ public class TestFileGenerator {
      * @throws RuntimeException
      *             if no files are found
      */
-    @SuppressWarnings("unused")
     public String getFirstFileNameInDirectory(String directory) {
         try {
             String[] list = ObjectUtils.firstNonNull(

@@ -103,6 +103,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         Map<String, Closure> steps = new HashMap<>();
         steps.put("hipchatSend", Closure.IDENTITY);
         steps.put("echo", Closure.IDENTITY);
+        steps.put("step", Closure.IDENTITY);
         // we need this for CPS mode
         MethodClosure.ALLOW_RESOLVE = true;
 

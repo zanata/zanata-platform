@@ -30,15 +30,20 @@
   </div>
 </noscript>
 
+<!-- Test data for dev mode
+  app-url: where this app is deployed
+  server-url: base URL for pages that are not part of the app
+  api-server-url: base URL for all API requests -->
 <div id="config"
-     data-base-url=""
-     data-api-origin="http://localhost:8080"
-     data-api-root="/rest"
-     data-user="{}"
-     data-links='{
-       "loginUrl": "http://localhost:8080/account/sign_in",
-       "registerUrl": "http://localhost:8080/account/register"
-     }'>
+  data-app-url="http://localhost:8000"
+  data-server-url="http://localhost:8080"
+  data-api-server-url="http://localhost:8080/rest"
+
+  data-user="{}"
+  data-links='{
+    "loginUrl": "http://localhost:8080/account/sign_in",
+    "registerUrl": "http://localhost:8080/account/register"
+  }'>
 </div>
 <script type="application/javascript">
   window.config = document.getElementById('config').dataset

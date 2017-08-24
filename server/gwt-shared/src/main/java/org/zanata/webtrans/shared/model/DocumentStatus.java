@@ -14,7 +14,6 @@ public class DocumentStatus implements IsSerializable, Serializable {
     private String lastTranslatedBy;
 
     // for GWT
-    @SuppressWarnings("unused")
     public DocumentStatus() {
         this(null, null, null);
     }

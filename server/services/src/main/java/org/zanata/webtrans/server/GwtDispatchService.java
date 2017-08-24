@@ -32,6 +32,7 @@ public class GwtDispatchService extends RemoteServiceServlet
         implements DispatchService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(GwtDispatchService.class);
+    private static final long serialVersionUID = 6778090735163524352L;
 
     @Inject
     private SeamDispatch dispatch;

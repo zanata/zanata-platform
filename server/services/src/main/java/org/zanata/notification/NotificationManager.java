@@ -27,7 +27,6 @@ import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
-import com.google.common.base.Throwables;
 
 /**
  * Centralized place to handle all events that needs to send out notifications.

@@ -47,6 +47,7 @@ import java.io.Serializable;
 @Named("transMemoryAdapter")
 @Dependent
 public class TransMemoryAdapter implements Serializable {
+    private static final long serialVersionUID = 3763289521130877464L;
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;

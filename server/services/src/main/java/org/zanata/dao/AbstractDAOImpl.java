@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 
 /**
  * Based on code from http://community.jboss.org/wiki/GenericDataAccessObjects
@@ -16,6 +17,9 @@ import javax.inject.Inject;
 public class AbstractDAOImpl<T, ID extends Serializable> implements
         GenericDAO<T, ID>, Serializable {
     private static final long serialVersionUID = 1L;
+
+    private static final String[] SPECIAL_CHARS = { "!", "%", "_" };
+    private static final String ESCAPE_PREFIX = "!";
 
     private Class<T> persistentClass;
     private Session session;
@@ -56,7 +60,6 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
      * See {@link org.hibernate.Session#get(Class, Serializable)} and
      * {@link org.hibernate.Session#load(Class, Serializable)} for documentation.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public T findById(ID id, boolean lock) {
         T entity;
@@ -137,5 +140,21 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
         }
         return crit.list();
     }
+
+    /**
+     * This is to handle special character search in hibernate by prefixing
+     * the character with {@link #ESCAPE_PREFIX}.
+     *
+     * The HQL MUST USE [escape '!'] as part of the query.
+     * e.g. from HProject where name LIKE :name escape '!'
+     *
+     */
+    protected String escapeQuery(@NotNull String query) {
+        for (String sp : SPECIAL_CHARS) {
+            query = query.replace(sp, ESCAPE_PREFIX + sp);
+        }
+        return query;
+    }
+
 
 }

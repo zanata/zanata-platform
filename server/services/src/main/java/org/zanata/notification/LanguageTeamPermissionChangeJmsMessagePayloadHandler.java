@@ -24,7 +24,6 @@ import java.io.Serializable;
 import javax.mail.internet.InternetAddress;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.email.Addresses;
 import org.zanata.email.EmailBuilder;
 import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;

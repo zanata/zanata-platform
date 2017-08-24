@@ -9,7 +9,6 @@ import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -40,7 +39,6 @@ public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
     private String revisionComment;
 
     // for GWT
-    @SuppressWarnings("unused")
     private TransUnit() {
     }
 

@@ -87,7 +87,6 @@ public class HPersonEmailValidationKey implements Serializable {
 
     public static class EntityListener {
 
-        @SuppressWarnings("unused")
         @PrePersist
         private void onPersist(HPersonEmailValidationKey key) {
             key.creationDate = new Date();

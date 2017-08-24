@@ -38,6 +38,8 @@ import org.zanata.model.HPerson;
 public class LocaleMemberDAO extends
         AbstractDAOImpl<HLocaleMember, HLocaleMemberPk> {
 
+    private static final long serialVersionUID = -8252966942701719184L;
+
     public LocaleMemberDAO() {
         super(HLocaleMember.class);
     }

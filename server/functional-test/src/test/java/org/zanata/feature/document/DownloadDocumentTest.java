@@ -1,16 +1,12 @@
 package org.zanata.feature.document;
 
-import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
-import org.zanata.page.projectversion.VersionDocumentsPage;
-import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +34,7 @@ public class DownloadDocumentTest {
     public void testSourceDownload() throws Exception {
         new LoginWorkFlow().signIn("admin", "admin")
                 .gotoProjectsTab();
-        VersionDocumentsPage versionDocumentsPage = new ProjectWorkFlow()
+        new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .gotoDocumentTab()
@@ -52,7 +48,7 @@ public class DownloadDocumentTest {
     public void testTranslationDownload() throws Exception {
         new LoginWorkFlow().signIn("admin", "admin")
                 .gotoProjectsTab();
-        VersionLanguagesPage versionLanguagesPage = new ProjectWorkFlow()
+        new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .clickLocale("pl")

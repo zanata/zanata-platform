@@ -80,7 +80,7 @@ public class ChangePositionalResIdToContentHash implements CustomTaskChange {
     private static final int RES_ID_COLUMN = 4;
     private static final int OBSOLETE_COLUMN = 5;
 
-    private Logger log = LogFactory.getLogger();
+    private Logger log = LogFactory.getInstance().getLog();
 
     private PreparedStatement countDocumentsOfType;
     private PreparedStatement selectDocumentsOfType;

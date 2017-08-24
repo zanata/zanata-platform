@@ -1,3 +1,4 @@
+/* global jest describe expect it */
 jest.disableAutomock()
 
 import React from 'react'
@@ -5,7 +6,7 @@ import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
 import Pager from '.'
 import { Icon } from '../../../components'
-import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
+import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
 
 describe('PagerTest', () => {
   it('Pager markup', () => {

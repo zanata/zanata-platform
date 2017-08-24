@@ -23,11 +23,6 @@ package org.zanata.security.openid;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
-import org.openid4java.message.MessageException;
-import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.FetchRequest;
-import org.openid4java.message.sreg.SRegRequest;
-
 import javax.enterprise.inject.Alternative;
 
 /**
@@ -38,6 +33,7 @@ import javax.enterprise.inject.Alternative;
  */
 @Alternative
 public class YahooOpenIdProvider extends GenericOpenIdProvider {
+    private static final long serialVersionUID = 8780127269512296293L;
     private static final String YAHOO_OPENID_FORMAT =
             "https://me.yahoo.com/{0}";
     private static final Pattern YAHOO_OPENID_PATTERN = Pattern

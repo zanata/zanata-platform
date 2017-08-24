@@ -21,7 +21,6 @@
 package org.zanata.cdi;
 
 import java.io.Serializable;
-import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;

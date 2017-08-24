@@ -26,8 +26,6 @@ import javax.enterprise.inject.Produces;
 import javax.servlet.ServletContext;
 
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.servlet.annotations.ContextPath;
 
 /**

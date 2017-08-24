@@ -28,7 +28,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.base.Optional;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;

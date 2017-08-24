@@ -26,6 +26,8 @@ import org.zanata.service.TranslationFinder;
 public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
         implements TranslationFinder {
 
+    private static final long serialVersionUID = -1426951552450893617L;
+
     public TextFlowTargetDAO() {
         super(HTextFlowTarget.class);
     }

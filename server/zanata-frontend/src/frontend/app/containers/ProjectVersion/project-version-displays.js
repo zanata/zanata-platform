@@ -5,11 +5,11 @@ import {Icon} from '../../components'
 export const ProjectVersionVertical = ({projectSlug, versionSlug}) => {
   return (
     <ul>
-      <li title='target project' >
+      <li className='list-group-item' title='target project' >
         <Icon name='project' className='s0 tmx-icon' />
         {projectSlug}
       </li>
-      <li title='target version'>
+      <li className='list-group-item' title='target version'>
         <Icon name='version' className='s0 tmx-icon' />
         {versionSlug}
       </li>

@@ -1,3 +1,4 @@
+
 /**
  * Utils
  */
@@ -43,13 +44,12 @@
 @import './containers/SuggestionDetailsModal/index.css';
 @import './containers/Sidebar/index.css';
 
-
 /**
  * Theme
+ *
+ * Provides variables and custom media definitions.
  */
-
 @import './css/theme/index.css';
-
 
 /* Fix for hotkeys, remove this when reimplemented */
 
@@ -60,15 +60,4 @@
 
 .fade.in {
   opacity: 1;
-}
-
-/* Angular specific classes */
-
-[ng\:cloak],
-[ng-cloak],
-[data-ng-cloak],
-[x-ng-cloak],
-.ng-cloak,
-.x-ng-cloak {
-  display: none !important;
 }

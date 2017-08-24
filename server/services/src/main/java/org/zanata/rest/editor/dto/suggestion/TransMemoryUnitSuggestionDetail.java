@@ -29,6 +29,7 @@ import java.util.Date;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TransMemoryUnitSuggestionDetail implements SuggestionDetail {
+    private static final long serialVersionUID = 2667323391430006581L;
     private final SuggestionType type = SuggestionType.IMPORTED_TM;
 
     /**

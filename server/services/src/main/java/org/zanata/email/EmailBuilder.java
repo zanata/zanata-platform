@@ -2,7 +2,6 @@ package org.zanata.email;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static javax.mail.Message.RecipientType.BCC;
-import static javax.mail.Message.RecipientType.TO;
 
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -51,6 +50,7 @@ public class EmailBuilder implements Serializable {
     // Warning: The full message may contain sensitive information
     private static final boolean LOG_FULL_MESSAGES = false;
     private static final VelocityEngine velocityEngine = makeVelocityEngine();
+    private static final long serialVersionUID = 7906997500076971623L;
 
     public EmailBuilder() {
     }

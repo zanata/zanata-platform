@@ -144,20 +144,4 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
         sessFactoryStats.setStatisticsEnabled(true);
         return sessFactoryStats.getSecondLevelCacheStatistics(regionName);
     }
-
-    private void printStats(SecondLevelCacheStatistics stats, int step) {
-        System.out.println("#" + step);
-        if (stats == null) {
-            System.out.println("null");
-            return;
-        }
-        System.out.println(stats);
-        System.out.println("Cache Keys: " + stats.getEntries().keySet());
-        // System.out.println("Cache Values: " + stats.getEntries().values());
-    }
-
-    private void printStats(SessionStatistics stats) {
-        System.out.println("Session Keys: " + stats.getEntityKeys());
-    }
-
 }

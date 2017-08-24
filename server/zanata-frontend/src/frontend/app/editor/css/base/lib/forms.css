@@ -70,3 +70,7 @@ textarea {
   outline: none;
   box-sizing: border-box;
 }
+
+.u-inputFlat {
+  border: none;
+}

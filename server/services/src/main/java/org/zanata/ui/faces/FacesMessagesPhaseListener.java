@@ -39,6 +39,8 @@ import static javax.faces.event.PhaseId.RENDER_RESPONSE;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class FacesMessagesPhaseListener implements PhaseListener {
+    private static final long serialVersionUID = 6141672536917716978L;
+
     @Override
     public void afterPhase(PhaseEvent event) {
         // Nothing to do here

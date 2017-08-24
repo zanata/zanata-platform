@@ -7,10 +7,6 @@ import {
   UI_LOCALES_FETCHED
 } from '../actions/header-action-types'
 import {
-  RESET_STATUS_FILTERS,
-  UPDATE_STATUS_FILTER
-} from '../actions/controls-header-actions'
-import {
   SUGGESTION_PANEL_HEIGHT_CHANGE,
   TOGGLE_SUGGESTIONS
 } from '../actions/suggestions-action-types'
@@ -28,15 +24,6 @@ export const identity = (key) => {
   // TODO pahuang implement gettextCatalog.getString
   // console.log('gettextCatalog.getString')
   return key
-}
-
-const DEFAULT_FILTER_STATE = {
-  all: true,
-  approved: false,
-  rejected: false,
-  translated: false,
-  needswork: false,
-  untranslated: false
 }
 
 const defaultState = {
@@ -58,9 +45,6 @@ const defaultState = {
   },
   uiLocales: {},
   selectedUiLocale: DEFAULT_LOCALE.localeId,
-  textFlowDisplay: {
-    filter: DEFAULT_FILTER_STATE
-  },
   gettextCatalog: {
     getString: identity
   }
@@ -160,30 +144,6 @@ const ui = (state = defaultState, action) => {
         }
       })
 
-    case RESET_STATUS_FILTERS:
-      return update({
-        textFlowDisplay: {
-          filter: {
-            $set: DEFAULT_FILTER_STATE
-          }
-        }
-      })
-
-    case UPDATE_STATUS_FILTER:
-      const newFilter = {
-        ...state.textFlowDisplay.filter,
-        all: false,
-        [action.status]: !state.textFlowDisplay.filter[action.status]
-      }
-
-      return update({
-        textFlowDisplay: {
-          filter: {
-            $set: allStatusesSame(newFilter) ? DEFAULT_FILTER_STATE : newFilter
-          }
-        }
-      })
-
     case SET_SIDEBAR_VISIBILITY:
       return update({
         panels: {
@@ -208,16 +168,6 @@ const ui = (state = defaultState, action) => {
     //       see: https://github.com/facebook/react/pull/4968
     return updateObject(state, commands)
   }
-}
-
-/**
- * Check if statuses are either all true or all false
- */
-function allStatusesSame (statuses) {
-  return statuses.approved === statuses.rejected &&
-    statuses.rejected === statuses.translated &&
-    statuses.translated === statuses.needswork &&
-    statuses.needswork === statuses.untranslated
 }
 
 export default ui

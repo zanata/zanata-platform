@@ -1,29 +1,23 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { baseUrl } from './config'
+import { appUrl, serverUrl } from '../config'
 import { locale, formats } from './config/intl'
+import createStoreWithMiddleware from './middlewares'
 import { addLocaleData, IntlProvider } from 'react-intl'
-import { createStore, applyMiddleware } from 'redux'
-import { apiMiddleware } from 'redux-api-middleware'
+import enLocaleData from 'react-intl/locale-data/en.js'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
-import newContextFetchMiddleware from './middlewares/new-context-fetch'
-import searchSelectedPhraseMiddleware
-  from './middlewares/selected-phrase-searches'
-import getStateInActions from './middlewares/getstate-in-actions'
-import titleUpdateMiddleware from './middlewares/title-update'
-import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
 import rootReducer from './reducers'
+import addWatchers from './watchers'
 
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
 
 // Set the path that webpack will try to load extra chunks from
 // This is needed to load intl-polyfill
-__webpack_public_path__ = baseUrl || '/' // eslint-disable-line
+__webpack_public_path__ = serverUrl || '/' // eslint-disable-line
 
 import './index.css'
 
@@ -50,48 +44,13 @@ function runApp () {
   //     addLocaleData(window.ReactIntlLocaleData[lang])
   //   })
   // }
-  addLocaleData({
-    locale: 'en-US'
-  })
 
-  // example uses createHistory, but the latest bundles history with
-  // react-router and has some defaults, so now I am just using one of those.
-  // const history = createHistory()
+  addLocaleData([...enLocaleData])
+
   const history = browserHistory
-  history.basename = baseUrl
-
-  const loggerMiddleware = createLogger({
-    predicate: (getState, action) =>
-      process.env && (process.env.NODE_ENV === 'development'),
-    actionTransformer: (action) => {
-      if (typeof action.type !== 'symbol') {
-        console.warn('You should use a Symbol for this action type: ' +
-          String(action.type))
-      }
-      return {
-        ...action,
-        // allow symbol action type to be printed properly in logs
-        type: String(action.type)
-      }
-    }
-  })
-
-  // const reduxRouterMiddleware = syncHistory(history)
-  const createStoreWithMiddleware =
-    applyMiddleware(
-      titleUpdateMiddleware,
-      newContextFetchMiddleware,
-      searchSelectedPhraseMiddleware,
-      // reduxRouterMiddleware,
-      thunk,
-      apiMiddleware,
-      // must run after thunk because it fails with thunks
-      getStateInActions,
-      loggerMiddleware
-    )(createStore)
-
+  history.basename = appUrl
   const store = createStoreWithMiddleware(rootReducer)
-  // reduxRouterMiddleware.listenForReplays(store)
+  addWatchers(store)
 
   const enhancedHistory = syncHistoryWithStore(history, store)
 
@@ -103,8 +62,11 @@ function runApp () {
   //       first doc and language in the list and goes ahead.
   //   Should be able to do better than that.
 
+  // TODO when translations are available, load user locale translations with
+  //   require.ensure and pass to IntlProvider as messages={...}
+  // defaultLocale will use the default messages with no errors
   ReactDOM.render(
-    <IntlProvider locale={locale} formats={formats}>
+    <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
       <Provider store={store}>
         <Router history={enhancedHistory}>
           {/* The ** is docId, captured as params.splat by react-router. */}
@@ -121,6 +83,9 @@ if (window.Intl) {
   runApp()
 } else {
   // Intl not present, so polyfill it.
+  // FIXME must test this, may require an additional polyfill to be available
+  // eslint-disable-next-line max-len
+  // see https://webpack.js.org/guides/migrating/#require-ensure-and-amd-require-are-asynchronous
   require.ensure([], (require) => {
     // This is 'require' on purpose, do not change to 'import'
     require('intl')

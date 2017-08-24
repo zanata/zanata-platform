@@ -60,6 +60,7 @@ import com.google.common.base.Optional;
 public class DocumentUploadUtil implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(DocumentUploadUtil.class);
+    private static final long serialVersionUID = -1655672694075627999L;
 
     @Inject
     private ZanataIdentity identity;

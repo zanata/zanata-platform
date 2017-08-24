@@ -97,7 +97,7 @@ public class MigrateSeamTextToCommonMark implements CustomTaskChange {
 
     @Override
     public void execute(Database database) throws CustomChangeException {
-        Logger log = LogFactory.getLogger();
+        Logger log = LogFactory.getInstance().getLog();
         JdbcConnection conn = (JdbcConnection) database.getConnection();
         try (Statement stmt = conn
                 .createStatement(ResultSet.TYPE_FORWARD_ONLY,

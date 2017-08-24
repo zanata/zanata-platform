@@ -56,16 +56,23 @@ class GlossarySearchInput extends React.Component {
     })
   }
 
-  focusInput = () => {
-    // TODO different approach for React 0.14
+  setInput = (input) => {
+    this.input = input
+    if (this.state.focused) {
+      this.input.focus()
+    }
+  }
 
+  focusInput = () => {
     // may not need to actually set focused=true, mainly using for
     // callback, which gets around issues with the component not being
     // properly in the DOM yet
     this.setState({
       focused: true
     }, () => {
-      this.refs.input.focus()
+      if (this.input) {
+        this.input.focus()
+      }
     })
   }
 
@@ -75,7 +82,7 @@ class GlossarySearchInput extends React.Component {
 
   render () {
     return (
-      <div className="inline-flex-search">
+      <div className="inline-search">
         <div className={cx('InputGroup InputGroup--outlined ' +
             'InputGroup--rounded',
           { 'is-focused': this.state.focused })}>
@@ -84,7 +91,7 @@ class GlossarySearchInput extends React.Component {
             <Icon name="search" className="n1"
               title="Search glossary" />
           </span>
-          <input ref="input"
+          <input ref={this.setInput}
             type="search"
             placeholder="Search glossary…"
             maxLength="100"

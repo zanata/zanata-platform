@@ -36,7 +36,6 @@ public class EditProfilePage extends BasePage {
     private By usernameField = By.id("profile-form:usernameField:username");
     private By emailField = By.id("profile-form:emailField:email");
     private By saveButton = By.id("profile-form:user-create-new");
-    private By cancelButton = By.id("profile-form:user-create-cancel");
 
     public EditProfilePage(WebDriver driver) {
         super(driver);

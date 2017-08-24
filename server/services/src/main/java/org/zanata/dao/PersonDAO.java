@@ -36,6 +36,8 @@ import org.zanata.model.HProject;
 @RequestScoped
 public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
 
+    private static final long serialVersionUID = -7523118638634663058L;
+
     public PersonDAO() {
         super(HPerson.class);
     }
@@ -68,18 +70,6 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
         return re;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<HProject> getMaintainerProjectByUsername(String userName) {
-        Query query =
-                getSession()
-                        .createQuery(
-                                "select p.maintainerProjects from HPerson as p where p.account.username = :username");
-        query.setParameter("username", userName);
-        query.setCacheable(false);
-        query.setComment("PersonDAO.getMaintainerProjectByUsername");
-        return query.list();
-    }
-
     public HPerson findByUsername(String username) {
         Query query =
                 getSession()
@@ -103,33 +93,34 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
 
     }
 
-    public int findAllContainingNameSize(String name) {
-        return findAllContainingName(name).size();
+    public int findAllEnabledContainingNameSize(String name) {
+        return findAllEnabledContainingName(name).size();
     }
 
-    public List<HPerson> findAllContainingName(String name) {
-        return findAllContainingName(name, -1, 0);
+    public List<HPerson> findAllEnabledContainingName(String name) {
+        return findAllEnabledContainingName(name, -1, 0);
     }
 
-    public List<HPerson> findAllContainingName(String name, int maxResult,
+    public List<HPerson> findAllEnabledContainingName(String name, int maxResult,
         int firstResult) {
-        if (!StringUtils.isEmpty(name)) {
-            Query query =
-                getSession()
-                    .createQuery(
-                        "from HPerson as p " +
-                            "where lower(p.account.username) like :name " +
-                            "or lower(p.name) like :name");
-            query.setParameter("name", "%" + name.toLowerCase() + "%");
-            query.setCacheable(false);
-            query.setFirstResult(firstResult);
-            if(maxResult != -1) {
-                query.setMaxResults(maxResult);
-            }
-            query.setComment("PersonDAO.findAllContainingName");
-            return query.list();
+        if (StringUtils.isEmpty(name)) {
+            return new ArrayList<>();
         }
-        return new ArrayList<HPerson>();
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("from HPerson as p ")
+                .append("where p.account.enabled=true ")
+                .append("and (lower(p.account.username) like :name ")
+                .append("or lower(p.name) like lower(:name) escape '!')");
+        Query query = getSession().createQuery(queryBuilder.toString());
+        String escapeName = escapeQuery(name);
+        query.setParameter("name", "%" + escapeName + "%");
+        query.setCacheable(false);
+        query.setFirstResult(firstResult);
+        if(maxResult != -1) {
+            query.setMaxResults(maxResult);
+        }
+        query.setComment("PersonDAO.findAllEnabledContainingName");
+        return query.list();
     }
 
     public int getTotalTranslator() {

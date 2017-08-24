@@ -27,6 +27,8 @@ import org.zanata.rest.editor.dto.JsonObject;
  */
 public abstract class WebhookEventType extends JsonObject {
 
+    private static final long serialVersionUID = 8724202867692136125L;
+
     /**
      * Return type of webhook
      */

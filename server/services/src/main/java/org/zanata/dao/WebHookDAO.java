@@ -34,6 +34,8 @@ import org.zanata.model.type.WebhookType;
 @RequestScoped
 public class WebHookDAO extends AbstractDAOImpl<WebHook, Long> {
 
+    private static final long serialVersionUID = -1182286946609575021L;
+
     public WebHookDAO() {
         super(WebHook.class);
     }

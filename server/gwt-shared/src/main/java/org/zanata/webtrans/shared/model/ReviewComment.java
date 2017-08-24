@@ -22,7 +22,6 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
     private ContentState targetState;
     private Integer targetVersion;
 
-    @SuppressWarnings("unused")
     public ReviewComment() {
     }
 

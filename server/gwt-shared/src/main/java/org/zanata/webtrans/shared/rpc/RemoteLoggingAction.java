@@ -3,7 +3,6 @@ package org.zanata.webtrans.shared.rpc;
 import java.util.List;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 /**
@@ -15,7 +14,6 @@ public class RemoteLoggingAction extends AbstractWorkspaceAction<NoOpResult> {
     private String message;
     private List<String> contextInfo = Lists.newArrayList();
 
-    @SuppressWarnings("unused")
     public RemoteLoggingAction() {
     }
 

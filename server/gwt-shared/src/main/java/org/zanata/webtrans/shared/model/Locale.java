@@ -17,7 +17,6 @@ public class Locale implements HasIdentifier<IdForLocale>, IsSerializable,
     public final static Locale notChosenLocale = new Locale();
 
     // for GWT
-    @SuppressWarnings("unused")
     private Locale() {
     }
 

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, InputGroup,
-  Col, FormControl, Checkbox} from 'react-bootstrap'
+import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels
+  Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels,
+  TriCheckbox
 } from '../../components'
 import ProjectVersionPanels from './ProjectVersionPanels'
 import {ProjectVersionVertical} from './project-version-displays'
@@ -64,7 +64,7 @@ const MergeOptions = (
         <Col xs={3}>
           <div className='vmerge-title'>
             <span className='text-info'>From</span>
-            <span className='text-muted'>Source</span>
+            <span>Source</span>
           </div>
         </Col>
         <Col xs={9} className='vmerge-searchbox'>
@@ -132,7 +132,10 @@ const MergeOptions = (
         onImportedCheckboxChange={onImportedCheckboxChange} />
       <Col xs={12} className='vmerge-row'>
         <Col xs={2}>
-          <span className='vmerge-title text-info'>Language</span>
+          <span className='vmerge-title text-info' id="languages-dd">
+            <Icon name="language" className="s1" />
+            Language
+          </span>
         </Col>
         {fetchingLocale ? undefined : <Col xs={6}>
           <SelectableDropdown
@@ -152,7 +155,7 @@ const MergeOptions = (
           <div className='vmerge-target'>
             <div className='vmerge-title'>
               <span className='text-info'>To</span>
-              <span className='text-muted'>Target</span>
+              <span>Target</span>
             </div>
             <ProjectVersionVertical projectSlug={projectSlug}
               versionSlug={versionSlug} />
@@ -161,10 +164,13 @@ const MergeOptions = (
       </Col>
       <Col xs={12} className='vmerge-boxes'>
         <Panel>
-          <Checkbox onChange={onFromAllProjectsChange}
-            checked={mergeOptions.fromAllProjects}>
-            Search TM from all projects
-          </Checkbox>
+          <div className='checkbox'>
+            <label>
+              <TriCheckbox onChange={onFromAllProjectsChange}
+                checked={mergeOptions.fromAllProjects} />
+                Search TM from all projects
+            </label>
+          </div>
         </Panel>
       </Col>
       {fromVersionsPanel}

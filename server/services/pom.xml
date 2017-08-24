@@ -397,11 +397,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.atteo.classindex</groupId>
-      <artifactId>classindex</artifactId>
-    </dependency>
-
     <!-- Zanata-specific dependencies -->
 
     <dependency>

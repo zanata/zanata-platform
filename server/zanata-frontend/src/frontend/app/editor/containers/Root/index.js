@@ -18,6 +18,15 @@ import Sidebar from '../Sidebar'
  * Top level of Zanata view hierarchy.
  */
 class Root extends Component {
+  static propTypes = {
+    percentHeight: PropTypes.number.isRequired,
+    showSidebar: PropTypes.bool.isRequired,
+    showSuggestion: PropTypes.bool,
+    requestUiLocales: PropTypes.func.isRequired,
+    setSidebarVisible: PropTypes.func.isRequired,
+    saveSuggestionPanelHeight: PropTypes.func.isRequired
+  }
+
   componentDidMount () {
     this.props.requestUiLocales()
     window.addEventListener('resize', this.onWindowResize)
@@ -85,26 +94,9 @@ class Root extends Component {
   }
 }
 
-Root.propTypes = {
-  percentHeight: PropTypes.number.isRequired,
-  showSidebar: PropTypes.bool.isRequired,
-  showSuggestion: PropTypes.bool,
-  requestUiLocales: PropTypes.func.isRequired,
-  setSidebarVisible: PropTypes.func.isRequired,
-  saveSuggestionPanelHeight: PropTypes.func.isRequired
-}
-
-function mapStateToProps (state, ownProps) {
-  const { phrases, ui } = state
-  const percentHeight = ui.panels.suggestions.heightPercent
-  const flyweights = phrases.inDoc[ownProps.params.docId] || []
-  const withDetail = flyweights.map(phrase => {
-    return {...phrase, detail: phrases.detail[phrase.id]}
-  })
-
+function mapStateToProps ({ ui }) {
   return {
-    phrases: withDetail,
-    percentHeight,
+    percentHeight: ui.panels.suggestions.heightPercent,
     showSidebar: ui.panels.sidebar.visible,
     showSuggestion: ui.panels.suggestions.visible
   }

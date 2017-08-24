@@ -39,7 +39,6 @@ public class ReviewCommentId implements Identifier<Long>, IsSerializable,
         this.id = id;
     }
 
-    @SuppressWarnings("unused")
     public ReviewCommentId() {
     }
 

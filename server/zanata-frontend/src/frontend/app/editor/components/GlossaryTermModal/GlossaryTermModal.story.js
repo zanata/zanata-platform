@@ -1,8 +1,6 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action, decorateAction } from '@kadira/storybook-addon-actions'
-import { Button, Panel, Row, Table } from 'react-bootstrap'
-import { Icon, Modal } from '../../../components'
+import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import Lorem from 'react-lorem-component'
 import GlossaryTermModal from './component'
 
@@ -25,7 +23,7 @@ storiesOf('GlossaryTermModal', module)
   ))
   .add('with 1 detail item', () => (
     <GlossaryTermModal
-      show={true}
+      show
       close={action('close')}
       sourceLocale="en-US"
       targetLocale="de"
@@ -37,6 +35,7 @@ storiesOf('GlossaryTermModal', module)
         {
           description: 'Take a turn at batting in a game of sportsball.',
           pos: 'Verb',
+          // eslint-disable-next-line max-len
           targetComment: 'It sounds a bit like "slugger" like someone might call a junior-league base kid ball.',
           lastModifiedDate: 1490687578793
         }
@@ -45,7 +44,7 @@ storiesOf('GlossaryTermModal', module)
   ))
   .add('with 3 detail items', () => (
     <GlossaryTermModal
-      show={true}
+      show
       close={action('close')}
       sourceLocale="en-US"
       targetLocale="de"
@@ -59,12 +58,13 @@ storiesOf('GlossaryTermModal', module)
           pos: 'Verb',
           targetComment: "So I schlagged 'im.",
           lastModifiedDate: 1490687563741
-        },{
+        }, {
           description: 'Take a turn at batting in a game of sportsball.',
           pos: 'Verb',
+          // eslint-disable-next-line max-len
           targetComment: 'It sounds a bit like "slugger" like someone might call a junior-league base kid ball.',
           lastModifiedDate: 1490687578793
-        },{
+        }, {
           description: 'For one who is a bat, to hit something with themself.',
           pos: 'Norb',
           targetComment: 'I did not just make it up, it is a real thing.',
@@ -75,7 +75,7 @@ storiesOf('GlossaryTermModal', module)
   ))
   .add('details still loading', () => (
     <GlossaryTermModal
-      show={true}
+      show
       close={action('close')}
       sourceLocale="en-US"
       targetLocale="de"

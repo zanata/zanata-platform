@@ -66,6 +66,7 @@ public class SuggestionsService implements SuggestionsResource {
             LoggerFactory.getLogger(SuggestionsService.class);
 
     public static final String SEARCH_TYPES = Joiner.on(", ").join(SearchType.values());
+    private static final long serialVersionUID = 1476086661647147017L;
 
     @Inject
     private TranslationMemoryService transMemoryService;

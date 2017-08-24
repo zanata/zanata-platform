@@ -1,7 +1,8 @@
+/* global jest describe expect it */
 jest.disableAutomock()
 
 import {
-  getSaveButtonStatus,
+  getSaveButtonStatus
 } from './phrase-util'
 import {
     STATUS_UNTRANSLATED,

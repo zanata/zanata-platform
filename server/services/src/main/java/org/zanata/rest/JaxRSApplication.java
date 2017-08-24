@@ -3,14 +3,12 @@ package org.zanata.rest;
 import com.google.common.collect.ImmutableSet;
 import org.jboss.resteasy.util.PickConstructor;
 import org.reflections.Reflections;
-import org.zanata.rest.service.RestResource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.ext.Provider;
 import java.util.Set;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.lang.System.currentTimeMillis;
 import static java.lang.reflect.Modifier.isAbstract;
@@ -41,18 +39,17 @@ public class JaxRSApplication extends javax.ws.rs.core.Application {
     private static Set<Class<?>> buildClassesSet() {
         long start = currentTimeMillis();
         Reflections reflections = new Reflections(PACKAGE_PREFIX);
-        Set<Class<? extends RestResource>> resourceClasses =
-                reflections.getSubTypesOf(RestResource.class);
-        log.debug("Indexed RestResource classes: {}", resourceClasses);
-        Set<Class<?>> pathClasses = reflections.getTypesAnnotatedWith(Path.class, true);
+        Set<Class<?>> pathClasses =
+                reflections.getTypesAnnotatedWith(Path.class);
         log.debug("Indexed @Path classes: {}", pathClasses);
         Set<Class<?>> providerClasses =
-                reflections.getTypesAnnotatedWith(Provider.class, true);
+                reflections.getTypesAnnotatedWith(Provider.class);
         log.debug("Indexed @Provider classes: {}", providerClasses);
-        Stream<Class<?>> concatStream = concat(stream(resourceClasses), concat(
-                stream(pathClasses),
-                stream(providerClasses)));
+        Stream<Class<?>> concatStream = concat(
+                pathClasses.stream(),
+                providerClasses.stream());
         ImmutableSet<Class<?>> classes = concatStream
+                // we don't want to pick up our JAX-RS client proxies
                 .filter(clazz -> !clazz.getName()
                         .startsWith("org.zanata.rest.client."))
                 .filter(JaxRSApplication::canConstruct)
@@ -60,6 +57,7 @@ public class JaxRSApplication extends javax.ws.rs.core.Application {
         long timeTaken = currentTimeMillis() - start;
         log.info("Found {} JAX-RS classes in total; took {} ms", classes.size(),
                 timeTaken);
+        log.debug("JAX-RS classes: {}", classes);
         return classes;
     }
 
@@ -69,9 +67,5 @@ public class JaxRSApplication extends javax.ws.rs.core.Application {
                 // with @Context args. This method should find either, but not
                 // org.zanata.rest.service.raw.SourceAndTranslationResourceRestBase.TestSourceDocResource.
                 PickConstructor.pickPerRequestConstructor(clazz) != null;
-    }
-
-    private static <T> Stream<T> stream(Iterable<T> iterable) {
-        return StreamSupport.stream(iterable.spliterator(), false);
     }
 }

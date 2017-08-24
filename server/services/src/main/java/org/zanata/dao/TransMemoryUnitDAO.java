@@ -32,6 +32,8 @@ import org.zanata.model.tm.TransMemoryUnit;
 @RequestScoped
 public class TransMemoryUnitDAO extends AbstractDAOImpl<TransMemoryUnit, Long> {
 
+    private static final long serialVersionUID = 5408880769594960257L;
+
     public TransMemoryUnitDAO() {
         super(TransMemoryUnit.class);
     }

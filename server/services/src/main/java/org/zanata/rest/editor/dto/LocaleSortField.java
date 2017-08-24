@@ -8,6 +8,7 @@ import java.util.Map;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class LocaleSortField implements Serializable {
+    private static final long serialVersionUID = 6610014898825078635L;
     public static final String LOCALE = "localeId";
     public static final String MEMBER = "member";
     private final String entityField;

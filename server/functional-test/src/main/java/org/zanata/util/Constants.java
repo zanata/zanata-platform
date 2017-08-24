@@ -22,9 +22,6 @@ package org.zanata.util;
 
 import com.google.common.base.MoreObjects;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public enum Constants {
     // constants used by page and workflow objects
     propFile("setup.properties"), zanataInstance("zanata.instance.url"),
