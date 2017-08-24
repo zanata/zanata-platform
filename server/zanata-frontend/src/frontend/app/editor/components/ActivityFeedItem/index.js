@@ -52,21 +52,37 @@ class ActivityFeedItem extends Component {
       imageUrl: PropTypes.string.isRequired,
     }).isRequired,
     criteria: PropTypes.string.isRequired,
+    commentText: PropTypes.string.isRequired,
     priority: PropTypes.oneOf(['Major', 'Critical', 'Minor']).isRequired,
 
   }
 
   getMessage = () => {
-    const { user, type, status, criteria } = this.props
+    const { user, type, status } = this.props
     // Uses href because editor app is separate from frontend app
     const name = (
       <Link useHref link={profileUrl(user.username)}>{user.name}</Link>
     )
     const priority = (
-        <span className={this.props.textStatus}>{this.props.priority}</span>
+        <span className="criteria-text">
+          <Icon name="warning" className="s0" />
+          <span className={this.props.textStatus}>
+            {this.props.priority}
+          </span>
+        </span>
     )
     const comment = (
-        <span className="comment"><Well>Comment</Well></span>
+        <span className="comment">
+          <Well bsSize="small">
+          <Icon name="comment" className="s0" />
+            {this.props.commentText}
+          </Well>
+        </span>
+    )
+    const criteria = (
+        <span className="criteria-text">
+          {this.props.criteria}
+        </span>
     )
     if (type === 'comment') {
       return (
@@ -120,7 +136,7 @@ class ActivityFeedItem extends Component {
               'Title for an item in the activity feed showing a reviewer ' +
               'rejected the translation. The inserted section is from ' +
               'ActivityFeedItem.rejected.rejectedTranslation'}
-            defaultMessage="{name} has {rejectedTranslation} because of {criteria} (Priority: {priority}). {comment}"
+            defaultMessage="{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}"
             values={{
               name,
               rejectedTranslation,

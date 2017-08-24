@@ -71,14 +71,40 @@ storiesOf('ActivityFeedItem', module)
       user={user} />
   ))
 
-  .add('rejected', () => (
+  .add('rejected - minor priority', () => (
     <ActivityFeedItem
-      criteria="Spellign and Grammah"
+      criteria="Spelling and Grammar"
       type="revision"
       priority="Minor"
-      textStatus="u-textWarning"
+      textStatus="u-textHighlight"
       status="rejected"
+      commentText="You spelt this wrong."
       content={'নাম'}
       lastModifiedTime={lastModifiedTime}
       user={user} />
   ))
+    .add('rejected - major priority', () => (
+        <ActivityFeedItem
+            criteria="Spelling and Grammar"
+            type="revision"
+            priority="Major"
+            textStatus="u-textWarning"
+            status="rejected"
+            commentText="You spelt this wrong."
+            content={'নাম'}
+            lastModifiedTime={lastModifiedTime}
+            user={user} />
+    ))
+    .add('rejected - critical priority', () => (
+        <ActivityFeedItem
+            criteria="Spelling and Grammar"
+            type="revision"
+            priority="Critical"
+            textStatus="u-textDanger"
+            status="rejected"
+            commentText="You spelt this wrong."
+            content={'নাম'}
+            lastModifiedTime={lastModifiedTime}
+            user={user} />
+    ))
+
