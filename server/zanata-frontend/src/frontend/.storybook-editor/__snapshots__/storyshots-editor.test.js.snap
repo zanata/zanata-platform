@@ -242,7 +242,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots ActivityFeedItem rejected 1`] = `
+exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
 <div
   className="revision-box"
 >
@@ -285,6 +285,352 @@ exports[`Editor Storyshots ActivityFeedItem rejected 1`] = `
         <span>
           rejected a translation
         </span>
+      </span>
+       for the reason: 
+      <span
+        className="criteria-text"
+      >
+        Spelling and Grammar
+      </span>
+       - 
+      <span
+        className="criteria-text"
+      >
+        <span
+          className="s0"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+        <span
+          className="u-textDanger"
+        >
+          Critical
+        </span>
+      </span>
+       priority. 
+      <span
+        className="comment"
+      >
+        <div
+          className="well well-sm"
+        >
+          <span
+            className="s0"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+          You spelt this wrong.
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="well-rejected well"
+  >
+    নাম
+  </div>
+  <span
+    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    <span>
+      Dec 16, 2016
+    </span>
+     
+    <span>
+      2:19 AM
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
+<div
+  className="revision-box"
+>
+  <p>
+    <span
+      className="s0"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+    <a
+      href="/profile/view/damason"
+    >
+      <img
+        className="u-round activity-avatar"
+        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+      />
+    </a>
+    <span>
+      <a
+        href="/profile/view/damason"
+      >
+        David Mason
+      </a>
+       has 
+      <span
+        className="u-textWarning"
+      >
+        <span>
+          rejected a translation
+        </span>
+      </span>
+       for the reason: 
+      <span
+        className="criteria-text"
+      >
+        Spelling and Grammar
+      </span>
+       - 
+      <span
+        className="criteria-text"
+      >
+        <span
+          className="s0"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+        <span
+          className="u-textWarning"
+        >
+          Major
+        </span>
+      </span>
+       priority. 
+      <span
+        className="comment"
+      >
+        <div
+          className="well well-sm"
+        >
+          <span
+            className="s0"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+          You spelt this wrong.
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="well-rejected well"
+  >
+    নাম
+  </div>
+  <span
+    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    <span>
+      Dec 16, 2016
+    </span>
+     
+    <span>
+      2:19 AM
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
+<div
+  className="revision-box"
+>
+  <p>
+    <span
+      className="s0"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+    <a
+      href="/profile/view/damason"
+    >
+      <img
+        className="u-round activity-avatar"
+        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+      />
+    </a>
+    <span>
+      <a
+        href="/profile/view/damason"
+      >
+        David Mason
+      </a>
+       has 
+      <span
+        className="u-textWarning"
+      >
+        <span>
+          rejected a translation
+        </span>
+      </span>
+       for the reason: 
+      <span
+        className="criteria-text"
+      >
+        Spelling and Grammar
+      </span>
+       - 
+      <span
+        className="criteria-text"
+      >
+        <span
+          className="s0"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+        <span
+          className="u-textHighlight"
+        >
+          Minor
+        </span>
+      </span>
+       priority. 
+      <span
+        className="comment"
+      >
+        <div
+          className="well well-sm"
+        >
+          <span
+            className="s0"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+          You spelt this wrong.
+        </div>
       </span>
     </span>
   </p>
