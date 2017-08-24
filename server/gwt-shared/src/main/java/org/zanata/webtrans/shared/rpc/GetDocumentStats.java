@@ -10,6 +10,7 @@ public class GetDocumentStats extends
 
     private List<DocumentId> docIds;
 
+    @SuppressWarnings("unused")
     private GetDocumentStats() {
     }
 

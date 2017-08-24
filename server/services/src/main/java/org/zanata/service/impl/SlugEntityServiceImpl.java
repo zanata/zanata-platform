@@ -42,6 +42,7 @@ import org.zanata.service.SlugEntityService;
 @RequestScoped
 @Transactional
 public class SlugEntityServiceImpl implements SlugEntityService {
+    private static final long serialVersionUID = 1035231120720583856L;
     @Inject
     private Session session;
 

@@ -36,7 +36,6 @@ import static org.apache.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 public class LocaleFilter extends Filter {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(LocaleFilter.class);
-    private static final long serialVersionUID = 1L;
     private LocaleId locale;
 
     public LocaleFilter(LocaleId locale) {

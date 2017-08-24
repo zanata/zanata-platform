@@ -12,6 +12,8 @@ import org.zanata.model.HApplicationConfiguration;
 public class ApplicationConfigurationDAO extends
         AbstractDAOImpl<HApplicationConfiguration, Long> {
 
+    private static final long serialVersionUID = 6357076088125640442L;
+
     public ApplicationConfigurationDAO() {
         super(HApplicationConfiguration.class);
     }

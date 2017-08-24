@@ -85,7 +85,6 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Before
-    @SuppressWarnings("unchecked")
     public void beforeMethod() {
         when(localeService.validateLocaleByProjectIteration(localeId,
                 workspaceId.getProjectIterationId().getProjectSlug(),

@@ -47,7 +47,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Statistics")
-public interface StatisticsResource extends RestResource {
+public interface StatisticsResource {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     public static final String SERVICE_PATH = "/stats";
@@ -107,7 +107,9 @@ public interface StatisticsResource extends RestResource {
      *            Locale statistics to be fetched. If this is empty, all locale
      *            statistics will be returned. This parameter may be specified
      *            multiple times if multiple locales are to be fetched.
+     * Deprecated. Use {@link #getStatisticsWithDocId}
      */
+    @Deprecated
     @GET
     @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.*}")
     @TypeHint(ContainerTranslationStatistics.class)
@@ -127,6 +129,41 @@ public interface StatisticsResource extends RestResource {
                     @PathParam("docId") String docId,
                     @QueryParam("word") @DefaultValue("false") boolean includeWordStats,
                     @QueryParam("locale") String[] locales);
+
+    /**
+     * Get translation statistics for a Document.
+     *
+     * @param projectSlug
+     *            Project identifier.
+     * @param iterationSlug
+     *            Project Iteration identifier.
+     * @param docId
+     *            Document identifier.
+     * @param includeWordStats
+     *            Indicates whether to include word-level statistics. Default is
+     *            only message level stats.
+     * @param locales
+     *            Locale statistics to be fetched. If this is empty, all locale
+     *            statistics will be returned. This parameter may be specified
+     *            multiple times if multiple locales are to be fetched.
+     */
+    @GET
+    @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc")
+    @TypeHint(ContainerTranslationStatistics.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Contains translation statistics" +
+                    " for the specified parameters"),
+            @ResponseCode(code = 404, condition = "A document could " +
+                    "not be found for the given parameters"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
+    public ContainerTranslationStatistics getStatisticsWithDocId(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("iterationSlug") String iterationSlug,
+            @QueryParam("docId") String docId,
+            @QueryParam("word") @DefaultValue("false") boolean includeWordStats,
+            @QueryParam("locale") String[] locales);
 
     /**
      * Get contribution statistic from project-version within given date

@@ -75,7 +75,6 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private Provider<Boolean> allowAnonymousAccessProvider;
 
 
-    @SuppressWarnings("unused")
     public ZanataRestSecurityInterceptor() {
     }
 

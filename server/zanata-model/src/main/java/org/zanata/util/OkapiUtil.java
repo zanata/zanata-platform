@@ -36,13 +36,11 @@ public class OkapiUtil {
     private OkapiUtil() {
     }
 
-    @SuppressWarnings("null")
     public static @Nonnull
     LocaleId toOkapiLocale(@Nonnull org.zanata.common.LocaleId zanataLocale) {
         return LocaleId.fromBCP47(zanataLocale.getId());
     }
 
-    @SuppressWarnings("null")
     public static @Nonnull
     LocaleId toOkapiLocaleOrEmpty(@Nullable org.zanata.common.LocaleId locale) {
         if (locale == null) {

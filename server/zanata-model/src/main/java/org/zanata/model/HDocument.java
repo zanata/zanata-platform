@@ -162,7 +162,6 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
         return path;
     }
 
-    @SuppressWarnings("null")
     @ManyToOne
     @JoinColumn(name = "locale", nullable = false)
     @Override

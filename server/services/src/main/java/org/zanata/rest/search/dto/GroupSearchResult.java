@@ -31,6 +31,7 @@ import org.zanata.rest.dto.SearchResult;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GroupSearchResult extends SearchResult {
+    private static final long serialVersionUID = 3866221934953793995L;
     private String title;
     private EntityStatus status;
 

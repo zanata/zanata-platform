@@ -23,7 +23,6 @@ package org.zanata.feature;
 
 import org.junit.Test;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.Constants;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;

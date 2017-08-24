@@ -43,6 +43,7 @@ public class WrapperManager implements Serializable {
             "zanata.connection.use.wrapper";
     private static final String USE_WRAPPER =
             System.getProperty(PROPERTY_USE_WRAPPER);
+    private static final long serialVersionUID = 7834683375687821406L;
     private boolean checkedFirstConnection = false;
     private boolean wrappingEnabled = false;
 

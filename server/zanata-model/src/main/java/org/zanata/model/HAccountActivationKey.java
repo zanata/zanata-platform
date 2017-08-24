@@ -48,7 +48,6 @@ public class HAccountActivationKey extends AccountKeyBase
 
     public static class EntityListener {
 
-        @SuppressWarnings("unused")
         @PrePersist
         private void onPersist(HAccountActivationKey key) {
             key.creationDate = new Date();

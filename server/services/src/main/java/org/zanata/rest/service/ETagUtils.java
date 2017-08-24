@@ -25,6 +25,7 @@ import org.zanata.util.HashUtil;
 @javax.enterprise.context.Dependent
 public class ETagUtils implements Serializable {
 
+    private static final long serialVersionUID = -9048796062192670716L;
     @Inject
     private Session session;
 

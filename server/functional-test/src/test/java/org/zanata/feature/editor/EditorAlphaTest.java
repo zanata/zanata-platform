@@ -48,6 +48,9 @@ public class EditorAlphaTest extends ZanataTestCase {
                 .switchToEditorWindow();
 
         assertThat(reactEditorPage.isReactEditor());
+
+        // Wait for the phrases to load
+        reactEditorPage.expectNumberOfTargets(1);
         assertThat(reactEditorPage.getTransunitTargets().size()).isEqualTo(1);
     }
 }

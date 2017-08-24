@@ -27,6 +27,7 @@ import java.io.Serializable;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class DashboardUserStats implements Serializable {
+    private static final long serialVersionUID = -8754654703489035048L;
     private int wordsTranslated;
     private int messagesTranslated;
     private int documentsTranslated;

@@ -310,6 +310,7 @@ public class ZanataJpaIdentityStore implements Serializable {
                 generatePasswordHash(password, user.getUsername()));
     }
 
+    @SuppressWarnings("deprecation")
     protected String generatePasswordHash(String password, String salt) {
         Preconditions.checkState(!Strings.isNullOrEmpty(salt));
         return PasswordUtil.generateSaltedHash(password, salt);

@@ -27,6 +27,7 @@ import java.io.Serializable;
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class DocumentLocaleKey implements Serializable {
+    private static final long serialVersionUID = -4313108360662519813L;
     private final Long documentId;
     private final LocaleId localeId;
 

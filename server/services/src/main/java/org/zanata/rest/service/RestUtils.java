@@ -48,7 +48,6 @@ public class RestUtils {
      * @param entity
      *            Hibernate-validator annotated entity
      */
-    @SuppressWarnings("unchecked")
     public <T> void validateEntity(T entity) {
         validator.getConstraintsForClass(entity.getClass());
         Set<ConstraintViolation<T>> violations = validator.validate(entity);

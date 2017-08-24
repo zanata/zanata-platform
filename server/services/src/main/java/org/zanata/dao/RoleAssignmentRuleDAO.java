@@ -32,6 +32,8 @@ import org.zanata.model.HRoleAssignmentRule;
 @RequestScoped
 public class RoleAssignmentRuleDAO extends
         AbstractDAOImpl<HRoleAssignmentRule, Long> {
+    private static final long serialVersionUID = -3639125268967764263L;
+
     public RoleAssignmentRuleDAO() {
         super(HRoleAssignmentRule.class);
     }

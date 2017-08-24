@@ -17,6 +17,7 @@ import org.zanata.transformer.TargetTransformer;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 class TranslationMergeAuto implements TranslationMergeService {
+    private static final long serialVersionUID = 8463961641142216442L;
     private final TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
     TranslationMergeAuto(TextFlowTargetHistoryDAO textFlowTargetHistoryDAO) {

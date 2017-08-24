@@ -5,6 +5,7 @@ package org.zanata.util;
 
 import java.util.Date;
 import java.util.Locale;
+import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Period;
@@ -21,6 +22,8 @@ public class DateUtil {
 
     private static final String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
     private static final String TIME_SHORT_PATTERN = "hh:mm:ss";
+    // Used for advanced editor search queries
+    private static final String DATE_SHORT_QUERY_PATTERN = "yyyy-MM-dd";
     // Period Formatters are thread safe and immutable according to joda time
     // docs
     private static final PeriodFormatter TIME_REMAINING_FORMATTER =
@@ -230,5 +233,19 @@ public class DateUtil {
         DateTime toDate = new DateTime(to);
         Days d = Days.daysBetween(fromDate, toDate);
         return d.getDays() <= days;
+    }
+
+    /**
+     * Parse a yyyy-mm-dd string to a date.
+     *
+     * @param dateString in form "yyyy-mm-dd" or empty string or null
+     * @return the parsed date or null.
+     */
+    public static DateTime parseQueryDate(String dateString) {
+        if (Strings.isNullOrEmpty(dateString)) {
+            return null;
+        }
+        return DateTimeFormat.forPattern(DATE_SHORT_QUERY_PATTERN)
+                .parseDateTime(dateString);
     }
 }

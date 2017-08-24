@@ -29,6 +29,7 @@ public class SeamTextParser extends antlr.LLkParser implements
     }
 
     public static class HtmlRecognitionException extends RecognitionException {
+        private static final long serialVersionUID = 54632504271583185L;
         Token openingElement;
         RecognitionException wrappedException;
 
@@ -575,10 +576,6 @@ public class SeamTextParser extends antlr.LLkParser implements
     private void append(String... strings) {
         for (String string : strings)
             builder.append(string);
-    }
-
-    private static boolean hasMultiple(String string, char c) {
-        return string.indexOf(c) != string.lastIndexOf(c);
     }
 
     private void beginCapture() {

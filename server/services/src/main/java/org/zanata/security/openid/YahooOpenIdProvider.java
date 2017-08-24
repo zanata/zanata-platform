@@ -33,6 +33,7 @@ import javax.enterprise.inject.Alternative;
  */
 @Alternative
 public class YahooOpenIdProvider extends GenericOpenIdProvider {
+    private static final long serialVersionUID = 8780127269512296293L;
     private static final String YAHOO_OPENID_FORMAT =
             "https://me.yahoo.com/{0}";
     private static final Pattern YAHOO_OPENID_PATTERN = Pattern

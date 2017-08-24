@@ -38,6 +38,7 @@ public class NoNestingTransactionStrategy
         extends BeanManagedUserTransactionStrategy {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(NoNestingTransactionStrategy.class);
+    private static final long serialVersionUID = 3852240744448507192L;
 
     @Override
     protected void beforeProceed(InvocationContext invocationContext,

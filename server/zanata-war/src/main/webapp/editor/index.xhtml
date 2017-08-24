@@ -47,8 +47,9 @@
   <body class="new-zanata">
   <!-- Based on config in /a/index.xhtml -->
   <div id="config"
-       data-base-url="#{request.contextPath}"
-       data-api-root="/rest"
+       data-app-url="#{request.contextPath}"
+       data-server-url="#{request.contextPath}"
+       data-api-server-url="#{request.contextPath}/rest"
        data-user="#{authenticatedAccountHome.getUser()}"
        data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
        data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",

@@ -50,7 +50,6 @@ public class VersionTMMerge implements HasTMMergeCriteria {
         this.internalTMSource = internalTMSource;
     }
 
-    @SuppressWarnings("unused")
     public VersionTMMerge() {
     }
 

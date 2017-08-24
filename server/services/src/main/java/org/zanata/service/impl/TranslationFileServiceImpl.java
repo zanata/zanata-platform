@@ -94,6 +94,7 @@ import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
 public class TranslationFileServiceImpl implements TranslationFileService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationFileServiceImpl.class);
+    private static final long serialVersionUID = 133921403101284549L;
 
     private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP =
             new MapMaker().makeMap();

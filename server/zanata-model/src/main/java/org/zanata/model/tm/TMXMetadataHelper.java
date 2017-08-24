@@ -172,7 +172,7 @@ public class TMXMetadataHelper {
         return m.build();
     }
 
-    @SuppressWarnings({"null", "unchecked"})
+    @SuppressWarnings("unchecked")
     @Nonnull
     private static Map<String, String>
             getGenericMetadata(HasTMMetadata fromEntity) {
@@ -290,13 +290,11 @@ public class TMXMetadataHelper {
         }
     }
 
-    @SuppressWarnings("null")
     @Nonnull
     public static Date toDate(String dateString) {
         return ISO8601Z.parseDateTime(dateString).toDate();
     }
 
-    @SuppressWarnings("null")
     @Nonnull
     public static String toString(Date date) {
         return ISO8601Z.print(date.getTime());

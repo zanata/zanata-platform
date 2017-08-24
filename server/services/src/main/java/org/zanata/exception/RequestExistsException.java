@@ -7,6 +7,8 @@ package org.zanata.exception;
  */
 public class RequestExistsException extends ZanataServiceException {
 
+    private static final long serialVersionUID = 3996435872028208341L;
+
     public RequestExistsException(String message) {
         super(message);
     }

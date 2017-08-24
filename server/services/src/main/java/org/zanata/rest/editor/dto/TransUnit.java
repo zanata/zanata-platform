@@ -23,6 +23,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TransUnit implements Map<String, Object>, Serializable {
 
+    private static final long serialVersionUID = 6128107041813135612L;
     private Map<String, Object> map = new HashMap<String, Object>();
 
     public static final String SOURCE = "source";
