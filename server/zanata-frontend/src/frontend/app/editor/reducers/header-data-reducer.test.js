@@ -1,3 +1,4 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import {
@@ -102,8 +103,7 @@ describe('header-data-reducer test', () => {
       user: {
         name: 'rick',
         gravatarUrl: 'http://www.gravatar.com/avatar/12345?d=mm&ampr=g&amps=72',
-        // base path is null since it is not configured
-        dashboardUrl: 'null/dashboard'
+        dashboardUrl: '/dashboard'
       },
       context: {
         projectVersion: {
@@ -112,7 +112,7 @@ describe('header-data-reducer test', () => {
             name: 'My Project'
           },
           version: 'myversion',
-          url: 'null/iteration/view/myproject/myversion',
+          url: '/iteration/view/myproject/myversion',
           docs: [ 'file01.txt', 'file02.txt', 'file03.txt' ],
           locales: {
             'en-US': {

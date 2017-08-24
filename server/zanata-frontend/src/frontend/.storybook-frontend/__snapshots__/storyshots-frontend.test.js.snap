@@ -12978,7 +12978,6 @@ exports[`Frontend Storyshots Label validation states 1`] = `
 exports[`Frontend Storyshots Link link page not in frontend app 1`] = `
 <a
   href="http://zanata.org/language/view/ja"
-  id={undefined}
 >
   Japanese
 </a>
@@ -12986,7 +12985,6 @@ exports[`Frontend Storyshots Link link page not in frontend app 1`] = `
 
 exports[`Frontend Storyshots Link link within frontend app 1`] = `
 <a
-  id={undefined}
   onClick={[Function]}
   style={Object {}}
 >

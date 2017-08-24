@@ -21,7 +21,6 @@
 package org.zanata.rest.editor.service.resource;
 
 import org.zanata.rest.editor.MediaTypes;
-import org.zanata.rest.service.RestResource;
 import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 
 import javax.ws.rs.*;
@@ -34,7 +33,7 @@ import java.util.List;
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface SuggestionsResource extends RestResource,
+public interface SuggestionsResource extends
         TransMemoryMergeResource {
 
     String SERVICE_PATH = "/suggestions";

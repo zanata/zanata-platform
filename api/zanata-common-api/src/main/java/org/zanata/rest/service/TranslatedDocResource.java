@@ -67,7 +67,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
         @ResponseCode(code = 500,
                 condition = "If there is an unexpected error in the server while performing this operation")
 })
-public interface TranslatedDocResource extends RestResource {
+public interface TranslatedDocResource {
     @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH;
 

@@ -1,5 +1,499 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
+<div
+  className="revision-box"
+>
+  <p>
+    <span
+      className="s0"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+    <a
+      href="/profile/view/damason"
+    >
+      <img
+        className="u-round activity-avatar"
+        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+      />
+    </a>
+    <span>
+      <a
+        href="/profile/view/damason"
+      >
+        David Mason
+      </a>
+       has 
+      <span
+        className="u-textHighlight"
+      >
+        <span>
+          approved a translation
+        </span>
+      </span>
+    </span>
+  </p>
+  <div
+    className="well-approved well"
+  >
+    নাম
+  </div>
+  <span
+    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    <span>
+      Dec 16, 2016
+    </span>
+     
+    <span>
+      2:19 AM
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
+<div
+  className="revision-box"
+>
+  <p>
+    <span
+      className="s0"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+    <a
+      href="/profile/view/damason"
+    >
+      <img
+        className="u-round activity-avatar"
+        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+      />
+    </a>
+    <span>
+      <a
+        href="/profile/view/damason"
+      >
+        David Mason
+      </a>
+       has commented on a translation
+    </span>
+  </p>
+  <div
+    className="well"
+  >
+    What in the world does this mean?
+  </div>
+  <span
+    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    <span>
+      Dec 16, 2016
+    </span>
+     
+    <span>
+      2:19 AM
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
+<div
+  className="revision-box"
+>
+  <p>
+    <span
+      className="s0"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+    <a
+      href="/profile/view/damason"
+    >
+      <img
+        className="u-round activity-avatar"
+        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+      />
+    </a>
+    <span>
+      <a
+        href="/profile/view/damason"
+      >
+        David Mason
+      </a>
+       has 
+      <span
+        className="u-textUnsure"
+      >
+        <span>
+          created a fuzzy revision
+        </span>
+      </span>
+    </span>
+  </p>
+  <div
+    className="well-fuzzy well"
+  >
+    নাম
+  </div>
+  <span
+    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    <span>
+      Dec 16, 2016
+    </span>
+     
+    <span>
+      2:19 AM
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots ActivityFeedItem rejected 1`] = `
+<div
+  className="revision-box"
+>
+  <p>
+    <span
+      className="s0"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+    <a
+      href="/profile/view/damason"
+    >
+      <img
+        className="u-round activity-avatar"
+        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+      />
+    </a>
+    <span>
+      <a
+        href="/profile/view/damason"
+      >
+        David Mason
+      </a>
+       has 
+      <span
+        className="u-textWarning"
+      >
+        <span>
+          rejected a translation
+        </span>
+      </span>
+    </span>
+  </p>
+  <div
+    className="well-rejected well"
+  >
+    নাম
+  </div>
+  <span
+    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    <span>
+      Dec 16, 2016
+    </span>
+     
+    <span>
+      2:19 AM
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
+<div
+  className="revision-box"
+>
+  <p>
+    <span
+      className="s0"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+    <a
+      href="/profile/view/damason"
+    >
+      <img
+        className="u-round activity-avatar"
+        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+      />
+    </a>
+    <span>
+      <a
+        href="/profile/view/damason"
+      >
+        David Mason
+      </a>
+       has 
+      <span
+        className="u-textSuccess"
+      >
+        <span>
+          created a translation revision
+        </span>
+      </span>
+    </span>
+  </p>
+  <div
+    className="well-translated well"
+  >
+    নাম
+  </div>
+  <span
+    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    <span>
+      Dec 16, 2016
+    </span>
+     
+    <span>
+      2:19 AM
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots ActivitySelectList default 1`] = `
+<div
+  className="btn-toolbar"
+  role="toolbar"
+>
+  <button
+    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    All
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--secondary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Comments
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--secondary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Updates
+  </button>
+</div>
+`;
+
 exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
 <div
   data-radium={true}
@@ -4410,9 +4904,255 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
 </div>
 `;
 
+exports[`Editor Storyshots CommentBox default 1`] = `
+<div
+  className="trans-comment-box"
+>
+  <div
+    className="form-group"
+  >
+    <label
+      className="control-label"
+      htmlFor="formControlsTextarea"
+    >
+      <span
+        className="s0"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       Post a comment
+    </label>
+    <br />
+    <textarea
+      className="form-control"
+      id="formControlsTextarea"
+      onChange={[Function]}
+      placeholder="..."
+      type={undefined}
+    />
+  </div>
+  <button
+    className="Button Button--small u-rounded Button--primary pull-right btn btn-default"
+    disabled={true}
+    onClick={[Function]}
+    type="button"
+  >
+    Post comment
+  </button>
+</div>
+`;
+
+exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
+<span
+  className={undefined}
+>
+  <span
+    className="n1"
+  >
+    <svg
+      className={undefined}
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+        }
+      }
+      style={
+        Object {
+          "fill": "currentColor",
+        }
+      }
+    />
+  </span>
+   
+  <span>
+    Dec 16, 2016
+  </span>
+   
+  <span>
+    2:18 AM
+  </span>
+</span>
+`;
+
+exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
+<ul>
+  <li>
+    <span
+      className={undefined}
+    >
+      <span
+        className="n1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       
+      <span>
+        Oct 26, 1985
+      </span>
+       
+      <span>
+        1:21 AM
+      </span>
+    </span>
+  </li>
+  <li>
+    <span
+      className="u-textMicro"
+    >
+      <span
+        className="n1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       
+      <span>
+        Oct 26, 1985
+      </span>
+       
+      <span>
+        1:22 AM
+      </span>
+    </span>
+  </li>
+  <li>
+    <span
+      className="u-textMuted u-textMini"
+    >
+      <span
+        className="n1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       
+      <span>
+        Oct 26, 1985
+      </span>
+       
+      <span>
+        1:20 AM
+      </span>
+    </span>
+  </li>
+  <li
+    className="u-sP-1-4"
+  >
+    <span
+      className="u-bgHigher u-sP-1-4"
+    >
+      <span
+        className="n1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       
+      <span>
+        Oct 21, 2015
+      </span>
+       
+      <span>
+        12:00 AM
+      </span>
+    </span>
+  </li>
+  <li
+    className="u-sP-1-2"
+  >
+    <span
+      className="u-bgHigher u-sP-1-2 u-textMuted"
+    >
+      <span
+        className="n1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       
+      <span>
+        Nov 12, 1955
+      </span>
+       
+      <span>
+        12:00 AM
+      </span>
+    </span>
+  </li>
+</ul>
+`;
+
 exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
 <div
-  className="inline-flex-search"
+  className="inline-search"
 >
   <div
     className="InputGroup InputGroup--outlined InputGroup--rounded is-focused"
@@ -4454,7 +5194,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
 
 exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
 <div
-  className="inline-flex-search"
+  className="inline-search"
 >
   <div
     className="InputGroup InputGroup--outlined InputGroup--rounded is-focused"
@@ -5352,6 +6092,92 @@ exports[`Editor Storyshots GlossaryTermModal with 3 detail items 1`] = `
 </div>
 `;
 
+exports[`Editor Storyshots LanguageSelectList default 1`] = `
+<div
+  className="btn-toolbar"
+  role="toolbar"
+>
+  <button
+    className="Button Button--small u-rounded Button--primary is-active btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-language\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Current
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--primary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-language\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    All
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--primary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-language\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Source
+  </button>
+</div>
+`;
+
 exports[`Editor Storyshots ProgressBar Large 1`] = `
 <div
   className="Progressbar Progressbar--lg"
@@ -5508,165 +6334,233 @@ exports[`Editor Storyshots ProgressBar Small 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots RejectTranslationModal Other [major] 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
+exports[`Editor Storyshots SelectButton active 1`] = `
+<button
+  className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
+  disabled={false}
+  onClick={[Function]}
+  type="button"
+>
+  <span
+    className="n1"
+  >
+    <svg
+      className={undefined}
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+        }
       }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-      <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-      <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-      <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-      <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
+      style={
+        Object {
+          "fill": "currentColor",
+        }
       }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-      <p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-      <p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-      <p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-      <p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
+    />
+  </span>
+   
+  All
+</button>
+`;
+
+exports[`Editor Storyshots SelectButton default 1`] = `
+<button
+  className="Button Button--small u-rounded Button--secondary btn btn-default"
+  disabled={false}
+  onClick={[Function]}
+  type="button"
+>
+  <span
+    className="n1"
+  >
+    <svg
+      className={undefined}
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+        }
       }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-      <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-      <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-      <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-      <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
+      style={
+        Object {
+          "fill": "currentColor",
+        }
       }
-    }
-  />
-  <div
-    className="static-modal"
-  />
+    />
+  </span>
+   
+  All
+</button>
+`;
+
+exports[`Editor Storyshots SelectButtonList default 1`] = `
+<div
+  className="btn-toolbar"
+  role="toolbar"
+>
+  <button
+    className="Button Button--small u-rounded Button--secondary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    All
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--secondary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Comments
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--secondary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Updates
+  </button>
 </div>
 `;
 
-exports[`Editor Storyshots RejectTranslationModal Style Guide and Glossary Violations [minor] 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-      <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-      <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-      <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-      <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-      <p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-      <p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-      <p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-      <p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-      <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-      <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-      <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-      <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <div
-    className="static-modal"
-  />
-</div>
-`;
-
-exports[`Editor Storyshots RejectTranslationModal Translation errors [critical] 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-      <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-      <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-      <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-      <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-      <p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-      <p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-      <p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-      <p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-      <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-      <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-      <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-      <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <div
-    className="static-modal"
-  />
+exports[`Editor Storyshots SelectButtonList first button active 1`] = `
+<div
+  className="btn-toolbar"
+  role="toolbar"
+>
+  <button
+    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    All
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--secondary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Comments
+  </button>
+  <button
+    className="Button Button--small u-rounded Button--secondary btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     
+    Updates
+  </button>
 </div>
 `;
 
