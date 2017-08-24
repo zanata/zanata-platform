@@ -14912,6 +14912,24 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
 </div>
 `;
 
+exports[`Frontend Storyshots VersionTMMergeModal disabled TM 1`] = `
+<div
+  className="static-modal"
+/>
+`;
+
+exports[`Frontend Storyshots VersionTMMergeModal no version selected 1`] = `
+<div
+  className="static-modal"
+/>
+`;
+
+exports[`Frontend Storyshots VersionTMMergeModal version selected 1`] = `
+<div
+  className="static-modal"
+/>
+`;
+
 exports[`Frontend Storyshots Well default 1`] = `
 <div
   className="well"
