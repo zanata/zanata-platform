@@ -49,6 +49,7 @@ import java.util.Map;
 public class CacheAction implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CacheAction.class);
+    private static final long serialVersionUID = -4179920199273998215L;
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     @Zanata

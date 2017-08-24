@@ -35,6 +35,7 @@ import org.zanata.model.HAccount;
 @RequestScoped
 public class AllowedAppDAO extends AbstractDAOImpl<AllowedApp, Long> {
 
+    private static final long serialVersionUID = 9130847294879979860L;
     @Inject
     private AccountDAO accountDAO;
 

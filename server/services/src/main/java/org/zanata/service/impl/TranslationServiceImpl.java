@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import javax.inject.Inject;
@@ -96,7 +97,9 @@ import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChan
 public class TranslationServiceImpl implements TranslationService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationServiceImpl.class);
+    private static final long serialVersionUID = -4409365256354251534L;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject
@@ -124,10 +127,13 @@ public class TranslationServiceImpl implements TranslationService {
     private TranslationMergeServiceFactory translationMergeServiceFactory;
     @Inject
     private Messages msgs;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<DocumentUploadedEvent> documentUploadedEvent;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<DocStatsEvent> docStatsEvent;
 

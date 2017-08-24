@@ -43,6 +43,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class AsyncTaskHandle<V> implements Serializable {
 
+    private static final long serialVersionUID = -2896367626313653728L;
     @SuppressFBWarnings("SE_BAD_FIELD")
     private CompletableFuture<V> futureResult;
     public long maxProgress = 100;

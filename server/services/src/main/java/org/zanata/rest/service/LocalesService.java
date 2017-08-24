@@ -318,6 +318,7 @@ public class LocalesService implements LocalesResource {
     private static class FilterLocaleDetails implements Predicate<LocaleDetails>,
             Serializable {
 
+        private static final long serialVersionUID = -1156776442946778719L;
         private String query;
 
         @Override

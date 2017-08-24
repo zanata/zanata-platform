@@ -9,21 +9,82 @@
   --InputGroup-transition: 0.2s cubic-bezier(.26, .47, .36, .94);
 }
 
+.InputEditorSearch {
+  margin-left: 0.75em;
+  display: inline-flex;
+  margin-top: 0.25em;
+  font-size: 0.875em;
+}
+
+.InputEditorSearch > div {
+  /* to contain nested .panel width */
+  position: relative;
+  width: 100%;
+}
+
+.InputGroup--wide {
+  width: 60%;
+  padding-left: 1rem;
+}
+
+
+/* advanced search panel */
+
+.InputEditorSearch .panel {
+  margin-bottom: 0.5em !important;
+  position: absolute;
+  width: 100%;
+}
+
+.InputEditorSearch .panel-body {
+  /* bootstrap panel cannot use utility class u-bgHigher directly */
+  background-color: var(--u-bg-color-lighter);
+}
+
+.InputEditorSearch .panel-body input {
+  box-shadow: var(--default-box-shadow-inset)
+}
+
+.InputEditorSearch .help-icon button {
+  vertical-align: sub;
+  margin-left: 0.375em;
+}
+
+.InputEditorSearch .help-icon button span {
+  vertical-align: bottom;
+}
+
+#editor-header .InputEditorSearch .InputGroup-addon span.n1 {
+  vertical-align: middle;
+}
+
+.InputGroup-addon {
+  vertical-align: baseline;
+}
+
+li.inline-search-list {
+  display: inline-flex;
+  width: 100%;
+  margin-right: 1em;
+}
+
+li.inline-search-list span {
+  width: 60%;
+  color: #20718A;
+}
+
 .InputGroup {
   position: relative;
   display: table;
   border-collapse: separate;
 }
 
-.InputGroup-input,
-.InputGroup-addon,
-.InputGroup-button {
+.InputGroup-input, .InputGroup-addon, .InputGroup-button {
   display: table-cell;
   transition: var(--InputGroup-transition);
 }
 
-.InputGroup-input,
-.InputGroup-addon {
+.InputGroup-input, .InputGroup-addon {
   background-color: transparent;
   padding: 0 calc(var(--InputGroup-rhythm) * .25);
 }
@@ -45,15 +106,11 @@
   content: ' ';
 }
 
-.InputGroup.is-focused .InputGroup-input,
-.InputGroup.is-focused .InputGroup-addon {
+.InputGroup.is-focused .InputGroup-input, .InputGroup.is-focused .InputGroup-addon {
   background-color: #fff;
 }
 
-.InputGroup--bordered .InputGroup-input,
-.InputGroup--bordered .InputGroup-addon,
-.InputGroup--outlined .InputGroup-input,
-.InputGroup--outlined .InputGroup-addon {
+.InputGroup--bordered .InputGroup-input, .InputGroup--bordered .InputGroup-addon, .InputGroup--outlined .InputGroup-input, .InputGroup--outlined .InputGroup-addon {
   border-top: 1px solid var(--InputGroup-border-color);
   border-bottom: 1px solid var(--InputGroup-border-color);
 }
@@ -63,32 +120,25 @@
   border-right: 1px solid var(--InputGroup-border-color);
 }
 
-.InputGroup--outlined .InputGroup-input:first-child,
-.InputGroup--outlined .InputGroup-addon:first-child {
+.InputGroup--outlined .InputGroup-input:first-child, .InputGroup--outlined .InputGroup-addon:first-child {
   border-left: 1px solid var(--InputGroup-border-color);
 }
 
-.InputGroup--outlined .InputGroup-input:last-child,
-.InputGroup--outlined .InputGroup-addon:last-child {
+.InputGroup--outlined .InputGroup-input:last-child, .InputGroup--outlined .InputGroup-addon:last-child {
   border-right: 1px solid var(--InputGroup-border-color);
 }
 
-.InputGroup--bordered.is-focused .InputGroup-input,
-.InputGroup--bordered.is-focused .InputGroup-addon,
-.InputGroup--outlined.is-focused .InputGroup-input,
-.InputGroup--outlined.is-focused .InputGroup-addon {
+.InputGroup--bordered.is-focused .InputGroup-input, .InputGroup--bordered.is-focused .InputGroup-addon, .InputGroup--outlined.is-focused .InputGroup-input, .InputGroup--outlined.is-focused .InputGroup-addon {
   border-color: var(--InputGroup-border--focus-color);
 }
 
-.InputGroup--rounded .InputGroup-input:first-child,
-.InputGroup--rounded .InputGroup-addon:first-child {
+.InputGroup--rounded .InputGroup-input:first-child, .InputGroup--rounded .InputGroup-addon:first-child {
   border-bottom-left-radius: calc(var(--InputGroup-rhythm) * 1);
   border-top-left-radius: calc(var(--InputGroup-rhythm) * 1);
   padding-left: calc(var(--InputGroup-rhythm) * .375);
 }
 
-.InputGroup--rounded .InputGroup-input:last-child,
-.InputGroup--rounded .InputGroup-addon:last-child {
+.InputGroup--rounded .InputGroup-input:last-child, .InputGroup--rounded .InputGroup-addon:last-child {
   border-bottom-right-radius: calc(var(--InputGroup-rhythm) * 1);
   border-top-right-radius: calc(var(--InputGroup-rhythm) * 1);
   padding-right: calc(var(--InputGroup-rhythm) * .375);
@@ -107,9 +157,91 @@
 }
 
 button.clearadvsearch {
-  color:#03A6D7;
-  padding:0;
-  padding-top:0.75em;
+  color: #03A6D7;
+  padding: 0;
+  padding-top: 0.75em;
 }
 
+@media (min-width:560px) {
+  .InputEditorSearch {
+    width: 35%;
+  }
+}
 
+@media (min-width:600px) {
+  .InputEditorSearch {
+    width: 40%;
+  }
+}
+
+@media (min-width:680px) {
+  .InputEditorSearch {
+    width: 45%;
+  }
+}
+
+@media (min-width:740px) {
+  .InputEditorSearch {
+    width: 35%;
+  }
+}
+
+@media (min-width:780px) {
+  .InputEditorSearch {
+    width: 40%;
+  }
+}
+
+@media (min-width:820px) {
+  .InputEditorSearch {
+    width: 45%;
+  }
+}
+
+@media (min-width:895px) {
+  .InputEditorSearch {
+    width: 50%;
+  }
+}
+
+@media (min-width:961px) {
+  .InputEditorSearch {
+    width: 15%;
+  }
+}
+
+@media (min-width:980px) {
+  .InputEditorSearch {
+    width: 20%;
+  }
+}
+
+@media (min-width:1040px) {
+  .InputEditorSearch {
+    width: 25%;
+  }
+}
+
+@media (min-width:1110px) {
+  .InputEditorSearch {
+    width: 30%;
+  }
+}
+
+@media (min-width:1280px) {
+  .InputEditorSearch {
+    width: 35%;
+  }
+}
+
+@media (min-width:1300px) {
+  .InputEditorSearch {
+    width: 40%;
+  }
+}
+
+@media (min-width:1400px) {
+  .InputEditorSearch {
+    width: 45%;
+  }
+}

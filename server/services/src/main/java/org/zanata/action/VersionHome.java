@@ -290,17 +290,21 @@ public class VersionHome extends SlugHome<HProjectIteration>
         }
     }
 
+    @SuppressWarnings("deprecation")
+    private void setMessage(String message) {
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                message);
+    }
+
     @Transactional
     public void updateRequireTranslationReview(String key, boolean checked) {
         identity.checkPermission(getInstance(), "update");
         getInstance().setRequireTranslationReview(checked);
         update();
         if (checked) {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.get("jsf.iteration.requireReview.enabled"));
+            setMessage(msgs.get("jsf.iteration.requireReview.enabled"));
         } else {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.get("jsf.iteration.requireReview.disabled"));
+            setMessage(msgs.get("jsf.iteration.requireReview.disabled"));
         }
     }
 
@@ -394,9 +398,8 @@ public class VersionHome extends SlugHome<HProjectIteration>
     public void copyVersion() {
         copyVersionManager.startCopyVersion(getProjectSlug(),
                 copyFromVersionSlug, inputSlugValue);
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.copyVersion.started", inputSlugValue,
-                        copyFromVersionSlug));
+        setMessage(msgs.format("jsf.copyVersion.started", inputSlugValue,
+                copyFromVersionSlug));
     }
 
     public void setSlug(String slug) {
@@ -462,8 +465,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 .putAll(getInstance().getProject().getCustomizedValidations());
         availableValidations.clear();
         update();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.get("jsf.iteration.CopyProjectValidations.message"));
+        setMessage(msgs.get("jsf.iteration.CopyProjectValidations.message"));
     }
 
     /**
@@ -545,14 +547,14 @@ public class VersionHome extends SlugHome<HProjectIteration>
         getInstance().setProjectType(
                 getInstance().getProject().getDefaultProjectType());
         update();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.get("jsf.iteration.CopyProjectType.message"));
+        setMessage(msgs.get("jsf.iteration.CopyProjectType.message"));
     }
 
     /**
      * @return comma-separated list of accepted file extensions. May be an empty
      *         string
      */
+    @SuppressWarnings("deprecation")
     public String getAcceptedSourceFileExtensions() {
         List<String> supportedTypes = Lists.transform(
                 ProjectType.getSupportedSourceFileTypes(getProjectType()),
@@ -567,6 +569,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
         return Joiner.on(", ").join(supportedTypes);
     }
 
+    @SuppressWarnings("deprecation")
     public String getAcceptedSourceFile() {
         List<String> supportedTypes = Lists.transform(
                 ProjectType.getSupportedSourceFileTypes(getProjectType()),
@@ -612,9 +615,8 @@ public class VersionHome extends SlugHome<HProjectIteration>
             }
         }
         update();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.validation.updated",
-                        validationId.getDisplayName(), state));
+        setMessage(msgs.format("jsf.validation.updated",
+                validationId.getDisplayName(), state));
     }
 
     /**

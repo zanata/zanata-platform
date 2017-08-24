@@ -36,6 +36,7 @@ import org.zanata.service.LocaleService;
 @Named("configurationServiceImpl")
 @RequestScoped
 public class ConfigurationServiceImpl implements ConfigurationService {
+    private static final long serialVersionUID = 813744282851342634L;
     private static final String FILE_NAME = "zanata.xml";
 
     private static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";

@@ -7,7 +7,6 @@ import { Link as RouterLink } from 'react-router'
  * based on useHref.
  */
 const Link = ({
-  id,
   children,
   link,
   useHref = false,
@@ -15,7 +14,7 @@ const Link = ({
 }) => {
   if (useHref) {
     return (
-      <a href={link} id={id}
+      <a href={link}
         {...props}>
         {children}
       </a>
@@ -23,7 +22,6 @@ const Link = ({
   }
   return (
     <RouterLink
-      id={id}
       to={link}
       {...props}
     >

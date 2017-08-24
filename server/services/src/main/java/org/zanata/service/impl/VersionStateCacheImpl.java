@@ -24,6 +24,7 @@ package org.zanata.service.impl;
 
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -52,14 +53,17 @@ import javax.enterprise.event.TransactionPhase;
 @ApplicationScoped
 // TODO look at using @Transactional
 public class VersionStateCacheImpl implements VersionStateCache {
+    private static final long serialVersionUID = -8601352007195143678L;
     private static final String BASE = VersionStateCacheImpl.class.getName();
 
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private  CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private final CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Zanata
     private CacheContainer cacheContainer;
     private final LocaleDAO localeDAO;

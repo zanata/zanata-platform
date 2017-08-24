@@ -200,6 +200,7 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     private static class TMComparator implements Comparator<TransMemory>, Serializable {
+        private static final long serialVersionUID = 3057178464938604821L;
         private SortingType sortingType;
 
         public TMComparator(SortingType sortingType) {

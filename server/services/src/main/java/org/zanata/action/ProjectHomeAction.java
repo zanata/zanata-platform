@@ -139,6 +139,9 @@ public class ProjectHomeAction extends AbstractSortAction
     private AbstractListFilter<HProjectIteration> versionFilter =
             new InMemoryListFilter<HProjectIteration>() {
 
+                private static final long serialVersionUID =
+                        7931445158995457207L;
+
                 @Override
                 protected List<HProjectIteration> fetchAll() {
                     return getProjectVersions();
@@ -189,8 +192,7 @@ public class ProjectHomeAction extends AbstractSortAction
 
     public void cancelCopyVersion(String projectSlug, String versionSlug) {
         copyVersionManager.cancelCopyVersion(projectSlug, versionSlug);
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.copyVersion.Cancelled", versionSlug));
+        setMessage(msgs.format("jsf.copyVersion.Cancelled", versionSlug));
     }
 
     public String getCopyVersionCompletePercent(String projectSlug,
@@ -201,13 +203,18 @@ public class ProjectHomeAction extends AbstractSortAction
             double completedPercent = (double) handler.getCurrentProgress()
                     / (double) handler.getMaxProgress() * 100;
             if (Double.compare(completedPercent, 100) == 0) {
-                conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                        msgs.format("jsf.copyVersion.Completed", versionSlug));
+                setMessage(msgs.format("jsf.copyVersion.Completed", versionSlug));
             }
             return String.format("%1$,.2f", completedPercent);
         } else {
             return "0";
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void setMessage(String message) {
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                message);
     }
 
     public String getCopyVersionTotalDocuments(String projectSlug,
@@ -723,6 +730,7 @@ public class ProjectHomeAction extends AbstractSortAction
 
     public final class PeopleFilterComparator
             extends InMemoryListFilter<HPerson> implements Comparator<HPerson> {
+        private static final long serialVersionUID = 3905373873256076410L;
         private final ProjectRolePredicate projectRolePredicate =
                 new ProjectRolePredicate();
         private final ProjectLocalePredicate projectLocalePredicate =

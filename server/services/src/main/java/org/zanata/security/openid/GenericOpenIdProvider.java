@@ -39,6 +39,7 @@ import java.util.HashSet;
 @Alternative
 public class GenericOpenIdProvider implements OpenIdProvider {
 
+    private static final long serialVersionUID = -4228317046763974262L;
     private boolean sregEnabled = true;
     private boolean aexEnabled = true;
 

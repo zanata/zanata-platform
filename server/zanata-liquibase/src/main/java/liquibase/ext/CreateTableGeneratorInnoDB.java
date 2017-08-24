@@ -47,7 +47,6 @@ import java.util.Collection;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@SuppressWarnings("unused")
 public class CreateTableGeneratorInnoDB extends CreateTableGenerator {
 
     @Override

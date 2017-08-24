@@ -20,7 +20,6 @@
  */
 package org.zanata.dao;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +51,8 @@ import com.google.common.collect.Sets;
 @RequestScoped
 public class TextFlowTargetHistoryDAO extends
         AbstractDAOImpl<HTextFlowTargetHistory, Long> {
+
+    private static final long serialVersionUID = -2556266468897519199L;
 
     public TextFlowTargetHistoryDAO() {
         super(HTextFlowTargetHistory.class);
@@ -374,12 +375,6 @@ public class TextFlowTargetHistoryDAO extends
     @VisibleForTesting
     protected String stripTimeFromDateTimeFunction(String columnName) {
         return "date(" + columnName + ")";
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T loadById(Object object, Class<T> entityClass) {
-        return (T) getSession().byId(entityClass).load(
-                ((BigInteger) object).longValue());
     }
 
     private static String getOffsetAsString(DateTimeZone zone) {

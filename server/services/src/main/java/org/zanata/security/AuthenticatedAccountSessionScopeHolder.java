@@ -34,6 +34,7 @@ import java.io.Serializable;
 @Synchronized
 public class AuthenticatedAccountSessionScopeHolder
         implements AuthenticatedAccountHolder, Serializable {
+    private static final long serialVersionUID = 8016167684384238549L;
     private HAccount authenticatedAccount;
 
     @Override

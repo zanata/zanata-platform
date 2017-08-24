@@ -27,6 +27,7 @@ package org.zanata.lock;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class LockNotAcquiredException extends RuntimeException {
+    private static final long serialVersionUID = -7743025595982561150L;
     private Lock lock;
 
     public LockNotAcquiredException(Lock l) {

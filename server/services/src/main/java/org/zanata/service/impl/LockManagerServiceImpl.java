@@ -42,6 +42,7 @@ import org.zanata.util.ServiceLocator;
 @Named("lockManagerServiceImpl")
 @ApplicationScoped
 public class LockManagerServiceImpl implements LockManagerService {
+    private static final long serialVersionUID = 9100776788798773866L;
     /**
      * Maps locks to their owners' usernames
      */

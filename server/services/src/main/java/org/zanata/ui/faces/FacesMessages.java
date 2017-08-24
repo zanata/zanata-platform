@@ -58,6 +58,7 @@ import org.zanata.i18n.Messages;
 public class FacesMessages implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(FacesMessages.class);
+    private static final long serialVersionUID = -5066321533305820364L;
 
     private final List<FacesMessage> globalMessages = new ArrayList<>();
     private final Map<String, List<FacesMessage>> keyedMessages =

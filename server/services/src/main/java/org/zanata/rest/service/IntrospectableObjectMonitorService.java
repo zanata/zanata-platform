@@ -101,7 +101,6 @@ public class IntrospectableObjectMonitorService {
     @XmlRootElement(name = "link")
     public static class LinkRoot extends Link {
 
-        @SuppressWarnings("unused")
         public LinkRoot() {
         }
 

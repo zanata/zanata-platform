@@ -44,6 +44,7 @@ import org.zanata.webtrans.shared.rpc.WrappedAction;
 public class SeamDispatch implements Dispatch, Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(SeamDispatch.class);
+    private static final long serialVersionUID = 4310981126540840766L;
     @SuppressFBWarnings("SE_BAD_FIELD")
     private HttpServletRequest request;
 
@@ -166,7 +167,7 @@ public class SeamDispatch implements Dispatch, Serializable {
         return handler.execute(action, ctx);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     private <A extends Action<R>, R extends Result> ActionHandler<A, R>
             findHandler(A action) throws UnsupportedActionException {
         Instance<AbstractActionHandler<?, ?>> handler = actionHandlers
@@ -223,6 +224,7 @@ public class SeamDispatch implements Dispatch, Serializable {
     static class ActionHandlerForLiteral
             extends AnnotationLiteral<ActionHandlerFor>
             implements ActionHandlerFor {
+        private static final long serialVersionUID = -8917663291909945834L;
         private final Class<? extends Action<?>> clazz;
 
         public ActionHandlerForLiteral(Class<? extends Action<?>> clazz) {

@@ -34,6 +34,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
@@ -77,6 +78,7 @@ import com.google.common.collect.Multimap;
 public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(MergeTranslationsServiceImpl.class);
+    private static final long serialVersionUID = 3719145807493583125L;
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;
@@ -88,8 +90,10 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     private TranslationStateCache translationStateCacheImpl;
     @Inject
     private LocaleService localeServiceImpl;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<DocStatsEvent> docStatsEvent;
     @Inject

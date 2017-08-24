@@ -21,6 +21,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class EditorTextFlow extends TextFlow {
 
+    private static final long serialVersionUID = -4762002793053226449L;
     private int wordCount;
     private String msgctxt;
     private String sourceReferences;

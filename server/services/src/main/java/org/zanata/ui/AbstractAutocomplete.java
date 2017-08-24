@@ -29,6 +29,7 @@ import java.util.List;
  */
 public abstract class AbstractAutocomplete<T> implements Serializable {
 
+    private static final long serialVersionUID = 8982902239785894826L;
     @SuppressWarnings("deprecation")
     protected org.zanata.seam.scope.ConversationScopeMessages
             conversationScopeMessages =

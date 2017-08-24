@@ -160,6 +160,11 @@
 
 /* Vertical */
 
+.u-sMV-1-8 {
+  margin-top: calc(var(--u-space-rhythm) * .125) !important;
+  margin-bottom: calc(var(--u-space-rhythm) * .125) !important;
+}
+
 .u-sMV-1-4 {
   margin-top: calc(var(--u-space-rhythm) * .25) !important;
   margin-bottom: calc(var(--u-space-rhythm) * .25) !important;

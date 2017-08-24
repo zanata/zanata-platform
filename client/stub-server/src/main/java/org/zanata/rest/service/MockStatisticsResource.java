@@ -69,6 +69,14 @@ public class MockStatisticsResource implements StatisticsResource {
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,
             @DefaultValue("false") boolean includeWordStats, String[] locales) {
+        return getStatisticsWithDocId(projectSlug, iterationSlug, docId,
+                includeWordStats, locales);
+    }
+
+    @Override
+    public ContainerTranslationStatistics getStatisticsWithDocId(
+            String projectSlug, String iterationSlug, String docId,
+            boolean includeWordStats, String[] locales) {
         return generateStatistics(docId, locales);
     }
 

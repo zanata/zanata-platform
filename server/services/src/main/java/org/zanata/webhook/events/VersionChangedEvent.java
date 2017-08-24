@@ -33,6 +33,7 @@ import org.zanata.model.type.WebhookType;
 public class VersionChangedEvent extends WebhookEventType {
     private static final String EVENT_TYPE =
             WebhookType.VersionChangedEvent.name();
+    private static final long serialVersionUID = -6169769592792396417L;
 
     public static enum ChangeType {
         CREATE,

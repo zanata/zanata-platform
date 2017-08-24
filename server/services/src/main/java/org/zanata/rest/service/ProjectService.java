@@ -53,6 +53,7 @@ import com.google.common.base.Objects;
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
 public class ProjectService implements ProjectResource {
+    private static final long serialVersionUID = -3670404109711592923L;
     /** Project Identifier. */
     @PathParam("projectSlug")
     String projectSlug;
@@ -63,8 +64,10 @@ public class ProjectService implements ProjectResource {
     @Context
     private MediaType accept;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private UriInfo uri;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private Request request;
 
@@ -83,7 +86,6 @@ public class ProjectService implements ProjectResource {
     @Inject
     ETagUtils eTagUtils;
 
-    @SuppressWarnings("null")
     @Nonnull
     public String getProjectSlug() {
         return projectSlug;

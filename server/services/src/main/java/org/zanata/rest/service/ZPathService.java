@@ -40,6 +40,7 @@ import org.zanata.model.HProjectIteration;
 
 // TODO this should probably be Transactional (and not Dependent)
 public class ZPathService implements Serializable {
+    private static final long serialVersionUID = -4943985376532430555L;
     /*
      * Private ZPaths. Mainly used for generation.
      */

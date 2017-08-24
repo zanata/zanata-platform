@@ -42,6 +42,8 @@ import java.util.Set;
 public class ProjectLocaleMemberDAO
         extends AbstractDAOImpl<HProjectLocaleMember, HProjectLocaleMember.HProjectLocaleMemberPK> {
 
+    private static final long serialVersionUID = -5060837439693219748L;
+
     public ProjectLocaleMemberDAO() {
         super(HProjectLocaleMember.class);
     }

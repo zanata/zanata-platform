@@ -57,6 +57,8 @@ import java.util.Optional;
  * for closing the Iterator, or a database connection may leak.
  */
 public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
+    private static final long serialVersionUID = 2870150930566501303L;
+
     public TextFlowStreamingDAO() {
         this(null);
     }

@@ -70,7 +70,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 @Path("/process")
 @Produces(MediaType.APPLICATION_JSON)
-public class AsyncProcessService implements RestResource {
+public class AsyncProcessService {
     private static final long serialVersionUID = 1L;
 
     @Inject

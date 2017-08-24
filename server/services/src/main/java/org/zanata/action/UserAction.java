@@ -81,6 +81,9 @@ public class UserAction implements Serializable {
     private AbstractListFilter<String> userFilter =
             new AbstractListFilter<String>() {
 
+                private static final long serialVersionUID =
+                        6774670019241510582L;
+
                 @Override
                 protected List<String> fetchRecords(int start, int max,
                         String filter) {

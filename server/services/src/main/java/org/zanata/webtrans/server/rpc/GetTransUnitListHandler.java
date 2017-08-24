@@ -26,9 +26,6 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -37,6 +34,7 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
+import static org.zanata.util.DateUtil.parseQueryDate;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.EditorFilter;
@@ -46,7 +44,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -70,8 +67,6 @@ public class GetTransUnitListHandler extends
     private ValidationService validationServiceImpl;
     @Inject
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
-    private DateTimeFormatter dateFormatter =
-            DateTimeFormat.forPattern("yyyy-MM-dd");
 
     @Override
     public GetTransUnitListResult execute(GetTransUnitList action,
@@ -86,10 +81,10 @@ public class GetTransUnitListHandler extends
         FilterConstraints constraints = FilterConstraints.builder()
                 .filterBy(editorFilter.getTextInContent())
                 .lastModifiedBy(editorFilter.getLastModifiedByUser())
-                .targetChangedBefore(parseDateIfPresent(
+                .targetChangedBefore(parseQueryDate(
                         editorFilter.getLastModifiedBefore()))
                 .targetChangedAfter(
-                        parseDateIfPresent(editorFilter.getLastModifiedAfter()))
+                        parseQueryDate(editorFilter.getLastModifiedAfter()))
                 .resourceIdIs(editorFilter.getResId())
                 .msgContext(editorFilter.getMsgContext())
                 .sourceCommentContains(editorFilter.getSourceComment())
@@ -125,11 +120,6 @@ public class GetTransUnitListHandler extends
                 textFlows, targetOffset, targetPageIndex);
         result.setNavigationIndex(navigationResult);
         return result;
-    }
-
-    private DateTime parseDateIfPresent(String dateInString) {
-        return Strings.isNullOrEmpty(dateInString) ? null
-                : dateFormatter.parseDateTime(dateInString);
     }
 
     private int getTotalPageIndex(int indexListSize, int countPerPage) {

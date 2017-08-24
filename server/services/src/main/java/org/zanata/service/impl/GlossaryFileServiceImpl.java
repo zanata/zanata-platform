@@ -65,6 +65,7 @@ import com.google.common.collect.Sets;
 @Named("glossaryFileServiceImpl")
 @RequestScoped
 public class GlossaryFileServiceImpl implements GlossaryFileService {
+    private static final long serialVersionUID = -4081753603490619691L;
 
     private static final Logger log =
             LoggerFactory.getLogger(GlossaryFileServiceImpl.class);
