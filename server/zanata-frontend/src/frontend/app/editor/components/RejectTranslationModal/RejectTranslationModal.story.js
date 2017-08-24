@@ -2,6 +2,7 @@ import React from 'react'
 import { storiesOf, action } from '@storybook/react'
 import RejectTranslationModal from '.'
 import Lorem from 'react-lorem-component'
+import { MINOR, MAJOR, CRITICAL } from './index.js'
 
 /*
  * TODO add stories showing the range of states
@@ -21,17 +22,17 @@ storiesOf('RejectTranslationModal', module)
           </div>
         </div>
     ))
-    .add('Translation errors [critical]', () => (
+    .add('Translation errors (critical)', () => (
         <RejectTranslationModal show
          criteria="Translation Errors (terminology, mistranslated addition, omission, un-localized, do not translate, etc)"
-         priority="Critical"  textState="u-textDanger" />
+         priority={CRITICAL}  textState="u-textDanger" />
     ))
-    .add('Style Guide and Glossary Violations [minor]', () => (
-        <RejectTranslationModal show criteria="Style Guide and Glossary Violations" priority="Minor" />
+    .add('Style Guide and Glossary Violations (minor)', () => (
+        <RejectTranslationModal show criteria="Style Guide and Glossary Violations" priority={MINOR} />
     ))
 
-    .add('Other [major]', () => (
+    .add('Other (major)', () => (
         <RejectTranslationModal show
          criteria="Other (reason may be in comment section/history if necessary)"
-         priority="Major" textState="u-textWarning" />
+         priority={MAJOR} textState="u-textWarning" />
     ))

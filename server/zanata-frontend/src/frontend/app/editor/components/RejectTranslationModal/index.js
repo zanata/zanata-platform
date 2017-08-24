@@ -8,9 +8,9 @@ import { Icon } from '../../../components'
 /**
  * TODO add a concise description of this component
  */
-const MINOR = 'Minor'
-const MAJOR = 'Major'
-const CRITICAL = 'Critical'
+export const MINOR = 'Minor'
+export const MAJOR = 'Major'
+export const CRITICAL = 'Critical'
 
 export class RejectTranslationModal extends Component {
   static propTypes = {

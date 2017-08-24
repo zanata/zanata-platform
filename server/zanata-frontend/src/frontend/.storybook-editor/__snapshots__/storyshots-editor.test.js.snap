@@ -6334,7 +6334,7 @@ exports[`Editor Storyshots ProgressBar Small 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots RejectTranslationModal Other [major] 1`] = `
+exports[`Editor Storyshots RejectTranslationModal Other (major) 1`] = `
 <div>
   <h1>
     Lorem Ipsum
@@ -6388,7 +6388,7 @@ exports[`Editor Storyshots RejectTranslationModal Other [major] 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots RejectTranslationModal Style Guide and Glossary Violations [minor] 1`] = `
+exports[`Editor Storyshots RejectTranslationModal Style Guide and Glossary Violations (minor) 1`] = `
 <div>
   <h1>
     Lorem Ipsum
@@ -6442,7 +6442,7 @@ exports[`Editor Storyshots RejectTranslationModal Style Guide and Glossary Viola
 </div>
 `;
 
-exports[`Editor Storyshots RejectTranslationModal Translation errors [critical] 1`] = `
+exports[`Editor Storyshots RejectTranslationModal Translation errors (critical) 1`] = `
 <div>
   <h1>
     Lorem Ipsum
