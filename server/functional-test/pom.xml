@@ -60,6 +60,7 @@
 
     <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}</zanata.instance.url>
     <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
+    <zanata.admin.username>admin</zanata.admin.username>
     <zanata.translatorkey>d83882201764f7d339e97c4b087f0806</zanata.translatorkey>
     <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
 

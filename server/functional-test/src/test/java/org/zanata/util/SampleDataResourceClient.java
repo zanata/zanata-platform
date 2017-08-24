@@ -26,6 +26,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.zanata.model.HApplicationConfiguration;
 
 /**
  * @author Patrick Huang <a
@@ -95,17 +96,34 @@ public class SampleDataResourceClient {
 
     public static void setRateLimit(int active, int concurrent)
             throws Exception {
+        String restUrl = PropertiesHolder.getProperty(Constants.zanataInstance
+                .value()) + "rest/configurations/c/";
+
         new ResteasyClientBuilder().build()
-                .target(
-                        PropertiesHolder.getProperty(Constants.zanataInstance
-                                .value()) + "rest/test/data/sample/rateLimit")
-                .queryParam("active", active)
-                .queryParam("concurrent", concurrent)
+                .target(restUrl +
+                                HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY)
+                .queryParam("configValue", active)
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("X-Auth-Token",
                         PropertiesHolder.getProperty(Constants.zanataApiKey
                                 .value()))
-                .put(EMPTY_ENTITY).close();
+                .header("X-Auth-User",
+                        PropertiesHolder.getProperty(Constants.zanataAdminUser
+                                .value()))
+                .put(null).close();
+
+        new ResteasyClientBuilder().build()
+                .target(restUrl +
+                                HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY)
+                .queryParam("configValue", concurrent)
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("X-Auth-Token",
+                        PropertiesHolder.getProperty(Constants.zanataApiKey
+                                .value()))
+                .header("X-Auth-User",
+                        PropertiesHolder.getProperty(Constants.zanataAdminUser
+                                .value()))
+                .put(null).close();
     }
 
     public static void makeSampleLanguages() throws Exception {

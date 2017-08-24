@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
-import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -129,25 +128,6 @@ public class SampleDataResourceImpl implements SampleDataResource {
             }
         }.run();
 
-        return Response.ok().build();
-    }
-
-    @Override
-    public Response setRateLimit(String active, String concurrent) {
-
-        new RunAsOperationForTest() {
-            public void execute() {
-                HApplicationConfiguration activeConfig =
-                        new HApplicationConfiguration(
-                                HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY,
-                                active);
-                HApplicationConfiguration concurrentConfig =
-                        new HApplicationConfiguration(
-                                HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY,
-                                concurrent);
-                sampleDataProfile.setRateLimit(activeConfig, concurrentConfig);
-            }
-        }.run();
         return Response.ok().build();
     }
 

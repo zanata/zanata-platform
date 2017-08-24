@@ -13,6 +13,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -131,7 +132,7 @@ public class ServerConfigurationService {
     @PUT
     @Path("/c/{configKey}")
     public Response put(@PathParam("configKey") @Nonnull String configKey,
-            String configValue) {
+           @QueryParam("configValue") String configValue) {
         if (!isConfigKeyValid(configKey)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("config key not supported: " + configKey).build();
