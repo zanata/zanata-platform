@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public abstract class ResourceRequest {
     private static final ResourceRequestEnvironment DEFAULT_ENV =
-            new ResourceRequestEnvironment();
+            ResourceRequestEnvironment.EMPTY;
 
     private String resourceUrl;
     private String method;

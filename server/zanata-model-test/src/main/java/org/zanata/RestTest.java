@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -54,6 +55,8 @@ import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
+
+import com.google.common.collect.ImmutableMap;
 
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
@@ -84,18 +87,9 @@ public abstract class RestTest {
 
     // Authorized environment with valid credentials
     private static final ResourceRequestEnvironment ENV_AUTHORIZED =
-            new ResourceRequestEnvironment() {
-                @Override
-                public Map<String, Object> getDefaultHeaders() {
-                    return new HashMap<String, Object>() {
-                        private static final long serialVersionUID = 1L;
-                        {
-                            put("X-Auth-User", ADMIN);
-                            put("X-Auth-Token", ADMIN_KEY);
-                        }
-                    };
-                }
-            };
+            () -> ImmutableMap.of(
+                    "X-Auth-User", ADMIN,
+                    "X-Auth-Token", ADMIN_KEY);
 
     private DBUnitProvider dbUnitProvider = new DBUnitProvider() {
         @Override
@@ -252,35 +246,21 @@ public abstract class RestTest {
      * @return A Resource Request execution environment with valid test
      *         credentials.
      */
-    public static final ResourceRequestEnvironment getAuthorizedEnvironment() {
+    public static ResourceRequestEnvironment getAuthorizedEnvironment() {
         return ENV_AUTHORIZED;
     }
 
     /**
      * Gets an empty header for REST request.
      */
-    public static final ResourceRequestEnvironment getEmptyHeaderEnvironment() {
-        return new ResourceRequestEnvironment() {
-            @Override
-            public Map<String, Object> getDefaultHeaders() {
-                return new HashMap<String, Object>();
-            }
-        };
+    public static ResourceRequestEnvironment getEmptyHeaderEnvironment() {
+        return ResourceRequestEnvironment.EMPTY;
     }
 
     public static ResourceRequestEnvironment getTranslatorHeaders() {
-        return new ResourceRequestEnvironment() {
-            @Override
-            public Map<String, Object> getDefaultHeaders() {
-                return new HashMap<String, Object>() {
-                    private static final long serialVersionUID = 1L;
-                    {
-                        put("X-Auth-User", TRANSLATOR);
-                        put("X-Auth-Token", TRANSLATOR_KEY);
-                    }
-                };
-            }
-        };
+        return () -> ImmutableMap.of(
+                "X-Auth-User", TRANSLATOR,
+                "X-Auth-Token", TRANSLATOR_KEY);
     }
 
     protected ResteasyWebTarget addExtensionToRequest(Set<String> extensions,
