@@ -103,7 +103,7 @@ class GlossaryTab extends React.Component {
     const { eventKey, searchText, onGlossaryTextChange } = this.props
     return (
       <Tab eventKey={eventKey} title="">
-        <div className="sidebar-wrapper" id="tab2">
+        <div className="sidebar-wrapper" id="tab1">
           <GlossarySearchInput
             text={searchText}
             onTextChange={onGlossaryTextChange} />

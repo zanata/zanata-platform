@@ -35,6 +35,7 @@
 @import './components/FilterToggle/index.css';
 @import './components/ToggleSwitch/index.css';
 @import './components/TransUnit/index.css';
+@import './components/RejectTranslationModal/index.css';
 
 /**
  * Views

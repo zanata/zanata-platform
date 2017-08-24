@@ -1,7 +1,5 @@
 package org.zanata.rest.editor.service.resource;
 
-import org.zanata.rest.service.RestResource;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,7 +14,7 @@ import javax.ws.rs.core.Response;
 
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface StatisticResource extends RestResource {
+public interface StatisticResource {
     public static final String SERVICE_PATH = "/stats";
 
     /**

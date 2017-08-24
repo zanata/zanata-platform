@@ -10,6 +10,8 @@ import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from './GlossaryTab'
+// Use this when the activity tab is activated
+// import ActivityTab from './ActivityTab'
 
 class SidebarContent extends React.Component {
   static propTypes = {
@@ -106,7 +108,7 @@ class SidebarContent extends React.Component {
     const { glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
       // TODO kgough display as a badge instead of text in parens
-      ? <span> ({this.props.glossaryCount})</span>
+      ? <span>({this.props.glossaryCount})</span>
       : undefined
     const glossaryTitle = (
       <span>
@@ -114,6 +116,14 @@ class SidebarContent extends React.Component {
         <span className="hide-md">Glossary{glossaryCountDisplay}</span>
       </span>
     )
+
+    // Use this when activity tab is activated
+    // const activityTitle = (
+    //   <span>
+    //     <Icon name="clock" className="s1 gloss-tab-svg" />
+    //     <span className="hide-md">Activity</span>
+    //   </span>
+    // )
 
     return (
       <div>
@@ -130,12 +140,9 @@ class SidebarContent extends React.Component {
           {this.sidebarDetails()}
         </div>
         <Tabs id="sidebartabs" defaultActiveKey={1}>
-          { /* <Tab eventKey={2} title={activityTitle}>
-            <div className="sidebar-wrapper" id="tab1">
-              Tab 1 content
-            </div>
-          </Tab> */ }
           <GlossaryTab eventKey={1} title={glossaryTitle} />
+          {/* Use this when activity tab is activated
+            <ActivityTab eventKey={2} title={activityTitle} /> */}
         </Tabs>
       </div>
     )
