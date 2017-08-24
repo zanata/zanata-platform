@@ -22,6 +22,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import ActivityFeedItem from '.'
+import { MINOR, MAJOR, CRITICAL } from "./index";
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -75,7 +76,7 @@ storiesOf('ActivityFeedItem', module)
     <ActivityFeedItem
       criteria="Spelling and Grammar"
       type="revision"
-      priority="Minor"
+      priority={MINOR}
       textStatus="u-textHighlight"
       status="rejected"
       commentText="You spelt this wrong."
@@ -87,7 +88,7 @@ storiesOf('ActivityFeedItem', module)
         <ActivityFeedItem
             criteria="Spelling and Grammar"
             type="revision"
-            priority="Major"
+            priority={MAJOR}
             textStatus="u-textWarning"
             status="rejected"
             commentText="You spelt this wrong."
@@ -99,7 +100,7 @@ storiesOf('ActivityFeedItem', module)
         <ActivityFeedItem
             criteria="Spelling and Grammar"
             type="revision"
-            priority="Critical"
+            priority={CRITICAL}
             textStatus="u-textDanger"
             status="rejected"
             commentText="You spelt this wrong."

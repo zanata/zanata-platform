@@ -28,6 +28,10 @@ import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import { Well } from 'react-bootstrap'
 import { profileUrl } from '../../api'
 
+export const MINOR = 'Minor'
+export const MAJOR = 'Major'
+export const CRITICAL = 'Critical'
+
 const statusToWellClass = {
   approved: 'well-approved',
   rejected: 'well-rejected',
@@ -53,8 +57,11 @@ class ActivityFeedItem extends Component {
     }).isRequired,
     criteria: PropTypes.string.isRequired,
     commentText: PropTypes.string.isRequired,
-    priority: PropTypes.oneOf(['Major', 'Critical', 'Minor']).isRequired,
-
+    priority: PropTypes.oneOf([
+      MINOR,
+      MAJOR,
+      CRITICAL
+    ]).isRequired
   }
 
   getMessage = () => {
