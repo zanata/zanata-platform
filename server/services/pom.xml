@@ -181,7 +181,7 @@
           </includes>
           <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
-            <java.util.logging.config.file>${build.testOutputDirectory}/logging-test.properties</java.util.logging.config.file>
+            <java.util.logging.config.file>${project.build.testOutputDirectory}/logging-test.properties</java.util.logging.config.file>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -1553,7 +1553,7 @@
               <reuseForks>true</reuseForks>
               <runOrder>alphabetical</runOrder>
               <systemPropertyVariables>
-                <java.util.logging.config.file>${build.testOutputDirectory}/logging-test.properties</java.util.logging.config.file>
+                <java.util.logging.config.file>${project.build.testOutputDirectory}/logging-test.properties</java.util.logging.config.file>
                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                 <jboss.home>${appserver.home}</jboss.home>
               </systemPropertyVariables>
