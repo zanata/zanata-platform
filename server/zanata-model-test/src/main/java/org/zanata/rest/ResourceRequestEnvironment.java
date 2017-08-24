@@ -22,6 +22,7 @@ package org.zanata.rest;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
 /**
  * The environment that a <code>ResourceRequest</code> should be executed with.
@@ -38,6 +39,7 @@ public class ResourceRequestEnvironment {
      * Returns the default headers to be used in a request. Override to change
      * the default headers.
      */
+    @Nonnull
     public Map<String, Object> getDefaultHeaders() {
         Map<String, Object> map = new HashMap<>();
         return map;

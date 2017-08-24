@@ -80,9 +80,8 @@ public abstract class ResourceRequest {
     }
 
     public void invoke(Invocation.Builder builder) throws Exception {
-        Response response = null;
+        Response response = builder.build(method).invoke();
         try {
-            response = builder.build(method).invoke();
             onResponse(response);
         } finally {
             response.close();
@@ -91,12 +90,9 @@ public abstract class ResourceRequest {
 
     private Invocation.Builder prepareEnvironment(Invocation.Builder builder) {
         // Insert the default headers
-        if (environment.getDefaultHeaders() != null &&
-                !environment.getDefaultHeaders().isEmpty()) {
-            for (Map.Entry<String, Object> entry : environment
-                    .getDefaultHeaders().entrySet()) {
-                builder = builder.header(entry.getKey(), entry.getValue());
-            }
+        Map<String, Object> defaultHeaders = environment.getDefaultHeaders();
+        for (Map.Entry<String, Object> entry : defaultHeaders.entrySet()) {
+            builder = builder.header(entry.getKey(), entry.getValue());
         }
         return builder;
     }

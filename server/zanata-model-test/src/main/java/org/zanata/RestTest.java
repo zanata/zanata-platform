@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import javax.annotation.CheckForNull;
 import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -43,7 +43,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -137,13 +136,11 @@ public abstract class RestTest {
             addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
                     dataSetToClear,
                     DatabaseOperation.DELETE_ALL));
-        }
-        prepareDBUnitOperations();
-        if (dataSetToClear != null) {
             addAfterTestOperation(new DBUnitProvider.DataSetOperation(
                     dataSetToClear,
                     DatabaseOperation.DELETE_ALL));
         }
+        prepareDBUnitOperations();
         dbUnitProvider.prepareDataBeforeTest();
         // Clear the hibernate cache
         entityManagerFactory().getCache().evictAll();
@@ -153,7 +150,7 @@ public abstract class RestTest {
         return CDI.current().select(EntityManagerFactory.class).get();
     }
 
-    @Nullable
+    @CheckForNull
     protected String getDataSetToClear() {
         return "org/zanata/test/model/ClearAllTables.dbunit.xml";
     }
