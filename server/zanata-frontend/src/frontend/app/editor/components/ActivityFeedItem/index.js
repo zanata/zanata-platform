@@ -40,7 +40,7 @@ const statusToWellClass = {
 class ActivityFeedItem extends Component {
   static propTypes = {
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
-
+    textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']).isRequired,
     content: PropTypes.string.isRequired,
     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
     // TODO damason define type for status
@@ -49,17 +49,25 @@ class ActivityFeedItem extends Component {
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired
-    }).isRequired
+      imageUrl: PropTypes.string.isRequired,
+    }).isRequired,
+    criteria: PropTypes.string.isRequired,
+    priority: PropTypes.oneOf(['Major', 'Critical', 'Minor']).isRequired,
+
   }
 
   getMessage = () => {
-    const { user, type, status } = this.props
+    const { user, type, status, criteria } = this.props
     // Uses href because editor app is separate from frontend app
     const name = (
       <Link useHref link={profileUrl(user.username)}>{user.name}</Link>
     )
-
+    const priority = (
+        <span className={this.props.textStatus}>{this.props.priority}</span>
+    )
+    const comment = (
+        <span className="comment"><Well>Comment</Well></span>
+    )
     if (type === 'comment') {
       return (
         <FormattedMessage id="ActivityFeedItem.comment"
@@ -112,10 +120,13 @@ class ActivityFeedItem extends Component {
               'Title for an item in the activity feed showing a reviewer ' +
               'rejected the translation. The inserted section is from ' +
               'ActivityFeedItem.rejected.rejectedTranslation'}
-            defaultMessage="{name} has {rejectedTranslation}"
+            defaultMessage="{name} has {rejectedTranslation} because of {criteria} (Priority: {priority}). {comment}"
             values={{
               name,
-              rejectedTranslation
+              rejectedTranslation,
+              criteria,
+              comment,
+              priority
             }} />
         )
 

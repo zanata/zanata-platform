@@ -73,7 +73,10 @@ storiesOf('ActivityFeedItem', module)
 
   .add('rejected', () => (
     <ActivityFeedItem
+      criteria="Spellign and Grammah"
       type="revision"
+      priority="Minor"
+      textStatus="u-textWarning"
       status="rejected"
       content={'নাম'}
       lastModifiedTime={lastModifiedTime}
