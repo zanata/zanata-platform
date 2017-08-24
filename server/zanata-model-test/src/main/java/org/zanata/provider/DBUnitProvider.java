@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,24 +111,23 @@ public abstract class DBUnitProvider {
     }
 
     protected void executeOperations(List<DataSetOperation> list) {
-        IDatabaseConnection con = null;
+        IDatabaseConnection con = getConnection();
         try {
-            con = getConnection();
             editConfig(con.getConfig());
-            disableReferentialIntegrity(con);
+            disableReferentialIntegrity(con.getConnection());
             for (DataSetOperation op : list) {
                 prepareExecution(con, op);
                 op.execute(con);
                 afterExecution(con, op);
             }
-            enableReferentialIntegrity(con);
+            enableReferentialIntegrity(con.getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace(System.err);
-                }
+            try {
+                con.close();
+            } catch (SQLException ignore) {
+                // ignore
             }
         }
     }
@@ -272,8 +272,8 @@ public abstract class DBUnitProvider {
      *            A DBUnit connection wrapper, which is used afterwards for
      *            dataset operations
      */
-    protected void disableReferentialIntegrity(IDatabaseConnection con) {
-        try (Connection c = con.getConnection(); PreparedStatement s = c
+    protected void disableReferentialIntegrity(Connection conn) {
+        try (PreparedStatement s = conn
                 .prepareStatement("set referential_integrity FALSE")) {
             s.execute();
         } catch (Exception ex) {
@@ -289,8 +289,8 @@ public abstract class DBUnitProvider {
      *            A DBUnit connection wrapper, before it is used by the
      *            application again
      */
-    protected void enableReferentialIntegrity(IDatabaseConnection con) {
-        try (Connection c = con.getConnection(); PreparedStatement s = c
+    protected void enableReferentialIntegrity(Connection conn) {
+        try (PreparedStatement s = conn
                 .prepareStatement("set referential_integrity TRUE")) {
             s.execute();
         } catch (Exception ex) {
