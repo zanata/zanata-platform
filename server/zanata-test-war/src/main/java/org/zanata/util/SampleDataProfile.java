@@ -256,11 +256,4 @@ public class SampleDataProfile implements Serializable {
         }
         // since we assume null value means allow anonymous access, we don't need to do anything here.
     }
-
-    public void setRateLimit(HApplicationConfiguration active,
-            HApplicationConfiguration concurrent) {
-        entityManager.persist(active);
-        entityManager.persist(concurrent);
-        entityManager.flush();
-    }
 }

@@ -36,11 +36,6 @@ public interface SampleDataResource {
     @Path("/project")
     Response makeSampleProject();
 
-    @PUT
-    @Path("/rateLimit")
-    Response setRateLimit(@QueryParam("active") String active,
-            @QueryParam("concurrent") String concurrent);
-
     @DELETE
     Response deleteExceptEssentialData();
 
