@@ -117,6 +117,8 @@ public class RateLimitManager implements Introspectable {
         try {
             return activeCallers.get(key, () -> {
                 log.debug("creating rate limiter for key: {}", key);
+                //FIXME: remove this log, for debugging only
+                log.warn("create new rate limiter:" + key + ":" + getMaxConcurrent() + ":" + getMaxActive());
                 return new RestCallLimiter(getMaxConcurrent(), getMaxActive());
             });
         } catch (ExecutionException e) {

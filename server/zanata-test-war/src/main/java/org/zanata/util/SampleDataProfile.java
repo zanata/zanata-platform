@@ -261,6 +261,9 @@ public class SampleDataProfile implements Serializable {
             HApplicationConfiguration concurrent) {
         entityManager.persist(active);
         entityManager.persist(concurrent);
+        //FIXME: remove this log, for debugging only
+        log.warn(active.getKey() + ":" + active.getValue());
+        log.warn(concurrent.getKey() + ":" + concurrent.getValue());
         entityManager.flush();
     }
 }

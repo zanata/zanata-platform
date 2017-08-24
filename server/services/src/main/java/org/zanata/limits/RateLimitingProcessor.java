@@ -66,6 +66,8 @@ public class RateLimitingProcessor {
                         "Too many concurrent requests for client \'%s\' (maximum is %d)",
                         key.getValue(), rateLimiter.getMaxConcurrentPermits());
             }
+            //FIXME: remove this log, for debugging only
+            log.warn(errorMessage);
             response.sendError(TOO_MANY_REQUEST, errorMessage);
         }
     }
