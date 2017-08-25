@@ -115,15 +115,12 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
-                return webTarget.request();
+                return webTarget.queryParam("configValue", false).request();
             }
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity<String> entity = Entity
-                        .entity("false",
-                                MediaType.APPLICATION_JSON_TYPE);
-                Response response = builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(null).invoke();
                 onResponse(response);
             }
 
@@ -157,15 +154,12 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
-                return webTarget.request();
+                return webTarget.queryParam("configValue", true).request();
             }
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity<String> entity = Entity
-                        .entity("true",
-                                MediaType.APPLICATION_JSON_TYPE);
-                Response response = builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(null).invoke();
                 onResponse(response);
             }
 
