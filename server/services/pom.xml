@@ -1145,6 +1145,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.googlecode.junit-toolbox</groupId>
+      <artifactId>junit-toolbox</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.concordion</groupId>
       <artifactId>concordion</artifactId>
       <scope>test</scope>
