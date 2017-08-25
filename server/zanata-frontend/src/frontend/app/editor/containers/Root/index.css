@@ -615,11 +615,6 @@ button.Link--neutral .row span.u-ltemd-hidden {
 label span.n1 {
   vertical-align: middle !important;
 }
-
-.InputGroup--outlined, .Dropdown {
-  border: none;
-}
-
 /**
  * Media Queries
  */
