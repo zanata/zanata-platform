@@ -890,7 +890,7 @@ public class ResourceUtils implements Serializable {
      * @param locale
      */
     private String getLanguage(final HLocale locale) {
-        return locale.getLocaleId().toString();
+        return StringUtils.replace(locale.getLocaleId().toString(), "-", "_");
     }
 
     /**
