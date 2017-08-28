@@ -4,9 +4,7 @@ import org.junit.runner.RunWith
 
 /**
  * This JUnit Suite class provides a way of running all the unit tests
- * in 'zanata-war' from IntelliJ. To use it, just create an Arquillian Run
- * Configuration and choose this class in the Configuration tab
- * instead of an individual test.
+ * in 'zanata-war' from IntelliJ (without picking up integration tests).
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RunWith(WildcardPatternSuite::class)
