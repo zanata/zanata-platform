@@ -9,7 +9,7 @@
   --TM-dropdown-text-color: #03a6d7;
 }
 
-.flex {
+#RejectTranslationModal .flex {
   flex-direction: row;
   align-items: center;
 }
@@ -18,33 +18,33 @@
   margin-right: var(--TM-default-margin);
 }
 
-#rejection-modal .modal-body {
+#RejectTranslationModal .modal-body {
   color: var(--TM-text-color);
 }
 
-.priority-dd {
+#RejectTranslationModal .priority-dd {
   margin-left: 1.5rem;
 }
 
-.modal-body .InputGroup--outlined {
+#RejectTranslationModal .modal-body .InputGroup--outlined {
   border: var(--TM-input-border) !important;
 }
 
-.modal-body .Dropdown {
+#RejectTranslationModal .modal-body .Dropdown {
   border-radius: var(--TM-input-border-radius);
   border: var(--TM-input-border) !important;
 }
 
-.criteria {
+#RejectTranslationModal .criteria {
   flex-grow: 2;
 }
 
-a.Dropdown-item span.s0 {
+#RejectTranslationModal a.Dropdown-item span.s0 {
   vertical-align: var(--TM-icon-vert-alignment);
   margin-left: var(--TM-small-margin);
 }
 
-.InputGroup--outlined.commenting {
+#RejectTranslationModal .InputGroup--outlined.commenting {
   margin-top: 2rem;
   max-width: 100%;
   min-width: 100%;
@@ -54,7 +54,7 @@ a.Dropdown-item span.s0 {
   min-height: var(--TM-large-spacing);
 }
 
-.modal-footer .Button--primary {
+#RejectTranslationModal .modal-footer .Button--primary {
   margin-left: var(--TM-default-margin);
 }
 
@@ -62,25 +62,25 @@ a.Dropdown-item span.s0 {
   vertical-align: sub;
 }
 
-.Dropdown-item {
+#RejectTranslationModal .Dropdown-item {
   color: var(--TM-dropdown-text-color);
 }
 
-.Dropdown-item:hover {
+#RejectTranslationModal .Dropdown-item:hover {
   background-color: #fcfcfc;
   color: var(--TM-dropdown-text-color);
 }
 
-.Dropdown-toggle .Dropdown-item:hover {
+#RejectTranslationModal .Dropdown-toggle .Dropdown-item:hover {
   border-radius: 0.4rem;
 }
 
-.Dropdown-item span.n1 {
+#RejectTranslationModal .Dropdown-item span.n1 {
   margin-left: var(--TM-small-margin);
   vertical-align: var(--TM-icon-vert-alignment);
 }
 
-#rejection-modal button.close {
+#RejectTranslationModal button.close {
   display: none;
   visibility: hidden;
 }
