@@ -557,10 +557,16 @@ ul.u-listInline li .u-textHighlight
 
 .flex {
   display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .flex ul.u-listHorizontal {
   z-index: 1000;
+}
+
+.control-header-bg {
+  background-color: #fff;
 }
 
 /* FIXME z-index for Header is already defined */
@@ -641,6 +647,14 @@ label span.n1 {
   }
 }
 
+@media (max-width:619px) {
+
+}
+
+@media (min-width:620px) {
+
+}
+
 @media (max-width:740px) {
   .TransUnit-heading {
     padding-left: 1.5em;
@@ -658,6 +672,9 @@ label span.n1 {
 @media (min-width:741px) {
   .TransUnit-heading {
     padding-left: 0 !important;
+  }
+  .control-header-bg {
+    background-color: transparent;
   }
 }
 

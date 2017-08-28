@@ -95,75 +95,77 @@ class ControlsHeader extends React.Component {
         {/* FIXME move InputEditorSearch into component. Layout component should
                   not have to know the internals of how the component is
                   styled. */}
-        <div className="u-floatLeft InputEditorSearch">
-          <EditorSearchInput />
-        </div>
-        <div className="u-floatRight flex">
-          <ul className="u-listHorizontal u-textCenter">
-            <li className="u-sMV-1-4">
-              <Pager {...pagerProps} />
-            </li>
-            <li className="u-sM-1-8">
-              <IconButtonToggle
-                icon="suggestions"
-                title={this.props.ui.panels.suggestions.visible
-                  ? gettextCatalog.getString('Hide suggestions panel')
-                  : gettextCatalog.getString('Show suggestions panel')}
-                onClick={toggleSuggestionPanel}
-                active={this.props.ui.panels.suggestions.visible} />
-            </li>
-            <li className="u-sM-1-8">
-              <IconButtonToggle
-                icon="glossary"
-                title={glossaryVisible ? 'Hide glossary' : 'Show glossary'}
-                onClick={actions.toggleGlossary}
-                active={glossaryVisible}
-              />
-            </li>
-            <li className="u-sM-1-8">
-              <IconButtonToggle
-                icon="info"
-                className="hide-sidebar-toggle"
-                title={this.props.ui.panels.sidebar.visible
-                  ? gettextCatalog.getString('Hide sidebar')
-                  : gettextCatalog.getString('Show sidebar')}
-                onClick={this.toggleSidebarVisibility}
-                active={this.props.ui.panels.sidebar.visible} />
-            </li>
-            {/* extra items from the angular template that were not being
-             displayed
-            <li ng-show="appCtrl.PRODUCTION">
-              <button class="Link--neutral u-sizeHeight-1_1-2"
-                title="{{'Details'|translate}}">
-                <icon name="info" title="{{'Details'|translate}}"
-                      class="u-sizeWidth-1_1-2"></icon>
-              </button>
-            </li>
-            <li ng-show="appCtrl.PRODUCTION">
-              <button class="Link--neutral u-sizeHeight-1_1-2"
-              title="{{'Editor Settings'|translate}}">
-                <icon name="settings" title="{{'Editor Settings'|translate}}"
-                      class="u-sizeWidth-1_1-2"></icon>
-              </button>
-            </li>
-      */}
-            <li className="u-sm-hidden u-sM-1-8">
-              <IconButtonToggle
-                icon="keyboard"
-                title={gettextCatalog.getString('Keyboard Shortcuts')}
-                onClick={toggleKeyboardShortcutsModal} />
-            </li>
-            <li className="u-sM-1-8">
-              <IconButtonToggle
-                icon="chevron-up-double"
-                title={navHeaderHidden
-                  ? gettextCatalog.getString('Show Menubar')
-                  : gettextCatalog.getString('Hide Menubar')}
-                onClick={toggleMainNav}
-                active={navHeaderHidden}
-                className={cx({'is-rotated': navHeaderHidden})} />
-            </li>
-          </ul>
+        <div className="flex">
+          <div className="u-floatLeft InputEditorSearch">
+            <EditorSearchInput />
+          </div>
+          <div className="u-floatRight">
+            <ul className="u-listHorizontal u-textCenter">
+              <li className="u-sMV-1-4">
+                <Pager {...pagerProps} />
+              </li>
+              <li className="u-sM-1-8">
+                <IconButtonToggle
+                  icon="suggestions"
+                  title={this.props.ui.panels.suggestions.visible
+                    ? gettextCatalog.getString('Hide suggestions panel')
+                    : gettextCatalog.getString('Show suggestions panel')}
+                  onClick={toggleSuggestionPanel}
+                  active={this.props.ui.panels.suggestions.visible} />
+              </li>
+              <li className="u-sM-1-8">
+                <IconButtonToggle
+                  icon="glossary"
+                  title={glossaryVisible ? 'Hide glossary' : 'Show glossary'}
+                  onClick={actions.toggleGlossary}
+                  active={glossaryVisible}
+                />
+              </li>
+              <li className="u-sM-1-8">
+                <IconButtonToggle
+                  icon="info"
+                  className="hide-sidebar-toggle"
+                  title={this.props.ui.panels.sidebar.visible
+                    ? gettextCatalog.getString('Hide sidebar')
+                    : gettextCatalog.getString('Show sidebar')}
+                  onClick={this.toggleSidebarVisibility}
+                  active={this.props.ui.panels.sidebar.visible} />
+              </li>
+              {/* extra items from the angular template that were not being
+               displayed
+              <li ng-show="appCtrl.PRODUCTION">
+                <button class="Link--neutral u-sizeHeight-1_1-2"
+                  title="{{'Details'|translate}}">
+                  <icon name="info" title="{{'Details'|translate}}"
+                        class="u-sizeWidth-1_1-2"></icon>
+                </button>
+              </li>
+              <li ng-show="appCtrl.PRODUCTION">
+                <button class="Link--neutral u-sizeHeight-1_1-2"
+                title="{{'Editor Settings'|translate}}">
+                  <icon name="settings" title="{{'Editor Settings'|translate}}"
+                        class="u-sizeWidth-1_1-2"></icon>
+                </button>
+              </li>
+        */}
+              <li className="u-sm-hidden u-sM-1-8">
+                <IconButtonToggle
+                  icon="keyboard"
+                  title={gettextCatalog.getString('Keyboard Shortcuts')}
+                  onClick={toggleKeyboardShortcutsModal} />
+              </li>
+              <li className="u-sM-1-8">
+                <IconButtonToggle
+                  icon="chevron-up-double"
+                  title={navHeaderHidden
+                    ? gettextCatalog.getString('Show Menubar')
+                    : gettextCatalog.getString('Hide Menubar')}
+                  onClick={toggleMainNav}
+                  active={navHeaderHidden}
+                  className={cx({'is-rotated': navHeaderHidden})} />
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     )
