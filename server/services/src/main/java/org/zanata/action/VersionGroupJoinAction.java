@@ -215,6 +215,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     }
 
     public static final class SelectableVersion extends ProjectIterationId {
+        private static final long serialVersionUID = -1843985308720091486L;
         private boolean selected;
 
         public SelectableVersion(String projectSlug, String versionSlug,

@@ -234,6 +234,8 @@ public class ZanataIdentity implements Identity, Serializable {
             HttpSession session =
                     BeanProvider.getContextualReference(HttpSession.class,
                             new AnnotationLiteral<DeltaSpike>() {
+                                private static final long serialVersionUID =
+                                        -5331054339416607095L;
                             });
             session.invalidate();
             urlUtil.redirectToInternal(urlUtil.home());

@@ -21,15 +21,9 @@
 package org.zanata.arquillian;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
@@ -49,10 +43,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrate
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.ImmutableList;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.*;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.COMPILE;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.TEST;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package
@@ -71,7 +65,7 @@ public class Deployments {
         ProjectStageProducer.setProjectStage(ProjectStage.IntegrationTest);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Archive<?> archive = Deployments.createDeployment();
         // see what will be in the war
         printArchiveContents(archive);
@@ -83,9 +77,9 @@ public class Deployments {
 
         // OR uncomment this if you want an exploded war directory:
 //        File exploded = new File("/tmp/zanata-arquillian-exploded.war");
-//        exploded.delete();
-//        archive.as(ExplodedExporter.class).exportExplodedInto(
-//                exploded);
+//        org.apache.commons.io.FileUtils.deleteDirectory(exploded);
+//        archive.as(org.jboss.shrinkwrap.api.exporter.ExplodedExporter.class)
+//                .exportExplodedInto(exploded);
     }
 
     private static void printArchiveContents(Archive archive) {
@@ -94,8 +88,8 @@ public class Deployments {
         ArrayList<ArchivePath> paths =
                 new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);
-        System.out.println("Deployment contents:");
-        paths.forEach(it -> System.out.println("  " + it.get()));
+        log.info("Deployment contents:");
+        paths.forEach(it -> log.info("  " + it.get()));
     }
 
     static File[] runtimeAndTestDependenciesFromPom() {
@@ -112,6 +106,10 @@ public class Deployments {
                                 // JavaMelody's ServletFilter/Listener
                                 // interferes with test deployments.
                                 "net.bull.javamelody:javamelody-core"
+                                // We shouldn't need apicompat interfaces in
+                                // the server, but we will also need to
+                                // exclude the tests which refer to them.
+//                                "org.zanata:zanata-common-api:jar:compat:?"
                         ),
                         TransitiveStrategy.INSTANCE))
                 .asFile();
@@ -139,10 +137,6 @@ public class Deployments {
                         .as(GenericArchive.class),
                 "/WEB-INF/classes", archivePathFilter);
 
-        // JaxRSClassIndexProcessor generated class index
-        File jaxRsPathIndex = concatenatePathClassIndice();
-        archive.addAsResource(jaxRsPathIndex,
-                "META-INF/annotations/javax.ws.rs.Path");
         archive.addAsResource(
                 new ClassLoaderAsset("arquillian/persistence.xml"),
                 "META-INF/persistence.xml");
@@ -155,50 +149,11 @@ public class Deployments {
         archive.setWebXML("arquillian/test-web.xml");
         archive.delete("/WEB-INF/classes/arquillian");
         archive.delete("/WEB-INF/classes/arquillian.xml");
+        // Remove log4j.xml to prevent JBoss from activating per-deployment
+        // logging (which breaks stdout and org.zanata logging).
+        archive.delete("/WEB-INF/classes/log4j.xml");
         // Note: see the main method if you want to see or extract the contents of the deployment
         return archive;
-    }
-
-    /**
-     * There are two copy of generated class index file from
-     * JaxRSClassIndexProcessor, one for production under target/classes and one
-     * for test under target/test-classes. Here we concatenate the content of
-     * the two and generate a new one for arquillian archive to use.
-     *
-     * @return class index file with concatenated content
-     */
-    private static File concatenatePathClassIndice() {
-        try {
-            Enumeration<URL> resources =
-                    Thread.currentThread().getContextClassLoader()
-                            .getResources(
-                                    "META-INF/annotations/javax.ws.rs.Path");
-            if (!resources.hasMoreElements()) {
-                throw new IllegalStateException(
-                        "cannot find any annotation index files (javax.ws.rs.Path)");
-            }
-            ImmutableList.Builder<String> builder = ImmutableList.builder();
-            forEachRemaining(resources, url -> {
-                File file = new File(url.getPath());
-                if (file.exists() && file.canRead()) {
-                    try {
-                        Files.lines(Paths.get(url.toURI()), UTF_8)
-                                .forEach(builder::add);
-                    } catch (URISyntaxException | IOException e) {
-                        log.error("error handling file: {}", file, e);
-                    }
-                }
-            });
-            List<String> pathClasses = builder.build();
-            log.debug("all javax.ws.rs.Path classes: {}", pathClasses);
-            File concatenatedIndex = File.createTempFile(
-                    "javax.ws.rs.Path-concatenated", ".tmp");
-            concatenatedIndex.deleteOnExit();
-            Files.write(concatenatedIndex.toPath(), pathClasses, UTF_8);
-            return concatenatedIndex;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static boolean notUnitTest(ArchivePath object) {

@@ -50,7 +50,6 @@ public class TraceEntry {
     @SuppressWarnings("unused")
     private List<Integer> planIds;
 
-    @SuppressWarnings("unused")
     TraceEntry() {
         // used by JSON serializer/deserializer
     }

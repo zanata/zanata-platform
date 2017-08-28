@@ -88,14 +88,14 @@ public class UserServiceTest {
 
     @Test
     public void getUserInfoWillReturnNotFoundIfNotFound() {
-        when(accountDAO.getByUsername(username)).thenReturn(null);
+        when(accountDAO.getEnabledByUsername(username)).thenReturn(null);
         Response response = service.getUserInfo(username);
         assertThat(response.getStatus()).isEqualTo(404);
     }
 
     @Test
     public void getUserInfoWillReturnInfoAboutThePerson() {
-        when(accountDAO.getByUsername(username)).thenReturn(person.getAccount());
+        when(accountDAO.getEnabledByUsername(username)).thenReturn(person.getAccount());
         when(personDAO.findById(person.getId())).thenReturn(person);
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
             person.getEmail())).thenReturn("imageurl");
@@ -105,7 +105,7 @@ public class UserServiceTest {
 
     @Test
     public void getUserInfoWillReturnInfoAboutThePersonWithoutEmail() {
-        when(accountDAO.getByUsername(username)).thenReturn(person.getAccount());
+        when(accountDAO.getEnabledByUsername(username)).thenReturn(person.getAccount());
         when(personDAO.findById(person.getId())).thenReturn(person);
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
             person.getEmail())).thenReturn("imageurl");

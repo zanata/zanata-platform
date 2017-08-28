@@ -31,6 +31,8 @@ import org.zanata.rest.dto.DTOUtil;
  */
 public abstract class JsonObject implements Serializable {
 
+    private static final long serialVersionUID = -3066784829487899714L;
+
     @JsonIgnore
     public String getJSON() {
         return DTOUtil.toJSON(this);

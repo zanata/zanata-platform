@@ -35,6 +35,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Permission extends JsonObject implements Map<String, Boolean> {
+    private static final long serialVersionUID = 2179155856314584293L;
     private Map<String, Boolean> map = new HashMap<String, Boolean>();
 
     @Override

@@ -1,8 +1,9 @@
 import cx from 'classnames'
+import EditorSearchInput from '../components/EditorSearchInput'
 import IconButtonToggle from '../components/IconButtonToggle'
 import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
-import TransUnitFilter from '../components/TransUnitFilter'
+import PhraseStatusFilter from '../components/PhraseStatusFilter'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -13,15 +14,13 @@ import {
   toggleKeyboardShortcutsModal
 } from '../actions/header-actions'
 import {
-  resetStatusFilter,
-  updateStatusFilter,
   firstPage,
   nextPage,
   previousPage,
   lastPage
 } from '../actions/controls-header-actions'
 import { toggleSuggestions } from '../actions/suggestions-actions'
-import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
+import { getMaxPageIndex } from '../selectors'
 import { GLOSSARY_TAB } from '../reducers/ui-reducer'
 
 const { bool, func, number, shape } = PropTypes
@@ -32,8 +31,6 @@ const { bool, func, number, shape } = PropTypes
 class ControlsHeader extends React.Component {
   static propTypes = {
     actions: shape({
-      resetFilter: func.isRequired,
-      onFilterChange: func.isRequired,
       firstPage: func.isRequired,
       previousPage: func.isRequired,
       nextPage: func.isRequired,
@@ -61,32 +58,12 @@ class ControlsHeader extends React.Component {
           visible: bool.isRequired
         }).isRequired
       }).isRequired,
-      textFlowDisplay: shape({
-        filter: shape({
-          // FIXME should be able to derive this from the other 4
-          all: bool.isRequired,
-          approved: bool.isRequired,
-          translated: bool.isRequired,
-          needswork: bool.isRequired,
-          untranslated: bool.isRequired
-        }).isRequired
-      }).isRequired,
-
       // DO NOT RENAME, the translation string extractor looks specifically
       // for gettextCatalog.getString when generating the translation template.
       gettextCatalog: shape({
         getString: func.isRequired
       }).isRequired
-    }).isRequired,
-
-    counts: shape({
-      // TODO better to derive total from the others rather than duplicate
-      total: number,
-      approved: number,
-      translated: number,
-      needswork: number,
-      untranslated: number
-    })
+    }).isRequired
   }
 
   toggleSidebarVisibility = () => {
@@ -95,19 +72,13 @@ class ControlsHeader extends React.Component {
   }
 
   render () {
-    const { actions, counts, paging, ui } = this.props
+    const { actions, paging, ui } = this.props
     const {
       toggleKeyboardShortcutsModal,
       toggleMainNav,
       toggleSuggestionPanel
     } = actions
-    const { panels, textFlowDisplay, gettextCatalog } = ui
-    const transFilterProps = {
-      actions,
-      counts,
-      filter: textFlowDisplay.filter,
-      gettextCatalog
-    }
+    const { panels, gettextCatalog } = ui
     const pagerProps = {
       ...paging,
       actions,
@@ -120,8 +91,12 @@ class ControlsHeader extends React.Component {
     return (
       <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
-        <div className="u-floatLeft">
-          <TransUnitFilter {...transFilterProps} />
+        <div className="u-floatLeft"><PhraseStatusFilter /></div>
+        {/* FIXME move InputEditorSearch into component. Layout component should
+                  not have to know the internals of how the component is
+                  styled. */}
+        <div className="u-floatLeft InputEditorSearch">
+          <EditorSearchInput />
         </div>
         <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
@@ -197,12 +172,11 @@ class ControlsHeader extends React.Component {
 
 function mapStateToProps (state) {
   const { actions, phrases, ui } = state
-  const pageCount = calculateMaxPageIndexFromState(state) + 1
+  const pageCount = getMaxPageIndex(state) + 1
   const pageNumber = Math.min(pageCount, phrases.paging.pageIndex + 1)
 
   return {
     actions,
-    counts: state.headerData.context.selectedDoc.counts,
     paging: {
       ...phrases.paging,
       pageCount: pageCount,
@@ -215,12 +189,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     actions: {
-      resetFilter: () => {
-        dispatch(resetStatusFilter())
-      },
-      onFilterChange: (status) => {
-        dispatch(updateStatusFilter(status))
-      },
       firstPage: () => {
         dispatch(firstPage())
       },

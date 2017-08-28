@@ -146,7 +146,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         this.urlUtil = urlUtil;
     }
 
-    @SuppressWarnings("unused")
     public TranslationMemoryServiceImpl() {
     }
 
@@ -760,11 +759,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             Optional<Long> textFlowTargetId, String queryText,
             String[] multiQueryText, String[] srcContentFields)
             throws ParseException {
-        BooleanQuery query = new BooleanQuery();
         Query contentQuery = buildContentQuery(queryParams, sourceLocale,
                 queryText, multiQueryText, srcContentFields);
         contentQuery.setBoost(BOOST_CONTENT);
-        query.add(contentQuery, BooleanClause.Occur.MUST);
+        BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
+        queryBuilder.add(contentQuery, BooleanClause.Occur.MUST);
         if (textFlowTargetId.isPresent()) {
             HTextFlowTarget tft = entityManager.find(HTextFlowTarget.class,
                     textFlowTargetId.get());
@@ -773,15 +772,15 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 HDocument doc = tf.getDocument();
                 HProjectIteration iter = doc.getProjectIteration();
                 HProject proj = iter.getProject();
-                addTermQueryWithBoost(query, "id",
+                addTermQueryWithBoost(queryBuilder, "id",
                         String.valueOf(textFlowTargetId), BOOST_TFTID);
-                addTermQueryWithBoost(query, "project", proj.getSlug(),
+                addTermQueryWithBoost(queryBuilder, "project", proj.getSlug(),
                         BOOST_PROJECT);
-                addTermQueryWithBoost(query, "documentId", doc.getDocId(),
+                addTermQueryWithBoost(queryBuilder, "documentId", doc.getDocId(),
                         BOOST_DOCID);
-                addTermQueryWithBoost(query, "textFlow.resId", tf.getResId(),
+                addTermQueryWithBoost(queryBuilder, "textFlow.resId", tf.getResId(),
                         BOOST_RESID);
-                addTermQueryWithBoost(query, "iteration", iter.getSlug(),
+                addTermQueryWithBoost(queryBuilder, "iteration", iter.getSlug(),
                         BOOST_ITERATION);
                 // TODO add projiterslug to the index, replacing iteration slug
                 // String projIterSlug = proj.getSlug()+iter.getSlug();
@@ -795,25 +794,26 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         TermQuery localeQuery =
                 new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD,
                         targetLocale.getId()));
-        query.add(localeQuery, BooleanClause.Occur.MUST);
-        buildContextQuery(query, queryParams);
+        queryBuilder.add(localeQuery, BooleanClause.Occur.MUST);
+        buildContextQuery(queryBuilder, queryParams);
         // exclude own translation
         if (!queryParams.getIncludeOwnTranslation().isCheck()) {
             TermQuery tmIdQuery = new TermQuery(new Term(IndexFieldLabels.TF_ID,
                     queryParams.getIncludeOwnTranslation().getValue()));
-            query.add(tmIdQuery, BooleanClause.Occur.MUST_NOT);
+            queryBuilder.add(tmIdQuery, BooleanClause.Occur.MUST_NOT);
         }
-        query.add(newStateQuery, BooleanClause.Occur.MUST_NOT);
-        query.add(needReviewStateQuery, BooleanClause.Occur.MUST_NOT);
-        query.add(rejectedStateQuery, BooleanClause.Occur.MUST_NOT);
-        return query;
+        queryBuilder.add(newStateQuery, BooleanClause.Occur.MUST_NOT);
+        queryBuilder.add(needReviewStateQuery, BooleanClause.Occur.MUST_NOT);
+        queryBuilder.add(rejectedStateQuery, BooleanClause.Occur.MUST_NOT);
+        return queryBuilder.build();
     }
 
-    private static void addTermQueryWithBoost(BooleanQuery query, String fld,
+    private static void addTermQueryWithBoost(BooleanQuery.Builder builder,
+            String fld,
             String txt, float boost) {
         TermQuery q = new TermQuery(new Term(fld, txt));
         q.setBoost(boost);
-        query.add(q, BooleanClause.Occur.SHOULD);
+        builder.add(q, BooleanClause.Occur.SHOULD);
     }
 
     /**
@@ -822,16 +822,16 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * @param queryParams
      * @return
      */
-    private void buildContextQuery(BooleanQuery query,
+    private void buildContextQuery(BooleanQuery.Builder builder,
             TransMemoryQuery queryParams) {
         if (queryParams.getProject() != null) {
             TermQuery projectQuery =
                     new TermQuery(new Term(IndexFieldLabels.PROJECT_ID_FIELD,
                             queryParams.getProject().getValue()));
             if (queryParams.getProject().isCheck()) {
-                query.add(projectQuery, BooleanClause.Occur.MUST);
+                builder.add(projectQuery, BooleanClause.Occur.MUST);
             } else {
-                query.add(projectQuery, BooleanClause.Occur.SHOULD);
+                builder.add(projectQuery, BooleanClause.Occur.SHOULD);
             }
         }
         if (queryParams.getDocument() != null) {
@@ -839,9 +839,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     new TermQuery(new Term(IndexFieldLabels.DOCUMENT_ID_FIELD,
                             queryParams.getDocument().getValue()));
             if (queryParams.getDocument().isCheck()) {
-                query.add(docQuery, BooleanClause.Occur.MUST);
+                builder.add(docQuery, BooleanClause.Occur.MUST);
             } else {
-                query.add(docQuery, BooleanClause.Occur.SHOULD);
+                builder.add(docQuery, BooleanClause.Occur.SHOULD);
             }
         }
         if (queryParams.getRes() != null) {
@@ -849,9 +849,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     new TermQuery(new Term(IndexFieldLabels.TF_RES_ID,
                             queryParams.getRes().getValue()));
             if (queryParams.getRes().isCheck()) {
-                query.add(resIdQuery, BooleanClause.Occur.MUST);
+                builder.add(resIdQuery, BooleanClause.Occur.MUST);
             } else {
-                query.add(resIdQuery, BooleanClause.Occur.SHOULD);
+                builder.add(resIdQuery, BooleanClause.Occur.SHOULD);
             }
         }
         if (queryParams.getInternalTMSource().getChoice() == SelectSome) {
@@ -865,7 +865,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
                 fromVersions.add(fromVersionQuery, BooleanClause.Occur.SHOULD);
             });
-            query.add(fromVersions.build(), BooleanClause.Occur.MUST);
+            builder.add(fromVersions.build(), BooleanClause.Occur.MUST);
         }
     }
 
@@ -941,11 +941,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      *         given occurence condition.
      */
     private static Query join(BooleanClause.Occur condition, Query... queries) {
-        BooleanQuery joinedQuery = new BooleanQuery();
+        BooleanQuery.Builder joinedQuery = new BooleanQuery.Builder();
         for (Query q : queries) {
             joinedQuery.add(q, condition);
         }
-        return joinedQuery;
+        return joinedQuery.build();
     }
 
     private static final class TransMemoryAboveThresholdPredicate

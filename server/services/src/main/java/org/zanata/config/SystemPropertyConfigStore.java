@@ -69,6 +69,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
     private static final String KEY_SUPPORT_OAUTH = "zanata.support.oauth";
     private static final Logger log =
             LoggerFactory.getLogger(SystemPropertyConfigStore.class);
+    private static final long serialVersionUID = 1086764656937071302L;
 
     @Override
     public String get(String propertyName) {

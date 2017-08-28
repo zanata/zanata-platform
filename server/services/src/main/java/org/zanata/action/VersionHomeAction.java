@@ -212,6 +212,9 @@ public class VersionHomeAction extends AbstractSortAction
     private final AbstractListFilter<HIterationGroup> groupFilter =
             new InMemoryListFilter<HIterationGroup>() {
 
+                private static final long serialVersionUID =
+                        -8985475801770776976L;
+
                 @Override
                 protected List<HIterationGroup> fetchAll() {
                     return getGroups();
@@ -228,6 +231,9 @@ public class VersionHomeAction extends AbstractSortAction
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
 
+                private static final long serialVersionUID =
+                        -1089546989875020588L;
+
                 @Override
                 protected List<HLocale> fetchAll() {
                     return getSupportedLocale();
@@ -243,6 +249,9 @@ public class VersionHomeAction extends AbstractSortAction
             };
     private final AbstractListFilter<HLocale> documentsTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
+
+                private static final long serialVersionUID =
+                        -3659763109918732037L;
 
                 @Override
                 protected List<HLocale> fetchAll() {
@@ -269,9 +278,19 @@ public class VersionHomeAction extends AbstractSortAction
         copyVersionHandler.setProjectSlug(projectSlug);
     }
 
+    @SuppressWarnings("deprecation")
+    private void setMessage(FacesMessage.Severity severity, String message) {
+        conversationScopeMessages.setMessage(severity, message);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void addMessages(List<FacesMessage> messages) {
+        conversationScopeMessages.addMessages(messages);
+    }
+
     public void cancelCopyVersion() {
         copyVersionManager.cancelCopyVersion(projectSlug, versionSlug);
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+        setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.copyVersion.Cancelled", versionSlug));
     }
 
@@ -294,14 +313,15 @@ public class VersionHomeAction extends AbstractSortAction
         if (selectedLocale != null && !manualWebhooks.isEmpty()) {
             webhookService.processManualEvent(projectSlug, versionSlug,
                     selectedLocale.getLocaleId(), manualWebhooks);
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.format("jsf.iteration.manualWebhook.triggered"));
+            setMessage(FacesMessage.SEVERITY_INFO,
+                    msgs.get("jsf.iteration.manualWebhook.triggered"));
         }
     }
     // TODO Serializable only because it's a dependent bean
 
     public static class CopyVersionHandler extends CopyAction
             implements Serializable {
+        private static final long serialVersionUID = 7720904735608930337L;
         private String projectSlug;
         private String versionSlug;
         @Inject
@@ -593,7 +613,7 @@ public class VersionHomeAction extends AbstractSortAction
         HDocument doc = documentDAO.getById(Long.valueOf(docId));
         documentServiceImpl.makeObsolete(doc);
         resetPageData();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+        setMessage(FacesMessage.SEVERITY_INFO,
                 doc.getDocId() + " has been removed.");
     }
 
@@ -704,8 +724,7 @@ public class VersionHomeAction extends AbstractSortAction
                 String summary = "Unrecognized file extension for "
                         + sourceFileUpload.getFileName();
                 // TODO this message is not displayed
-                conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                        summary);
+                setMessage(FacesMessage.SEVERITY_INFO, summary);
                 throw new IllegalArgumentException(summary);
             }
         }
@@ -734,7 +753,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     private void showUploadSuccessMessage() {
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+        setMessage(FacesMessage.SEVERITY_INFO,
                 "Document " + sourceFileUpload.getFileName() + " uploaded.");
     }
 
@@ -772,11 +791,10 @@ public class VersionHomeAction extends AbstractSortAction
                     extensions, false);
             showUploadSuccessMessage();
         } catch (ZanataServiceException e) {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
+            setMessage(FacesMessage.SEVERITY_ERROR,
                     e.getMessage() + "-" + sourceFileUpload.getFileName());
         } catch (ConstraintViolationException e) {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                    "Invalid arguments");
+            setMessage(FacesMessage.SEVERITY_ERROR, "Invalid arguments");
         }
     }
 
@@ -820,13 +838,13 @@ public class VersionHomeAction extends AbstractSortAction
             VersionHomeAction.log.error(
                     "Failed writing temp file for document {}", e,
                     sourceFileUpload.getDocId());
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
+            setMessage(FacesMessage.SEVERITY_ERROR,
                     "Error saving uploaded document " + fileName
                             + " to server.");
             return;
         } catch (NoSuchAlgorithmException e) {
             VersionHomeAction.log.error("MD5 hash algorithm not available", e);
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
+            setMessage(FacesMessage.SEVERITY_ERROR,
                     "Error generating hash for uploaded document " + fileName
                             + ".");
             return;
@@ -851,11 +869,11 @@ public class VersionHomeAction extends AbstractSortAction
                     versionSlug, doc, extensions, false);
             showUploadSuccessMessage();
         } catch (SecurityException e) {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
+            setMessage(FacesMessage.SEVERITY_ERROR,
                     "Error reading uploaded document " + fileName
                             + " on server.");
         } catch (ZanataServiceException e) {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
+            setMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid document format for " + fileName);
         }
         if (document == null) {
@@ -877,8 +895,7 @@ public class VersionHomeAction extends AbstractSortAction
             } catch (VirusDetectedException e) {
                 VersionHomeAction.log.warn("File failed virus scan: {}",
                         e.getMessage());
-                conversationScopeMessages.setMessage(
-                        FacesMessage.SEVERITY_ERROR,
+                setMessage(FacesMessage.SEVERITY_ERROR,
                         "uploaded file did not pass virus scan");
             }
             filePersistService.persistRawDocumentContentFromFile(rawDocument,
@@ -960,18 +977,17 @@ public class VersionHomeAction extends AbstractSortAction
             if (!warnings.isEmpty()) {
                 infoMsg.append(" There were some warnings, see below.");
             }
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    infoMsg.toString());
+            setMessage(FacesMessage.SEVERITY_INFO, infoMsg.toString());
             if (!warnings.isEmpty()) {
                 List<FacesMessage> warningMessages = Lists.newArrayList();
                 for (String warning : warnings) {
                     warningMessages.add(new FacesMessage(
                             FacesMessage.SEVERITY_WARN, warning, null));
                 }
-                conversationScopeMessages.addMessages(warningMessages);
+                addMessages(warningMessages);
             }
         } catch (ZanataServiceException e) {
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
+            setMessage(FacesMessage.SEVERITY_ERROR,
                     translationFileUpload.getFileName() + "-" + e.getMessage());
         }
         resetPageData();
@@ -1003,6 +1019,8 @@ public class VersionHomeAction extends AbstractSortAction
 
     private class DocumentFilter extends InMemoryListFilter<HDocument> {
 
+        private static final long serialVersionUID = -4675800292403066019L;
+
         @Override
         protected List<HDocument> fetchAll() {
             return getDocuments(documentDAO);
@@ -1018,6 +1036,7 @@ public class VersionHomeAction extends AbstractSortAction
 
     private class SourceDocumentFilter extends InMemoryListFilter<HDocument> {
 
+        private static final long serialVersionUID = 5939911285844999856L;
         private DocumentDAO documentDAO =
                 ServiceLocator.instance().getInstance(DocumentDAO.class);
 

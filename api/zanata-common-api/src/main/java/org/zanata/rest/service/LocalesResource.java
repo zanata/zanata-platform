@@ -24,7 +24,7 @@ import org.zanata.rest.dto.SourceLocaleDetails;
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface LocalesResource extends RestResource {
+public interface LocalesResource {
 
     public static final String SERVICE_PATH = "/locales";
 

@@ -107,6 +107,9 @@ public class VersionGroupHomeAction extends AbstractSortAction
     private final AbstractListFilter<HLocale> projectTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
 
+                private static final long serialVersionUID =
+                        7550100962201447662L;
+
                 @Override
                 protected List<HLocale> fetchAll() {
                     return getActiveLocales();
@@ -122,6 +125,9 @@ public class VersionGroupHomeAction extends AbstractSortAction
             };
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
+
+                private static final long serialVersionUID =
+                        -5026649603666309838L;
 
                 @Override
                 protected List<HLocale> fetchAll() {
@@ -139,6 +145,9 @@ public class VersionGroupHomeAction extends AbstractSortAction
     private final AbstractListFilter<HProjectIteration> languageTabVersionFilter =
             new InMemoryListFilter<HProjectIteration>() {
 
+                private static final long serialVersionUID =
+                        -8992474540264340865L;
+
                 @Override
                 protected List<HProjectIteration> fetchAll() {
                     return getProjectIterations();
@@ -154,6 +163,9 @@ public class VersionGroupHomeAction extends AbstractSortAction
             };
     private final AbstractListFilter<HProjectIteration> projectTabVersionFilter =
             new InMemoryListFilter<HProjectIteration>() {
+
+                private static final long serialVersionUID =
+                        1693725144619170657L;
 
                 @Override
                 protected List<HProjectIteration> fetchAll() {

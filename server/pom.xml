@@ -219,6 +219,12 @@
       </dependency>
 
       <dependency>
+        <groupId>com.googlecode.junit-toolbox</groupId>
+        <artifactId>junit-toolbox</artifactId>
+        <version>2.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
         <version>${resteasy.version}</version>
@@ -474,12 +480,6 @@
         <artifactId>assertj-core</artifactId>
         <version>3.8.0</version>
         <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.atteo.classindex</groupId>
-        <artifactId>classindex</artifactId>
-        <version>3.4</version>
       </dependency>
 
       <dependency>
@@ -1378,7 +1378,7 @@
       <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
-        <version>3.19.0-GA</version>
+        <version>3.21.0-GA</version>
       </dependency>
 
       <dependency>

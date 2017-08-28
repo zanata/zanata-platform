@@ -26,6 +26,7 @@ import java.util.Map;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
@@ -61,6 +62,8 @@ import org.zanata.webtrans.shared.rpc.LuceneQuery;
 @Named("glossaryDAO")
 @RequestScoped
 public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
+    private static final long serialVersionUID = -11578921177910314L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @FullText
     private FullTextEntityManager entityManager;
 
@@ -144,10 +147,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
                 .setComment("GlossaryDAO.getEntriesByLocale");
 
         if (StringUtils.isNotBlank(filter)) {
-            String escapeFilter = filter
-                    .replace("!", "!!")
-                    .replace("%", "!%")
-                    .replace("_", "!_");
+            String escapeFilter = escapeQuery(filter);
             query.setParameter("filter", "%" + escapeFilter + "%");
         }
         query.setFirstResult(offset).setMaxResults(maxResults);
@@ -302,9 +302,9 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
                 new TermQuery(new Term(IndexFieldLabels.GLOSSARY_QUALIFIED_NAME,
                         qualifiedName));
 
-        BooleanQuery booleanQuery = new BooleanQuery();
-        booleanQuery.add(textQuery, BooleanClause.Occur.MUST);
-        booleanQuery.add(qualifiedNameQuery, BooleanClause.Occur.MUST);
+        BooleanQuery booleanQuery = new BooleanQuery.Builder()
+                .add(textQuery, BooleanClause.Occur.MUST)
+                .add(qualifiedNameQuery, BooleanClause.Occur.MUST).build();
 
         FullTextQuery ftQuery =
                 entityManager.createFullTextQuery(booleanQuery,

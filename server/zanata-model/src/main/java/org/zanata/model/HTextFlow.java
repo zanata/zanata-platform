@@ -524,10 +524,12 @@ public class HTextFlow extends HTextContainer implements Serializable,
         this.pos = pos;
     }
 
+    @SuppressWarnings("unused")
     private void setOldRevision(final Integer oldRevision) {
         this.oldRevision = oldRevision;
     }
 
+    @SuppressWarnings("unused")
     private void setInitialState(final HTextFlowHistory initialState) {
         this.initialState = initialState;
     }

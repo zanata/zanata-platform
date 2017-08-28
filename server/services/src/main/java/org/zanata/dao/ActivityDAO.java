@@ -48,7 +48,6 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
         super(Activity.class, session);
     }
 
-    @SuppressWarnings("unchecked")
     public Activity findActivity(long personId, EntityType contextType,
             long contextId, ActivityType activityType, Date approxTime) {
         Query query =

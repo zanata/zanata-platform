@@ -30,6 +30,7 @@ import java.util.Date;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TextFlowSuggestionDetail implements SuggestionDetail {
+    private static final long serialVersionUID = -3779746347162161883L;
     private final SuggestionType type = SuggestionType.LOCAL_PROJECT;
     private final Long textFlowId;
     private final String sourceComment;

@@ -41,12 +41,12 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 @RequestScoped
 public class TextFlowTargetReviewCommentsDAO extends
         AbstractDAOImpl<HTextFlowTargetReviewComment, Long> {
-    @SuppressWarnings("unused")
+    private static final long serialVersionUID = -8679512509179391126L;
+
     public TextFlowTargetReviewCommentsDAO() {
         super(HTextFlowTargetReviewComment.class);
     }
 
-    @SuppressWarnings("unused")
     public TextFlowTargetReviewCommentsDAO(Session session) {
         super(HTextFlowTargetReviewComment.class, session);
     }

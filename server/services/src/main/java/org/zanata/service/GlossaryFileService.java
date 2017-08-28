@@ -21,6 +21,7 @@
 package org.zanata.service;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +38,7 @@ import org.zanata.service.impl.GlossaryFileServiceImpl;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface GlossaryFileService {
+public interface GlossaryFileService extends Serializable {
     /**
      * Save or update all entries {@link org.zanata.rest.dto.GlossaryEntry}
      *

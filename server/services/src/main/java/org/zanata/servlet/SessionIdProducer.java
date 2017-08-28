@@ -36,6 +36,7 @@ import java.io.Serializable;
 public class SessionIdProducer implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(SessionIdProducer.class);
+    private static final long serialVersionUID = 2584730948351259335L;
 
     private String sessionId;
 

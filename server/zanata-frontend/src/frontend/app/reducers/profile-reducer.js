@@ -278,6 +278,10 @@ export default handleActions({
     return {
       ...state,
       loading: false,
+      user: {
+        username: '',
+        loading: false
+      },
       notification: {
         severity: SEVERITY.ERROR,
         message:

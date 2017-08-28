@@ -32,6 +32,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
@@ -69,7 +70,6 @@ public class RestLimitingFilter implements Filter {
         this.authenticatedUser = authenticatedUser;
     }
 
-    @SuppressWarnings("unused")
     public RestLimitingFilter() {
         this(null, null, null);
     }

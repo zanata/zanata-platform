@@ -37,6 +37,7 @@ import org.zanata.model.type.WebhookType;
 public class DocumentStatsEvent extends WebhookEventType {
     private static final String EVENT_TYPE =
             WebhookType.DocumentStatsEvent.name();
+    private static final long serialVersionUID = 9149754043202160955L;
 
     /**
      * Username of the actor

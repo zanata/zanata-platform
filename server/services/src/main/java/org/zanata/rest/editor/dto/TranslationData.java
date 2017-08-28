@@ -26,6 +26,7 @@ import com.google.common.collect.Lists;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TranslationData implements Serializable {
 
+    private static final long serialVersionUID = -8798154305879389711L;
     @NotNull
     private Integer id;
 

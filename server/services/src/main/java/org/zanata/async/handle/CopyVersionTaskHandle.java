@@ -32,6 +32,7 @@ import org.zanata.async.UserTriggeredTaskHandle;
 public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> implements
         UserTriggeredTaskHandle {
 
+    private static final long serialVersionUID = -3200117976693100638L;
     private int documentCopied;
     private int totalDoc;
     private String triggeredBy;

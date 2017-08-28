@@ -47,6 +47,8 @@ import org.zanata.util.Zanata;
  */
 public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit> {
 
+    private static final long serialVersionUID = 4090547457808815382L;
+
     public TransMemoryStreamingDAO() {
         this(null);
     }

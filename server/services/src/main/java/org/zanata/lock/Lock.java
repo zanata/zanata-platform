@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class Lock implements Serializable {
 
+    private static final long serialVersionUID = -8883152729721215366L;
     private final List<Object> properties;
 
     public Lock(Object... properties) {

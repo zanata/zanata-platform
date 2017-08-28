@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
@@ -66,6 +67,7 @@ import com.google.common.cache.CacheLoader;
 @javax.enterprise.context.ApplicationScoped
 
 public class TranslationStateCacheImpl implements TranslationStateCache {
+    private static final long serialVersionUID = -212573982590368031L;
     private static final String BASE = TranslationStateCacheImpl.class.getName();
 
     private static final String DOC_STATISTIC_CACHE_NAME = BASE
@@ -77,15 +79,19 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String TFT_VALIDATION_CACHE_NAME = BASE
             + ".targetValidationCache";
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private CacheWrapper<DocumentLocaleKey, WordStatistic> documentStatisticCache;
     private final CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private CacheWrapper<DocumentLocaleKey, DocumentStatus> docStatusCache;
     private final CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
     private final CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Zanata
     private final CacheContainer cacheContainer;
     private final TextFlowDAO textFlowDAO;

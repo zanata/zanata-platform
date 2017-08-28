@@ -35,6 +35,7 @@
 @import './components/FilterToggle/index.css';
 @import './components/ToggleSwitch/index.css';
 @import './components/TransUnit/index.css';
+@import './components/RejectTranslationModal/index.css';
 
 /**
  * Views
@@ -60,15 +61,4 @@
 
 .fade.in {
   opacity: 1;
-}
-
-/* Angular specific classes */
-
-[ng\:cloak],
-[ng-cloak],
-[data-ng-cloak],
-[x-ng-cloak],
-.ng-cloak,
-.x-ng-cloak {
-  display: none !important;
 }

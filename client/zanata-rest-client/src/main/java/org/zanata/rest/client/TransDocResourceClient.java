@@ -24,6 +24,7 @@ package org.zanata.rest.client;
 import java.net.URI;
 import java.util.Set;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -55,31 +56,33 @@ public class TransDocResourceClient {
     public Response getTranslations(String docId, LocaleId locale,
             Set<String> extensions, boolean createSkeletons, String eTag) {
         Client client = factory.getClient();
-        Response response = getBaseServiceResource(client)
-                .path("resource")
-                .path("translations")
-                .path(locale.getId())
-                .queryParam("docId", docId)
-                .queryParam("ext", extensions.toArray())
-                .queryParam("skeletons", String.valueOf(createSkeletons))
-                .request(MediaType.APPLICATION_XML_TYPE)
-                .header(HttpHeaders.IF_NONE_MATCH, eTag)
-                .get();
-        if (RestUtil.isNotFound(response)) {
-            // fallback to old endpoint
-            response.close();
-            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
-            response = getBaseServiceResource(client)
-                    .path("r")
-                    .path(idNoSlash)
-                    .path("translations").path(locale.getId())
+        try {
+            return getBaseServiceResource(client)
+                    .path("resource")
+                    .path("translations")
+                    .path(locale.getId())
+                    .queryParam("docId", docId)
                     .queryParam("ext", extensions.toArray())
                     .queryParam("skeletons", String.valueOf(createSkeletons))
                     .request(MediaType.APPLICATION_XML_TYPE)
                     .header(HttpHeaders.IF_NONE_MATCH, eTag)
                     .get();
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                // fallback to old endpoint
+                String idNoSlash = RestUtil.convertToDocumentURIId(docId);
+                return getBaseServiceResource(client)
+                        .path("r")
+                        .path(idNoSlash)
+                        .path("translations").path(locale.getId())
+                        .queryParam("ext", extensions.toArray())
+                        .queryParam("skeletons", String.valueOf(createSkeletons))
+                        .request(MediaType.APPLICATION_XML_TYPE)
+                        .header(HttpHeaders.IF_NONE_MATCH, eTag)
+                        .get();
+            }
+            throw e;
         }
-        return response;
     }
 
     private WebTarget getBaseServiceResource(Client client) {

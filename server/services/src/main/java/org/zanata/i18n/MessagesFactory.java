@@ -38,6 +38,7 @@ import java.util.Locale;
 @javax.enterprise.context.ApplicationScoped
 public class MessagesFactory implements Serializable {
 
+    private static final long serialVersionUID = 4503539056097043809L;
     /**
      * Returns an instance of Messages for the server's default locale.
      */

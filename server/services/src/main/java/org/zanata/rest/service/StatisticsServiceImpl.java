@@ -24,9 +24,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
@@ -94,6 +96,7 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
 public class StatisticsServiceImpl implements StatisticsResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(StatisticsServiceImpl.class);
+    private static final long serialVersionUID = 4936614337971433129L;
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;
@@ -205,23 +208,26 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId, boolean includeWordStats,
             String[] locales) {
-        LocaleId[] localeIds;
+        return getStatisticsWithDocId(projectSlug, iterationSlug, docId,
+                includeWordStats, locales);
+    }
+
+    @Override
+    public ContainerTranslationStatistics getStatisticsWithDocId(
+            String projectSlug, String iterationSlug, String docId,
+            boolean includeWordStats, String[] locales) {
+        List<LocaleId> localeIds;
         // if no locales are specified, search in all locales
-        if (locales.length == 0) {
+        if (locales == null || locales.length == 0) {
             List<HLocale> iterationLocales =
                     localeServiceImpl.getSupportedLanguageByProjectIteration(
                             projectSlug, iterationSlug);
-            localeIds = new LocaleId[iterationLocales.size()];
-            for (int i = 0, iterationLocalesSize =
-                    iterationLocales.size(); i < iterationLocalesSize; i++) {
-                HLocale loc = iterationLocales.get(i);
-                localeIds[i] = loc.getLocaleId();
-            }
+            localeIds =
+                    iterationLocales.stream().map(HLocale::getLocaleId).collect(
+                            Collectors.toList());
         } else {
-            localeIds = new LocaleId[locales.length];
-            for (int i = 0; i < locales.length; i++) {
-                localeIds[i] = new LocaleId(locales[i]);
-            }
+            localeIds = Arrays.stream(locales).map(s -> new LocaleId(s))
+                    .collect(Collectors.toList());
         }
         HDocument document = documentDAO.getByProjectIterationAndDocId(
                 projectSlug, iterationSlug, docId);
