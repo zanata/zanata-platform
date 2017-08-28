@@ -444,6 +444,11 @@ ul.source-infolist {
   height: 6.192rem;
 }
 
+nav.flex.flex-wrapper {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
 .nav {
   padding-left: 0;
   margin-bottom: 0;

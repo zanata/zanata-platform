@@ -11,11 +11,12 @@
 
 .InputEditorSearch {
   margin-left: 0.75em;
+  margin-right: 1em;
   display: inline-flex;
-  margin-top: 0.25em;
   font-size: 0.875em;
   padding-bottom: 1rem;
   padding-top: 0.25rem;
+  flex: 2 0 16rem;
 }
 
 .InputEditorSearch > div {
@@ -163,9 +164,8 @@ button.clearadvsearch {
   padding-top: 0.75em;
 }
 
-@media (min-width:560px) {
-  .InputEditorSearch {
-    padding-top: 0;
-    padding-bottom: 1rem;
+@media (max-width: 622px) {
+  .u-sizeHeight-1_1-2 {
+    height: fit-content !important;
   }
 }
