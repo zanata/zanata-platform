@@ -21,10 +21,7 @@
 
 package org.zanata.util;
 
-import com.google.common.collect.Lists;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

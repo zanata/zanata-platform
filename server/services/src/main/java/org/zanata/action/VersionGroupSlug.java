@@ -32,6 +32,7 @@ import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 @GroupedConversationScoped
 @ConversationGroup(SlugHome.class)
 public class VersionGroupSlug implements Serializable {
+    private static final long serialVersionUID = 991219281405201825L;
     private String value;
 
     public String getValue() {

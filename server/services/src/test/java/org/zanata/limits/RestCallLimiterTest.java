@@ -1,6 +1,5 @@
 package org.zanata.limits;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -12,7 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

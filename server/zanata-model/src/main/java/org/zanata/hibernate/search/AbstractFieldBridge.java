@@ -13,6 +13,7 @@ public abstract class AbstractFieldBridge implements FieldBridge {
     /**
      * Copy of {@link Field#translateFieldType}
      */
+    @SuppressWarnings("deprecation")
     protected static final FieldType translateFieldType(
             LuceneOptions luceneOptions) {
         final FieldType ft = new FieldType();

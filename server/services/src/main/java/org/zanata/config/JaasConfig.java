@@ -38,6 +38,8 @@ import java.io.Serializable;
 @javax.enterprise.context.ApplicationScoped
 public class JaasConfig implements Serializable {
 
+    private static final long serialVersionUID = -8707906261411142759L;
+
     /**
      * Retrieves all App configuration entries under a given name. In Jboss's
      * standalone.xml, these are all the {@code <login-module></login-module>}

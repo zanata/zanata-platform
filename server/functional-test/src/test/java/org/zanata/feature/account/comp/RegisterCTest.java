@@ -41,9 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(TestPlan.ComprehensiveTest.class)
 public class RegisterCTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(RegisterUsernameCharactersCTest.class);
-
     private HomePage homePage;
 
     @Before

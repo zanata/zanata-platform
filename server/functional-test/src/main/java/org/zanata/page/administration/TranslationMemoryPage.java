@@ -46,7 +46,6 @@ public class TranslationMemoryPage extends BasePage {
     private By uploadButton = By.id("tm-import-button");
     private By listDropDownMenu = By.className("dropdown__toggle");
     private By listImportButton = By.linkText("Import");
-    private By listExportButton = By.linkText("Export");
     private By listClearButton = By.linkText("Clear");
     private By listDeleteButton = By.linkText("Delete");
     private By deleteConfirmation = By.id("deleteTMModal");

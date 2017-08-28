@@ -48,6 +48,7 @@ import com.google.common.collect.Lists;
 public class WebhookServiceImpl implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(WebhookServiceImpl.class);
+    private static final long serialVersionUID = -277881434888432935L;
 
     @Inject
     private Messages msgs;

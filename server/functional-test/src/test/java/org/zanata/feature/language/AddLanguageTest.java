@@ -56,7 +56,6 @@ public class AddLanguageTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addLanguageAsEnabledByDefault() throws Exception {
         String language = "Goa'uld";
-        String languageDisplayName = "goa'uld[Goa'uld]";
         LanguagesPage languagesPage = new BasicWorkFlow()
             .goToHome()
             .goToLanguages();
@@ -98,7 +97,6 @@ public class AddLanguageTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addLanguageAsDisabledByDefault() throws Exception {
         String language = "Klingon";
-        String languageDisplayName = "klingon[Klingon]";
         LanguagesPage languagesPage = new BasicWorkFlow()
                 .goToHome()
                 .goToHomePage()

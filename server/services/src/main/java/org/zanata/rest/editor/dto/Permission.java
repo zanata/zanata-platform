@@ -21,16 +21,12 @@
 
 package org.zanata.rest.editor.dto;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -39,6 +35,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Permission extends JsonObject implements Map<String, Boolean> {
+    private static final long serialVersionUID = 2179155856314584293L;
     private Map<String, Boolean> map = new HashMap<String, Boolean>();
 
     @Override

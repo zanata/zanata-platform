@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.service.raw;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -34,11 +32,7 @@ import org.zanata.RestTest;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
-import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryInfo;
-import org.zanata.rest.dto.GlossaryTerm;
-
-import com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
@@ -201,71 +195,5 @@ public class GlossaryRawRestITCase extends RestTest {
                 assertThat(response.getStatus()).isEqualTo(401);
             }
         }.run();
-    }
-
-    private List<GlossaryEntry> getSampleGlossary() {
-        List<GlossaryEntry> entries = new ArrayList<GlossaryEntry>();
-
-        GlossaryEntry glossaryEntry1 = new GlossaryEntry();
-        glossaryEntry1.setSrcLang(LocaleId.EN_US);
-        glossaryEntry1.setSourceReference("TEST SOURCE REF DATA");
-
-        GlossaryTerm glossaryTerm1 = new GlossaryTerm();
-        glossaryTerm1.setLocale(LocaleId.EN_US);
-        glossaryTerm1.setContent("TEST DATA 1 EN_US");
-        glossaryTerm1.setComment("COMMENT 1");
-
-        GlossaryTerm glossaryTerm2 = new GlossaryTerm();
-        glossaryTerm2.setLocale(LocaleId.DE);
-        glossaryTerm2.setContent("TEST DATA 2 DE");
-        glossaryTerm2.setComment("COMMENT 2");
-
-        glossaryEntry1.getGlossaryTerms().add(glossaryTerm1);
-        glossaryEntry1.getGlossaryTerms().add(glossaryTerm2);
-
-        GlossaryEntry glossaryEntry2 = new GlossaryEntry();
-        glossaryEntry2.setSrcLang(LocaleId.EN_US);
-        glossaryEntry2.setSourceReference("TEST SOURCE REF DATA2");
-
-        GlossaryTerm glossaryTerm3 = new GlossaryTerm();
-        glossaryTerm3.setLocale(LocaleId.EN_US);
-        glossaryTerm3.setContent("TEST DATA 3 EN_US");
-        glossaryTerm3.setComment("COMMENT 3");
-
-        GlossaryTerm glossaryTerm4 = new GlossaryTerm();
-        glossaryTerm4.setLocale(LocaleId.DE);
-        glossaryTerm4.setContent("TEST DATA 4 DE");
-        glossaryTerm4.setComment("COMMENT 4");
-
-        glossaryEntry2.getGlossaryTerms().add(glossaryTerm3);
-        glossaryEntry2.getGlossaryTerms().add(glossaryTerm4);
-
-        entries.add(glossaryEntry1);
-        entries.add(glossaryEntry2);
-
-        return entries;
-    }
-
-    private List<GlossaryTerm> getExpectedTerms() {
-        List<GlossaryTerm> expectedTerms = Lists.newArrayList();
-        GlossaryTerm expTerm = new GlossaryTerm();
-        expTerm.setLocale(LocaleId.EN_US);
-        expTerm.setContent("test data content 1 (source lang)");
-        expTerm.setComment("test data comment 1");
-        expectedTerms.add(expTerm);
-
-        expTerm = new GlossaryTerm();
-        expTerm.setLocale(LocaleId.DE);
-        expTerm.setContent("test data content 2");
-        expTerm.setComment("test data comment 2");
-        expectedTerms.add(expTerm);
-
-        expTerm = new GlossaryTerm();
-        expTerm.setLocale(LocaleId.ES);
-        expTerm.setContent("test data content 3");
-        expTerm.setComment("test data comment 3");
-        expectedTerms.add(expTerm);
-
-        return expectedTerms;
     }
 }

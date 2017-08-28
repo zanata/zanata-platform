@@ -66,6 +66,7 @@ public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
 
     public static class CheckRoleSecurityViolation
             implements SecurityViolation {
+        private static final long serialVersionUID = 7503206287254497777L;
         private static final String REASON =
                 "You don't have the necessary access";
         private String requiredRole;

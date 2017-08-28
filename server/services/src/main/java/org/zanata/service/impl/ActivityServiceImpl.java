@@ -31,7 +31,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
-import com.google.common.base.Throwables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,6 +61,7 @@ import org.zanata.transaction.TransactionUtil;
 @Named("activityServiceImpl")
 @RequestScoped
 public class ActivityServiceImpl implements ActivityService {
+    private static final long serialVersionUID = -6696241684824218697L;
     @Inject
     private ActivityDAO activityDAO;
 
@@ -73,6 +74,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Inject
     private PersonDAO personDAO;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
 

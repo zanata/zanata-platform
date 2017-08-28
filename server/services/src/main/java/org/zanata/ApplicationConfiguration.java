@@ -43,7 +43,6 @@ import javax.servlet.http.HttpSession;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.AllowPublicRegistration;
 import org.zanata.config.DatabaseBackedConfig;

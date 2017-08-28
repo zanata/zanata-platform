@@ -29,6 +29,7 @@ import javax.persistence.EntityManager;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
@@ -57,6 +58,8 @@ import static org.zanata.model.ProjectRole.Maintainer;
 @RequestScoped
 @Transactional
 public class RegisterServiceImpl implements RegisterService {
+    private static final long serialVersionUID = -2728229404088882444L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     EntityManager entityManager;
 

@@ -9,7 +9,7 @@ import {
 } from '../actions/header-action-types'
 import updateObject from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
-import { dashboardUrl, serviceUrl } from '../api'
+import { dashboardUrl, projectPageUrl } from '../api'
 
 const defaultState = {
   user: {
@@ -43,10 +43,6 @@ const defaultState = {
   }
 }
 
-const projectPage = (projectSlug, versionSlug) => {
-  return `${serviceUrl}/iteration/view/${projectSlug}/${versionSlug}`
-}
-
 const gravatarUrl = (hash, size) => {
   return `http://www.gravatar.com/avatar/${hash}?d=mm&ampr=g&amps=${size}`
 }
@@ -60,6 +56,7 @@ export default (state = defaultState, action) => {
       const projectSlug = action.data.projectInfo.id
       const projectName = action.data.projectInfo.name
       const name = action.data.myInfo.name
+      // FIXME server is providing myInfo.imageUrl not gravatarHash
       const gravatarHash = action.data.myInfo.gravatarHash
 
       return updateObject(state, {
@@ -89,7 +86,7 @@ export default (state = defaultState, action) => {
               $set: versionSlug
             },
             url: {
-              $set: projectPage(projectSlug, versionSlug)
+              $set: projectPageUrl(projectSlug, versionSlug)
             },
             docs: {
               $set: docs

@@ -11,12 +11,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.common.LocaleId;
-import org.zanata.common.ProjectType;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
 import org.zanata.webtrans.shared.model.IdForLocale;
 import org.zanata.webtrans.shared.model.Locale;
@@ -35,7 +32,6 @@ public class ChangeReferenceLangPresenterTest {
     @Mock
     private UserOptionsService userOptionsService;
     private UserConfigHolder configHolder = new UserConfigHolder();
-    private WorkspaceId workspaceId;
 
     @Before
     public void beforeMethod() {
@@ -44,9 +40,6 @@ public class ChangeReferenceLangPresenterTest {
 
         presenter = new ChangeReferenceLangPresenter(display, eventBus,
                 dispatcher, userOptionsService);
-
-        workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug",
-                "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
 
         verify(display).setListener(presenter);
     }

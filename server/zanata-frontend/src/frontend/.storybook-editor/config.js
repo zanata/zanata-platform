@@ -1,22 +1,25 @@
+/* global document */
 import React from 'react'
 import Icons from '../app/components/Icons'
 import { addLocaleData, IntlProvider } from 'react-intl'
+import enLocaleData from 'react-intl/locale-data/en.js'
 import { locale, formats } from '../app/editor/config/intl'
-import { addDecorator, configure } from '@kadira/storybook'
+import { addDecorator, configure } from '@storybook/react'
 import './storybook.css'
 
-// fonts are included in index.html for the app, but storybook does not use that
-var fontLink = document.createElement('link')
-fontLink.setAttribute('href', 'http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic') // eslint-disable-line max-len
-fontLink.setAttribute('rel', 'stylesheet')
-fontLink.setAttribute('type', 'text/css')
-fontLink.setAttribute('async', '')
-document.getElementsByTagName('head')[0].appendChild(fontLink)
+// Storyshots test runs this file too, with no document available.
+if (typeof document !== 'undefined') {
+  // fonts are included in index.html for the app, but storybook does not use that
+  var fontLink = document.createElement('link')
+  fontLink.setAttribute('href', 'http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic') // eslint-disable-line max-len
+  fontLink.setAttribute('rel', 'stylesheet')
+  fontLink.setAttribute('type', 'text/css')
+  fontLink.setAttribute('async', '')
+  document.getElementsByTagName('head')[0].appendChild(fontLink)
+}
 
 // Set up locale data so formats etc. will work properly
-addLocaleData({
-  locale: 'en-US'
-})
+addLocaleData([...enLocaleData])
 
 /*
  * This sets up the context that all the components are expecting to be in.
@@ -28,7 +31,7 @@ addLocaleData({
  *   300, 400 (plain and italic), 600 and 700
  */
 addDecorator((story) => (
-  <IntlProvider locale={locale} formats={formats}>
+  <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
     <div style={{padding: '2em'}}>
       <Icons />
       {story()}

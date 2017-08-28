@@ -22,7 +22,6 @@ package org.zanata.rest.service;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.WebApplicationException;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,6 +48,7 @@ import java.io.Serializable;
 public class RestSlugValidator implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(RestSlugValidator.class);
+    private static final long serialVersionUID = -4351166985603114879L;
 
     @Inject
     private LocaleService localeServiceImpl;

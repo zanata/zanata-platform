@@ -1,9 +1,10 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf, action } from '@storybook/react'
 import GlossaryTerm from '.'
 import { Table } from 'react-bootstrap'
 
 const copyGlossaryTerm = action('copyGlossaryTerm')
+const showDetails = action('showDetails')
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -12,7 +13,9 @@ storiesOf('GlossaryTerm', module)
   .add('simple term on its own', () => (
     <Table>
       <tbody>
-        <GlossaryTerm key={0} index={0} copyGlossaryTerm={copyGlossaryTerm}
+        <GlossaryTerm key={0} index={0}
+          copyGlossaryTerm={copyGlossaryTerm}
+          showDetails={showDetails}
           term={{
             source: 'Ambulance',
             target: 'Krankenwagen'
@@ -31,17 +34,23 @@ storiesOf('GlossaryTerm', module)
         </tr>
       </thead>
       <tbody>
-        <GlossaryTerm key={0} index={0} copyGlossaryTerm={copyGlossaryTerm}
+        <GlossaryTerm key={0} index={0}
+          copyGlossaryTerm={copyGlossaryTerm}
+          showDetails={showDetails}
           term={{
             source: 'Ambulance',
             target: 'Krankenwagen'
           }} />
-        <GlossaryTerm key={1} index={1} copyGlossaryTerm={copyGlossaryTerm}
+        <GlossaryTerm key={1} index={1}
+          copyGlossaryTerm={copyGlossaryTerm}
+          showDetails={showDetails}
           term={{
             source: 'Hospital',
             target: 'Krankenhaus'
           }} />
-        <GlossaryTerm key={2} index={2} copyGlossaryTerm={copyGlossaryTerm}
+        <GlossaryTerm key={2} index={2}
+          copyGlossaryTerm={copyGlossaryTerm}
+          showDetails={showDetails}
           term={{
             source: 'Doctor',
             target: 'Arzt'
@@ -52,29 +61,35 @@ storiesOf('GlossaryTerm', module)
   .add('Without translations', () => (
     <Table>
       <thead>
-      <tr>
-        <th>Source</th>
-        <th>Target</th>
-        <th></th>
-        <th className="align-right hide-md">Details</th>
-      </tr>
+        <tr>
+          <th>Source</th>
+          <th>Target</th>
+          <th></th>
+          <th className="align-right hide-md">Details</th>
+        </tr>
       </thead>
       <tbody>
-      <GlossaryTerm key={0} index={0} copyGlossaryTerm={copyGlossaryTerm}
-        term={{
-          source: 'Ambulance',
-          target: ''
-        }} />
-      <GlossaryTerm key={1} index={1} copyGlossaryTerm={copyGlossaryTerm}
-        term={{
-          source: 'Hospital',
-          target: ''
-        }} />
-      <GlossaryTerm key={2} index={2} copyGlossaryTerm={copyGlossaryTerm}
-        term={{
-          source: 'Doctor',
-          target: ''
-        }} />
+        <GlossaryTerm key={0} index={0}
+          copyGlossaryTerm={copyGlossaryTerm}
+          showDetails={showDetails}
+          term={{
+            source: 'Ambulance',
+            target: ''
+          }} />
+        <GlossaryTerm key={1} index={1}
+          copyGlossaryTerm={copyGlossaryTerm}
+          showDetails={showDetails}
+          term={{
+            source: 'Hospital',
+            target: ''
+          }} />
+        <GlossaryTerm key={2} index={2}
+          copyGlossaryTerm={copyGlossaryTerm}
+          showDetails={showDetails}
+          term={{
+            source: 'Doctor',
+            target: ''
+          }} />
       </tbody>
     </Table>
   ))

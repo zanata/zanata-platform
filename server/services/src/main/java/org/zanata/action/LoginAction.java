@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -85,21 +86,23 @@ public class SourceDocResourceClient {
                         .path("resource")
                         .queryParam("docId", docId)
                         .queryParam("ext", extensions.toArray());
-        Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
-                .get();
-        if (RestUtil.isNotFound(response)) {
-            // fallback to old endpoint
-            response.close();
-            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
-            webResource =
-                    getBaseServiceResource(client)
-                            .path("r")
-                            .path(idNoSlash)
-                            .queryParam("ext", extensions.toArray());
+        try {
             return webResource.request(MediaType.APPLICATION_XML_TYPE)
                     .get(Resource.class);
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                // fallback to old endpoint
+                String idNoSlash = RestUtil.convertToDocumentURIId(docId);
+                webResource =
+                        getBaseServiceResource(client)
+                                .path("r")
+                                .path(idNoSlash)
+                                .queryParam("ext", extensions.toArray());
+                return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                        .get(Resource.class);
+            }
+            throw e;
         }
-        return response.readEntity(Resource.class);
     }
 
     public String putResource(String docId, Resource resource,
@@ -110,36 +113,42 @@ public class SourceDocResourceClient {
                 .queryParam("ext", extensions.toArray())
                 .queryParam("copyTrans", String.valueOf(copyTrans));
 
-        Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
-                .put(Entity.entity(resource, MediaType.APPLICATION_XML_TYPE));
-        if (RestUtil.isNotFound(response)) {
-            // fallback to old endpoint
-            response.close();
-            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
-            webResource = getBaseServiceResource(client)
-                    .path("r")
-                    .path(idNoSlash)
-                    .queryParam("ext", extensions.toArray())
-                    .queryParam("copyTrans", String.valueOf(copyTrans));
-            response = webResource.request(MediaType.APPLICATION_XML_TYPE)
+        try {
+            Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
                     .put(Entity.entity(resource, MediaType.APPLICATION_XML_TYPE));
+            response.bufferEntity();
+            return response.readEntity(String.class);
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                // fallback to old endpoint
+                String idNoSlash = RestUtil.convertToDocumentURIId(docId);
+                webResource = getBaseServiceResource(client)
+                        .path("r")
+                        .path(idNoSlash)
+                        .queryParam("ext", extensions.toArray())
+                        .queryParam("copyTrans", String.valueOf(copyTrans));
+                Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
+                        .put(Entity.entity(resource, MediaType.APPLICATION_XML_TYPE));
+                response.bufferEntity();
+                return response.readEntity(String.class);
+            }
+            throw e;
         }
-        response.bufferEntity();
-        return response.readEntity(String.class);
     }
 
     public String deleteResource(String docId) {
         Client client = factory.getClient();
         WebTarget webResource = getBaseServiceResource(client);
-        Response response =
-                webResource.path("resource").queryParam("docId", docId).request()
-                        .delete();
-        if (RestUtil.isNotFound(response)) {
-            response.close();
-            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
-            return webResource.path("r").path(idNoSlash).request()
-                    .delete(String.class);
+        try {
+            return webResource.path("resource").queryParam("docId", docId)
+                            .request().delete(String.class);
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                String idNoSlash = RestUtil.convertToDocumentURIId(docId);
+                return webResource.path("r").path(idNoSlash).request()
+                        .delete(String.class);
+            }
+            throw e;
         }
-        return response.readEntity(String.class);
     }
 }

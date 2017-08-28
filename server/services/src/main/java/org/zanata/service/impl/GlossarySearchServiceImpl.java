@@ -34,7 +34,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.lucene.search.BooleanQuery;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
@@ -55,6 +54,7 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @RequestScoped
 public class GlossarySearchServiceImpl implements GlossarySearchService {
+    private static final long serialVersionUID = 7525324567708315447L;
     private static final Comparator<GlossaryResultItem> COMPARATOR =
             new GlossaryResultItemComparator();
     private static final org.slf4j.Logger log =
@@ -73,7 +73,6 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         this.urlUtil = urlUtil;
     }
 
-    @SuppressWarnings("unused")
     public GlossarySearchServiceImpl() {
     }
 
@@ -209,6 +208,8 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
      */
     private static class GlossaryResultItemComparator
             implements Comparator<GlossaryResultItem>, Serializable {
+
+        private static final long serialVersionUID = 2560160793728483264L;
 
         @Override
         public int compare(GlossaryResultItem m1, GlossaryResultItem m2) {

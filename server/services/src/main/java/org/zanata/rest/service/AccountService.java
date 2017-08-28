@@ -11,6 +11,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import javax.inject.Inject;
@@ -36,14 +38,17 @@ import org.zanata.rest.dto.Account;
 public class AccountService implements AccountResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AccountService.class);
+    private static final long serialVersionUID = 6561405744815887237L;
 
     /**
      * User name that identifies an account.
      */
     @PathParam("username")
     String username;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private HttpServletRequest request;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     private UriInfo uri;
     @Inject

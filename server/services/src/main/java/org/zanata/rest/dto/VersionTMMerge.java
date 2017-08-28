@@ -52,7 +52,6 @@ public class VersionTMMerge implements HasTMMergeCriteria {
         this.differentProjectRule = differentProjectRule;
     }
 
-    @SuppressWarnings("unused")
     public VersionTMMerge() {
     }
 

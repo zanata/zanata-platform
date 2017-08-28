@@ -22,9 +22,6 @@ package org.zanata.security.openid;
 
 import org.openid4java.message.AuthSuccess;
 import org.openid4java.message.MessageExtension;
-import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.AxMessage;
-import org.openid4java.message.ax.FetchRequest;
 
 import java.io.Serializable;
 import java.util.Collection;

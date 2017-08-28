@@ -34,7 +34,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
-import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
@@ -45,6 +44,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 @Named("securityServiceImpl")
 @RequestScoped
 public class SecurityServiceImpl implements SecurityService {
+    private static final long serialVersionUID = -7329512537723813134L;
     @Inject
     private ProjectDAO projectDAO;
 
@@ -102,26 +102,5 @@ public class SecurityServiceImpl implements SecurityService {
             EntityStatus projectStatus, EntityStatus iterStatus) {
         return !(projectStatus.equals(EntityStatus.ACTIVE) && iterStatus
                 .equals(EntityStatus.ACTIVE));
-    }
-
-    private static class SecurityCheckResultImpl implements SecurityCheckResult {
-        private final HLocale hLocale;
-        private final TranslationWorkspace workspace;
-
-        private SecurityCheckResultImpl(HLocale hLocale,
-                TranslationWorkspace workspace) {
-            this.hLocale = hLocale;
-            this.workspace = workspace;
-        }
-
-        @Override
-        public HLocale getLocale() {
-            return hLocale;
-        }
-
-        @Override
-        public TranslationWorkspace getWorkspace() {
-            return workspace;
-        }
     }
 }

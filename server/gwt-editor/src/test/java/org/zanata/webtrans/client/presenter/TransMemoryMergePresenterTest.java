@@ -47,7 +47,6 @@ import org.zanata.webtrans.client.events.TMMergeProgressEvent;
 import org.zanata.webtrans.client.events.TMMergeStartOrEndEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
-import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -64,7 +63,6 @@ import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 import com.google.common.collect.Maps;
-import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -212,7 +210,6 @@ public class TransMemoryMergePresenterTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void
             onRequestTMMergeSuccessWithStartTheAsyncMergeOnServer() {
         // Given:
@@ -350,6 +347,7 @@ public class TransMemoryMergePresenterTest {
             CallbackAware {
 
         private TransMemoryMergeRequest request;
+        @SuppressWarnings("unused")
         private TransMemoryMergeCancelRequest cancelRequest;
         private MethodCallback<?> callback;
 

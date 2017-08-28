@@ -56,6 +56,7 @@ import org.zanata.util.Zanata;
 public class IndexingServiceImpl implements IndexingService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(IndexingServiceImpl.class);
+    private static final long serialVersionUID = 8853710030204952940L;
 
     @Inject
     @Zanata

@@ -14,6 +14,7 @@ import org.zanata.model.HRawDocument;
 public class RawDocumentDAO extends AbstractDAOImpl<HRawDocument, Long> {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(RawDocumentDAO.class);
+    private static final long serialVersionUID = -6342220103109898548L;
 
     public RawDocumentDAO() {
         super(HRawDocument.class);

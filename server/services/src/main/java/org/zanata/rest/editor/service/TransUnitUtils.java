@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
@@ -29,6 +28,7 @@ import javax.annotation.Nonnull;
 public class TransUnitUtils implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TransUnitUtils.class);
+    private static final long serialVersionUID = 5128782948971430463L;
     public static final int MAX_SIZE = 200;
     public static final String ID_SEPARATOR = ",";
     @Inject

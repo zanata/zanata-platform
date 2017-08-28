@@ -15,9 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class SaveEventQueueTest {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(SaveEventQueueTest.class);
-
     private SaveEventQueue queue;
 
     @Before
@@ -30,12 +27,6 @@ public class SaveEventQueueTest {
         return new TransUnitSaveEvent(Lists.newArrayList(newContent),
                 ContentState.NeedReview, new TransUnitId(id), verNum,
                 Lists.newArrayList(oldContent));
-    }
-
-    private void printQueue() {
-        for (SaveEventQueue.EventWrapper wrapper : queue.getEventQueue()) {
-            log.info("\n{}\n", wrapper);
-        }
     }
 
     private static void assertEventEquals(TransUnitSaveEvent one,

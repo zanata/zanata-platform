@@ -60,7 +60,7 @@ public class ResponseStatusFilter implements ClientResponseFilter {
             // getLocation() can return null but it's acceptable
             throw new RedirectionException(message, statusCode,
                     responseContext.getLocation());
-        } else if (statusCode >= 399) {
+        } else if (statusCode >= 400) {
             URI uri = requestContext.getUri();
             String entity = tryGetEntity(responseContext);
             String msg =

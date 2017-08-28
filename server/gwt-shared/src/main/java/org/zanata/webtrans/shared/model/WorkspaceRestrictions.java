@@ -1,7 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;

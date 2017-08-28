@@ -34,6 +34,8 @@ import java.util.Arrays;
  */
 public class MultiTargetList extends ArrayList<Object> {
 
+    private static final long serialVersionUID = 1545376522997318794L;
+
     public static MultiTargetList fromTargets(Object ... targets) {
         MultiTargetList newInstance = new MultiTargetList();
         newInstance.addAll(Arrays.asList(targets));

@@ -29,8 +29,6 @@ public class AdministrationPage extends BasePage {
             org.slf4j.LoggerFactory.getLogger(AdministrationPage.class);
     private final By CONFIGURE_SERVER_LINK =
             By.id("Admin_Server_configuration_home");
-    private final By MANAGE_LANGUAGE_LINK =
-            By.id("Admin_Manage_languages_home");
     private final By MANAGE_USER_LINK = By.id("Admin_Manage_users_home");
     private final By MANAGE_TM_LINK = By.id("Translation_Memory_home");
     private final By MANAGE_SEARCH_LINK = By.id("Admin_Manage_search_home");

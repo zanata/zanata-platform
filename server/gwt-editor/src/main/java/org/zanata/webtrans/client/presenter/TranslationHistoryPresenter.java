@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEventHandler;

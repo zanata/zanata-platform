@@ -45,7 +45,6 @@ public class VersionDocumentsTab extends VersionBasePage {
             By.id("file-upload-component-cancel-upload");
     private By fileUploadInput = By.id("file-upload-component-file-input");
     private By fileUploadDone = By.id("file-upload-component-done-upload");
-    private By filesListPanel = By.className("js-files-panel");
     private By fileUploadPanel = By.id("file-upload-component");
 
     public VersionDocumentsTab(WebDriver driver) {

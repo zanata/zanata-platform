@@ -34,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
@@ -47,7 +46,6 @@ import com.google.common.collect.Lists;
 
 import static org.apache.oltu.oauth2.common.OAuth.HeaderType.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;

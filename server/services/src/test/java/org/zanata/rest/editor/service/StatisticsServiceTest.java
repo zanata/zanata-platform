@@ -1,6 +1,5 @@
 package org.zanata.rest.editor.service;
 
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
