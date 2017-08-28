@@ -18,7 +18,7 @@
   margin-right: var(--TM-default-margin);
 }
 
-.modal-body {
+#rejection-modal .modal-body {
   color: var(--TM-text-color);
 }
 
