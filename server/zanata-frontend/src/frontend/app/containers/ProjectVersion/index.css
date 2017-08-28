@@ -312,10 +312,6 @@ li.list-group-item.to .item .tmx-icon {
   margin-bottom: 0.75rem;
 }
 
-.btn-link {
-  line-height: inherit;
-}
-
 /* React Toggle Component CSS */
 
 .react-toggle {
