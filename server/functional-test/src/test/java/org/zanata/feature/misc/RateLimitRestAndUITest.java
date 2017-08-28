@@ -88,10 +88,10 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canCallServerConfigurationRestService() throws Exception {
-        Invocation.Builder clientRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxConcurrentPathParam);
+        Invocation.Builder clientRequest = clientRequestAsAdminWithQueryParam(
+                "rest/configurations/" + maxConcurrentPathParam, "configValue", 1);
         // can put
-        clientRequest.put(Entity.json("1"));
+        clientRequest.put(null);
         // can get single configuration
         String rateLimitConfig = clientRequestAsAdmin(
                 "rest/configurations/" + maxConcurrentPathParam)
@@ -109,6 +109,19 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         return new ResteasyClientBuilder().build()
                 .target(PropertiesHolder
                         .getProperty(Constants.zanataInstance.value()) + path)
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("X-Auth-User", "admin")
+                .header("X-Auth-Token",
+                        PropertiesHolder
+                                .getProperty(Constants.zanataApiKey.value()))
+                .header("Content-Type", "application/xml");
+    }
+
+    private static Invocation.Builder clientRequestAsAdminWithQueryParam(String path, String paramName, Object paramValue) {
+        return new ResteasyClientBuilder().build()
+                .target(PropertiesHolder
+                        .getProperty(Constants.zanataInstance.value()) + path)
+                .queryParam(paramName, paramValue)
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("X-Auth-User", "admin")
                 .header("X-Auth-Token",
@@ -161,9 +174,8 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         final String iterationSlug = "version";
         new ZanataRestCaller(TRANSLATOR, TRANSLATOR_API)
                 .createProjectAndVersion(projectSlug, iterationSlug, "gettext");
-        Invocation.Builder clientRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxConcurrentPathParam);
-        clientRequest.put(Entity.json("2"));
+        Invocation.Builder clientRequest = clientRequestAsAdminWithQueryParam(
+                "rest/configurations/" + maxConcurrentPathParam, "configValue", 2);
         // prepare to fire multiple REST requests
         final AtomicInteger atomicInteger = new AtomicInteger(1);
         // requests from translator user
@@ -206,9 +218,9 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     @Test(timeout = 5000)
     public void exceptionWillReleaseSemaphore() throws Exception {
         // Given: max active is set to 1
-        Invocation.Builder configRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxActivePathParam);
-        configRequest.put(Entity.json("1")).close();
+        Invocation.Builder configRequest = clientRequestAsAdminWithQueryParam(
+                "rest/configurations/" + maxActivePathParam, "configValue", 1);
+        configRequest.put(null).close();
         // When: multiple requests that will result in a mapped exception
         Invocation.Builder clientRequest = clientRequestAsAdmin(
                 "rest/test/data/sample/dummy?exception=org.zanata.rest.NoSuchEntityException");
@@ -224,9 +236,9 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     @Test(timeout = 5000)
     public void unmappedExceptionWillAlsoReleaseSemaphore() throws Exception {
         // Given: max active is set to 1
-        Invocation.Builder configRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxActivePathParam);
-        configRequest.put(Entity.json("1")).close();
+        Invocation.Builder configRequest = clientRequestAsAdminWithQueryParam(
+                "rest/configurations/" + maxActivePathParam, "configValue", 1);
+        configRequest.put(null).close();
         // When: multiple requests that will result in an unmapped exception
         Invocation.Builder clientRequest = clientRequestAsAdmin(
                 "rest/test/data/sample/dummy?exception=java.lang.RuntimeException");
