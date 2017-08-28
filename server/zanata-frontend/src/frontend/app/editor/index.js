@@ -15,6 +15,9 @@ import addWatchers from './watchers'
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
 
+// FIXME remove this, it is just for a test
+import { fetchSettings, saveSettings } from './actions/settings-actions'
+
 // Set the path that webpack will try to load extra chunks from
 // This is needed to load intl-polyfill
 __webpack_public_path__ = serverUrl || '/' // eslint-disable-line
@@ -61,6 +64,16 @@ function runApp () {
   //       URL. As soon as it has the /translate part of the URL it grabs the
   //       first doc and language in the list and goes ahead.
   //   Should be able to do better than that.
+
+  // TODO figure out the best place for this.
+  store.dispatch(fetchSettings())
+
+  // FIXME remove, just a test
+  store.dispatch(saveSettings({
+    'sample-setting-A': 'sample-value-A',
+    'sample-setting-B': 'sample-value-B',
+    'sample-setting-C': 'sample-value-C'
+  }))
 
   // TODO when translations are available, load user locale translations with
   //   require.ensure and pass to IntlProvider as messages={...}
