@@ -89,7 +89,7 @@ class ControlsHeader extends React.Component {
     const glossaryVisible = panels.sidebar.visible &&
       panels.sidebar.selectedTab === GLOSSARY_TAB
     return (
-      <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
+      <nav className="flex u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
         <div className="u-floatLeft"><PhraseStatusFilter /></div>
         {/* FIXME move InputEditorSearch into component. Layout component should
