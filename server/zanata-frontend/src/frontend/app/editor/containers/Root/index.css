@@ -628,9 +628,8 @@ label span.n1 {
 @media (--gtemd-viewport) {
   .Editor-translations {
     background: linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
-    linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
-    background-position: center,
-    right;
+      linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
+    background-position: center, right;
     background-size: var(--rhythm) 100%, 50% 100%;
     background-repeat: no-repeat;
   }
