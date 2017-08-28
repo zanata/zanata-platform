@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, Col} from 'react-bootstrap'
+import {Button, Panel, Row, Col, Accordion, Well} from 'react-bootstrap'
 import {
   Icon, Modal, LoaderText, SelectableDropdown} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
@@ -78,31 +78,43 @@ const MergeOptions = (
   return (
     <div>
       <p className="intro">
-        Copy existing translations from similar documents
+        Copy existing <strong>translations</strong> from similar documents
         in other projects and versions into this project version.
       </p>
+      <Accordion>
+        <Panel header={
+          <p>Matching phrases are found in the selected projects and
+            imported TM, filtered using the active
+            conditions, then the best matching translation is copied to
+            the target project-version. <Button bsStyle="link">more..</Button>
+          </p>
+        } eventKey="1">
+          <p><img src="http://i.imgur.com/ezA992G.png"
+            alt="Version TM Merge workflow" /></p>
+        </Panel>
+      </Accordion>
       <Col xs={12} className='vmerge-boxes'>
         <Panel>
           <div className='vmerge-target'>
             <div className='vmerge-title'>
-              <span className='text-info'>To</span>
-              <span>Target</span>
+              <span>To</span>
+              <span className="panel-name">Target</span>
             </div>
-            <Panel>
-              <ProjectVersionHorizontal projectSlug={projectSlug}
-                versionSlug={versionSlug} />
-              <span className='vmerge-title text-info' id="languages-dd">
-                <Icon name="language" className="s1" />
-              </span>
-              {localesSelection}
-            </Panel>
+            <ul>
+              <li className='list-group-item to' title='target project'>
+                <ProjectVersionHorizontal projectSlug={projectSlug}
+                  versionSlug={versionSlug} />
+                <span className='item' id="languages-dd">
+                  <Icon name="language" className="s1 tmx-icon" />
+                  {localesSelection}
+                </span>
+              </li>
+            </ul>
           </div>
         </Panel>
       </Col>
       <Col xs={12} className='vmerge-row'>
-        For every potential translation:
-      </Col>
-      <Col xs={12} className='vmerge-row'>
+        <p className="lead">For every potential translation:</p>
         <span className='vmerge-title text-info'>If text is less than </span>
         <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
           id='percent-dropdown-basic' className='vmerge-ddown'
@@ -110,18 +122,29 @@ const MergeOptions = (
           selectedValue={mergeOptions.matchPercentage}
           valueToDisplay={percentValueToDisplay}
           values={[80, 90, 100]} />
-        <span className='vmerge-title text-info'> similar, don't use it.</span>
+        <span className='text-new-blue'> similar, don't use it.</span>
       </Col>
-      <TMMergeProjectSources {...{projectVersions, fetchingProject,
-        mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
-        flushProjectSearch, onAllVersionCheckboxChange, onVersionCheckboxChange,
-        onDragMoveEnd, removeProjectVersion}}
-      />
-      <TMMergeProjectTMOptions {...mergeOptions}
-        onDifferentDocIdChange={onDifferentDocIdChange}
-        onDifferentContextChange={onDifferentContextChange}
-        onDifferentProjectChange={onDifferentProjectChange}
-      />
+      <Col xs={12} className='vmerge-boxes'>
+        <Panel>
+          <TMMergeProjectSources {...{projectVersions, fetchingProject,
+            mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
+            flushProjectSearch, onAllVersionCheckboxChange,
+            onVersionCheckboxChange, onDragMoveEnd, removeProjectVersion}}
+          />
+          <TMMergeProjectTMOptions {...mergeOptions}
+            onDifferentDocIdChange={onDifferentDocIdChange}
+            onDifferentContextChange={onDifferentContextChange}
+            onDifferentProjectChange={onDifferentProjectChange}
+          />
+          <Col xs={12}>
+            <Well>
+              <p>Translations which satisfy all conditions will copy as
+                <span className="text-bold text-success"> translated</span>.
+              </p>
+            </Well>
+          </Col>
+        </Panel>
+      </Col>
       <TMMergeImportedTM fromImportedTM={mergeOptions.fromImportedTM}
         onImportedTMChange={onImportedTMChange} />
     </div>
@@ -362,7 +385,7 @@ class TMMergeModal extends Component {
       differentContext: value
     }))
   }
-  onImportedTMChange = (value) => {
+  onImportedTMChange = (value) => () => {
     this.setState(prevState => ({
       fromImportedTM: value
     }))

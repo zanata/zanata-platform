@@ -25,8 +25,8 @@ ProjectVersionVertical.propTypes = projectVersionDisplayPropTypes
 export const ProjectVersionHorizontal = ({projectSlug, versionSlug}) => {
   return (
     <span>
-      <Icon name='project' className='s0 tmx-icon' />{projectSlug}
-      <Icon name='version' className='s0 tmx-icon' />{versionSlug}
+      <Icon name='project' className='s1 tmx-icon' />{projectSlug}
+      <Icon name='version' className='s1 tmx-icon' />{versionSlug}
     </span>
   )
 }

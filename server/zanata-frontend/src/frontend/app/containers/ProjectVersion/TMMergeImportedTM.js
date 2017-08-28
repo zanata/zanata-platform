@@ -1,29 +1,46 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Panel,
-  ToggleButtonGroup, ToggleButton, Col} from 'react-bootstrap'
+import {Panel, Radio, OverlayTrigger, Button,
+  Tooltip, Col} from 'react-bootstrap'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 import {CopyLabel} from './TMMergeOptionsCommon'
+import Icon from '../../components/Icon'
+import Toggle from 'react-toggle'
+
+const tooltip = (
+  <Tooltip id='copy-as-translated-TM' title='Copy as translated - TM'>
+    Less than 100% match still copies as fuzzy.
+  </Tooltip>)
 
 const TMMergeImportedTM = ({fromImportedTM, onImportedTMChange}) => {
   return (
     <Col xs={12}>
       <Panel>
-        <div className="vmerge-title">
-          From<span className="text-info"> Imported TM</span>
-        </div>
-        No project, document or context for TMX
-        <ToggleButtonGroup
-          type="radio" name="radio"
-          value={fromImportedTM}
-          onChange={onImportedTMChange}>
-          <ToggleButton value={IGNORE_CHECK}> I don't mind at all
+        <Col xs={12}>
+          <div className="vmerge-title vmerge-title-flex">
+            <span>
+              <Toggle icons={false} defaultChecked />
+            </span>
+            <span>From </span>
+            <span className="panel-name">TM Source</span>
+          </div>
+        </Col>
+        <Col xs={12} md={8}>
+          No project, document or context for TMX
+          <Radio checked={fromImportedTM === IGNORE_CHECK}
+            onChange={onImportedTMChange(IGNORE_CHECK)}> I don't mind at all
             <CopyLabel type={IGNORE_CHECK} value={fromImportedTM} />
-          </ToggleButton>
-          <ToggleButton value={FUZZY}> I will need to review it
+            <OverlayTrigger placement='right' overlay={tooltip}>
+              <Button bsStyle="link" className="tooltip-btn">
+                <Icon name="info" className="s0 info-icon" />
+              </Button>
+            </OverlayTrigger>
+          </Radio>
+          <Radio checked={fromImportedTM === FUZZY}
+            onChange={onImportedTMChange(FUZZY)}> I will need to review it
             <CopyLabel type={FUZZY} value={fromImportedTM} />
-          </ToggleButton>
-        </ToggleButtonGroup>
+          </Radio>
+        </Col>
       </Panel>
     </Col>
   )
