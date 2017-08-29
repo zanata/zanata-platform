@@ -43,7 +43,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.zanata.model.security.HCredentials;
 import org.zanata.rest.dto.Account;
 
@@ -53,7 +52,6 @@ import org.zanata.rest.dto.Account;
 @Entity
 @Cacheable
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-@Indexed
 public class HAccount extends ModelEntityBase
         implements Serializable, HasUserFriendlyToString {
 
