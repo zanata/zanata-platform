@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {InputGroup, Col, FormControl, OverlayTrigger, Radio,
-  Tooltip, Button} from 'react-bootstrap'
+import {InputGroup, Col, FormControl, OverlayTrigger, Radio, Well,
+  Tooltip, Button, Panel} from 'react-bootstrap'
 import {
   Icon, LoaderText, DraggableVersionPanels
 } from '../../components'
 import ProjectVersionPanels from './ProjectVersionPanels'
+import TMMergeProjectTMOptions from './TMMergeProjectTMOptions'
 import Toggle from 'react-toggle'
 
 import {
@@ -17,7 +18,7 @@ const ALL = 'ALL'
 const SAME = 'SAME'
 const OTHER = 'OTHER'
 
-const tooltip1 = (
+const fromProjectSourceTooltip = (
   <Tooltip id='from-project-source' title='From project source'>
     Exact text matches from projects are used before exact matches in imported
     TM. Fuzzy text matches from projects are used before fuzzy matches in
@@ -44,7 +45,8 @@ class TMMergeProjectSources extends Component {
     removeProjectVersion: PropTypes.func.isRequired
   }
   defaultState = {
-    fromProjectSelection: SAME
+    fromProjectSelection: SAME,
+    enabled: true
   }
   constructor (props) {
     super(props)
@@ -58,6 +60,12 @@ class TMMergeProjectSources extends Component {
       this.props.onFromAllProjectsChange()
     }
   }
+  toggleChange = (e) => {
+    const checked = e.target.checked
+    this.setState((prevState) => ({
+      enabled: checked
+    }))
+  }
   render () {
     const {
       projectVersions,
@@ -70,8 +78,10 @@ class TMMergeProjectSources extends Component {
       onDragMoveEnd,
       removeProjectVersion
     } = this.props
+    const disabled = !this.state.enabled
     const noResults = (projectVersions.length === 0) ? 'No results' : ''
-    const fromVersionsPanel = this.state.fromProjectSelection !== OTHER
+    const fromVersionsPanel = this.state.fromProjectSelection === ALL ||
+    disabled
       ? DO_NOT_RENDER
       : (
       <span>
@@ -111,16 +121,19 @@ class TMMergeProjectSources extends Component {
         </Col>
       </span>
       )
+    const disableDiffProjectOption = this.state.fromProjectSelection === SAME
     return (
-      <span>
+      <Panel>
         <Col xs={12}>
           <div className='vmerge-title vmerge-title-flex'>
             <span>
-              <Toggle icons={false} defaultChecked />
+              <Toggle icons={false} defaultChecked
+                onChange={this.toggleChange} />
             </span>
             <span>From </span>
             <span className="panel-name">Project Source</span>
-            <OverlayTrigger placement='right' overlay={tooltip1}>
+            <OverlayTrigger placement='right'
+              overlay={fromProjectSourceTooltip}>
               <Button bsStyle="link" className="tooltip-btn">
                 <Icon name="info" className="s0 info-icon" />
               </Button>
@@ -129,22 +142,31 @@ class TMMergeProjectSources extends Component {
         </Col>
         <Col xs={12} className='vmerge-searchbox'>
           Search TM from
-          <Radio name="fromProjectSelection" inline
+          <Radio name="fromProjectSelection" inline disabled={disabled}
             checked={this.state.fromProjectSelection === SAME}
             onChange={this.onFromProjectSelectionChange(SAME)}> this project
           </Radio>
-          <Radio name="fromProjectSelection" inline
+          <Radio name="fromProjectSelection" inline disabled={disabled}
             checked={this.state.fromProjectSelection === ALL}
             onChange={this.onFromProjectSelectionChange(ALL)}> all projects
           </Radio>
-          <Radio name="fromProjectSelection" inline
+          <Radio name="fromProjectSelection" inline disabled={disabled}
             checked={this.state.fromProjectSelection === OTHER}
-            onChange={this.onFromProjectSelectionChange(OTHER)}> some
-            projects
+            onChange={this.onFromProjectSelectionChange(OTHER)}> some projects
           </Radio>
         </Col>
         {fromVersionsPanel}
-      </span>
+        <TMMergeProjectTMOptions {...this.props} disabled={disabled}
+          disableDifferentProjectOption={disableDiffProjectOption}
+        />
+        <Col xs={12}>
+          <Well>
+            <p>Translations which satisfy all conditions will copy as
+              <span className="text-bold text-success"> translated</span>.
+            </p>
+          </Well>
+        </Col>
+      </Panel>
     )
   }
 }

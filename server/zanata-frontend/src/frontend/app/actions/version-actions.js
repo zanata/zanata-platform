@@ -58,6 +58,15 @@ export const fetchVersionLocales = (project, version) => {
 export const fetchProjectPage = (projectSearchTerm) => {
   // used for success/failure to ensure the most recent results are used
   const timestamp = Date.now()
+  // empty search term should return nothing
+  if (!projectSearchTerm) {
+    return {
+      type: PROJECT_PAGE_SUCCESS,
+      meta: {timestamp},
+      payload: []
+    }
+  }
+  // making the call to server
   const endpoint =
       `${apiUrl}/search/projects?q=${projectSearchTerm}&includeVersion=true`
   const apiTypes = [

@@ -17,9 +17,8 @@ import {
 } from '../actions/version-action-types'
 
 const defaultState = {
-  // TODO pahuang revert this
   TMMerge: {
-    show: true,
+    show: false,
     triggered: false,
     processStatus: undefined,
     queryStatus: undefined,

@@ -1,33 +1,5 @@
-module.exports = {
-  collectCoverageFrom: [
-    'app/**/*.{js,jsx}',
-    '!**/node_modules/**',
-    '!app/**/*.story.js'
-  ],
-  coverageReporters: [
-    'cobertura',
-    'html',
-    'lcov',
-    'text'
-  ],
-  moduleNameMapper: {
-    // FIXME this seems not to be applied properly
-    '\\.(css|less)$': '<rootDir>/__mocks__/cssMock.js'
-  },
-  transform: {
-    '.*': './node_modules/babel-jest'
-  },
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/__tests__/mock'
-  ],
-  unmockedModulePathPatterns: [
-    '/node_modules',
-    '/app'
-  ],
-  moduleFileExtensions: [
-    'js',
-    'jsx',
-    'json'
-  ]
-}
+// FIXME the entry under 'moduleNameMapper' seems not to be applied properly
+import config from './jest.config.json'
+// we have to use a separate json file because IntelliJ JEST plugin only accepts
+// json file as JEST config
+module.exports = config

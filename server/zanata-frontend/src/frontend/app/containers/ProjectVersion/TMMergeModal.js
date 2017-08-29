@@ -3,11 +3,10 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, Col, Accordion, Well} from 'react-bootstrap'
+import {Button, Panel, Row, Col, Accordion} from 'react-bootstrap'
 import {
   Icon, Modal, LoaderText, SelectableDropdown} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
-import TMMergeProjectTMOptions from './TMMergeProjectTMOptions'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
 import {
@@ -125,25 +124,14 @@ const MergeOptions = (
         <span className='text-new-blue'> similar, don't use it.</span>
       </Col>
       <Col xs={12} className='vmerge-boxes'>
-        <Panel>
-          <TMMergeProjectSources {...{projectVersions, fetchingProject,
-            mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
-            flushProjectSearch, onAllVersionCheckboxChange,
-            onVersionCheckboxChange, onDragMoveEnd, removeProjectVersion}}
-          />
-          <TMMergeProjectTMOptions {...mergeOptions}
-            onDifferentDocIdChange={onDifferentDocIdChange}
-            onDifferentContextChange={onDifferentContextChange}
-            onDifferentProjectChange={onDifferentProjectChange}
-          />
-          <Col xs={12}>
-            <Well>
-              <p>Translations which satisfy all conditions will copy as
-                <span className="text-bold text-success"> translated</span>.
-              </p>
-            </Well>
-          </Col>
-        </Panel>
+        <TMMergeProjectSources {...{projectVersions, fetchingProject,
+          mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
+          flushProjectSearch, onAllVersionCheckboxChange,
+          onVersionCheckboxChange, onDragMoveEnd, removeProjectVersion}}
+          {...mergeOptions}
+          {...{onDifferentDocIdChange, onDifferentContextChange,
+            onDifferentProjectChange} }
+        />
       </Col>
       <TMMergeImportedTM fromImportedTM={mergeOptions.fromImportedTM}
         onImportedTMChange={onImportedTMChange} />
