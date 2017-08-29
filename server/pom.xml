@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.1.2-4</kotlin.version>
+    <kotlin.version>1.1.4-2</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -60,10 +60,10 @@
 
     <richfaces.version>4.5.17.Final</richfaces.version>
 
-    <arquillian.version>1.1.11.Final</arquillian.version>
+    <arquillian.version>1.1.13.Final</arquillian.version>
     <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
     <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
-    <shrinkwrap.desc.version>2.0.0-alpha-10</shrinkwrap.desc.version>
+    <shrinkwrap.desc.version>2.0.0</shrinkwrap.desc.version>
     <maven.model.version>3.3.9</maven.model.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
@@ -908,6 +908,12 @@
             <artifactId>hibernate-jpa-2.0-api</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang</artifactId>
+        <version>2.0.6</version>
       </dependency>
 
       <dependency>

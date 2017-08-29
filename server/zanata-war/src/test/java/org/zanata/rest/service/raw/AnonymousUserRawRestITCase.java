@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
@@ -45,6 +46,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.dto.Project;
+import com.google.common.collect.ImmutableMap;
 
 public class AnonymousUserRawRestITCase extends RestTest {
 
@@ -215,17 +217,8 @@ public class AnonymousUserRawRestITCase extends RestTest {
     }
 
     private ResourceRequestEnvironment getUnAuthorizedEnvironment() {
-        return new ResourceRequestEnvironment() {
-            @Override
-            public Map<String, Object> getDefaultHeaders() {
-                return new HashMap<String, Object>() {
-                    private static final long serialVersionUID = 1L;
-                    {
-                        put("X-Auth-User", ADMIN);
-                        put("X-Auth-Token", invalidAPI);
-                    }
-                };
-            }
-        };
+        return () -> ImmutableMap.of(
+                "X-Auth-User", ADMIN,
+                "X-Auth-Token", invalidAPI);
     }
 }

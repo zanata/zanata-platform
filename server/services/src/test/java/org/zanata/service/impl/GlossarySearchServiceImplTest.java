@@ -12,6 +12,7 @@ import org.zanata.model.*;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
@@ -43,6 +44,8 @@ public class GlossarySearchServiceImplTest extends ZanataTest {
     private LocaleService localeServiceImpl;
     @Produces @Mock
     private UrlUtil urlUtil;
+    @Produces @ContextPath
+    String contextPath = "/mock-context";
     private HLocale targetHLocale = new HLocale(LocaleId.DE);
     private final HLocale srcLocale = new HLocale(LocaleId.EN);
 
