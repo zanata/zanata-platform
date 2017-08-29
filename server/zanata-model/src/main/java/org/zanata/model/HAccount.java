@@ -112,6 +112,7 @@ public class HAccount extends ModelEntityBase
     }
     // @UserEnabled
 
+    @Field
     public boolean isEnabled() {
         return enabled;
     }
