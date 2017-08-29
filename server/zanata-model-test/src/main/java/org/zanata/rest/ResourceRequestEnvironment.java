@@ -20,8 +20,11 @@
  */
 package org.zanata.rest;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
+import javax.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * The environment that a <code>ResourceRequest</code> should be executed with.
@@ -32,14 +35,15 @@ import java.util.Map;
  *
  * @see ResourceRequest
  */
-public class ResourceRequestEnvironment {
+@FunctionalInterface
+public interface ResourceRequestEnvironment {
+
+    ResourceRequestEnvironment EMPTY = Collections::emptyMap;
 
     /**
      * Returns the default headers to be used in a request. Override to change
      * the default headers.
      */
-    public Map<String, Object> getDefaultHeaders() {
-        Map<String, Object> map = new HashMap<>();
-        return map;
-    }
+    @Nonnull
+    Map<String, Object> getDefaultHeaders();
 }
