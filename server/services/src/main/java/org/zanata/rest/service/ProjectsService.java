@@ -37,7 +37,6 @@ import javax.ws.rs.core.Response;
 
 import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,8 +55,6 @@ import org.zanata.rest.dto.Project;
 public class ProjectsService implements ProjectsResource {
 
     private static final long serialVersionUID = 851866433537828355L;
-    @Inject
-    private Session session;
 
     /** Type of media requested. */
     @SuppressFBWarnings(value = "SE_BAD_FIELD")

@@ -29,9 +29,6 @@ import org.zanata.model.tm.TransMemoryUnit;
 @ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class SearchIndexManager implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(SearchIndexManager.class);
-
     private static final long serialVersionUID = 1L;
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD",

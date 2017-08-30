@@ -69,9 +69,6 @@ import java.util.Set;
 @Named("identityStore")
 @ApplicationScoped
 public class ZanataJpaIdentityStore implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ZanataJpaIdentityStore.class);
-
     // see also org.zanata.model.HDocument.EntityListener.AUTHENTICATED_USER
     public static final String AUTHENTICATED_USER =
             "org.jboss.seam.security.management.authenticatedUser";

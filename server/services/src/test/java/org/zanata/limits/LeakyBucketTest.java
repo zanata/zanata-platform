@@ -23,9 +23,6 @@ import static org.mockito.Mockito.when;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class LeakyBucketTest {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(LeakyBucketTest.class);
-
     private LeakyBucket bucket;
     private final int refillDuration = 20;
     private final TimeUnit refillTimeUnit = TimeUnit.MILLISECONDS;
