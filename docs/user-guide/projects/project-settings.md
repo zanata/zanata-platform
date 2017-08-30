@@ -38,6 +38,11 @@ For example, a git checkout URL is provided for the Zanata server project that c
 $ git clone git@github.com:zanata/zanata-platform.git
 ```
 
+### Private
+
+This setting determines if the project will be visible to all Zanata users or just subset of users.
+When it is activated, the project will only visible to assigned users and only translators in your [project team](/user-guide/projects/project-team/) are allowed to translate your project.
+
 ### Make this project read only
 
 This button is used to set a project to read-only, which prevents translations being entered. This may be useful in some cases, but should be used sparingly so that translators are able to work on your project.
@@ -90,12 +95,6 @@ To remove a language from the list of available locales, first move the cursor o
 </figure>
 
 ------------
-### Invite only
-
-This setting determines which users will be allowed to translate your project.
-When it is inactive, any translator can translate your project into their language,
-as long as their language is enabled in your project. When the setting is active,
-only translators in your [project team](/user-guide/projects/project-team/) are allowed to translate your project.
 
 ### Validations
 
