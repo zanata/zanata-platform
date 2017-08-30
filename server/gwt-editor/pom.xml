@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.2.4-SNAPSHOT</version>
+    <version>4.2.5-SNAPSHOT</version>
   </parent>
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
@@ -210,7 +210,7 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>gwt-test</artifactId>
-      <version>4.2.4-SNAPSHOT</version>
+      <version>4.2.5-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
