@@ -316,7 +316,7 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.error(e)
+        notify.error(e.toString())
         currentBuild.result = 'FAILURE'
         // abort the rest of the pipeline
         throw e
