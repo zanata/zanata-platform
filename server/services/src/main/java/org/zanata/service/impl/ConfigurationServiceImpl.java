@@ -31,7 +31,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.service.ConfigurationService;
-import org.zanata.service.LocaleService;
 
 @Named("configurationServiceImpl")
 @RequestScoped
@@ -40,9 +39,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private static final String FILE_NAME = "zanata.xml";
 
     private static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
-
-    @Inject
-    private LocaleService localeServiceImpl;
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;
@@ -56,9 +52,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     }
 
     @Override
-    public String getSingleLocaleConfig(String projectSlug, String versionSlug,
-            HLocale locale) {
-        return new SingleLocaleConfigBuilder(projectSlug, versionSlug, locale)
+    public String getSingleLocaleConfig(String projectSlug, String versionSlug) {
+        return new SingleLocaleConfigBuilder(projectSlug, versionSlug)
                 .getConfig();
     }
 
@@ -137,12 +132,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private class SingleLocaleConfigBuilder extends ConfigBuilder {
 
-        private final HLocale locale;
-
         public SingleLocaleConfigBuilder(String projectSlug,
-                String versionSlug, HLocale locale) {
+                String versionSlug) {
             super(projectSlug, versionSlug);
-            this.locale = locale;
         }
     }
 
@@ -151,7 +143,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         public OfflineTranslationConfigBuilder(String projectSlug,
                 String versionSlug, HLocale locale) {
-            super(projectSlug, versionSlug, locale);
+            super(projectSlug, versionSlug);
         }
 
         @Override
