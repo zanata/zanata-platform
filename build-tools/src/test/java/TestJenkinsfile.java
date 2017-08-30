@@ -34,7 +34,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                 // uncomment to use already-downloaded (perhaps modified) copy instead of git:
 //                .retriever(localSource(LIB_PATH))
                 .targetPath(LIB_PATH)
-                .defaultVersion("master")
+                .defaultVersion("ZNTA-2182-failed-email")
                 .allowOverride(true)
                 .implicit(false)
                 .build();
@@ -103,6 +103,8 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         Map<String, Closure> steps = new HashMap<>();
         steps.put("hipchatSend", Closure.IDENTITY);
         steps.put("echo", Closure.IDENTITY);
+        steps.put("emailext", Closure.IDENTITY);
+        steps.put("emailextrecipients", Closure.IDENTITY);
         steps.put("step", Closure.IDENTITY);
         // we need this for CPS mode
         MethodClosure.ALLOW_RESOLVE = true;
