@@ -79,12 +79,12 @@ public class WebJars implements Serializable {
      * name="${webjars.npm('commonmark', 'dist/commonmark.min.js'}"/>}
      * </pre>
      */
-    private String npm(String libName, String resourceName) {
-        String depName = "org.webjars.npm:" + libName + ":jar";
-        String ver = Dependencies.getVersion(depName);
-        String basePath = libName + "/" + ver + "/";
-        return basePath + resourceName;
-    }
+//    private String npm(String libName, String resourceName) {
+//        String depName = "org.webjars.npm:" + libName + ":jar";
+//        String ver = Dependencies.getVersion(depName);
+//        String basePath = libName + "/" + ver + "/";
+//        return basePath + resourceName;
+//    }
 
     public String getCommonmarkJS() {
         return bower("commonmark", "dist/commonmark.min.js");

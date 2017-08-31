@@ -34,7 +34,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -42,8 +41,7 @@ import java.net.URL;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ApplicationScoped
-public class CommonMarkRenderer implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class CommonMarkRenderer {
 
     // Share ScriptEngine and CompiledScript across threads, but not Bindings
     // See http://stackoverflow.com/a/30159424/14379
@@ -120,7 +118,7 @@ public class CommonMarkRenderer implements Serializable {
 
     private URL getScriptResource() {
         String resourceName = "/META-INF/resources/webjars/" + getOutputScriptName();
-        URL url = getClass().getResource(resourceName);
+        URL url = CommonMarkRenderer.class.getResource(resourceName);
         if (url == null) {
             throw new IllegalArgumentException(
                     "resource " + resourceName + " relative to " +
