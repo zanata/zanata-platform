@@ -22,6 +22,7 @@ package org.zanata.security;
 
 import java.io.IOException;
 import java.util.Map;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -45,6 +46,7 @@ public class ZanataCentralLoginModule implements LoginModule {
     private String kerberosDomain;
     private String openIdDomain;
     private String jaasDomain;
+    private String ssoDomain;
 
     private Subject subject;
     private CallbackHandler callbackHandler;
@@ -73,6 +75,8 @@ public class ZanataCentralLoginModule implements LoginModule {
         jaasDomain =
                 systemPropCfg.getAuthPolicyName(AuthenticationType.JAAS.name()
                         .toLowerCase());
+        ssoDomain = systemPropCfg
+                .getAuthPolicyName(AuthenticationType.SSO.name().toLowerCase());
     }
 
     @Override
@@ -108,6 +112,9 @@ public class ZanataCentralLoginModule implements LoginModule {
             break;
         case JAAS:
             delegateName = jaasDomain;
+            break;
+        case SSO:
+            delegateName = ssoDomain;
             break;
         }
 

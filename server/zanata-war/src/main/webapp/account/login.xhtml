@@ -160,6 +160,27 @@
                 </ul>
               </h:form>
             </h:panelGroup>
+            <ui:remove>
+              <!-- SSO Login -->
+            </ui:remove>
+            <h:panelGroup layout="block"
+              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
+              rendered="#{applicationConfiguration.SSO}">
+              <h:form>
+                <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
+                  <h2
+                    class="gamma heading--sub">#{msgs['jsf.login.OrLoginUsing.label']}</h2>
+                </ui:fragment>
+                <div class="g__item w--1-4 w--1-4-s">
+                  <h:outputLink value="#{request.contextPath}/account/ssologin">
+                    Single Sign On
+                  </h:outputLink>
+                  <h:commandButton
+                    action="#{loginAction.ssoLogin()}"
+                    styleClass="button--full" value="Single Sign On"/>
+                </div>
+              </h:form>
+            </h:panelGroup>
           </div>
         </div>
       </div>

@@ -20,7 +20,11 @@
  */
 package org.zanata.config;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.zanata.security.AuthenticationType.*;
+
 import java.util.Map;
+
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -28,8 +32,6 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.security.AuthenticationType;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * This servlet context listener will check the correctness of required system
@@ -78,15 +80,20 @@ public class SystemConfigStartupCheck implements ServletContextListener {
         // Validate that only internal / openid authentication is enabled at
         // once
         if (loginModuleNames.size() > 2) {
+            if (loginModuleNames.containsKey(SSO)
+                    && loginModuleNames.containsKey(INTERNAL) && loginModuleNames.containsKey(OPENID)) {
+                log.info("========== internal, openid and SSO are both enabled ==========");
+                return true;
+            }
             log.error(
                     "Multiple invalid authentication types present in Zanata configuration.");
             return false;
         } else if (loginModuleNames.size() == 2) {
             // Internal and Open id are the only allowed combined authentication
             // types
-            if (!(loginModuleNames.containsKey(AuthenticationType.OPENID) &&
+            if (!(loginModuleNames.containsKey(OPENID) &&
                     loginModuleNames
-                            .containsKey(AuthenticationType.INTERNAL))) {
+                            .containsKey(INTERNAL))) {
                 log.error(
                         "Multiple invalid authentication types present in Zanata configuration.");
                 return false;

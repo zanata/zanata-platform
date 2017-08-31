@@ -161,6 +161,12 @@ public class LoginAction implements Serializable {
         return authenticationManager.openIdLogin();
     }
 
+    public String ssoLogin() {
+        credentials.setAuthType(AuthenticationType.SSO);
+        credentials.setPassword("");
+        return authenticationManager.ssoLogin();
+    }
+
     /**
      * Another way of doing open id without knowing the provider first hand.
      * Tries to match the given open id with a known provider. If it can't find

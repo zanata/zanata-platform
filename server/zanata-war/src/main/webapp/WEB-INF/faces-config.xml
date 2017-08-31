@@ -115,6 +115,11 @@
       <to-view-id>/dashboard/home.xhtml</to-view-id>
       <redirect />
     </navigation-case>
+    <navigation-case>
+      <from-outcome>sso</from-outcome>
+      <to-view-id>/account/ssologin.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
   </navigation-rule>
 
   <navigation-rule>

@@ -383,4 +383,9 @@ public class AuthenticationManager implements Serializable {
         }
         setAuthenticateUser(username);
     }
+
+    public String ssoLogin() {
+        String loginResult = identity.login(AuthenticationType.SSO);
+        return loginResult;
+    }
 }

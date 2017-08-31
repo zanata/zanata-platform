@@ -322,9 +322,15 @@ public class ApplicationConfiguration implements Serializable {
             return AuthenticationType.JAAS;
         } else if (isKerberosAuth()) {
             return AuthenticationType.KERBEROS;
+        } else if (isSSO()) {
+            return AuthenticationType.SSO;
         }
         throw new RuntimeException(
-                "only supports internal, jaas, or kerberos authentication");
+                "only supports internal, jaas, sso or kerberos authentication");
+    }
+
+    public boolean isSSO() {
+        return loginModuleNames.containsKey(AuthenticationType.SSO);
     }
 
     public String getOpenIdProviderUrl() {
