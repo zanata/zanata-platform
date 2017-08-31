@@ -82,12 +82,15 @@ const MergeOptions = (
       </p>
       <Accordion>
         <Panel header={
-          <p>Matching phrases are found in the selected projects and
+          <span>
+            <p>Matching phrases are found in the selected projects and
             imported TM, filtered using the active
             conditions, then the best matching translation is copied to
-            the target project-version. <Button bsStyle="link">more..</Button>
-          </p>
-        } eventKey="1">
+            the target project-version.
+            </p>
+            <a className="btn-link" role="button">more..</a>
+          </span>
+          } eventKey="1">
           <p><img src="http://i.imgur.com/ezA992G.png"
             alt="Version TM Merge workflow" /></p>
         </Panel>
