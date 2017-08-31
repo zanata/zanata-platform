@@ -289,7 +289,7 @@
         </executions>
         <configuration>
           <sourceLevel>auto</sourceLevel>
-          <runTarget>zanata/webtrans/Application.html</runTarget>
+          <!--<runTarget>zanata/webtrans/Application.html</runTarget>-->
           <noServer>true</noServer>
           <!-- GWT needs more memory for more threads, or for Java 8+ -->
           <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
@@ -366,6 +366,7 @@
 
       </plugin>
 
+      <!-- TODO see if this can go away now that shared has been extracted -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>

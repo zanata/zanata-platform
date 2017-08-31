@@ -2,7 +2,8 @@
  * This works around an issue with ajax in jsf that causes the view state to be
  * lost or inaccessible.
  *
- * See http://stackoverflow.com/a/11412138/297938
+ * See http://stackoverflow.com/a/11412138/297938 and
+ * http://showcase.omnifaces.org/scripts/FixViewState
  */
 
 (function () {

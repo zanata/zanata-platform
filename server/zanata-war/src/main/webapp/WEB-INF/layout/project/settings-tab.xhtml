@@ -216,10 +216,9 @@
 </ul>
 </div>
 
-  <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptNameSanitizer}"/>
-  <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptName}"/>
-  <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
-
+  <h:outputScript target="body" library="webjars" name="${webjars.googleCajaHtmlSanitizerJS}"/>
+  <h:outputScript target="body" library="webjars" name="${webjars.commonmarkJS}"/>
+  <h:outputScript target="body" name="script/commonmark-preview.js"/>
   <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
     <ui:param name="copiedEntityType" value="#{msgs['jsf.Project']}" />
     <ui:param name="entityName" value="#{projectHome.instance.name}" />
