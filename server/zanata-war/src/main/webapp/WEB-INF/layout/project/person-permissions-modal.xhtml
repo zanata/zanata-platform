@@ -110,7 +110,11 @@
                 </z:ajax-command-button>
 
                 <!-- without this, the above button only works the second time it is clicked -->
-                <h:outputScript library="script" name="jsf-ajax-viewstate-fix.js" target="head"/>
+                <!-- TODO put this somewhere more general
+                     See https://stackoverflow.com/a/11412138/14379 and
+                     http://showcase.omnifaces.org/scripts/FixViewState
+                 -->
+                <h:outputScript library="omnifaces" name="fixviewstate.js" target="head" />
               </p>
 
               <hr/>
