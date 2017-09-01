@@ -20,10 +20,10 @@
  */
 package org.zanata.servlet
 
+import io.undertow.servlet.ServletExtension
+import io.undertow.servlet.api.DeploymentInfo
 import java.io.File
-import javax.servlet.ServletContextEvent
-import javax.servlet.ServletContextListener
-import javax.servlet.annotation.WebListener
+import javax.servlet.ServletContext
 
 /**
  * We don't want to build picketlink.xml into the war file, so we use
@@ -31,20 +31,15 @@ import javax.servlet.annotation.WebListener
  * pass in the location of picketlink.xml.
  * @author Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
  */
-@WebListener
-class PicketlinkFileHelper : ServletContextListener {
+class PicketlinkFileHelper : ServletExtension {
 
-    override fun contextInitialized(event: ServletContextEvent) {
+    override fun handleDeployment(deploymentInfo: DeploymentInfo, servletContext: ServletContext) {
         val file = System.getProperty("picketlink.file")
         if (file != null) {
             if (!File(file).exists()) {
                 throw RuntimeException("Can't read picketlink.file $file")
             }
-            event.servletContext.setInitParameter("CONFIG_FILE", file)
+            servletContext.setInitParameter("CONFIG_FILE", file)
         }
-    }
-
-    override fun contextDestroyed(event: ServletContextEvent) {
-        // nothing to do
     }
 }
