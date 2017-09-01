@@ -21,6 +21,7 @@
 package org.zanata.util;
 
 import java.io.Serializable;
+import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
@@ -46,10 +47,7 @@ public class WebJars implements Serializable {
      * </pre>
      */
     private String bower(String libName, String resourceName) {
-        String depName = "org.webjars.bower:" + libName + ":jar";
-        String ver = Dependencies.getVersion(depName);
-        String basePath = libName + "/" + ver + "/";
-        return basePath + resourceName;
+        return resolveLibResource("org.webjars.bower", libName, resourceName);
     }
 
     /**
@@ -63,13 +61,10 @@ public class WebJars implements Serializable {
      * </pre>
      */
     private String classic(String libName, String resourceName) {
-        String depName = "org.webjars:" + libName + ":jar";
-        String ver = Dependencies.getVersion(depName);
-        String basePath = libName + "/" + ver + "/";
-        return basePath + resourceName;
+        return resolveLibResource("org.webjars", libName, resourceName);
     }
 
-    /**
+    /*
      * Return the name of the implementation script for JSF h:outputScript.
      *
      * You can use it like this:
@@ -80,11 +75,17 @@ public class WebJars implements Serializable {
      * </pre>
      */
 //    private String npm(String libName, String resourceName) {
-//        String depName = "org.webjars.npm:" + libName + ":jar";
-//        String ver = Dependencies.getVersion(depName);
-//        String basePath = libName + "/" + ver + "/";
-//        return basePath + resourceName;
+//        return resolveLibResource("org.webjars.npm", libName, resourceName);
 //    }
+
+    @Nonnull
+    private String resolveLibResource(String groupId, String libName,
+            String resourceName) {
+        String depName = groupId + ":" + libName + ":jar";
+        String ver = Dependencies.getVersion(depName);
+        String basePath = libName + "/" + ver + "/";
+        return basePath + resourceName;
+    }
 
     public String getCommonmarkJS() {
         return bower("commonmark", "dist/commonmark.min.js");
