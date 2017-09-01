@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
-  Col, Radio, OverlayTrigger, Button, Tooltip
+  Col, Radio, OverlayTrigger, Tooltip
 } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import {TMMergeOptionsValuePropType,
@@ -17,23 +17,26 @@ const copyAsFuzzyTooltip = (
 const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
   const reject = hasReject && (
     <Radio checked={value === REJECT} validationState="error"
-      onChange={callback(REJECT)} disabled={disabled}> I don't want it
+      onChange={callback(REJECT)} disabled={disabled}>
+      <span>I don't want it</span><br />
       <CopyLabel type={REJECT} value={value} />
     </Radio>
   )
   return <Col xs={12} md={4}>
     If the translation is from a different <span>{name}</span>
     <Radio checked={value === IGNORE_CHECK} validationState='success'
-      onChange={callback(IGNORE_CHECK)} disabled={disabled}> I don't mind at all
+      onChange={callback(IGNORE_CHECK)} disabled={disabled}>
+      <span>I don't mind at all</span><br />
       <CopyLabel type={IGNORE_CHECK} value={value} />
     </Radio>
     <Radio checked={value === FUZZY} onChange={callback(FUZZY)}
-      validationState='warning' disabled={disabled}> I will need to review it
+      validationState='warning' disabled={disabled}>
+      <span>I will need to review it</span><br />
       <CopyLabel type={FUZZY} value={value} />
       <OverlayTrigger placement='right' overlay={copyAsFuzzyTooltip}>
-        <Button bsStyle="link" className="tooltip-btn">
+        <a className="btn-link tooltip-btn" role="button">
           <Icon name="info" className="s0 info-icon" />
-        </Button>
+        </a>
       </OverlayTrigger>
     </Radio>
     {reject}

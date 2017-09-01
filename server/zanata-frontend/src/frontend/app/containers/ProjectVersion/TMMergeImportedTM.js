@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Panel, Radio, OverlayTrigger, Button,
+import {Panel, Radio, OverlayTrigger,
   Tooltip, Col} from 'react-bootstrap'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 import {CopyLabel} from './TMMergeOptionsCommon'
@@ -49,16 +49,18 @@ class TMMergeImportedTM extends Component {
           <Col xs={12} md={8}>
             No project, document or context for TMX
             <Radio checked={fromImportedTM === IGNORE_CHECK} disabled={disabled}
-              onChange={onImportedTMChange(IGNORE_CHECK)}> I don't mind at all
+              onChange={onImportedTMChange(IGNORE_CHECK)}>
+              <span>I don't mind at all</span><br />
               <CopyLabel type={IGNORE_CHECK} value={fromImportedTM} />
               <OverlayTrigger placement='right' overlay={tooltip}>
-                <Button bsStyle="link" className="tooltip-btn">
+                <a className="btn-link tooltip-btn" role="button">
                   <Icon name="info" className="s0 info-icon" />
-                </Button>
+                </a>
               </OverlayTrigger>
             </Radio>
             <Radio checked={fromImportedTM === FUZZY} disabled={disabled}
-              onChange={onImportedTMChange(FUZZY)}> I will need to review it
+              onChange={onImportedTMChange(FUZZY)}>
+              <span>I will need to review it</span><br />
               <CopyLabel type={FUZZY} value={fromImportedTM} />
             </Radio>
           </Col>

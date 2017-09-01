@@ -39,7 +39,8 @@
 }
 
 button#percent-dropdown-basic {
-
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
 }
 
 #TM-merge-modal .label-default {
@@ -66,7 +67,7 @@ button#percent-dropdown-basic {
 
 .vmerge-title-flex {
   display: inline-flex;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
@@ -79,9 +80,10 @@ button#percent-dropdown-basic {
   height: 2rem;
 }
 
-.vmerge-boxes .info-icon {
-  vertical-align: sub;
+.vmerge-boxes .info-icon, .s0.info-icon {
+  vertical-align: middle;
   margin-left: 0.375em;
+  color: #03A6D7;
 }
 
 .vmerge-boxes li.v.list-group-item label.checkbox-inline {
@@ -110,9 +112,13 @@ button#percent-dropdown-basic {
 }
 
 .vmerge-searchbox {
-  margin-bottom: 1em;
   display: inline-flex;
 }
+
+#TM-merge-modal  .search-input {
+  margin-bottom: 1em;
+}
+
 
 .modal-body .dropdown .dropdown-menu > li > a {
   font-size: 1em;
@@ -470,4 +476,17 @@ p.vmerge-title.text-new-blue .dropdown {
 
 .react-toggle--checked .react-toggle-thumb {
   left: 27px;
+}
+
+@media (max-width: 991px) {
+  #TM-merge-modal .label {
+    margin-left: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  #TM-merge-modal .label {
+    margin-left: 0;
+    margin-top: 0.75rem;
+  }
 }

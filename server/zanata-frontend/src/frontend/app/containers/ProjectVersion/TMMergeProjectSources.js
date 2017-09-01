@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {InputGroup, Col, FormControl, OverlayTrigger, Radio, Well,
-  Tooltip, Button, Panel} from 'react-bootstrap'
+  Tooltip, Panel} from 'react-bootstrap'
 import {
   Icon, LoaderText, DraggableVersionPanels
 } from '../../components'
@@ -84,7 +84,7 @@ class TMMergeProjectSources extends Component {
     disabled
       ? DO_NOT_RENDER
       : (
-      <span>
+      <span className="search-input">
         <Col xs={12}>
           <InputGroup>
             <InputGroup.Addon>
@@ -134,9 +134,9 @@ class TMMergeProjectSources extends Component {
             <span className="panel-name">Project Source</span>
             <OverlayTrigger placement='right'
               overlay={fromProjectSourceTooltip}>
-              <Button bsStyle="link" className="tooltip-btn">
+              <a className="btn-link tooltip-btn" role="button">
                 <Icon name="info" className="s0 info-icon" />
-              </Button>
+              </a>
             </OverlayTrigger>
           </div>
         </Col>
