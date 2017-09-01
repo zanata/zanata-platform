@@ -38,6 +38,14 @@
   background-color: #62c876 !important;
 }
 
+button#percent-dropdown-basic {
+
+}
+
+#TM-merge-modal .label-default {
+  background-color: #546677;
+}
+
 .vmerge-boxes .panel-group {
   margin-bottom: 0;
 }
@@ -58,7 +66,7 @@
 
 .vmerge-title-flex {
   display: inline-flex;
-  align-items: baseline;
+  align-items: flex-end;
   margin-bottom: 1rem;
 }
 
@@ -120,7 +128,7 @@
   color: @color-muted;
 }
 
-.panel-title {
+#TM-merge-modal .panel-title {
   font-size: 1rem !important;
   margin: 0 !important;
   font-weight: 400;
@@ -152,13 +160,13 @@
   z-index: 10000 !important;
 }
 
-.new-zanata .button.btn-primary {
+#TM-merge-modal .button.btn-primary {
   color: #fff !important;
   border-color: @color-neutral !important;
   background-color: @color-light !important;
 }
 
-.new-zanata .button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+.button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
   background-color: transparent !important;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
@@ -179,7 +187,6 @@
 }
 
 .new-zanata #TM-merge-modal label {
-  color: @color-dark;
   font-weight: 500;
 }
 
@@ -209,7 +216,7 @@
   margin-right: 1rem;
 }
 
-li.v input.checkbox {
+#TM-merge-modal li.v input.checkbox {
   margin-left: 1rem;
 }
 
@@ -218,11 +225,11 @@ li.v input.checkbox {
   align-items: center;
 }
 
-#languages-dd span.s1 {
+#TM-merge-modal #languages-dd span.s1 {
   margin-right: 0.375rem;
 }
 
-.s0.icon-locked {
+#TM-merge-modal .s0.icon-locked {
   color: #FFA800 !important;
   vertical-align: middle;
   margin-left: 0.375em;
@@ -241,9 +248,9 @@ li.v input.checkbox {
   font-size: 1.1rem;
 }
 
-.radio.has-success label,
-.radio.has-warning label,
-.radio.has-error label {
+#TM-merge-modal .radio.has-success label,
+#TM-merge-modal .radio.has-warning label,
+#TM-merge-modal .radio.has-error label {
   font-weight: 500;
   font-size: 0.975rem;
 }
@@ -257,17 +264,17 @@ li.v input.checkbox {
   padding-right: 1rem;
 }
 
-p.lead {
+#TM-merge-modal p.lead {
   font-weight: 400;
   margin-bottom: 0.5rem;
 }
 
-li.v span.text-muted {
+#TM-merge-modal li.v span.text-muted {
   font-weight: 500;
   margin-left: 2.5rem;
 }
 
-li.list-group-item.to .item {
+#TM-merge-modal li.list-group-item.to .item {
   vertical-align: middle;
   margin-right: 1.5rem;
 }
@@ -276,22 +283,22 @@ li.list-group-item.to .item .tmx-icon {
   vertical-align: sub;
 }
 
-.panel-name {
+#TM-merge-modal .panel-name {
   font-size: 1.1rem;
 }
 
-.tooltip-btn {
+#TM-merge-modal .tooltip-btn {
   padding: 0;
 }
 
-.well {
+#TM-merge-modal .well {
   background-color: #fff;
   border-color: #BDD4DC;
   text-align: center;
   margin-top: 2rem;
 }
 
-.well p {
+#TM-merge-modal .well p {
   padding: 1.5rem;
   font-size: 1.1rem;
 }
@@ -309,18 +316,33 @@ li.list-group-item.to .item .tmx-icon {
   margin-top: 1rem;
 }
 
-.radio.disabled {
+#TM-merge-modal .radio.disabled {
   opacity: 0.5;
 }
 
-.radio input[type=radio] {
+#TM-merge-modal .radio input[type=radio] {
   margin-bottom: 0.75rem;
+  margin-left: 1rem;
 }
 
-.btn-link {
+#TM-merge-modal .btn-link {
   line-height: inherit;
 }
 
+#TM-merge-modal .panel-title p {
+  hyphens: initial;
+}
+
+p.vmerge-title.text-new-blue {
+  display: inline-flex;
+  align-items: center;
+}
+
+p.vmerge-title.text-new-blue .dropdown {
+  width: unset;
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
 /* React Toggle Component CSS */
 
 .react-toggle {

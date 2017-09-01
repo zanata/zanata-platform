@@ -117,14 +117,15 @@ const MergeOptions = (
       </Col>
       <Col xs={12} className='vmerge-row'>
         <p className="lead">For every potential translation:</p>
-        <span className='vmerge-title text-info'>If text is less than </span>
-        <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
-          id='percent-dropdown-basic' className='vmerge-ddown'
-          onSelectDropdownItem={onPercentSelection}
-          selectedValue={mergeOptions.matchPercentage}
-          valueToDisplay={percentValueToDisplay}
-          values={[80, 90, 100]} />
-        <span className='text-new-blue'> similar, don't use it.</span>
+        <p className="vmerge-title text-new-blue">
+          If text is less than
+          <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
+            id='percent-dropdown-basic' className='vmerge-ddown'
+            onSelectDropdownItem={onPercentSelection}
+            selectedValue={mergeOptions.matchPercentage}
+            valueToDisplay={percentValueToDisplay}
+            values={[80, 90, 100]} /> similar, don't use it.
+        </p>
       </Col>
       <Col xs={12} className='vmerge-boxes'>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
