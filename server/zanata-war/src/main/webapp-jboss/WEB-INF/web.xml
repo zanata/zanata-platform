@@ -68,6 +68,11 @@
     <param-value>false</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>CONFIG_FILE</param-name>
+    <param-value>/opt/jboss/wildfly/picketlink.xml</param-value>
+  </context-param>
+
   <!-- Suppress spurious stylesheets -->
 
   <context-param>

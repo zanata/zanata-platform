@@ -4,17 +4,17 @@
   /system-property="picketlink.file":add(value="/opt/jboss/wildfly/picketlink.xml")
   reload
 -->
-  <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" BindingType="POST" SupportsSignatures="true">
+  <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" BindingType="POST" SupportsSignatures="false">
     <IdentityURL>${idp.url::http://localhost:8080/identity/}</IdentityURL>
     <ServiceURL>${service.url::http://pahuang.usersys.redhat.com:8080/ssologin}</ServiceURL>
-    <KeyProvider ClassName="org.picketlink.identity.federation.core.impl.KeyStoreKeyManager">
-      <Auth Key="KeyStoreURL" Value="/my_keystore.jks" />
-      <Auth Key="KeyStorePass" Value="store123" />
-      <Auth Key="SigningKeyPass" Value="test123" />
-      <Auth Key="SigningKeyAlias" Value="servercert" />
-      <ValidatingAlias Key="idp.example.com" Value="servercert" />
-      <ValidatingAlias Key="localhost" Value="servercert" />
-    </KeyProvider>
+    <!--<KeyProvider ClassName="org.picketlink.identity.federation.core.impl.KeyStoreKeyManager">-->
+      <!--<Auth Key="KeyStoreURL" Value="/my_keystore.jks" />-->
+      <!--<Auth Key="KeyStorePass" Value="store123" />-->
+      <!--<Auth Key="SigningKeyPass" Value="test123" />-->
+      <!--<Auth Key="SigningKeyAlias" Value="servercert" />-->
+      <!--<ValidatingAlias Key="idp.example.com" Value="servercert" />-->
+      <!--<ValidatingAlias Key="localhost" Value="servercert" />-->
+    <!--</KeyProvider>-->
   </PicketLinkSP>
 
   <Handlers xmlns="urn:picketlink:identity-federation:handler:config:2.1">
