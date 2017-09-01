@@ -122,7 +122,9 @@ public class WebJars implements Serializable {
         return classic("crossroads.js", "crossroads.min.js");
     }
 
-    public String getJQueryTyping() {
+    // NB We have to call it getjQueryTyping if we want to use it in EL as webjars.jQueryTyping (javabean rules)
+    // Ref: http://futuretask.blogspot.com/2005/01/java-tip-6-dont-capitalize-first-two.html
+    public String getjQueryTyping() {
         return bower("github-com-ccakes-jquery-typing", "plugin/jquery.typing-0.3.3.min.js");
     }
 
