@@ -86,8 +86,8 @@ const MergeOptions = (
             <p>Matching phrases are found in the selected projects and
             imported TM, filtered using the active
             conditions, then the best matching translation is copied to
-            the target project-version.
-              <a className="btn-link" role="button">more..</a>
+            the target project-version.&nbsp;
+              <a className="btn-link" role="button">[more..]</a>
             </p>
           </span>
           } eventKey="1">

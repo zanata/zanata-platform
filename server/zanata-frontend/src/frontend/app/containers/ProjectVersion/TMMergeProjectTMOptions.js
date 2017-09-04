@@ -23,7 +23,8 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
     </Radio>
   )
   return <Col xs={12} md={4}>
-    If the translation is from a different <span>{name}</span>
+    If the translation is from a different&nbsp;
+    <span className="import-type">{name}</span>
     <Radio checked={value === IGNORE_CHECK} validationState='success'
       onChange={callback(IGNORE_CHECK)} disabled={disabled}>
       <span>I don't mind at all</span><br />
@@ -76,8 +77,10 @@ class TMMergeProjectTMOptions extends Component {
     } = this.props
     const diffProjectOption = disableDifferentProjectOption
       ? (<Col xs={12} md={4}>
-        If the translation is from a different <span>project</span>
-        <Radio checked validationState="error" disabled> I don't want it
+        If the translation is from a different&nbsp;
+        <span className="import-type">project</span>
+        <Radio checked validationState="error" disabled>
+          <span>I don't want it</span><br />
           <CopyLabel type={REJECT} value={REJECT} />
         </Radio>
       </Col>)
