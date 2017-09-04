@@ -31,7 +31,6 @@ import javax.enterprise.context.RequestScoped;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
 
 @RequestScoped
 public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
@@ -120,7 +119,9 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
             query.setMaxResults(maxResult);
         }
         query.setComment("PersonDAO.findAllEnabledContainingName");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HPerson> results = query.list();
+        return results;
     }
 
     public int getTotalTranslator() {

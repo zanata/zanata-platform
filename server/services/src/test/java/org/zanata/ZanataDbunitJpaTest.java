@@ -5,8 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -223,6 +226,9 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
      */
     protected IDatabaseConnection getConnection() {
         try {
+            // TODO DBUnit recommends reusing the DatabaseConnection for all tests in a run
+            // because it's expensive to collect the table metadata each time
+            // http://dbunit.sourceforge.net/faq.html#performance
             DatabaseConnection dbConn = new DatabaseConnection(
                     ((SessionImpl) getSession()).connection());
             editConfig(dbConn.getConfig());
@@ -283,7 +289,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
      *            A DBUnit <tt>DatabaseConfig</tt> object for setting properties
      *            and features
      */
-    protected void editConfig(DatabaseConfig config) {
+    private static void editConfig(DatabaseConfig config) {
         config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
                 new H2DataTypeFactory());
     }

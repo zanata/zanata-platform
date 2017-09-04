@@ -38,7 +38,6 @@ import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.richfaces.exception.FileUploadException;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -439,9 +438,9 @@ public class ResourceUtils implements Serializable {
         List<String> flagList = from.getFlags();
         // rhbz1012502 - should not store fuzzy tag in source document
         if (flagList.contains("fuzzy")) {
-            throw new FileUploadException(String.format(
+            throw new WebApplicationException(String.format(
                     "Please remove fuzzy flags from document. First fuzzy flag was found on text flow %s with content %s",
-                    textFlow.getId(), textFlow.getContents()));
+                    textFlow.getId(), textFlow.getContents()), 422);
         }
         String flags = StringUtil.concat(flagList, ',');
         if (flagList.isEmpty()) {
