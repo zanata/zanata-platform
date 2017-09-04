@@ -2624,9 +2624,9 @@ span.langcode {
 }
 
 .btn-primary {
-  color: #fff;
-  border-color: @color-neutral;
-  background-color: @color-light;
+  color: #fff !important;
+  border-color: @color-neutral !important;
+  background-color: @color-light !important;
 }
 
 .btn-primary .fa, .btn-primary:focus .fa {
@@ -2635,7 +2635,7 @@ span.langcode {
 
 .btn-primary.focus, .btn-primary:focus {
   color: #fff;
-   border-color: @color-neutral;
+  border-color: @color-neutral;
   background-color: @color-dark;
 }
 
@@ -2680,7 +2680,13 @@ button.btn-link {
   color: @color-light;
 }
 
-button.btn-link.link-danger {
+button.btn-link.link-danger,
+button.btn-link.link-danger.focus,
+button.btn-link.link-danger:focus,
+button.btn-link.link-danger:hover, {
+  border: none;
+  box-shadow: none;
+  background: none;
   color:@color-danger;
 }
 
