@@ -15,6 +15,13 @@
   trusted, every entry in the <Trust> element. SPs need to have a
   <ValidatingAlias> for each server/domain containing an IDP.
 -->
+  <!--
+  may be able to reference
+  https://github.com/jboss-developer/jboss-picketlink-quickstarts/blob/33114a8b8e3d1e425b4e88b6213547a8bd76d385/picketlink-federation-saml-sp-with-metadata/src/main/webapp/WEB-INF/picketlink.xml
+  and https://github.com/jboss-developer/jboss-picketlink-quickstarts/blob/33114a8b8e3d1e425b4e88b6213547a8bd76d385/picketlink-federation-saml-sp-with-metadata/src/main/resources/idp-metadata.xml
+
+  and just copy over Red Hat's idp-metadata.xml
+   -->
   <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" BindingType="POST" SupportsSignatures="true">
     <IdentityURL>${idp.url::http://localhost/identity/}</IdentityURL>
     <ServiceURL>${service.url::http://pahuang.usersys.redhat.com/account/ssologin}</ServiceURL>
