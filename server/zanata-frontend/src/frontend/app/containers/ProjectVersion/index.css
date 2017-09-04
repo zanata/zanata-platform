@@ -79,7 +79,7 @@ button#percent-dropdown-basic {
   display: inline-flex;
 }
 
-#TM-merge-modal  .search-input .input-group {
+#TM-merge-modal .search-input .input-group {
   margin-bottom: 1.5em;
 }
 
@@ -118,7 +118,6 @@ button#percent-dropdown-basic {
 .vmerge-adjsub {
   font-size: 0.85em;
 }
-
 
 .modal-body .dropdown .dropdown-menu > li > a {
   font-size: 1em;
