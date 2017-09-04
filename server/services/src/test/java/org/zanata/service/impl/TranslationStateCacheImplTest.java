@@ -31,7 +31,6 @@ import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.test.CdiUnitRunner;
@@ -67,7 +66,6 @@ public class TranslationStateCacheImplTest {
 
     @Produces @Mock Session session;
     @Produces @Mock TextFlowTargetDAO textFlowTargetDAO;
-    @Produces @Mock TextFlowDAO textFlowDAO;
     @Produces @Mock LocaleDAO localeDAO;
     @Produces @Mock DocumentDAO documentDAO;
 

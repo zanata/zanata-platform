@@ -16,7 +16,6 @@ import org.zanata.ServerConstants;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
-import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HProject;
@@ -29,9 +28,6 @@ import org.zanata.model.tm.TransMemoryUnit;
 @ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class SearchIndexManager implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(SearchIndexManager.class);
-
     private static final long serialVersionUID = 1L;
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD",
@@ -51,7 +47,6 @@ public class SearchIndexManager implements Serializable {
         // TODO get the list of classes from Hibernate Search
         // ie
         // FullTextSession.getSearchFactory().getStatistics().getIndexedClassNames()
-        indexables.add(HAccount.class);
         indexables.add(HGlossaryEntry.class);
         indexables.add(HGlossaryTerm.class);
         indexables.add(HProject.class);

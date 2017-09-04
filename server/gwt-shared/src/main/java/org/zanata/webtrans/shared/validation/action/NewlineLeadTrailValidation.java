@@ -42,7 +42,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction {
 
     private final static String leadNewlineRegex = "^\n";
     private final static String endNewlineRegex = "\n$";
-    private final static String newlineRegex = "\n";
 
     private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
     private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);

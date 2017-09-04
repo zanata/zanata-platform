@@ -34,7 +34,6 @@ import org.zanata.rest.dto.Link;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import javax.enterprise.event.Event;
 
 /**
  * This API is experimental only and subject to change or even removal.
@@ -51,11 +50,6 @@ import javax.enterprise.event.Event;
 @CheckRole("admin")
 @Beta
 public class ServerConfigurationService {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ServerConfigurationService.class);
-
-    private static List<String> availableKeys;
-
     /**
      * Type of media requested.
      */
@@ -65,9 +59,6 @@ public class ServerConfigurationService {
     private MediaType accept;
     @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
-    @Inject
-    private Event<ConfigurationChanged> configurationChangedEvent;
-
     /**
      * Retrieves all existing server configurations.
      *

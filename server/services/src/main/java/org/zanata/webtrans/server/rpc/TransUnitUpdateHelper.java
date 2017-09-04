@@ -102,7 +102,9 @@ public class TransUnitUpdateHelper {
     }
 
     private static class CacheKey {
+        @SuppressWarnings("unused")
         private final Long textFlowTargetId;
+        @SuppressWarnings("unused")
         private final Integer versionNum;
 
         @java.beans.ConstructorProperties({ "textFlowTargetId", "versionNum" })
