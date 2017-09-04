@@ -9,7 +9,7 @@
     description="An example Project"
     homeContent=""
     name="Sample Project"
-    allowGlobalTranslation="TRUE"
+    privateProject="FALSE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="A"

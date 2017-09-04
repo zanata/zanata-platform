@@ -5,14 +5,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-  <changeSet author="aeng@redhat.com" id="2">
-    <comment>Rename allowGlobalTranslation to private</comment>
-    <renameColumn tableName="HProject" oldColumnName="allowGlobalTranslation" newColumnName="private" />
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Rename allowGlobalTranslation to privateProject</comment>
+    <renameColumn tableName="HProject" oldColumnName="allowGlobalTranslation" newColumnName="privateProject" />
   </changeSet>
 
-  <changeSet author="aeng@redhat.com" id="3">
-    <comment>Migrate allowGlobalTranslation data to private</comment>
-    <sql>UPDATE HProject SET private= !private</sql>
+  <changeSet  id="3" author="aeng@redhat.com">
+    <comment>Migrate allowGlobalTranslation data to privateProject</comment>
+    <sql>UPDATE HProject SET privateProject= !privateProject</sql>
+  </changeSet>
+
+  <changeSet id="4" author="aeng@redhat.com">
+    <comment>Update default value for HProject.privateProject column</comment>
+    <dropDefaultValue columnName="privateProject" tableName="HProject"/>
+    <addDefaultValue columnName="privateProject" defaultValueBoolean="false"
+        tableName="HProject"/>
   </changeSet>
 
 </databaseChangeLog>

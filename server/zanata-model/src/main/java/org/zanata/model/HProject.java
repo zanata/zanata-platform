@@ -345,7 +345,6 @@ public class HProject extends SlugEntityBase
         return this.restrictedByRoles;
     }
 
-    @Column(name = "private")
     public boolean isPrivateProject() {
         return this.privateProject;
     }
