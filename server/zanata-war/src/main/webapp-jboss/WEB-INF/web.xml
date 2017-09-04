@@ -69,8 +69,8 @@
   </context-param>
 
   <context-param>
-    <param-name>CONFIG_FILE</param-name>
-    <param-value>/opt/jboss/wildfly/picketlink.xml</param-value>
+    <param-name>org.picketlink.federation.saml.CONFIG_PROVIDER</param-name>
+    <param-value>org.zanata.security.ExternalSAMLConfigurationProvider</param-value>
   </context-param>
 
   <!-- Suppress spurious stylesheets -->

@@ -1,19 +1,30 @@
 <PicketLink xmlns="urn:picketlink:identity-federation:config:2.1">
-<!--
-  # use this in jboss-cli to add a system property and then restart the server
-  /system-property="picketlink.file":add(value="/opt/jboss/wildfly/picketlink.xml")
-  reload
+  <!--
+    # used in jboss-cli to add a system property
+    /system-property="picketlink.file":add(value="/opt/jboss/wildfly/standalone/deployments/picketlink.xml")
+
+    In local docker dev environment, this means, you can copy this file to
+    ~/docker-volumes/zanata-deployments/picketlink.xml
+    Also copy your keystore file as sso_keystore.jks to that folder.
+  -->
+  <!--
+  in order to properly encrypt and decrypt assertions, the IDP needs to generate
+  signatures and the SP needs to verify those signatures as well as identify
+  where they came from. This is accomplished via the <ValidatingAlias> element.
+  IDPs need to have a <ValidatingAlias> for each trusted server/domain that is
+  trusted, every entry in the <Trust> element. SPs need to have a
+  <ValidatingAlias> for each server/domain containing an IDP.
 -->
   <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" BindingType="POST" SupportsSignatures="true">
-    <IdentityURL>${idp.url::http://localhost:8080/identity/}</IdentityURL>
-    <ServiceURL>${service.url::http://pahuang.usersys.redhat.com:8080/ssologin}</ServiceURL>
+    <IdentityURL>${idp.url::http://localhost/identity/}</IdentityURL>
+    <ServiceURL>${service.url::http://pahuang.usersys.redhat.com/account/ssologin}</ServiceURL>
     <KeyProvider ClassName="org.picketlink.identity.federation.core.impl.KeyStoreKeyManager">
-      <Auth Key="KeyStoreURL" Value="/my_keystore.jks" />
+      <Auth Key="KeyStoreURL" Value="/opt/jboss/wildfly/standalone/deployments/sso_keystore.jks" />
       <Auth Key="KeyStorePass" Value="store123" />
       <Auth Key="SigningKeyPass" Value="test123" />
-      <Auth Key="SigningKeyAlias" Value="servercert" />
-      <ValidatingAlias Key="idp.example.com" Value="servercert" />
-      <ValidatingAlias Key="localhost" Value="servercert" />
+      <Auth Key="SigningKeyAlias" Value="zanataserv" />
+      <ValidatingAlias Key="localhost" Value="zanataserv" />
+      <ValidatingAlias Key="pahuang.usersys.redhat.com" Value="zanataserv" />
     </KeyProvider>
   </PicketLinkSP>
 

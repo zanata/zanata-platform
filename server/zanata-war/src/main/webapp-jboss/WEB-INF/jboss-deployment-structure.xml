@@ -36,6 +36,8 @@
       <!-- Bring in org.picketlink.identity.federation.bindings.wildfly.sp.SPServletExtension
            for SAML 2.0 (org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule) -->
       <module name="org.picketlink" services="import"/>
+      <!-- We need this for some of the exceptions. See org.zanata.security.ExternalSAMLConfigurationProvider-->
+      <module name="org.picketlink.common" />
 
       <!-- other modules -->
       <module name="org.infinispan.commons" optional="true" />

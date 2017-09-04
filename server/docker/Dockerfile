@@ -12,8 +12,6 @@ RUN yum -y install mysql-connector-java && yum clean all && \
 
 COPY conf/zanata-config.cli /tmp/
 
-COPY conf/sample-picketlink.xml /opt/jboss/wildfly/picketlink.xml
-
 USER jboss
 
 RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/zanata-config.cli
