@@ -109,11 +109,13 @@ public class CopyTransServiceUnitTest {
         List<HLocale> localeList = Arrays.asList(de);
         when(localeServiceImpl.getSupportedLanguageByProjectIteration(projSlug, iterSlug)).thenReturn(localeList);
 
-        HCopyTransOptions optionsIn;
+        HCopyTransOptions optionsIn, optionsOut;
         if (useProjectOpts) {
             optionsIn = null;
+            optionsOut = projOptions;
         } else {
             optionsIn = new HCopyTransOptions(DOWNGRADE_TO_FUZZY, DOWNGRADE_TO_FUZZY, DOWNGRADE_TO_FUZZY);
+            optionsOut = optionsIn;
         }
 
         ctService.copyTransForDocument(doc, optionsIn, null);

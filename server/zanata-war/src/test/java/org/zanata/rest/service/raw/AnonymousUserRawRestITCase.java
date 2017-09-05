@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
-import javax.annotation.Nonnull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
@@ -46,7 +45,6 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.dto.Project;
-import com.google.common.collect.ImmutableMap;
 
 public class AnonymousUserRawRestITCase extends RestTest {
 
@@ -117,12 +115,15 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("configValue", false).request();
+                return webTarget.request();
             }
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Response response = builder.buildPut(null).invoke();
+                Entity<String> entity = Entity
+                        .entity("false",
+                                MediaType.APPLICATION_JSON_TYPE);
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
@@ -156,12 +157,15 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("configValue", true).request();
+                return webTarget.request();
             }
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Response response = builder.buildPut(null).invoke();
+                Entity<String> entity = Entity
+                        .entity("true",
+                                MediaType.APPLICATION_JSON_TYPE);
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
@@ -217,8 +221,17 @@ public class AnonymousUserRawRestITCase extends RestTest {
     }
 
     private ResourceRequestEnvironment getUnAuthorizedEnvironment() {
-        return () -> ImmutableMap.of(
-                "X-Auth-User", ADMIN,
-                "X-Auth-Token", invalidAPI);
+        return new ResourceRequestEnvironment() {
+            @Override
+            public Map<String, Object> getDefaultHeaders() {
+                return new HashMap<String, Object>() {
+                    private static final long serialVersionUID = 1L;
+                    {
+                        put("X-Auth-User", ADMIN);
+                        put("X-Auth-Token", invalidAPI);
+                    }
+                };
+            }
+        };
     }
 }

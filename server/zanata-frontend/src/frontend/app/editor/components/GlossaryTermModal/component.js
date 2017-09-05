@@ -72,7 +72,7 @@ class GlossaryTermModal extends React.Component {
       <Modal show={show}
         onHide={close}
         key="glosssary-term-modal"
-        id="GlossaryTermModal">
+        className="suggestions-modal">
         <Modal.Header>
           <Modal.Title><small><span className="pull-left">
           Glossary details</span></small></Modal.Title>

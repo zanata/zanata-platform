@@ -57,6 +57,9 @@ import com.google.common.collect.Lists;
 @Model
 @Transactional
 public class TranslationMemoryAction implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryAction.class);
+
     private static final long serialVersionUID = -6791743907133760028L;
     private static final String KEY_NAME = "ClearTMXKey";
     @Inject

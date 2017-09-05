@@ -75,7 +75,8 @@ public class HGlossaryEntryTest {
         entry.getGlossaryTerms().clear();
 
         // Glossary Term 1 - EN_US
-        setupTerm(1L, "TERM 1", LocaleId.EN_US, 1L);
+        HLocale term1Locale =
+                setupTerm(1L, "TERM 1", LocaleId.EN_US, 1L);
 
         // Glossary Term 2 - DE
         HLocale term2Locale =
@@ -93,10 +94,12 @@ public class HGlossaryEntryTest {
         entry.getGlossaryTerms().clear();
 
         // Glossary Term 1 - EN_US
-        setupTerm(1L, "TERM 1", LocaleId.EN_US, 1L);
+        HLocale term1Locale =
+                setupTerm(1L, "TERM 1", LocaleId.EN_US, 1L);
 
         // Glossary Term 2 - DE
-        setupTerm(2L, "TERM 2", LocaleId.DE, 2L);
+        HLocale term2Locale =
+                setupTerm(2L, "TERM 2", LocaleId.DE, 2L);
 
         // Glossary Term 3 - ES
         HLocale term3Locale =

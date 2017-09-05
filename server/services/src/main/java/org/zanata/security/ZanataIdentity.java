@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.auth.Subject;
@@ -44,7 +45,6 @@ import javax.servlet.http.HttpSession;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.apache.deltaspike.core.api.literal.DeltaSpikeLiteral;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,7 +233,10 @@ public class ZanataIdentity implements Identity, Serializable {
             unAuthenticate();
             HttpSession session =
                     BeanProvider.getContextualReference(HttpSession.class,
-                            DeltaSpikeLiteral.INSTANCE);
+                            new AnnotationLiteral<DeltaSpike>() {
+                                private static final long serialVersionUID =
+                                        -5331054339416607095L;
+                            });
             session.invalidate();
             urlUtil.redirectToInternal(urlUtil.home());
         }

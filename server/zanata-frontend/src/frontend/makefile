@@ -6,9 +6,6 @@
 
 # Ensure all dependencies are present at appropriate versions.
 install:
-	@echo `tput setaf 6`If you see \"`tput setaf 1`error`tput sgr0` Your lockfile needs to be updated...`tput setaf 6`\",
-	@echo you have added dependencies to package.json without yarn.
-	@echo Add them to yarn.lock using: `tput sgr0`yarn add [dependency]
 	yarn --ignore-scripts
 
 # Build the css and javascript bundles using webpack.

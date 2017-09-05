@@ -47,6 +47,9 @@ import javax.annotation.Nonnull;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class XliffAdapter implements FileFormatAdapter {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(XliffAdapter.class);
+
     @Override
     public Resource parseDocumentFile(@Nonnull URI fileUri,
                                       @Nonnull LocaleId sourceLocale,

@@ -20,6 +20,9 @@ import org.hibernate.search.bridge.LuceneOptions;
  * @author David Mason, damason@redhat.com
  */
 public class StringListBridge extends AbstractFieldBridge {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(StringListBridge.class);
+
     @Override
     public void set(String name, Object value, Document luceneDocument,
             LuceneOptions luceneOptions) {

@@ -46,7 +46,10 @@ public class SeamTextLexer extends antlr.CharScanner implements
     }
 
     public Token nextToken() throws TokenStreamException {
+        Token theRetToken = null;
         tryAgain: for (;;) {
+            Token _token = null;
+            int _ttype = Token.INVALID_TYPE;
             resetText();
             try { // for char stream error handling
                 try { // for lexical error handling
@@ -114,6 +117,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
                     case 'y':
                     case 'z': {
                         mALPHANUMERICWORD(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '!':
@@ -131,97 +135,120 @@ public class SeamTextLexer extends antlr.CharScanner implements
                     case '{':
                     case '}': {
                         mPUNCTUATION(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '=': {
                         mEQ(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '+': {
                         mPLUS(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '_': {
                         mUNDERSCORE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '*': {
                         mSTAR(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '/': {
                         mSLASH(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '\\': {
                         mESCAPE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '|': {
                         mBAR(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '`': {
                         mBACKTICK(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '~': {
                         mTWIDDLE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '"': {
                         mDOUBLEQUOTE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '\'': {
                         mSINGLEQUOTE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '[': {
                         mOPEN(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case ']': {
                         mCLOSE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '#': {
                         mHASH(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '^': {
                         mHAT(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '>': {
                         mGT(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '<': {
                         mLT(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '&': {
                         mAMPERSAND(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '\t':
                     case ' ': {
                         mSPACE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '\n':
                     case '\r': {
                         mNEWLINE(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     case '\uffff': {
                         mEOF(true);
+                        theRetToken = _returnToken;
                         break;
                     }
                     default:
                         if ((_tokenSet_0.member(LA(1)))) {
                             mUNICODEWORD(true);
+                            theRetToken = _returnToken;
                         } else {
                             if (LA(1) == EOF_CHAR) {
                                 uponEOF();
@@ -235,7 +262,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
                     }
                     if (_returnToken == null)
                         continue tryAgain; // found SKIP token
-                    int _ttype = _returnToken.getType();
+                    _ttype = _returnToken.getType();
                     _ttype = testLiteralsTable(_ttype);
                     _returnToken.setType(_ttype);
                     return _returnToken;
@@ -260,6 +287,8 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = ALPHANUMERICWORD;
+        int _saveIndex;
+
         {
             int _cnt110 = 0;
             _loop110: do {
@@ -362,6 +391,8 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = UNICODEWORD;
+        int _saveIndex;
+
         {
             int _cnt113 = 0;
             _loop113: do {
@@ -402,6 +433,8 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = PUNCTUATION;
+        int _saveIndex;
+
         switch (LA(1)) {
         case '-': {
             match('-');
@@ -478,6 +511,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = EQ;
+        int _saveIndex;
 
         match('=');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -494,6 +528,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = PLUS;
+        int _saveIndex;
 
         match('+');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -511,6 +546,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = UNDERSCORE;
+        int _saveIndex;
 
         match('_');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -527,6 +563,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = STAR;
+        int _saveIndex;
 
         match('*');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -543,6 +580,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = SLASH;
+        int _saveIndex;
 
         match('/');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -560,6 +598,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = ESCAPE;
+        int _saveIndex;
 
         match('\\');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -576,6 +615,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = BAR;
+        int _saveIndex;
 
         match('|');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -593,6 +633,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = BACKTICK;
+        int _saveIndex;
 
         match('`');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -610,6 +651,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = TWIDDLE;
+        int _saveIndex;
 
         match('~');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -627,6 +669,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = DOUBLEQUOTE;
+        int _saveIndex;
 
         match('"');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -644,6 +687,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = SINGLEQUOTE;
+        int _saveIndex;
 
         match('\'');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -660,6 +704,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = OPEN;
+        int _saveIndex;
 
         match('[');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -676,6 +721,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = CLOSE;
+        int _saveIndex;
 
         match(']');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -692,6 +738,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = HASH;
+        int _saveIndex;
 
         match('#');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -708,6 +755,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = HAT;
+        int _saveIndex;
 
         match('^');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -724,6 +772,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = GT;
+        int _saveIndex;
 
         match('>');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -740,6 +789,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = LT;
+        int _saveIndex;
 
         match('<');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -757,6 +807,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = AMPERSAND;
+        int _saveIndex;
 
         match('&');
         if (_createToken && _token == null && _ttype != Token.SKIP) {
@@ -773,6 +824,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = SPACE;
+        int _saveIndex;
 
         {
             int _cnt135 = 0;
@@ -813,6 +865,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = NEWLINE;
+        int _saveIndex;
 
         if ((LA(1) == '\r') && (LA(2) == '\n')) {
             match("\r\n");
@@ -839,6 +892,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         Token _token = null;
         int _begin = text.length();
         _ttype = Token.EOF_TYPE;
+        int _saveIndex;
 
         match('\uFFFF');
         if (_createToken && _token == null && _ttype != Token.SKIP) {

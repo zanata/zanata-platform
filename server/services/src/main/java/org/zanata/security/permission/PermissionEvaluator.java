@@ -74,6 +74,7 @@ public class PermissionEvaluator {
      * @return True, if the permission has been granted. False otherwise.
      */
     public boolean checkPermission(String action, Object... targets) {
+        boolean permissionGranted = false;
         // Get granters for all actions (those with no declared action)
         Collection<PermissionGranter> allActionGranters =
                 permissionGrantMethods.get(ALL_ACTION_GRANTER);

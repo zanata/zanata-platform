@@ -16,6 +16,7 @@ import org.mockito.ArgumentMatchers.same
 import org.mockito.Mockito
 import org.mockito.stubbing.Answer
 import org.zanata.ZanataTest
+import org.zanata.dao.AccountDAO
 import org.zanata.limits.RateLimitingProcessor
 import org.zanata.model.HAccount
 import org.zanata.test.CdiUnitRunner
@@ -44,13 +45,14 @@ class RestLimitingFilterTest : ZanataTest() {
     private val response = mock<HttpServletResponse>(RETURNS_DEEP_STUBS)
     private final val processor = mock<RateLimitingProcessor>()
     private val filterChain = mock<FilterChain>()
+    private final val accountDAO = mock<AccountDAO>()
     private val taskCaptor = captor<RunnableEx>()
 
     private final var authenticatedUser: HAccount? = null
     // Using @Inject would be better, but some tests currently require
     // authenticatedUser to be null, which is difficult without spy()
     private val filter: RestLimitingFilter =
-            spy(RestLimitingFilter(processor, authenticatedUser))
+            spy(RestLimitingFilter(processor, accountDAO, authenticatedUser))
 
     @Before
     fun beforeMethod() {

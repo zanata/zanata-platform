@@ -24,6 +24,9 @@ import com.google.common.base.Strings;
 @javax.enterprise.context.RequestScoped
 @Named("identityManager")
 public class IdentityManager implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(IdentityManager.class);
+
     public static final String USER_PERMISSION_NAME = "seam.user";
     public static final String ROLE_PERMISSION_NAME = "seam.role";
     public static final String PERMISSION_CREATE = "create";

@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.service.raw;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
@@ -29,33 +27,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.zanata.RestTest;
-import org.zanata.exception.handler.AccessDeniedExceptionHandler;
-import org.zanata.model.HLocaleMember;
-import org.zanata.rest.AccessDeniedExceptionMapper;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Account;
-import org.zanata.rest.service.AccountService;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.arquillian.ArquillianUtil.addClassesWithDependencies;
-import static org.zanata.arquillian.ArquillianUtil.addPersistenceConfig;
-import static org.zanata.arquillian.ArquillianUtil.addWebInfXml;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
-import static org.zanata.rest.service.raw.ArquillianRest.beansXmlForRest;
-import static org.zanata.rest.service.raw.ArquillianRest.classesWithDependenciesForRest;
-import static org.zanata.rest.service.raw.ArquillianRest.jbossDeploymentStructureForRest;
-import static org.zanata.rest.service.raw.ArquillianRest.libsForRest;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
@@ -63,50 +44,7 @@ import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-@RunWith(Arquillian.class)
 public class AccountRawRestITCase extends RestTest {
-
-    private static List<Class<?>> classesWithDependencies() {
-        List<Class<?>> classes = new ArrayList<>(asList(
-                AccountRawRestITCase.class,
-                AccountService.class,
-                HLocaleMember.class,
-                AccessDeniedExceptionMapper.class,
-                AccessDeniedExceptionHandler.class
-        ));
-        classes.addAll(classesWithDependenciesForRest());
-        return classes;
-    }
-
-    @Deployment(name = "AccountService")
-    public static WebArchive createDeployment()  {
-        WebArchive war = ShrinkWrap
-                .create(WebArchive.class, "AccountService.war")
-                .addAsLibraries(libsForRest())
-                .addAsResource("org/zanata/test/model/AccountData.dbunit.xml")
-//                .addAsResource("org/zanata/test/model/ClearAllTables.dbunit.xml")
-                ;
-//        addWebInfXml(war, beansXmlForRest(ServerPathAlt.class));
-//        addWebInfXml(war, beansXmlForRest(ServerPathAlt.class, OAuthAlt.class));
-        addWebInfXml(war, beansXmlForRest(ServerPathAlt.class, OAuthAlt.class, AnonAccessAlt.class));
-
-        addWebInfXml(war, jbossDeploymentStructureForRest());
-        addPersistenceConfig(war);
-        // NB: this only adds Zanata dependencies. For other dependencies, you
-        // should add it to the libraries above (unless it's part of the
-        // platform).
-        addClassesWithDependencies(war, classesWithDependencies());
-//            war.content.forEach { path, _ -> println(path) }
-        return war;
-    }
-
-    @Override
-    protected String getDataSetToClear() {
-        // ClearAllTables.dbunit.xml doesn't work because not all entities are in the deployment
-        // NB if there are other entities created during the test, this won't delete them unless
-        // they are added to AccountData.dbunit.xml.
-        return "org/zanata/test/model/AccountData.dbunit.xml";
-    }
 
     @Override
     protected void prepareDBUnitOperations() {

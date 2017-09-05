@@ -42,6 +42,9 @@ import org.zanata.service.impl.EmailChangeService;
 @Transactional
 public class ProfileAction extends AbstractProfileAction
         implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProfileAction.class);
+
     private static final long serialVersionUID = 1L;
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD",
