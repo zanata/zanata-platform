@@ -44,6 +44,8 @@ import org.zanata.ui.faces.FacesMessages;
 @Transactional
 @CheckRole("admin")
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryHome.class);
     private static final long serialVersionUID = -8557363011909155662L;
     @Inject
     private SlugEntityService slugEntityServiceImpl;

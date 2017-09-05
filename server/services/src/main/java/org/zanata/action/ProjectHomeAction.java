@@ -45,6 +45,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleMemberDAO;
+import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
@@ -94,6 +95,9 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
 @Transactional
 public class ProjectHomeAction extends AbstractSortAction
         implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectHomeAction.class);
+
     public static final Ordering<LocaleRole> LOCALE_ROLE_ORDERING =
             Ordering.explicit(LocaleRole.Translator, LocaleRole.Reviewer,
                     LocaleRole.Coordinator, LocaleRole.Glossarist);
@@ -116,6 +120,8 @@ public class ProjectHomeAction extends AbstractSortAction
     @Inject
     private Messages msgs;
     private String slug;
+    @Inject
+    private PersonDAO personDAO;
     @Inject
     private ProjectDAO projectDAO;
     @Inject
@@ -628,7 +634,7 @@ public class ProjectHomeAction extends AbstractSortAction
         return Lists.newArrayList(Joiner.on(", ").join(roleNames));
     }
 
-    @SuppressFBWarnings("SE_BAD_FIELD")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
     private final Function<Map.Entry<HLocale, Collection<LocaleRole>>, String>
             TO_LOCALE_ROLES_DISPLAY_STRING =
             new Function<Map.Entry<HLocale, Collection<LocaleRole>>, String>() {
@@ -651,7 +657,7 @@ public class ProjectHomeAction extends AbstractSortAction
                     return null;
                 }
             };
-    @SuppressFBWarnings("SE_BAD_FIELD")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
     private final Function<LocaleRole, String> TO_DISPLAY_NAME =
             new Function<LocaleRole, String>() {
 
@@ -707,7 +713,6 @@ public class ProjectHomeAction extends AbstractSortAction
      *
      * Use with {@link java.util.Collections#sort}
      */
-    @SuppressFBWarnings("SE_BAD_FIELD")
     public static final Function<HLocale, String> TO_LOCALE_NAME =
             new Function<HLocale, String>() {
 

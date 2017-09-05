@@ -30,6 +30,9 @@ import javax.inject.Named;
 @Named("javaScriptTestHelper")
 @Dependent
 public class JavaScriptTestHelper {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(JavaScriptTestHelper.class);
+
     private static final String propName = "zanata.javaScriptTestHelper";
     private static final String HEAD_SCRIPT =
             "<script type=\"application/javascript\">\nwindow.addEventListener(\'error\', function (e) {\n  // For some reason, this form (with a comma) won\'t let WebDriver see the stack trace:\n  // console.error(\'error stack:\', e.error.stack.toString());\n  console.error(\'error stack: \' + e.error.stack.toString());\n});\n</script>\n";

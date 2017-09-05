@@ -24,6 +24,8 @@ import java.util.Date;
 @Model
 @Transactional
 public class PasswordResetRequestAction implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(PasswordResetRequestAction.class);
     private static final long serialVersionUID = 1L;
     @Inject
     private FacesMessages facesMessages;

@@ -33,6 +33,9 @@ import javax.enterprise.event.TransactionPhase;
 @Named("translationUpdatedManager")
 @RequestScoped
 public class TranslationUpdatedManager {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationUpdatedManager.class);
+
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
     @Inject

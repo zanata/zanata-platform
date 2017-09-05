@@ -35,6 +35,9 @@ import org.zanata.exception.VirusDetectedException;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class VirusScannerTest {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VirusScannerTest.class);
+
     private VirusScanner virusScanner = new VirusScanner();
 
     @BeforeClass

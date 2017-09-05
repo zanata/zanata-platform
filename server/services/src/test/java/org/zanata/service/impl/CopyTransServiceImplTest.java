@@ -171,7 +171,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         projectDAO.makePersistent(project);
         // Run the copy trans scenario (very liberal, but nothing should be
         // translated)
-        @SuppressWarnings("unused")
         CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE,
                 IGNORE, true, true, true, true, Approved).expectUntranslated();
         // testCopyTrans(execution);
@@ -197,7 +196,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
             }
         }
         // Run the copy trans scenario
-        @SuppressWarnings("unused")
         CopyTransExecution execution =
                 new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true,
                         true, Approved).expectTransState(Approved);

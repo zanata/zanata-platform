@@ -13,7 +13,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -34,6 +33,7 @@ import org.zanata.rest.dto.Link;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import javax.enterprise.event.Event;
 
 /**
  * This API is experimental only and subject to change or even removal.
@@ -50,6 +50,11 @@ import com.google.common.collect.Lists;
 @CheckRole("admin")
 @Beta
 public class ServerConfigurationService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerConfigurationService.class);
+
+    private static List<String> availableKeys;
+
     /**
      * Type of media requested.
      */
@@ -59,6 +64,9 @@ public class ServerConfigurationService {
     private MediaType accept;
     @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
+    @Inject
+    private Event<ConfigurationChanged> configurationChangedEvent;
+
     /**
      * Retrieves all existing server configurations.
      *
@@ -123,7 +131,7 @@ public class ServerConfigurationService {
     @PUT
     @Path("/c/{configKey}")
     public Response put(@PathParam("configKey") @Nonnull String configKey,
-           @QueryParam("configValue") String configValue) {
+            String configValue) {
         if (!isConfigKeyValid(configKey)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("config key not supported: " + configKey).build();

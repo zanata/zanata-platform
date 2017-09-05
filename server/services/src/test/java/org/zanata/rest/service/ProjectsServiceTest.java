@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.jpa.FullText;
 import org.zanata.rest.dto.Project;
 import org.zanata.test.CdiUnitRunner;
@@ -29,6 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ ProjectsService.class })
 public class ProjectsServiceTest extends ZanataDbunitJpaTest {
+    @Inject
+    private ProjectDAO projectDAO;
+
     @Inject
     private ProjectsService projectsService;
 

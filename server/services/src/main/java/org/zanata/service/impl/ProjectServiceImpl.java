@@ -55,6 +55,8 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
 @Named("projectServiceImpl")
 @RequestScoped
 public class ProjectServiceImpl implements ProjectService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectServiceImpl.class);
     private static final long serialVersionUID = 4774995512082570483L;
 
     @Inject

@@ -165,6 +165,7 @@ public class ChangePositionalResIdToContentHash implements CustomTaskChange {
             int processed = 0;
 
             while (textFlows.next()) {
+                long id = textFlows.getLong(ID_COLUMN);
                 boolean isObsolete = textFlows.getBoolean(OBSOLETE_COLUMN);
 
                 if (!isObsolete) {

@@ -10,6 +10,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.RequestDAO;
 import org.zanata.events.RequestUpdatedEvent;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
@@ -37,6 +38,9 @@ public class RequestServiceImplTest extends ZanataDbunitJpaTest {
 
     @Inject
     private RequestServiceImpl service;
+
+    @Inject
+    private RequestDAO requestDAO;
 
     @Inject
     private LocaleDAO localeDAO;

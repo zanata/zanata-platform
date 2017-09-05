@@ -38,7 +38,8 @@ public interface ConfigurationService extends Serializable {
      *
      * @return contents of the config file
      */
-    String getSingleLocaleConfig(String projectSlug, String versionSlug);
+    String getSingleLocaleConfig(String projectSlug, String versionSlug,
+            HLocale locale);
 
     /**
      * Get a config file for a single locale, with project type adjusted to be

@@ -12,7 +12,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.SampleDataResourceClient;
-import org.zanata.util.SampleDataRule;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import java.util.List;
 import static org.zanata.util.ZanataRestCaller.*;
@@ -31,7 +31,7 @@ public class CopyTransTuningTest {
 
     private static final String PROJECT_SLUG = "ovirt-reports-history";
     @Rule
-    public SampleDataRule rule = new SampleDataRule();
+    public SampleProjectRule rule = new SampleProjectRule();
     private ZanataRestCaller restCaller;
     private List<LocaleId> translatedLocales =
             ImmutableList.<LocaleId> builder().add(new LocaleId("ja"))

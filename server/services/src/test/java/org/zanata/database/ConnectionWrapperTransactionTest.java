@@ -10,6 +10,9 @@ import org.junit.rules.ExpectedException;
 import org.zanata.ZanataJpaTest;
 
 public class ConnectionWrapperTransactionTest extends ZanataJpaTest {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(ConnectionWrapperTransactionTest.class);
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     private Session session;

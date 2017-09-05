@@ -12,7 +12,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
@@ -23,14 +22,8 @@ import org.zanata.rest.dto.SourceLocaleDetails;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Path(LocalesResource.SERVICE_PATH)
-@ResourceLabel("Languages")
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-@StatusCodes({
-        @ResponseCode(code = 500,
-                condition = "If there is an unexpected error in the server while performing this operation")
-})
 public interface LocalesResource {
 
     public static final String SERVICE_PATH = "/locales";
@@ -40,7 +33,9 @@ public interface LocalesResource {
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
-     *         OK(200) - Response containing a full list of locales.
+     *         OK(200) - Response containing a full list of locales. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -72,7 +67,9 @@ public interface LocalesResource {
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
-     *         OK(200) - Response containing a full list of locales.
+     *         OK(200) - Response containing a full list of locales. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
      */
     @GET
     @Path("/ui")
@@ -102,7 +99,9 @@ public interface LocalesResource {
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
-     *         OK(200) - Response containing a list of locales.
+     *         OK(200) - Response containing a list of locales. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
      */
     @GET
     @Path("/new")
@@ -116,7 +115,9 @@ public interface LocalesResource {
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
-     *         OK(200) - Locale is deleted.
+     *         OK(200) - Locale is deleted. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
      */
     @DELETE
     @Path("/locale/{localeId}")
@@ -128,7 +129,9 @@ public interface LocalesResource {
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(201) - Locale is added. <br>
-     *         OK(200) - Locale is already exist.
+     *         OK(200) - Locale is already exist. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
      */
     @PUT
     @Path("/locale")

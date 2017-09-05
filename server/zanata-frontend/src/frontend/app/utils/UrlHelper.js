@@ -10,15 +10,15 @@ export function getDswid () {
 }
 
 /**
- * @returns string of project url (jsf)
+ * @returns string of project url
  * e.g. https://translate.zanata.org/project/view/zanata-server?dswid=-805
  */
-export function getProjectUrl (projectSlug) {
-  return serverUrl + '/project/view/' + projectSlug + getDswid()
+export function getProjectUrl (project) {
+  return serverUrl + '/project/view/' + project.id + getDswid()
 }
 
 /**
- * @returns string of language page url (jsf)
+ * @returns string of language page url
  *
  */
 export function getLanguageUrl (localeId) {
@@ -26,7 +26,7 @@ export function getLanguageUrl (localeId) {
 }
 
 /**
- * @returns string of project version languages settings url (jsf)
+ * @returns string of project version languages settings url
  * e.g. https://translate.zanata.org/iteration/view/meikai/
  *      ver1/settings/languages?dswid=4384
  */
@@ -35,19 +35,7 @@ export function getVersionLanguageSettingsUrl (projectID, versionID) {
     '/settings/languages' + getDswid()
 }
 
-/**
- *
- * @returns string of profile page url (react page)
- */
-export function getProfileUrl (username) {
-  return '/profile/view/' + username + getDswid()
+export default {
+  getDswid,
+  getProjectUrl
 }
-
-/**
- *
- * @returns string of version group url (jsf)
- */
-export function getVersionGroupUrl (slug) {
-  return serverUrl + '/version-group/view/' + slug + getDswid()
-}
-

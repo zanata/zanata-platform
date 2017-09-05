@@ -5,17 +5,17 @@
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
     <param name="threshold" value="DEBUG" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} [%t] %-5p %c{4} - %m%n" />
+      <param name="ConversionPattern" value="%d %t %-5p [%c{1}] - %m%n" />
     </layout>
   </appender>
-
   <!--
-    NB Third-party code (eg javax.faces, DeltaSpike, Arquillian) which uses java.util.logging will be
-    directed here by SLF4JBridgeHandler, but JUL Logger thresholds must be configured in both systems.
-    Also, disabling logging here won't prevent unneeded JUL log messages from being created.
-    See logging-test.properties.
-  -->
-
+       <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+          <param name="file" value="target/test.log"/>
+          <layout class="org.apache.log4j.PatternLayout">
+              <param name="ConversionPattern" value="%d %t %-5p [%c] - %m%n" />
+          </layout>
+      </appender>
+   -->
   <!--
       <logger name="org.hibernate">
           <level value="info" />
@@ -25,9 +25,6 @@
   <!--<logger name="org.hibernate.SQL">-->
       <!--<level value="TRACE" />-->
   <!--</logger>-->
-  <logger name="jdbc">
-    <level value="OFF" />
-  </logger>
   <!-- this require log4jdbc -->
   <!--
   <logger name="jdbc.sqlonly">
@@ -56,7 +53,8 @@
     <level value="ERROR"/>
   </logger>
   <root>
-    <level value="INFO" />
+    <level value="ERROR" />
     <appender-ref ref="STDOUT" />
+    <!--         <appender-ref ref="FILE" /> -->
   </root>
 </log4j:configuration>

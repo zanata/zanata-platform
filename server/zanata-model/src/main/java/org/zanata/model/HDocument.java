@@ -76,6 +76,8 @@ import org.zanata.security.annotations.Authenticated;
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 public class HDocument extends ModelEntityBase implements DocumentWithId,
         IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(HDocument.class);
     private static final long serialVersionUID = 5129552589912687504L;
     private String docId;
     private String name;

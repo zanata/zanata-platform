@@ -46,6 +46,9 @@ import static org.zanata.adapter.AdapterUtils.readStream;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class GettextAdapter implements FileFormatAdapter {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GettextAdapter.class);
+
     @Override
     public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
             Optional<String> params)

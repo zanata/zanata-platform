@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public abstract class ResourceRequest {
     private static final ResourceRequestEnvironment DEFAULT_ENV =
-            ResourceRequestEnvironment.EMPTY;
+            new ResourceRequestEnvironment();
 
     private String resourceUrl;
     private String method;
@@ -80,8 +80,9 @@ public abstract class ResourceRequest {
     }
 
     public void invoke(Invocation.Builder builder) throws Exception {
-        Response response = builder.build(method).invoke();
+        Response response = null;
         try {
+            response = builder.build(method).invoke();
             onResponse(response);
         } finally {
             response.close();
@@ -90,9 +91,12 @@ public abstract class ResourceRequest {
 
     private Invocation.Builder prepareEnvironment(Invocation.Builder builder) {
         // Insert the default headers
-        Map<String, Object> defaultHeaders = environment.getDefaultHeaders();
-        for (Map.Entry<String, Object> entry : defaultHeaders.entrySet()) {
-            builder = builder.header(entry.getKey(), entry.getValue());
+        if (environment.getDefaultHeaders() != null &&
+                !environment.getDefaultHeaders().isEmpty()) {
+            for (Map.Entry<String, Object> entry : environment
+                    .getDefaultHeaders().entrySet()) {
+                builder = builder.header(entry.getKey(), entry.getValue());
+            }
         }
         return builder;
     }
