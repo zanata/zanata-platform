@@ -48,9 +48,6 @@ import com.ibm.icu.util.ULocale;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class TMXMetadataHelper {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(TMXMetadataHelper.class);
-
     private static final String EMPTY_NAMESPACE = XMLConstants.NULL_NS_URI;
     private static final String TMX_ELEMENT_CHILDREN =
             "__TMX_ELEMENT_CHILDREN__";

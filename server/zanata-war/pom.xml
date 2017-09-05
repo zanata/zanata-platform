@@ -307,13 +307,6 @@
           <skip>${allow.deploy.skip}</skip>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-
     </plugins>
 
     <pluginManagement>
@@ -724,7 +717,6 @@
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
-      <version>2.0.5</version>
     </dependency>
 
     <dependency>
@@ -1545,6 +1537,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.googlecode.junit-toolbox</groupId>
+      <artifactId>junit-toolbox</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.concordion</groupId>
       <artifactId>concordion</artifactId>
       <scope>test</scope>
@@ -1769,6 +1767,7 @@
       <version>1.27</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>

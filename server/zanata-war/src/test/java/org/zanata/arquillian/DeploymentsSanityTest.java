@@ -30,8 +30,6 @@ import java.util.regex.Pattern;
 import org.assertj.core.api.Condition;
 import org.junit.Assume;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * To run this test by itself in Maven, try this:
@@ -40,8 +38,6 @@ import org.slf4j.LoggerFactory;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class DeploymentsSanityTest {
-    private static final Logger log = LoggerFactory.getLogger(DeploymentsSanityTest.class);
-
     @Test
     public void testSanity() {
         String classpath = System.getProperty("java.class.path");

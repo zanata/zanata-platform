@@ -69,7 +69,7 @@ static void download(String url, String filePath) {
 }
 
 static void unzip(String zipFileName, String outputDir) {
-  println "Extracting zip file $zipFileName:"
+  println "Extracting zip file $zipFileName to $outputDir:"
   new ZipFile(new File(zipFileName)).withCloseable { zip ->
     zip.entries().each { entry ->
       if (!entry.isDirectory()) {

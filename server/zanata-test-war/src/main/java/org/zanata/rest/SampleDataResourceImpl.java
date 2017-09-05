@@ -21,7 +21,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.security.annotations.NoSecurityCheck;
-import org.zanata.util.SampleProjectProfile;
+import org.zanata.util.SampleDataProfile;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
@@ -42,7 +42,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     private static final long serialVersionUID = -7132159610444327773L;
 
     @Inject
-    private SampleProjectProfile sampleProjectProfile;
+    private SampleDataProfile sampleDataProfile;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
@@ -56,7 +56,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
         new RunAsOperationForTest() {
             @Override
             public void execute() {
-                sampleProjectProfile.makeSampleLanguages();
+                sampleDataProfile.makeSampleLanguages();
             }
         }.run();
 
@@ -70,7 +70,8 @@ public class SampleDataResourceImpl implements SampleDataResource {
         new RunAsOperationForTest() {
             @Override
             public void execute() {
-                sampleProjectProfile.makeLanguage(true, new LocaleId(localeId), pluralForms);
+                sampleDataProfile
+                        .makeLanguage(true, new LocaleId(localeId), pluralForms);
             }
         }.run();
 
@@ -81,7 +82,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     public Response makeSampleUsers() {
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.makeSampleUsers();
+                sampleDataProfile.makeSampleUsers();
             }
         }.run();
 
@@ -112,7 +113,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
                 HLocale.class).setParameter("locales", locales).getResultList();
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.addUsersToLanguage(hPerson, hLocales);
+                sampleDataProfile.addUsersToLanguage(hPerson, hLocales);
             }
         }.run();
 
@@ -123,7 +124,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     public Response makeSampleProject() {
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.makeSampleProject();
+                sampleDataProfile.makeSampleProject();
             }
         }.run();
 
@@ -134,7 +135,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     public Response deleteExceptEssentialData() {
         new RunAsOperationForTest() {
             public void execute() {
-                sampleProjectProfile.deleteExceptEssentialData();
+                sampleDataProfile.deleteExceptEssentialData();
             }
         }.run();
 
@@ -146,7 +147,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
         new RunAsOperationForTest() {
             @Override
             public void execute() {
-                sampleProjectProfile.setAllowAnonymousUserConfig(value);
+                sampleDataProfile.setAllowAnonymousUserConfig(value);
             }
         }.run();
         return Response.ok().build();

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link, Icon } from '../../components'
-import { serverUrl } from '../../config'
+import { getProjectUrl } from '../../utils/UrlHelper'
 
 const statusIcons = {
   ACTIVE: '',
@@ -35,7 +35,7 @@ const ProjectTeaser = ({
       </Link>
     </div>
   )
-  const link = serverUrl + '/project/view/' + details.id
+  const link = getProjectUrl(details.id)
   const className = status !== statusIcons.ACTIVE
     ? 'text-muted-bold'
     : 'text-bold'

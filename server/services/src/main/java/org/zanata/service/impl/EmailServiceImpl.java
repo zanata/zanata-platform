@@ -61,8 +61,6 @@ import static org.zanata.email.Addresses.getLocaleMemberAddresses;
 @RequestScoped
 @Transactional
 public class EmailServiceImpl implements EmailService {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(EmailServiceImpl.class);
     private static final long serialVersionUID = 1419335892218906099L;
 
     @Inject
