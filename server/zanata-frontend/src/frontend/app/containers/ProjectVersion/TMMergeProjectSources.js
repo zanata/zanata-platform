@@ -42,7 +42,8 @@ class TMMergeProjectSources extends Component {
     onVersionCheckboxChange: PropTypes.func.isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired,
     onDragMoveEnd: PropTypes.func.isRequired,
-    removeProjectVersion: PropTypes.func.isRequired
+    removeProjectVersion: PropTypes.func.isRequired,
+    thisProjectSlug: PropTypes.string.isRequired
   }
   defaultState = {
     fromProjectSelection: SAME,
@@ -59,6 +60,14 @@ class TMMergeProjectSources extends Component {
     if (value === ALL) {
       this.props.onFromAllProjectsChange()
     }
+    if (value === SAME) {
+      // if user select this project, we should search for current project
+      this.props.onProjectSearchChange(this.props.thisProjectSlug)
+    }
+  }
+  projectSearchTermChanged = e => {
+    const text = e.target.value
+    this.props.onProjectSearchChange(text)
   }
   toggleChange = (e) => {
     const checked = e.target.checked
@@ -71,7 +80,6 @@ class TMMergeProjectSources extends Component {
       projectVersions,
       fetchingProject,
       mergeOptions,
-      onProjectSearchChange,
       flushProjectSearch,
       onVersionCheckboxChange,
       onAllVersionCheckboxChange,
@@ -93,7 +101,7 @@ class TMMergeProjectSources extends Component {
             <FormControl type='text'
               value={mergeOptions.projectSearchTerm}
               className='vmerge-searchinput'
-              onChange={onProjectSearchChange}
+              onChange={this.projectSearchTermChanged}
               onKeyDown={flushProjectSearch}
             />
           </InputGroup>

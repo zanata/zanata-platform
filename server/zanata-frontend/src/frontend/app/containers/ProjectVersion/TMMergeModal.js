@@ -132,6 +132,7 @@ const MergeOptions = (
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
           flushProjectSearch, onAllVersionCheckboxChange,
           onVersionCheckboxChange, onDragMoveEnd, removeProjectVersion}}
+          thisProjectSlug={projectSlug}
           {...mergeOptions}
           {...{onDifferentDocIdChange, onDifferentContextChange,
             onDifferentProjectChange} }
@@ -281,8 +282,7 @@ class TMMergeModal extends Component {
       selectedLanguage: language
     })
   }
-  onProjectSearchChange = (event) => {
-    const textEntered = event.target.value
+  onProjectSearchChange = (textEntered) => {
     this.throttleHandleSearch(textEntered)
     this.setState({
       projectSearchTerm: textEntered
