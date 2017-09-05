@@ -36,7 +36,7 @@ if (appServerHome == null) {
 
 File baseDir = new File(project.basedir as String)
 
-// basedir will be either functional-test module or services/zanata-war module
+// basedir will be either functional-test module or zanata-war module
 File commonCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-test-common.cli")
 File arqTestCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-arq-test.cli")
 
@@ -51,7 +51,7 @@ Set<PosixFilePermission> permissions = [GROUP_READ, GROUP_EXECUTE, OTHERS_EXECUT
 Files.setPosixFilePermissions(jbossCLI.toPath(), permissions)
 
 runJBossCLI(jbossCLI, commonCLIScript)
-if (project.artifactId != 'functional-test') {
+if (project.artifactId == 'zanata-war') {
     // we are running arquillian test. need to run extra script
     runJBossCLI(jbossCLI, arqTestCLIScript)
 }

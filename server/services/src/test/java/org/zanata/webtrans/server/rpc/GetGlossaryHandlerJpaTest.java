@@ -90,7 +90,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         glossaryDAO = spy(dao);
         targetHLocale = getEm().find(HLocale.class, 2L);
         glossarySearchService =
-                new GlossarySearchServiceImpl(glossaryDAO, localeService, urlUtil, "/");
+                new GlossarySearchServiceImpl(glossaryDAO, localeService, urlUtil);
     }
 
     @Test

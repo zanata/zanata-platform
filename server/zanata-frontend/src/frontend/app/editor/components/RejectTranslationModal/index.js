@@ -74,7 +74,7 @@ export class RejectTranslationModal extends Component {
       <Modal show={show}
         onHide={close}
         key="reject-translation-modal"
-        id="RejectTranslationModal">
+        className="suggestions-modal">
         <Modal.Header>
           <Modal.Title>Reject translation</Modal.Title>
         </Modal.Header>

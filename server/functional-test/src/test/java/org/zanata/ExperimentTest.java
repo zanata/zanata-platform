@@ -22,7 +22,7 @@ package org.zanata;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.zanata.util.SampleDataRule;
+import org.zanata.util.SampleProjectRule;
 
 /**
  * This is a class for experiment some things i.e. populate cargo instance with
@@ -31,7 +31,7 @@ import org.zanata.util.SampleDataRule;
  */
 public class ExperimentTest {
     @Rule
-    public SampleDataRule sampleDataRule = new SampleDataRule();
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Test
     public void test() {

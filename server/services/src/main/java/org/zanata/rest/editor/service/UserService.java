@@ -10,8 +10,6 @@ import javax.ws.rs.core.Response;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -60,9 +58,6 @@ public class UserService implements UserResource {
 
     @Inject
     private IdentityManager identityManager;
-
-    private static final Logger log =
-            LoggerFactory.getLogger(UserService.class);
 
     @Override
     @CheckLoggedIn

@@ -31,6 +31,9 @@ import javax.inject.Inject;
 
 @RunWith(CdiUnitRunner.class)
 public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTargetForLocaleHandlerTest.class);
+
     @Inject
     @Any
     private GetTargetForLocaleHandler handler;

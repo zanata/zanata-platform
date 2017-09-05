@@ -119,7 +119,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
                 workspaceId.getProjectIterationId().getProjectSlug(),
                 workspaceId.getProjectIterationId().getIterationSlug()))
                         .thenThrow(new ZanataServiceException("bad"));
-        handler.execute(action, null);
+        GetProjectTransUnitListsResult result = handler.execute(action, null);
     }
 
     @Test

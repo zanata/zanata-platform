@@ -1,10 +1,12 @@
+/** @define InputGroup; use strict */
+
 :root {
---InputGroup-rhythm: 1.5rem;
---InputGroup-input-color: #20718A;
---InputGroup-addon-color: color(#20718A tint(30%));
---InputGroup-border-color: color(#20718A tint(60%));
---InputGroup-border--focus-color: color(#20718A tint(30%));
---InputGroup-transition: 0.2s cubic-bezier(.26, .47, .36, .94);
+  --InputGroup-rhythm: 1.5rem;
+  --InputGroup-input-color: #20718A;
+  --InputGroup-addon-color: color(#20718A tint(30%));
+  --InputGroup-border-color: color(#20718A tint(60%));
+  --InputGroup-border--focus-color: color(#20718A tint(30%));
+  --InputGroup-transition: 0.2s cubic-bezier(.26, .47, .36, .94);
 }
 
 .InputGroup {

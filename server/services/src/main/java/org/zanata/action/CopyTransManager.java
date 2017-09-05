@@ -51,6 +51,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 @Dependent
 public class CopyTransManager implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyTransManager.class);
+
     private static final long serialVersionUID = 1L;
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD",

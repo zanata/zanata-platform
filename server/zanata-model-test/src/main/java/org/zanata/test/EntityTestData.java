@@ -160,7 +160,6 @@ public class EntityTestData {
 
     public static void setId(ModelEntityBase entity, Long id) {
         try {
-            // alternative(commons-lang3) FieldUtils.writeField(entity, "setId", id, true);
             Method setIdMethod = ModelEntityBase.class
                     .getDeclaredMethod("setId", Long.class);
             setIdMethod.setAccessible(true);

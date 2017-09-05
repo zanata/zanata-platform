@@ -38,6 +38,7 @@ import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
@@ -93,13 +94,14 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Zanata
     private final CacheContainer cacheContainer;
+    private final TextFlowDAO textFlowDAO;
     private final TextFlowTargetDAO textFlowTargetDAO;
     private final DocumentDAO documentDAO;
     private final LocaleDAO localeDAO;
 
     // constructor for CDI
     public TranslationStateCacheImpl() {
-        this(null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null, null);
     }
 
     // Constructor for testing
@@ -109,6 +111,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         CacheLoader<DocumentLocaleKey, DocumentStatus> docStatsLoader,
         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader,
         @Zanata CacheContainer cacheContainer,
+        TextFlowDAO textFlowDAO,
         TextFlowTargetDAO textFlowTargetDAO,
         DocumentDAO documentDAO,
         LocaleDAO localeDAO) {
@@ -116,6 +119,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         this.docStatusLoader = docStatsLoader;
         this.targetValidationLoader = targetValidationLoader;
         this.cacheContainer = cacheContainer;
+        this.textFlowDAO = textFlowDAO;
         this.textFlowTargetDAO = textFlowTargetDAO;
         this.documentDAO = documentDAO;
         this.localeDAO = localeDAO;

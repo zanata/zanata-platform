@@ -39,6 +39,8 @@ import org.junit.runners.parameterized.TestWithParameters;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class CdiUnitRunnerWithParameters extends CdiUnitRunner {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(CdiUnitRunnerWithParameters.class);
     private final Object[] parameters;
     private final String paramsName;
 

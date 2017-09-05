@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.service.impl;
+package org.zanata.util;
 
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.jglue.cdiunit.InRequestScope;
@@ -28,14 +28,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.GlossaryDAO;
-import org.zanata.service.LocaleService;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.util.UrlUtil;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
-public class GlossaryUrlTest extends ZanataTest {
+public class UrlUtilTest extends ZanataTest {
 
     @Produces @ServerPath String serverPath = "/";
     @Produces @ContextPath String contextPath = "";
@@ -56,15 +52,8 @@ public class GlossaryUrlTest extends ZanataTest {
     @Produces @Mock
     WindowContext windowContext;
 
-    @Produces @Mock
-    GlossaryDAO glossaryDAO;
-    @Produces @Mock
-    LocaleService localeServiceImpl;
-
     @Inject
     private UrlUtil urlUtil;
-    @Inject @Any
-    private GlossarySearchServiceImpl impl;
 
     @Test
     @InRequestScope
@@ -77,7 +66,7 @@ public class GlossaryUrlTest extends ZanataTest {
             contextPath + "/glossary?filter=" +
                 UrlUtil.encodeString(filter) + "&locale=fr";
 
-        String url = impl.glossaryUrl(qualifiedName, filter, localeId);
+        String url = urlUtil.glossaryUrl(qualifiedName, filter, localeId);
         assertThat(url).isEqualTo(expectedUrl);
     }
 
@@ -92,7 +81,7 @@ public class GlossaryUrlTest extends ZanataTest {
             contextPath + "/glossary/project/project1?filter=" +
                 UrlUtil.encodeString(filter) + "&locale=fr";
 
-        String url = impl.glossaryUrl(qualifiedName, filter, localeId);
+        String url = urlUtil.glossaryUrl(qualifiedName, filter, localeId);
         assertThat(url).isEqualTo(expectedUrl);
     }
 }

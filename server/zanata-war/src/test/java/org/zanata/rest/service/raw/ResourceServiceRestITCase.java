@@ -332,6 +332,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @Test
     @RunAsClient
     public void testPutGetNoExtensionResourceMeta() {
+        Resource rs1 = getTestDocWith2TextFlows();
         log.debug("test put get resource meta service");
         Resource res = getTestDocWithTextFlow();
         getSourceDocResource()

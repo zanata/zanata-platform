@@ -218,6 +218,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
 
     @Test
     public void testFailToParseOriginalFile() throws Exception {
+        File file = getTestFile("test-ts-invalid.ts");
         exception.expect(FileFormatAdapterException.class);
         exception.expectMessage("Unable to generate translated document from original");
         getAdapter().generateTranslatedFile(

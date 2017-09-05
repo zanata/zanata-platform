@@ -1,18 +1,18 @@
 /** @define Editor; use strict */
 
 :root {
-  --Editor-rhythm: 1.5rem;
-  --Editor-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
-  --Editor-color-status-bg: color(#416988 tint(82%));
-  --Editor-color-translation-bg: #ECEFF0;
-  --Editor-loader-z-index: 900;
-  --Editor-panel-z-index: 200;
-  --Editor-suggestions-header-z-index: 300;
-  --Editor-suggestionsSearch-z-index: 300;
+  --Editor-rhythm                         : 1.5rem;
+  --Editor-transition-ease                : cubic-bezier(.175, .885, .320, 1.275);
+  --Editor-color-status-bg                : color(#416988 tint(82%));
+  --Editor-color-translation-bg           : #ECEFF0;
+  --Editor-loader-z-index                 : 900;
+  --Editor-panel-z-index                  : 200;
+  --Editor-suggestions-header-z-index     : 300;
+  --Editor-suggestionsSearch-z-index      : 300;
   --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
-  --Editor-color-light: #90b8c5;
-  --Editor-color-dark: #20718a;
-  --Editor-color-bright: #1ba7d9;
+  --Editor-color-light                    : #90b8c5;
+  --Editor-color-dark                     : #20718a;
+  --Editor-color-bright                   : #1ba7d9;
 }
 
 .stretched-box {
@@ -260,7 +260,7 @@ li.docName span.ellipsis {
   bottom: 0;
   left: 0;
   overflow: hidden;
-  box-shadow: 0 -calc(var(--Editor-rhythm) *.125) var(--Header-rhythm) rgba(0, 0, 0, .1);
+  box-shadow: 0 -calc(var(--Editor-rhythm) * .125) var(--Header-rhythm) rgba(0,0,0,.1);
   /*transform: translateY(100%);*/
 }
 
@@ -269,7 +269,7 @@ li.docName span.ellipsis {
   top: 0;
   left: 0;
   right: 0;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
   z-index: var(--Editor-suggestions-header-z-index);
   user-select: none;
 }
@@ -309,7 +309,7 @@ li.docName span.ellipsis {
 }
 
 .modal-title {
-  font-weight: 300;
+  font-weight:300;
 }
 
 h4.modal-title {
@@ -340,11 +340,11 @@ h4.modal-title {
   color: #333;
 }
 
-.row span.s1, .row span.s0, .row span.n1 {
+.row span.s1, .row span.s0, .row span.n1  {
   vertical-align: sub;
 }
 
-.btn-group-xs > .btn, .btn-xs {
+.btn-group-xs>.btn, .btn-xs {
   padding: 1px 5px;
   font-size: 12px;
   line-height: 1.5;
@@ -517,8 +517,9 @@ ul.source-infolist {
 }
 
 ul.u-listInline li .u-textSuccess, ul.u-listInline li .u-textSecondary,
-ul.u-listInline li .u-textHighlight {
-  width: 120%;
+ul.u-listInline li .u-textHighlight
+{
+  width:120%;
 }
 
 /* bootstrap override */
@@ -608,13 +609,12 @@ button.close:focus, button.close:hover, button.close:active:focus {
  * FIXME use a utility class for this adjustment instead. Probably
  *   .u-vAlignSuper, which could go next to .u-vAlignMiddle in utils-display */
 button.Link--neutral .row span.u-ltemd-hidden {
-  vertical-align: super;
+  vertical-align:super;
 }
 
 label span.n1 {
   vertical-align: middle !important;
 }
-
 /**
  * Media Queries
  */
@@ -627,44 +627,49 @@ label span.n1 {
 
 @media (--gtemd-viewport) {
   .Editor-translations {
-    background: linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
+    background:
+      linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
       linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
-    background-position: center, right;
-    background-size: var(--rhythm) 100%, 50% 100%;
-    background-repeat: no-repeat;
+    background-position:
+      center,
+      right;
+    background-size:
+      var(--rhythm) 100%,
+      50% 100%;
+    background-repeat:
+      no-repeat;
   }
 }
 
-@media (max-width: 740px) {
+@media (max-width:740px) {
   .TransUnit-heading {
     padding-left: 1.5em;
   }
-
   td.long-string {
     display: table-row !important;
     padding-bottom: 0 !important;
     max-width: 10em !important;
   }
-
   .long-string span {
     max-width: 9.5em !important;
   }
 }
 
-@media (min-width: 741px) {
+@media (min-width:741px) {
   .TransUnit-heading {
     padding-left: 0 !important;
   }
 }
 
-@media (max-width: 909px) {
+
+@media (max-width:909px) {
 
   .info-icon {
     text-align: left;
   }
 
   .hide-small {
-    display: none;
+    display:none;
     visibility: hidden;
   }
 
@@ -705,7 +710,7 @@ label span.n1 {
 
 }
 
-@media (min-width: 910px) {
+@media (min-width:910px) {
   .hide-mdplus {
     display: none;
     visibility: hidden;
@@ -738,11 +743,10 @@ label span.n1 {
   }
 }
 
-@media (min-width: 1100px) {
-  td.long-string {
+@media (min-width:1100px) {
+  td.long-string  {
     max-width: 10em;
   }
-
   .long-string span {
     max-width: 9.5em;
   }

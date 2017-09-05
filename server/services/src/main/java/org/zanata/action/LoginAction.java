@@ -55,6 +55,9 @@ import org.zanata.util.FacesNavigationUtil;
 @Model
 @Transactional
 public class LoginAction implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LoginAction.class);
+
     private static final long serialVersionUID = 1L;
     @Inject
     private ZanataIdentity identity;

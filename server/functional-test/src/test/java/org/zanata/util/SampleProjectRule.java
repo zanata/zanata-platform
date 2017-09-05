@@ -30,10 +30,7 @@ import static org.zanata.util.SampleDataResourceClient.*;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class SampleDataRule extends ExternalResource {
-    public static final int CONCURRENT_RATE_LIMIT = 20;
-    public static final int ACTIVE_RATE_LIMIT = 10;
-
+public class SampleProjectRule extends ExternalResource {
     @Override
     public void before() throws Throwable {
         deleteExceptEssentialData();
@@ -43,6 +40,5 @@ public class SampleDataRule extends ExternalResource {
         userJoinsLanguageTeam("translator", locales);
         userJoinsLanguageTeam("glossarist", locales);
         makeSampleProject();
-        setRateLimit(ACTIVE_RATE_LIMIT, CONCURRENT_RATE_LIMIT);
     }
 }

@@ -25,6 +25,8 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.type.EntityType;
@@ -37,6 +39,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest {
 
+    private HLocale as;
+    private HLocale de;
+
     private TextFlowTargetDAO textFlowTargetDAO;
 
     private LocaleDAO localeDAO;
@@ -45,6 +50,8 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest {
     public void setup() {
         textFlowTargetDAO = new TextFlowTargetDAO(getSession());
         localeDAO = new LocaleDAO(getSession());
+        as = localeDAO.findByLocaleId(new LocaleId("as"));
+        de = localeDAO.findByLocaleId(new LocaleId("de"));
     }
 
     @Override
