@@ -5,7 +5,7 @@ import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import {Button, Panel, Row, Col, Accordion} from 'react-bootstrap'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown} from '../../components'
+  Icon, Modal, LoaderText, SelectableDropdown, Link} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
@@ -33,6 +33,8 @@ import TMMergeImportedTM from './TMMergeImportedTM'
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
 const DO_NOT_RENDER = undefined
+const docLink =
+  'http://docs.zanata.org/en/release/user-guide/versions/version-tm-merge/'
 
 /*
  * Component to display TM merge options
@@ -79,6 +81,9 @@ const MergeOptions = (
       <p className="intro">
         Copy existing <strong>translations</strong> from similar documents
         in other projects and versions into this project version.
+        <Link useHref link={docLink} target="_blank">
+          <span title='help'><Icon name='help' className='s0' /></span>
+        </Link>
       </p>
       <Accordion>
         <Panel header={
