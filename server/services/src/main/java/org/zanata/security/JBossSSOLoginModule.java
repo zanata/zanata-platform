@@ -51,7 +51,6 @@ public class JBossSSOLoginModule implements LoginModule {
 
     private CallbackHandler callbackHandler;
     private Subject subject;
-    private Map<String, ?> options;
     private String username;
     private char[] password;
     private String jbossSSOServerUrl = "https://sso.jboss.org";
@@ -62,7 +61,6 @@ public class JBossSSOLoginModule implements LoginModule {
             Map<String, ?> sharedState, Map<String, ?> options) {
         this.callbackHandler = callbackHandler;
         this.subject = subject;
-        this.options = options;
         if (options.containsKey("serverURL")) {
             jbossSSOServerUrl = (String) options.get("serverURL");
         }

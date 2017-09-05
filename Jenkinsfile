@@ -290,7 +290,7 @@ timestamps {
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '419',
+                unstableTotalAll: '300',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
@@ -316,7 +316,7 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.error(e)
+        notify.error(e.toString())
         currentBuild.result = 'FAILURE'
         // abort the rest of the pipeline
         throw e

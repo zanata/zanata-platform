@@ -1035,7 +1035,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * the helper methods, since that makes the code very hard to read.
      */
     private class QueryMatchProcessor {
-        public static final boolean SORT_BY_DATE = false;
         private final TransMemoryQuery query;
         private final LocaleId srcLocale;
         private final LocaleId transLocale;

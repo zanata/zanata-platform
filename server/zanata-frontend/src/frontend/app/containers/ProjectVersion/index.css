@@ -34,6 +34,19 @@
   padding: 0.25rem;
 }
 
+.label-success {
+  background-color: #62c876 !important;
+}
+
+button#percent-dropdown-basic {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
+
+#TM-merge-modal .label-default {
+  background-color: #A2B3BE;
+}
+
 .vmerge-boxes .panel-group {
   margin-bottom: 0;
 }
@@ -54,7 +67,7 @@
 
 .vmerge-title-flex {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
@@ -62,14 +75,23 @@
   margin-left: 1em;
 }
 
+.vmerge-searchbox {
+  display: inline-flex;
+}
+
+#TM-merge-modal .search-input .input-group {
+  margin-bottom: 1.5em;
+}
+
 .vmerge-searchbox .input-group-addon {
   color: @color-muted;
   height: 2rem;
 }
 
-.vmerge-boxes .info-icon {
-  vertical-align: sub;
+.vmerge-boxes .info-icon, .s0.info-icon {
+  vertical-align: middle;
   margin-left: 0.375em;
+  color: #03A6D7;
 }
 
 .vmerge-boxes li.v.list-group-item label.checkbox-inline {
@@ -97,10 +119,6 @@
   font-size: 0.85em;
 }
 
-.vmerge-searchbox {
-  margin-bottom: 1em;
-}
-
 .modal-body .dropdown .dropdown-menu > li > a {
   font-size: 1em;
 }
@@ -115,7 +133,7 @@
   color: @color-muted;
 }
 
-.panel-title {
+#TM-merge-modal .panel-title {
   font-size: 1rem !important;
   margin: 0 !important;
   font-weight: 400;
@@ -147,13 +165,13 @@
   z-index: 10000 !important;
 }
 
-.new-zanata .button.btn-primary {
+#TM-merge-modal .button.btn-primary {
   color: #fff !important;
   border-color: @color-neutral !important;
   background-color: @color-light !important;
 }
 
-.new-zanata .button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+.button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
   background-color: transparent !important;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
@@ -174,7 +192,6 @@
 }
 
 .new-zanata #TM-merge-modal label {
-  color: @color-dark;
   font-weight: 500;
 }
 
@@ -184,6 +201,7 @@
 
 #TM-merge-modal .panel-group .panel-heading {
   border-bottom: 1px solid #cdd4dc !important;
+  margin-left: 1.5rem;
 }
 
 #TM-merge-modal .modal-body .intro {
@@ -196,6 +214,10 @@
   backface-visibility: hidden;
 }
 
+.import-type {
+  font-size: 1.1rem;
+}
+
 .tmx-icon {
   margin-right: 0.375rem;
 }
@@ -204,7 +226,7 @@
   margin-right: 1rem;
 }
 
-li.v input.checkbox {
+#TM-merge-modal li.v input.checkbox {
   margin-left: 1rem;
 }
 
@@ -213,11 +235,11 @@ li.v input.checkbox {
   align-items: center;
 }
 
-#languages-dd span.s1 {
+#TM-merge-modal #languages-dd span.s1 {
   margin-right: 0.375rem;
 }
 
-.s0.icon-locked {
+#TM-merge-modal .s0.icon-locked {
   color: #FFA800 !important;
   vertical-align: middle;
   margin-left: 0.375em;
@@ -233,12 +255,11 @@ li.v input.checkbox {
 
 .validations span {
   font-weight: 500;
-  font-size: 1.1rem;
 }
 
-.radio.has-success label,
-.radio.has-warning label,
-.radio.has-error label {
+#TM-merge-modal .radio.has-success label,
+#TM-merge-modal .radio.has-warning label,
+#TM-merge-modal .radio.has-error label {
   font-weight: 500;
   font-size: 0.975rem;
 }
@@ -252,17 +273,17 @@ li.v input.checkbox {
   padding-right: 1rem;
 }
 
-p.lead {
+#TM-merge-modal p.lead {
   font-weight: 400;
   margin-bottom: 0.5rem;
 }
 
-li.v span.text-muted {
+#TM-merge-modal li.v span.text-muted {
   font-weight: 500;
   margin-left: 2.5rem;
 }
 
-li.list-group-item.to .item {
+#TM-merge-modal li.list-group-item.to .item {
   vertical-align: middle;
   margin-right: 1.5rem;
 }
@@ -271,23 +292,23 @@ li.list-group-item.to .item .tmx-icon {
   vertical-align: sub;
 }
 
-.panel-name {
+#TM-merge-modal .panel-name {
   font-size: 1.1rem;
 }
 
-.tooltip-btn {
+#TM-merge-modal .tooltip-btn {
   padding: 0;
 }
 
-.well {
+#TM-merge-modal .well {
   background-color: #fff;
   border-color: #BDD4DC;
   text-align: center;
   margin-top: 2rem;
 }
 
-.well p {
-  padding-top: 1.5rem;
+#TM-merge-modal .well p {
+  padding: 1.5rem;
   font-size: 1.1rem;
 }
 
@@ -304,16 +325,32 @@ li.list-group-item.to .item .tmx-icon {
   margin-top: 1rem;
 }
 
-.radio.disabled {
+#TM-merge-modal .radio.disabled {
   opacity: 0.5;
 }
 
-.radio input[type=radio] {
+#TM-merge-modal .radio input[type=radio] {
   margin-bottom: 0.75rem;
+  margin-left: 1rem;
 }
 
-.btn-link {
+#TM-merge-modal .btn-link {
   line-height: inherit;
+}
+
+#TM-merge-modal .panel-title p {
+  hyphens: initial;
+}
+
+p.vmerge-title.text-new-blue {
+  display: inline-flex;
+  align-items: center;
+}
+
+p.vmerge-title.text-new-blue .dropdown {
+  width: unset;
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
 }
 
 /* React Toggle Component CSS */
@@ -443,4 +480,17 @@ li.list-group-item.to .item .tmx-icon {
 
 .react-toggle--checked .react-toggle-thumb {
   left: 27px;
+}
+
+@media (max-width: 991px) {
+  #TM-merge-modal .label {
+    margin-left: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  #TM-merge-modal .label {
+    margin-left: 0;
+    margin-top: 0.75rem;
+  }
 }
