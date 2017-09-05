@@ -101,7 +101,7 @@ const MergeOptions = (
               <span className="panel-name">Target</span>
             </div>
             <ul>
-              <li className='list-group-item to' title='target project'>
+              <li className='list-group-item to' title='target project version'>
                 <ProjectVersionHorizontal projectSlug={projectSlug}
                   versionSlug={versionSlug} />
                 <span className='item' id="languages-dd">
@@ -115,7 +115,7 @@ const MergeOptions = (
       </Col>
       <Col xs={12} className='vmerge-row'>
         <p className="lead">For every potential translation:</p>
-        <p className="vmerge-title text-new-blue">
+        <div className="vmerge-title text-new-blue">
           If text is less than
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
             id='percent-dropdown-basic' className='vmerge-ddown'
@@ -123,7 +123,7 @@ const MergeOptions = (
             selectedValue={mergeOptions.matchPercentage}
             valueToDisplay={percentValueToDisplay}
             values={[80, 90, 100]} /> similar, don't use it.
-        </p>
+        </div>
       </Col>
       <Col xs={12} className='vmerge-boxes'>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
