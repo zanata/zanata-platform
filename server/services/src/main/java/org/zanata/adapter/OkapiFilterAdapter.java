@@ -39,8 +39,6 @@ import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.resource.StartSubDocument;
 import net.sf.okapi.common.resource.TextUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.adapter.TranslatableSeparator.SplitString;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -71,8 +69,6 @@ import static net.sf.okapi.common.LocaleId.fromString;
  *
  */
 public class OkapiFilterAdapter implements FileFormatAdapter {
-    private Logger log;
-
     /**
      * Determines how TextFlow ids are assigned for Okapi TextUnits
      */
@@ -151,8 +147,6 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         this.idSource = idSource;
         this.requireFileOutput = requireFileOutput;
         this.separateNonTranslatable = separateNonTranslatable;
-
-        log = LoggerFactory.getLogger(OkapiFilterAdapter.class);
     }
 
     protected IFilter getFilter() {

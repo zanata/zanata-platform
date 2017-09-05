@@ -511,14 +511,6 @@ img.activity-avatar {
   border-left: solid 5px var(--Editor-color-approved);
 }
 
-.revision-box .well-sm {
-  background-color: rgba(255, 255, 255, 0.35) !important;
-}
-
-.criteria-text {
-  font-weight: 600;
-}
-
 .trans-comment-box {
   padding: 0.75rem;
   margin-top: 1rem;

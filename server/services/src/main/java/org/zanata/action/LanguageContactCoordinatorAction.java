@@ -71,8 +71,6 @@ public class LanguageContactCoordinatorAction implements Serializable {
     @Inject
     private Messages msgs;
 
-    private String receiver;
-
     private String message;
 
     private String localeId;

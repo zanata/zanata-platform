@@ -22,7 +22,7 @@
   {
     "id": "ActivityFeedItem.rejected",
     "description": "Title for an item in the activity feed showing a reviewer rejected the translation. The inserted section is from ActivityFeedItem.rejected.rejectedTranslation",
-    "defaultMessage": "{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}"
+    "defaultMessage": "{name} has {rejectedTranslation}"
   },
   {
     "id": "ActivityFeedItem.translated.translatedRevision",

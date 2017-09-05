@@ -20,9 +20,8 @@
  */
 
 import React from 'react'
-import {storiesOf} from '@storybook/react'
+import { storiesOf } from '@storybook/react'
 import ActivityFeedItem from '.'
-import {MINOR, MAJOR, CRITICAL} from "./index";
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -33,79 +32,50 @@ const user = {
   username: 'damason',
   name: 'David Mason',
   imageUrl:
-      'http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
+    'http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
 }
 
 storiesOf('ActivityFeedItem', module)
-    .add('comment', () => (
-        <ActivityFeedItem
-            type="comment"
-            content={'What in the world does this mean?'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+  .add('comment', () => (
+    <ActivityFeedItem
+      type="comment"
+      content={'What in the world does this mean?'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
     ))
 
-    .add('translated', () => (
-        <ActivityFeedItem
-            type="revision"
-            status="translated"
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
-    ))
+  .add('translated', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="translated"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))
 
-    .add('fuzzy', () => (
-        <ActivityFeedItem
-            type="revision"
-            status="fuzzy"
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
-    ))
+  .add('fuzzy', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="fuzzy"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))
 
-    .add('approved', () => (
-        <ActivityFeedItem
-            type="revision"
-            status="approved"
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
-    ))
+  .add('approved', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="approved"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))
 
-    .add('rejected - minor priority', () => (
-        <ActivityFeedItem
-            criteria="Spelling and Grammar"
-            type="revision"
-            priority={MINOR}
-            textStatus="u-textHighlight"
-            status="rejected"
-            commentText="You spelt this wrong."
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
-    ))
-    .add('rejected - major priority', () => (
-        <ActivityFeedItem
-            criteria="Spelling and Grammar"
-            type="revision"
-            priority={MAJOR}
-            textStatus="u-textWarning"
-            status="rejected"
-            commentText="You spelt this wrong."
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
-    ))
-    .add('rejected - critical priority', () => (
-        <ActivityFeedItem
-            criteria="Spelling and Grammar"
-            type="revision"
-            priority={CRITICAL}
-            textStatus="u-textDanger"
-            status="rejected"
-            commentText="You spelt this wrong."
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
-    ))
-
+  .add('rejected', () => (
+    <ActivityFeedItem
+      type="revision"
+      status="rejected"
+      content={'নাম'}
+      lastModifiedTime={lastModifiedTime}
+      user={user} />
+  ))

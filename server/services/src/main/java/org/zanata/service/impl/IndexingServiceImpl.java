@@ -35,7 +35,6 @@ import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
@@ -61,8 +60,6 @@ public class IndexingServiceImpl implements IndexingService {
     @Inject
     @Zanata
     private EntityManagerFactory entityManagerFactory;
-    @Inject
-    private HTextFlowTargetStreamingDAO hTextFlowTargetStreamingDAO;
 
     @Override
     @Async

@@ -51,7 +51,7 @@
       function (pre, projectSlug, versionSlug, query) {
         zanata.tabs.activate(jQuery('#documents_tab'));
         var docId = encodeURIComponent(query.docId);
-        var clickEle = jQuery('#' + jqSelector(docId)).children().eq(1);
+        var clickEle = jQuery('#document-' + jqSelector(docId)).children().eq(1);
         if (docId && clickEle.length != 0) {
           updateActiveRow(clickEle);
           toggleColumn('documents');

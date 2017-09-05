@@ -43,7 +43,6 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.dao.VersionGroupDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -72,7 +71,6 @@ public class LocaleServiceImpl implements LocaleService {
     private ProjectDAO projectDAO;
     private ProjectIterationDAO projectIterationDAO;
     private PersonDAO personDAO;
-    private VersionGroupDAO versionGroupDAO;
     private TextFlowTargetDAO textFlowTargetDAO;
 
     public LocaleServiceImpl() {
@@ -80,14 +78,12 @@ public class LocaleServiceImpl implements LocaleService {
 
     public LocaleServiceImpl(LocaleDAO localeDAO, ProjectDAO projectDAO,
             ProjectIterationDAO projectIterationDAO, PersonDAO personDAO,
-            TextFlowTargetDAO textFlowTargetDAO,
-            VersionGroupDAO versionGroupDAO) {
+            TextFlowTargetDAO textFlowTargetDAO) {
         setLocaleDAO(localeDAO);
         setProjectDAO(projectDAO);
         setProjectIterationDAO(projectIterationDAO);
         setPersonDAO(personDAO);
         setTextFlowTargetDAO(textFlowTargetDAO);
-        setVersionGroupDAO(versionGroupDAO);
     }
 
     public static Map<LocaleId, String>
@@ -125,11 +121,6 @@ public class LocaleServiceImpl implements LocaleService {
     @Inject
     public void setPersonDAO(PersonDAO personDAO) {
         this.personDAO = personDAO;
-    }
-
-    @Inject
-    public void setVersionGroupDAO(VersionGroupDAO versionGroupDAO) {
-        this.versionGroupDAO = versionGroupDAO;
     }
 
     public List<HLocale> getAllLocales() {

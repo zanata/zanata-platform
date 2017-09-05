@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
@@ -38,7 +39,6 @@ import javax.inject.Named;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.service.GlossaryService;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.ServerPath;
 
@@ -334,26 +334,4 @@ public class UrlUtil implements Serializable {
         return contextPath + "/account/inactive" + dswidQuery;
     }
 
-    /**
-     * Get glossary url with dswid parameter
-     */
-    public String glossaryUrl(String qualifiedName, String filter,
-            LocaleId localeId) {
-        String url = contextPath;
-        if (GlossaryService.isProjectGlossary(qualifiedName)) {
-            String projectSlug = GlossaryService.getProjectSlug(qualifiedName);
-            url = url + "/glossary/project/" + projectSlug;
-        } else {
-            url = url + "/glossary";
-        }
-        boolean hasFilter = StringUtils.isNotBlank(filter);
-        if (hasFilter) {
-            url += "?filter=" + encodeString(filter);
-        }
-        if (localeId != null) {
-            String prefix = hasFilter ? "&" : "?";
-            url += prefix + "locale=" + localeId;
-        }
-        return url;
-    }
 }
