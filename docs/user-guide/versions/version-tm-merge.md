@@ -17,19 +17,31 @@ TM Merge allows project maintainers to copy translations from TM based on certai
         <td>Different content</td><td>above selected threshold (80%, 90%)</td><td>Copy as fuzzy</td>
     </tr>
     <tr>
-        <td>Different document</td><td>Don't copy</td><td>No</td>
+        <td>From different project</td><td>I don't mind at all</td><td>Saved as translated if other conditions are met</td>
     </tr>
     <tr>
-        <td>Different document</td><td>Copy as fuzzy</td><td>Saved as fuzzy</td>
+        <td>From different project</td><td>I will need to review it</td><td>Saved as fuzzy</td>
     </tr>
     <tr>
-        <td>Different msgctxt or res ID (message context)</td><td>Don't copy</td><td>No</td>
+        <td>Different document</td><td>I don't want it</td><td>No</td>
     </tr>
     <tr>
-        <td>Different msgctxt or res ID (message context)</td><td>Copy as fuzzy</td><td>Saved as fuzzy</td>
+        <td>Different document</td><td>I will need to review it</td><td>Saved as fuzzy</td>
     </tr>
     <tr>
-        <td>From imported TM (TMX import)</td><td>Don't copy</td><td>No</td>
+        <td>Different document</td><td>I don't mind at all</td><td>Saved as translated if other conditions are met</td>
+    </tr>
+    <tr>
+        <td>Different msgctxt or res ID (message context)</td><td>I don't want it</td><td>No</td>
+    </tr>
+    <tr>
+        <td>Different msgctxt or res ID (message context)</td><td>I will need to review it</td><td>Saved as fuzzy</td>
+    </tr>
+    <tr>
+        <td>Different msgctxt or res ID (message context)</td><td>I don't mind at all</td><td>Saved as translated if other conditions are met</td>
+    </tr>
+    <tr>
+        <td>From imported TM (TMX import)</td><td>I don't mind at all</td><td>Saved as translated if other conditions are met</td>
     </tr>
     <tr>
         <td>From imported TM (TMX import)</td><td>Copy as fuzzy</td><td>Saved as fuzzy</td>
