@@ -94,8 +94,6 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
 @RequestScoped
 @Transactional(readOnly = true)
 public class StatisticsServiceImpl implements StatisticsResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(StatisticsServiceImpl.class);
     private static final long serialVersionUID = 4936614337971433129L;
 
     @Inject

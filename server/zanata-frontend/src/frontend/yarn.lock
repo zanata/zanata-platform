@@ -8172,6 +8172,12 @@ react-themeable@^1.1.0:
   dependencies:
     object-assign "^3.0.0"
 
+react-toggle@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/react-toggle/-/react-toggle-4.0.1.tgz#0e83e8c94d94232debfa21a938ff3d2b2106ec72"
+  dependencies:
+    classnames "^2.2.5"
+
 react-transform-catch-errors@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-transform-catch-errors/-/react-transform-catch-errors-1.0.2.tgz#1b4d4a76e97271896fc16fe3086c793ec88a9eeb"

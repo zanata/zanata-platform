@@ -48,8 +48,6 @@ import org.zanata.util.HashUtil;
 @RequestScoped
 @Transactional
 public class UserAccountServiceImpl implements UserAccountService {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(UserAccountServiceImpl.class);
     private static final long serialVersionUID = -6318120298386269907L;
 
     @Inject

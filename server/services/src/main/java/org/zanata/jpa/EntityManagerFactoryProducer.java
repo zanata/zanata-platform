@@ -28,8 +28,6 @@ import javax.persistence.PersistenceUnit;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.util.Zanata;
 
 /**
@@ -37,9 +35,6 @@ import org.zanata.util.Zanata;
  */
 @ApplicationScoped
 public class EntityManagerFactoryProducer {
-    private static final Logger log =
-            LoggerFactory.getLogger(EntityManagerFactoryProducer.class);
-
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
 

@@ -115,8 +115,8 @@ public class Deployments {
                 .asFile();
     }
 
-    @Deployment(name = "zanata.war")
-    public static Archive<?> createDeployment() {
+    @Deployment(name = "zanata-tests.war")
+    public static WebArchive createDeployment() {
         WebArchive archive =
                 ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
         // TODO add org.zanata packages on classpath first, exclude any libraries with colliding classes
