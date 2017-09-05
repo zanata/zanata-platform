@@ -341,15 +341,19 @@ li.list-group-item.to .item .tmx-icon {
   hyphens: initial;
 }
 
-p.vmerge-title.text-new-blue {
+.vmerge-title.text-new-blue {
   display: inline-flex;
   align-items: center;
 }
 
-p.vmerge-title.text-new-blue .dropdown {
+.vmerge-title.text-new-blue .dropdown {
   width: unset;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
+}
+
+.vmerge-searchbox span {
+  margin-right: 1.5rem;
 }
 
 /* React Toggle Component CSS */

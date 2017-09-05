@@ -149,7 +149,7 @@ class TMMergeProjectSources extends Component {
           </div>
         </Col>
         <Col xs={12} className='vmerge-searchbox'>
-          Search TM from
+          <span>Search TM from</span>
           <Radio name="fromProjectSelection" inline disabled={disabled}
             checked={this.state.fromProjectSelection === SAME}
             onChange={this.onFromProjectSelectionChange(SAME)}> this project
