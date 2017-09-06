@@ -58,7 +58,7 @@
           <zanata:checkbox label="#{msgs['jsf.project.Private']}"
             onValueChanged="privateValueChangedWrapper"
             labelStyle="js-reveal__toggle l--push-bottom-0"
-            checked="#{!projectHome.instance.privateProject()}"
+            checked="#{projectHome.instance.isPrivateProject()}"
             value="allow-global-translation"/>
         </h:panelGroup>
         <p>#{msgs['jsf.project.private.detail']}</p>
