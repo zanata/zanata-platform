@@ -3,12 +3,11 @@ import PropTypes from 'prop-types'
 import SettingOption from '../SettingOption'
 
 const SettingsOptions = ({settings, updateSetting}) => {
-
   const checkboxes = settings.map((setting, index) => (
     <li key={index}>
       <SettingOption
-         updateSetting={updateSetting}
-         {...setting} />
+        updateSetting={updateSetting}
+        {...setting} />
     </li>
   ))
   return (
@@ -22,7 +21,8 @@ const SettingsOptions = ({settings, updateSetting}) => {
 
 SettingsOptions.propTypes = {
   settings: PropTypes.shape({
-    id: PropTypes.any.isRequired, // I will update this to whatever I use when I wire it up
+    // FIXME update to appropriate type
+    id: PropTypes.any.isRequired,
     label: PropTypes.string.isRequired,
     active: PropTypes.bool.isRequired
   }).isRequired,

@@ -5,7 +5,8 @@ import { Checkbox } from 'react-bootstrap'
 class SettingOption extends React.Component {
   propTypes = {
     setting: PropTypes.shape({
-      id: PropTypes.any.isRequired, // I will update this to whatever I use when I wire it up
+      // FIXME update type
+      id: PropTypes.any.isRequired,
       label: PropTypes.string.isRequired,
       active: PropTypes.bool.isRequired
     }).isRequired,
@@ -14,11 +15,11 @@ class SettingOption extends React.Component {
   }
 
   updateSetting = (event) => {
-    this.props.updateSetting(this.props.id, event.target.checked)
+    this.props.updateSetting(this.props.setting.id, event.target.checked)
   }
 
   render () {
-    const { label, active } = this.props
+    const { label, active } = this.props.setting
     return (
       <Checkbox checked={active}
         onChange={this.updateSetting}>
