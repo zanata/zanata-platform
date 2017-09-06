@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
+import {
+  Alert, Button, Panel, Row, InputGroup, Col, FormControl
+} from 'react-bootstrap'
 import {
   Icon, Modal, LoaderText, SelectableDropdown, DraggableVersionPanels,
   TriCheckbox
@@ -483,13 +485,16 @@ class TMMergeModal extends Component {
         </Row>
       </span>
     )
+    // TODO: Implement custom style .modal__alert--affix
+    const Notify = <Alert bsStyle='danger' className='modal__alert--affix'>
+      {notification && notification.message}
+    </Alert>
     return (
       <Modal id="TM-merge-modal" show={showTMMergeModal}
         onHide={toggleTMMergeModal} keyboard backdrop>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
-          <p className="text-danger modal-danger">
-            {notification && notification.message}</p>
+            {notification && Notify}
         </Modal.Header>
         <Modal.Body>{modalBody}</Modal.Body>
         <Modal.Footer>{modalFooter}</Modal.Footer>

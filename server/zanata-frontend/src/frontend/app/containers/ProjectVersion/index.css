@@ -115,6 +115,13 @@
   color: @color-muted;
 }
 
+.modal__alert--affix {
+  position: fixed !important;
+  z-index: 1060 !important;
+  max-width: 45rem;
+  width: 60%;
+}
+
 .panel-title {
   font-size: 1rem !important;
   margin: 0 !important;
