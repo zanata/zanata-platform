@@ -7,6 +7,7 @@ import PhraseStatusFilter from '../components/PhraseStatusFilter'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { getSuggestionsPanelVisible } from '../reducers'
 import { setSidebarVisibility } from '../actions'
 import {
   toggleGlossary,
@@ -45,16 +46,13 @@ class ControlsHeader extends React.Component {
       pageNumber: number.isRequired,
       pageCount: number
     }).isRequired,
-
+    suggestionsVisible: bool.isRequired,
     ui: shape({
       panels: shape({
         sidebar: shape({
           visible: bool.isRequired
         }).isRequired,
         navHeader: shape({
-          visible: bool.isRequired
-        }).isRequired,
-        suggestions: shape({
           visible: bool.isRequired
         }).isRequired
       }).isRequired,
@@ -107,11 +105,11 @@ class ControlsHeader extends React.Component {
             <li className="u-sM-1-8">
               <IconButtonToggle
                 icon="suggestions"
-                title={this.props.ui.panels.suggestions.visible
+                title={this.props.suggestionsVisible
                   ? gettextCatalog.getString('Hide suggestions panel')
                   : gettextCatalog.getString('Show suggestions panel')}
                 onClick={toggleSuggestionPanel}
-                active={this.props.ui.panels.suggestions.visible} />
+                active={this.props.suggestionsVisible} />
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
@@ -176,6 +174,8 @@ function mapStateToProps (state) {
   const pageCount = getMaxPageIndex(state) + 1
   const pageNumber = Math.min(pageCount, phrases.paging.pageIndex + 1)
 
+  const suggestionsVisible = getSuggestionsPanelVisible(state)
+
   return {
     actions,
     paging: {
@@ -183,7 +183,8 @@ function mapStateToProps (state) {
       pageCount: pageCount,
       pageNumber: pageNumber
     },
-    ui
+    ui,
+    suggestionsVisible
   }
 }
 

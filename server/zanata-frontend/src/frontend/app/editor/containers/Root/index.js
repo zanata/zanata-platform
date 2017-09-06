@@ -7,6 +7,7 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
+import { getSuggestionsPanelVisible } from '../../reducers'
 import { setSidebarVisibility } from '../../actions'
 import { fetchUiLocales } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
@@ -94,11 +95,12 @@ class Root extends Component {
   }
 }
 
-function mapStateToProps ({ ui }) {
+function mapStateToProps (state) {
+  const { sidebar, suggestions } = state.ui.panels
   return {
-    percentHeight: ui.panels.suggestions.heightPercent,
-    showSidebar: ui.panels.sidebar.visible,
-    showSuggestion: ui.panels.suggestions.visible
+    percentHeight: suggestions.heightPercent,
+    showSidebar: sidebar.visible,
+    showSuggestion: getSuggestionsPanelVisible(state)
   }
 }
 

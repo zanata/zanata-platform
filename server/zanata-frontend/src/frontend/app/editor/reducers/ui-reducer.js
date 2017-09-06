@@ -7,8 +7,7 @@ import {
   UI_LOCALES_FETCHED
 } from '../actions/header-action-types'
 import {
-  SUGGESTION_PANEL_HEIGHT_CHANGE,
-  TOGGLE_SUGGESTIONS
+  SUGGESTION_PANEL_HEIGHT_CHANGE
 } from '../actions/suggestions-action-types'
 import {prepareLocales} from '../utils/Util'
 import updateObject from 'immutability-helper'
@@ -36,7 +35,6 @@ const defaultState = {
       selectedTab: GLOSSARY_TAB
     },
     suggestions: {
-      visible: true,
       heightPercent: 0.3
     },
     keyShortcuts: {
@@ -78,15 +76,6 @@ const ui = (state = defaultState, action) => {
         panels: {
           navHeader: {
             visible: {$set: !state.panels.navHeader.visible}
-          }
-        }
-      })
-
-    case TOGGLE_SUGGESTIONS:
-      return update({
-        panels: {
-          suggestions: {
-            visible: {$set: !state.panels.suggestions.visible}
           }
         }
       })
