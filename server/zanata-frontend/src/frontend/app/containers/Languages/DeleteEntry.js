@@ -25,10 +25,10 @@ class DeleteEntry extends Component {
     } = this.props
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='block-inline'>
+      <div className='u-blockInline'>
         <Button bsSize='small' className='langdel-btn'
           onClick={() => handleDeleteEntryDisplay(true)}>
-          <Icon name='cross' className='n2 crossicon' title='cross' />
+          <Icon name='cross' className='n2 iconCross' title='cross' />
           Delete
         </Button>
         <Overlay show={show} placement='top'

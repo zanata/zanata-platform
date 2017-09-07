@@ -63,7 +63,7 @@ const MergeOptions = (
       <Panel>
         <Col xs={3}>
           <div className='vmerge-title'>
-            <span className='text-info'>From</span>
+            <span className='u-textInfo'>From</span>
             <span>Source</span>
           </div>
         </Col>
@@ -87,7 +87,7 @@ const MergeOptions = (
           <div>
             <LoaderText loading={fetchingProject}
               loadingText={'Fetching Projects'} />
-            <span className="text-muted">{noResults}</span>
+            <span className="u-textMuted">{noResults}</span>
           </div>
           <ProjectVersionPanels projectVersions={projectVersions}
             selectedVersions={mergeOptions.selectedVersions}
@@ -112,7 +112,7 @@ const MergeOptions = (
       </p>
       <Col xs={12} className='vmerge-row'>
         <Col xs={4}>
-          <span className='vmerge-title text-info'>TM match threshold</span>
+          <span className='vmerge-title u-textInfo'>TM match threshold</span>
         </Col>
         <Col xs={5}>
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
@@ -132,7 +132,7 @@ const MergeOptions = (
         onImportedCheckboxChange={onImportedCheckboxChange} />
       <Col xs={12} className='vmerge-row'>
         <Col xs={2}>
-          <span className='vmerge-title text-info' id="languages-dd">
+          <span className='vmerge-title u-textInfo' id="languages-dd">
             <Icon name="language" className="s1" />
             Language
           </span>
@@ -154,7 +154,7 @@ const MergeOptions = (
         <Panel>
           <div className='vmerge-target'>
             <div className='vmerge-title'>
-              <span className='text-info'>To</span>
+              <span className='u-textInfo'>To</span>
               <span>Target</span>
             </div>
             <ProjectVersionVertical projectSlug={projectSlug}
@@ -488,7 +488,7 @@ class TMMergeModal extends Component {
         onHide={toggleTMMergeModal} keyboard backdrop>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
-          <p className="text-danger modal-danger">
+          <p className="u-textDanger modalText-danger">
             {notification && notification.message}</p>
         </Modal.Header>
         <Modal.Body>{modalBody}</Modal.Body>

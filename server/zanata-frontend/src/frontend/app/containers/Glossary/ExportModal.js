@@ -64,7 +64,7 @@ class ExportModal extends Component {
           <Select
             disabled={isExporting}
             name='glossary-export-type-selection'
-            className='modal-select'
+            className='modalSelect'
             placeholder='Select a file type…'
             value={type}
             options={types}
@@ -73,7 +73,7 @@ class ExportModal extends Component {
             {message}
             <br />
             For more details on how to export glossary
-            files, see our <a href={exportGlossaryUrl} className='text-info'
+            files, see our <a href={exportGlossaryUrl} className='u-textInfo'
               target='_blank'>glossary export documentation</a>.
           </p>
         </Modal.Body>

@@ -79,14 +79,14 @@ class ViewHeader extends Component {
 
   localeOptionsRenderer = (op) => {
     return (
-      <span className='locale-options'>
-        <span className='locale-options-label' title={op.label}>
+      <span className='localeOptions'>
+        <span className='localeOptions-label' title={op.label}>
           {op.label}
         </span>
-        <span className='locale-options-value'>
+        <span className='localeOptions-value'>
           {op.value}
         </span>
-        <span className='locale-options-count'>
+        <span className='localeOptions-count'>
           {op.count}
         </span>
       </span>
@@ -127,17 +127,17 @@ class ViewHeader extends Component {
     permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon name='locked' className='s1 lockedicon' />
+        <Icon name='locked' className='s1 iconLocked' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
     const projectUrl = project && getProjectUrl(project)
 
     const projectLink = project && (
-      <div className='project-link'>
+      <div className='projectLink'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon name='project' className='s1 projecticon' />
+            <Icon name='project' className='s1 iconProject' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
@@ -151,7 +151,7 @@ class ViewHeader extends Component {
         extraElements={(
           <div className='flex-row-center'>
             <TextInput
-              className='text-input glossary-search'
+              className='textInput glossary-search'
               ref={(ref) => this.searchInput = ref}
               type='search'
               placeholder='Search Terms…'
@@ -166,11 +166,11 @@ class ViewHeader extends Component {
             </Button>
 
                   {permission.canAddNewEntry && (
-                    <div className='glossary-button'>
+                    <div className='glossaryBtn'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleImportFileDisplay(true)}>
                         <Row>
-                          <Icon name='import' className='import-icon s1' />
+                          <Icon name='import' className='iconImport s1' />
                           <span className='hidden-lesm'>Import</span>
                         </Row>
                       </Button>
@@ -178,11 +178,11 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canDownload && !isEmptyTerms && (
-                    <div className='glossary-button'>
+                    <div className='glossaryBtn'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleExportFileDisplay(true)}>
                         <Row>
-                          <Icon name='export' className='export-icon s1' />
+                          <Icon name='export' className='iconExport s1' />
                           <span className='hidden-lesm'>Export</span>
                         </Row>
                       </Button>
@@ -190,11 +190,11 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canAddNewEntry && (
-                    <div className='glossary-button'>
+                    <div className='glossaryBtn'>
                       <Button bsStyle='link' onClick={() =>
                         handleNewEntryDisplay(true)}>
                         <Row>
-                          <Icon name='plus' className='plus-icon s1' />
+                          <Icon name='plus' className='iconPlus2 s1' />
                           <span className='hidden-lesm'>New</span>
                         </Row>
                       </Button>
@@ -202,7 +202,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {showDeleteAll && (
-                    <div className='glossary-button'>
+                    <div className='glossaryBtn'>
                       <DeleteAllEntriesModal show={deleteAll.show}
                         isDeleting={deleteAll.isDeleting}
                         handleDeleteAllEntriesDisplay={
@@ -211,7 +211,7 @@ class ViewHeader extends Component {
                     </div>)}
           </div>
         )}>
-        <div className='glossary-table'>
+        <div className='glossaryTable'>
           <table>
             <tbody>
               <tr className='tr-flex1'>
@@ -225,21 +225,21 @@ class ViewHeader extends Component {
                           : <Icon name='chevron-up' className='s1' />
                         : ''}
                       <Icon name='glossary'
-                        className='s1 glossaryicon-neutral' />
+                        className='s1 iconGlossary-neutral' />
                       <span>
                       English (United States)
                       </span>
-                      <span className='muted-left'>{termCount}</span>
+                      <span className='u-textMutedLeft'>{termCount}</span>
                     </Row>
                   </Button>
                 </td>
                 <td
-                  className='lang-select td-3'>
+                  className='languageSelect td-3'>
                   <Select
                     name='language-selection'
                     placeholder={statsLoading
                       ? 'Loading…' : 'Select a language…'}
-                    className='input-flex'
+                    className='inputFlex'
                     isLoading={statsLoading}
                     value={selectedTransLocale}
                     options={transLocales}
@@ -251,7 +251,7 @@ class ViewHeader extends Component {
                   (<span className='hidden-xs'>
                     <Row>
                       <Icon name='translate' className='s1
-                        translateicon-neutral' />
+                        iconTranslate-neutral' />
                       <span className='text-neutral'>
                       {currentLocaleCount}
                       </span>

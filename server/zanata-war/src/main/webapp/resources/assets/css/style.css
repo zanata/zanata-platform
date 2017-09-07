@@ -2913,7 +2913,7 @@ Centered grids align grid items centrally without needing to use push or pull cl
 ```
 
 */
-.new-zanata .txt--understated, .new-zanata .i--understated:before {
+.new-zanata .u-textUnderstated, .new-zanata .i--understated:before {
   color: #639cad;
 }
 
@@ -2983,7 +2983,7 @@ Centered grids align grid items centrally without needing to use push or pull cl
 .new-zanata .txt--required {
   color: #FF3B3D !important;
 }
-.new-zanata .txt--neutral, .new-zanata .message--neutral,
+.new-zanata .u-textNeutral, .new-zanata .message--neutral,
 .new-zanata .txt--state-neutral {
   color: #bcd4dc !important;
 }
@@ -8114,7 +8114,7 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
 .new-zanata .autocomplete__result.is-selected a {
   color: #fff;
 }
-.new-zanata .autocomplete__result.is-selected .txt--understated, .new-zanata .autocomplete__result.is-selected .i--understated:before {
+.new-zanata .autocomplete__result.is-selected .u-textUnderstated, .new-zanata .autocomplete__result.is-selected .i--understated:before {
   color: #d2e3e8;
 }
 
@@ -8525,7 +8525,7 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
   color: #f2f2f2;
 }
 .new-zanata .rf-au-itm-sel .txt--meta,
-.new-zanata .rf-au-itm-sel .txt--understated,
+.new-zanata .rf-au-itm-sel .u-textUnderstated,
 .new-zanata .rf-au-itm-sel .i--understated:before {
   color: #bcd4dc;
 }

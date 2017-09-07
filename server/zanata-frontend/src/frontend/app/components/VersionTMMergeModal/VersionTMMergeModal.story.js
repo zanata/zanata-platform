@@ -54,7 +54,7 @@ storiesOf('VersionTMMergeModal', module)
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
-            <Modal.Title><span className="text-new-blue">Version TM Merge</span></Modal.Title>
+            <Modal.Title><span className="u-textNewBlue">Version TM Merge</span></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p className="intro">
@@ -103,7 +103,7 @@ storiesOf('VersionTMMergeModal', module)
             </Col>
             <Col xs={12} className='vmerge-row'>
               <p className="lead">For every potential translation:</p>
-              <span className="text-new-blue">If text is less than </span>
+              <span className="u-textNewBlue">If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
                               id='language-dropdown-basic'
                               className='vmerge-ddown'>
@@ -113,7 +113,7 @@ storiesOf('VersionTMMergeModal', module)
                           eventKey='1'>90%</MenuItem>
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>80%</MenuItem>
-              </DropdownButton><span className="text-new-blue"> &nbsp;similar, don't use it.
+              </DropdownButton><span className="u-textNewBlue"> &nbsp;similar, don't use it.
             </span>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
@@ -203,7 +203,7 @@ storiesOf('VersionTMMergeModal', module)
                    <span className="vmerge-adjtitle vmerge-title">
           Adjust priority of selected versions
           </span><br/>
-                  <span className="text-muted vmerge-adjsub">(best first)
+                  <span className="u-textMuted vmerge-adjsub">(best first)
                    <OverlayTrigger placement='right' overlay={tooltip2}>
                       <Button bsStyle="link" className="tooltip-btn">
                         <Icon name="info" className="s0 info-icon"/>
@@ -214,22 +214,22 @@ storiesOf('VersionTMMergeModal', module)
                     <ListGroupItem className='v'>
                       <Icon name='menu' className='n1 drag-handle'/>
                       Version 1 <Icon name='locked' className='s0 icon-locked'/>
-                      <br/><span className='text-muted'>  Project A
+                      <br/><span className='u-textMuted'>  Project A
                        </span>
                       {" "}
                       <Button bsSize='xsmall' className='close rm-version-btn'>
-                        <Icon name='cross' className='n2 crossicon'
+                        <Icon name='cross' className='n2 iconCross'
                               title='remove version'/>
                       </Button>
                     </ListGroupItem>
                     <ListGroupItem className='v'>
                       <Icon name='menu' className='n1 drag-handle'/>
                       Version 2 <Icon name='locked' className='s0 icon-locked'/>
-                      <br/><span className='text-muted'>  Project A
+                      <br/><span className='u-textMuted'>  Project A
                        </span>
                       {" "}
                       <Button bsSize='xsmall' className='close rm-version-btn'>
-                        <Icon name='cross' className='n2 crossicon'
+                        <Icon name='cross' className='n2 iconCross'
                               title='remove version'/>
                       </Button>
                     </ListGroupItem>
@@ -294,7 +294,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12}>
                   <Well>
                     <p>Translations which satisfy all conditions will copy as
-                      <span className="text-bold text-success"> translated</span>.
+                      <span className="text-bold u-textSuccess"> translated</span>.
                     </p>
                   </Well>
                 </Col>
@@ -357,7 +357,7 @@ storiesOf('VersionTMMergeModal', module)
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
-            <Modal.Title><span className="text-new-blue">Version TM Merge</span></Modal.Title>
+            <Modal.Title><span className="u-textNewBlue">Version TM Merge</span></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p className="intro">
@@ -406,7 +406,7 @@ storiesOf('VersionTMMergeModal', module)
             </Col>
             <Col xs={12} className='vmerge-row'>
               <p className="lead">For every potential translation:</p>
-              <span className="text-new-blue">If text is less than </span>
+              <span className="u-textNewBlue">If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
                               id='language-dropdown-basic'
                               className='vmerge-ddown'>
@@ -416,7 +416,7 @@ storiesOf('VersionTMMergeModal', module)
                           eventKey='1'>90%</MenuItem>
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>80%</MenuItem>
-              </DropdownButton><span className="text-new-blue"> &nbsp;similar, don't use it.
+              </DropdownButton><span className="u-textNewBlue"> &nbsp;similar, don't use it.
             </span>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
@@ -503,7 +503,7 @@ storiesOf('VersionTMMergeModal', module)
                   </div>
                 </Col>
                 <Col xs={6}>
-                  <span className="no-v text-muted">Please select versions to sort<br/>
+                  <span className="no-v u-textMuted">Please select versions to sort<br/>
                     <Icon name="version" className="s8"/></span>
                 </Col>
                 <Col xs={12} className="validations">
@@ -565,7 +565,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12}>
                   <Well>
                     <p>Translations which satisfy all conditions will copy as
-                      <span className="text-bold text-success"> translated</span>.
+                      <span className="text-bold u-textSuccess"> translated</span>.
                     </p>
                   </Well>
                 </Col>
@@ -628,7 +628,7 @@ storiesOf('VersionTMMergeModal', module)
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
-            <Modal.Title><span className="text-new-blue">Version TM Merge</span></Modal.Title>
+            <Modal.Title><span className="u-textNewBlue">Version TM Merge</span></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p className="intro">
@@ -677,7 +677,7 @@ storiesOf('VersionTMMergeModal', module)
             </Col>
             <Col xs={12} className='vmerge-row'>
               <p className="lead">For every potential translation:</p>
-              <span className="text-new-blue">If text is less than </span>
+              <span className="u-textNewBlue">If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
                               id='language-dropdown-basic'
                               className='vmerge-ddown'>
@@ -687,7 +687,7 @@ storiesOf('VersionTMMergeModal', module)
                           eventKey='1'>90%</MenuItem>
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>80%</MenuItem>
-              </DropdownButton><span className="text-new-blue"> &nbsp;similar, don't use it.
+              </DropdownButton><span className="u-textNewBlue"> &nbsp;similar, don't use it.
             </span>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
@@ -774,7 +774,7 @@ storiesOf('VersionTMMergeModal', module)
                   </div>
                 </Col>
                 <Col xs={6}>
-                  <span className="no-v text-muted">Please select versions to sort<br/>
+                  <span className="no-v u-textMuted">Please select versions to sort<br/>
                     <Icon name="version" className="s8"/></span>
                 </Col>
                 <Col xs={12} className="validations">
@@ -836,7 +836,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12}>
                   <Well>
                     <p>Translations which satisfy all conditions will copy as
-                      <span className="text-bold text-success"> translated</span>.
+                      <span className="text-bold u-textSuccess"> translated</span>.
                     </p>
                   </Well>
                 </Col>

@@ -43,7 +43,7 @@ const DayMatrix = ({
             {dateIsInFuture ? '\u00a0' : wordCount}
           </div>
         </Button>
-        : <div className='stretched-box'></div>}
+        : <div className='matrixBox'></div>}
     </td>
   )
   /* eslint-enable react/jsx-no-bind */

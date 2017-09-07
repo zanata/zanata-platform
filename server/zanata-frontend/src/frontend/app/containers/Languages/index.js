@@ -101,7 +101,7 @@ class Languages extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='page wide-view-theme'>
+      <div className='page wideView'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -120,7 +120,7 @@ class Languages extends Component {
             {permission.canAddLocale &&
               <div>
                 <Button bsStyle='primary' bsSize='small'
-                  id='btn-language-add-new'
+                  id='btnLanguageAdd'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
                     title='plus' />
@@ -130,7 +130,7 @@ class Languages extends Component {
               </div>
             }
             <div className='toolbar col-xs-12'>
-              <FormGroup className='search-box col-xs-6 col-sm-5 col-md-6
+              <FormGroup className='searchBox col-xs-6 col-sm-5 col-md-6
                 col-lg-7'>
                 <InputGroup>
                   <FormControl type='text'
@@ -145,8 +145,8 @@ class Languages extends Component {
               </FormGroup>
 
               {loading
-                ? <div className='content-view-container'>
-                  <span className='list-inline'>
+                ? <div className='containerContentView'>
+                  <span className='listInline'>
                     <LoaderText loading />
                   </span>
                 </div>
@@ -162,7 +162,7 @@ class Languages extends Component {
                     })}
                     </FormControl>
                   </div>
-                  <div className='show-items pull-right col-xs-5
+                  <div className='showItems pull-right col-xs-5
                     col-sm-3 col-md-2 col-lg-2'>
                     <span>Show</span>
                     <FormControl componentClass='select'
@@ -188,7 +188,7 @@ class Languages extends Component {
               }
             </div>
             {!loading &&
-              <div className='left-form tablepadding col-xs-12'>
+              <div className='left-form u-tablePadding col-xs-12'>
                 <table className='table' id='languages-table'>
                   <thead>
                     <tr className='hidden'>

@@ -33,7 +33,7 @@ class RejectionsForm extends Component {
         <span className={this.props.textState}>{this.props.priority}</span>
     )
     return (
-        <Form className='rejections' inline>
+        <Form className='rejectionsForm' inline>
           <FormGroup className='flex-grow1' controlId='formInlineCriteria'>
             <ControlLabel>Criteria</ControlLabel><br/>
             <TextInput multiline={true}  editable={this.props.editable}
@@ -43,18 +43,18 @@ class RejectionsForm extends Component {
             <ControlLabel>Priority</ControlLabel><br/>
             <DropdownButton bsStyle='default' title={title}
                id='dropdown-basic'>
-              <MenuItem><span className='text-info'>Minor</span></MenuItem>
-              <MenuItem><span className='text-warning'>Major</span></MenuItem>
-              <MenuItem><span className='text-danger'>Critical</span></MenuItem>
+              <MenuItem><span className='u-textInfo'>Minor</span></MenuItem>
+              <MenuItem><span className='u-textWarning'>Major</span></MenuItem>
+              <MenuItem><span className='u-textDanger'>Critical</span></MenuItem>
             </DropdownButton>
           </FormGroup>
           <FormGroup controlId='formInlineButtonEdit'>
             <ControlLabel>&nbsp;</ControlLabel><br/>
             <Button bsStyle='primary' className={this.props.className}>
-              <Icon name='edit' className='s0 editicon'/>
+              <Icon name='edit' className='s0 iconEdit'/>
             </Button>
             <Button bsStyle='danger' className={this.props.className}>
-              <Icon name='trash' className='s0 editicon'/>
+              <Icon name='trash' className='s0 iconEdit'/>
             </Button>
           </FormGroup>
         </Form>

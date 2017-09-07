@@ -234,7 +234,7 @@ storiesOf('Modal', module)
               </Button>
             </OverlayTrigger>
           </p>
-          <p className='text-warning'>* All translations of documents for
+          <p className='u-textWarning'>* All translations of documents for
             the selected source language will be included.
           </p>
         </span>

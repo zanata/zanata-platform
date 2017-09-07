@@ -83,9 +83,9 @@ class EditableText extends Component {
     }
     const emptyText = editable ? placeholder : emptyReadOnlyText
     const content = children ||
-      <span className='text-muted'>{emptyText}</span>
+      <span className='u-textMuted'>{emptyText}</span>
     return (
-      <Row className='text-input text-state-classes text'
+      <Row className='textInput textState text'
         onClick={this.handleClick} title={title}>
         {content}
       </Row>

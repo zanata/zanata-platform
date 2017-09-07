@@ -25,12 +25,12 @@ describe('DraggableVersionPanels', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <ListGroupItem className='v' >
         <DragHandle />
-        {'ver1'} <span className='text-muted'> {'meikai1'}
+        {'ver1'} <span className='u-textMuted'> {'meikai1'}
         </span> <LockIcon status={'ACTIVE'} />
         {" "}
         <Button bsSize='xsmall' className='close rm-version-btn'
           onClick={callback}>
-          <Icon name='cross' className='n2 crossicon' title='remove version' />
+          <Icon name='cross' className='n2 iconCross' title='remove version' />
         </Button>
       </ListGroupItem>
     )
@@ -63,7 +63,7 @@ describe('DraggableVersionPanels', () => {
           <span className="vmerge-adjtitle vmerge-title">
           Adjust priority of selected versions
           </span><br />
-          <span className="text-muted vmerge-adjsub">(best first)</span>
+          <span className="u-textMuted vmerge-adjsub">(best first)</span>
           <OverlayTrigger placement='top' overlay={tooltipSort}>
             <Icon name='info' className='s0 info-icon' />
           </OverlayTrigger>

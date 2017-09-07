@@ -40,7 +40,7 @@ class Admin extends Component {
   render () {
     if (!isAdmin) {
       return (
-        <div className='page wide-view-theme' id='admin'>
+        <div className='page wideView' id='admin'>
           <div className='center-block'>
             <p>You are not authorised to access to this page</p>
           </div>
@@ -48,7 +48,7 @@ class Admin extends Component {
       )
     }
     return (
-      <div className='page wide-view-theme' id='admin'>
+      <div className='page wideView' id='admin'>
         <div className='center-block'>
           <TMXExportModal />
         </div>

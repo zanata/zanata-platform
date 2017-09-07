@@ -13,7 +13,7 @@ const UserTeaser = ({
 }) => {
   const wordsTranslated = details.wordsTranslated &&
     (<div className='words-translated-view'>
-      <Icon className='translateicon-muted' />
+      <Icon className='iconTranslate-muted' />
         {details.wordsTranslated}
     </div>)
   const url = getProfileUrl(details.id)

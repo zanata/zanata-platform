@@ -137,7 +137,7 @@ const Nav = ({
       {...props}
       id='nav'
       name={username}
-      className='nav-bar'>
+      className='navBar'>
       {items.map((item, itemId) => {
         if (((item.auth === 'public') || (item.auth === auth) ||
           (item.auth === 'loggedin' && admin))) {

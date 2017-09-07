@@ -163,7 +163,7 @@ class TMXExportModal extends Component {
                 {srcLangRows}
               </tbody>
             </Table>
-            <p className='text-warning'>
+            <p className='u-textWarning'>
               {warningText}
             </p>
           </span>

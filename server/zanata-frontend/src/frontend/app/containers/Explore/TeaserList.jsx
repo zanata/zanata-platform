@@ -49,7 +49,7 @@ const TeaserList = ({
         totalCount={totalCount} updatePage={updatePage} loading={loading} />
       <span className='list-theme' id={'explore_' + type + '_result'}>
         {!items || items.length <= 0
-          ? (<p className='text-muted'>No Results</p>)
+          ? (<p className='u-textMuted'>No Results</p>)
           : (items.map((item, key) => (
             <TeaserComponent details={item} key={key} name='entry' />
         )))

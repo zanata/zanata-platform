@@ -15,8 +15,8 @@ const CalendarPeriodHeading = ({
 
   return (
     <div className='calendar-activity'>
-      <h3 className='text-bold-uppercase'>Activity Details</h3>
-      <p className='text-muted'>{period}</p>
+      <h3 className='u-textUppercaseBold'>Activity Details</h3>
+      <p className='u-textMuted'>{period}</p>
     </div>
   )
 }

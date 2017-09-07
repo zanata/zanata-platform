@@ -76,24 +76,24 @@ class UserProfile extends Component {
 
     let content
     if (user.loading || loading) {
-      content = (<div className='user-profile'>
-        <LoaderText className='loader-text s8' loading />
+      content = (<div className='userProfile'>
+        <LoaderText className='loaderText s8' loading />
       </div>)
     } else if (isEmpty(username)) {
-      content = <div className='flex-c profile-wrapper'></div>
+      content = <div className='u-flexColumn userProfile-wrapper'></div>
     } else {
-      content = (<div className='flex-c profile-wrapper'>
+      content = (<div className='u-flexColumn userProfile-wrapper'>
         <div className='details' id='profile-overview'>
           <img className='details-avatar'
             src={user.imageUrl ? user.imageUrl : ''} alt={username} />
-          <div className='flex-c details-text'>
+          <div className='u-flexColumn details-text'>
             {name &&
               <div className='username h2 ellipsis' id='profile-displayname'>
               {name}
               </div>
             }
             <ul className='large-font-list'>
-              <li className='flex-center' id='profile-username'>
+              <li className='u-flexCenter' id='profile-username'>
                 <Icon name='user' className='s0' title='Username' />
                 {username}
               </li>
@@ -101,12 +101,12 @@ class UserProfile extends Component {
               (<span className='profile-email'>{email}</span>)}
               {languageTeams &&
               (<li id='profile-languages'>
-                <Icon name='language' className='s0 langicon pull-left'
+                <Icon name='language' className='s0 iconLanguage pull-left'
                   title='Spoken languages' />
                 {languageTeams}
               </li>)}
               {roles && isLoggedIn &&
-              (<li className='flex-center' id='profile-roles' title='Roles'>
+              (<li className='u-flexCenter' id='profile-roles' title='Roles'>
                 <Icon name='users' className='s0' />
                 <span>{roles}</span>
               </li>)}
@@ -139,7 +139,7 @@ class UserProfile extends Component {
             show={!!notification} />
         )}
         <Helmet title='User Profile' />
-        <div className='wide-view-theme profile-page' >
+        <div className='wideView profile' >
           {content}
         </div>
       </div>

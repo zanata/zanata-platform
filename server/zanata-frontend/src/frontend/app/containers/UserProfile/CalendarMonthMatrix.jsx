@@ -85,7 +85,7 @@ const CalendarMonthMatrix = ({
     <div id='activity-table'>
       <div className='activity-table-inner'>
         <div>
-          <h3 className='text-bold-uppercase'>
+          <h3 className='u-textUppercaseBold'>
             {header}
           </h3>
         </div>

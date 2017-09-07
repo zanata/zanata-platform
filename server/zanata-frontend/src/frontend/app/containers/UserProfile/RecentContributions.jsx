@@ -68,8 +68,8 @@ class RecentContributions extends React.Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='matrix-heading' id='profile-matrix'>
-        <div className='flex-center'>
+      <div className='matrixHeading' id='profile-matrix'>
+        <div className='u-flexCenter'>
           <h2 className='recent-contrib'>Recent Contributions</h2>
           <div className='daterange-container'>
             <Button bsStyle='link' className='pull-right'
@@ -84,7 +84,7 @@ class RecentContributions extends React.Component {
                 onHide={() => this.onToggleShowDateRange()}>
                 <Modal.Header>
                   <Modal.Title>Date range selection</Modal.Title>
-                  <span className='text-muted'>(Maximum 365 days)</span>
+                  <span className='u-textMuted'>(Maximum 365 days)</span>
                 </Modal.Header>
                 <Modal.Body>
                   <DateRange
@@ -111,7 +111,7 @@ class RecentContributions extends React.Component {
             }
           </div>
         </div>
-        <div className='flex-chart-container'>
+        <div className='flexChart-container'>
           <ContributionChart
             wordCountForEachDay={matrixForAllDays}
             dateRange={dateRange} />

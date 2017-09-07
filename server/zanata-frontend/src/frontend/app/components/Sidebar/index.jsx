@@ -78,13 +78,13 @@ class Sidebar extends Component {
                     <p><span className='percent'>10%</span> translated</p>
                   </div>
                   <ProgressBar>
-                    <ProgressBar className='progress-bar-translated'
+                    <ProgressBar className='progressBar-translated'
                       now={10} key={1} />
-                    <ProgressBar className='progress-bar-fuzzy'
+                    <ProgressBar className='progressBar-fuzzy'
                       now={7} key={2} />
-                    <ProgressBar className='progress-bar-rejected'
+                    <ProgressBar className='progressBar-rejected'
                       now={3} key={3} />
-                    <ProgressBar className='progress-bar-approved'
+                    <ProgressBar className='progressBar-approved'
                       now={10} key={4} />
                   </ProgressBar>
                   <Nav className='v-links'

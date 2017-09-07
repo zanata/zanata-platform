@@ -58,7 +58,7 @@
   margin-bottom: 1rem;
 }
 
-.vmerge-title .text-muted {
+.vmerge-title .u-textMuted {
   margin-left: 1em;
 }
 
@@ -121,7 +121,7 @@
   font-weight: 400;
 }
 
-.react-draggable.list-group-item span.text-muted {
+.react-draggable.list-group-item span.u-textMuted {
   margin-left: 1em !important;
 }
 
@@ -200,7 +200,7 @@
   margin-right: 0.375rem;
 }
 
-.vmerge-title .text-info {
+.vmerge-title .u-textInfo {
   margin-right: 1rem;
 }
 
@@ -257,7 +257,7 @@ p.lead {
   margin-bottom: 0.5rem;
 }
 
-li.v span.text-muted {
+li.v span.u-textMuted {
   font-weight: 500;
   margin-left: 2.5rem;
 }
