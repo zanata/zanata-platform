@@ -171,7 +171,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
         Future<Void> future = service.startMergeTranslations(
                 targetVersion.getId(),
                 new VersionTMMerge(targetLocale.getLocaleId(), 100,
-                        MergeRule.REJECT, MergeRule.REJECT, MergeRule.FUZZY,
+                        MergeRule.FUZZY, MergeRule.REJECT, MergeRule.REJECT, MergeRule.FUZZY,
                         InternalTMSource.SELECT_NONE),
                 new MergeTranslationsTaskHandle(
                         new GenericAsyncTaskKey("textKeyId")));
