@@ -161,7 +161,7 @@ class Entry extends Component {
             <td className='td-2'>
               {termsLoading
                 ? loadingDiv
-                : (<Row className='entryRow'>
+                : (<Row className='entry-row'>
                   <Button bsStyle="link"
                     className="btn-link-end"
                     disabled={isDeleting}
@@ -183,7 +183,7 @@ class Entry extends Component {
                   <div className='u-row--transparent row--selected
                     editable-op1'>
                     <div className='hidden-lesm'>
-                      <Row className='entryRow'>
+                      <Row className='entry-row'>
                         {updateButton}
                         {displayUpdateButton && !isSaving ? (
                           <Button bsStyle='link' bsSize='small'
