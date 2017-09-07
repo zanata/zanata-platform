@@ -42,3 +42,10 @@ export function toInternalTMSource (isFromAllProjects, fromVersions) {
     projectIterationIds: fromVersions
   }
 }
+
+/**
+ * TM merge rules
+ */
+export const IGNORE_CHECK = 'IGNORE_CHECK'
+export const FUZZY = 'FUZZY'
+export const REJECT = 'REJECT'
