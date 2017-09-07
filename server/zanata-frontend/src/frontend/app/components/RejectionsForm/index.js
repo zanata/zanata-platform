@@ -18,9 +18,9 @@ class RejectionsForm extends Component {
       CRITICAL
     ]).isRequired,
     textState: PropTypes.oneOf([
-      'text-info',
-      'text-warning',
-      'text-danger'
+      'u-textIinfo',
+      'u-textWarning',
+      'u-textDanger'
     ]).isRequired,
     criteriaPlaceholder: PropTypes.string.isRequired,
     editable: PropTypes.boolean,
@@ -34,7 +34,7 @@ class RejectionsForm extends Component {
     )
     return (
         <Form className='rejectionsForm' inline>
-          <FormGroup className='flex-grow1' controlId='formInlineCriteria'>
+          <FormGroup className='flexGrow1' controlId='formInlineCriteria'>
             <ControlLabel>Criteria</ControlLabel><br/>
             <TextInput multiline={true}  editable={this.props.editable}
              type='text' numberOfLines={2} placeholder={this.props.criteriaPlaceholder}/>

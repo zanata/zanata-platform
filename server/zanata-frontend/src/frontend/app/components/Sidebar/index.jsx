@@ -33,7 +33,7 @@ class Sidebar extends Component {
             <div className='sidebar-content'>
               <a className='accordion-section-title'
                 onClick={::this.toggleDisplay}>
-                <Icon name='project' className='projicon' />
+                <Icon name='project' className='iconProject' />
                 <span className='projtitle'>Zanata Server</span>
                 <svg className={toggleArrow}>
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
@@ -50,7 +50,7 @@ class Sidebar extends Component {
                     <Icon name='settings' className='s1 sidebar-icon' />
                   Settings </NavItem>
                 </Nav>
-                <DropdownButton title='Options' id='options-dropdown'
+                <DropdownButton title='Options' id='optionsDropdown'
                   className='btn-sm btn-default'>
                   <MenuItem eventKey='1'>Copy translations</MenuItem>
                   <MenuItem eventKey='2'>Merge translations</MenuItem>
@@ -58,11 +58,11 @@ class Sidebar extends Component {
                   <MenuItem eventKey='4'>Download config file</MenuItem>
                   <MenuItem eventKey='5'>Export version to TMX</MenuItem>
                 </DropdownButton>
-                <div id='version'>
-                  <div className='version-inline'>
-                    <span className='sidebar-version-title'>
+                <div id='sidebarVersion'>
+                  <div className='sidebarVersion-inline'>
+                    <span className='sidebarVersion-title'>
                       <Icon name='version' className='s2' />
-                      <span className='v-heading'>VERSION</span>
+                      <span className='versionHeading'>VERSION</span>
                     </span>
                     <DropdownButton id='version-dropdown'
                       className='btn-sm btn-default'
@@ -71,10 +71,10 @@ class Sidebar extends Component {
                       <MenuItem eventKey='2'>test-1</MenuItem>
                     </DropdownButton>
                   </div>
-                  <p className='version-settings'>
+                  <p className='sidebarVersion-settings'>
                     <a href=''>Version settings</a>
                   </p>
-                  <div className='version-percent'>
+                  <div className='sidebarVersion-percent'>
                     <p><span className='percent'>10%</span> translated</p>
                   </div>
                   <ProgressBar>

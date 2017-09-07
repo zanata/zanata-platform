@@ -70,7 +70,8 @@ class RecentContributions extends React.Component {
     return (
       <div className='matrixHeading' id='userProfile-matrix'>
         <div className='u-flexCenter'>
-          <h2 className='userProfile-recentContributions'>Recent Contributions</h2>
+          <h2 className='userProfile-recentContributions'>
+          Recent Contributions</h2>
           <div className='daterange-container'>
             <Button bsStyle='link' className='u-pullRight'
               onClick={() => this.onToggleShowDateRange()}>

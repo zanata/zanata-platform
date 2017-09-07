@@ -126,7 +126,7 @@ class TMXExportModal extends Component {
             </OverlayTrigger>
           </td>
           <td>
-            <span className='tmx-dl'>
+            <span className='tmxDownload'>
               <OverlayTrigger placement='top' overlay={downloadTooltip}>
                 <Button
                   className={'button--primary ' +
@@ -154,11 +154,11 @@ class TMXExportModal extends Component {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <span className='tmx-export'>
+          <span className='tmxExport'>
             <p>{question}</p>
             {size(srcLangRows) > 1 &&
               <p className='lead'>Source languages</p>}
-            <Table className='tmx-table'>
+            <Table className='tmxTable'>
               <tbody>
                 {srcLangRows}
               </tbody>
