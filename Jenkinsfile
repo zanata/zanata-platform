@@ -6,7 +6,7 @@
 
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
-@Library('zanata-pipeline-library@ZNTA-2182-failed-email')
+@Library('zanata-pipeline-library@master')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
 import static org.zanata.jenkins.StackTraces.getStackTrace
