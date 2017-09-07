@@ -76,13 +76,19 @@ describe('DraggableVersionPanels', () => {
     )
     expect(actual).toEqual(expected)
   })
-  it('returns an empty span if there are no selectedVersions', () => {
+  it('returns an descriptive span if there are no selectedVersions', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <DraggableVersionPanels
         selectedVersions={[]}
         onDraggableMoveEnd={callback}
         removeVersion={callback} />
     )
-    expect(actual).toEqual('')
+    const expected = ReactDOMServer.renderToStaticMarkup(
+      <span className="no-v text-muted">
+        Please select versions to sort<br />
+        <Icon name="version" className="s8" />
+      </span>
+    )
+    expect(actual).toEqual(expected)
   })
 })
