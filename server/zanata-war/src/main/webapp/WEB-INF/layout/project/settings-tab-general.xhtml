@@ -55,11 +55,13 @@
     <div class="g__item w--1">
       <div class="form__item">
         <h:panelGroup layout="block" styleClass="l--push-bottom-half" id="private-setting">
-          <zanata:checkbox label="#{msgs['jsf.project.Private']}"
-            onValueChanged="privateValueChangedWrapper"
-            labelStyle="js-reveal__toggle l--push-bottom-0"
-            checked="#{projectHome.instance.isPrivateProject()}"
-            value="allow-global-translation"/>
+          <h3 class="heading--secondary">
+            <zanata:checkbox label="#{msgs['jsf.project.Private']}"
+              onValueChanged="privateValueChangedWrapper"
+              labelStyle="js-reveal__toggle l--push-bottom-0"
+              checked="#{projectHome.instance.isPrivateProject()}"
+              value="allow-global-translation"/>
+          </h3>
         </h:panelGroup>
         <p>#{msgs['jsf.project.private.detail']}</p>
       </div>
