@@ -83,7 +83,7 @@ const CalendarMonthMatrix = ({
   /* eslint-disable react/jsx-no-bind */
   return (
     <div id='activity-table'>
-      <div className='activity-table-inner'>
+      <div className='userProfile-activityTable-inner'>
         <div>
           <h3 className='u-textUppercaseBold'>
             {header}

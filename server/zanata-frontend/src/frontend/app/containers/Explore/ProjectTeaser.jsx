@@ -25,7 +25,7 @@ const ProjectTeaser = ({
       <em>Project: {details.id}</em>
     </div>)
   const metaData = details.owner && (
-    <div className='meta-info'>
+    <div className='metaInfo'>
       <Icon name='user' className='n1 iconUser-muted' />
       <Link to={details.owner}>{details.owner}</Link>
       <Icon name='users' className='iconUsers-muted n1' />
@@ -43,7 +43,7 @@ const ProjectTeaser = ({
     ? ''
     : 'This project is currently read only'
   return (
-    <div className='teaser-view-theme' name={name}>
+    <div className='teaserView' name={name}>
       <div className='teaser-inner'>
         <div>
           <Link link={link} useHref className={className} title={tooltip}>

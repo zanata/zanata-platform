@@ -41,7 +41,7 @@ class Admin extends Component {
     if (!isAdmin) {
       return (
         <div className='page wideView' id='admin'>
-          <div className='center-block'>
+          <div className='u-centerBlock'>
             <p>You are not authorised to access to this page</p>
           </div>
         </div>
@@ -49,7 +49,7 @@ class Admin extends Component {
     }
     return (
       <div className='page wideView' id='admin'>
-        <div className='center-block'>
+        <div className='u-centerBlock'>
           <TMXExportModal />
         </div>
       </div>

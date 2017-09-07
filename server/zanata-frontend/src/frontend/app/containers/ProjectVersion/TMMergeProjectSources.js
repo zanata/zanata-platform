@@ -170,7 +170,7 @@ class TMMergeProjectSources extends Component {
         <Col xs={12}>
           <Well>
             <p>Translations which satisfy all conditions will copy as
-              <span className="text-bold text-success"> translated</span>.
+              <span className="u-textBold u-textSuccess"> translated</span>.
             </p>
           </Well>
         </Col>

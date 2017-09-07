@@ -13,15 +13,15 @@ const LanguageTeamTeaser = ({
 }) => {
   const link = getLanguageUrl(details.id)
   return (
-    <div className='team-teaser-view' name={name}>
-      <div className='flex-row'>
+    <div className='teamTeaser' name={name}>
+      <div className='u-flexRow'>
         <Link link={link} useHref className='text-bold'>
           {details.localeDetails.displayName}
         </Link>
-        <span className='u-textMuted langteam-teaser-view-id '>
+        <span className='u-textMuted languageTeamTeaser-id '>
           {details.id}
         </span>
-        <div className='langteam-teaser-view-members'>
+        <div className='languageTeamTeaser-members'>
           <Icon name='users' className='s1 iconUsers-muted' />
           {details.memberCount}
         </div>

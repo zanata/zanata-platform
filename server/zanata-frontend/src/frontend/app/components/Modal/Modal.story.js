@@ -75,7 +75,7 @@ storiesOf('Modal', module)
         <Lorem />
       </Modal.Body>
       <Modal.Footer>
-        <span className='bootstrap pull-right'>
+        <span className='bootstrap u-pullRight'>
           <Row>
             <Button bsStyle='link'
               className='btn-left'

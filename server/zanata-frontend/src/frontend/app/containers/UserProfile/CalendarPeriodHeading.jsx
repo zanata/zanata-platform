@@ -14,7 +14,7 @@ const CalendarPeriodHeading = ({
       dateUtils.formatDate(dateRange.endDate, dateUtils.dateRangeDisplayFmt)
 
   return (
-    <div className='calendar-activity'>
+    <div className='userProfile-calendarActivity'>
       <h3 className='u-textUppercaseBold'>Activity Details</h3>
       <p className='u-textMuted'>{period}</p>
     </div>

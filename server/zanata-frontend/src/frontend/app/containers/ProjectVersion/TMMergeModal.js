@@ -120,7 +120,7 @@ const MergeOptions = (
       </Col>
       <Col xs={12} className='vmerge-row'>
         <p className="lead">For every potential translation:</p>
-        <div className="vmerge-title text-new-blue">
+        <div className="vmerge-title u-textNewBlue">
           If text is less than
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
             id='percent-dropdown-basic' className='vmerge-ddown'

@@ -83,30 +83,31 @@ class UserProfile extends Component {
       content = <div className='u-flexColumn userProfile-wrapper'></div>
     } else {
       content = (<div className='u-flexColumn userProfile-wrapper'>
-        <div className='details' id='profile-overview'>
-          <img className='details-avatar'
+        <div className='userProfile-details' id='userProfile-overview'>
+          <img className='userProfile-details-avatar'
             src={user.imageUrl ? user.imageUrl : ''} alt={username} />
           <div className='u-flexColumn details-text'>
             {name &&
-              <div className='username h2 ellipsis' id='profile-displayname'>
+              <div className='username h2 ellipsis'
+                id='userProfile-displayName'>
               {name}
               </div>
             }
-            <ul className='large-font-list'>
-              <li className='u-flexCenter' id='profile-username'>
+            <ul className='largeFontList'>
+              <li className='u-flexCenter' id='profileUsername'>
                 <Icon name='user' className='s0' title='Username' />
                 {username}
               </li>
               {email &&
-              (<span className='profile-email'>{email}</span>)}
+              (<span className='userProfile-email'>{email}</span>)}
               {languageTeams &&
-              (<li id='profile-languages'>
-                <Icon name='language' className='s0 iconLanguage pull-left'
+              (<li id='profileLanguages'>
+                <Icon name='language' className='s0 iconLanguage u-pullLeft'
                   title='Spoken languages' />
                 {languageTeams}
               </li>)}
               {roles && isLoggedIn &&
-              (<li className='u-flexCenter' id='profile-roles' title='Roles'>
+              (<li className='u-flexCenter' id='profileRoles' title='Roles'>
                 <Icon name='users' className='s0' />
                 <span>{roles}</span>
               </li>)}

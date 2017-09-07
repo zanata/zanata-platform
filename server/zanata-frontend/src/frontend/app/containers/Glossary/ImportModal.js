@@ -117,7 +117,7 @@ class ImportModal extends Component {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='pull-right'>
+          <ButtonGroup className='u-pullRight'>
             <Button bsStyle='link'
               disabled={isUploading}
               onClick={() => handleImportFileDisplay(false)}>

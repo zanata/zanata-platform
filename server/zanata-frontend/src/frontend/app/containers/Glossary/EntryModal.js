@@ -155,7 +155,7 @@ class EntryModal extends Component {
           }
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='pull-right'>
+          <ButtonGroup className='u-pullRight'>
             <Button bsStyle='link'
               onClick={
                 () => {

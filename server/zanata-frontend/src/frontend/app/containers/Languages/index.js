@@ -110,7 +110,7 @@ class Languages extends Component {
         )
         }
         <Helmet title='Languages' />
-        <div className='center-block'>
+        <div className='u-centerBlock'>
           <div className='clearfix'
             id='languages-form'>
             <h2>
@@ -154,7 +154,7 @@ class Languages extends Component {
                   <div className='sort-items
                     col-xs-6 col-sm-4 col-md-4 col-lg-3'>
                     <FormControl componentClass='select'
-                      className='pull-right' id='sort-options'
+                      className='u-pullRight' id='sort-options'
                       onChange={handleOnUpdateSort} value={sort.value}>
                     {sortOption.map(function (sort, i) {
                       return <option key={i} value={sort.value}>
@@ -162,7 +162,7 @@ class Languages extends Component {
                     })}
                     </FormControl>
                   </div>
-                  <div className='showItems pull-right col-xs-5
+                  <div className='showItems u-pullRight col-xs-5
                     col-sm-3 col-md-2 col-lg-2'>
                     <span>Show</span>
                     <FormControl componentClass='select'

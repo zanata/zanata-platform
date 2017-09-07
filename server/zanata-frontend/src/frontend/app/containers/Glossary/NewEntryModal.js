@@ -124,7 +124,7 @@ class NewEntryModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='pull-right'>
+          <ButtonGroup className='u-pullRight'>
             <Button bsStyle='link'
               disabled={isSaving}
               onClick={() => this.handleCancel()}>

@@ -224,7 +224,7 @@ class Glossary extends Component {
                 </Row>
               }
               {displayPaging &&
-                <div className='pull-right glossaryPaging'>
+                <div className='u-pullRight glossaryPaging'>
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='First page'
                     onClick={() => { gotoFirstPage(currentPage, totalPage) }}>

@@ -29,7 +29,7 @@ class ProjectVersion extends Component {
     const { params } = this.props
     return (
       <div className='page wideView' id='version'>
-        <div className='center-block'>
+        <div className='u-centerBlock'>
           <TMMergeModal projectSlug={params.project}
             versionSlug={params.version} />
           <TMXExportModal project={params.project}

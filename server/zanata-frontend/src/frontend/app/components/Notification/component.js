@@ -74,9 +74,9 @@ class Notification extends Component {
             </div>)}
         </Modal.Body>
         <Modal.Footer>
-          <span className='pull-right'>
+          <span className='u-pullRight'>
             <Row>
-              <ButtonGroup className='pull-right'>
+              <ButtonGroup className='u-pullRight'>
                 <Button bsStyle='primary'
                   id='btn-notification-close'
                   type='button' onClick={this.clearMessage}>

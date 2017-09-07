@@ -68,11 +68,11 @@ class RecentContributions extends React.Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='matrixHeading' id='profile-matrix'>
+      <div className='matrixHeading' id='userProfile-matrix'>
         <div className='u-flexCenter'>
-          <h2 className='recent-contrib'>Recent Contributions</h2>
+          <h2 className='userProfile-recentContributions'>Recent Contributions</h2>
           <div className='daterange-container'>
-            <Button bsStyle='link' className='pull-right'
+            <Button bsStyle='link' className='u-pullRight'
               onClick={() => this.onToggleShowDateRange()}>
               <span className='daterange-textfield'>
                 <TextInput editable={false} value={displayDateRange} />
@@ -91,11 +91,11 @@ class RecentContributions extends React.Component {
                     startDate={this.state.dateRange.startDate}
                     endDate={this.state.dateRange.endDate}
                     ranges={utilsDate.getDefaultDateRange()}
-                    className='calendar-daterange'
+                    className='dateRange-calendar'
                     onChange={this.onDateRangeChanged} />
                 </Modal.Body>
                 <Modal.Footer>
-                  <span className='pull-right'>
+                  <span className='u-pullRight'>
                     <Button bsStyle='link'
                       onClick={() => this.onToggleShowDateRange()}>
                       Cancel

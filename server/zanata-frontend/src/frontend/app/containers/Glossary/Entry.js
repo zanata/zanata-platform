@@ -72,7 +72,7 @@ class Entry extends Component {
       return (
         <tr>
           <td>
-            <div className='lineclamp'>Loading…</div>
+            <div className='lineClamp'>Loading…</div>
           </td>
         </tr>
       )
@@ -97,7 +97,7 @@ class Entry extends Component {
     )
 
     const loadingDiv = (
-      <div className='lineclamp'>Loading…</div>
+      <div className='lineClamp'>Loading…</div>
     )
 
     let secondColumnContent
@@ -116,7 +116,7 @@ class Entry extends Component {
         </EditableText>
     } else {
       secondColumnContent =
-        <div className='lineclamp'>
+        <div className='lineClamp'>
           {entry.termsCount}
         </div>
     }

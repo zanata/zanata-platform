@@ -149,9 +149,9 @@ class ViewHeader extends Component {
       <Header className='header-glossary' title={title} icon={icon}
         extraHeadingElements={projectLink}
         extraElements={(
-          <div className='flex-row-center'>
+          <div className='u-flexRowCenter'>
             <TextInput
-              className='textInput glossary-search'
+              className='textInput glossarySearch'
               ref={(ref) => this.searchInput = ref}
               type='search'
               placeholder='Search Terms…'
@@ -268,7 +268,7 @@ class ViewHeader extends Component {
                           ? <Icon name='chevron-down' className='s1' />
                           : <Icon name='chevron-up' className='s1' />
                         : ''}
-                      <span className='left-rq'>
+                      <span className='u-marginL--rq'>
                       Part of Speech
                       </span>
                     </Row>
