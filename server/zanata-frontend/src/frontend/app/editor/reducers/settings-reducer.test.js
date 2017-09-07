@@ -16,7 +16,7 @@ import {
   SETTINGS_SAVE_FAILURE
 } from '../actions/settings-action-types'
 
-describe('ui-reducer test', () => {
+describe('settings-reducer test', () => {
   it('generates initial state', () => {
     const initial = reducer(undefined, createAction('any')())
     expect(initial).toEqual({
@@ -31,6 +31,7 @@ describe('ui-reducer test', () => {
       }
     })
   })
+  // FIXME check the loaded settings individually, don't depend on initial state
   it('can load settings', () => {
     const loading = reducer(undefined, createAction(SETTINGS_REQUEST)())
     const loaded = reducer(loading, createAction(SETTINGS_SUCCESS)({

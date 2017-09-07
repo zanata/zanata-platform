@@ -1,32 +1,58 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import {Button} from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { hideSettings } from '../actions'
+import { updateSetting } from '../actions/settings-actions'
+import { Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
-import ValidationOptions from '../components/ValidationOptions'
+import SettingsOptions from '../components/SettingsOptions'
+import { getEnterSavesImmediately } from '../reducers'
+import { ENTER_SAVES_IMMEDIATELY } from '../reducers/settings-reducer'
 
-class SidebarSettings extends Component {
-  static propTypes = {
-    /* close the sidebar */
-    close: PropTypes.func.isRequired
-  }
-
-  render () {
-    return (
-      <div className="sidebar-settings">
-        <h1 className="sidebar-heading">
-          <Icon name="settings" className="s1" /> Settings
-          <span className="s1 pull-right">
-            <Button bsStyle="link" onClick={this.props.close}>
-              <Icon name="cross" />
-            </Button>
-          </span>
-        </h1>
-        <div className="sidebar-wrapper">
-          <ValidationOptions />
+export const SidebarSettings = ({
+  enterSavesImmediately,
+  hideSettings,
+  updateSetting
+}) => {
+  return (
+    <div className="sidebar-settings">
+      <h1 className="sidebar-heading">
+        <Icon name="settings" className="s1" /> Settings
+        <span className="s1 pull-right">
+          <Button bsStyle="link" onClick={hideSettings}>
+            <Icon name="cross" />
+          </Button>
+        </span>
+      </h1>
+      <div className="sidebar-wrapper">
+        <div>
+          <h2 className='settings-heading'>Editor options</h2>
+          <SettingsOptions
+            settings={[
+              {
+                id: ENTER_SAVES_IMMEDIATELY,
+                label: 'Enter key saves immediately',
+                active: enterSavesImmediately
+              }
+            ]}
+            updateSetting={updateSetting} />
         </div>
       </div>
-    )
+    </div>
+  )
+}
+
+SidebarSettings.propTypes = {
+  enterSavesImmediately: PropTypes.bool.isRequired,
+  hideSettings: PropTypes.func.isRequired,
+  updateSetting: PropTypes.func.isRequired
+}
+
+const mapStateToProps = (state) => {
+  return {
+    enterSavesImmediately: getEnterSavesImmediately(state)
   }
 }
 
-export default SidebarSettings
+export default connect(mapStateToProps,
+  { hideSettings, updateSetting })(SidebarSettings)

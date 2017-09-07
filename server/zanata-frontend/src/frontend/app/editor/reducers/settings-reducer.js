@@ -1,5 +1,6 @@
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
+import { createSelector } from 'reselect'
 import { has, keys, mapValues, omit, pick } from 'lodash'
 import {
   SETTINGS_REQUEST,
@@ -10,7 +11,9 @@ import {
   SETTINGS_SAVE_SUCCESS,
   SETTINGS_SAVE_FAILURE
 } from '../actions/settings-action-types'
+import { SHORTCUTS } from '../actions/key-shortcuts-actions'
 
+export const ENTER_SAVES_IMMEDIATELY = 'enter-saves-immediately'
 export const KEY_SUGGESTIONS_VISIBLE = 'suggestions-visible'
 
 /* Parse values of known settings to appropriate types */
@@ -18,6 +21,7 @@ function parseKnownSettings (settings) {
   return mapValues(settings, (value, key) => {
     try {
       switch (key) {
+        case ENTER_SAVES_IMMEDIATELY:
         case KEY_SUGGESTIONS_VISIBLE:
           return JSON.parse(value)
         default:
@@ -30,6 +34,9 @@ function parseKnownSettings (settings) {
   })
 }
 
+/* convenience function to construct an empty setting body */
+const newSetting = value => ({ value, saving: false, error: undefined })
+
 export const defaultState = {
   // state for all settings being requested on app load
   fetching: false,
@@ -39,7 +46,8 @@ export const defaultState = {
 
   // state for individual settings
   settings: {
-    [KEY_SUGGESTIONS_VISIBLE]: { value: true, saving: false, error: undefined }
+    [ENTER_SAVES_IMMEDIATELY]: newSetting(false),
+    [KEY_SUGGESTIONS_VISIBLE]: newSetting(true)
   // 'suggestions-heightpercent': { value: 0.3, saving: false, error:undefined }
   // 'setting-key': { value: defaultValue, saving: false, error: undefined }
   }
@@ -48,6 +56,23 @@ export const defaultState = {
 /* Selectors */
 export const getSuggestionsPanelVisible = settings =>
   settings.settings[KEY_SUGGESTIONS_VISIBLE].value
+export const getEnterSavesImmediately = settings =>
+  settings.settings[ENTER_SAVES_IMMEDIATELY].value
+export const getShortcuts = createSelector(getEnterSavesImmediately,
+  enterSaves => enterSaves ? update(SHORTCUTS, {
+    // Both shortcuts are at index 0, but replacing by value in case they move
+    GOTO_NEXT_ROW_FAST: {
+      keyConfig: {
+        keys: {$apply: keys => keys.map(v => v === 'mod+enter' ? 'enter' : v)}
+      }
+    },
+    GOTO_PREVIOUS_ROW: {
+      keyConfig: {
+        keys: {$apply: keys => keys.map(
+          v => v === 'mod+shift+enter' ? 'shift+enter' : v)}
+      }
+    }
+  }) : SHORTCUTS)
 
 export default handleActions({
   [SETTING_UPDATE]: (state, { payload }) => {
