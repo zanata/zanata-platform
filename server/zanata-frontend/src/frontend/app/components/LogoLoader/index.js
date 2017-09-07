@@ -23,8 +23,8 @@ class LogoLoader extends React.Component {
       loading
     } = this.props
 
-    const className = cx('LogoLoader', {
-      'LogoLoader--inverted': inverted,
+    const className = cx('logoLoader', {
+      'logoLoader-inverted': inverted,
       'is-loading': loading
     })
 

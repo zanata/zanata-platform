@@ -379,7 +379,7 @@ body.templateStyle {
 
 /* NavBar */
 
-.navBar {
+.nav-bar {
   background-color: @color-light;
   box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.185);
   display: flex !important;
@@ -393,11 +393,11 @@ body.templateStyle {
   position: fixed;
 }
 
-.navBar-icon {
+.nav-bar-icon {
   display: block;
 }
 
-.navBar-navLink {
+.nav-link {
   display: flex;
   display: -webkit-flex;
   display: -moz-flex;
@@ -416,29 +416,29 @@ body.templateStyle {
   transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.navBar-navLink:hover {
+.nav-link:hover {
   color: #fff !important;
   background-color: rgba(255, 255, 255, 0.2);
   filter: '';
 }
 
-.navBar-navLink:focus, .navBar-navLink:active {
+.nav-link:focus, .nav-link:active {
   filter: '';
 }
 
-.navBar-navLink.active {
+.nav-link.active {
   background-color: #fff;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
   color: @color-light !important;
   cursor: default;
 }
 
-.navBar-navLink.active:hover {
+.nav-link.active:hover {
   color: '';
   background-color: '';
 }
 
-.navBar-navLink.search {
+.nav-link.search {
   margin-top: @spacing-rq;
 }
 
@@ -6771,12 +6771,12 @@ form.rejectionsForm button, form.rejectionsForm input, form.rejectionsForm texta
     z-index: 1000;
   }
 
-  .navBar {
+  .nav-bar {
     order: 1;
     width: 100%;
   }
 
-  .navBar-navLink {
+  .nav-link {
     display: none;
     flex-grow: 1;
     -webkit-flex-grow: 1;
@@ -6844,7 +6844,7 @@ form.rejectionsForm button, form.rejectionsForm input, form.rejectionsForm texta
     overflow: auto;
   }
 
-  .navBar {
+  .nav-bar {
     flex-direction: column;
     -webkit-flex-direction: column;
     height: 100%;
@@ -6852,7 +6852,7 @@ form.rejectionsForm button, form.rejectionsForm input, form.rejectionsForm texta
     width: 4.5rem;
   }
 
-  .navBar-navLink {
+  .nav-bar .nav-link {
     display: flex;
     display: -webkit-flex;
     display: -moz-flex;
