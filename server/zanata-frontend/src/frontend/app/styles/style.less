@@ -177,7 +177,6 @@ body.templateStyle {
   margin-right: @spacing-base;
 }
 
-
 .searchView {
   align-items: center;
   -webkit-align-items: center; /* Safari 7.0+ */
@@ -1684,29 +1683,6 @@ dd {
   background-color: rgb(237, 242, 248);
 }
 
-/* Rejections Form */
-
-form.rejectionsForm {
-  display: inline-flex;
-  align-items: flex-start;
-  width: 100%;
-  flex-direction: row;
-  margin-bottom: 2rem;
-}
-
-form.rejectionsForm input.textInput::placeholder,
-form.rejectionsForm textarea.textInput::placeholder {
-  color: #546677 !important;
-}
-
-form.rejectionsForm .form-group {
-  padding-right: 1rem;
-}
-
-form.rejectionsForm .iconEdit {
-  vertical-align: sub;
-}
-
 /* Locale */
 
 .localeOptions {
@@ -2741,7 +2717,7 @@ button.btn-link.link-danger:hover {
   border: none;
   box-shadow: none;
   background: none;
-  color:@color-danger;
+  color: @color-danger;
 }
 
 .button-group {
@@ -3776,7 +3752,6 @@ table.glossaryEntry {
   display: block;
 }
 
-
 #deleteEntries .tooltip-inner {
   max-width: 14rem;
 }
@@ -4228,7 +4203,6 @@ img.avatar-round {
 
 /* Styleguide layout */
 
-
 .showGrid {
   border: solid 1px #ccc;
 }
@@ -4340,7 +4314,6 @@ img.avatar-round {
 .sg-nav-pills {
   max-width: 220px;
 }
-
 
 //
 // Navs
@@ -4469,10 +4442,7 @@ img.avatar-round {
 // Include CSS for tri-checkbox component
 @import "../components/TriCheckbox/index.less";
 
-
 @import "../components/RejectionsForm/index.css";
-
-
 
 // Nav variations
 // --------------------------------------------------
@@ -6241,9 +6211,9 @@ button.close:focus, button.close:hover, button.close:active:focus {
   }
 
   &.l-wrapper {
-    align-items:center;
+    align-items: center;
     -webkit-align-items: center; /* Safari 7.0+ */
-    display:inherit;
+    display: inherit;
   }
 
   &.g--centered {
@@ -6256,12 +6226,11 @@ button.close:focus, button.close:hover, button.close:active:focus {
     margin-top: -1rem;
   }
 
-  &.button--group input[type=radio]:checked+.button--Off,
-  &.button--group input[type=radio]:checked+.button--Off:hover {
+  &.button--group input[type=radio]:checked + .button--Off,
+  &.button--group input[type=radio]:checked + .button--Off:hover {
     background-color: @color-dark !important;
     color: @gray-lighter;
   }
-
 
 }
 
@@ -6317,7 +6286,7 @@ i.i--left.i--lock, i.i--left.i--trash {
 }
 
 .g--padded {
-  padding-bottom:4.2em !important;
+  padding-bottom: 4.2em !important;
 }
 
 li.moreContent-info {
@@ -6357,8 +6326,8 @@ i.i--left.i--lock, i.i--left.i--trash {
 }
 
 .textMeta.content {
-  padding-top:0;
-  padding-bottom:0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .tabsContent {
@@ -6366,8 +6335,8 @@ i.i--left.i--lock, i.i--left.i--trash {
 }
 
 .tmPanel ul.list-group {
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
 }
 
 //Project Version Sidebar
@@ -6510,9 +6479,9 @@ table .projectWideSearchResultsDocumentBody {
 }
 
 table.tmxTable {
-  width:50% !important;
-  margin-left:auto;
-  margin-right:auto;
+  width: 50% !important;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 table.tmxTable tbody tr td {
@@ -6538,8 +6507,8 @@ table.tmxTable .btn-sm {
 }
 
 table.tmxTable .badge {
-  background-color:@color-muted;
-  color:#fff;
+  background-color: @color-muted;
+  color: #fff;
   font-size: 1rem;
   line-height: 1.5rem;
   width: 4rem;
@@ -6555,7 +6524,7 @@ table.tmxTable .badge {
 
 .tmxExport p.allWarnings .btn-link {
   font-size: 0.75em;
-  line-height:1em;
+  line-height: 1em;
   color: @color-warning;
 }
 
@@ -6587,7 +6556,7 @@ table.tmxTable .badge .n1 {
   hyphens: initial;
 }
 
-.panel__header a#new-version-link  i.i.i--add:not(.i--large) {
+.panel__header a#new-version-link i.i.i--add:not(.i--large) {
   color: @color-light;
 }
 
@@ -6598,7 +6567,6 @@ table.tmxTable .badge .n1 {
 .form-group.flexGrow2 {
   flex-grow: 2;
 }
-
 
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
@@ -6620,7 +6588,7 @@ table.tmxTable .badge .n1 {
   .templateContainer {
     flex-direction: column;
     -webkit-flex-direction: column;
-    width:100%;
+    width: 100%;
   }
 
   .glossaryhead-wrapper {
@@ -6726,7 +6694,7 @@ table.tmxTable .badge .n1 {
   }
 
   .nav-link {
-    display:none;
+    display: none;
   }
 
   .nav-link.small {
@@ -6971,7 +6939,7 @@ table.tmxTable .badge .n1 {
 
   .sidebar .dropdown.btn-group {
     vertical-align: bottom;
-    padding-bottom:0.5em;
+    padding-bottom: 0.5em;
   }
 
   .hide-desktop {
@@ -7439,6 +7407,10 @@ table.tmxTable .badge .n1 {
     display: block !important;
   }
 
+  .visible-print-inline-block {
+    display: inline-block !important;
+  }
+
   table.visible-print {
     display: table !important;
   }
@@ -7450,95 +7422,19 @@ table.tmxTable .badge .n1 {
   td.visible-print, th.visible-print {
     display: table-cell !important;
   }
-}
 
-.visible-print-block {
-  display: none !important;
-}
-
-@media print {
   .visible-print-block {
     display: block !important;
   }
-}
 
-.visible-print-inline {
-  display: none !important;
-}
-
-@media print {
   .visible-print-inline {
     display: inline !important;
   }
-}
 
-.visible-print-inline-block {
-  display: none !important;
-}
-
-@media print {
-  .visible-print-inline-block {
-    display: inline-block !important;
-  }
-}
-
-@media print {
   .hidden-print {
     display: none !important;
   }
-}
 
-@media screen and (max-width: @screen-sm-max) {
-  .table-responsive {
-    overflow-y: hidden;
-    width: 100%;
-    margin-bottom: @spacing-base;
-    border: 1px solid @color-neutral;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-  }
-
-  .table-responsive > .table {
-    margin-bottom: 0;
-  }
-
-  .table-responsive > .table > tbody > tr > td, .table-responsive > .table > tbody > tr > th, .table-responsive > .table > tfoot > tr > td, .table-responsive > .table > tfoot > tr > th, .table-responsive > .table > thead > tr > td, .table-responsive > .table > thead > tr > th {
-    white-space: nowrap;
-  }
-
-  .table-responsive > .table-bordered {
-    border: 0;
-  }
-
-  .table-responsive > .table-bordered > tbody > tr > td:first-child, .table-responsive > .table-bordered > tbody > tr > th:first-child, .table-responsive > .table-bordered > tfoot > tr > td:first-child, .table-responsive > .table-bordered > tfoot > tr > th:first-child, .table-responsive > .table-bordered > thead > tr > td:first-child, .table-responsive > .table-bordered > thead > tr > th:first-child {
-    border-left: 0;
-  }
-
-  .table-responsive > .table-bordered > tbody > tr > td:last-child, .table-responsive > .table-bordered > tbody > tr > th:last-child, .table-responsive > .table-bordered > tfoot > tr > td:last-child, .table-responsive > .table-bordered > tfoot > tr > th:last-child, .table-responsive > .table-bordered > thead > tr > td:last-child, .table-responsive > .table-bordered > thead > tr > th:last-child {
-    border-right: 0;
-  }
-
-  .table-responsive > .table-bordered > tbody > tr:last-child > td, .table-responsive > .table-bordered > tbody > tr:last-child > th, .table-responsive > .table-bordered > tfoot > tr:last-child > td, .table-responsive > .table-bordered > tfoot > tr:last-child > th {
-    border-bottom: 0;
-  }
-}
-
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  input[type=date].form-control, input[type=datetime-local].form-control, input[type=month].form-control, input[type=time].form-control {
-    line-height: 2rem;
-  }
-
-  .input-group-sm input[type=date], .input-group-sm input[type=datetime-local], .input-group-sm input[type=month], .input-group-sm input[type=time], input[type=date].input-sm, input[type=datetime-local].input-sm, input[type=month].input-sm, input[type=time].input-sm {
-    line-height: 1rem;
-  }
-
-  .input-group-lg input[type=date], .input-group-lg input[type=datetime-local], .input-group-lg input[type=month], .input-group-lg input[type=time], input[type=date].input-lg, input[type=datetime-local].input-lg, input[type=month].input-lg, input[type=time].input-lg {
-    line-height: 3rem;
-  }
-}
-
-/*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
-
-@media print {
   *, :after, :before {
     color: #000 !important;
     background: 0 0 !important;
@@ -7620,5 +7516,66 @@ table.tmxTable .badge .n1 {
 
   .table-bordered td, .table-bordered th {
     border: 1px solid @color-neutral !important;
+  }
+
+}
+
+.visible-print-block {
+  display: none !important;
+}
+
+.visible-print-inline {
+  display: none !important;
+}
+
+.visible-print-inline-block {
+  display: none !important;
+}
+
+@media screen and (max-width: @screen-sm-max) {
+  .table-responsive {
+    overflow-y: hidden;
+    width: 100%;
+    margin-bottom: @spacing-base;
+    border: 1px solid @color-neutral;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+
+  .table-responsive > .table {
+    margin-bottom: 0;
+  }
+
+  .table-responsive > .table > tbody > tr > td, .table-responsive > .table > tbody > tr > th, .table-responsive > .table > tfoot > tr > td, .table-responsive > .table > tfoot > tr > th, .table-responsive > .table > thead > tr > td, .table-responsive > .table > thead > tr > th {
+    white-space: nowrap;
+  }
+
+  .table-responsive > .table-bordered {
+    border: 0;
+  }
+
+  .table-responsive > .table-bordered > tbody > tr > td:first-child, .table-responsive > .table-bordered > tbody > tr > th:first-child, .table-responsive > .table-bordered > tfoot > tr > td:first-child, .table-responsive > .table-bordered > tfoot > tr > th:first-child, .table-responsive > .table-bordered > thead > tr > td:first-child, .table-responsive > .table-bordered > thead > tr > th:first-child {
+    border-left: 0;
+  }
+
+  .table-responsive > .table-bordered > tbody > tr > td:last-child, .table-responsive > .table-bordered > tbody > tr > th:last-child, .table-responsive > .table-bordered > tfoot > tr > td:last-child, .table-responsive > .table-bordered > tfoot > tr > th:last-child, .table-responsive > .table-bordered > thead > tr > td:last-child, .table-responsive > .table-bordered > thead > tr > th:last-child {
+    border-right: 0;
+  }
+
+  .table-responsive > .table-bordered > tbody > tr:last-child > td, .table-responsive > .table-bordered > tbody > tr:last-child > th, .table-responsive > .table-bordered > tfoot > tr:last-child > td, .table-responsive > .table-bordered > tfoot > tr:last-child > th {
+    border-bottom: 0;
+  }
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input[type=date].form-control, input[type=datetime-local].form-control, input[type=month].form-control, input[type=time].form-control {
+    line-height: 2rem;
+  }
+
+  .input-group-sm input[type=date], .input-group-sm input[type=datetime-local], .input-group-sm input[type=month], .input-group-sm input[type=time], input[type=date].input-sm, input[type=datetime-local].input-sm, input[type=month].input-sm, input[type=time].input-sm {
+    line-height: 1rem;
+  }
+
+  .input-group-lg input[type=date], .input-group-lg input[type=datetime-local], .input-group-lg input[type=month], .input-group-lg input[type=time], input[type=date].input-lg, input[type=datetime-local].input-lg, input[type=month].input-lg, input[type=time].input-lg {
+    line-height: 3rem;
   }
 }
