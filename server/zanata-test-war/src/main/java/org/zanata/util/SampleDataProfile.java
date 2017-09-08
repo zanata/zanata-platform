@@ -44,8 +44,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @ApplicationScoped
 @Transactional
-public class SampleProjectProfile implements Serializable {
-    private static final Logger log = getLogger(SampleProjectProfile.class);
+public class SampleDataProfile implements Serializable {
+    private static final Logger log = getLogger(SampleDataProfile.class);
     private static final long serialVersionUID = 8699288697515054056L;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
@@ -84,7 +84,6 @@ public class SampleProjectProfile implements Serializable {
                 Search.getFullTextEntityManager(
                         entityManagerFactory.createEntityManager());
         try {
-            em.purgeAll(HAccount.class);
             em.purgeAll(HGlossaryEntry.class);
             em.purgeAll(HGlossaryTerm.class);
             em.purgeAll(HProject.class);
@@ -173,7 +172,7 @@ public class SampleProjectProfile implements Serializable {
     }
 
     private HAccountRole getAccountRole(String roleName) {
-        SampleProjectProfile.log.debug("get account role with name {}", roleName);
+        SampleDataProfile.log.debug("get account role with name {}", roleName);
         return entityManager.createQuery(
                 String.format("from HAccountRole where name = '%s' ", roleName),
                 HAccountRole.class)

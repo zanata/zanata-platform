@@ -110,7 +110,6 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest 
         HPerson person = personDAO.findById(1L, false);
         HTextFlowTarget target = textFlowTargetDAO.findById(2L, false);
 
-        List<String> oldTranslation = target.getContents();
         int oldVersion = target.getVersionNum();
 
         target.addReviewComment("comment blah", person);

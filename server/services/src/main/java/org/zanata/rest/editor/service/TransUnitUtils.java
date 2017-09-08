@@ -26,8 +26,6 @@ import javax.annotation.Nonnull;
 @Named("transUnitUtils")
 @javax.enterprise.context.Dependent
 public class TransUnitUtils implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(TransUnitUtils.class);
     private static final long serialVersionUID = 5128782948971430463L;
     public static final int MAX_SIZE = 200;
     public static final String ID_SEPARATOR = ",";

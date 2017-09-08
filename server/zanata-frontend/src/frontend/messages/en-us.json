@@ -16,7 +16,7 @@
     "description": "Highlighted section inserted into ActivityFeedItem.rejected"
   },
   "ActivityFeedItem.rejected": {
-    "defaultMessage": "{name} has {rejectedTranslation}",
+    "defaultMessage": "{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}",
     "description": "Title for an item in the activity feed showing a reviewer rejected the translation. The inserted section is from ActivityFeedItem.rejected.rejectedTranslation"
   },
   "ActivityFeedItem.translated.translatedRevision": {

@@ -58,6 +58,15 @@ export const fetchVersionLocales = (project, version) => {
 export const fetchProjectPage = (projectSearchTerm) => {
   // used for success/failure to ensure the most recent results are used
   const timestamp = Date.now()
+  // empty search term should return nothing
+  if (!projectSearchTerm) {
+    return {
+      type: PROJECT_PAGE_SUCCESS,
+      meta: {timestamp},
+      payload: []
+    }
+  }
+  // making the call to server
   const endpoint =
       `${apiUrl}/search/projects?q=${projectSearchTerm}&includeVersion=true`
   const apiTypes = [
@@ -78,9 +87,6 @@ export const fetchProjectPage = (projectSearchTerm) => {
     [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
   }
 }
-
-// convert merge option to MergeRule enum value
-const fuzzyOrRejectMergeRule = (isAccept) => isAccept ? 'FUZZY' : 'REJECT'
 
 // convert project version to string representation
 const toProjectVersionString = (projectVersion) => {
@@ -121,6 +127,7 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const {
     selectedLanguage: {localeId},
     matchPercentage,
+    differentProject,
     differentDocId,
     differentContext,
     fromImportedTM,
@@ -133,9 +140,10 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const body = {
     localeId: localeId,
     thresholdPercent: matchPercentage,
-    differentDocumentRule: fuzzyOrRejectMergeRule(differentDocId),
-    differentContextRule: fuzzyOrRejectMergeRule(differentContext),
-    importedMatchRule: fuzzyOrRejectMergeRule(fromImportedTM),
+    differentProjectRule: differentProject,
+    differentDocumentRule: differentDocId,
+    differentContextRule: differentContext,
+    importedMatchRule: fromImportedTM,
     internalTMSource: internalTMSource
   }
   const apiRequest = buildAPIRequest(

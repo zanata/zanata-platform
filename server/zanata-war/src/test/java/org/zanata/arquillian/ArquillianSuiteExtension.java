@@ -69,40 +69,31 @@ public class ArquillianSuiteExtension implements LoadableExtension {
                 ArquillianDescriptor descriptor) {
             deploymentClass = getDeploymentClass(descriptor);
 
-            executeInClassScope(new Callable<Void>() {
-                public Void call() throws Exception {
-                    generateDeploymentEvent.fire(new GenerateDeployment(
-                            new TestClass(deploymentClass)));
-                    suiteDeploymentScenario = classDeploymentScenario.get();
-                    return null;
-                }
+            executeInClassScope(() -> {
+                generateDeploymentEvent.fire(new GenerateDeployment(
+                        new TestClass(deploymentClass)));
+                suiteDeploymentScenario = classDeploymentScenario.get();
             });
         }
 
         public void deploy(@Observes final AfterStart event,
                 final ContainerRegistry registry) {
-            executeInClassScope(new Callable<Void>() {
-                public Void call() throws Exception {
-                    for (Deployment d : suiteDeploymentScenario.deployments()) {
-                        deploymentEvent.fire(new DeployDeployment(
-                                findContainer(registry,
-                                        event.getDeployableContainer()), d));
-                    }
-                    return null;
+            executeInClassScope(() -> {
+                for (Deployment d : suiteDeploymentScenario.deployments()) {
+                    deploymentEvent.fire(new DeployDeployment(
+                            findContainer(registry,
+                                    event.getDeployableContainer()), d));
                 }
             });
         }
 
         public void undeploy(@Observes final BeforeStop event,
                 final ContainerRegistry registry) {
-            executeInClassScope(new Callable<Void>() {
-                public Void call() throws Exception {
-                    for (Deployment d : suiteDeploymentScenario.deployments()) {
-                        deploymentEvent.fire(new UnDeployDeployment(
-                                findContainer(registry,
-                                        event.getDeployableContainer()), d));
-                    }
-                    return null;
+            executeInClassScope(() -> {
+                for (Deployment d : suiteDeploymentScenario.deployments()) {
+                    deploymentEvent.fire(new UnDeployDeployment(
+                            findContainer(registry,
+                                    event.getDeployableContainer()), d));
                 }
             });
         }
@@ -117,7 +108,7 @@ public class ArquillianSuiteExtension implements LoadableExtension {
             cachedProtocolMetaData = protocolMetaData;
         }
 
-        public void resotreProtocolMetaData(
+        public void restoreProtocolMetaData(
                 @Observes EventContext<Before> eventContext) {
             testScopedProtocolMetaData.set(cachedProtocolMetaData);
             eventContext.proceed();
@@ -135,10 +126,10 @@ public class ArquillianSuiteExtension implements LoadableExtension {
             // We need to block UnDeployManagedDeployments event
         }
 
-        private void executeInClassScope(Callable<Void> call) {
+        private void executeInClassScope(Runnable call) {
             try {
                 classContext.get().activate(deploymentClass);
-                call.call();
+                call.run();
             } catch (Exception e) {
                 throw new RuntimeException("Could not invoke operation", e);
             } finally {

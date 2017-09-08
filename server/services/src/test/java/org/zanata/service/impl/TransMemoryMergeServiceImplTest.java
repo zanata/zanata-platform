@@ -32,7 +32,6 @@ import static org.zanata.test.EntityTestData.makeApprovedHTextFlow;
 import static org.zanata.test.EntityTestData.makeHTextFlow;
 import static org.zanata.test.EntityTestData.makeTransMemoryUnit;
 import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
-import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,9 +173,9 @@ public class TransMemoryMergeServiceImplTest {
         // we have TransMemoryMergeStatusResolverTest to cover various different
         // merge options so here we don't test that
         MergeRule importedTMOption =
-                acceptImportedTMResults ? MergeRule.FUZZY
+                acceptImportedTMResults ? MergeRule.IGNORE_CHECK
                         : MergeRule.REJECT;
-        MergeOptions opts = MergeOptions.allFuzzy();
+        MergeOptions opts = MergeOptions.allIgnore();
         opts.setImportedMatch(importedTMOption);
 
         return prepareAction(threshold, opts);
@@ -483,11 +482,6 @@ public class TransMemoryMergeServiceImplTest {
                 importedTmResult(tuResultSource.getId(), 100);
 
         Optional<TransMemoryResultItem> match = Optional.of(mostSimilarTM);
-
-        // A Translation memory query
-        TransMemoryQuery tmQuery =
-                prepareTMQuery(hTextFlow.getContents(), FUZZY_PLURAL, null,
-                        hTextFlow.getResId());
 
         // Expectations:
         when(localeService.getByLocaleId(action.localeId))

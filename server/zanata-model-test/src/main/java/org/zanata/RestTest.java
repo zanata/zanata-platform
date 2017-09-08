@@ -25,8 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.ws.rs.core.Response;
 
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
@@ -43,11 +49,16 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
-import org.zanata.util.ServiceLocator;
+
+import com.google.common.collect.ImmutableMap;
+
+import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 /**
  * Provides basic test utilities to test raw REST APIs and compatibility.
@@ -58,6 +69,8 @@ import org.zanata.util.ServiceLocator;
 @RunWith(Arquillian.class)
 @Exclude
 public abstract class RestTest {
+    private static final Logger log = LoggerFactory.getLogger(RestTest.class);
+
     // Admin credentials
     protected static final String ADMIN = "admin";
     protected static final String ADMIN_KEY =
@@ -74,28 +87,19 @@ public abstract class RestTest {
 
     // Authorized environment with valid credentials
     private static final ResourceRequestEnvironment ENV_AUTHORIZED =
-            new ResourceRequestEnvironment() {
-                @Override
-                public Map<String, Object> getDefaultHeaders() {
-                    return new HashMap<String, Object>() {
-                        private static final long serialVersionUID = 1L;
-                        {
-                            put("X-Auth-User", ADMIN);
-                            put("X-Auth-Token", ADMIN_KEY);
-                        }
-                    };
-                }
-            };
+            () -> ImmutableMap.of(
+                    "X-Auth-User", ADMIN,
+                    "X-Auth-Token", ADMIN_KEY);
 
     private DBUnitProvider dbUnitProvider = new DBUnitProvider() {
         @Override
         protected IDatabaseConnection getConnection() {
-            return RestTest.getConnection();
+            return RestTest.this.getConnection();
         }
     };
 
     @ArquillianResource
-    protected URL deploymentUrl;
+    private URL deploymentUrl;
 
     /**
      * Implement this in a subclass.
@@ -120,17 +124,29 @@ public abstract class RestTest {
      */
     @RemoteBefore
     public void prepareDataBeforeTest() {
-        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                DatabaseOperation.DELETE_ALL));
+        log.info("Executing prepareDataBeforeTest()");
+        String dataSetToClear = getDataSetToClear();
+        if (dataSetToClear != null) {
+            addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                    dataSetToClear,
+                    DatabaseOperation.DELETE_ALL));
+            addAfterTestOperation(new DBUnitProvider.DataSetOperation(
+                    dataSetToClear,
+                    DatabaseOperation.DELETE_ALL));
+        }
         prepareDBUnitOperations();
-        addAfterTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                DatabaseOperation.DELETE_ALL));
         dbUnitProvider.prepareDataBeforeTest();
         // Clear the hibernate cache
-        ServiceLocator.instance().getEntityManagerFactory().getCache()
-                .evictAll();
+        entityManagerFactory().getCache().evictAll();
+    }
+
+    private EntityManagerFactory entityManagerFactory() {
+        return CDI.current().select(EntityManagerFactory.class).get();
+    }
+
+    @CheckForNull
+    protected String getDataSetToClear() {
+        return "org/zanata/test/model/ClearAllTables.dbunit.xml";
     }
 
     /**
@@ -138,60 +154,64 @@ public abstract class RestTest {
      */
     @RemoteAfter
     public void cleanDataAfterTest() {
+        log.info("Executing cleanDataAfterTest()");
         dbUnitProvider.cleanDataAfterTest();
     }
 
     @Rule
-    public final TestName testName = new TestName();
+    public TestName testName = new TestName();
 
     @Before
-    public void signalBeforeTest() {
+    public void signalBeforeTest() throws Exception {
         ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
                 .target(getRestEndpointUrl() + "test/remote/signal/before");
         // test resources allow anonymous access
-        try {
-            webTarget
-                    .queryParam("c", this.getClass().getName())
-                    .queryParam("m", testName.getMethodName())
-                    .request().build("post").invoke();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Response response = webTarget
+                .queryParam("c", this.getClass().getName())
+                .queryParam("m", testName.getMethodName())
+                .request().build("post").invoke();
+        Response.StatusType statusInfo = response.getStatusInfo();
+        if (statusInfo.getFamily() != SUCCESSFUL) {
+            throw new Exception("bad response: " + statusInfo.getStatusCode() + " " + statusInfo);
         }
     }
 
     @After
-    public void signalAfterTest() {
+    public void signalAfterTest() throws Exception {
         ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
                 .target(getRestEndpointUrl() + "test/remote/signal/after");
         // test resources allow anonymous access
-        try {
-            webTarget
-                    .queryParam("c", this.getClass().getName())
-                    .queryParam("m", testName.getMethodName())
-                    .request().build("post").invoke();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Response response = webTarget
+                .queryParam("c", this.getClass().getName())
+                .queryParam("m", testName.getMethodName())
+                .request().build("post").invoke();
+        if (response.getStatusInfo().getFamily() != SUCCESSFUL) {
+            throw new Exception("bad response: " + response.getStatusInfo());
         }
     }
 
-    private static IDatabaseConnection getConnection() {
+    private IDatabaseConnection getConnection() {
         try {
-            DataSource dataSource =
-                    (DataSource) new InitialContext().lookup(
-                            "java:jboss/datasources/zanataDatasource");
+            DataSource dataSource = getDataSource();
             DatabaseConnection dbConn =
                     new DatabaseConnection(dataSource.getConnection());
+//            dbConn.getConfig().setProperty(DatabaseConfig.FEATURE_CASE_SENSITIVE_TABLE_NAMES, false);
             return dbConn;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    protected DataSource getDataSource() throws NamingException {
+        return (DataSource) new InitialContext().lookup(
+                "java:jboss/datasources/zanataDatasource");
+    }
+
     /**
      * @return The artifact's base deployment Url.
      */
-    public String getDeploymentUrl() {
-        return deploymentUrl.toString();
+    public URL getDeploymentUrl() {
+        return deploymentUrl;
     }
 
     /**
@@ -226,35 +246,21 @@ public abstract class RestTest {
      * @return A Resource Request execution environment with valid test
      *         credentials.
      */
-    public static final ResourceRequestEnvironment getAuthorizedEnvironment() {
+    public static ResourceRequestEnvironment getAuthorizedEnvironment() {
         return ENV_AUTHORIZED;
     }
 
     /**
      * Gets an empty header for REST request.
      */
-    public static final ResourceRequestEnvironment getEmptyHeaderEnvironment() {
-        return new ResourceRequestEnvironment() {
-            @Override
-            public Map<String, Object> getDefaultHeaders() {
-                return new HashMap<String, Object>();
-            }
-        };
+    public static ResourceRequestEnvironment getEmptyHeaderEnvironment() {
+        return ResourceRequestEnvironment.EMPTY;
     }
 
     public static ResourceRequestEnvironment getTranslatorHeaders() {
-        return new ResourceRequestEnvironment() {
-            @Override
-            public Map<String, Object> getDefaultHeaders() {
-                return new HashMap<String, Object>() {
-                    private static final long serialVersionUID = 1L;
-                    {
-                        put("X-Auth-User", TRANSLATOR);
-                        put("X-Auth-Token", TRANSLATOR_KEY);
-                    }
-                };
-            }
-        };
+        return () -> ImmutableMap.of(
+                "X-Auth-User", TRANSLATOR,
+                "X-Auth-Token", TRANSLATOR_KEY);
     }
 
     protected ResteasyWebTarget addExtensionToRequest(Set<String> extensions,
