@@ -59,6 +59,8 @@ public class RemoteTestSignalerImpl {
     @Path("/after")
     public void signalAfterTest(@QueryParam("testClass") String testClass,
             @QueryParam("method") String testMethod) throws Exception {
+        // Note: this will also trigger SessionChecker to check the
+        // serializability of remaining sessions as they are destroyed:
         sessionTracker.invalidateAllSessions();
         log.info("Finished test {}:{}", testClass, testMethod);
     }
