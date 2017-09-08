@@ -57,6 +57,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.exception.ProjectNotFoundException;
 import org.zanata.i18n.Messages;
@@ -143,6 +144,8 @@ public class ProjectHome extends SlugHome<HProject>
     private PersonDAO personDAO;
     @Inject
     private AccountRoleDAO accountRoleDAO;
+    @Inject
+    private ProjectMemberDAO projectMemberDAO;
     @Inject
     private WebHookDAO webHookDAO;
     @Inject
@@ -682,6 +685,18 @@ public class ProjectHome extends SlugHome<HProject>
     // Verify it still works properly */
 
     public void initialize() {
+        if (getInstance().isPrivateProject()) {
+            if (authenticatedAccount == null) {
+                throw new EntityNotFoundException();
+            }
+            boolean isProjectMember = projectMemberDAO
+                    .isProjectMember(authenticatedAccount.getPerson(),
+                            getInstance());
+            if (!isProjectMember) {
+                throw new EntityNotFoundException();
+            }
+        }
+        identity.checkPermission(getInstance(), "read");
         validateSuppliedId();
         if (getInstance().getDefaultCopyTransOpts() != null) {
             copyTransOptionsModel

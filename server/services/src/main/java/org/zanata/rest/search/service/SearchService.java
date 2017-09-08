@@ -47,6 +47,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.SearchResult;
@@ -112,10 +113,11 @@ public class SearchService {
         try {
             int totalCount;
             List<HProject> projects;
+            HPerson person = authenticatedAccount != null ? authenticatedAccount.getPerson() : null;
             if (StringUtils.isEmpty(query)) {
-                totalCount = projectDAO.getFilterProjectSize(false, false, true);
+                totalCount = projectDAO.getFilterProjectSize(false, false, true, person);
                 projects = projectDAO.getOffsetList(offset,
-                        validatePageSize(sizePerPage), false, false, true);
+                        validatePageSize(sizePerPage), false, false, true, person);
             } else {
                 totalCount = projectDAO.getQueryProjectSize(query, false);
                 projects =

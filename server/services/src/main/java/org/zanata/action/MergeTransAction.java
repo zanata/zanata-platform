@@ -150,7 +150,8 @@ public class MergeTransAction extends CopyAction implements Serializable {
                 .hasPermission(getTargetVersion().getProject(), "merge-trans");
         if (canMergeFromAllProjects) {
             return projectDAO.getOffsetList(0, Integer.MAX_VALUE, false, true,
-                    true);
+                    true, authenticatedAccount != null ?
+                            authenticatedAccount.getPerson() : null);
         }
         return Lists.newArrayList();
     }

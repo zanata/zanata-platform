@@ -88,6 +88,20 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean isProjectTranslationMaintainer(HProject project) {
         return isProjectRole(project, TranslationMaintainer);
     }
+
+    public boolean isProjectMember(HProject project) {
+        if (isLoggedIn()) {
+            HPerson person = authenticatedAccount.get().getPerson();
+            // see class level javadoc for why we need a new session here
+            try (AutoCloseSession autoCloseSession = newSession()) {
+                ProjectMemberDAO projectMemberDAO =
+                        new ProjectMemberDAO(autoCloseSession.session);
+                return projectMemberDAO.isProjectMember(person, project);
+            }
+        }
+        // No authenticated user
+        return false;
+    }
     /*
      * Check whether the authenticated person has the given role in the given
      * project.
@@ -161,14 +175,20 @@ public class SecurityFunctions extends PermissionProvider {
     /* anyone can read a project */
 
     @GrantsPermission(actions = "read")
-    public static boolean canReadProject(HProject target) {
-        return true;
+    public boolean canReadProject(HProject target) {
+        if (!target.isPrivateProject()) {
+            return true;
+        }
+        return isProjectMember(target);
     }
     /* anyone can read a project iteration */
 
     @GrantsPermission(actions = "read")
-    public static boolean canReadProjectIteration(HProjectIteration target) {
-        return true;
+    public boolean canReadProjectIteration(HProjectIteration target) {
+        if (!target.getProject().isPrivateProject()) {
+            return true;
+        }
+        return isProjectMember(target.getProject());
     }
     /*
      * Project maintainers may edit (but not delete) a project, or add an

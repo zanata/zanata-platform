@@ -85,14 +85,14 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @SuppressWarnings("unchecked")
     public List<HProject> getOffsetList(int offset, int count,
                     boolean filterOutActive, boolean filterOutReadOnly,
-                    boolean filterOutObsolete) {
+                    boolean filterOutObsolete, @Nullable HPerson person) {
 
         String condition =
                 constructFilterCondition(filterOutActive, filterOutReadOnly,
-                    filterOutObsolete);
+                    filterOutObsolete, person);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("from HProject p ")
+        sb.append("select p from HProject p ")
             .append(condition)
             .append("order by UPPER(p.name) asc");
         Query q = getSession().createQuery(sb.toString());
@@ -103,18 +103,27 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         if (offset > 0) {
             q.setFirstResult(offset);
         }
+
+        if (person != null) {
+            q.setParameter("person", person);
+        }
+
         q.setCacheable(true)
                 .setComment("ProjectDAO.getOffsetList");
         return q.list();
     }
 
     public int getFilterProjectSize(boolean filterOutActive,
-            boolean filterOutReadOnly, boolean filterOutObsolete) {
+            boolean filterOutReadOnly, boolean filterOutObsolete, @Nullable HPerson person) {
         String condition = constructFilterCondition(filterOutActive,
-                filterOutReadOnly, filterOutObsolete);
+                filterOutReadOnly, filterOutObsolete, person);
         String query = "select count(*) from HProject p " + condition;
         Query q = getSession().createQuery(query);
-        q.setCacheable(true).setComment("ProjectDAO.getFilterProjectSize");
+        if (person != null) {
+            q.setParameter("person", person);
+        }
+        q.setCacheable(true)
+                .setComment("ProjectDAO.getFilterProjectSize");
         Long totalCount = (Long) q.uniqueResult();
 
         if (totalCount == null)
@@ -123,10 +132,19 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     private String constructFilterCondition(boolean filterOutActive,
-            boolean filterOutReadOnly, boolean filterOutObsolete) {
+            boolean filterOutReadOnly, boolean filterOutObsolete, @Nullable HPerson person) {
         StringBuilder condition = new StringBuilder();
+
+        if (person != null) {
+            condition
+                    .append("left join p.localeMembers lm left join p.members m ")
+                    .append("where (p.privateProject is TRUE and ((m.person =:person) or (lm.person =:person))) or (p.privateProject is FALSE) ");
+        } else {
+            condition.append("where p.privateProject is FALSE ");
+        }
+
         if (filterOutActive || filterOutReadOnly || filterOutObsolete) {
-            condition.append("where ");
+            condition.append("and ");
         }
 
         if (filterOutActive) {
@@ -155,17 +173,6 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                     + EntityStatus.OBSOLETE.getInitial() + "' ");
         }
         return condition.toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<HProjectIteration> getAllIterations(String slug) {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "from HProjectIteration t where t.project.slug = :projectSlug order by t.creationDate");
-        q.setParameter("projectSlug", slug);
-        q.setCacheable(true).setComment("ProjectDAO.getAllIterations");
-        return q.list();
     }
 
     @SuppressWarnings("unchecked")
