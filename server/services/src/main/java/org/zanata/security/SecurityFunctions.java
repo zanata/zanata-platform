@@ -172,19 +172,31 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean canCreateProject(HProject target) {
         return identity.hasRole("project-creator");
     }
-    /* anyone can read a project */
 
+    /**
+     * Anyone can read a non-private project
+     * Only project members can read private project
+     */
     @GrantsPermission(actions = "read")
     public boolean canReadProject(HProject target) {
+        if (isAdmin()) {
+            return true;
+        }
         if (!target.isPrivateProject()) {
             return true;
         }
         return isProjectMember(target);
     }
-    /* anyone can read a project iteration */
 
+    /**
+     * Anyone can read a non-private project
+     * Only project members can read private project
+     */
     @GrantsPermission(actions = "read")
     public boolean canReadProjectIteration(HProjectIteration target) {
+        if (isAdmin()) {
+            return true;
+        }
         if (!target.getProject().isPrivateProject()) {
             return true;
         }
