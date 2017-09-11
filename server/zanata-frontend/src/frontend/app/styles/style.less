@@ -1798,7 +1798,7 @@ dd {
   text-transform: capitalize;
 }
 
-.u-textMuted {
+.u-textMuted, .txt--meta {
   color: @color-muted;
   font-weight: 500;
 }
@@ -4546,6 +4546,11 @@ h2.matrixHeading {
   width: 100%;
 }
 
+#userProfile-matrix canvas {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
 #profileUsername, #profileLanguages, #profileRoles {
   line-height: 1.333;
 }
@@ -4713,7 +4718,7 @@ h2.userProfile-recentContributions {
 }
 
 #userProfile-activityTable td button.btn-primary {
-  background-color: rgba(84, 102, 119, 0.65);
+  background-color: rgba(84, 102, 119, 0.65) !important;
 }
 
 #userProfile-activityTable td button.btn-warning {
@@ -6665,8 +6670,6 @@ table .projectWideSearchResultsDocumentBody {
 
   main {
     margin-left: 4.5rem;
-    margin-right: -4.5rem;
-    padding-left: 1rem;
   }
 
   .containerSidebar {
@@ -6721,10 +6724,6 @@ table .projectWideSearchResultsDocumentBody {
 
   .modal-sm {
     width: 300px;
-  }
-
-  h1 {
-    margin-top: 0;
   }
 
   .container {
@@ -7060,6 +7059,7 @@ table .projectWideSearchResultsDocumentBody {
 
   .matrix-inner {
     width: 100%;
+    margin-right: 1rem;
   }
 
   .matrixHeading {

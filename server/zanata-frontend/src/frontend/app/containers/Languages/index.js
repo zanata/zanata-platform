@@ -113,10 +113,10 @@ class Languages extends Component {
         <div className='u-centerBlock'>
           <div className='clearfix'
             id='languages-form'>
-            <h2>
+            <h1>
               Languages {!loading &&
                 <Badge className='default'>{totalCount}</Badge>}
-            </h2>
+            </h1>
             {permission.canAddLocale &&
               <div>
                 <Button bsStyle='primary' bsSize='small'

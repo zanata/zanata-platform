@@ -72,10 +72,10 @@ class RecentContributions extends React.Component {
         <div className='u-flexCenter'>
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
-          <div className='daterange-container'>
+          <div className='dateRange-container'>
             <Button bsStyle='link' className='u-pullRight'
               onClick={() => this.onToggleShowDateRange()}>
-              <span className='daterange-textfield'>
+              <span className='dateRange-textField'>
                 <TextInput editable={false} value={displayDateRange} />
               </span>
             </Button>
