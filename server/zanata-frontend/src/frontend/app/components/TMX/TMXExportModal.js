@@ -149,7 +149,7 @@ class TMXExportModal extends Component {
 
     return (
       <Modal id='tmxExportModal' show={show} onHide={handleOnClose}
-             keyboard backdrop>
+        keyboard backdrop>
         <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
