@@ -58,7 +58,6 @@ import org.zanata.common.TransUnitWords;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -114,8 +113,6 @@ public class StatisticsServiceImpl implements StatisticsResource {
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
-    @Inject
-    private ProjectMemberDAO projectMemberDAO;
     @Inject
     private TranslationStateCache translationStateCacheImpl;
     @Inject

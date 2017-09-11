@@ -43,6 +43,7 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
@@ -62,6 +63,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationStateCacheImpl;
@@ -100,9 +102,8 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     @Produces @Mock ValidationService validationService;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
 
-    @Produces @Authenticated
-    @Mock
-    HAccount authenticatedAccount;
+    @Produces @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ZanataIdentity identity;
 
     @Override
     @Produces
