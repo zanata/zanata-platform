@@ -151,8 +151,7 @@ class Languages extends Component {
                   </span>
                 </div>
                 : (<div>
-                  <div className='sort-items
-                    col-xs-6 col-sm-4 col-md-4 col-lg-3'>
+                  <div className='sortItems'>
                     <FormControl componentClass='select'
                       className='u-pullRight' id='sort-options'
                       onChange={handleOnUpdateSort} value={sort.value}>
@@ -162,8 +161,7 @@ class Languages extends Component {
                     })}
                     </FormControl>
                   </div>
-                  <div className='showItems u-pullRight col-xs-5
-                    col-sm-3 col-md-2 col-lg-2'>
+                  <div className='showItems u-pullRight'>
                     <span>Show</span>
                     <FormControl componentClass='select'
                       onChange={handleOnUpdatePageSize} value={size}
@@ -174,7 +172,7 @@ class Languages extends Component {
                     })}
                     </FormControl>
                   </div>
-                  <div className='page-count col-xs-7 col-sm-8
+                  <div className='pageCount col-xs-7 col-sm-8
                     col-md-12'>
                     <Pagination
                       prev

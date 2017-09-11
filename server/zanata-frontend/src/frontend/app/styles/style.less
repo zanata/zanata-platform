@@ -3416,6 +3416,9 @@ tbody.collapse {
 
 .toolbar {
   padding-top: @spacing-hr;
+  flex-direction: row;
+  display: inline-flex;
+  flex-wrap: wrap;
 }
 
 .toolbar .sortItems {
@@ -3710,6 +3713,10 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 .pagination, .searchBox, .showItems {
   padding: 0;
   height: 2rem;
+}
+
+.searchBox {
+  width:50%;
 }
 
 .showItems {
@@ -6101,11 +6108,13 @@ button.close:focus, button.close:hover, button.close:active:focus {
 .toolbar .sortItems {
   padding-bottom: @spacing-large-horizontal;
   padding-right: 0;
+  width: 30%;
 }
 
 .toolbar .showItems {
   padding-bottom: @spacing-large-horizontal;
   padding-right: 0;
+  width: auto;
 }
 
 .toolbar .pageCount {
