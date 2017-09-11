@@ -765,7 +765,7 @@
                         -XX:+PrintGCDateStamps
                         -verbose:gc
                         -XX:+PrintGCDetails
-                        -Xloggc:"target/gc.log"
+                        -Xloggc:target/gc.log
                         -XX:+UseGCLogFileRotation
                         -XX:NumberOfGCLogFiles=10
                         -XX:GCLogFileSize=100M
@@ -795,7 +795,7 @@
                         -XX:+PrintGCDateStamps
                         -verbose:gc
                         -XX:+PrintGCDetails
-                        -Xloggc:"target/gc.log"
+                        -Xloggc:target/gc.log
                         -XX:+UseGCLogFileRotation
                         -XX:NumberOfGCLogFiles=10
                         -XX:GCLogFileSize=100M
