@@ -37,7 +37,7 @@ class TMMergeImportedTM extends Component {
       <Col xs={12}>
         <Panel>
           <Col xs={12}>
-            <div className="vmerge-title vmerge-title-flex">
+            <div className="VersionMergeTitle versionMergeTitle-flex">
               <span>
                 <Toggle icons={false} defaultChecked
                   onChange={this.toggleChange} />
@@ -54,7 +54,7 @@ class TMMergeImportedTM extends Component {
               <CopyLabel type={IGNORE_CHECK} value={fromImportedTM} />
               <OverlayTrigger placement='right' overlay={tooltip}>
                 <a className="btn-link tooltip-btn" role="button">
-                  <Icon name="info" className="s0 info-icon" />
+                  <Icon name="info" className="s0 iconInfoVersionMerge" />
                 </a>
               </OverlayTrigger>
             </Radio>

@@ -659,7 +659,7 @@ label span.n1 {
 
 @media (max-width: 909px) {
 
-  .info-icon {
+  .iconInfoVersionMerge {
     text-align: left;
   }
 
@@ -712,7 +712,7 @@ label span.n1 {
     margin-right: 0;
   }
 
-  .info-icon, th.hide-md {
+  .iconInfoVersionMerge, th.hide-md {
     text-align: right !important;
   }
 

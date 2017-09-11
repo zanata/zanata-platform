@@ -50,14 +50,14 @@ storiesOf('VersionTMMergeModal', module)
     .add('version selected', () => (
 
         <Modal
-            id="TM-merge-modal"
+            id="tmMergeModal"
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
             <Modal.Title><span className="u-textNewBlue">Version TM Merge</span></Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p className="intro">
+            <p className="introPar">
               Copy existing <strong>translations</strong> from similar documents
               in other projects and versions into this project version.
             </p>
@@ -72,26 +72,26 @@ storiesOf('VersionTMMergeModal', module)
                         alt="Version TM Merge workflow"/></p>
               </Panel>
             </Accordion>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
-                <div className='vmerge-target'>
-                  <div className='vmerge-title'>
+                <div className='versionMergeTarget'>
+                  <div className='VersionMergeTitle'>
                     <span>To</span>
                     <span className="panel-name">Target</span>
                   </div>
                   <ul>
                     <li className='list-group-item to' title='target project'>
                       <span className="item"><Icon name='project'
-                                                   className='s1 tmx-icon'/>
+                                                   className='s1 iconTMX'/>
                         Project</span>
                       <span className="item"><Icon name='version'
-                                                   className='s1 tmx-icon'/>
+                                                   className='s1 iconTMX'/>
                         Version</span>
-                      <span className="item" id="languages-dd">
-                      <Icon name="language" className="s1 tmx-icon"/>
+                      <span className="item" id="versionMergeDropdown">
+                      <Icon name="language" className="s1 iconTMX"/>
                          <DropdownButton bsStyle='default' title='Assamese'
-                                         id='language-dropdown-basic'
-                                         className='vmerge-ddown'>
+                           id='languageDropdown'
+                           className='versionMergeDropdown'>
                   <MenuItem onClick={action('onClick')}
                             eventKey='1'>Assamese</MenuItem>
                          </DropdownButton>
@@ -101,12 +101,12 @@ storiesOf('VersionTMMergeModal', module)
                 </div>
               </Panel>
             </Col>
-            <Col xs={12} className='vmerge-row'>
+            <Col xs={12} className='versionMergeRow'>
               <p className="lead">For every potential translation:</p>
               <span className="u-textNewBlue">If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
-                              id='language-dropdown-basic'
-                              className='vmerge-ddown'>
+                id='percentDropdown'
+                className='versionMergeDropdown'>
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>100%</MenuItem>
                 <MenuItem onClick={action('onClick')}
@@ -116,10 +116,10 @@ storiesOf('VersionTMMergeModal', module)
               </DropdownButton><span className="u-textNewBlue"> &nbsp;similar, don't use it.
             </span>
             </Col>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
                 <Col xs={12}>
-                  <div className='vmerge-title vmerge-title-flex'>
+                  <div className='VersionMergeTitle versionMergeTitle-flex'>
                     <span>
                       <Toggle icons={false} defaultChecked={true}/>
                     </span>
@@ -127,12 +127,12 @@ storiesOf('VersionTMMergeModal', module)
                     <span className="panel-name">Project Source</span>
                     <OverlayTrigger placement='right' overlay={tooltip1}>
                       <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon"/>
+                        <Icon name="info" className="s0 iconInfoVersionMerge"/>
                       </Button>
                     </OverlayTrigger>
                   </div>
                 </Col>
-                <Col xs={12} className="select-source">
+                <Col xs={12} className="versionMergeSource">
                   <span>Select TM from</span>
                   <Radio inline>
                     this project
@@ -144,13 +144,13 @@ storiesOf('VersionTMMergeModal', module)
                     some projects
                   </Radio>
                 </Col>
-                <Col xs={12} className='vmerge-searchbox'>
+                <Col xs={12} className='versionMergeSearch'>
                   <InputGroup>
                     <InputGroup.Addon>
                       <Icon name='search' className='s0' title='search'/>
                     </InputGroup.Addon>
                     <FormControl type='text'
-                                 className='vmerge-searchinput'
+                                 className='versionMergeSearch-input'
                     />
                   </InputGroup>
                 </Col>
@@ -159,7 +159,7 @@ storiesOf('VersionTMMergeModal', module)
                                                             className="n1"/></Label>
                 </Col>
                 <Col xs={6}>
-          <span className='vmerge-adjtitle vmerge-title'>
+          <span className='versionMergeTitle-adjusted VersionMergeTitle'>
             Select source project versions to merge
           </span>
                   <div className="panel-group proj-select">
@@ -169,7 +169,7 @@ storiesOf('VersionTMMergeModal', module)
                           <ListGroupItem className='list-group-item'
                                          title='target project'>
                             <Checkbox checked inline><Icon name='project'
-                                                           className='s0 tmx-icon'/>
+                                                           className='s0 iconTMX'/>
                               Project A</Checkbox>
                           </ListGroupItem>
                         </ListGroup>
@@ -177,21 +177,21 @@ storiesOf('VersionTMMergeModal', module)
                       <ListGroup fill>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox checked inline><Icon name='version'
-                                                         className='s0 tmx-icon'/>
+                                                         className='s0 iconTMX'/>
                             Version 1 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox checked inline><Icon name='version'
-                                                         className='s0 tmx-icon'/>
+                                                         className='s0 iconTMX'/>
                             Version 2 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox inline><Icon name='version'
-                                                 className='s0 tmx-icon'/>
+                                                 className='s0 iconTMX'/>
                             Version 3</Checkbox>
 
                         </ListGroupItem>
@@ -200,13 +200,13 @@ storiesOf('VersionTMMergeModal', module)
                   </div>
                 </Col>
                 <Col xs={6}>
-                   <span className="vmerge-adjtitle vmerge-title">
+                   <span className="versionMergeTitle-adjusted VersionMergeTitle">
           Adjust priority of selected versions
           </span><br/>
-                  <span className="u-textMuted vmerge-adjsub">(best first)
+                  <span className="u-textMuted versionMergeTitle-sub">(best first)
                    <OverlayTrigger placement='right' overlay={tooltip2}>
                       <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon"/>
+                        <Icon name="info" className="s0 iconInfoVersionMerge"/>
                       </Button>
                     </OverlayTrigger>
                   </span>
@@ -247,7 +247,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -263,7 +263,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -282,7 +282,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -300,10 +300,10 @@ storiesOf('VersionTMMergeModal', module)
                 </Col>
               </Panel>
             </Col>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
                 <Col xs={12}>
-                  <div className='vmerge-title vmerge-title-flex'>
+                  <div className='VersionMergeTitle versionMergeTitle-flex'>
                     <span>
                     <Toggle icons={false} defaultChecked={true}/>
                     </span>
@@ -318,7 +318,7 @@ storiesOf('VersionTMMergeModal', module)
                     translated</Label>
                     <OverlayTrigger placement='right' overlay={tooltip4}>
                       <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon"/>
+                        <Icon name="info" className="s0 iconInfoVersionMerge"/>
                       </Button>
                     </OverlayTrigger>
                   </Radio>
@@ -353,7 +353,7 @@ storiesOf('VersionTMMergeModal', module)
     .add('no version selected', () => (
 
         <Modal
-            id="TM-merge-modal"
+            id="tmMergeModal"
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
@@ -375,26 +375,26 @@ storiesOf('VersionTMMergeModal', module)
                         alt="Version TM Merge workflow"/></p>
               </Panel>
             </Accordion>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
-                <div className='vmerge-target'>
-                  <div className='vmerge-title'>
+                <div className='versionMergeTarget'>
+                  <div className='VersionMergeTitle'>
                     <span>To</span>
                     <span className="panel-name">Target</span>
                   </div>
                   <ul>
                     <li className='list-group-item to' title='target project'>
                       <span className="item"><Icon name='project'
-                                                   className='s1 tmx-icon'/>
+                                                   className='s1 iconTMX'/>
                         Project</span>
                       <span className="item"><Icon name='version'
-                                                   className='s1 tmx-icon'/>
+                                                   className='s1 iconTMX'/>
                         Version</span>
-                      <span className="item" id="languages-dd">
-                      <Icon name="language" className="s1 tmx-icon"/>
+                      <span className="item" id="versionMergeDropdown">
+                      <Icon name="language" className="s1 iconTMX"/>
                          <DropdownButton bsStyle='default' title='Assamese'
                                          id='language-dropdown-basic'
-                                         className='vmerge-ddown'>
+                                         className='versionMergeDropdown'>
                   <MenuItem onClick={action('onClick')}
                             eventKey='1'>Assamese</MenuItem>
                          </DropdownButton>
@@ -404,12 +404,12 @@ storiesOf('VersionTMMergeModal', module)
                 </div>
               </Panel>
             </Col>
-            <Col xs={12} className='vmerge-row'>
+            <Col xs={12} className='versionMergeRow'>
               <p className="lead">For every potential translation:</p>
               <span className="u-textNewBlue">If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
                               id='language-dropdown-basic'
-                              className='vmerge-ddown'>
+                              className='versionMergeDropdown'>
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>100%</MenuItem>
                 <MenuItem onClick={action('onClick')}
@@ -419,10 +419,10 @@ storiesOf('VersionTMMergeModal', module)
               </DropdownButton><span className="u-textNewBlue"> &nbsp;similar, don't use it.
             </span>
             </Col>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
                 <Col xs={12}>
-                  <div className='vmerge-title vmerge-title-flex'>
+                  <div className='VersionMergeTitle versionMergeTitle-flex'>
                     <span>
                     <Toggle icons={false} defaultChecked={true}/>
                     </span>
@@ -430,12 +430,12 @@ storiesOf('VersionTMMergeModal', module)
                     <span className="panel-name">Project Source</span>
                     <OverlayTrigger placement='right' overlay={tooltip1}>
                       <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon"/>
+                        <Icon name="info" className="s0 iconInfoVersionMerge"/>
                       </Button>
                     </OverlayTrigger>
                   </div>
                 </Col>
-                <Col xs={12} className="select-source">
+                <Col xs={12} className="versionMergeSource">
                   <span>Select TM from</span>
                   <Radio inline>
                     this project
@@ -447,13 +447,13 @@ storiesOf('VersionTMMergeModal', module)
                     some projects
                   </Radio>
                 </Col>
-                <Col xs={12} className='vmerge-searchbox'>
+                <Col xs={12} className='versionMergeSearch'>
                   <InputGroup>
                     <InputGroup.Addon>
                       <Icon name='search' className='s0' title='search'/>
                     </InputGroup.Addon>
                     <FormControl type='text'
-                                 className='vmerge-searchinput'
+                                 className='versionMergeSearch-input'
                     />
                   </InputGroup>
                 </Col>
@@ -462,7 +462,7 @@ storiesOf('VersionTMMergeModal', module)
                                                             className="n1"/></Label>
                 </Col>
                 <Col xs={6}>
-          <span className='vmerge-adjtitle vmerge-title'>
+          <span className='versionMergeTitle-adjusted VersionMergeTitle'>
             Select source project versions to merge
           </span>
                   <div className="panel-group proj-select">
@@ -472,7 +472,7 @@ storiesOf('VersionTMMergeModal', module)
                           <ListGroupItem className='list-group-item'
                                          title='target project'>
                             <Checkbox inline><Icon name='project'
-                                                   className='s0 tmx-icon'/>
+                                                   className='s0 iconTMX'/>
                               Project A</Checkbox>
                           </ListGroupItem>
                         </ListGroup>
@@ -480,21 +480,21 @@ storiesOf('VersionTMMergeModal', module)
                       <ListGroup fill>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox inline><Icon name='version'
-                                                 className='s0 tmx-icon'/>
+                                                 className='s0 iconTMX'/>
                             Version 1 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox inline><Icon name='version'
-                                                 className='s0 tmx-icon'/>
+                                                 className='s0 iconTMX'/>
                             Version 2 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox inline><Icon name='version'
-                                                 className='s0 tmx-icon'/>
+                                                 className='s0 iconTMX'/>
                             Version 3</Checkbox>
 
                         </ListGroupItem>
@@ -518,7 +518,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -534,7 +534,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -553,7 +553,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -571,10 +571,10 @@ storiesOf('VersionTMMergeModal', module)
                 </Col>
               </Panel>
             </Col>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
                 <Col xs={12}>
-                  <div className='vmerge-title vmerge-title-flex'>
+                  <div className='VersionMergeTitle versionMergeTitle-flex'>
                     <span>
                     <Toggle icons={false} defaultChecked={true}/>
                     </span>
@@ -589,7 +589,7 @@ storiesOf('VersionTMMergeModal', module)
                     translated</Label>
                     <OverlayTrigger placement='right' overlay={tooltip4}>
                       <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon"/>
+                        <Icon name="info" className="s0 iconInfoVersionMerge"/>
                       </Button>
                     </OverlayTrigger>
                   </Radio>
@@ -624,7 +624,7 @@ storiesOf('VersionTMMergeModal', module)
     .add('disabled TM', () => (
 
         <Modal
-            id="TM-merge-modal"
+            id="tmMergeModal"
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
@@ -646,26 +646,26 @@ storiesOf('VersionTMMergeModal', module)
                         alt="Version TM Merge workflow"/></p>
               </Panel>
             </Accordion>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
-                <div className='vmerge-target'>
-                  <div className='vmerge-title'>
+                <div className='versionMergeTarget'>
+                  <div className='VersionMergeTitle'>
                     <span>To</span>
                     <span className="panel-name">Target</span>
                   </div>
                   <ul>
                     <li className='list-group-item to' title='target project'>
                       <span className="item"><Icon name='project'
-                                                   className='s1 tmx-icon'/>
+                                                   className='s1 iconTMX'/>
                         Project</span>
                       <span className="item"><Icon name='version'
-                                                   className='s1 tmx-icon'/>
+                                                   className='s1 iconTMX'/>
                         Version</span>
-                      <span className="item" id="languages-dd">
-                      <Icon name="language" className="s1 tmx-icon"/>
+                      <span className="item" id="versionMergeDropdown">
+                      <Icon name="language" className="s1 iconTMX"/>
                          <DropdownButton bsStyle='default' title='Assamese'
                                          id='language-dropdown-basic'
-                                         className='vmerge-ddown'>
+                                         className='versionMergeDropdown'>
                   <MenuItem onClick={action('onClick')}
                             eventKey='1'>Assamese</MenuItem>
                          </DropdownButton>
@@ -675,12 +675,12 @@ storiesOf('VersionTMMergeModal', module)
                 </div>
               </Panel>
             </Col>
-            <Col xs={12} className='vmerge-row'>
+            <Col xs={12} className='versionMergeRow'>
               <p className="lead">For every potential translation:</p>
               <span className="u-textNewBlue">If text is less than </span>
               <DropdownButton bsStyle='default' title='80%'
                               id='language-dropdown-basic'
-                              className='vmerge-ddown'>
+                              className='versionMergeDropdown'>
                 <MenuItem onClick={action('onClick')}
                           eventKey='1'>100%</MenuItem>
                 <MenuItem onClick={action('onClick')}
@@ -690,10 +690,10 @@ storiesOf('VersionTMMergeModal', module)
               </DropdownButton><span className="u-textNewBlue"> &nbsp;similar, don't use it.
             </span>
             </Col>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
                 <Col xs={12}>
-                  <div className='vmerge-title vmerge-title-flex'>
+                  <div className='VersionMergeTitle versionMergeTitle-flex'>
                     <span>
                     <Toggle icons={false} defaultChecked={true}/>
                     </span>
@@ -701,12 +701,12 @@ storiesOf('VersionTMMergeModal', module)
                     <span className="panel-name">Project Source</span>
                     <OverlayTrigger placement='right' overlay={tooltip1}>
                       <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon"/>
+                        <Icon name="info" className="s0 iconInfoVersionMerge"/>
                       </Button>
                     </OverlayTrigger>
                   </div>
                 </Col>
-                <Col xs={12} className="select-source">
+                <Col xs={12} className="versionMergeSource">
                   <span>Select TM from</span>
                   <Radio inline>
                     this project
@@ -718,13 +718,13 @@ storiesOf('VersionTMMergeModal', module)
                     some projects
                   </Radio>
                 </Col>
-                <Col xs={12} className='vmerge-searchbox'>
+                <Col xs={12} className='versionMergeSearch'>
                   <InputGroup>
                     <InputGroup.Addon>
                       <Icon name='search' className='s0' title='search'/>
                     </InputGroup.Addon>
                     <FormControl type='text'
-                                 className='vmerge-searchinput'
+                                 className='versionMergeSearch-input'
                     />
                   </InputGroup>
                 </Col>
@@ -733,7 +733,7 @@ storiesOf('VersionTMMergeModal', module)
                                                             className="n1"/></Label>
                 </Col>
                 <Col xs={6}>
-          <span className='vmerge-adjtitle vmerge-title'>
+          <span className='versionMergeTitle-adjusted VersionMergeTitle'>
             Select source project versions to merge
           </span>
                   <div className="panel-group proj-select">
@@ -743,7 +743,7 @@ storiesOf('VersionTMMergeModal', module)
                           <ListGroupItem className='list-group-item'
                                          title='target project'>
                             <Checkbox inline><Icon name='project'
-                                                   className='s0 tmx-icon'/>
+                                                   className='s0 iconTMX'/>
                               Project A</Checkbox>
                           </ListGroupItem>
                         </ListGroup>
@@ -751,21 +751,21 @@ storiesOf('VersionTMMergeModal', module)
                       <ListGroup fill>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox inline><Icon name='version'
-                                                 className='s0 tmx-icon'/>
+                                                 className='s0 iconTMX'/>
                             Version 1 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox inline><Icon name='version'
-                                                 className='s0 tmx-icon'/>
+                                                 className='s0 iconTMX'/>
                             Version 2 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
                           <Checkbox inline><Icon name='version'
-                                                 className='s0 tmx-icon'/>
+                                                 className='s0 iconTMX'/>
                             Version 3</Checkbox>
 
                         </ListGroupItem>
@@ -789,7 +789,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -805,7 +805,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -824,7 +824,7 @@ storiesOf('VersionTMMergeModal', module)
                       fuzzy</Label>
                       <OverlayTrigger placement='right' overlay={tooltip3}>
                         <Button bsStyle="link" className="tooltip-btn">
-                          <Icon name="info" className="s0 info-icon"/>
+                          <Icon name="info" className="s0 iconInfoVersionMerge"/>
                         </Button>
                       </OverlayTrigger>
                     </Radio>
@@ -842,10 +842,10 @@ storiesOf('VersionTMMergeModal', module)
                 </Col>
               </Panel>
             </Col>
-            <Col xs={12} className='vmerge-boxes'>
+            <Col xs={12} className='versionMergeContainer'>
               <Panel>
                 <Col xs={12}>
-                  <div className='vmerge-title vmerge-title-flex'>
+                  <div className='VersionMergeTitle versionMergeTitle-flex'>
                     <span>
                     <Toggle icons={false} defaultChecked={false}/>
                     </span>
@@ -860,7 +860,7 @@ storiesOf('VersionTMMergeModal', module)
                     translated</Label>
                     <OverlayTrigger placement='right' overlay={tooltip4}>
                       <Button bsStyle="link" className="tooltip-btn">
-                        <Icon name="info" className="s0 info-icon"/>
+                        <Icon name="info" className="s0 iconInfoVersionMerge"/>
                       </Button>
                     </OverlayTrigger>
                   </Radio>

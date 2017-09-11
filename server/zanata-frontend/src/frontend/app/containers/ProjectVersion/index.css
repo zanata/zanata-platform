@@ -1,15 +1,15 @@
 /* Modal specific css */
 
-.vmerge-searchinput.form-control {
+.versionMergeSearch-input.form-control {
   height: inherit !important;
 }
 
-.vmerge-boxes .list-group-item:last-child {
+.versionMergeContainer .list-group-item:last-child {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-.vmerge-target {
+.versionMergeTarget {
   margin-left: 1em;
 }
 
@@ -21,14 +21,14 @@
   padding: 0;
 }
 
-.vmerge-target ul {
+.versionMergeTarget ul {
   list-style-type: none;
   margin-bottom: 0;
   line-height: 2em;
   margin-left: 1rem;
 }
 
-#TM-merge-modal .label {
+#tmMergeModal .label {
   font-size: 0.975rem;
   font-weight: 400;
   padding: 0.25rem;
@@ -43,58 +43,58 @@ button#percent-dropdown-basic {
   margin-right: 0.75rem;
 }
 
-#TM-merge-modal .label-default {
+#tmMergeModal .label-default {
   background-color: #A2B3BE;
 }
 
-.vmerge-boxes .panel-group {
+.versionMergeContainer .panel-group {
   margin-bottom: 0;
 }
 
-.vmerge-row {
+.versionMergeRow {
   margin-bottom: 1.75em;
 }
 
-.vmerge-ddown {
+.versionMergeDropdown {
   font-weight: 500;
 }
 
-.vmerge-title {
+.VersionMergeTitle {
   font-weight: 600;
   font-size: 1em;
   margin-bottom: 0.375rem;
 }
 
-.vmerge-title-flex {
+.versionMergeTitle-flex {
   display: inline-flex;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.vmerge-title .u-textMuted {
+.VersionMergeTitle .u-textMuted {
   margin-left: 1em;
 }
 
-.vmerge-searchbox {
+.versionMergeSearch {
   display: inline-flex;
 }
 
-#TM-merge-modal .search-input .input-group {
+#tmMergeModal .search-input .input-group {
   margin-bottom: 1.5em;
 }
 
-.vmerge-searchbox .input-group-addon {
+.versionMergeSearch .input-group-addon {
   color: @color-muted;
   height: 2rem;
 }
 
-.vmerge-boxes .info-icon, .s0.info-icon {
+.versionMergeContainer .iconInfoVersionMerge, .s0.iconInfoVersionMerge {
   vertical-align: middle;
   margin-left: 0.375em;
   color: #03A6D7;
 }
 
-.vmerge-boxes li.v.list-group-item label.checkbox-inline {
+.versionMergeContainer li.v.list-group-item label.checkbox-inline {
   margin-left: 2rem;
 }
 
@@ -104,18 +104,18 @@ button#percent-dropdown-basic {
   margin-left: 0.375em;
 }
 
-.vmerge-adjtitle {
+.versionMergeTitle-adjusted {
   color: @color-light;
   font-style: italic;
   font-weight: 500;
 }
 
-.vmerge-target ul {
+.versionMergeTarget ul {
   padding-left: 0;
   margin-left: 0;
 }
 
-.vmerge-adjsub {
+.versionMergeTitle-sub {
   font-size: 0.85em;
 }
 
@@ -133,7 +133,7 @@ button#percent-dropdown-basic {
   color: @color-muted;
 }
 
-#TM-merge-modal .panel-title {
+#tmMergeModal .panel-title {
   font-size: 1rem !important;
   margin: 0 !important;
   font-weight: 400;
@@ -165,7 +165,7 @@ button#percent-dropdown-basic {
   z-index: 10000 !important;
 }
 
-#TM-merge-modal .button.btn-primary {
+#tmMergeModal .button.btn-primary {
   color: #fff !important;
   border-color: @color-neutral !important;
   background-color: @color-light !important;
@@ -178,36 +178,36 @@ button#percent-dropdown-basic {
   border: none !important;
 }
 
-.new-zanata #TM-merge-modal ul {
+.new-zanata #tmMergeModal ul {
   margin: 0;
   padding: 0;
 }
 
-.new-zanata #TM-merge-modal ul, .new-zanata #TM-merge-modal ul li {
+.new-zanata #tmMergeModal ul, .new-zanata #tmMergeModal ul li {
   list-style-type: none !important;
 }
 
-.new-zanata #TM-merge-modal input[type=text] {
+.new-zanata #tmMergeModal input[type=text] {
   margin: 0;
 }
 
-.new-zanata #TM-merge-modal label {
+.new-zanata #tmMergeModal label {
   font-weight: 500;
 }
 
-#TM-merge-modal .progress-bar {
+#tmMergeModal .progress-bar {
   height: 100% !important;
 }
 
-#TM-merge-modal .panel-group .panel-heading {
+#tmMergeModal .panel-group .panel-heading {
   border-bottom: 1px solid #cdd4dc !important;
 }
 
-#TM-merge-modal .modal-body .intro {
+#tmMergeModal .modal-body .introPar {
   margin-bottom: 1rem !important;
 }
 
-#TM-merge-modal {
+#tmMergeModal {
   visibility: visible;
   opacity: inherit;
   backface-visibility: hidden;
@@ -217,28 +217,28 @@ button#percent-dropdown-basic {
   font-size: 1.1rem;
 }
 
-.tmx-icon {
+.iconTMX {
   margin-right: 0.375rem;
 }
 
-.vmerge-title .u-textInfo {
+.VersionMergeTitle .u-textInfo {
   margin-right: 1rem;
 }
 
-#TM-merge-modal li.v input.checkbox {
+#tmMergeModal li.v input.checkbox {
   margin-left: 1rem;
 }
 
-#languages-dd {
+#versionMergeDropdown {
   display: inline-flex;
   align-items: center;
 }
 
-#TM-merge-modal #languages-dd span.s1 {
+#tmMergeModal #versionMergeDropdown span.s1 {
   margin-right: 0.375rem;
 }
 
-#TM-merge-modal .s0.icon-locked {
+#tmMergeModal .s0.icon-locked {
   color: #FFA800 !important;
   vertical-align: middle;
   margin-left: 0.375em;
@@ -256,57 +256,57 @@ button#percent-dropdown-basic {
   font-weight: 500;
 }
 
-#TM-merge-modal .radio.has-success label,
-#TM-merge-modal .radio.has-warning label,
-#TM-merge-modal .radio.has-error label {
+#tmMergeModal .radio.has-success label,
+#tmMergeModal .radio.has-warning label,
+#tmMergeModal .radio.has-error label {
   font-weight: 500;
   font-size: 0.975rem;
 }
 
-.select-source {
+.versionMergeSource {
   display: flex;
   padding-bottom: 0.75rem;
 }
 
-.select-source span {
+.versionMergeSource span {
   padding-right: 1rem;
 }
 
-#TM-merge-modal p.lead {
+#tmMergeModal p.lead {
   font-weight: 400;
   margin-bottom: 0.5rem;
 }
 
-#TM-merge-modal li.v span.text-muted {
+#tmMergeModal li.v span.text-muted {
   font-weight: 500;
   margin-left: 2.5rem;
 }
 
-#TM-merge-modal li.list-group-item.to .item {
+#tmMergeModal li.list-group-item.to .item {
   vertical-align: middle;
   margin-right: 1.5rem;
 }
 
-li.list-group-item.to .item .tmx-icon {
+li.list-group-item.to .item .iconTMX {
   vertical-align: sub;
 }
 
-#TM-merge-modal .panel-name {
+#tmMergeModal .panel-name {
   font-size: 1.1rem;
 }
 
-#TM-merge-modal .tooltip-btn {
+#tmMergeModal .tooltip-btn {
   padding: 0;
 }
 
-#TM-merge-modal .well {
+#tmMergeModal .well {
   background-color: #fff;
   border-color: #BDD4DC;
   text-align: center;
   margin-top: 2rem;
 }
 
-#TM-merge-modal .well p {
+#tmMergeModal .well p {
   padding: 1.5rem;
   font-size: 1.1rem;
 }
@@ -324,35 +324,35 @@ li.list-group-item.to .item .tmx-icon {
   margin-top: 1rem;
 }
 
-#TM-merge-modal .radio.disabled {
+#tmMergeModal .radio.disabled {
   opacity: 0.5;
 }
 
-#TM-merge-modal .radio input[type=radio] {
+#tmMergeModal .radio input[type=radio] {
   margin-bottom: 0.75rem;
   margin-left: 1rem;
 }
 
-#TM-merge-modal .btn-link {
+#tmMergeModal .btn-link {
   line-height: inherit;
 }
 
-#TM-merge-modal .panel-title p {
+#tmMergeModal .panel-title p {
   hyphens: initial;
 }
 
-.vmerge-title.text-new-blue {
+.VersionMergeTitle.text-new-blue {
   display: inline-flex;
   align-items: center;
 }
 
-.vmerge-title.text-new-blue .dropdown {
+.VersionMergeTitle.text-new-blue .dropdown {
   width: unset;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
 }
 
-.vmerge-searchbox span {
+.versionMergeSearch span {
   margin-right: 1.5rem;
 }
 
@@ -486,13 +486,13 @@ li.list-group-item.to .item .tmx-icon {
 }
 
 @media (max-width: 991px) {
-  #TM-merge-modal .label {
+  #tmMergeModal .label {
     margin-left: 1rem;
   }
 }
 
 @media (min-width: 992px) {
-  #TM-merge-modal .label {
+  #tmMergeModal .label {
     margin-left: 0;
     margin-top: 0.75rem;
   }

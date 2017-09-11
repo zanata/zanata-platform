@@ -60,12 +60,12 @@ describe('DraggableVersionPanels', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <ListGroup>
         <div>
-          <span className="vmerge-adjtitle vmerge-title">
+          <span className="versionMergeTitle-adjusted VersionMergeTitle">
           Adjust priority of selected versions
           </span><br />
-          <span className="u-textMuted vmerge-adjsub">(best first)</span>
+          <span className="u-textMuted versionMergeTitle-sub">(best first)</span>
           <OverlayTrigger placement='top' overlay={tooltipSort}>
-            <Icon name='info' className='s0 info-icon' />
+            <Icon name='info' className='s0 iconInfoVersionMerge' />
           </OverlayTrigger>
           <Item key={'meikai1:ver1'} index={0}
             value={someVersions[0]} removeVersion={callback} />
