@@ -138,8 +138,7 @@ class Languages extends Component {
                 </div>
                 : (
                 <div className='toolbar'>
-                  <FormGroup className='searchBox col-xs-6 col-sm-5
-                    col-md-6col-lg-7'>
+                  <FormGroup className='searchBox'>
                     <InputGroup>
                       <FormControl type='text'
                         value={this.state.searchText}

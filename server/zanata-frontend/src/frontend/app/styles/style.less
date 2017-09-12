@@ -3717,14 +3717,20 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 
 .searchBox {
   width:50%;
+  flex-grow: 1;
 }
 
 .showItems {
   display: inline-flex;
+  flex-grow: 0;
 }
 
 .showItems .form-control {
   margin-left: @spacing-label-large;
+}
+
+.sortItems {
+  margin-left: @spacing-large-horizontal;
 }
 
 .showItems span {
@@ -3907,11 +3913,6 @@ span.hidden-lesm.glossaryRow {
 
 .showItems .form-control {
   margin-left: @spacing-label-large;
-}
-
-.showItems {
-  margin-top: @spacing-small-horizontal;
-  margin-left: @spacing-large-horizontal;
 }
 
 .iconDelete {
