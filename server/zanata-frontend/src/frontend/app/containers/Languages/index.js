@@ -150,10 +150,10 @@ class Languages extends Component {
                     <LoaderText loading />
                   </span>
                 </div>
-                : (<div>
+                : (
                   <div className='sortItems'>
                     <FormControl componentClass='select'
-                      className='u-pullRight' id='sort-options'
+                      id='sort-options'
                       onChange={handleOnUpdateSort} value={sort.value}>
                     {sortOption.map(function (sort, i) {
                       return <option key={i} value={sort.value}>
@@ -182,7 +182,7 @@ class Languages extends Component {
                       activePage={page}
                       onSelect={handlePageChanged} />
                   </div>
-                </div>)
+                )
               }
             </div>
             {!loading &&
