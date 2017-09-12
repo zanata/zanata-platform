@@ -1,8 +1,11 @@
 .InputEditorSearch {
   margin-left: 0.75em;
+  margin-right: 1em;
   display: inline-flex;
-  margin-top: 0.25em;
   font-size: 0.875em;
+  padding-bottom: 1rem;
+  padding-top: 0.25rem;
+  flex: 2 0 16rem;
 }
 
 .InputEditorSearch > div {
@@ -12,7 +15,6 @@
 }
 
 .InputGroup--wide {
-  width: 60%;
   padding-left: 1rem;
 }
 
@@ -80,86 +82,8 @@ button.clearadvsearch {
   padding-top: 0.75em;
 }
 
-@media (min-width:560px) {
-  .InputEditorSearch {
-    width: 35%;
-  }
-}
-
-@media (min-width:600px) {
-  .InputEditorSearch {
-    width: 40%;
-  }
-}
-
-@media (min-width:680px) {
-  .InputEditorSearch {
-    width: 45%;
-  }
-}
-
-@media (min-width:740px) {
-  .InputEditorSearch {
-    width: 35%;
-  }
-}
-
-@media (min-width:780px) {
-  .InputEditorSearch {
-    width: 40%;
-  }
-}
-
-@media (min-width:820px) {
-  .InputEditorSearch {
-    width: 45%;
-  }
-}
-
-@media (min-width:895px) {
-  .InputEditorSearch {
-    width: 50%;
-  }
-}
-
-@media (min-width:961px) {
-  .InputEditorSearch {
-    width: 15%;
-  }
-}
-
-@media (min-width:980px) {
-  .InputEditorSearch {
-    width: 20%;
-  }
-}
-
-@media (min-width:1040px) {
-  .InputEditorSearch {
-    width: 25%;
-  }
-}
-
-@media (min-width:1110px) {
-  .InputEditorSearch {
-    width: 30%;
-  }
-}
-
-@media (min-width:1280px) {
-  .InputEditorSearch {
-    width: 35%;
-  }
-}
-
-@media (min-width:1300px) {
-  .InputEditorSearch {
-    width: 40%;
-  }
-}
-
-@media (min-width:1400px) {
-  .InputEditorSearch {
-    width: 45%;
+@media (max-width: 622px) {
+  .u-sizeHeight-1_1-2 {
+    height: fit-content !important;
   }
 }

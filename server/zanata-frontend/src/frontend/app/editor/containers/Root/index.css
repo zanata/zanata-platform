@@ -444,6 +444,11 @@ ul.source-infolist {
   height: 6.192rem;
 }
 
+nav.flex.flex-wrapper {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
 .nav {
   padding-left: 0;
   margin-bottom: 0;
@@ -556,10 +561,16 @@ ul.u-listInline li .u-textHighlight {
 
 .flex {
   display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .flex ul.u-listHorizontal {
   z-index: 1000;
+}
+
+.control-header-bg {
+  background-color: #fff;
 }
 
 /* FIXME z-index for Header is already defined */
@@ -635,7 +646,7 @@ label span.n1 {
   }
 }
 
-@media (max-width: 740px) {
+@media (max-width:740px) {
   .TransUnit-heading {
     padding-left: 1.5em;
   }
@@ -654,6 +665,9 @@ label span.n1 {
 @media (min-width: 741px) {
   .TransUnit-heading {
     padding-left: 0 !important;
+  }
+  .control-header-bg {
+    background-color: transparent;
   }
 }
 
