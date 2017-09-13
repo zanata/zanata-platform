@@ -13,22 +13,4 @@
     </createIndex>
   </changeSet>
 
-  <changeSet id="2" author="aeng@redhat.com">
-    <comment>Rename allowGlobalTranslation to privateProject</comment>
-    <renameColumn tableName="HProject" oldColumnName="allowGlobalTranslation"
-        newColumnName="privateProject" columnDataType="boolean" />
-  </changeSet>
-
-  <changeSet id="3" author="aeng@redhat.com">
-    <comment>Migrate allowGlobalTranslation data to privateProject</comment>
-    <sql>UPDATE HProject SET privateProject= !privateProject</sql>
-  </changeSet>
-
-  <changeSet id="4" author="aeng@redhat.com">
-    <comment>Update default value for HProject.privateProject column</comment>
-    <dropDefaultValue columnName="privateProject" tableName="HProject"/>
-    <addDefaultValue columnName="privateProject" defaultValueBoolean="false"
-        tableName="HProject"/>
-  </changeSet>
-
 </databaseChangeLog>
