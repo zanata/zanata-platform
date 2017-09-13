@@ -164,6 +164,7 @@ timestamps {
   // allocate a node for build+unit tests
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " {${agentName}}"
     // generate logs in colour
     ansicolor {
       try {
@@ -373,6 +374,8 @@ void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " [${agentName}]"
+
     echo "WORKSPACE=${env.WORKSPACE}"
     checkout scm
     // Clean the workspace
