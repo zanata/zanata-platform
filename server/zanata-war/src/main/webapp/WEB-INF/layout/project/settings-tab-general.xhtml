@@ -51,17 +51,17 @@
     <a4j:param name="val1" assignTo="#{checked}"/>
   </a4j:jsFunction>
 
+  <h3 class="heading--secondary">#{msgs['jsf.project.Access']}</h3>
+
   <div class="g--tight l--push-top-half">
     <div class="g__item w--1">
       <div class="form__item">
         <h:panelGroup layout="block" styleClass="l--push-bottom-half" id="private-setting">
-          <h3 class="heading--secondary">
-            <zanata:checkbox label="#{msgs['jsf.project.Private']}"
-              onValueChanged="privateValueChangedWrapper"
-              labelStyle="js-reveal__toggle l--push-bottom-0"
-              checked="#{projectHome.instance.isPrivateProject()}"
-              value="allow-global-translation"/>
-          </h3>
+          <zanata:checkbox label="#{msgs['jsf.project.Private']}"
+            onValueChanged="privateValueChangedWrapper"
+            labelStyle="js-reveal__toggle l--push-bottom-0"
+            checked="#{projectHome.instance.isPrivateProject()}"
+            value="allow-global-translation"/>
         </h:panelGroup>
         <p>#{msgs['jsf.project.private.detail']}</p>
       </div>
