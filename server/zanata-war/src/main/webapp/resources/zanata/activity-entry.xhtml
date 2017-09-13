@@ -92,7 +92,7 @@
         </ui:fragment>
         <ui:fragment rendered="#{isVersionDeleted or not canViewProject}">
           <span class="txt--neutral">
-            <zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}"/>
+            <zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}" showIcon="false"/>
           </span>
         </ui:fragment>
       </li>
