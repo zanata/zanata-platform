@@ -58,7 +58,7 @@ class GlossarySearchInput extends React.Component {
 
   setInput = (input) => {
     this.input = input
-    if (this.state.focused) {
+    if (this.input && this.state.focused) {
       this.input.focus()
     }
   }
