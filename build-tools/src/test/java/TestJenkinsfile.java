@@ -34,7 +34,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                 // uncomment to use already-downloaded (perhaps modified) copy instead of git:
 //                .retriever(localSource(LIB_PATH))
                 .targetPath(LIB_PATH)
-                .defaultVersion("master")
+                .defaultVersion("ZNTA-2201-correctSHA")
                 .allowOverride(true)
                 .implicit(false)
                 .build();

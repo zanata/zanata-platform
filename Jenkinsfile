@@ -6,7 +6,7 @@
 
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
-@Library('zanata-pipeline-library@master')
+@Library('zanata-pipeline-library@ZNTA-2201-correctSHA')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
 import static org.zanata.jenkins.StackTraces.getStackTrace
@@ -182,6 +182,8 @@ timestamps {
         // Build and Unit Tests
         // The built files are stashed for integration tests in other nodes.
         stage('Build') {
+          // Now SCM commit info is available (after checkout scm)
+          notify.startBuilding()
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
