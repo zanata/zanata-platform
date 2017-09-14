@@ -47,6 +47,19 @@ button#percent-dropdown-basic {
   background-color: #A2B3BE;
 }
 
+#tmMergeModal .col-md-4 {
+  width: 33.333333%;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 1.2rem;
+}
+
+#tmMergeModal .modal-content p {
+  word-break: normal;
+  word-break: break-word; /*Chrome specific*/
+  hyphens: none;
+}
+
 .versionMergeContainer .panel-group {
   margin-bottom: 0;
 }
@@ -86,6 +99,11 @@ button#percent-dropdown-basic {
 .versionMergeSearch .input-group-addon {
   color: @color-muted;
   height: 2rem;
+}
+
+.iconHelp {
+  vertical-align: middle;
+  padding-left: 1rem;
 }
 
 .versionMergeContainer .iconInfoVersionMerge, .s0.iconInfoVersionMerge {
@@ -341,13 +359,13 @@ li.list-group-item.to .item .iconTMX {
   hyphens: initial;
 }
 
-.VersionMergeTitle.text-new-blue {
+.VersionMergeTitle.u-textNewBlue {
   display: inline-flex;
   align-items: center;
 }
 
-.VersionMergeTitle.text-new-blue .dropdown {
-  width: unset;
+.VersionMergeTitle.u-textNewBlue .dropdown {
+  width: auto;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
 }
@@ -485,9 +503,15 @@ li.list-group-item.to .item .iconTMX {
   left: 27px;
 }
 
+
+
 @media (max-width: 991px) {
   #tmMergeModal .label {
     margin-left: 1rem;
+  }
+  #tmMergeModal .col-md-4 {
+    width:100%;
+    margin-top:1rem;
   }
 }
 
@@ -497,3 +521,4 @@ li.list-group-item.to .item .iconTMX {
     margin-top: 0.75rem;
   }
 }
+

@@ -82,7 +82,9 @@ const MergeOptions = (
         Copy existing <strong>translations</strong> from similar documents
         in other projects and versions into this project version.
         <Link useHref link={docLink} target="_blank">
-          <span title='help'><Icon name='help' className='s0' /></span>
+          <span title='help'>
+            <Icon name='help' className='iconHelp s0' />&nbsp;Need help?
+          </span>
         </Link>
       </p>
       <Accordion>
@@ -111,7 +113,9 @@ const MergeOptions = (
                   versionSlug={versionSlug} />
                 <span className='item' id="languageDropdown">
                   <Icon name="language" className="s1 iconTMX" />
-                  {localesSelection}
+                  <span className="languageDropdown-field">
+                    {localesSelection}
+                  </span>
                 </span>
               </li>
             </ul>
