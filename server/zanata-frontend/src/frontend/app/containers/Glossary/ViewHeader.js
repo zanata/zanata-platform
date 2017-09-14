@@ -162,11 +162,11 @@ class ViewHeader extends Component {
               title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={this.handleClearSearch}>
-              <Icon name='cross' className='s1' />
+              <Icon name='cross' className='s1 iconCross-glossary' />
             </Button>
 
                   {permission.canAddNewEntry && (
-                    <div className='glossaryBtn'>
+                    <div className='glossaryBtn topBtn'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleImportFileDisplay(true)}>
                         <Row>
@@ -178,7 +178,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canDownload && !isEmptyTerms && (
-                    <div className='glossaryBtn'>
+                    <div className='glossaryBtn topBtn'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleExportFileDisplay(true)}>
                         <Row>
@@ -190,7 +190,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canAddNewEntry && (
-                    <div className='glossaryBtn'>
+                    <div className='glossaryBtn topBtn'>
                       <Button bsStyle='link' onClick={() =>
                         handleNewEntryDisplay(true)}>
                         <Row>
@@ -202,7 +202,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {showDeleteAll && (
-                    <div className='glossaryBtn'>
+                    <div className='glossaryBtn topBtn'>
                       <DeleteAllEntriesModal show={deleteAll.show}
                         isDeleting={deleteAll.isDeleting}
                         handleDeleteAllEntriesDisplay={
@@ -252,7 +252,7 @@ class ViewHeader extends Component {
                     <Row>
                       <Icon name='translate' className='s1
                         iconTranslate-neutral' />
-                      <span className='text-neutral'>
+                      <span className='u-textNeutral'>
                       {currentLocaleCount}
                       </span>
                     </Row>
@@ -265,8 +265,10 @@ class ViewHeader extends Component {
                     <Row>
                       {'part_of_speech' in sort
                         ? (sort.part_of_speech === true)
-                          ? <Icon name='chevron-down' className='s1' />
-                          : <Icon name='chevron-up' className='s1' />
+                          ? <Icon name='chevron-down'
+                            className='iconChevron s1' />
+                          : <Icon name='chevron-up'
+                            className='iconChevron s1' />
                         : ''}
                       <span className='u-marginL--rq'>
                       Part of Speech

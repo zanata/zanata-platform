@@ -236,7 +236,7 @@ class Glossary extends Component {
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
                     <Icon name='chevron-left' className='s1' />
                   </Button>
-                  <span className='text-neutral-top'>
+                  <span className='u-textNeutral-top'>
                     {currentPage} of {totalPage}
                   </span>
                   <Button bsStyle='link' disabled={currentPage === totalPage}
