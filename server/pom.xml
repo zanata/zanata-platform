@@ -106,6 +106,28 @@
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
     <jackson2.version>2.7.2</jackson2.version>
+
+    <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
+    <server.jvmargs>
+      <!-- NB: JDom parser doesn't like comments starting with '-' -->
+      -server
+      -showversion
+      -XX:+PrintCommandLineFlags
+      -Xmx1536m
+      -XX:MaxMetaspaceSize=1g
+      -XX:-OmitStackTraceInFastThrow
+      -XX:+PrintGCDateStamps
+      -verbose:gc
+      -XX:+PrintGCDetails
+      -Xloggc:target/gc.log
+      -XX:+UseGCLogFileRotation
+      -XX:NumberOfGCLogFiles=10
+      -XX:GCLogFileSize=100M
+      -XX:+HeapDumpOnOutOfMemoryError
+      -XX:HeapDumpPath=target
+      -Djava.net.preferIPv4Stack=true
+      -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0
+    </server.jvmargs>
   </properties>
 
   <dependencyManagement>

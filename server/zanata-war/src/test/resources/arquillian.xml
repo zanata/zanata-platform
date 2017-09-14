@@ -15,24 +15,7 @@
       <property name="jbossHome">${jboss.home}</property>
       <!-- We can use the JAVA_HOME env variable instead of this -->
       <!--             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property> -->
-      <property name="javaVmArguments">
-        -server
-        -showversion
-        -XX:+PrintCommandLineFlags
-        -Xmx1536m
-        -XX:MaxMetaspaceSize=1g
-        -XX:-OmitStackTraceInFastThrow
-        -XX:+PrintGCDateStamps
-        -verbose:gc
-        -XX:+PrintGCDetails
-        -Xloggc:target/gc.log
-        -XX:+UseGCLogFileRotation
-        -XX:NumberOfGCLogFiles=10
-        -XX:GCLogFileSize=100M
-        -XX:+HeapDumpOnOutOfMemoryError
-        -XX:HeapDumpPath=target
-        -Djava.net.preferIPv4Stack=true
-        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0</property>
+      <property name="javaVmArguments">${server.jvmargs}</property>
       <!-- From JBOSS_HOME/standalone/configuration -->
       <property name="serverConfig">standalone-full.xml</property>
       <!--<property name="allowConnectingToRunningServer">true</property>-->
@@ -46,24 +29,7 @@
   <container qualifier="wildfly" default="true">
     <configuration>
       <property name="jbossHome">${jboss.home}</property>
-      <property name="javaVmArguments">
-        -server
-        -showversion
-        -XX:+PrintCommandLineFlags
-        -Xmx1536m
-        -XX:MaxMetaspaceSize=1g
-        -XX:-OmitStackTraceInFastThrow
-        -XX:+PrintGCDateStamps
-        -verbose:gc
-        -XX:+PrintGCDetails
-        -Xloggc:target/gc.log
-        -XX:+UseGCLogFileRotation
-        -XX:NumberOfGCLogFiles=10
-        -XX:GCLogFileSize=100M
-        -XX:+HeapDumpOnOutOfMemoryError
-        -XX:HeapDumpPath=target
-        -Djava.net.preferIPv4Stack=true
-        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0</property>
+      <property name="javaVmArguments">${server.jvmargs}</property>
       <!-- From JBOSS_HOME/standalone/configuration -->
       <property name="serverConfig">standalone-full.xml</property>
       <!-- NB: don't put whitespace around the number -->

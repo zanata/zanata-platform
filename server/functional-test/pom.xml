@@ -751,28 +751,7 @@
                 <configuration>
                   <configuration>
                     <properties>
-                      <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
-                      <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                        -server
-                        -showversion
-                        -XX:+PrintCommandLineFlags
-                        -Xmx1536m
-                        -XX:MaxMetaspaceSize=1g
-                        -XX:-OmitStackTraceInFastThrow
-                        -XX:+UseConcMarkSweepGC
-                        -XX:+CMSClassUnloadingEnabled
-                        -XX:+PrintGCDateStamps
-                        -verbose:gc
-                        -XX:+PrintGCDetails
-                        -Xloggc:target/gc.log
-                        -XX:+UseGCLogFileRotation
-                        -XX:NumberOfGCLogFiles=10
-                        -XX:GCLogFileSize=100M
-                        -XX:+HeapDumpOnOutOfMemoryError
-                        -XX:HeapDumpPath=target
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
+                      <cargo.jvmargs>${server.jvmargs}</cargo.jvmargs>
                     </properties>
                   </configuration>
                 </configuration>
@@ -782,27 +761,7 @@
                 <configuration>
                   <configuration>
                     <properties>
-                      <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                        -server
-                        -showversion
-                        -XX:+PrintCommandLineFlags
-                        -Xmx1536m
-                        -XX:MaxMetaspaceSize=1g
-                        -XX:-OmitStackTraceInFastThrow
-                        -XX:+UseConcMarkSweepGC
-                        -XX:+CMSClassUnloadingEnabled
-                        -XX:+PrintGCDateStamps
-                        -verbose:gc
-                        -XX:+PrintGCDetails
-                        -Xloggc:target/gc.log
-                        -XX:+UseGCLogFileRotation
-                        -XX:NumberOfGCLogFiles=10
-                        -XX:GCLogFileSize=100M
-                        -XX:+HeapDumpOnOutOfMemoryError
-                        -XX:HeapDumpPath=target
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
+                      <cargo.jvmargs>${server.jvmargs}</cargo.jvmargs>
                     </properties>
                   </configuration>
                 </configuration>
