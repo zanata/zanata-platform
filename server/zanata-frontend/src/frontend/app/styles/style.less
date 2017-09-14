@@ -1,4 +1,12 @@
 @import "./variables.less";
+// Override legacy JSF new-zanata classes for TMMergeModal React component
+@import "../containers/ProjectVersion/index.css";
+@import "../containers/Glossary/index.css";
+// Override legacy JSF new-zanata classes for TMXModal React component
+@import "../components/TMX/index.css";
+// Include CSS for tri-checkbox component
+@import "../components/TriCheckbox/index.less";
+@import "../components/RejectionsForm/index.css";
 
 /* Base containers */
 
@@ -206,58 +214,6 @@ body.templateStyle {
   max-width: 100%;
 }
 
-.wideView.glossary {
-  padding-bottom: 3rem;
-}
-
-.glossaryHeader {
-  flex-direction: row-reverse;
-  -webkit-flex-direction: row-reverse;
-}
-
-.glossaryHeader .row {
-  display: inline-flex;
-  padding-top: @spacing-rq;
-  padding-bottom: @spacing-rh;
-  padding-right: @spacing-half-base;
-  position: relative;
-  width: 100%;
-}
-
-.glossaryHeader .row .row {
-  width: 5em;
-  padding-left: @spacing-rq;
-}
-
-.glossaryHeader-wrapper {
-  right: 0;
-  padding-left: @spacing-rq;
-  padding-right: @spacing-rq;
-  position: fixed;
-  left: 4.5rem;
-  z-index: 100;
-}
-
-.glossaryHeader-base {
-  border-bottom: solid 2px;
-  border-bottom-color: rgb(237, 242, 248);
-  background-color: #fff;
-  padding-top: @spacing-rq;
-}
-
-.glossaryTable {
-  width: 100%;
-  margin-top: @spacing-rq;
-}
-
-.glossaryTable table {
-  width: 100%;
-}
-
-.glossaryTable button {
-  padding-left: 0;
-}
-
 .gwtBase {
   background-color: #fff;
   font-size: 16px;
@@ -281,21 +237,6 @@ body.templateStyle {
   border: none;
   line-height: 1;
   margin-right: @spacing-rh;
-}
-
-.glossaryHeader-title {
-  font-size: 1.2rem;
-  margin-top: @spacing-heading;
-  margin-right: @spacing-rh;
-}
-
-.glossaryHeader-actions {
-  flex-grow: 1;
-  -webkit-flex-grow: 1;
-}
-
-.glossaryHeader-actions .textInput {
-  min-width: 4em;
 }
 
 .scrollView {
@@ -489,8 +430,8 @@ body.templateStyle {
   display: -o-flex;
   flex-direction: row;
   -webkit-flex-direction: row;
-  align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  align-items: stretch;
+  -webkit-align-items: stretch; /* Safari 7.0+ */
 }
 
 .u-flexCenter {
@@ -3742,67 +3683,6 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   vertical-align: sub;
 }
 
-/* Glossary specific */
-
-#deleteEntries .tooltip-inner {
-  max-width: 14rem;
-}
-
-table.glossaryEntry {
-  width: 100%;
-  margin-bottom: 0;
-}
-
-.glossaryBtn {
-  margin-left: @spacing-rq;
-}
-
-.glossaryBtn span.s1 {
-  vertical-align: sub;
-}
-
-.row {
-  display: block;
-}
-
-#deleteEntries .tooltip-inner {
-  max-width: 14rem;
-}
-
-table.glossaryEntry {
-  width: 100%;
-  margin-bottom: 0;
-}
-
-.glossaryBtn {
-  margin-left: @spacing-rq;
-}
-
-.glossaryBtn span.s1 {
-  vertical-align: sub;
-}
-
-.row {
-  display: block;
-}
-
-.glossaryRow {
-  padding-right: @spacing-rq;
-}
-
-span.hidden-lesm.glossaryRow {
-  margin-top: @spacing-rh;
-}
-
-#glossarySelect {
-  margin-right: @spacing-re;
-  width: 4.5rem;
-}
-
-.glossarySelect {
-  position: absolute;
-}
-
 .is-searchable.is-open > .Select-control {
   cursor: text;
 }
@@ -3835,10 +3715,6 @@ span.hidden-lesm.glossaryRow {
   -webkit-overflow-scrolling: touch;
 }
 
-.glossaryHeader .selectMenu-outer {
-  top: 0 !important;
-  position: relative;
-}
 
 .input-group-addon:first-child {
   border-right: 0;
@@ -4087,7 +3963,7 @@ td.languageSelect .Select-input input {
 
 td.languageSelect .row {
   position: absolute;
-  top: 0.8rem;
+  top: 1.2rem;
   right: 5rem;
 }
 
@@ -4099,28 +3975,12 @@ td.languageSelect .row span svg {
   vertical-align: inherit;
 }
 
-.glossaryList .entry-row {
-  align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
-}
-
-.glossaryPaging {
-  margin-top: 0.6em;
-  margin-left: auto;
-  padding-left: 4em;
-}
-
 .entry-row, .glossaryPaging {
   display: flex !important;
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
   display: -o-flex;
-}
-
-.glossaryPaging .u-textMuted {
-  color: @text-muted;
-  margin-left: @spacing-re;
 }
 
 .u-textNeutral-top {
@@ -4130,22 +3990,6 @@ td.languageSelect .row span svg {
 
 .u-textNeutral, .txt--neutral {
   color: @color-neutral;
-}
-
-.glossaryPaging .textNeutralTotal {
-  color: @color-neutral;
-  margin-left: @spacing-rq;
-  margin-top: -0.3em;
-}
-
-.glossaryPaging .textNeutralTotal .row {
-  vertical-align: middle;
-}
-
-.glossaryList {
-  margin-right: @spacing-base;
-  margin-left: @spacing-base;
-  font-size: 0.92rem;
 }
 
 td.languageSelect .selectClear {
@@ -4445,17 +4289,6 @@ img.avatar-round {
     }
   }
 }
-
-// Override legacy JSF new-zanata classes for TMMergeModal React component
-@import "../containers/ProjectVersion/index.css";
-
-// Override legacy JSF new-zanata classes for TMXModal React component
-@import "../components/TMX/index.css";
-
-// Include CSS for tri-checkbox component
-@import "../components/TriCheckbox/index.less";
-
-@import "../components/RejectionsForm/index.css";
 
 // Nav variations
 // --------------------------------------------------
@@ -6187,14 +6020,6 @@ button.close:focus, button.close:hover, button.close:active:focus {
   margin-bottom: 0;
 }
 
-.glossarySearch {
-  flex: 1;
-  -webkit-box-flex: 1;
-  -moz-flex: 1;
-  -webkit-flex: 1;
-  margin-left: 0;
-}
-
 .searchBox svg {
   vertical-align: text-bottom;
 }
@@ -6533,41 +6358,12 @@ table .projectWideSearchResultsDocumentBody {
     width: 100%;
   }
 
-  .glossaryhead-wrapper {
-    left: 0;
-    top: 0;
-    background-color: #fff;
-  }
-
   .wideView {
     margin-left: 0;
   }
 
-  .glossaryTable {
-    margin-top: @spacing-rh;
-  }
-
-  .glossaryHeader {
-    padding-top: 7rem;
-  }
-
-  .glossaryList {
-    margin-top: 2em;
-  }
-
-  .glossaryHeader-base {
-    padding-top: 0;
-    margin-left: @spacing-rh;
-    margin-right: @spacing-rh;
-  }
-
   .logoLink {
     display: none;
-  }
-
-  .glossaryHeader-title {
-    font-size: 1.44rem;
-    margin-right: 0;
   }
 
   .hidden-lesm {
@@ -6578,10 +6374,6 @@ table .projectWideSearchResultsDocumentBody {
     height: 1px !important;
     width: 1px !important;
     overflow: hidden;
-  }
-
-  .glossaryhead-wrapper {
-    left: 0;
   }
 
   .metaInfo {
@@ -6661,29 +6453,6 @@ table .projectWideSearchResultsDocumentBody {
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
     min-height: 100%;
-  }
-
-  .glossaryHeader {
-    padding-top: 8rem;
-  }
-
-  .glossaryList {
-    margin-top: 2em;
-  }
-
-  .glossaryHeader-base {
-    margin-left: 1.5rem;
-    margin-right: 1rem;
-  }
-
-  .glossaryHeader-title {
-    margin-right: @spacing-base;
-  }
-
-  .wide-view-theme-glossary {
-    margin-left: 2.5rem;
-    margin-right: 1rem;
-    margin-bottom: 2.5rem;
   }
 
   main {
@@ -6985,11 +6754,6 @@ table .projectWideSearchResultsDocumentBody {
     right: 0;
   }
 
-  .glossaryHeader-actions button {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
   .headerClasses {
     margin-left: 0;
     margin-bottom: @spacing-hr;
@@ -7176,30 +6940,10 @@ table .projectWideSearchResultsDocumentBody {
     width: 900px;
   }
 
-  .glossaryHeader-title {
-    margin-right: 3em;
-  }
-
-  .glossaryBtn {
-    margin-left: @spacing-rh;
-  }
-
-  .glossarySearch {
-    flex: 1;
-    -webkit-box-flex: 1;
-    -moz-flex: 1;
-    -webkit-flex: 1;
-    margin-left: @spacing-rh;
-  }
-
   .wideView.profile {
     margin-top: @spacing-rh;
   }
 
-  .wide-view-theme-glossary {
-    margin-left: 2.5rem;
-    margin-right: 1rem;
-  }
 
   .matrixHeading {
     margin-right: @spacing-rq;
