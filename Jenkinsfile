@@ -6,7 +6,10 @@
 
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
-@Library('zanata-pipeline-library@ZNTA-2201-correctSHA')
+@Field
+String pipelineLibraryBranch = 'ZNTA-2201-correctSHA'
+
+@Library("zanata-pipeline-library@$pipelineLibraryBranch")
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
 import static org.zanata.jenkins.StackTraces.getStackTrace
@@ -21,7 +24,8 @@ PullRequests.ensureJobDescription(env, manager, steps)
 @Field
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps, currentBuild, 'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile')
+notify = new Notifier(env, steps, currentBuild,
+    'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile', $pipelineLibraryBranch)
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
