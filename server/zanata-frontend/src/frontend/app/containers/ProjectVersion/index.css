@@ -503,22 +503,25 @@ li.list-group-item.to .item .iconTMX {
   left: 27px;
 }
 
-
-
 @media (max-width: 991px) {
+
   #tmMergeModal .label {
     margin-left: 1rem;
   }
+
   #tmMergeModal .col-md-4 {
-    width:100%;
-    margin-top:1rem;
+    width: 100%;
+    margin-top: 1rem;
   }
+
 }
 
 @media (min-width: 992px) {
+
   #tmMergeModal .label {
     margin-left: 0;
     margin-top: 0.75rem;
+
   }
 }
 
