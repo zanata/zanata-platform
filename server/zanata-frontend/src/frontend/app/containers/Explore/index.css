@@ -148,6 +148,7 @@
 }
 
 @media (max-width: 29.375rem) {
+
   .teaser-inner {
     flex-direction: row;
     -webkit-flex-direction: row;

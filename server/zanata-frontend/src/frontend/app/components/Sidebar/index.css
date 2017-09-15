@@ -228,6 +228,7 @@ textarea {
 }
 
 @media (min-width: 48rem) {
+
   svg.hide-desktop {
   display: none;
   visibility: hidden;
