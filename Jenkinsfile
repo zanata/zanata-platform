@@ -25,7 +25,7 @@ PullRequests.ensureJobDescription(env, manager, steps)
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
 notify = new Notifier(env, steps, currentBuild,
-    'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile', $pipelineLibraryBranch)
+    'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile', pipelineLibraryBranch)
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
