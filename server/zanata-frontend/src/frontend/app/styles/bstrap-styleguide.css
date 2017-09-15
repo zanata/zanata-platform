@@ -17,8 +17,8 @@
   border: 1px solid #b3b3b3;
   display: inline-block;
   height: 80px;
-  margin: 0 @spacing-half-base @spacing-half-base 0;
-  padding: @spacing-small-horizontal;
+  margin: 0 0.5rem 0.5rem 0;
+  padding: 0.31rem;
   position: relative;
   width: 100px;
 }
@@ -37,7 +37,7 @@
   font-size: .8rem;
   margin: 0;
   opacity: 0;
-  padding: @spacing-small-horizontal 0;
+  padding: 0.31rem 0;
   position: absolute;
   text-align: center;
   text-transform: uppercase;
@@ -53,11 +53,11 @@
 ---------------------------------------------------------------------------- */
 
 .sg-brand-primary .sg-color-swatch {
-  background: @color-light;
+  background: #03A6D7;
 }
 
 .sg-gray-lighter .sg-color-swatch {
-  background: @color-dark;
+  background: #546677;
 }
 
 .sg-gray-light .sg-color-swatch {
@@ -93,7 +93,7 @@
 }
 
 .sg-brand-info .sg-color-swatch {
-  background: @color-light;
+  background: #03A6D7;
 }
 
 .sg-brand-unsure .sg-color-swatch {

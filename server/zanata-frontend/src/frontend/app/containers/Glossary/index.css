@@ -281,7 +281,7 @@ td.languageSelect .selectClear {
 
 .projectLink {
   display: inline-block;
-  margin-left: @spacing-rh;
+  margin-left: 0.375rem;
 }
 
 @media (max-width: 29.375rem) {
