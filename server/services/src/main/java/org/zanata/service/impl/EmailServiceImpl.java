@@ -49,7 +49,6 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import javax.annotation.Nullable;
 import javax.mail.internet.InternetAddress;
-import javax.validation.constraints.NotNull;
 
 import com.google.common.collect.Lists;
 import static org.zanata.email.Addresses.getAddresses;
@@ -62,8 +61,7 @@ import static org.zanata.email.Addresses.getLocaleMemberAddresses;
 @RequestScoped
 @Transactional
 public class EmailServiceImpl implements EmailService {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(EmailServiceImpl.class);
+    private static final long serialVersionUID = 1419335892218906099L;
 
     @Inject
     private EmailBuilder emailBuilder;

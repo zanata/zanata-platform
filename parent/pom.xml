@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>parent</artifactId>
-  <version>4.2.5-SNAPSHOT</version>
+  <version>4.3.0-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -1166,6 +1166,11 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
       <dependency>

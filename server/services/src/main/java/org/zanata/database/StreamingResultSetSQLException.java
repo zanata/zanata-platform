@@ -30,6 +30,8 @@ import java.sql.SQLException;
  */
 public class StreamingResultSetSQLException extends SQLException {
 
+    private static final long serialVersionUID = 5171270710627360114L;
+
     public StreamingResultSetSQLException() {
     }
 

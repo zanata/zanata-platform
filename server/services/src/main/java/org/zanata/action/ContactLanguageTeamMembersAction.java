@@ -49,6 +49,7 @@ import com.google.common.collect.Lists;
 public class ContactLanguageTeamMembersAction implements Serializable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(ContactLanguageTeamMembersAction.class);
+    private static final long serialVersionUID = -5039341516353267288L;
 
     @Inject
     @Authenticated

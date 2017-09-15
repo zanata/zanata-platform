@@ -7,6 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -27,6 +28,7 @@ import javax.enterprise.event.Event;
 @RequestScoped
 @Transactional
 public class LanguageTeamServiceImpl implements LanguageTeamService {
+    private static final long serialVersionUID = -1049037380252117557L;
     @Inject
     private PersonDAO personDAO;
 
@@ -40,6 +42,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
     @Authenticated
     private HAccount authenticatedAccount;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<LanguageTeamPermissionChangedEvent>
             languageTeamPermissionChangedEvent;

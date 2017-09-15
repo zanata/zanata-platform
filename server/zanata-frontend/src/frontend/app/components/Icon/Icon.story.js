@@ -1,10 +1,12 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@storybook/react'
 import { Icon } from '../'
 import iconList from '../Icon/list'
 
 function renderIcon (name, size) {
-  return <span title={name}> <Icon name={name} className={size} /> </span>
+  return (
+    <span key={name} title={name}> <Icon name={name} className={size} /> </span>
+  )
 }
 
 function allIconsSize (size) {
@@ -12,7 +14,7 @@ function allIconsSize (size) {
 }
 
 storiesOf('Icon', module)
-    .add('default', () => (
+  .add('default', () => (
     <div>
       <h2>Size n2</h2>
       {allIconsSize('n2')}

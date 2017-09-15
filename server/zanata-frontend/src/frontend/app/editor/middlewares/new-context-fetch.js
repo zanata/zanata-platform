@@ -1,7 +1,5 @@
 import stateChangeDispatchMiddleware from './state-change-dispatch'
 import { requestDocumentList } from '../actions'
-import { requestPhraseList, fetchPhraseDetails }
-  from '../actions/phrases-actions'
 import {
   fetchHeaderInfo,
   selectDoc,
@@ -36,6 +34,7 @@ const getPageIndexFromQuery = (state) => {
  *  - when the project or version change, fetch a new document list
  */
 const fetchDocsMiddleware = stateChangeDispatchMiddleware(
+  // FIXME replace with watcher
   (dispatch, oldState, newState) => {
     const pre = oldState.context
     const post = newState.context
@@ -46,7 +45,7 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
     }
   },
   (dispatch, oldState, newState) => {
-    const { projectSlug, versionSlug, lang, docId } = newState.context
+    const { lang, docId } = newState.context
 
     const docChanged = oldState.context.docId !== docId
     const localeChanged = oldState.context.lang !== lang
@@ -56,27 +55,18 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
 
     const updatePage = oldPageIndex !== newPageIndex
     if (docChanged || localeChanged) {
-      const paging = {
-        ...newState.phrases.paging,
-        pageIndex: newPageIndex
-      }
       if (docChanged) {
+        // FIXME looks like probably duplicate state
         dispatch(selectDoc(docId))
       }
       if (localeChanged) {
+        // FIXME looks like more duplicate state here
         // FIXME just use selected locale from context.lang if possible
         dispatch(selectLocale(lang))
       }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
-      dispatch(requestPhraseList(projectSlug, versionSlug, lang, docId, paging))
     } else if (updatePage) {
-      const phraseState = newState.phrases
-      const paging = {
-        ...phraseState.paging,
-        pageIndex: newPageIndex
-      }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
-      dispatch(fetchPhraseDetails(phraseState.docStatus, lang, paging))
     }
   },
   // Fetch new header data only when the full workspace is first known

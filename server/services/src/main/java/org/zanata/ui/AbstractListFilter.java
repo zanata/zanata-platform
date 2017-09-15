@@ -23,8 +23,6 @@ package org.zanata.ui;
 
 import java.io.Serializable;
 import java.util.List;
-import com.google.common.collect.Lists;
-
 /**
  * Helper class to assist with the paging of data.
  *
@@ -32,6 +30,7 @@ import com.google.common.collect.Lists;
  */
 public abstract class AbstractListFilter<T> implements Serializable {
 
+    private static final long serialVersionUID = 7360910062641949862L;
     private int pageSize = 100;
     private int pageNumber = 1;
     private String filter;

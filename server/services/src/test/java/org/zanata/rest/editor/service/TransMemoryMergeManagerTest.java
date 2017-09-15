@@ -2,10 +2,8 @@ package org.zanata.rest.editor.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -277,7 +275,7 @@ public class TransMemoryMergeManagerTest {
     public void
     startTMMergeForVersionIfNoProcessForThisRequestIsAlreadyRunning() {
         VersionTMMerge versionTMMerge =
-                new VersionTMMerge(LocaleId.FR, 80, MergeRule.FUZZY,
+                new VersionTMMerge(LocaleId.FR, 80, MergeRule.FUZZY, MergeRule.FUZZY,
                         MergeRule.FUZZY, MergeRule.FUZZY,
                         InternalTMSource.SELECT_ALL);
         long versionId = 1L;
@@ -302,7 +300,7 @@ public class TransMemoryMergeManagerTest {
         when(asyncTaskHandleManager.getHandleByKey(TransMemoryMergeManager.makeKey(
                 versionId, localeId))).thenReturn(taskHandle);
         VersionTMMerge versionTMMerge =
-                new VersionTMMerge(localeId, 80, MergeRule.FUZZY,
+                new VersionTMMerge(localeId, 80, MergeRule.FUZZY, MergeRule.FUZZY,
                         MergeRule.FUZZY, MergeRule.FUZZY,
                         InternalTMSource.SELECT_ALL);
 

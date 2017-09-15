@@ -65,6 +65,7 @@ import com.google.common.collect.Maps;
 public class CopyTransWorkFactory implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CopyTransWorkFactory.class);
+    private static final long serialVersionUID = 3709610236866704460L;
 
     // Inject textFlowTargetDAO (@DatabaseSearch) for Hibernate-based query
     // Inject translationMemoryServiceImpl (no qualifier) for Hibernate Search

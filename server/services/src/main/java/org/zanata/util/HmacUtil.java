@@ -36,10 +36,6 @@ public class HmacUtil {
 
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
-    private static final String HMAC_MD5_ALGORITHM = "HmacMD5";
-
-    private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
-
     /**
      * Generate SHA with given key and valueToDigest.
      * All values will using UTF-8 encoding.

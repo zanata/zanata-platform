@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,9 +55,6 @@ import org.zanata.util.FacesNavigationUtil;
 @Model
 @Transactional
 public class LoginAction implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(LoginAction.class);
-
     private static final long serialVersionUID = 1L;
     @Inject
     private ZanataIdentity identity;

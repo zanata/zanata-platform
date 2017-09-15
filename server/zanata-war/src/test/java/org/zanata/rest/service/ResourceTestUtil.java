@@ -3,8 +3,6 @@ package org.zanata.rest.service;
 import java.util.Iterator;
 import java.util.List;
 
-import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
-import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.extensions.gettext.TranslationsResourceExtension;
 import org.zanata.rest.dto.resource.AbstractResourceMeta;

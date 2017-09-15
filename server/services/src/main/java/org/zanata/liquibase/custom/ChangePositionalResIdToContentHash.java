@@ -80,7 +80,7 @@ public class ChangePositionalResIdToContentHash implements CustomTaskChange {
     private static final int RES_ID_COLUMN = 4;
     private static final int OBSOLETE_COLUMN = 5;
 
-    private Logger log = LogFactory.getLogger();
+    private Logger log = LogFactory.getInstance().getLog();
 
     private PreparedStatement countDocumentsOfType;
     private PreparedStatement selectDocumentsOfType;
@@ -165,7 +165,6 @@ public class ChangePositionalResIdToContentHash implements CustomTaskChange {
             int processed = 0;
 
             while (textFlows.next()) {
-                long id = textFlows.getLong(ID_COLUMN);
                 boolean isObsolete = textFlows.getBoolean(OBSOLETE_COLUMN);
 
                 if (!isObsolete) {

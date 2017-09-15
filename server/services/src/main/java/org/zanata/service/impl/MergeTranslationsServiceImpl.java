@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
@@ -35,11 +34,11 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocStatsEvent;
@@ -51,14 +50,10 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.ModelEntityBase;
 import org.zanata.model.type.TranslationSourceType;
-import org.zanata.rest.dto.VersionTMMerge;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MergeTranslationsService;
-import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
@@ -83,6 +78,7 @@ import com.google.common.collect.Multimap;
 public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(MergeTranslationsServiceImpl.class);
+    private static final long serialVersionUID = 3719145807493583125L;
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;
@@ -94,8 +90,10 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     private TranslationStateCache translationStateCacheImpl;
     @Inject
     private LocaleService localeServiceImpl;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private Event<DocStatsEvent> docStatsEvent;
     @Inject

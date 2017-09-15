@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -48,6 +47,7 @@ import com.google.common.base.Stopwatch;
 
 @RequestScoped
 public class CopyTransServiceImpl implements CopyTransService {
+    private static final long serialVersionUID = -5790050245194362769L;
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CopyTransServiceImpl.class);
     private static final int COPY_TRANS_BATCH_SIZE = 20;

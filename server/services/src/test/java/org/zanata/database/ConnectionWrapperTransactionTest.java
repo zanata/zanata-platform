@@ -2,16 +2,7 @@ package org.zanata.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.database.ConnectionWrapper.getConnectionWrapper;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import org.assertj.core.api.Fail;
-import org.hibernate.JDBCException;
-import org.hibernate.Query;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.jdbc.Work;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,9 +10,6 @@ import org.junit.rules.ExpectedException;
 import org.zanata.ZanataJpaTest;
 
 public class ConnectionWrapperTransactionTest extends ZanataJpaTest {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(ConnectionWrapperTransactionTest.class);
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     private Session session;

@@ -1,3 +1,4 @@
+
 /**
  * Utils
  */
@@ -21,8 +22,6 @@
 @import './components/SplitDropdown/index.css';
 @import './components/Button/index.css';
 @import './components/GlossaryTermModal/index.css';
-@import './components/GlossarySearchInput/index.css';
-@import './components/SuggestionSearchInput/index.css';
 @import './components/Dropdown/index.css';
 @import './containers/EditorHeader/index.css';
 @import './components/EditorSearchInput/index.css';
@@ -34,6 +33,8 @@
 @import './components/FilterToggle/index.css';
 @import './components/ToggleSwitch/index.css';
 @import './components/TransUnit/index.css';
+@import './components/RejectTranslationModal/index.css';
+@import './components/InputGroup/index.css';
 
 /**
  * Views
@@ -43,13 +44,12 @@
 @import './containers/SuggestionDetailsModal/index.css';
 @import './containers/Sidebar/index.css';
 
-
 /**
  * Theme
+ *
+ * Provides variables and custom media definitions.
  */
-
 @import './css/theme/index.css';
-
 
 /* Fix for hotkeys, remove this when reimplemented */
 
@@ -60,15 +60,4 @@
 
 .fade.in {
   opacity: 1;
-}
-
-/* Angular specific classes */
-
-[ng\:cloak],
-[ng-cloak],
-[data-ng-cloak],
-[x-ng-cloak],
-.ng-cloak,
-.x-ng-cloak {
-  display: none !important;
 }

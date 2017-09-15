@@ -1,6 +1,5 @@
 package org.zanata.webhook.events;
 
-import java.util.Date;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.zanata.events.WebhookEventType;
 import org.zanata.model.ProjectRole;
@@ -15,6 +14,7 @@ import org.zanata.model.type.WebhookType;
 public class ProjectMaintainerChangedEvent extends WebhookEventType {
     private static final String EVENT_TYPE =
             WebhookType.ProjectMaintainerChangedEvent.name();
+    private static final long serialVersionUID = -3087646265225183691L;
 
     public static enum ChangeType {
         ADD,

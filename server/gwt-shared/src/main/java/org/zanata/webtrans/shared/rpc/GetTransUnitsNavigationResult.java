@@ -8,7 +8,6 @@ import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GetTransUnitsNavigationResult implements IsSerializable,

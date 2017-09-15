@@ -11,7 +11,7 @@
     "text"
   ],
   "moduleNameMapper": {
-    "^.+\\.(css)$": "./__tests__/mock/mockCss.js"
+    "\\.(css|less)$": "<rootDir>/__mocks__/cssMock.js"
   },
   "transform": {
     ".*": "./node_modules/babel-jest"
@@ -26,6 +26,7 @@
   ],
   "moduleFileExtensions": [
     "js",
-    "jsx"
+    "jsx",
+    "json"
   ]
 }

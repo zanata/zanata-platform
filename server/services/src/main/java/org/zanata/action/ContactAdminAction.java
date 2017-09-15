@@ -21,7 +21,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -29,9 +28,6 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.email.ContactAdminAnonymousEmailStrategy;
 import org.zanata.email.ContactAdminEmailStrategy;
 import org.zanata.email.EmailStrategy;
@@ -57,6 +53,7 @@ import javax.validation.constraints.Size;
 public class ContactAdminAction implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ContactAdminAction.class);
+    private static final long serialVersionUID = -5891506955608084664L;
 
     @Inject
     @Authenticated

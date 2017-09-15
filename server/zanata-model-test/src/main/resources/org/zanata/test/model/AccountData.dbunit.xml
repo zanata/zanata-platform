@@ -28,6 +28,16 @@
     username="bob"
     />
 
+  <HAccount id="4"
+      versionNum="1"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      apiKey="34567890123456789012345678945234"
+      enabled="FALSE"
+      passwordHash="pQRgEKG97HuyCfeoOR69Sg=="
+      username="disabled"
+  />
+
   <HAccountRole id="1"
     conditional="FALSE"
     roleType="M"
@@ -82,6 +92,15 @@
     name="Bob Translator"
     accountId="3"
     />
+
+  <HPerson id="4"
+      versionNum="1"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      email="user4@localhost"
+      name="Disabled Translator"
+      accountId="4"
+  />
 
   <!-- de-DE -->
   <HLocale_Member

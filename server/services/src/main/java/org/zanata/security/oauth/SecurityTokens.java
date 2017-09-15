@@ -44,9 +44,7 @@ import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.events.LogoutEvent;
 import org.zanata.model.HAccount;
 import org.zanata.rest.dto.DTOUtil;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.Introspectable;
-import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
@@ -62,6 +60,7 @@ import com.google.common.collect.Maps;
  */
 @ApplicationScoped
 public class SecurityTokens implements Serializable, Introspectable {
+    private static final long serialVersionUID = -3730853500496535652L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private OAuthIssuerImpl oAuthIssuer =
             new OAuthIssuerImpl(new MD5Generator());
@@ -81,7 +80,6 @@ public class SecurityTokens implements Serializable, Introspectable {
     private Cache<String, String> usernameByAccessTokens;
     private long tokenExpiresInSeconds;
 
-    @SuppressWarnings("unused")
     protected SecurityTokens() {
     }
 

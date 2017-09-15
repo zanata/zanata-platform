@@ -56,6 +56,7 @@ import com.google.common.collect.Maps;
 @Transactional
 public class VersionGroupServiceImpl implements VersionGroupService {
 
+    private static final long serialVersionUID = -2876274960830397139L;
     @Inject
     private VersionGroupDAO versionGroupDAO;
 

@@ -42,6 +42,7 @@ import java.io.IOException;
 )
 public class KLoginServlet extends HttpServlet {
 
+    private static final long serialVersionUID = -2742244273442437881L;
     @Inject
     private UserRedirectBean userRedirect;
 

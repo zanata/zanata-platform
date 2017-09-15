@@ -61,6 +61,7 @@ import com.google.common.base.Stopwatch;
 public class VirusScanner implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(VirusScanner.class);
+    private static final long serialVersionUID = -8549284996099342254L;
 
     private static final boolean DISABLED;
     private static final boolean SCANNER_SET;

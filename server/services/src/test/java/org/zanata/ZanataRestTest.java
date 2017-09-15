@@ -3,8 +3,6 @@ package org.zanata;
 import java.net.URI;
 import java.util.Set;
 
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
@@ -143,8 +141,6 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      * any other relevant annotations.
      */
     protected void prepareProviders() {
-        ValidatorFactory validatorFactory =
-                Validation.buildDefaultValidatorFactory();
     }
 
     /**

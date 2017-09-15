@@ -9,7 +9,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.assertj.core.api.Assertions;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;

@@ -2,7 +2,6 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.zanata.model.LanguageRequest;
 import org.zanata.model.Request;
 
 import javax.enterprise.context.RequestScoped;
@@ -16,6 +15,8 @@ import java.util.UUID;
 @Named("requestDAO")
 @RequestScoped
 public class RequestDAO extends AbstractDAOImpl<Request, Long> {
+
+    private static final long serialVersionUID = 3982430185518476239L;
 
     public RequestDAO() {
         super(Request.class);

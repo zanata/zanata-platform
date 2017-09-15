@@ -22,7 +22,7 @@ package org.zanata;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.zanata.util.SampleProjectRule;
+import org.zanata.util.SampleDataRule;
 
 /**
  * This is a class for experiment some things i.e. populate cargo instance with
@@ -30,11 +30,8 @@ import org.zanata.util.SampleProjectRule;
  * Under normal circumstances it will have no active tests in it.
  */
 public class ExperimentTest {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ExperimentTest.class);
-
     @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    public SampleDataRule sampleDataRule = new SampleDataRule();
 
     @Test
     public void test() {

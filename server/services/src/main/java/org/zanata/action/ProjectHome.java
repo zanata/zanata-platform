@@ -40,7 +40,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
@@ -227,6 +226,9 @@ public class ProjectHome extends SlugHome<HProject>
     private ProjectMaintainersAutocomplete maintainerAutocomplete;
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
+
+                private static final long serialVersionUID =
+                        8259700829800303578L;
 
                 @Override
                 protected List<HPerson> fetchAll() {
@@ -1184,15 +1186,11 @@ public class ProjectHome extends SlugHome<HProject>
         // Disable the default message from Seam
     }
 
-    private boolean checkViewObsolete() {
-        return identity != null
-                && identity.hasPermission("HProject", "view-obsolete");
-    }
-
     @ViewScoped
     public static class ProjectMaintainersAutocomplete
             extends MaintainerAutocomplete {
 
+        private static final long serialVersionUID = -6765972032876700000L;
         @Inject
         private ProjectHome projectHome;
         @Inject

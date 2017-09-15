@@ -1,9 +1,6 @@
 package org.zanata.util;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Priority;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
@@ -25,6 +22,7 @@ import org.apache.deltaspike.cdise.api.ContextControl;
 public class WithRequestScopeInterceptor implements Serializable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(WithRequestScopeInterceptor.class);
+    private static final long serialVersionUID = -4495961147091189442L;
 
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject

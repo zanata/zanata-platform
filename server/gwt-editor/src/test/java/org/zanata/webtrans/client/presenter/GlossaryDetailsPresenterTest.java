@@ -31,7 +31,6 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -40,10 +39,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
-import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
-import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 
@@ -68,44 +65,24 @@ public class GlossaryDetailsPresenterTest {
     // TODO we shouldn't mock UIMessages methods by hand
     @Mock
     private UiMessages messages;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private UserWorkspaceContext mockUserWorkspaceContext;
     @Mock
     private HasText targetText;
-    @Mock
-    private HasText targetComment;
-    @Mock
-    private HasText pos;
-    @Mock
-    private HasText description;
-    @Mock
-    private HasText targetCommentText;
-
     @Captor
     private ArgumentCaptor<GetGlossaryDetailsAction> getGlossaryDetailsCaptor;
 
     @Captor
     private ArgumentCaptor<AsyncCallback<GetGlossaryDetailsResult>> getGlossarycallbackCaptor;
-    @Mock
-    private GlossaryDisplay.Listener glossaryListener;
 
     @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         glossaryDetailsPresenter =
                 new GlossaryDetailsPresenter(display, mockEventBus, messages,
-                        mockDispatcher, mockUserWorkspaceContext);
-        glossaryDetailsPresenter.setGlossaryListener(glossaryListener);
+                        mockDispatcher);
     }
 
     @Test
     public void onBind() {
-        boolean hasAccess = true;
-
-        when(
-                mockUserWorkspaceContext.getWorkspaceRestrictions()
-                        .isHasGlossaryUpdateAccess()).thenReturn(hasAccess);
-
         glossaryDetailsPresenter.bind();
 
         verify(display).setListener(glossaryDetailsPresenter);
@@ -114,10 +91,6 @@ public class GlossaryDetailsPresenterTest {
     @Test
     public void show() {
         GlossaryResultItem item = new GlossaryResultItem("qualifiedName", "", "", 0, 0);
-        when(
-                mockUserWorkspaceContext.getWorkspaceRestrictions()
-                        .isHasGlossaryUpdateAccess()).thenReturn(true);
-
         glossaryDetailsPresenter.show(item);
 
         verify(mockDispatcher).execute(getGlossaryDetailsCaptor.capture(),

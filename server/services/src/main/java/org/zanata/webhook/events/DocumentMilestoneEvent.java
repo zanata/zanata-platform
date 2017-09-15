@@ -35,6 +35,7 @@ import org.zanata.model.type.WebhookType;
 public class DocumentMilestoneEvent extends WebhookEventType {
     private static final String EVENT_TYPE =
             WebhookType.DocumentMilestoneEvent.name();
+    private static final long serialVersionUID = -204335137291025073L;
 
     /**
      * Target project slug. {@link org.zanata.model.HProject#slug}

@@ -29,6 +29,8 @@ import org.zanata.model.HAccountOption;
 @Named("accountOptionDAO")
 @RequestScoped
 public class AccountOptionDAO extends AbstractDAOImpl<HAccountOption, Long> {
+    private static final long serialVersionUID = 886034475613575773L;
+
     public AccountOptionDAO() {
         super(HAccountOption.class);
     }

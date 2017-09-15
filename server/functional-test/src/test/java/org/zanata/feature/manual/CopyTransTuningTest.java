@@ -12,7 +12,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.SampleDataResourceClient;
-import org.zanata.util.SampleProjectRule;
+import org.zanata.util.SampleDataRule;
 import org.zanata.util.ZanataRestCaller;
 import java.util.List;
 import static org.zanata.util.ZanataRestCaller.*;
@@ -31,7 +31,7 @@ public class CopyTransTuningTest {
 
     private static final String PROJECT_SLUG = "ovirt-reports-history";
     @Rule
-    public SampleProjectRule rule = new SampleProjectRule();
+    public SampleDataRule rule = new SampleDataRule();
     private ZanataRestCaller restCaller;
     private List<LocaleId> translatedLocales =
             ImmutableList.<LocaleId> builder().add(new LocaleId("ja"))
@@ -56,22 +56,11 @@ public class CopyTransTuningTest {
         final int numOfTextFlows = 2000;
         Resource message1 = buildSourceResource("message1",
                 generateTextFlows(numOfTextFlows));
-        Resource message2 = buildSourceResource("message2",
-                generateTextFlows(numOfTextFlows));
-        Resource message3 = buildSourceResource("message3",
-                generateTextFlows(numOfTextFlows));
-        Resource message4 = buildSourceResource("message4",
-                generateTextFlows(numOfTextFlows));
+
         resources = new Resource[] { message1
                 /* , message2, message3, message4 */
         };
         TranslationsResource translation1 = buildTranslationResource(
-                generateTextFlowTargets(numOfTextFlows));
-        TranslationsResource translation2 = buildTranslationResource(
-                generateTextFlowTargets(numOfTextFlows));
-        TranslationsResource translation3 = buildTranslationResource(
-                generateTextFlowTargets(numOfTextFlows));
-        TranslationsResource translation4 = buildTranslationResource(
                 generateTextFlowTargets(numOfTextFlows));
         translations = new Pair[] { Pair.of(message1, translation1) };
         // , Pair.of(message2, translation2),

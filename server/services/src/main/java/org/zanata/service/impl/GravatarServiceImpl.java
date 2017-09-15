@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.zanata.ApplicationConfiguration;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
@@ -14,6 +13,7 @@ import org.zanata.util.HashUtil;
 @Named("gravatarServiceImpl")
 @RequestScoped
 public class GravatarServiceImpl implements GravatarService {
+    private static final long serialVersionUID = 651073648625288166L;
     private static String GRAVATAR_URL = "//www.gravatar.com/avatar/";
 
     @Inject

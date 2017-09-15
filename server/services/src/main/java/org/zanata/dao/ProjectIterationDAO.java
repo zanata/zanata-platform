@@ -58,6 +58,8 @@ import com.google.common.collect.Lists;
 public class ProjectIterationDAO extends
         AbstractDAOImpl<HProjectIteration, Long> {
 
+    private static final long serialVersionUID = 5643663448633778779L;
+
     public ProjectIterationDAO() {
         super(HProjectIteration.class);
     }

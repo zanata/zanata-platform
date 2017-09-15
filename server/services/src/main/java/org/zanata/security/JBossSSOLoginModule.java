@@ -33,7 +33,6 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.zanata.util.HashUtil;
@@ -52,7 +51,6 @@ public class JBossSSOLoginModule implements LoginModule {
 
     private CallbackHandler callbackHandler;
     private Subject subject;
-    private Map<String, ?> options;
     private String username;
     private char[] password;
     private String jbossSSOServerUrl = "https://sso.jboss.org";
@@ -63,7 +61,6 @@ public class JBossSSOLoginModule implements LoginModule {
             Map<String, ?> sharedState, Map<String, ?> options) {
         this.callbackHandler = callbackHandler;
         this.subject = subject;
-        this.options = options;
         if (options.containsKey("serverURL")) {
             jbossSSOServerUrl = (String) options.get("serverURL");
         }

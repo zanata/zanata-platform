@@ -20,27 +20,32 @@
  */
 
 import cx from 'classnames'
+import { connect } from 'react-redux'
 import { Icon } from '../../../components'
 import IconButton from '../IconButton'
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'
 import { map } from 'lodash'
+import {
+  toggleAdvanced,
+  updatePhraseFilter
+} from '../../actions/phrases-filter-actions'
 
 const fields = {
-  resourceId: {
+  resId: {
     label: 'Resource ID',
     description: 'exact Resource ID for a string'
   },
-  lastModifiedBy: {
+  lastModifiedByUser: {
     label: 'Last modified by',
     description: 'username'
   },
-  lastModifiedBefore: {
+  changedBefore: {
     label: 'Last modified before',
     description: 'date in format yyyy/mm/dd'
   },
-  lastModifiedAfter: {
+  changedAfter: {
     label: 'Last modified after',
     description: 'date in format yyyy/mm/dd'
   },
@@ -48,11 +53,11 @@ const fields = {
     label: 'Source comment',
     description: 'source comment text'
   },
-  translationComment: {
+  transComment: {
     label: 'Translation comment',
     description: 'translation comment text'
   },
-  msgctxt: {
+  msgContext: {
     label: 'msgctxt (gettext)',
     description: 'exact Message Context for a string'
   }
@@ -65,18 +70,18 @@ const fields = {
  * more appropriate widgets (e.g. username field that suggests usernames, date
  * input with calendar widget).
  */
-class EditorSearchInput extends React.Component {
+export class EditorSearchInput extends Component {
   static propTypes = {
-    advanced: PropTypes.bool.isRequired,
+    showAdvanced: PropTypes.bool.isRequired,
     search: PropTypes.shape({
-      text: PropTypes.string.isRequired,
-      resourceId: PropTypes.string.isRequired,
-      lastModifiedBy: PropTypes.string.isRequired,
-      lastModifiedBefore: PropTypes.string.isRequired,
-      lastModifiedAfter: PropTypes.string.isRequired,
+      searchString: PropTypes.string.isRequired,
+      resId: PropTypes.string.isRequired,
+      lastModifiedByUser: PropTypes.string.isRequired,
+      changedBefore: PropTypes.string.isRequired,
+      changedAfter: PropTypes.string.isRequired,
       sourceComment: PropTypes.string.isRequired,
-      translationComment: PropTypes.string.isRequired,
-      msgctxt: PropTypes.string.isRequired
+      transComment: PropTypes.string.isRequired,
+      msgContext: PropTypes.string.isRequired
     }).isRequired,
     toggleAdvanced: PropTypes.func.isRequired,
     updateSearch: PropTypes.func.isRequired
@@ -115,28 +120,36 @@ class EditorSearchInput extends React.Component {
 
   clearAllAdvancedFields = () => {
     this.props.updateSearch({
-      resourceId: '',
-      lastModifiedBy: '',
-      lastModifiedBefore: '',
-      lastModifiedAfter: '',
+      resId: '',
+      lastModifiedByUser: '',
+      changedBefore: '',
+      changedAfter: '',
       sourceComment: '',
-      translationComment: '',
-      msgctxt: ''
+      transComment: '',
+      msgContext: ''
     })
     // click on "Clear all" removes focus from input fields, so give focus back.
     this.focusInput()
   }
 
-  focusInput = () => {
-    // TODO different approach for React 0.14
+  setInput = (input) => {
+    this.input = input
+    // Since the input component is now loaded, make sure it focuses if needed.
+    if (this.state.focused) {
+      this.focusInput()
+    }
+  }
 
+  focusInput = () => {
     // may not need to actually set focused=true, mainly using for
     // callback, which gets around issues with the component not being
     // properly in the DOM yet
     this.setState({
       focused: true
     }, () => {
-      this.refs.input.focus()
+      if (this.input) {
+        this.input.focus()
+      }
     })
   }
 
@@ -145,11 +158,11 @@ class EditorSearchInput extends React.Component {
   }
 
   clearSearch = () => this.props.updateSearch({
-    text: '' // FIXME include all the other search parameters?
+    searchString: '' // FIXME include all the other search parameters?
   })
 
   updateSearchText = (event) => {
-    this.props.updateSearch({ text: event.target.value })
+    this.props.updateSearch({ searchString: event.target.value })
   }
 
   clearButtonElement = () => {
@@ -164,7 +177,7 @@ class EditorSearchInput extends React.Component {
   }
 
   render () {
-    const { advanced } = this.props
+    const { showAdvanced } = this.props
 
     const advancedFields = map(fields, (field, key) => (
       <AdvancedField key={key}
@@ -186,23 +199,21 @@ class EditorSearchInput extends React.Component {
             <Icon name="search" title="Search"
               className="n1" />
           </span>
-          <input ref="input"
+          <input ref={this.setInput}
             type="search"
             placeholder="Search source and target text"
             maxLength="1000"
-            value={this.props.search.text}
+            value={this.props.search.searchString}
             onChange={this.updateSearchText}
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
           {this.clearButtonElement()}
           <span className="InputGroup-addon btn-xs advsearch btn-link"
             onClick={this.toggleAdvanced}>
-            {advanced ? 'Hide advanced' : 'Advanced'}</span>
+            {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={this.props.advanced && this.state.focused}>
-          <ul>
-            {advancedFields}
-          </ul>
+        <Panel collapsible expanded={showAdvanced}>
+          {advancedFields}
           <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
             onClick={this.clearAllAdvancedFields}>
             Clear all
@@ -213,7 +224,7 @@ class EditorSearchInput extends React.Component {
   }
 }
 
-class AdvancedField extends React.Component {
+class AdvancedField extends Component {
   static propTypes = {
     id: PropTypes.any.isRequired,
     field: PropTypes.shape({
@@ -232,21 +243,32 @@ class AdvancedField extends React.Component {
     const { id, field, value } = this.props
     const { label, description } = field
     return (
-      <li key={id} className="inline-search-list" title={description}>
-        {label + ':'}
-        <div
-          className="InputGroup--outlined InputGroup--wide InputGroup--rounded">
-          <input ref={id}
-            type="text"
-            placeholder={description}
-            className="InputGroup-input"
-            value={value}
-            onChange={this.updateSearch}
-            />
-        </div>
-      </li>
+      <div key={id} title={description} className="u-sPB-1-2">
+        <label className="u-textSecondary u-sPB-1-4">{label}</label>
+        <input ref={id}
+          type="text"
+          placeholder={description}
+          className="u-bgHighest u-sizeFull u-inputFlat
+            u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+          value={value}
+          onChange={this.updateSearch} />
+      </div>
     )
   }
 }
 
-export default EditorSearchInput
+function mapStateToProps ({ phrases: { filter: { showAdvanced, advanced } } }) {
+  return {
+    showAdvanced,
+    search: advanced
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    toggleAdvanced: () => dispatch(toggleAdvanced()),
+    updateSearch: (newValues) => dispatch(updatePhraseFilter(newValues))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchInput)

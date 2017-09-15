@@ -1,6 +1,6 @@
 import React from 'react'
-import { storiesOf } from '@kadira/storybook'
-import { action, decorateAction } from '@kadira/storybook-addon-actions'
+import { storiesOf } from '@storybook/react'
+import { action, decorateAction } from '@storybook/addon-actions'
 import GlossarySearchInput from '.'
 
 // Showing two different approaches to modifying the arguments to an action
@@ -25,14 +25,14 @@ const eventTarget = decorateAction([
  */
 storiesOf('GlossarySearchInput', module)
     .add('empty', () => (
-        <GlossarySearchInput
-          text=""
-          onTextChange={onTextChange} />
+      <GlossarySearchInput
+        text=""
+        onTextChange={onTextChange} />
     ))
     .add('with text', () => {
       return (
         <GlossarySearchInput
           text={'some text'}
-          onTextChange={eventTarget('onTextChange')}/>
+          onTextChange={eventTarget('onTextChange')} />
       )
     })

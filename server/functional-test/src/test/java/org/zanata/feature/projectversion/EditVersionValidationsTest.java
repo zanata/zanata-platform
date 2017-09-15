@@ -82,7 +82,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
             "translation targets and displays them to the user")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyValidationsAreErrors() throws Exception {
-        VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()
+        new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .gotoSettingsTab()
@@ -116,7 +116,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     @Trace(summary = "The user cannot disable enforced validations")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCannotTurnOffEnforcedValidations() throws Exception {
-        VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()
+        new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .gotoSettingsTab()
@@ -184,7 +184,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     @Trace(summary = "The user can turn on a disabled validation option")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCanEnableADisabledValidation() throws Exception {
-        VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()
+        new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .gotoSettingsTab()

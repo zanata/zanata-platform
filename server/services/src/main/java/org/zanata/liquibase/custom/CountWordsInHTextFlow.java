@@ -66,7 +66,7 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
                 rs2 = stmt.executeQuery(countSql);
                 rs2.next();
                 long totalRows = rs2.getLong(1);
-                Logger log = LogFactory.getLogger();
+                Logger log = LogFactory.getInstance().getLog();
                 log.info("CountWordsInHTextFlow: updating " + totalRows
                         + " rows");
                 String textFlowSql =

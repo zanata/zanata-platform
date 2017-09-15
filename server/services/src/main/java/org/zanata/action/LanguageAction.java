@@ -118,6 +118,9 @@ public class LanguageAction implements Serializable {
     private AbstractListFilter<HLocaleMember> membersFilter =
             new InMemoryListFilter<HLocaleMember>() {
 
+                private static final long serialVersionUID =
+                        2623778070221385071L;
+
                 @Override
                 protected List<HLocaleMember> fetchAll() {
                     return localeMemberDAO
@@ -499,7 +502,7 @@ public class LanguageAction implements Serializable {
     public void searchForTeamMembers() {
         clearSearchResult();
         List<HPerson> results =
-                this.personDAO.findAllContainingName(this.searchTerm);
+                this.personDAO.findAllEnabledContainingName(this.searchTerm);
         for (HPerson person : results) {
             HLocaleMember localeMember = getLocaleMember(person.getId());
             boolean isMember = localeMember != null;

@@ -36,7 +36,6 @@ import javax.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.base.Throwables;
 
 /**
  * Produce JMS connection for CDI injection.

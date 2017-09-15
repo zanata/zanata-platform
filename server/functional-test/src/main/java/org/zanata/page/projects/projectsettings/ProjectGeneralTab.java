@@ -48,7 +48,6 @@ public class ProjectGeneralTab extends ProjectBasePage {
     private By deleteButton = By.id("button-archive-project");
     private By confirmDeleteButton = By.id("deleteButton");
     private By confirmDeleteInput = By.id("confirmDeleteInput");
-    private By cancelDeleteButton = By.id("cancelDelete");
     private By lockProjectButton =
             By.id("settings-general-form:button-lock-project");
     private By unlockProjectButton =

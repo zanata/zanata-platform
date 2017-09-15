@@ -44,6 +44,8 @@ public class MergeStatusRenderer extends EnumRenderer<MergeRule> {
         switch (option) {
         case FUZZY:
             return messages.downgradeToFuzzy();
+        case IGNORE_CHECK:
+            return messages.ignoreDifference();
         case REJECT:
             return messages.rejectMerge();
         default:

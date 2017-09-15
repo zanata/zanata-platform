@@ -11,7 +11,6 @@ public class AddReviewComment implements SessionEventData {
     private TransUnitId transUnitId;
     private int commentCount;
 
-    @SuppressWarnings("unused")
     public AddReviewComment() {
     }
 

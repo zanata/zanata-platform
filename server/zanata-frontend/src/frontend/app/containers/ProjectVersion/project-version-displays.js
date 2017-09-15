@@ -16,7 +16,22 @@ export const ProjectVersionVertical = ({projectSlug, versionSlug}) => {
     </ul>
   )
 }
-ProjectVersionVertical.propTypes = {
+const projectVersionDisplayPropTypes = {
   projectSlug: PropTypes.string.isRequired,
   versionSlug: PropTypes.string.isRequired
 }
+ProjectVersionVertical.propTypes = projectVersionDisplayPropTypes
+
+export const ProjectVersionHorizontal = ({projectSlug, versionSlug}) => {
+  return (
+    <span>
+      <span className="item">
+        <Icon name='project' className='s1 tmx-icon' />{projectSlug}
+      </span>
+      <span className="item">
+        <Icon name='version' className='s1 tmx-icon' />{versionSlug}
+      </span>
+    </span>
+  )
+}
+ProjectVersionHorizontal.propTypes = projectVersionDisplayPropTypes

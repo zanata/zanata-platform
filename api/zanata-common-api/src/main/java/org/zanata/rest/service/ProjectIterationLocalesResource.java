@@ -43,7 +43,7 @@ import org.zanata.rest.dto.SourceLocaleDetails;
 @Path(ProjectIterationLocalesResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Version Locales")
-public interface ProjectIterationLocalesResource extends RestResource {
+public interface ProjectIterationLocalesResource {
     @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH
             + "/locales";

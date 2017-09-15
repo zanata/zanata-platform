@@ -39,9 +39,6 @@ import org.zanata.workflow.RegisterWorkFlow;
  */
 @Category(DetailedTest.class)
 public class InactiveUserLoginCTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(InactiveUserLoginCTest.class);
-
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 

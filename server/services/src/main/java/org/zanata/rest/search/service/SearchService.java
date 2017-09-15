@@ -55,7 +55,6 @@ import org.zanata.rest.search.dto.PersonSearchResult;
 import org.zanata.rest.search.dto.ProjectSearchResult;
 import org.zanata.rest.search.dto.ProjectVersionSearchResult;
 import org.zanata.rest.search.dto.SearchResults;
-import org.zanata.rest.service.RestResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
@@ -71,8 +70,9 @@ import com.google.common.collect.Maps;
 @Path("/search")
 @Produces(APPLICATION_JSON)
 @Transactional(readOnly = true)
-public class SearchService implements RestResource {
+public class SearchService {
 
+    private static final long serialVersionUID = 8924030399679653241L;
     @Inject
     private ProjectDAO projectDAO;
 
@@ -218,8 +218,8 @@ public class SearchService implements RestResource {
 
         int offset = (validatePage(page) - 1) * validatePageSize(sizePerPage);
 
-        int totalCount = personDAO.findAllContainingNameSize(query);
-        List<SearchResult> results = personDAO.findAllContainingName(query,
+        int totalCount = personDAO.findAllEnabledContainingNameSize(query);
+        List<SearchResult> results = personDAO.findAllEnabledContainingName(query,
                 validatePageSize(sizePerPage), offset)
             .stream().map(p -> {
                 PersonSearchResult result = new PersonSearchResult();
