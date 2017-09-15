@@ -61,7 +61,7 @@
   -webkit-flex-grow: 1;
 }
 
-.glossaryHeader-actions .textInput, .glossaryBtn.topBtn {
+.glossaryHeader-actions .textInput, .glossaryBtn.topBtn  {
   margin-top: 0.6rem;
 }
 
@@ -138,6 +138,7 @@ span.hidden-lesm.glossaryRow {
   position: relative;
 }
 
+
 .glossaryPaging .textNeutralTotal {
   color: #BDD4DC;
   margin-left: 0.75rem;
@@ -154,6 +155,7 @@ span.hidden-lesm.glossaryRow {
   font-size: 0.92rem;
 }
 
+
 .glossaryList .entry-row {
   align-items: center;
   -webkit-align-items: center; /* Safari 7.0+ */
@@ -165,10 +167,12 @@ span.hidden-lesm.glossaryRow {
   padding-left: 4rem;
 }
 
+
 .glossaryPaging .u-textMuted {
   color: #A2B3BE;
   margin-left: 0.1875rem;
 }
+
 
 .glossarySearch {
   flex: 1;
@@ -217,12 +221,14 @@ td.languageSelect .row span svg {
   display: -o-flex;
 }
 
+
 td.languageSelect .selectClear {
   vertical-align: middle;
   top: 0.25em;
   color: #BDD4DC;
   font-size: 1.2em;
 }
+
 
 /* Locale */
 
@@ -386,5 +392,4 @@ td.languageSelect .selectClear {
   .glossaryHeader-title {
     margin-right: 9em;
   }
-
 }

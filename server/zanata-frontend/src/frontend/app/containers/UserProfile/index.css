@@ -386,7 +386,6 @@ button.unsure.btn.btn-default.active {
     max-width: 100%;
     min-width: 100%;
   }
-
 }
 
 @media (min-width: 992px){
@@ -404,19 +403,17 @@ button.unsure.btn.btn-default.active {
     min-width: 0;
     margin-left: 3rem;
   }
-
 }
 
 @media (min-width: 992px) and (max-width: 1200px) {
-
   .userProfile-wrapper {
     flex-direction: column;
     -webkit-flex-direction: column;
   }
-
 }
 
 @media (min-width: 1200px) {
+
 
   .userProfile-wrapper {
     padding-right: 4rem;
@@ -436,3 +433,4 @@ button.unsure.btn.btn-default.active {
   }
 
 }
+
