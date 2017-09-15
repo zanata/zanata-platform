@@ -119,12 +119,12 @@
       -XX:+PrintGCDateStamps
       -verbose:gc
       -XX:+PrintGCDetails
-      -Xloggc:target/gc.log
+      -Xloggc:gc.log
       -XX:+UseGCLogFileRotation
       -XX:NumberOfGCLogFiles=10
       -XX:GCLogFileSize=100M
       -XX:+HeapDumpOnOutOfMemoryError
-      -XX:HeapDumpPath=target
+      -XX:HeapDumpPath=.
       -Djava.net.preferIPv4Stack=true
       -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0
     </server.jvmargs>
@@ -2205,6 +2205,13 @@
               <goals>
                 <goal>integration-test</goal>
               </goals>
+              <configuration>
+                <systemPropertyVariables combine.children="append">
+                  <server.jvmargs>${server.jvmargs}</server.jvmargs>
+                </systemPropertyVariables>
+                <!-- gc.log and heapdumps will be relative to this -->
+                <workingDirectory>${project.build.directory}</workingDirectory>
+              </configuration>
             </execution>
             <execution>
               <id>verify</id>
