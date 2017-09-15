@@ -50,9 +50,8 @@
   padding-left: 0;
 }
 
-
 .glossaryHeader-title {
-  font-size: 1.2rem;
+  font-size: 1.44rem;
   margin-top: 0.715rem;
   margin-right: 0.375rem;
 }
@@ -66,7 +65,9 @@
   margin-top: 0.6rem;
 }
 
-/* Glossary specific */
+.glossaryHeader-actions .textInput {
+  min-width: 8rem;
+}
 
 #deleteEntries .tooltip-inner {
   max-width: 14rem;
@@ -129,9 +130,10 @@ span.hidden-lesm.glossaryRow {
 
 .glossarySelect {
   position: absolute;
+  z-index: 999;
 }
 
-.glossaryHeader .selectMenu-outer {
+.glossaryHeader .Select-menu-outer {
   top: 0 !important;
   position: relative;
 }
@@ -241,7 +243,7 @@ td.languageSelect .selectClear {
   }
 
   .glossaryHeader {
-    padding-top: 7rem;
+    padding-top: 8rem;
   }
 
   .glossaryList {
@@ -254,13 +256,13 @@ td.languageSelect .selectClear {
     margin-right: 0.375rem;
   }
 
-  .glossaryHeader-title {
-    font-size: 1.44rem;
-    margin-right: 0;
-  }
-
   .glossaryhead-wrapper {
     left: 0;
+  }
+
+  .glossaryHeader-actions button {
+    padding-left: 0;
+    padding-right: 0;
   }
 
 }
@@ -268,7 +270,7 @@ td.languageSelect .selectClear {
 @media (min-width: 29.376rem) {
 
   .glossaryHeader {
-    padding-top: 8rem;
+    padding-top: 9rem;
   }
 
   .glossaryList {
@@ -288,11 +290,6 @@ td.languageSelect .selectClear {
     margin-left: 2.5rem;
     margin-right: 1rem;
     margin-bottom: 2.5rem;
-  }
-
-  .glossaryHeader-actions button {
-    padding-left: 0;
-    padding-right: 0;
   }
 
   .glossaryHeader-title {

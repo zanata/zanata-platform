@@ -1,4 +1,5 @@
 @import "./variables.less";
+@import "./gwt.less";
 // Override legacy JSF new-zanata classes for TMMergeModal React component
 @import "../containers/ProjectVersion/index.css";
 @import "../containers/Glossary/index.css";
@@ -3316,7 +3317,7 @@ tbody.collapse {
   overflow-y: scroll;
 }
 
-.modalSelect .selectMenu-outer {
+.modalSelect .Select-menu-outer {
   position: relative !important
 }
 
@@ -3698,7 +3699,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   box-sizing: border-box;
 }
 
-.selectMenu-outer {
+.Select-menu-outer {
   border-bottom-right-radius: .375em;
   border-bottom-left-radius: .375em;
   background-color: #fff;
@@ -3810,7 +3811,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   box-sizing: border-box;
 }
 
-.selectMenu-outer {
+.Select-menu-outer {
   border-bottom-right-radius: .375em;
   border-bottom-left-radius: .375em;
   background-color: #fff;
@@ -3827,12 +3828,12 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   -webkit-overflow-scrolling: touch;
 }
 
-.glossaryHeader .selectMenu-outer {
+.glossaryHeader .Select-menu-outer {
   top: 0 !important;
   position: relative;
 }
 
-.selectMenu {
+.Select-menu {
   max-height: 198px;
   overflow-y: auto;
 }
@@ -5976,64 +5977,6 @@ button.close:focus, button.close:hover, button.close:active:focus {
 
 .searchBox svg {
   vertical-align: text-bottom;
-}
-
-/* GWT overrides */
-
-.new-zanata {
-
-  .bg--pop-highest {
-    border: none;
-  }
-
-  h1 {
-    height: 1.1em;
-  }
-
-  .g {
-    align-self: center;
-    padding-bottom: @spacing-base;
-  }
-
-  button.close {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    padding: 0.75rem
-  }
-
-  .bg--pop-highest thead, &.bg--pop-highest tbody {
-    border: 1px solid rgba(32, 113, 138, .15);
-  }
-
-  .l-wrapper {
-    align-items: center;
-    -webkit-align-items: center; /* Safari 7.0+ */
-    display: inherit;
-  }
-
-  .g--centered {
-    text-align: center;
-    width: 100%;
-  }
-
-  #versionAutocomplete .autocomplete__results {
-    position: relative;
-    margin-top: -1rem;
-  }
-
-  .button--group input[type=radio]:checked + .button--Off,
-  .button--group input[type=radio]:checked + .button--Off:hover {
-    background-color: @color-dark !important;
-    color: @gray-lighter;
-  }
-
-  label {
-    color: @color-dark !important;
-  }
-
 }
 
 .moreContent {
