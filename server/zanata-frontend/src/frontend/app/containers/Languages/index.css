@@ -1,5 +1,5 @@
 .toolbar {
-  padding-top: @spacing-hr;
+  padding-top: 1.429rem;
   flex-direction: row;
   display: inline-flex;
   flex-wrap: wrap;
@@ -11,27 +11,27 @@ span.languageCode {
 }
 
 #btnLanguageAdd {
-  margin-left: @spacing-large-vertical;
+  margin-left: 0.8rem;
 }
 
 .toolbar .sortItems {
-  padding-bottom: @spacing-large-horizontal;
+  padding-bottom: 0.62rem;
   padding-right: 0;
 }
 
 .toolbar .showItems {
-  padding-bottom: @spacing-large-horizontal;
+  padding-bottom: 0.62rem;
   padding-right: 0;
   width: auto;
 }
 
 .toolbar .pageCount {
-  padding-bottom: @spacing-base;
+  padding-bottom: 1rem;
   padding-left: 0;
 }
 
 .searchBox {
-  width:50%;
+  width: 50%;
   flex-grow: 1;
 }
 
@@ -41,16 +41,16 @@ span.languageCode {
 }
 
 .showItems .form-control {
-  margin-left: @spacing-label-large;
+  margin-left: 0.2rem;
 }
 
 .sortItems {
-  margin-left: @spacing-large-horizontal;
+  margin-left: 0.62rem;
 }
 
 .showItems span {
-  margin-top: @spacing-small-horizontal;
-  margin-left: @spacing-large-horizontal;
+  margin-top: 0.31rem;
+  margin-left: 0.62rem;
 }
 
 .showItems {
@@ -58,7 +58,7 @@ span.languageCode {
 }
 
 .showItems .form-control {
-  margin-left: @spacing-label-large;
+  margin-left: 0.2rem;
 }
 
 .glossaryHeader .Select-menu-outer {
@@ -67,14 +67,13 @@ span.languageCode {
 }
 
 .toolbar .pageCount {
-  padding-bottom: @spacing-large-horizontal;
+  padding-bottom: 0.62rem;
   padding-left: 0;
 }
 
 .searchBox svg {
   vertical-align: text-bottom;
 }
-
 
 @media (min-width: 992px) {
 
