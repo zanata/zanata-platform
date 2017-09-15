@@ -65,31 +65,31 @@
 }
 
 .sg-neutral .sg-color-swatch {
-  background: @color-neutral;
+  background: #BDD4DC;
 }
 
 .sg-muted .sg-color-swatch {
-  background: @color-muted;
+  background: #A2B3BE;
 }
 
 .sg-gray .sg-color-swatch {
-  background: @gray-lighter;
+  background: #fcfcfc;
 }
 
 .sg-gray-dark .sg-color-swatch {
-  background: @gray-light;
+  background: #f7f7f7;
 }
 
 .sg-gray-darker .sg-color-swatch {
-  background: @gray;
+  background: #ddd;
 }
 
 .sg-gray-darkest .sg-color-swatch {
-  background: @gray-darker;
+  background: #333;
 }
 
 .sg-brand-success .sg-color-swatch {
-  background: @color-success;
+  background: #62c876;
 }
 
 .sg-brand-info .sg-color-swatch {
@@ -97,15 +97,15 @@
 }
 
 .sg-brand-unsure .sg-color-swatch {
-  background: @color-unsure;
+  background: #E9DD00;
 }
 
 .sg-brand-warning .sg-color-swatch {
-  background: @color-warning;
+  background: #ffa800;
 }
 
 .sg-brand-danger .sg-color-swatch {
-  background: @color-danger;
+  background: #ff3b3d;
 }
 
 .sg-nav-pills {
