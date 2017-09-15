@@ -2207,10 +2207,9 @@
               </goals>
               <configuration>
                 <systemPropertyVariables combine.children="append">
-                  <server.jvmargs>${server.jvmargs}</server.jvmargs>
+                  <!-- Override gc.log and heapdump dir for Arquillian tests -->
+                  <server.jvmargs>${server.jvmargs} -Xloggc:target/gc.log -XX:HeapDumpPath=target</server.jvmargs>
                 </systemPropertyVariables>
-                <!-- gc.log and heapdumps will be relative to this -->
-                <workingDirectory>${project.build.directory}</workingDirectory>
               </configuration>
             </execution>
             <execution>
