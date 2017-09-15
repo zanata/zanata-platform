@@ -9,7 +9,7 @@
 @Field
 String pipelineLibraryBranch = 'ZNTA-2201-correctSHA'
 
-@Library("zanata-pipeline-library@$pipelineLibraryBranch")
+@Library('zanata-pipeline-library@' + pipelineLibraryBranch)
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
 import static org.zanata.jenkins.StackTraces.getStackTrace
