@@ -1,0 +1,86 @@
+.toolbar {
+  padding-top: @spacing-hr;
+  flex-direction: row;
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+span.languageCode {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+#btnLanguageAdd {
+  margin-left: @spacing-large-vertical;
+}
+
+.toolbar .sortItems {
+  padding-bottom: @spacing-large-horizontal;
+  padding-right: 0;
+}
+
+.toolbar .showItems {
+  padding-bottom: @spacing-large-horizontal;
+  padding-right: 0;
+  width: auto;
+}
+
+.toolbar .pageCount {
+  padding-bottom: @spacing-base;
+  padding-left: 0;
+}
+
+.searchBox {
+  width:50%;
+  flex-grow: 1;
+}
+
+.showItems {
+  display: inline-flex;
+  flex-grow: 0;
+}
+
+.showItems .form-control {
+  margin-left: @spacing-label-large;
+}
+
+.sortItems {
+  margin-left: @spacing-large-horizontal;
+}
+
+.showItems span {
+  margin-top: @spacing-small-horizontal;
+  margin-left: @spacing-large-horizontal;
+}
+
+.showItems {
+  display: inline-flex;
+}
+
+.showItems .form-control {
+  margin-left: @spacing-label-large;
+}
+
+.glossaryHeader .Select-menu-outer {
+  top: 0 !important;
+  position: relative;
+}
+
+.toolbar .pageCount {
+  padding-bottom: @spacing-large-horizontal;
+  padding-left: 0;
+}
+
+.searchBox svg {
+  vertical-align: text-bottom;
+}
+
+
+@media (min-width: 992px) {
+
+  .showItems {
+    clear: none !important;
+  }
+
+}
+

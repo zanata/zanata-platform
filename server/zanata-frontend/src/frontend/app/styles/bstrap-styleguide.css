@@ -1,0 +1,113 @@
+/* Styleguide layout */
+
+.showGrid {
+  border: solid 1px #ccc;
+}
+
+.sg-animated {
+  -webkit-transition: all 0.6s ease-out;
+  -moz-transition: all 0.6s ease-out;
+  -ms-transition: all 0.6s ease-out;
+  -o-transition: all 0.6s ease-out;
+  transition: all 0.6s ease-out;
+}
+
+.sg-color {
+  background: #fff;
+  border: 1px solid #b3b3b3;
+  display: inline-block;
+  height: 80px;
+  margin: 0 @spacing-half-base @spacing-half-base 0;
+  padding: @spacing-small-horizontal;
+  position: relative;
+  width: 100px;
+}
+
+.sg-color-swatch {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.sg-color-swatch span {
+  background: #000;
+  background: rgba(0, 0, 0, 0.7);
+  bottom: 5px;
+  color: #fff;
+  font-size: .8rem;
+  margin: 0;
+  opacity: 0;
+  padding: @spacing-small-horizontal 0;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  width: 88px;
+}
+
+.sg-color-swatch:hover span {
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------------------
+ Styleguide Colors
+---------------------------------------------------------------------------- */
+
+.sg-brand-primary .sg-color-swatch {
+  background: @color-light;
+}
+
+.sg-gray-lighter .sg-color-swatch {
+  background: @color-dark;
+}
+
+.sg-gray-light .sg-color-swatch {
+  background: #629BAC;
+}
+
+.sg-neutral .sg-color-swatch {
+  background: @color-neutral;
+}
+
+.sg-muted .sg-color-swatch {
+  background: @color-muted;
+}
+
+.sg-gray .sg-color-swatch {
+  background: @gray-lighter;
+}
+
+.sg-gray-dark .sg-color-swatch {
+  background: @gray-light;
+}
+
+.sg-gray-darker .sg-color-swatch {
+  background: @gray;
+}
+
+.sg-gray-darkest .sg-color-swatch {
+  background: @gray-darker;
+}
+
+.sg-brand-success .sg-color-swatch {
+  background: @color-success;
+}
+
+.sg-brand-info .sg-color-swatch {
+  background: @color-light;
+}
+
+.sg-brand-unsure .sg-color-swatch {
+  background: @color-unsure;
+}
+
+.sg-brand-warning .sg-color-swatch {
+  background: @color-warning;
+}
+
+.sg-brand-danger .sg-color-swatch {
+  background: @color-danger;
+}
+
+.sg-nav-pills {
+  max-width: 220px;
+}

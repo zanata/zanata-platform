@@ -140,7 +140,7 @@ span.hidden-lesm.glossaryRow {
 
 
 .glossaryPaging .textNeutralTotal {
-  color: @color-neutral;
+  color: #BDD4DC;
   margin-left: 0.75rem;
   margin-top: -0.3rem;
 }
@@ -150,8 +150,8 @@ span.hidden-lesm.glossaryRow {
 }
 
 .glossaryList {
-  margin-right: @spacing-base;
-  margin-left: @spacing-base;
+  margin-right: 1rem;
+  margin-left: 1rem;
   font-size: 0.92rem;
 }
 
@@ -225,8 +225,63 @@ td.languageSelect .row span svg {
 td.languageSelect .selectClear {
   vertical-align: middle;
   top: 0.25em;
-  color: @color-neutral;
+  color: #BDD4DC;
   font-size: 1.2em;
+}
+
+
+/* Locale */
+
+.localeOptions {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  align-items: center;
+  -webkit-align-items: center; /* Safari 7.0+ */
+  justify-content: space-between;
+}
+
+.localeOptions-label {
+  flex: 1;
+  -webkit-box-flex: 1;
+  -moz-flex: 1;
+  -webkit-flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  max-height: 2rem;
+}
+
+.localeOptions-value {
+  flex: none;
+  padding-left: @spacing-re;
+  text-align: right;
+  max-width: 6rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  max-height: 1rem;
+}
+
+.localeOptions-count {
+  flex: none;
+  color: @color-muted;
+  padding-left: @spacing-re;
+  text-align: right;
+  width: 3rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  max-height: 1rem;
+}
+
+.projectLink {
+  display: inline-block;
+  margin-left: @spacing-rh;
 }
 
 @media (max-width: 29.375rem) {
@@ -236,7 +291,6 @@ td.languageSelect .selectClear {
     top: 0;
     background-color: #fff;
   }
-
 
   .glossaryTable {
     margin-top: 0.375rem;
@@ -317,4 +371,25 @@ td.languageSelect .selectClear {
     margin-right: 1rem;
   }
 
+}
+
+@media (max-width: 1119px) {
+
+  .glossaryHeader-actions .hidden-lesm {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
+  }
+
+}
+
+@media (min-width: 1200px) {
+
+  .glossaryHeader-title {
+    margin-right: 9em;
+  }
 }
