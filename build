@@ -322,7 +322,7 @@ fi
 
 
 #############################################
-# cargo:run (for --wait)
+# wildfly:run (for --wait)
 #############################################
 
 unset cargocommandline
@@ -332,7 +332,7 @@ if (($+wait)); then
     cargogoals=(clean)
   fi
   # we include `package` to trigger lifecycle bindings, eg start mysql
-  cargogoals+=(package cargo:run)
+  cargogoals+=(package wildfly:run)
 
   # copy mvnopts array without -DskipFuncTests
   skipFuncOpt=(-DskipFuncTests)

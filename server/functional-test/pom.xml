@@ -24,7 +24,6 @@
     <!-- This needs to agree with the http socket-binding in standalone.xml -->
     <cargo.servlet.port>8180</cargo.servlet.port>
     <cargo.jboss.management-http.port>10090</cargo.jboss.management-http.port>
-    <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
     <!-- This can be empty (root context) or a value with a trailing slash -->
@@ -123,7 +122,7 @@
       <artifactId>zanata-test-war</artifactId>
       <version>${project.version}</version>
       <type>war</type>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -719,74 +718,85 @@
               </execution>
             </executions>
           </plugin>
+
           <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <configuration combine.self="append">
-              <configuration>
-                <properties>
-                  <cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>
-                  <cargo.jboss.management-http.port>${cargo.jboss.management-http.port}</cargo.jboss.management-http.port>
-                  <cargo.jboss.management-native.port>${cargo.jboss.management-native.port}</cargo.jboss.management-native.port>
-                </properties>
-              </configuration>
-              <deployables>
-                <deployable>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>zanata-test-war</artifactId>
-                  <type>war</type>
-                  <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}info?dswid=1</pingURL>
-                  <pingTimeout>600000</pingTimeout>
-                  <properties>
-                    <context>/${context.path}</context>
-                  </properties>
-                </deployable>
-              </deployables>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-maven-plugin</artifactId>
+            <configuration>
+              <jboss-home>${appserver.home}</jboss-home>
+              <server-config>standalone-full.xml</server-config>
+              <port>${cargo.jboss.management-http.port}</port>
+              <!-- TODO we had this in cargo -->
+              <!--<cargo.jvmargs>-->
+                <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                <!-- -XX:-OmitStackTraceInFastThrow-->
+                <!-- -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target-->
+                <!-- -XX:PermSize=512m -XX:MaxPermSize=1024-->
+                <!-- -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled-->
+                <!--${cargo.debug.jvm.args}-->
+              <!--</cargo.jvmargs>-->
+              <!-- TODO we had this in cargo -->
+              <!--<systemProperties>-->
+                <!--<jboss.server.log.threshold>WARN</jboss.server.log.threshold>-->
+                <!--<hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>-->
+                <!--<javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>-->
+                <!--<jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>-->
+              <!--</systemProperties>-->
+              <!-- TODO we had this in cargo (as used in remote-destination-outbound-socket-binding=mail-smtp) -->
+              <!--<properties>-->
+                <!--<smtp.port>${smtp.port}</smtp.port>-->
+              <!--</properties>-->
             </configuration>
             <executions>
               <execution>
-                <id>cargo-start</id>
+                <id>start</id>
                 <phase>pre-integration-test</phase>
                 <goals>
                   <goal>start</goal>
+                  <goal>deploy-only</goal>
                 </goals>
                 <configuration>
-                  <configuration>
-                    <properties>
-                      <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                        -XX:-OmitStackTraceInFastThrow
-                        -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target
-                        -XX:PermSize=512m -XX:MaxPermSize=1024
-                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
-                    </properties>
-                  </configuration>
+                  <!-- TODO try deploy-artifact -->
+                  <targetDir>${settings.localRepository}/${jdbc.groupId}/${jdbc.artifactId}/${jdbc.version}</targetDir>
+                  <filename>${jdbc.artifactId}-${jdbc.version}.jar</filename>
+                  <runtime-name>mysql-connector-java_jar</runtime-name>
                 </configuration>
               </execution>
+
               <execution>
-                <id>default-cli</id>
+                <id>ds</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>deploy-only</goal>
+                </goals>
                 <configuration>
-                  <configuration>
-                    <properties>
-                      <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                        -XX:-OmitStackTraceInFastThrow
-                        -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target
-                        -XX:PermSize=512m -XX:MaxPermSize=1024
-                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
-                    </properties>
-                  </configuration>
+                  <!-- deploy zanata-ds.xml -->
+                  <targetDir>target/test-classes/deployments/</targetDir>
+                  <filename>zanata-ds.xml</filename>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>deploy</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>deploy-artifact</goal>
+                </goals>
+                <configuration>
+                  <!-- deploy zanata-test-war -->
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>zanata-test-war</artifactId>
+                  <!-- use ROOT.war for empty context.path -->
+                  <!-- 'name' might work too -->
+                  <runtime-name>ROOT.war</runtime-name>
                 </configuration>
               </execution>
               <execution>
-                <id>cargo-stop</id>
+                <id>shutdown</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>stop</goal>
+                  <!--<goal>undeploy</goal>-->
+                  <goal>shutdown</goal>
                 </goals>
               </execution>
             </executions>
@@ -837,18 +847,6 @@
       </activation>
       <properties>
         <cargo.jboss.management-http.port>${env.JBOSS_MANAGEMENT_HTTP_PORT}</cargo.jboss.management-http.port>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>JBOSS_MANAGEMENT_NATIVE_PORT</id>
-      <activation>
-        <property>
-          <name>env.JBOSS_MANAGEMENT_NATIVE_PORT</name>
-        </property>
-      </activation>
-      <properties>
-        <cargo.jboss.management-native.port>${env.JBOSS_MANAGEMENT_NATIVE_PORT}</cargo.jboss.management-native.port>
       </properties>
     </profile>
 
@@ -936,6 +934,14 @@
               <filtering>true</filtering>
               <includes>
                 <include>**</include>
+              </includes>
+            </resource>
+            <resource>
+              <directory>src/test/conf</directory>
+              <targetPath>deployments</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <include>*.xml</include>
               </includes>
             </resource>
           </resources>
@@ -1057,6 +1063,13 @@
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>mysql:mysql-connector-java</usedDependency>
@@ -1096,58 +1109,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>true</skip>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.cargo</groupId>
-        <artifactId>cargo-maven2-plugin</artifactId>
-        <!-- this plugin configuration is shared by two profiles: functional-test and wildfly -->
-        <configuration>
-          <container>
-            <type>installed</type>
-            <home>${appserver.home}</home>
-
-            <systemProperties>
-              <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
-              <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
-              <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
-              <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
-            </systemProperties>
-
-            <timeout>120000</timeout>
-          </container>
-
-          <configuration>
-            <type>standalone</type>
-            <home>${cargo.container.home}</home>
-
-            <configfiles>
-              <configfile>
-                <file>${project.basedir}/src/test/conf/zanata-ds.xml</file>
-                <todir>deployments</todir>
-              </configfile>
-            </configfiles>
-
-            <files>
-              <file>
-                <file>${settings.localRepository}/${jdbc.groupId}/${jdbc.artifactId}/${jdbc.version}/${jdbc.artifactId}-${jdbc.version}.jar</file>
-                <tofile>deployments/${jdbc.artifactId}.jar</tofile>
-              </file>
-            </files>
-
-            <properties>
-              <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
-              <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
-              <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
-              <!-- These properties will be interpolated by Cargo into the configfiles above -->
-              <ds.connection.url>${ds.connection.url}</ds.connection.url>
-              <ds.username>${ds.username}</ds.username>
-              <ds.password>${ds.password}</ds.password>
-              <jdbc.artifactId>${jdbc.artifactId}</jdbc.artifactId>
-              <smtp.port>${smtp.port}</smtp.port>
-            </properties>
-          </configuration>
         </configuration>
       </plugin>
 
