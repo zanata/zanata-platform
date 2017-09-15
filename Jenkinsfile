@@ -450,7 +450,7 @@ void integrationTests(String appserver) {
             // work from parent directory so that $appserver will appear at the beginning of the archive paths
             dir('..') {
               archive(
-                      includes: '*/server/functional-test/target/**/*.log,*/server/functional-test/target/screenshots/**,*/server/*/target/gc.log*,*/server/*/target/*.hprof',
+                      includes: '*/server/functional-test/target/**/*.log,*/server/functional-test/target/screenshots/**,*/server/*/target/**/gc.log*,*/server/*/target/**/*.hprof',
                       excludes: '**/BACKUP-*.log')
             }
           } else {
