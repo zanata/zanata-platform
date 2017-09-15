@@ -7,7 +7,7 @@
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
 @Field
-static final String PIPELINE_LIBRARY_BRANCH = 'ZNTA-2201-correctSHA'
+public static final String PIPELINE_LIBRARY_BRANCH = 'ZNTA-2201-correctSHA'
 
 @Library("zanata-pipeline-library@$PIPELINE_LIBRARY_BRANCH")
 import org.zanata.jenkins.Notifier
