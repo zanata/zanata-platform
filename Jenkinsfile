@@ -186,7 +186,7 @@ timestamps {
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
-            -Dbuildtime.output.log \
+            -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
             -pl :zanata-war -am -DexcludeFrontend \
           """
@@ -256,7 +256,7 @@ timestamps {
           // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
-          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,**/target/buildtime.csv"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
@@ -437,8 +437,8 @@ void integrationTests(String appserver) {
         -DskipShade \
          */
 
-        // retain traceability report
-        archive(includes: "server/functional-test/target/**/traceability.json")
+        // retain traceability report and build time info
+        archive(includes: "server/functional-test/target/**/traceability.json,**/target/buildtime.csv")
 
         if (mvnResult != 0) {
           notify.testResults(appserver, 'UNSTABLE', 'Failed maven build for integration tests')
