@@ -56,7 +56,8 @@ button#percent-dropdown-basic {
 
 #tmMergeModal .modal-content p {
   word-break: normal;
-  word-break: break-word; /*Chrome specific*/
+  word-break: break-word;
+  /*Chrome specific*/
   hyphens: none;
 }
 
@@ -137,7 +138,7 @@ button#percent-dropdown-basic {
   font-size: 0.85em;
 }
 
-.modal-body .dropdown .dropdown-menu > li > a {
+.modal-body .dropdown .dropdown-menu>li>a {
   font-size: 1em;
 }
 
@@ -274,9 +275,7 @@ button#percent-dropdown-basic {
   font-weight: 500;
 }
 
-#tmMergeModal .radio.has-success label,
-#tmMergeModal .radio.has-warning label,
-#tmMergeModal .radio.has-error label {
+#tmMergeModal .radio.has-success label, #tmMergeModal .radio.has-warning label, #tmMergeModal .radio.has-error label {
   font-weight: 500;
   font-size: 0.975rem;
 }
@@ -373,6 +372,7 @@ li.list-group-item.to .item .iconTMX {
 .versionMergeSearch span {
   margin-right: 1.5rem;
 }
+
 
 /* React Toggle Component CSS */
 
@@ -489,11 +489,9 @@ li.list-group-item.to .item .iconTMX {
   height: 22px;
   border-radius: 50%;
   background-color: #FAFAFA;
-
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-
   -webkit-transition: all 0.25s ease;
   -moz-transition: all 0.25s ease;
   transition: all 0.25s ease;
@@ -503,15 +501,13 @@ li.list-group-item.to .item .iconTMX {
   left: 27px;
 }
 
-
-
 @media (max-width: 991px) {
   #tmMergeModal .label {
     margin-left: 1rem;
   }
   #tmMergeModal .col-md-4 {
-    width:100%;
-    margin-top:1rem;
+    width: 100%;
+    margin-top: 1rem;
   }
 }
 
@@ -521,4 +517,3 @@ li.list-group-item.to .item .iconTMX {
     margin-top: 0.75rem;
   }
 }
-

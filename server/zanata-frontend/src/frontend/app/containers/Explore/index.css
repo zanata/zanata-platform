@@ -8,7 +8,8 @@
 
 .scrollView {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   overflow: hidden;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -56,13 +57,15 @@
 
 .teaserView {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   margin-bottom: 0.375rem;
 }
 
 .teaserHeader {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   display: inline-flex;
   vertical-align: sub;
   padding-bottom: 1rem;
@@ -79,7 +82,8 @@
 
 .userTeaser-inner {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   flex-direction: row;
   -webkit-flex-direction: row;
 }
@@ -93,12 +97,14 @@
   display: -ms-flex;
   display: -o-flex;
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
 }
 
 .teamTeaser {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   margin-bottom: 0.75rem;
 }
 
@@ -108,7 +114,8 @@
 
 .languageTeamTeaser-members {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   margin-left: auto;
   float: right;
   padding-right: 2rem;
@@ -116,19 +123,22 @@
 
 .metaInfo {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   font-size: 0.833rem;
 }
 
 .wordsTranslatedView {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   margin-left: auto;
 }
 
 .searchView {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   color: rgb(84, 102, 122);
   position: relative;
   width: 80%;
@@ -148,7 +158,6 @@
 }
 
 @media (max-width: 29.375rem) {
-
   .teaser-inner {
     flex-direction: row;
     -webkit-flex-direction: row;
@@ -157,18 +166,13 @@
     -moz-flex: 1;
     -webkit-flex: 1;
   }
-
   .metaInfo {
     margin-left: auto;
   }
-
   .searchView span svg {
     font-size: 1.4rem;
   }
-
   .searchView .textInput {
     width: 60%;
   }
-
 }
-

@@ -78,9 +78,7 @@ table.tmxTable .badge {
   vertical-align: sub;
 }
 
-.tmxExport p.allWarnings .btn-link:focus,
-.tmxExport p.allWarnings .btn-link:hover,
-.tmxExport p.allWarnings .btn-link:active {
+.tmxExport p.allWarnings .btn-link:focus, .tmxExport p.allWarnings .btn-link:hover, .tmxExport p.allWarnings .btn-link:active {
   text-decoration: none;
   opacity: 1 !important;
 }

@@ -61,7 +61,7 @@
   -webkit-flex-grow: 1;
 }
 
-.glossaryHeader-actions .textInput, .glossaryBtn.topBtn  {
+.glossaryHeader-actions .textInput, .glossaryBtn.topBtn {
   margin-top: 0.6rem;
 }
 
@@ -156,7 +156,8 @@ span.hidden-lesm.glossaryRow {
 
 .glossaryList .entry-row {
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
 }
 
 .glossaryPaging {
@@ -224,6 +225,7 @@ td.languageSelect .selectClear {
   font-size: 1.2em;
 }
 
+
 /* Locale */
 
 .localeOptions {
@@ -233,7 +235,8 @@ td.languageSelect .selectClear {
   display: -ms-flex;
   display: -o-flex;
   align-items: center;
-  -webkit-align-items: center; /* Safari 7.0+ */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
   justify-content: space-between;
 }
 
@@ -279,75 +282,59 @@ td.languageSelect .selectClear {
 }
 
 @media (max-width: 29.375rem) {
-
   .glossaryhead-wrapper {
     left: 0;
     top: 0;
     background-color: #fff;
   }
-
   .glossaryTable {
     margin-top: 0.375rem;
   }
-
   .glossaryHeader {
     padding-top: 8rem;
   }
-
   .glossaryList {
     margin-top: 2rem;
   }
-
   .glossaryHeader-base {
     padding-top: 0;
     margin-left: 0.375rem;
     margin-right: 0.375rem;
   }
-
   .glossaryhead-wrapper {
     left: 0;
   }
-
   .glossaryHeader-actions button {
     padding-left: 0;
     padding-right: 0;
   }
-
 }
 
 @media (min-width: 29.376rem) {
-
   .glossaryHeader {
     padding-top: 9rem;
   }
-
   .glossaryList {
     margin-top: 2rem;
   }
-
   .glossaryHeader-base {
     margin-left: 1.5rem;
     margin-right: 1rem;
   }
-
   .glossaryHeader-title {
     margin-right: 1rem;
   }
-
   .wide-view-theme-glossary {
     margin-left: 2.5rem;
     margin-right: 1rem;
     margin-bottom: 2.5rem;
   }
-
   .glossaryHeader-title {
     margin-right: 3rem;
   }
-
   .glossaryBtn {
     margin-left: 0.375rem;
   }
-
   .glossarySearch {
     flex: 1;
     -webkit-box-flex: 1;
@@ -355,20 +342,16 @@ td.languageSelect .selectClear {
     -webkit-flex: 1;
     margin-left: 0.375rem;
   }
-
   .glossaryHeader-wrapper {
     left: 4.5rem;
   }
-
   .wide-view-theme-glossary {
     margin-left: 2.5rem;
     margin-right: 1rem;
   }
-
 }
 
 @media (max-width: 1119px) {
-
   .glossaryHeader-actions .hidden-lesm {
     position: absolute !important;
     clip: rect(1px, 1px, 1px, 1px);
@@ -378,13 +361,10 @@ td.languageSelect .selectClear {
     width: 1px !important;
     overflow: hidden;
   }
-
 }
 
 @media (min-width: 1200px) {
-
   .glossaryHeader-title {
     margin-right: 9em;
   }
-
 }

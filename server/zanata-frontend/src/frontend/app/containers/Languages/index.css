@@ -76,10 +76,7 @@ span.languageCode {
 }
 
 @media (min-width: 992px) {
-
   .showItems {
     clear: none !important;
   }
-
 }
-

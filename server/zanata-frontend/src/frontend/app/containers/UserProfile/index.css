@@ -7,7 +7,8 @@
   display: -ms-flex;
   display: -o-flex;
   align-items: flex-start;
-  -webkit-align-items: flex-start; /* Safari 7.0+ */
+  -webkit-align-items: flex-start;
+  /* Safari 7.0+ */
   align-content: flex-start;
   -webkit-align-content: flex-start;
   flex-direction: column;
@@ -15,7 +16,8 @@
   justify-content: flex-start;
   margin-left: auto;
   flex-wrap: nowrap;
-  -webkit-flex-wrap: nowrap; /* Safari 6.1+ */
+  -webkit-flex-wrap: nowrap;
+  /* Safari 6.1+ */
   margin-top: 4.5rem;
   margin-bottom: 4.5rem;
   margin-right: auto;
@@ -132,14 +134,16 @@ ul.largeFontList li.u-flexCenter svg {
 
 #userProfile-overview {
   align-items: flex-start;
-  -webkit-align-items: flex-start; /* Safari 7.0+ */
+  -webkit-align-items: flex-start;
+  /* Safari 7.0+ */
   align-content: flex-start;
   -webkit-align-content: flex-start;
   flex-direction: row-reverse;
   -webkit-flex-direction: row-reverse;
   justify-content: flex-start;
   flex-wrap: nowrap;
-  -webkit-flex-wrap: nowrap; /* Safari 6.1+ */
+  -webkit-flex-wrap: nowrap;
+  /* Safari 6.1+ */
   width: 100%;
   margin-bottom: 1.5rem;
 }
@@ -241,8 +245,7 @@ button.success.btn.btn-default, button.plain.btn.btn-default, button.primary.btn
   border: solid 1px #ddd
 }
 
-button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover,
-button.plain.btn.btn-default.active {
+button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover, button.plain.btn.btn-default.active {
   background-color: rgba(84, 102, 119, 0.95);
   color: #fff;
   text-decoration: none;
@@ -250,8 +253,7 @@ button.plain.btn.btn-default.active {
   box-shadow: none;
 }
 
-button.primary.btn.btn-default:focus, button.primary.btn.btn-default:hover,
-button.primary.btn.btn-default.active {
+button.primary.btn.btn-default:focus, button.primary.btn.btn-default:hover, button.primary.btn.btn-default.active {
   background-color: rgba(3, 166, 215, 0.95);
   color: #fff;
   text-decoration: none;
@@ -259,8 +261,7 @@ button.primary.btn.btn-default.active {
   box-shadow: none;
 }
 
-button.success.btn.btn-default:focus, button.success.btn.btn-default:hover,
-button.success.btn.btn-default.active {
+button.success.btn.btn-default:focus, button.success.btn.btn-default:hover, button.success.btn.btn-default.active {
   background-color: rgba(98, 200, 118, 0.95);
   color: #fff;
   text-decoration: none;
@@ -268,8 +269,7 @@ button.success.btn.btn-default.active {
   box-shadow: none;
 }
 
-button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover,
-button.unsure.btn.btn-default.active {
+button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover, button.unsure.btn.btn-default.active {
   background-color: rgba(233, 221, 0, 1);
   color: #546677;
   text-decoration: none;
@@ -340,23 +340,18 @@ button.unsure.btn.btn-default.active {
 }
 
 @media (max-width: 29.375rem) {
-
   .matrix-table {
     display: block;
   }
-
   .matrixHeading {
     padding-bottom: 1rem;
   }
-
   #userProfile-matrix {
     padding-left: 0;
   }
-
 }
 
-@media (min-width: 768px) and (max-width: 992px){
-
+@media (min-width: 768px) and (max-width: 992px) {
   .matrix-table {
     display: flex;
     display: -webkit-flex;
@@ -366,72 +361,56 @@ button.unsure.btn.btn-default.active {
     flex-direction: row;
     -webkit-flex-direction: row;
   }
-
   .matrix-inner {
     width: 100%;
     margin-right: 1rem;
   }
-
   .matrixHeading {
     width: 100%;
   }
-
   #userProfile-matrix h2 {
     margin-top: 0;
   }
-
   h2.matrixHeading {
     max-width: 100%;
     min-width: 100%;
   }
-
 }
 
-@media (min-width: 992px){
-
+@media (min-width: 992px) {
   .wideView.profile {
     margin-top: 0.375rem;
   }
-
   .matrixHeading {
     margin-right: 0.75rem;
     margin-left: 0.75rem;
   }
-
   h2.matrixHeading {
     min-width: 0;
     margin-left: 3rem;
   }
-
 }
 
 @media (min-width: 992px) and (max-width: 1200px) {
-
   .userProfile-wrapper {
     flex-direction: column;
     -webkit-flex-direction: column;
   }
-
 }
 
 @media (min-width: 1200px) {
-
   .userProfile-wrapper {
     padding-right: 4rem;
     flex-direction: row;
     -webkit-flex-direction: row;
   }
-
   .matrix-table {
     display: flex;
     flex-direction: row;
     -webkit-flex-direction: row;
   }
-
   .matrix-inner {
     width: 50%;
     margin-right: 0.75rem;
   }
-
 }
-

@@ -119,7 +119,6 @@ textarea {
 }
 
 @media (max-width: 29.375rem) {
-
   ul#expList {
     margin-bottom: -5px;
   }
@@ -132,26 +131,21 @@ textarea {
     transform: rotate(0deg);
     transform-origin: 50% 50% 0px;
   }
-
   .accordion, .accordion * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
-
   .accordion {
     overflow: hidden;
   }
-
   .sidebar .dropdown.btn-group {
     vertical-align: bottom;
     padding-bottom: 0.5em;
   }
-
   .hide-desktop {
     transition: all linear 0.15s;
   }
-
   .hide-desktop.down {
     fill: rgb(84, 102, 122);
     height: 30px;
@@ -161,101 +155,79 @@ textarea {
     transform: rotate(0deg);
     transform-origin: 50% 50% 0px;
   }
-
   .hide-desktop.up {
     transform: rotate(-180deg);
     transform-origin: 50% 50% 0px;
   }
-
   .iconProject {
     color: #54667a;
     height: 30px;
     width: 30px;
     margin-bottom: 2px;
   }
-
   .accordion-section-title.active, .accordion-section-title:hover {
     text-decoration: none;
   }
-
   .accordion-section:last-child .accordion-section-title {
     border-bottom: none;
   }
-
   .accordion-section-content {
     display: none;
     padding-top: 10px;
   }
-
   .accordion-section-content.open {
     display: block !important;
     padding-top: 10px;
   }
-
   .sidebar {
     width: 100%;
   }
-
   #sidebarVersion {
     margin-top: 0.5em !important;
   }
-
   p.sidebarVersion-settings {
     margin-bottom: 0;
   }
-
   #sidebarVersion .drop {
     margin-left: 10px;
   }
-
   .sidebar ul:not(.dropdown-menu) {
     display: inline-flex;
   }
-
   .sidebar ul li.active {
     display: inline-block;
     margin-left: 0px !important;
   }
-
   .sidebar ul li {
     padding-right: 10px;
     line-height: 2em;
   }
-
 }
 
 @media (min-width: 48rem) {
-
   svg.hide-desktop {
-  display: none;
-  visibility: hidden;
-}
-
+    display: none;
+    visibility: hidden;
+  }
   .sidebar {
     float: left;
     height: 100vh;
   }
-
   .sidebar ul li.active {
     margin-left: -15px;
     margin-right: -15px;
   }
-
   li.active .iconSidebar svg {
     margin-left: 15px;
   }
-
   .sidebar ul {
     margin-left: -10px;
   }
-
   ul.v-links {
     margin-top: 0.75rem;
   }
-
   ul.v-links li.active a {
     padding-left: 45px;
     margin-left: -15px;
   }
-
 }
