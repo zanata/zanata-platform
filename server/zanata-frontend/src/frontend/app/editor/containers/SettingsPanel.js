@@ -9,7 +9,7 @@ import SettingsOptions from '../components/SettingsOptions'
 import { getEnterSavesImmediately } from '../reducers'
 import { ENTER_SAVES_IMMEDIATELY } from '../reducers/settings-reducer'
 
-export const SidebarSettings = ({
+export const SettingsPanel = ({
   enterSavesImmediately,
   hideSettings,
   updateSetting
@@ -42,7 +42,7 @@ export const SidebarSettings = ({
   )
 }
 
-SidebarSettings.propTypes = {
+SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired
@@ -55,4 +55,4 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps,
-  { hideSettings, updateSetting })(SidebarSettings)
+  { hideSettings, updateSetting })(SettingsPanel)
