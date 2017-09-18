@@ -10,9 +10,9 @@ import {
   SETTINGS_SAVE_SUCCESS,
   SETTINGS_SAVE_FAILURE
 } from './settings-action-types'
-import { baseRestUrl } from '../api'
+import { apiUrl } from '../../config'
 
-export const settingsUrl = `${baseRestUrl}/user/settings/webeditor`
+export const settingsUrl = `${apiUrl}/user/settings/webeditor`
 
 /**
  * Fetch the editor settings over the REST API.

@@ -39,6 +39,7 @@ describe('ui-reducer test', () => {
       },
       uiLocales: {},
       selectedUiLocale: 'en-US',
+      showSettings: false,
       gettextCatalog: {
         getString: identity
       }
