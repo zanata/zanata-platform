@@ -22,11 +22,11 @@ const SettingsOptions = ({settings, updateSetting}) => {
 SettingsOptions.propTypes = {
   settings: PropTypes.arrayOf(PropTypes.shape({
     // FIXME update to appropriate type
-    id: PropTypes.any.isRequired,
+    id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     active: PropTypes.bool.isRequired
   })).isRequired,
-  /* arguments: (any: settingId, bool: active) */
+  /* arguments: (string: settingId, bool: active) */
   updateSetting: PropTypes.func.isRequired
 }
 

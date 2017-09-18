@@ -4,11 +4,10 @@ import { Checkbox } from 'react-bootstrap'
 
 class SettingOption extends React.Component {
   static propTypes = {
-    // FIXME update type
-    id: PropTypes.any.isRequired,
+    id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     active: PropTypes.bool.isRequired,
-    /* arguments: (any: settingId, bool: active) */
+    /* arguments: (string: settingId, bool: active) */
     updateSetting: PropTypes.func.isRequired
   }
 
