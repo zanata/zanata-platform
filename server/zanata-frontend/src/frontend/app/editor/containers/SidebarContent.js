@@ -17,23 +17,3 @@ SidebarContent.propTypes = {
 
 export default connect(
   state => ({ showSettings: getShowSettings(state) }))(SidebarContent)
-
-// Changed here in other branch, copy to appropriate place:
-
-// Use this when the activity tab is activated
-// import ActivityTab from './ActivityTab'
-
-// Note: space removed before parens
-// <span>({this.props.glossaryCount})</span>
-
-// Use this when activity tab is activated
-// const activityTitle = (
-//   <span>
-//     <Icon name="clock" className="s1 gloss-tab-svg" />
-//     <span className="hide-md">Activity</span>
-//   </span>
-// )
-
-//  {/* Use this when activity tab is activated
-//    <ActivityTab eventKey={2} title={activityTitle} /> */}
-
