@@ -31,6 +31,7 @@
       <column name="enabled"/>
       <column name="username"/>
     </createIndex>
+  </changeSet>
 
   <changeSet author="damason@redhat.com" id="1">
     <comment>Migrate gwt app settings to use distinct key.</comment>

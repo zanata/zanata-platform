@@ -71,9 +71,6 @@ public class UserService implements UserResource {
     @Inject
     private IdentityManager identityManager;
 
-    private static final Logger log =
-            LoggerFactory.getLogger(UserService.class);
-
     @Override
     @CheckLoggedIn
     public Response getMyInfo() {
