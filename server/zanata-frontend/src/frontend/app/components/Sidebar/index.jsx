@@ -41,13 +41,13 @@ class Sidebar extends Component {
               <div id='accordion-1' className={displayAccordion}>
                 <Nav bsStyle='pills' stacked activeKey={1}>
                   <NavItem eventKey={1} href=''>
-                    <Icon name='users' className='s1 sidebar-icon' />
+                    <Icon name='users' className='s1 iconSidebar' />
                   People</NavItem>
                   <NavItem eventKey={2} href=''>
-                    <Icon name='info' className='s1 sidebar-icon' />
+                    <Icon name='info' className='s1 iconSidebar' />
                   About</NavItem>
                   <NavItem eventKey={3} href=''>
-                    <Icon name='settings' className='s1 sidebar-icon' />
+                    <Icon name='settings' className='s1 iconSidebar' />
                   Settings </NavItem>
                 </Nav>
                 <DropdownButton title='Options' id='optionsDropdown'
@@ -78,13 +78,13 @@ class Sidebar extends Component {
                     <p><span className='percent'>10%</span> translated</p>
                   </div>
                   <ProgressBar>
-                    <ProgressBar className='progressBar-translated'
+                    <ProgressBar className='progress-bar-success'
                       now={10} key={1} />
-                    <ProgressBar className='progressBar-fuzzy'
+                    <ProgressBar className='progress-bar-warning'
                       now={7} key={2} />
-                    <ProgressBar className='progressBar-rejected'
+                    <ProgressBar className='progress-bar-danger'
                       now={3} key={3} />
-                    <ProgressBar className='progressBar-approved'
+                    <ProgressBar className='progress-bar-info'
                       now={10} key={4} />
                   </ProgressBar>
                   <Nav className='v-links'

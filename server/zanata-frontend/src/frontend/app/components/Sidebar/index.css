@@ -9,6 +9,40 @@
   letter-spacing: -0.05em;
 }
 
+.sidebar {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 25%;
+  font-size: 0.875rem;
+  z-index: 2;
+}
+
+.sidebar-wrapper {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: #EEF2F5;
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-scrolling: touch;
+}
+
+.sidebar-container {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  flex-grow: 1;
+  padding-bottom: @spacing-rh;
+  position: relative;
+  width: 100%;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
 .accordion-section-title .iconProject svg {
   fill: #546677;
   height: 30px;
@@ -118,7 +152,7 @@ textarea {
   max-width: 100%;
 }
 
-@media (max-width: 29.375rem) {
+@media (max-width: 61rem) {
   ul#expList {
     margin-bottom: -5px;
   }
@@ -138,6 +172,7 @@ textarea {
   }
   .accordion {
     overflow: hidden;
+    width: 100%;
   }
   .sidebar .dropdown.btn-group {
     vertical-align: bottom;
@@ -204,7 +239,7 @@ textarea {
   }
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 62rem) {
   svg.hide-desktop {
     display: none;
     visibility: hidden;

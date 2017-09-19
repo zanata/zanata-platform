@@ -5290,7 +5290,7 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     />
   </div>
   <button
-    className="Button Button--small u-rounded Button--primary pull-right btn btn-default"
+    className="Button Button--small u-rounded Button--primary u-pullRight btn btn-default"
     disabled={true}
     onClick={[Function]}
     type="button"
