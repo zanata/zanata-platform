@@ -31,6 +31,8 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.config.SystemPropertyConfigStore;
 
 /**
@@ -88,10 +90,16 @@ public class ZanataCentralLoginModule implements LoginModule {
         try {
             callbackHandler.handle(new Callback[] { authTypeCallback });
         } catch (UnsupportedCallbackException ucex) {
-            // This happens on kerberos authentication
+            // This happens on kerberos or SAML authentication
             // NB: A custom callback handler could be configured on the app
             // server to avoid this.
-            authTypeCallback.setAuthType(AuthenticationType.KERBEROS);
+            ApplicationConfiguration appConfig = BeanProvider
+                    .getContextualReference(ApplicationConfiguration.class);
+            if (appConfig.isSSO()) {
+                authTypeCallback.setAuthType(AuthenticationType.SSO);
+            } else {
+                authTypeCallback.setAuthType(AuthenticationType.KERBEROS);
+            }
         } catch (IOException e) {
             LoginException lex = new LoginException(e.getMessage());
             lex.initCause(e);

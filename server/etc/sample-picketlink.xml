@@ -38,6 +38,9 @@
   <Handlers xmlns="urn:picketlink:identity-federation:handler:config:2.1">
     <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2LogOutHandler" />
     <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2AuthenticationHandler" />
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2AttributeHandler">
+      <Option Key="ATTRIBUTE_CHOOSE_FRIENDLY_NAME" Value="true"/>
+    </Handler>
     <Handler class="org.picketlink.identity.federation.web.handlers.saml2.RolesGenerationHandler" />
     <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2SignatureGenerationHandler" />
     <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2SignatureValidationHandler" />

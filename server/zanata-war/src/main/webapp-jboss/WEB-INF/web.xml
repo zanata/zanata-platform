@@ -254,6 +254,12 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>ssoFilter</filter-name>
+    <url-pattern>/account/ssologin</url-pattern>
+  </filter-mapping>
+
+
   <!-- Facelets development mode (disable in production)
   To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :-->
 

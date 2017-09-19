@@ -22,18 +22,21 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.regex.Pattern;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.exception.AuthorizationException;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.SamlIdentity;
 import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
@@ -67,6 +70,8 @@ public class NewProfileAction extends AbstractProfileAction
     RegisterService registerServiceImpl;
     @Inject
     ApplicationConfiguration applicationConfiguration;
+    @Inject
+    private SamlIdentity samlIdentity;
 
     @PostConstruct
     public void onCreate() {
@@ -75,10 +80,7 @@ public class NewProfileAction extends AbstractProfileAction
             throw new AuthorizationException(
                     "Need to be in pre authenticated state");
         }
-        if (authType != AuthenticationType.OPENID) {
-            // Open id user names are url's so they don't make good defaults
-            username = identity.getCredentials().getUsername();
-        } else {
+        if (authType == AuthenticationType.OPENID) {
             // Try to get the information from the openid provider
             username = zanataOpenId.getAuthResult().getUsername();
             name = zanataOpenId.getAuthResult().getFullName();
@@ -97,6 +99,14 @@ public class NewProfileAction extends AbstractProfileAction
                                     username, USERNAME_REGEX));
                 }
             }
+        } else if (authType == AuthenticationType.SSO) {
+            email = samlIdentity.getEmail();
+            name = samlIdentity.getName();
+            username = identity.getCredentials().getUsername();
+
+        } else {
+            // Open id user names are url's so they don't make good defaults
+            username = identity.getCredentials().getUsername();
         }
     }
 
@@ -131,6 +141,10 @@ public class NewProfileAction extends AbstractProfileAction
                 || authType == AuthenticationType.JAAS) {
             key = registerServiceImpl.register(this.username, this.username,
                     this.email);
+        } else if (authType == AuthenticationType.SSO) {
+            key = registerServiceImpl.register(username,
+                    samlIdentity.getUniqueNameId(), AuthenticationType.SSO,
+                    name, email);
         } else {
             key = registerServiceImpl.register(this.username,
                     zanataOpenId.getAuthResult().getAuthenticatedId(),

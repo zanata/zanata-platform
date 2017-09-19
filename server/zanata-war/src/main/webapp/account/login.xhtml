@@ -171,9 +171,9 @@
                   class="gamma heading--sub">#{msgs['jsf.login.OrLoginUsing.label']}</h2>
               </ui:fragment>
               <div class="g__item w--1-4 w--1-4-s">
-                <h:outputLink value="#{request.contextPath}/account/ssologin">
-                  Single Sign On
-                </h:outputLink>
+                <h:link outcome="/account/ssologin.xhtml" id="ssoLogin">
+                  SSO
+                </h:link>
               </div>
             </h:panelGroup>
           </div>

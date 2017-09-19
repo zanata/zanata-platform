@@ -369,6 +369,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.picketlink.distribution</groupId>
+      <artifactId>picketlink-wildfly8</artifactId>
+      <version>2.5.5.SP2</version>
+      <scope>provided</scope>
+    </dependency>
+
 
     <dependency>
       <groupId>net.jodah</groupId>

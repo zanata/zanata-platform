@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,6 +42,7 @@ import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.util.FacesNavigationUtil;
+import io.undertow.security.idm.Account;
 
 /**
  * This action takes care of logging a user into the system. It contains logic
@@ -159,12 +159,6 @@ public class LoginAction implements Serializable {
         credentials.setAuthType(AuthenticationType.OPENID);
         credentials.setOpenIdProviderType(providerType);
         return authenticationManager.openIdLogin();
-    }
-
-    public String ssoLogin() {
-        credentials.setAuthType(AuthenticationType.SSO);
-        credentials.setPassword("");
-        return authenticationManager.ssoLogin();
     }
 
     /**

@@ -22,10 +22,18 @@ package org.zanata.security;
 
 import java.io.Serializable;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.apache.deltaspike.core.util.ContextUtils;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
@@ -38,7 +46,8 @@ import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
-import javax.enterprise.event.Observes;
+
+import io.undertow.security.idm.Account;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -80,6 +89,8 @@ public class AuthenticationManager implements Serializable {
     private Messages msgs;
     @Inject
     private SpNegoIdentity spNegoIdentity;
+    @Inject
+    private SamlIdentity samlIdentity;
 
     /**
      * Logs in a user using a specified authentication type.
@@ -236,8 +247,10 @@ public class AuthenticationManager implements Serializable {
      *         dashboard - Redirect the user to dashboard page.
      */
     public String getAuthenticationRedirect() {
-        if (identity.getCredentials()
-                .getAuthType() == AuthenticationType.KERBEROS) {
+        AuthenticationType authType = identity.getCredentials()
+                .getAuthType();
+        if (authType == AuthenticationType.KERBEROS
+                || authType == AuthenticationType.SSO) {
             if (isAuthenticatedAccountWaitingForActivation()) {
                 return "inactive";
             } else if (identity.isPreAuthenticated() && isNewUser()) {
@@ -284,7 +297,15 @@ public class AuthenticationManager implements Serializable {
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
             }
-        } else {
+        } else if (authType == AuthenticationType.SSO) {
+            authenticatedCredentials = credentialsDAO
+                    .findByUser(samlIdentity.getUniqueNameId());
+            // on first SSO login, there might not be any stored credentials
+            if (authenticatedCredentials != null) {
+                authenticatedAccount = authenticatedCredentials.getAccount();
+            }
+        }
+        else {
             authenticatedCredentials = credentialsDAO.findByUser(username);
             authenticatedAccount = accountDAO.getByUsername(username);
         }
@@ -362,8 +383,11 @@ public class AuthenticationManager implements Serializable {
                 message = "User " + username
                         + " has been disabled. Please contact server admin.";
             }
-            facesMessages.clear();
-            facesMessages.addGlobal(message);
+            // TODO pahuang temp hack
+            if (ContextUtils.isContextActive(WindowScoped.class)) {
+                facesMessages.clear();
+                facesMessages.addGlobal(message);
+            }
             // identity.setPreAuthenticated(false);
             // identity.unAuthenticate();
             return false;
@@ -384,8 +408,22 @@ public class AuthenticationManager implements Serializable {
         setAuthenticateUser(username);
     }
 
-    public String ssoLogin() {
-        String loginResult = identity.login(AuthenticationType.SSO);
-        return loginResult;
+    public void ssoLogin(Account account, String usernameFromSSO, String email, String name) {
+        if (applicationConfiguration.isSSO()) {
+            String uniqueNameId = account.getPrincipal().getName();
+            HCredentials credentials = credentialsDAO.findSSOUser(uniqueNameId);
+            // when sign in with SSO the first time, there is no HCredentials or HAccount in database
+            String username = usernameFromSSO;
+            if (credentials != null) {
+                username = credentials.getAccount().getUsername();
+            }
+            samlIdentity.authenticate(uniqueNameId, username, email, name);
+            if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
+                    && isAccountEnabledAndActivated()) {
+                samlIdentity.login(account.getPrincipal());
+                this.onLoginCompleted(
+                        new LoginCompleted(AuthenticationType.SSO));
+            }
+        }
     }
 }
