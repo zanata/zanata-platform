@@ -241,8 +241,9 @@ table.userProfile-activityGraph tr td {
 
 button.success.btn.btn-default, button.plain.btn.btn-default, button.primary.btn.btn-default, button.unsure.btn.btn-default {
   border-radius: 1.071rem;
-  margin-right: 1rem;
-  border: solid 1px #ddd
+  margin-right: 0.5rem;
+  border: solid 1px #ddd;
+  margin-bottom: 0.5rem;
 }
 
 button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover, button.plain.btn.btn-default.active {

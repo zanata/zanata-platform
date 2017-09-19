@@ -38,8 +38,10 @@ const FilterableMatrixTable = ({
     : <div className='u-textMuted'>No contributions</div>
   return (
     <div>
-      <ContentStateFilter selectedContentState={selectedContentState}
-        handleFilterChanged={handleFilterChanged} />
+      <div className='u-flexRow'>
+        <ContentStateFilter selectedContentState={selectedContentState}
+          handleFilterChanged={handleFilterChanged} />
+      </div>
       <div className='matrix-table'>
         <div className='matrix-inner'>
           <CalendarMonthMatrix
