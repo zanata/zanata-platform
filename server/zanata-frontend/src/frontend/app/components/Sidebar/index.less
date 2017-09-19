@@ -1,12 +1,24 @@
+@import "../../styles/variables.less";
+
+:root {
+  --AccordionSectionTitle-paddingTop: 20px;
+  --AccordionSectionTitle-paddingBottom: 10px;
+  --AccordionSectionTitle-fontSize: 2.25rem;
+  --Sidebar-fontSize: 0.875rem;
+  --SidebarWrapper-backgroundColor: #EEF2F5;
+  --SidebarIcon-size: 30px;
+  --SidebarVersion-fontSize: 1.6em;
+}
+
 .accordion-section-title {
   width: 100%;
   display: inline-block;
-  color: #54667a;
-  padding-top: 20px;
-  padding-bottom: 10px;
-  font-size: 2.25em;
-  line-height: 1.08333em;
-  letter-spacing: -0.05em;
+  color: @color-dark;
+  padding-top: var(--AccordionSectionTitle-paddingTop);
+  padding-bottom: var(--AccordionSectionTitle-paddingBottom);
+  font-size: var(--AccordionSectionTitle-fontSize);
+  line-height: @line-height-sidebar;
+  letter-spacing: -0.05rem;
 }
 
 .sidebar {
@@ -15,7 +27,7 @@
   flex-direction: column;
   overflow: hidden;
   width: 25%;
-  font-size: 0.875rem;
+  font-size: var(--Sidebar-fontSize);
   z-index: 2;
 }
 
@@ -24,7 +36,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  background-color: #EEF2F5;
+  background-color: var(--SidebarWrapper-backgroundColor);
   overflow: auto;
   overflow-x: hidden;
   overflow-scrolling: touch;
@@ -44,9 +56,9 @@
 }
 
 .accordion-section-title .iconProject svg {
-  fill: #546677;
-  height: 30px;
-  width: 30px;
+  fill: @color-dark;
+  height: var(--SidebarIcon-size);
+  width: var(--SidebarIcon-size);
   margin-bottom: 2px;
   vertical-align: bottom;
 }
@@ -56,7 +68,7 @@
 }
 
 a.accordion-section-title:hover {
-  color: #546677;
+  color: @color-dark;
 }
 
 .accordion-section-content ul {
@@ -65,9 +77,9 @@ a.accordion-section-title:hover {
 }
 
 .iconSidebar svg {
-  fill: #546677 !important;
+  fill: @color-dark !important;
   vertical-align: middle;
-  margin-right: 0.1875rem;
+  margin-right: @spacing-re;
 }
 
 .sidebar .nav-stacked {
@@ -83,9 +95,10 @@ li.active .iconSidebar svg {
 }
 
 .sidebarVersion-percent {
-  color: #62c876;
+  color: @color-success;
 }
 
+// From here
 .sidebarVersion-percent span.percent {
   font-size: 1.6em;
 }
