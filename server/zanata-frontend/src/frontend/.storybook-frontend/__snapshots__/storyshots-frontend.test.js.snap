@@ -15463,7 +15463,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   role="button"
                 >
                   <span
-                    className="s1 sidebar-icon"
+                    className="s1 iconSidebar"
                   >
                     <svg
                       className={undefined}
@@ -15493,7 +15493,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   role="button"
                 >
                   <span
-                    className="s1 sidebar-icon"
+                    className="s1 iconSidebar"
                   >
                     <svg
                       className={undefined}
@@ -15523,7 +15523,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   role="button"
                 >
                   <span
-                    className="s1 sidebar-icon"
+                    className="s1 iconSidebar"
                   >
                     <svg
                       className={undefined}
