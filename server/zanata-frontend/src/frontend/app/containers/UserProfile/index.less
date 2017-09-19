@@ -2,6 +2,10 @@
 
 :root {
   --UserProfile-fontSm: 0.986rem;
+  --UserProfile-btnFuzzyColor: rgba(233, 221, 0, 1);
+  --UserProfile-btnTransColor: rgba(98, 200, 118, 1);
+  --UserProfile-btnApprColor: rgba(2, 154, 207, 1);
+  --UserProfile-btnTotalColor: rgba(84, 102, 119, 1);
 }
 /* User profile */
 
@@ -284,20 +288,20 @@ button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover, button
 }
 
 #userProfile-activityTable td button.active.btn.btn-primary {
-  background-color: rgba(84, 102, 119, 1);
+  background-color: var(--UserProfile-btnTotalColor);
 }
 
 #userProfile-activityTable td button.active.btn.btn-warning {
-  background-color: rgba(233, 221, 0, 1);
+  background-color: var(--UserProfile-btnFuzzyColor);
   color: #546677;
 }
 
 #userProfile-activityTable td button.active.btn.btn-info {
-  background-color: rgba(2, 154, 207, 1);
+  background-color: var(--UserProfile-btnApprColor);
 }
 
 #userProfile-activityTable td button.active.btn.btn-success {
-  background-color: rgba(98, 200, 118, 1);
+  background-color: var(--UserProfile-btnTransColor);
 }
 
 #userProfile-activityTable td button.btn-primary:focus, #userProfile-activityTable td button.btn-info:focus, #userProfile-activityTable td button.btn-warning:focus, #userProfile-activityTable td button.btn-success:focus {
