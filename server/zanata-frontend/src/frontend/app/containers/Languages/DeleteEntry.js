@@ -26,7 +26,7 @@ class DeleteEntry extends Component {
     /* eslint-disable react/jsx-no-bind */
     return (
       <div className='u-blockInline'>
-        <Button bsSize='small' className='langdel-btn'
+        <Button bsSize='small'
           onClick={() => handleDeleteEntryDisplay(true)}>
           <Icon name='cross' className='n2 iconCross' title='cross' />
           Delete
@@ -38,11 +38,11 @@ class DeleteEntry extends Component {
               <strong>{locale.displayName}</strong>?&nbsp;
             </p>
             <span className='button-spacing'>
-              <Button bsStyle='default'
+              <Button bsStyle='default' bsSize='small'
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='button'
+              <Button bsStyle='danger' bsSize='small' type='button'
                 onClick={() => {
                   handleDeleteEntry(locale.localeId)
                   handleDeleteEntryDisplay(false)
