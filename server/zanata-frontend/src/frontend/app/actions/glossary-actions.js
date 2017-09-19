@@ -234,6 +234,7 @@ const getProjectDetails = (projectSlug) => {
 }
 
 const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
+  let headers = getHeaders()
   const endpoint = apiUrl + '/glossary'
   let formData = new FormData()
   formData.append('file', data.file, data.file.name)
@@ -258,8 +259,7 @@ const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
     GLOSSARY_UPLOAD_FAILURE
   ]
   return {
-    [CALL_API]: buildAPIRequest(endpoint, 'POST',
-      getJsonHeaders(), apiTypes, formData)
+    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes, formData)
   }
 }
 
