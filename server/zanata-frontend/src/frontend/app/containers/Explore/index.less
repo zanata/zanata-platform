@@ -1,9 +1,16 @@
+@import "../../styles/variables.less";
+
+:root {
+  --ExploreSearch-width: 80%;
+  --ExploreSearchTextInput-width: 60%;
+}
+
 .containerContentView {
   max-width: 48rem;
   width: 100%;
-  margin-top: 1rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin-top: @spacing-base;
+  margin-left: @spacing-base;
+  margin-right: @spacing-base;
 }
 
 .scrollView {
@@ -17,19 +24,19 @@
   width: inherit;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: @spacing-base;
+  padding-right: @spacing-base;
 }
 
 .scrollView h2 {
-  padding-left: 0.1875rem;
+  padding-left: @spacing-re;
   margin-top: 0;
 }
 
 .searchView .textInput {
   background-color: '';
-  border: 2px solid rgb(189, 212, 220) !important;
-  border-radius: 0.375rem;
+  border: @color-neutral !important;
+  border-radius: @border-radius-text-input;
   box-sizing: border-box;
   font-family: inherit;
   font-weight: inherit;
@@ -38,8 +45,8 @@
   font-style: inherit;
   outline: 0;
   width: 80%;
-  padding-left: 1.429rem;
-  padding-right: 1.429rem;
+  padding-left: @spacing-hr;
+  padding-right: @spacing-hr;
   margin-left: -1.5rem;
 }
 
@@ -52,14 +59,14 @@
 }
 
 .teaserList .listTheme {
-  margin-top: 1.5rem;
+  margin-top: @spacing-base-and-a-half;
 }
 
 .teaserView {
   align-items: center;
   -webkit-align-items: center;
   /* Safari 7.0+ */
-  margin-bottom: 0.375rem;
+  margin-bottom: @spacing-rh;
 }
 
 .teaserHeader {
@@ -68,7 +75,7 @@
   /* Safari 7.0+ */
   display: inline-flex;
   vertical-align: sub;
-  padding-bottom: 1rem;
+  padding-bottom: @spacing-base;
 }
 
 .teaser-inner {
@@ -89,8 +96,8 @@
 }
 
 .teaserHeader-inner {
-  margin-left: 0.375rem;
-  color: #03A6D7;
+  margin-left: @spacing-rh;
+  color: @color-light;
   display: flex;
   display: -webkit-flex;
   display: -moz-flex;
@@ -105,11 +112,11 @@
   align-items: center;
   -webkit-align-items: center;
   /* Safari 7.0+ */
-  margin-bottom: 0.75rem;
+  margin-bottom: @spacing-rq;
 }
 
 .languageTeamTeaser-id {
-  margin-left: 0.75rem;
+  margin-left: @spacing-rq;
 }
 
 .languageTeamTeaser-members {
@@ -118,7 +125,7 @@
   /* Safari 7.0+ */
   margin-left: auto;
   float: right;
-  padding-right: 2rem;
+  padding-right: @spacing-xlarge;
 }
 
 .metaInfo {
@@ -139,11 +146,11 @@
   align-items: center;
   -webkit-align-items: center;
   /* Safari 7.0+ */
-  color: rgb(84, 102, 122);
+  color: @color-dark;
   position: relative;
-  width: 80%;
-  margin-top: 0.75rem;
-  margin-bottom: 1rem;
+  width: var(--ExploreSearch-width);
+  margin-top: @spacing-rq;
+  margin-bottom: @spacing-base;
   margin-left: auto;
   margin-right: auto;
 }
@@ -157,6 +164,7 @@
   margin-bottom: 0;
 }
 
+// @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
   .teaser-inner {
     flex-direction: row;
@@ -173,6 +181,6 @@
     font-size: 1.4rem;
   }
   .searchView .textInput {
-    width: 60%;
+    width: var(--ExploreSearchTextInput-width);
   }
 }

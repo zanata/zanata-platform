@@ -1,3 +1,11 @@
+@import "../../styles/variables.less";
+
+:root {
+  --VersionMerge-fontSm: 0.975rem;
+  --VersionMerge-font: 1rem;
+  --VersionMerge-fontLg: 1.1rem;
+}
+
 /* Modal specific css */
 
 .versionMergeSearch-input.form-control {
@@ -10,7 +18,7 @@
 }
 
 .versionMergeTarget {
-  margin-left: 1em;
+  margin-left: @spacing-base;
 }
 
 .proj-select .list-group-item {
@@ -24,27 +32,27 @@
 .versionMergeTarget ul {
   list-style-type: none;
   margin-bottom: 0;
-  line-height: 2em;
-  margin-left: 1rem;
+  line-height: @spacing-xlarge;
+  margin-left: @spacing-base;
 }
 
 #tmMergeModal .label {
-  font-size: 0.975rem;
+  font-size: var(--VersionMerge-fontSm);
   font-weight: 400;
-  padding: 0.25rem;
+  padding: @spacing-search-box;
 }
 
 .label-success {
-  background-color: #62c876 !important;
+  background-color :@color-success;
 }
 
 button#percent-dropdown-basic {
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
+  margin-left: @spacing-rq;
+  margin-right: @spacing-rq;
 }
 
 #tmMergeModal .label-default {
-  background-color: #A2B3BE;
+  background-color: @color-muted;
 }
 
 #tmMergeModal .col-md-4 {
@@ -75,18 +83,18 @@ button#percent-dropdown-basic {
 
 .VersionMergeTitle {
   font-weight: 600;
-  font-size: 1em;
-  margin-bottom: 0.375rem;
+  font-size: var(--VersionMerge-font);
+  margin-bottom: @spacing-rh;
 }
 
 .versionMergeTitle-flex {
   display: inline-flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: @spacing-base;
 }
 
 .VersionMergeTitle .u-textMuted {
-  margin-left: 1em;
+  margin-left: @spacing-base;
 }
 
 .versionMergeSearch {
@@ -94,33 +102,33 @@ button#percent-dropdown-basic {
 }
 
 #tmMergeModal .search-input .input-group {
-  margin-bottom: 1.5em;
+  margin-bottom: @spacing-base-and-a-half;
 }
 
 .versionMergeSearch .input-group-addon {
   color: @color-muted;
-  height: 2rem;
+  height: @spacing-xlarge;
 }
 
 .iconHelp {
   vertical-align: middle;
-  padding-left: 1rem;
+  padding-left: @spacing-base;
 }
 
 .versionMergeContainer .iconInfoVersionMerge, .s0.iconInfoVersionMerge {
   vertical-align: middle;
-  margin-left: 0.375em;
-  color: #03A6D7;
+  margin-left: @spacing-rh;
+  color: @color-light;
 }
 
 .versionMergeContainer li.v.list-group-item label.checkbox-inline {
-  margin-left: 2rem;
+  margin-left: @spacing-xlarge;
 }
 
 .s0.icon-locked {
   color: @color-warning;
   vertical-align: middle;
-  margin-left: 0.375em;
+  margin-left: @spacing-rh;
 }
 
 .versionMergeTitle-adjusted {
@@ -139,13 +147,13 @@ button#percent-dropdown-basic {
 }
 
 .modal-body .dropdown .dropdown-menu>li>a {
-  font-size: 1em;
+  font-size: var(--VersionMerge-font);
 }
 
 .tm-panel .checkbox .label {
   font-size: 0.875rem;
-  margin-left: 1rem;
-  padding: 0.375rem;
+  margin-left: @spacing-base;
+  padding: @spacing-rh;
 }
 
 .tm-panel .checkbox small {
@@ -153,13 +161,13 @@ button#percent-dropdown-basic {
 }
 
 #tmMergeModal .panel-title {
-  font-size: 1rem !important;
+  font-size: var(--VersionMerge-font) !important;
   margin: 0 !important;
   font-weight: 400;
 }
 
 .react-draggable.list-group-item span.u-textMuted {
-  margin-left: 1em !important;
+  margin-left: @spacing-base !important;
 }
 
 .drag-handle {
@@ -167,7 +175,7 @@ button#percent-dropdown-basic {
   right: 3% !important;
   -ms-transform: translate(3%, -50%);
   transform: translate(3%, -50%);
-  padding: 0.75rem !important;
+  padding: @spacing-rq !important;
   cursor: ns-resize !important;
 }
 
@@ -176,7 +184,7 @@ button#percent-dropdown-basic {
   right: 3% !important;
   -ms-transform: translate(3%, -50%);
   transform: translate(3%, -50%);
-  padding: 0.75rem !important;
+  padding: @spacing-rq !important;
   color: red !important;
 }
 
@@ -223,7 +231,7 @@ button#percent-dropdown-basic {
 }
 
 #tmMergeModal .modal-body .introPar {
-  margin-bottom: 1rem !important;
+  margin-bottom: @spacing-base !important;
 }
 
 #tmMergeModal {
@@ -233,19 +241,19 @@ button#percent-dropdown-basic {
 }
 
 .import-type {
-  font-size: 1.1rem;
+  font-size: var(--VersionMerge-fontLg);
 }
 
 .iconTMX {
-  margin-right: 0.375rem;
+  margin-right: @spacing-rh;
 }
 
 .VersionMergeTitle .u-textInfo {
-  margin-right: 1rem;
+  margin-right: @spacing-base;
 }
 
 #tmMergeModal li.v input.checkbox {
-  margin-left: 1rem;
+  margin-left: @spacing-base;
 }
 
 #versionMergeDropdown {
@@ -254,21 +262,21 @@ button#percent-dropdown-basic {
 }
 
 #tmMergeModal #versionMergeDropdown span.s1 {
-  margin-right: 0.375rem;
+  margin-right: @spacing-rh;
 }
 
 #tmMergeModal .s0.icon-locked {
-  color: #FFA800 !important;
+  color: @color-warning !important;
   vertical-align: middle;
-  margin-left: 0.375em;
+  margin-left: @spacing-rh;
 }
 
 .select-project {
-  padding-bottom: 1.5rem;
+  padding-bottom: @spacing-base-and-a-half;
 }
 
 .validations {
-  padding-top: 1.5rem;
+  padding-top: @spacing-base-and-a-half;
 }
 
 .validations span {
@@ -277,21 +285,21 @@ button#percent-dropdown-basic {
 
 #tmMergeModal .radio.has-success label, #tmMergeModal .radio.has-warning label, #tmMergeModal .radio.has-error label {
   font-weight: 500;
-  font-size: 0.975rem;
+  font-size: var(--VersionMerge-fontSm);
 }
 
 .versionMergeSource {
   display: flex;
-  padding-bottom: 0.75rem;
+  padding-bottom: @spacing-rq;
 }
 
 .versionMergeSource span {
-  padding-right: 1rem;
+  padding-right: @spacing-base;
 }
 
 #tmMergeModal p.lead {
   font-weight: 400;
-  margin-bottom: 0.5rem;
+  margin-bottom: @spacing-half-base;
 }
 
 #tmMergeModal li.v span.text-muted {
@@ -301,7 +309,7 @@ button#percent-dropdown-basic {
 
 #tmMergeModal li.list-group-item.to .item {
   vertical-align: middle;
-  margin-right: 1.5rem;
+  margin-right: @spacing-base-and-a-half;
 }
 
 li.list-group-item.to .item .iconTMX {
@@ -309,7 +317,7 @@ li.list-group-item.to .item .iconTMX {
 }
 
 #tmMergeModal .panel-name {
-  font-size: 1.1rem;
+  font-size: var(--VersionMerge-fontLg);
 }
 
 #tmMergeModal .tooltip-btn {
@@ -318,27 +326,27 @@ li.list-group-item.to .item .iconTMX {
 
 #tmMergeModal .well {
   background-color: #fff;
-  border-color: #BDD4DC;
+  border-color: @color-neutral;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: @spacing-xlarge;
 }
 
 #tmMergeModal .well p {
-  padding: 1.5rem;
-  font-size: 1.1rem;
+  padding: @spacing-base-and-a-half;
+  font-size: var(--VersionMerge-fontLg);
 }
 
 .no-v {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 2rem;
+  padding-top: @spacing-xlarge;
   font-weight: 500;
-  font-size: 1.1rem;
+  font-size: var(--VersionMerge-fontLg);
 }
 
 .no-v .s8 {
-  margin-top: 1rem;
+  margin-top: @spacing-base;
 }
 
 #tmMergeModal .radio.disabled {
@@ -346,8 +354,8 @@ li.list-group-item.to .item .iconTMX {
 }
 
 #tmMergeModal .radio input[type=radio] {
-  margin-bottom: 0.75rem;
-  margin-left: 1rem;
+  margin-bottom: @spacing-rq;
+  margin-left: @spacing-base;
 }
 
 #tmMergeModal .btn-link {
@@ -365,14 +373,13 @@ li.list-group-item.to .item .iconTMX {
 
 .VersionMergeTitle.u-textNewBlue .dropdown {
   width: auto;
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
+  margin-left: @spacing-rq;
+  margin-right: @spacing-rq;
 }
 
 .versionMergeSearch span {
-  margin-right: 1.5rem;
+  margin-right: @spacing-base-and-a-half;
 }
-
 
 /* React Toggle Component CSS */
 
@@ -501,19 +508,19 @@ li.list-group-item.to .item .iconTMX {
   left: 27px;
 }
 
-@media (max-width: 991px) {
+@media (max-width: @screen-sm-max) {
   #tmMergeModal .label {
-    margin-left: 1rem;
+    margin-left: @spacing-base;
   }
   #tmMergeModal .col-md-4 {
     width: 100%;
-    margin-top: 1rem;
+    margin-top: @spacing-base;
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: @screen-md-min) {
   #tmMergeModal .label {
     margin-left: 0;
-    margin-top: 0.75rem;
+    margin-top: @spacing-rq;
   }
 }

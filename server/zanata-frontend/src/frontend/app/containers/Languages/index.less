@@ -1,32 +1,38 @@
+@import "../../styles/variables.less";
+
+:root {
+  --LanguagesLangCode-fontSize: 0.9rem;
+}
+
 .toolbar {
-  padding-top: 1.429rem;
+  padding-top: @spacing-hr;
   flex-direction: row;
   display: inline-flex;
   flex-wrap: wrap;
 }
 
 span.languageCode {
-  font-size: 0.9rem;
+  font-size: var(--LanguagesLangCode-fontSize);
   color: #aaa;
 }
 
 #btnLanguageAdd {
-  margin-left: 0.8rem;
+  margin-left: @spacing-large-vertical;
 }
 
 .toolbar .sortItems {
-  padding-bottom: 0.62rem;
+  padding-bottom: @spacing-large-horizontal;
   padding-right: 0;
 }
 
 .toolbar .showItems {
-  padding-bottom: 0.62rem;
+  padding-bottom: @spacing-large-horizontal;
   padding-right: 0;
   width: auto;
 }
 
 .toolbar .pageCount {
-  padding-bottom: 1rem;
+  padding-bottom: @spacing-base;
   padding-left: 0;
 }
 
@@ -41,16 +47,16 @@ span.languageCode {
 }
 
 .showItems .form-control {
-  margin-left: 0.2rem;
+  margin-left: @spacing-label-large;
 }
 
 .sortItems {
-  margin-left: 0.62rem;
+  margin-left: @spacing-large-horizontal;
 }
 
 .showItems span {
-  margin-top: 0.31rem;
-  margin-left: 0.62rem;
+  margin-top: @spacing-small-horizontal;
+  margin-left: @spacing-large-horizontal;
 }
 
 .showItems {
@@ -58,7 +64,7 @@ span.languageCode {
 }
 
 .showItems .form-control {
-  margin-left: 0.2rem;
+  margin-left: @spacing-label-large;
 }
 
 .glossaryHeader .Select-menu-outer {
@@ -67,7 +73,7 @@ span.languageCode {
 }
 
 .toolbar .pageCount {
-  padding-bottom: 0.62rem;
+  padding-bottom: @spacing-large-horizontal;
   padding-left: 0;
 }
 
@@ -75,7 +81,7 @@ span.languageCode {
   vertical-align: text-bottom;
 }
 
-@media (min-width: 992px) {
+@media (min-width: @screen-md-min) {
   .showItems {
     clear: none !important;
   }
