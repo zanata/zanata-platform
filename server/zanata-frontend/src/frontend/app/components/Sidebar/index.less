@@ -100,7 +100,7 @@ li.active .iconSidebar svg {
 
 // From here
 .sidebarVersion-percent span.percent {
-  font-size: 1.6em;
+  font-size: var(--Sidebar-fontSize);
 }
 
 .sidebarVersion-percent p {
@@ -110,16 +110,16 @@ li.active .iconSidebar svg {
 .sidebarVersion-title {
   vertical-align: super;
   padding-left: 3px;
-  font-size: 1.6em;
+  font-size: var(--Sidebar-fontSize);
 }
 
 .sidebarVersion-inline {
-  margin-bottom: 0.375rem;
+  margin-bottom: @spacing-rh;
 }
 
 .sidebar .sidebarVersion-inline .dropdown.btn-group {
   vertical-align: sub;
-  padding-left: 0.375rem;
+  padding-left: @spacing-rh;
 }
 
 .sidebarVersion-inline .btn-sm {
@@ -127,11 +127,11 @@ li.active .iconSidebar svg {
 }
 
 .sidebarVersion-inline svg {
-  fill: #546677;
+  fill: @color-dark;
 }
 
 .sidebarVersion-settings {
-  margin-bottom: 0.75rem;
+  margin-bottom: @spacing-rq;
 }
 
 .sidebar .dropdown-menu, .sidebarVersion-settings {
@@ -153,12 +153,12 @@ li.active .iconSidebar svg {
 }
 
 #optionsDropdown {
-  margin-top: 0.75rem;
+  margin-top: @spacing-rq;
 }
 
 .versionHeading {
   vertical-align: text-top;
-  padding-left: 0.1875rem;
+  padding-left: @spacing-re;
 }
 
 textarea {
@@ -170,9 +170,9 @@ textarea {
     margin-bottom: -5px;
   }
   svg.hide-desktop {
-    fill: rgb(84, 102, 122);
-    height: 30px;
-    width: 30px;
+    fill: @color-dark;
+    height: var(--SidebarIcon-size);
+    width: var(--SidebarIcon-size);
     right: 10px;
     position: absolute;
     transform: rotate(0deg);
@@ -189,15 +189,15 @@ textarea {
   }
   .sidebar .dropdown.btn-group {
     vertical-align: bottom;
-    padding-bottom: 0.5em;
+    padding-bottom: @spacing-half-base;
   }
   .hide-desktop {
     transition: all linear 0.15s;
   }
   .hide-desktop.down {
-    fill: rgb(84, 102, 122);
-    height: 30px;
-    width: 30px;
+    fill: @color-dark;
+    height: var(--SidebarIcon-size);
+    width: var(--SidebarIcon-size);
     right: 10px;
     position: absolute;
     transform: rotate(0deg);
@@ -208,9 +208,9 @@ textarea {
     transform-origin: 50% 50% 0px;
   }
   .iconProject {
-    color: #54667a;
-    height: 30px;
-    width: 30px;
+    color: @color-dark;
+    height: var(--SidebarIcon-size);
+    width: var(--SidebarIcon-size);
     margin-bottom: 2px;
   }
   .accordion-section-title.active, .accordion-section-title:hover {
@@ -231,7 +231,7 @@ textarea {
     width: 100%;
   }
   #sidebarVersion {
-    margin-top: 0.5em !important;
+    margin-top: @spacing-half-base !important;
   }
   p.sidebarVersion-settings {
     margin-bottom: 0;
@@ -272,7 +272,7 @@ textarea {
     margin-left: -10px;
   }
   ul.v-links {
-    margin-top: 0.75rem;
+    margin-top: @spacing-rq;
   }
   ul.v-links li.active a {
     padding-left: 45px;

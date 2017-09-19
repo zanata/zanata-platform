@@ -1,9 +1,18 @@
+@import "../../styles/variables.less";
+
+:root {
+  --TMXExportModal-fontSm: 0.75rem;
+  --TMXExportModal-badgeWidth: 4rem;
+  --TMXExportModal-reset: 0;
+}
+
+// These are bootstrap overrides specific to this modal
 #tmxExportModal .modal-header {
-  padding-bottom: 0 !important;
+  padding-bottom: var(--TMXExportModal-reset) !important;
 }
 
 #tmxExportModal .modal-body {
-  padding-top: 0 !important;
+  padding-top: var(--TMXExportModal-reset) !important;
 }
 
 #tmxExportModal {
@@ -12,6 +21,7 @@
   backface-visibility: hidden;
 }
 
+// Modal content override specific to this modal
 .tmxExport {
   text-align: center;
 }
@@ -21,7 +31,7 @@
 }
 
 .tmxExport p.u-textWarning {
-  font-size: 0.75em;
+  font-size: var(--TMXExportModal-fontSm);
 }
 
 table.tmxTable {
@@ -31,7 +41,7 @@ table.tmxTable {
 }
 
 table.tmxTable tbody tr td {
-  border-top: 0;
+  border-top: var(--TMXExportModal-reset);
 }
 
 table.tmxTable tbody tr td:last-child {
@@ -39,25 +49,25 @@ table.tmxTable tbody tr td:last-child {
 }
 
 table.tmxTable tbody tr td:first-child {
-  color: #03A6D7;
+  color: @color-light;
 }
 
 table.tmxTable .btn-sm {
-  padding: 0.31rem 2.4rem;
+  padding: @spacing-small-horizontal @spacing-large-horizontal;
 }
 
 .asterix {
   vertical-align: bottom;
-  margin-left: 0.5em;
-  color: #ffa800;
+  margin-left: @spacing-half-base;
+  color: @color-warning;
 }
 
 table.tmxTable .badge {
-  background-color: #A2B3BE;
+  background-color: @color-muted;
   color: #fff;
   font-size: 1rem;
-  line-height: 1.5rem;
-  width: 4rem;
+  line-height: @line-height-small;
+  width: var(--TMXExportModal-badgeWidth);
   font-weight: 400;
   height: 100%;
 }
@@ -69,9 +79,9 @@ table.tmxTable .badge {
 }
 
 .tmxExport p.allWarnings .btn-link {
-  font-size: 0.75em;
-  line-height: 1em;
-  color: #ffa800;
+  font-size: var(--TMXExportModal-fontSm);
+  line-height: @spacing-base;
+  color: @color-warning;
 }
 
 .tmxExport p.allWarnings .btn-link .n1 {
