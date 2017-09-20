@@ -65,6 +65,7 @@
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
     <class>org.zanata.model.AllowedApp</class>
+    <class>org.zanata.model.ReviewCriteria</class>
 
     <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 
