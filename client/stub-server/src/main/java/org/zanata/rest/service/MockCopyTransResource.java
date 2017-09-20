@@ -31,8 +31,6 @@ import org.zanata.rest.dto.CopyTransStatus;
  */
 @Path(CopyTransResource.SERVICE_PATH)
 public class MockCopyTransResource implements CopyTransResource {
-    private static final long serialVersionUID = 739638991208574793L;
-
     @Override
     public CopyTransStatus startCopyTrans(String projectSlug,
             String iterationSlug, String docId) {

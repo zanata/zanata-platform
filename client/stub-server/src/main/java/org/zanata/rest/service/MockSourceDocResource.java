@@ -39,9 +39,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
  */
 @Path(SourceDocResource.SERVICE_PATH)
 public class MockSourceDocResource implements SourceDocResource {
-
-    private static final long serialVersionUID = 6416300737012575743L;
-
     @Override
     public Response head() {
         return Response.ok(new EntityTag(new Date().toString())).build();
