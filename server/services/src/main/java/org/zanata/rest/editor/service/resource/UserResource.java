@@ -1,6 +1,5 @@
 package org.zanata.rest.editor.service.resource;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
