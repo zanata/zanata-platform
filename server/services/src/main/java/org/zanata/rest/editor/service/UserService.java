@@ -245,16 +245,14 @@ public class UserService implements UserResource {
      *         of setting value.
      */
     public Response getSettings(String prefix) {
-      String dotPrefix = prefix + ".";
-      int trim = dotPrefix.length();
-      HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
-      Map<String, String> options = new HashMap<String, String>();
-      for (HAccountOption option : account.getEditorOptions().values()) {
-        if (option.getName().startsWith(dotPrefix)) {
-          options.put(option.getName().substring(trim), option.getValue());
-        }
-      }
-      return Response.ok(options).build();
+        String dotPrefix = prefix + ".";
+        int trim = dotPrefix.length();
+        HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+        Map<String, String> options = new HashMap<String, String>();
+        account.getEditorOptions().values().stream()
+            .filter(o -> o.getName().startsWith(dotPrefix))
+            .forEach(o -> options.put(o.getName().substring(trim), o.getValue()))
+        return Response.ok(options).build();
     }
 
     /**
@@ -265,23 +263,23 @@ public class UserService implements UserResource {
      */
     @Transactional(readOnly = false)
     public Response postSettings(String prefix, Map<String, String> settings) {
-      HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
-      for (Map.Entry<String, String> entry : settings.entrySet()) {
-        String name = prefix + "." + entry.getKey();
-        // Look up the existing option
-        HAccountOption option = account.getEditorOptions().get(name);
-        if (option == null) {
-          // need a new one
-          option = new HAccountOption(name, entry.getValue());
-          option.setAccount(account);
-          account.getEditorOptions().put(name, option);
-        } else {
-          option.setValue(entry.getValue());
+        HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+        for (Map.Entry<String, String> entry : settings.entrySet()) {
+            String name = prefix + "." + entry.getKey();
+            // Look up the existing option
+            HAccountOption option = account.getEditorOptions().get(name);
+            if (option == null) {
+                // need a new one
+                option = new HAccountOption(name, entry.getValue());
+                option.setAccount(account);
+                account.getEditorOptions().put(name, option);
+            } else {
+                option.setValue(entry.getValue());
+            }
+            accountOptionDAO.makePersistent(option);
         }
-        accountOptionDAO.makePersistent(option);
-      }
-      accountOptionDAO.flush();
-      return Response.ok().build();
+        accountOptionDAO.flush();
+        return Response.ok().build();
     }
 
 }
