@@ -246,7 +246,7 @@ public class UserService implements UserResource {
         Map<String, String> options = new HashMap<String, String>();
         account.getEditorOptions().values().stream()
             .filter(o -> o.getName().startsWith(dotPrefix))
-            .forEach(o -> options.put(o.getName().substring(trim), o.getValue()))
+            .forEach(o -> options.put(o.getName().substring(trim), o.getValue()));
         return Response.ok(options).build();
     }
 
