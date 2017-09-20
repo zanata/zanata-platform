@@ -14,8 +14,6 @@ import addWatchers from './watchers'
 
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
-
-// FIXME remove this, it is just for a test
 import { fetchSettings } from './actions/settings-actions'
 
 // Set the path that webpack will try to load extra chunks from

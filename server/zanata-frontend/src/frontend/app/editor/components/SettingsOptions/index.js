@@ -21,7 +21,6 @@ const SettingsOptions = ({settings, updateSetting}) => {
 
 SettingsOptions.propTypes = {
   settings: PropTypes.arrayOf(PropTypes.shape({
-    // FIXME update to appropriate type
     id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     active: PropTypes.bool.isRequired
