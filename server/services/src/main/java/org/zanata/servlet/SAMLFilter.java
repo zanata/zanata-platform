@@ -54,21 +54,19 @@ public class SAMLFilter implements Filter {
                 Account acc = (Account) account;
                 Optional<Map<String, List<String>>> samlAttributeMap =
                         getSAMLAttributeMap(r.getSession());
-                // TODO pahuang extract the key to system properties
+                // These assumes IDP follow standard SAML assertion names
                 Optional<String> usernameFromSSO =
                         getValueFromSessionAttribute(samlAttributeMap, "uid");
                 Optional<String> emailFromSSO = getValueFromSessionAttribute(samlAttributeMap, "email");
-                Optional<String> surnameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "sn");
-                Optional<String> givenNameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "givenName");
+                Optional<String> nameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "cn");
 
                 if (acc.getRoles().contains("authenticated")) {
                     String principalName = acc.getPrincipal().getName();
-                    log.info("SSO login: username: {}, uuid: {}",
-                            usernameFromSSO, principalName);
-                    String name = givenNameFromSSO.orElse("") + " " + surnameFromSSO.orElse("");
+                    log.info("SSO login: username: {}, name: {}, uuid: {}",
+                            usernameFromSSO, nameFromSSO, principalName);
                     authenticationManager.ssoLogin(acc,
                             usernameFromSSO.orElse(principalName),
-                            emailFromSSO.orElse(""), name);
+                            emailFromSSO.orElse(""), nameFromSSO.orElse(""));
                     performRedirection((HttpServletResponse) response);
                     return;
                 }
