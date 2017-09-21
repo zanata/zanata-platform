@@ -199,8 +199,8 @@ Trigger when a source document is added or removed from project version
 #### Manual event
 Trigger by user manually.
 
-To trigger such event, first project maintainer will need to add and enable the webhook.
-Then translator can select the language he/she has access to from the version page, then from the top right dropdown menu, you should be able to fire the event to registered webhook endpoint.
+To trigger such an event, first the project maintainer will need to add and enable the webhook.
+Then the translator can select the language they have access to from the languages tab on the version overview page. Then from the top right dropdown menu of the documents column, they should be able to fire the event to the registered webhook endpoint.
 ```json
 {
   "project": "zanata",
