@@ -154,7 +154,7 @@ Types of events available:
 Trigger when document has reached 100% Translated or Approved
 ```
 {
-  "type": "org.zanata.events.DocumentMilestoneEvent",
+  "type": "DocumentMilestoneEvent",
   "milestone": "100% Translated",
   "locale": "de",
   "docId": "zanata-war/src/main/resources/messages",
@@ -208,7 +208,7 @@ Then translator can select the language he/she has access to from the version pa
   "username": "triggerer",
   "zanataServer": "translate.zanata.org",
   "locale": "zh",
-  "type": "Manual event"
+  "type": "ManuallyTriggeredEvent"
 }
 ```
 
