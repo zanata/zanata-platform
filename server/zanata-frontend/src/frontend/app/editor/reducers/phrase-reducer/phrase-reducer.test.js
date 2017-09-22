@@ -81,7 +81,7 @@ describe('phrase-reducer test', () => {
     })
     const pageTooHigh = phraseReducer(withPhrases, {
       type: UPDATE_PAGE,
-      page: 7
+      payload: 7
     })
     const clamped = phraseReducer(pageTooHigh, {
       type: CLAMP_PAGE,
@@ -263,11 +263,11 @@ describe('phrase-reducer test', () => {
     const initialState = phraseReducer(undefined, { type: 'any' })
     const pageChanged = phraseReducer(initialState, {
       type: UPDATE_PAGE,
-      page: 7
+      payload: 7
     })
     const samePage = phraseReducer(pageChanged, {
       type: UPDATE_PAGE,
-      page: 7
+      payload: 7
     })
     expect(pageChanged.paging.pageIndex).toEqual(7)
     expect(samePage.paging.pageIndex).toEqual(7)
