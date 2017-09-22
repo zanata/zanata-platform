@@ -84,7 +84,7 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case UPDATE_PAGE:
-      return updatePageIndex(action.page)
+      return updatePageIndex(action.payload)
 
     case CANCEL_EDIT:
       // Discard any newTranslations that were entered.

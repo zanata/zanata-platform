@@ -8,7 +8,7 @@ import { createAction } from 'redux-actions'
 export const CLAMP_PAGE = 'CLAMP_PAGE'
 export const clampPage = createAction(CLAMP_PAGE)
 
-export const UPDATE_PAGE = Symbol('UPDATE_PAGE')
+export const UPDATE_PAGE = 'UPDATE_PAGE'
 
 export function firstPage () {
   return (dispatch, getState) => {
@@ -45,5 +45,5 @@ function updatePage (dispatch, location, pageIndex) {
   replaceRouteQuery(location, {
     page: pageIndex + 1
   })
-  dispatch({type: UPDATE_PAGE, page: pageIndex})
+  dispatch(createAction(UPDATE_PAGE)(pageIndex))
 }
