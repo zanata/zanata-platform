@@ -41,7 +41,7 @@ import org.zanata.rest.dto.VersionInfo;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("System Version")
-public interface VersionResource extends RestResource {
+public interface VersionResource {
     public static final String SERVICE_PATH = "/version";
 
     /**

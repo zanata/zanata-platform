@@ -69,9 +69,6 @@ import java.util.Set;
 @Named("identityStore")
 @ApplicationScoped
 public class ZanataJpaIdentityStore implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ZanataJpaIdentityStore.class);
-
     // see also org.zanata.model.HDocument.EntityListener.AUTHENTICATED_USER
     public static final String AUTHENTICATED_USER =
             "org.jboss.seam.security.management.authenticatedUser";
@@ -310,6 +307,7 @@ public class ZanataJpaIdentityStore implements Serializable {
                 generatePasswordHash(password, user.getUsername()));
     }
 
+    @SuppressWarnings("deprecation")
     protected String generatePasswordHash(String password, String salt) {
         Preconditions.checkState(!Strings.isNullOrEmpty(salt));
         return PasswordUtil.generateSaltedHash(password, salt);

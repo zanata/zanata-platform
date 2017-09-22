@@ -147,7 +147,6 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         this.authenticatedAccount = authenticatedAccount;
     }
 
-    @SuppressWarnings("unused")
     public TransMemoryMergeServiceImpl() {
     }
 

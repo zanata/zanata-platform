@@ -187,8 +187,9 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         }
         em = null;
     }
-    // This method will ensure database schema is up to date
 
+    // This method will ensure database schema is up to date
+    @SuppressWarnings("unused")
     private static void runLiquibase() throws Exception {
         when(jndiContext
                 .lookup("java:global/zanata/files/document-storage-directory"))

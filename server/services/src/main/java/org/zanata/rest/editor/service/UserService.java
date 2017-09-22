@@ -10,6 +10,8 @@ import javax.ws.rs.core.Response;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -39,6 +41,7 @@ import com.google.common.base.Strings;
 @Path(UserResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class UserService implements UserResource {
+    private static final long serialVersionUID = 6392233836993864627L;
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
@@ -57,6 +60,9 @@ public class UserService implements UserResource {
 
     @Inject
     private IdentityManager identityManager;
+
+    private static final Logger log =
+            LoggerFactory.getLogger(UserService.class);
 
     @Override
     @CheckLoggedIn
@@ -149,7 +155,7 @@ public class UserService implements UserResource {
         if (StringUtils.isBlank(username)) {
             return null;
         }
-        HAccount account = accountDAO.getByUsername(username);
+        HAccount account = accountDAO.getEnabledByUsername(username);
         if (account == null) {
             return null;
         }

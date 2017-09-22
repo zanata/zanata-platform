@@ -39,9 +39,6 @@ import com.google.common.collect.Lists;
 @CheckRole("admin")
 @Beta
 public class IntrospectableObjectMonitorService {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(IntrospectableObjectMonitorService.class);
-
     @Inject
     private Instance<Introspectable> introspectables;
 
@@ -101,7 +98,6 @@ public class IntrospectableObjectMonitorService {
     @XmlRootElement(name = "link")
     public static class LinkRoot extends Link {
 
-        @SuppressWarnings("unused")
         public LinkRoot() {
         }
 

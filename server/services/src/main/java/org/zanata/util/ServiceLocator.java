@@ -21,8 +21,6 @@
 package org.zanata.util;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.inject.Default;
 import javax.naming.Context;
@@ -55,7 +53,7 @@ import java.util.Optional;
  */
 @Default
 public class ServiceLocator implements IServiceLocator {
-    private static Logger log = LoggerFactory.getLogger(ServiceLocator.class);
+    private static final long serialVersionUID = -2684377437438879504L;
 
     protected static final ServiceLocator INSTANCE = new ServiceLocator();
 

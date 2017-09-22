@@ -33,6 +33,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SearchResults implements Serializable {
+    private static final long serialVersionUID = 898787026624323942L;
     public int totalCount;
     public List<SearchResult> results;
     private SearchResult.SearchResultType type;

@@ -44,6 +44,7 @@ import com.google.common.collect.Lists;
 public class CheckPermissionDecisionVoter extends
         AbstractAccessDecisionVoter {
 
+    private static final long serialVersionUID = 6006138422273326142L;
     @Inject
     private ZanataIdentity identity;
 

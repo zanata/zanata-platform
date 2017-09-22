@@ -38,7 +38,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Named("activityLockManager")
 @javax.enterprise.context.ApplicationScoped
 public class ActivityLockManager implements Serializable {
+    private static final long serialVersionUID = -7784287332726360272L;
     private static final int NUM_STRIPES = Runtime.getRuntime().availableProcessors() * 4;
+
     public ActivityLockManager() {
     }
 

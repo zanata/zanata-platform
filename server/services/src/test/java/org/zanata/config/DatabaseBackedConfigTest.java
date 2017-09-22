@@ -103,7 +103,7 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
     @Test
     @InRequestScope
     public void getHelpUrl() {
-        assertThat(databaseBackedConfig.getHelpUrl()).isEqualTo("http://zanata.org/help");
+        assertThat(databaseBackedConfig.getHelpUrl()).isEqualTo("http://docs.zanata.org/en/release/");
     }
 
     @Test

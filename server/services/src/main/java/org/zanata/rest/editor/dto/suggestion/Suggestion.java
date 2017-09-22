@@ -37,6 +37,7 @@ import java.util.List;
         "targetContents", "matchDetails" })
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Suggestion implements Serializable {
+    private static final long serialVersionUID = -6361941557733316653L;
     private final double relevanceScore;
     private final double similarityPercent;
     private final List<String> sourceContents;

@@ -9,6 +9,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class SortingType implements Serializable {
+    private static final long serialVersionUID = -5844701953054739028L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private SortOption selectedSortOption = SortOption.ALPHABETICAL;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")

@@ -70,7 +70,7 @@
       lastChanged="2009-01-14 11:39:00"
       versionNum="1"
       config_key="help.url"
-      config_value="http://zanata.org/help"
+      config_value="http://docs.zanata.org/en/release/"
   />
   <HApplicationConfiguration
       id="10"

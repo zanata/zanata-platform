@@ -164,6 +164,7 @@ timestamps {
   // allocate a node for build+unit tests
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
     // generate logs in colour
     ansicolor {
       try {
@@ -290,7 +291,7 @@ timestamps {
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '753',
+                unstableTotalAll: '300',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
@@ -316,7 +317,7 @@ timestamps {
         sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
-        notify.error(e)
+        notify.error(e.toString())
         currentBuild.result = 'FAILURE'
         // abort the rest of the pipeline
         throw e
@@ -373,6 +374,8 @@ void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
+
     echo "WORKSPACE=${env.WORKSPACE}"
     checkout scm
     // Clean the workspace

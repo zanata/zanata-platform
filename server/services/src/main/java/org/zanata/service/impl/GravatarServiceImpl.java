@@ -13,6 +13,7 @@ import org.zanata.util.HashUtil;
 @Named("gravatarServiceImpl")
 @RequestScoped
 public class GravatarServiceImpl implements GravatarService {
+    private static final long serialVersionUID = 651073648625288166L;
     private static String GRAVATAR_URL = "//www.gravatar.com/avatar/";
 
     @Inject

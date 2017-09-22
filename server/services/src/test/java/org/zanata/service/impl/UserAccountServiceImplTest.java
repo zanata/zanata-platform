@@ -141,10 +141,9 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         HAccount account = em.find(HAccount.class, 3L);
         assertThat(account.getAccountResetPasswordKey()).isNull();
 
+        userAccountService.requestPasswordReset(account.getUsername(),
+                account.getPerson().getEmail());
 
-        HAccountResetPasswordKey resetPasswordKey = userAccountService
-                .requestPasswordReset(account.getUsername(),
-                        account.getPerson().getEmail());
         // Now it has reset password key
         assertThat(account.getAccountResetPasswordKey()).isNotNull()
                 .isInstanceOf(HAccountResetPasswordKey.class);

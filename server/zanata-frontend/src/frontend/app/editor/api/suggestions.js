@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch'
-import { baseRestUrl } from '.'
+import { apiUrl } from '../../config'
 import { chain, sortBy } from 'lodash'
 import { oneLiner } from '../utils/string-utils'
 
@@ -16,7 +16,7 @@ export function getSuggestions (sourceLocale, transLocale, contents) {
   // TODO allow different search types?
   const searchType = 'FUZZY_PLURAL'
 
-  const suggestionsUrl = `${baseRestUrl}/suggestions?from=${sourceLocale}&to=${transLocale}&searchType=${searchType}` // eslint-disable-line max-len
+  const suggestionsUrl = `${apiUrl}/suggestions?from=${sourceLocale}&to=${transLocale}&searchType=${searchType}` // eslint-disable-line max-len
 
   const request = fetch(suggestionsUrl, {
     method: 'POST',

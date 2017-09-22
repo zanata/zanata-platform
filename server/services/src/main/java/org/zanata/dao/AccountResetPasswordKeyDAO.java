@@ -31,6 +31,8 @@ import org.zanata.model.HAccountResetPasswordKey;
 public class AccountResetPasswordKeyDAO extends
         AbstractDAOImpl<HAccountResetPasswordKey, String> {
 
+    private static final long serialVersionUID = -1352452849076617687L;
+
     public AccountResetPasswordKeyDAO() {
         super(HAccountResetPasswordKey.class);
     }

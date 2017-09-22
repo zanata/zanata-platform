@@ -19,8 +19,7 @@ import java.io.Serializable;
 @Named("translationMergeServiceFactory")
 @RequestScoped
 public class TranslationMergeServiceFactory implements Serializable {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(TranslationMergeServiceFactory.class);
+    private static final long serialVersionUID = 5606929166609421365L;
 
     @Inject
     private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;

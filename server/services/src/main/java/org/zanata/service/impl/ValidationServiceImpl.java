@@ -42,6 +42,7 @@ import com.google.common.collect.Lists;
 public class ValidationServiceImpl implements ValidationService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ValidationServiceImpl.class);
+    private static final long serialVersionUID = 9200677945370459931L;
 
     @Inject
     private ProjectDAO projectDAO;

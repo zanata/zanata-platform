@@ -79,7 +79,7 @@ public class VersionDocumentsPage extends VersionBasePage {
 
     public VersionDocumentsPage clickDownloadPotOnDocument(String documentName) {
         WebElement listItem = readyElement(DOCSLIST)
-                .findElement(By.id(documentName));
+                .findElement(By.id("document-" + documentName));
         listItem.findElement(By.className("dropdown__toggle")).click();
         slightPause();
         clickLinkAfterAnimation(

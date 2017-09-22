@@ -33,12 +33,22 @@ import org.zanata.util.PasswordUtil;
 @RequestScoped
 public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     public static final String REGION = "Account";
+    private static final long serialVersionUID = -2710311827560778973L;
+
     public AccountDAO() {
         super(HAccount.class);
     }
 
     public AccountDAO(Session session) {
         super(HAccount.class, session);
+    }
+
+    public @Nullable HAccount getEnabledByUsername(String username) {
+        Criteria cr = getSession().createCriteria(HAccount.class);
+        cr.add(Restrictions.eq("username", username));
+        cr.add(Restrictions.eq("enabled", true));
+        cr.setCacheRegion(REGION).setCacheable(true).setComment("AccountDAO.getEnabledByUsername");
+        return (HAccount) cr.uniqueResult();
     }
 
     public @Nullable HAccount getByUsername(String username) {

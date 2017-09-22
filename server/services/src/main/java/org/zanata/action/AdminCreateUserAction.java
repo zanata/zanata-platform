@@ -77,7 +77,6 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
         this.userAccountService = userAccountService;
     }
 
-    @SuppressWarnings("unused")
     public AdminCreateUserAction() {
     }
 

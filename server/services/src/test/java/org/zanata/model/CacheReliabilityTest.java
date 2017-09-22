@@ -51,9 +51,6 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
     @Test
     public void secondLevelCacheAccessInSameTx() throws Exception {
         EntityManager em = super.newEntityManagerInstance();
-        SessionStatistics sessionStats = getSessionStatistics(em);
-        SecondLevelCacheStatistics cacheStats =
-                getSecondLevelCacheStatistics(em, HPerson.class.getName());
 
         HPerson p = em.find(HPerson.class, 3L);
         assertThat(p.getName()).isEqualTo("Bob Translator");
@@ -68,16 +65,12 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
     @Test
     public void secondLevelCacheAccessAfterCommit() throws Exception {
         EntityManager em = super.newEntityManagerInstance();
-        SessionStatistics sessionStats = getSessionStatistics(em);
-        SecondLevelCacheStatistics cacheStats =
-                getSecondLevelCacheStatistics(em, HPerson.class.getName());
 
         HPerson p = em.find(HPerson.class, 3L);
         assertThat(p.getName()).isEqualTo("Bob Translator");
 
         em.close();
         em = super.newEntityManagerInstance();
-        sessionStats = getSessionStatistics(em);
 
         p = em.find(HPerson.class, 3L);
         // Should still be bob translator
@@ -89,14 +82,8 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
         EntityManager em1 = super.newEntityManagerInstance(), em2 =
                 super.newEntityManagerInstance();
 
-        SecondLevelCacheStatistics stats =
-                getSecondLevelCacheStatistics(em1, HPerson.class.getName());
-
         em1.getTransaction().begin();
         em2.getTransaction().begin();
-
-        SessionStatistics sesStats1 = getSessionStatistics(em1), sesStats2 =
-                getSessionStatistics(em2);
 
         // EM 1
         HPerson bobT = em1.find(HPerson.class, 3L);
@@ -144,20 +131,4 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
         sessFactoryStats.setStatisticsEnabled(true);
         return sessFactoryStats.getSecondLevelCacheStatistics(regionName);
     }
-
-    private void printStats(SecondLevelCacheStatistics stats, int step) {
-        System.out.println("#" + step);
-        if (stats == null) {
-            System.out.println("null");
-            return;
-        }
-        System.out.println(stats);
-        System.out.println("Cache Keys: " + stats.getEntries().keySet());
-        // System.out.println("Cache Values: " + stats.getEntries().values());
-    }
-
-    private void printStats(SessionStatistics stats) {
-        System.out.println("Session Keys: " + stats.getEntityKeys());
-    }
-
 }

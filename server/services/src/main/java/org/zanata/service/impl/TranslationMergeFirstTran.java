@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TranslationMergeFirstTran implements TranslationMergeService {
+    private static final long serialVersionUID = -2380476843887300315L;
     private final int nPlurals;
     private final HLocale hLocale;
     private final HTextFlow textFlow;

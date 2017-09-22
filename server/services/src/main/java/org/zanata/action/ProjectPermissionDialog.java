@@ -74,6 +74,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
         implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ProjectPermissionDialog.class);
+    private static final long serialVersionUID = 2295330844926429686L;
 
     @Inject
     private FacesMessages facesMessages;
@@ -302,7 +303,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
 
     @Override
     public List<HPerson> suggest() {
-        return getPersonDAO().findAllContainingName(getQuery());
+        return getPersonDAO().findAllEnabledContainingName(getQuery());
     }
 
     private PersonDAO getPersonDAO() {

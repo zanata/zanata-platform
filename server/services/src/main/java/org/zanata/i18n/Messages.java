@@ -228,6 +228,8 @@ public class Messages extends AbstractMap<String, String>
     @RequestScoped
     @Named("msgs")
     public static class AutoLocaleMessages extends Messages {
+        private static final long serialVersionUID = 6089689177570724372L;
+
         public AutoLocaleMessages() {
             super(getLocale());
         }

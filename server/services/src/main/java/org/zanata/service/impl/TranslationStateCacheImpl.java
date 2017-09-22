@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
@@ -37,7 +38,6 @@ import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
@@ -66,6 +66,7 @@ import com.google.common.cache.CacheLoader;
 @javax.enterprise.context.ApplicationScoped
 
 public class TranslationStateCacheImpl implements TranslationStateCache {
+    private static final long serialVersionUID = -212573982590368031L;
     private static final String BASE = TranslationStateCacheImpl.class.getName();
 
     private static final String DOC_STATISTIC_CACHE_NAME = BASE
@@ -77,25 +78,28 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String TFT_VALIDATION_CACHE_NAME = BASE
             + ".targetValidationCache";
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private CacheWrapper<DocumentLocaleKey, WordStatistic> documentStatisticCache;
     private final CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private CacheWrapper<DocumentLocaleKey, DocumentStatus> docStatusCache;
     private final CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
     private final CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Zanata
     private final CacheContainer cacheContainer;
-    private final TextFlowDAO textFlowDAO;
     private final TextFlowTargetDAO textFlowTargetDAO;
     private final DocumentDAO documentDAO;
     private final LocaleDAO localeDAO;
 
     // constructor for CDI
     public TranslationStateCacheImpl() {
-        this(null, null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null);
     }
 
     // Constructor for testing
@@ -105,7 +109,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         CacheLoader<DocumentLocaleKey, DocumentStatus> docStatsLoader,
         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader,
         @Zanata CacheContainer cacheContainer,
-        TextFlowDAO textFlowDAO,
         TextFlowTargetDAO textFlowTargetDAO,
         DocumentDAO documentDAO,
         LocaleDAO localeDAO) {
@@ -113,7 +116,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         this.docStatusLoader = docStatsLoader;
         this.targetValidationLoader = targetValidationLoader;
         this.cacheContainer = cacheContainer;
-        this.textFlowDAO = textFlowDAO;
         this.textFlowTargetDAO = textFlowTargetDAO;
         this.documentDAO = documentDAO;
         this.localeDAO = localeDAO;

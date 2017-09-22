@@ -31,6 +31,7 @@ import java.io.Serializable;
  */
 public class OpenIdAuthenticationResult implements Serializable {
 
+    private static final long serialVersionUID = 3266536726847576460L;
     /**
      * Represents an externally authenticated username (ie a username for the
      * external system).

@@ -1,8 +1,5 @@
 package org.zanata.rest;
 
-
-import org.zanata.rest.service.RestResource;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -12,7 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-public interface SampleDataResource extends RestResource {
+public interface SampleDataResource {
 
 
     @PUT

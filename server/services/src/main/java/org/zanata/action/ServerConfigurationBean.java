@@ -60,7 +60,7 @@ public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
     @Inject
     private FacesMessages facesMessages;
-    public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
+    public static final String DEFAULT_HELP_URL = "http://docs.zanata.org/en/release/";
     public static final String DEFAULT_TERM_OF_USE_URL =
             "http://zanata.org/terms";
     @Inject

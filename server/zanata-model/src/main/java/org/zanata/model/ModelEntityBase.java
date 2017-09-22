@@ -171,7 +171,6 @@ public class ModelEntityBase implements Serializable {
 
     public static class EntityListener {
 
-        @SuppressWarnings("unused")
         @PrePersist
         private void onPersist(ModelEntityBase meb) {
             Date now = new Date();
@@ -183,7 +182,6 @@ public class ModelEntityBase implements Serializable {
             }
         }
 
-        @SuppressWarnings("unused")
         @PostPersist
         private void postPersist(ModelEntityBase meb) {
             if (meb.logPersistence()) {
@@ -192,13 +190,11 @@ public class ModelEntityBase implements Serializable {
             }
         }
 
-        @SuppressWarnings("unused")
         @PreUpdate
         private void onUpdate(ModelEntityBase meb) {
             meb.lastChanged = new Date();
         }
 
-        @SuppressWarnings("unused")
         @PreRemove
         private void onRemove(ModelEntityBase meb) {
             if (meb.logPersistence()) {

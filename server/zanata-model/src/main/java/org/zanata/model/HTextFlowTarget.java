@@ -792,10 +792,12 @@ public class HTextFlowTarget extends ModelEntityBase
         this.automatedEntry = automatedEntry;
     }
 
+    @SuppressWarnings("unused")
     private void setOldVersionNum(final Integer oldVersionNum) {
         this.oldVersionNum = oldVersionNum;
     }
 
+    @SuppressWarnings("unused")
     private void setInitialState(final HTextFlowTargetHistory initialState) {
         this.initialState = initialState;
     }

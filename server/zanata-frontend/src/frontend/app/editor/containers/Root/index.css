@@ -1,18 +1,18 @@
 /** @define Editor; use strict */
 
 :root {
-  --Editor-rhythm                         : 1.5rem;
-  --Editor-transition-ease                : cubic-bezier(.175, .885, .320, 1.275);
-  --Editor-color-status-bg                : color(#416988 tint(82%));
-  --Editor-color-translation-bg           : #ECEFF0;
-  --Editor-loader-z-index                 : 900;
-  --Editor-panel-z-index                  : 200;
-  --Editor-suggestions-header-z-index     : 300;
-  --Editor-suggestionsSearch-z-index      : 300;
+  --Editor-rhythm: 1.5rem;
+  --Editor-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
+  --Editor-color-status-bg: color(#416988 tint(82%));
+  --Editor-color-translation-bg: #ECEFF0;
+  --Editor-loader-z-index: 900;
+  --Editor-panel-z-index: 200;
+  --Editor-suggestions-header-z-index: 300;
+  --Editor-suggestionsSearch-z-index: 300;
   --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
-  --Editor-color-light                    : #90b8c5;
-  --Editor-color-dark                     : #20718a;
-  --Editor-color-bright                   : #1ba7d9;
+  --Editor-color-light: #90b8c5;
+  --Editor-color-dark: #20718a;
+  --Editor-color-bright: #1ba7d9;
 }
 
 .stretched-box {
@@ -260,7 +260,7 @@ li.docName span.ellipsis {
   bottom: 0;
   left: 0;
   overflow: hidden;
-  box-shadow: 0 -calc(var(--Editor-rhythm) * .125) var(--Header-rhythm) rgba(0,0,0,.1);
+  box-shadow: 0 -calc(var(--Editor-rhythm) *.125) var(--Header-rhythm) rgba(0, 0, 0, .1);
   /*transform: translateY(100%);*/
 }
 
@@ -269,7 +269,7 @@ li.docName span.ellipsis {
   top: 0;
   left: 0;
   right: 0;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   z-index: var(--Editor-suggestions-header-z-index);
   user-select: none;
 }
@@ -309,7 +309,7 @@ li.docName span.ellipsis {
 }
 
 .modal-title {
-  font-weight:300;
+  font-weight: 300;
 }
 
 h4.modal-title {
@@ -340,11 +340,11 @@ h4.modal-title {
   color: #333;
 }
 
-.row span.s1, .row span.s0, .row span.n1  {
+.row span.s1, .row span.s0, .row span.n1 {
   vertical-align: sub;
 }
 
-.btn-group-xs>.btn, .btn-xs {
+.btn-group-xs > .btn, .btn-xs {
   padding: 1px 5px;
   font-size: 12px;
   line-height: 1.5;
@@ -444,6 +444,11 @@ ul.source-infolist {
   height: 6.192rem;
 }
 
+nav.flex.flex-wrapper {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
 .nav {
   padding-left: 0;
   margin-bottom: 0;
@@ -517,9 +522,8 @@ ul.source-infolist {
 }
 
 ul.u-listInline li .u-textSuccess, ul.u-listInline li .u-textSecondary,
-ul.u-listInline li .u-textHighlight
-{
-  width:120%;
+ul.u-listInline li .u-textHighlight {
+  width: 120%;
 }
 
 /* bootstrap override */
@@ -555,63 +559,23 @@ ul.u-listInline li .u-textHighlight
   float: right;
 }
 
-li.inline-search-list {
-  display: inline-flex;
-  width: 25em;
-  margin-right: 1em;
-}
-
-li.inline-search-list span {
-  width: 60%;
-  color: #20718A;
-}
-
-/* advanced search panel */
-.InputEditorSearch  .panel.panel-default {
-  margin-bottom: 0.5em !important;
-  position: absolute;
-  width: 27em;
-}
-
-.InputEditorSearch {
-  width: 18em;
-  margin-left: 0.75em;
-  display: inline-flex;
-  margin-top: 0.15em;
-  font-size: 0.875em;
-}
-
-.InputEditorSearch .help-icon button {
-  vertical-align: sub;
-  margin-left: 0.375em;
-}
-
-.InputEditorSearch .help-icon button span {
-  vertical-align: bottom;
-}
-
-.InputGroup--wide {
-  width: inherit !important;
-}
-
 .flex {
   display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .flex ul.u-listHorizontal {
   z-index: 1000;
 }
 
+.control-header-bg {
+  background-color: #fff;
+}
+
+/* FIXME z-index for Header is already defined */
 .Header {
   z-index: 301;
-}
-
-.InputGroup-addon {
-  vertical-align: baseline;
-}
-
-#editor-header .InputGroup--outlined {
-  width: 18em;
 }
 
 button.close {
@@ -646,80 +610,22 @@ button.close:focus, button.close:hover, button.close:active:focus {
   color: #f00;
 }
 
-li.inline-search-list {
-  display: inline-flex;
-  width: 25em;
-  margin-right: 1em;
-}
-
-span.u-textNeutral span.s2, a.Link--Neutral span.s2 {
-  vertical-align:baseline !important;
-}
-
-li.inline-search-list span {
-  width: 60%;
-  color: #20718A;
-}
-
-/* advanced search panel */
-.InputEditorSearch  .panel.panel-default {
-  margin-bottom: 0.5em !important;
-  position: absolute;
-  width: 27em;
-}
-
-.InputEditorSearch {
-  width: 18em;
-  margin-left: 0.75em;
-  display: inline-flex;
-  margin-top: 0.15em;
-  font-size: 0.875em;
-}
-
-.InputEditorSearch .help-icon button {
-  vertical-align: sub;
-  margin-left: 0.375em;
-}
-
-.InputEditorSearch .help-icon button span {
-  vertical-align: bottom;
-}
-
-.InputGroup--wide {
-  width: inherit !important;
-}
-
-.flex {
-  display: flex;
-}
-
-.flex ul.u-listHorizontal {
-  z-index: 1000;
-}
-
-.Header {
-  z-index: 301;
-}
-
-.InputGroup-addon {
-  vertical-align: baseline;
-}
-
-#editor-header .InputGroup--outlined {
-  width: 18em;
-}
-
-span.u-textNeutral span.s2, a.Link--Neutral span.s2 {
-  vertical-align:baseline !important;
-}
-
+/* This rule looks fragile - 5 different things needed to trigger it, and they
+ * do not look related to the adjustment:
+ *  .Link--neutral is just color
+ *  .row is just displaying as table cell
+ *  .u-ltemd-hidden is just hiding on non-large screens
+ *
+ * FIXME use a utility class for this adjustment instead. Probably
+ *   .u-vAlignSuper, which could go next to .u-vAlignMiddle in utils-display */
 button.Link--neutral .row span.u-ltemd-hidden {
-  vertical-align:super;
+  vertical-align: super;
 }
 
 label span.n1 {
   vertical-align: middle !important;
 }
+
 /**
  * Media Queries
  */
@@ -732,17 +638,11 @@ label span.n1 {
 
 @media (--gtemd-viewport) {
   .Editor-translations {
-    background:
-      linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
+    background: linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
       linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
-    background-position:
-      center,
-      right;
-    background-size:
-      var(--rhythm) 100%,
-      50% 100%;
-    background-repeat:
-      no-repeat;
+    background-position: center, right;
+    background-size: var(--rhythm) 100%, 50% 100%;
+    background-repeat: no-repeat;
   }
 }
 
@@ -750,31 +650,35 @@ label span.n1 {
   .TransUnit-heading {
     padding-left: 1.5em;
   }
+
   td.long-string {
     display: table-row !important;
     padding-bottom: 0 !important;
     max-width: 10em !important;
   }
+
   .long-string span {
     max-width: 9.5em !important;
   }
 }
 
-@media (min-width:741px) {
+@media (min-width: 741px) {
   .TransUnit-heading {
     padding-left: 0 !important;
   }
+  .control-header-bg {
+    background-color: transparent;
+  }
 }
 
-
-@media (max-width:909px) {
+@media (max-width: 909px) {
 
   .info-icon {
     text-align: left;
   }
 
   .hide-small {
-    display:none;
+    display: none;
     visibility: hidden;
   }
 
@@ -815,7 +719,7 @@ label span.n1 {
 
 }
 
-@media (min-width:910px) {
+@media (min-width: 910px) {
   .hide-mdplus {
     display: none;
     visibility: hidden;
@@ -848,10 +752,11 @@ label span.n1 {
   }
 }
 
-@media (min-width:1100px) {
-  td.long-string  {
+@media (min-width: 1100px) {
+  td.long-string {
     max-width: 10em;
   }
+
   .long-string span {
     max-width: 9.5em;
   }

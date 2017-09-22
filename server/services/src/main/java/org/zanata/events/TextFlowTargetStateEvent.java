@@ -56,6 +56,7 @@ public final class TextFlowTargetStateEvent {
 
     public static final class TextFlowTargetStateChange
             implements Serializable {
+        private static final long serialVersionUID = 2154746663366811565L;
         private final Long textFlowId;
         private final Long textFlowTargetId;
         private final ContentState newState;

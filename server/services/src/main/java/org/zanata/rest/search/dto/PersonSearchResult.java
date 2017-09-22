@@ -31,6 +31,7 @@ import org.zanata.rest.dto.SearchResult;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class PersonSearchResult extends SearchResult {
+    private static final long serialVersionUID = -6044936235006900748L;
     private String avatarUrl;
 
     public PersonSearchResult() {

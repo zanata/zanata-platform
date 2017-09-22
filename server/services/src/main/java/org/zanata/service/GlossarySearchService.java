@@ -28,13 +28,14 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Handles searching and result collation for glossary terms.
  */
-public interface GlossarySearchService {
+public interface GlossarySearchService extends Serializable {
 
     /**
      * Find glossary entries based on the words in some search text.

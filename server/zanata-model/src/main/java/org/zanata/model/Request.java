@@ -122,22 +122,27 @@ public class Request extends TimeEntityBase {
         return this.actor;
     }
 
+    @SuppressWarnings("unused")
     private void setState(final RequestState state) {
         this.state = state;
     }
 
+    @SuppressWarnings("unused")
     private void setRequestType(final RequestType requestType) {
         this.requestType = requestType;
     }
 
+    @SuppressWarnings("unused")
     private void setComment(final String comment) {
         this.comment = comment;
     }
 
+    @SuppressWarnings("unused")
     private void setRequester(final HAccount requester) {
         this.requester = requester;
     }
 
+    @SuppressWarnings("unused")
     private void setActor(final HAccount actor) {
         this.actor = actor;
     }

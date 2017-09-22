@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
-import org.zanata.page.projectversion.VersionDocumentsPage;
-import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 import java.io.File;
