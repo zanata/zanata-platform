@@ -2,6 +2,7 @@
  * Actions related to the glossary.
  */
 
+import { createAction } from 'redux-actions'
 import { debounce, isEmpty } from 'lodash'
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
 
@@ -32,6 +33,10 @@ const dispatchFindGlossaryTermsWhenInactive = debounce(
       dispatch(findGlossaryTerms(searchText))
     }, 250)
 
+/* Action to set the current glossary search text. Does not trigger a search. */
+export const glossarySearchTextChange =
+  createAction(GLOSSARY_SEARCH_TEXT_CHANGE)
+
 /* Update glossary search text in state and trigger a search when text stops
  * being entered. */
 export function glossarySearchTextEntered (searchText) {
@@ -53,14 +58,6 @@ export function findGlossaryTermsByPhraseId (phraseId) {
     }, TIMES_TO_POLL_FOR_PHRASE_DETAIL, () => {
       console.error('No phrase detail for glossary search after 20 tries.')
     })
-  }
-}
-
-/* Action to set the current glossary search text. Does not trigger a search. */
-export function glossarySearchTextChange (searchText) {
-  return {
-    type: GLOSSARY_SEARCH_TEXT_CHANGE,
-    text: searchText
   }
 }
 
