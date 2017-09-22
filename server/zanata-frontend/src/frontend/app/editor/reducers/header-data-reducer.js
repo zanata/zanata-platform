@@ -50,14 +50,14 @@ const gravatarUrl = (hash, size) => {
 export default (state = defaultState, action) => {
   switch (action.type) {
     case HEADER_DATA_FETCHED:
-      const docs = prepareDocs(action.data.documents)
-      const locales = prepareLocales(action.data.locales)
-      const versionSlug = action.data.versionSlug
-      const projectSlug = action.data.projectInfo.id
-      const projectName = action.data.projectInfo.name
-      const name = action.data.myInfo.name
+      const docs = prepareDocs(action.payload.documents)
+      const locales = prepareLocales(action.payload.locales)
+      const versionSlug = action.payload.versionSlug
+      const projectSlug = action.payload.projectInfo.id
+      const projectName = action.payload.projectInfo.name
+      const name = action.payload.myInfo.name
       // FIXME server is providing myInfo.imageUrl not gravatarHash
-      const gravatarHash = action.data.myInfo.gravatarHash
+      const gravatarHash = action.payload.myInfo.gravatarHash
 
       return updateObject(state, {
         user: {
