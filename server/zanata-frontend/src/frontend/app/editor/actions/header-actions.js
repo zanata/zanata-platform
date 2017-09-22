@@ -75,14 +75,7 @@ const containsLocale = (localeList, localeId) => {
   return hasCaseInsensitiveMatchingProp(localeList, 'localeId', localeId)
 }
 
-export function selectDoc (docId) {
-  return {
-    type: DOCUMENT_SELECTED,
-    data: {
-      selectedDocId: docId
-    }
-  }
-}
+export const selectDoc = createAction(DOCUMENT_SELECTED)
 
 export function selectLocale (localeId) {
   return {
