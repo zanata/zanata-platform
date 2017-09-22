@@ -94,12 +94,7 @@ export function documentListFetched (projectSlug, versionSlug, documents) {
   }
 }
 
-export function setSidebarVisibility (visible) {
-  return {
-    type: SET_SIDEBAR_VISIBILITY,
-    visible
-  }
-}
+export const setSidebarVisibility = createAction(SET_SIDEBAR_VISIBILITY)
 
 export const toggleShowSettings = createAction(TOGGLE_SHOW_SETTINGS)
 export const hideSettings = createAction(HIDE_SETTINGS)
