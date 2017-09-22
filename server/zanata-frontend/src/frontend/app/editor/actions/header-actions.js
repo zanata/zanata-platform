@@ -12,7 +12,6 @@ import {
   TOGGLE_INFO_PANEL,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
-  FETCH_FAILED,
   UI_LOCALES_FETCHED,
   CHANGE_UI_LOCALE,
   DOCUMENT_SELECTED,
@@ -30,13 +29,10 @@ export const toggleInfoPanel = createAction(TOGGLE_INFO_PANEL)
 export const toggleHeader = createAction(TOGGLE_HEADER)
 export const toggleKeyboardShortcutsModal = createAction(TOGGLE_KEY_SHORTCUTS)
 
-const fetchFailed = (error) => {
-  return {type: FETCH_FAILED, error: error}
-}
-
 const unwrapResponse = (dispatch, errorMsg, response) => {
   if (response.status >= 400) {
-    dispatch(fetchFailed(new Error(errorMsg)))
+    // FIXME replace with api middleware and use standard error handling
+    // new Error(errorMsg))
   }
   return response.json()
 }
@@ -54,7 +50,8 @@ export function fetchUiLocales () {
         .then(uiLocales => dispatch(uiLocaleFetched(uiLocales)))
         .catch(err => {
           console.error('Failed to fetch UI locales', err)
-          return {type: FETCH_FAILED, error: err}
+          // FIXME replace with api middleware and use standard error handling
+          // return {type: FETCH_FAILED, error: err}
         })
   }
 }
@@ -222,7 +219,8 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
         })
         .catch(err => {
           console.error('Failed to fetch all header info', err)
-          return {type: FETCH_FAILED, error: err}
+          // FIXME replace with api middleware and use standard error handling
+          // return {type: FETCH_FAILED, error: err}
         })
   }
 }
