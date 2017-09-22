@@ -140,7 +140,7 @@ const ui = (state = defaultState, action) => {
        */
       return update({
         selectedUiLocale: {
-          $set: action.data
+          $set: action.payload
         }
       })
 

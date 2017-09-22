@@ -48,12 +48,7 @@ export function fetchUiLocales () {
   }
 }
 
-export function changeUiLocale (locale) {
-  return {
-    type: CHANGE_UI_LOCALE,
-    data: locale
-  }
-}
+export const changeUiLocale = createAction(CHANGE_UI_LOCALE)
 
 // TODO check if this is needed
 export const FETCHING = 'FETCHING'

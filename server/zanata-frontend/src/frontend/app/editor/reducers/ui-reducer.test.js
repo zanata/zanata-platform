@@ -63,7 +63,7 @@ describe('ui-reducer test', () => {
   it('can change UI locale', () => {
     const withLocale = uiReducer(undefined, {
       type: CHANGE_UI_LOCALE,
-      data: 'jp'
+      payload: 'jp'
     })
     expect(withLocale.selectedUiLocale).toEqual('jp')
   })
