@@ -76,15 +76,7 @@ const containsLocale = (localeList, localeId) => {
 }
 
 export const selectDoc = createAction(DOCUMENT_SELECTED)
-
-export function selectLocale (localeId) {
-  return {
-    type: LOCALE_SELECTED,
-    data: {
-      selectedLocaleId: localeId
-    }
-  }
-}
+export const selectLocale = createAction(LOCALE_SELECTED)
 
 export function statsFetched (stats) {
   return {
