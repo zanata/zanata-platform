@@ -152,9 +152,7 @@ describe('header-data-reducer test', () => {
     })
     const selected = headerDataReducer(withData, {
       type: LOCALE_SELECTED,
-      data: {
-        selectedLocaleId: 'de'
-      }
+      payload: 'de'
     })
     expect(selected.context.selectedLocale).toEqual('de')
   })
