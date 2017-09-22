@@ -11,7 +11,7 @@ export const GLOSSARY_TERMS_FAILURE = 'GLOSSARY_TERMS_FAILURE'
 /* Indicates the index in glossary results that should have details displayed */
 export const SET_GLOSSARY_DETAILS_INDEX = 'SET_GLOSSARY_DETAILS_INDEX'
 /* Set whether glossary details modal is showing */
-export const SHOW_GLOSSARY_DETAILS = Symbol('SHOW_GLOSSARY_DETAILS')
+export const SHOW_GLOSSARY_DETAILS = 'SHOW_GLOSSARY_DETAILS'
 
 /* API request for glossary details has started. */
 export const GLOSSARY_DETAILS_REQUEST = Symbol('GLOSSARY_DETAILS_REQUEST')

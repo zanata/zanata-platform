@@ -105,13 +105,7 @@ function findGlossaryTerms (searchText) {
 }
 
 const setGlossaryDetailsIndex = createAction(SET_GLOSSARY_DETAILS_INDEX)
-
-export function showGlossaryDetails (show) {
-  return {
-    type: SHOW_GLOSSARY_DETAILS,
-    payload: { show }
-  }
-}
+export const showGlossaryDetails = createAction(SHOW_GLOSSARY_DETAILS)
 
 /**
  * Show the glossary details modal and fetch details from the API.
