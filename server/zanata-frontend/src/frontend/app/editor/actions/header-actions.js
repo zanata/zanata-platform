@@ -1,3 +1,4 @@
+import { createAction } from 'redux-actions'
 import {
   fetchStatistics,
   fetchLocales,
@@ -21,11 +22,7 @@ import {
 import { some, curry, isEmpty } from 'lodash'
 import { equals } from '../utils/string-utils'
 
-export function toggleGlossary () {
-  return {
-    type: TOGGLE_GLOSSARY
-  }
-}
+export const toggleGlossary = createAction(TOGGLE_GLOSSARY)
 
 export function toggleHeader () {
   return {
