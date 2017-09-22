@@ -114,7 +114,7 @@ export default (state = defaultState, action) => {
       return updateObject(state, {
         context: {
           selectedLocale: {
-            $set: action.data.selectedLocaleId
+            $set: action.payload
           }
         }
       })
