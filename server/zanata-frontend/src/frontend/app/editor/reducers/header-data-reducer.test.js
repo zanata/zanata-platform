@@ -161,7 +161,7 @@ describe('header-data-reducer test', () => {
     const withStats = headerDataReducer(undefined, {
       type: STATS_FETCHED,
       // stats pre-preparation
-      data: [
+      payload: [
         {
           approved: 0,
           fuzzy: 44,

@@ -120,7 +120,7 @@ export default (state = defaultState, action) => {
       })
 
     case STATS_FETCHED:
-      const counts = prepareStats(action.data)
+      const counts = prepareStats(action.payload)
       return updateObject(state, {
         context: {
           selectedDoc: {
