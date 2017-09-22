@@ -13,13 +13,9 @@ import {
 export const routingParamsChanged = createAction(ROUTING_PARAMS_CHANGED)
 
 /**
- * Every dropdown should have a reference-unique key. A symbol is recommended
- * since it is unique with reference equality checks and can have a meaningful
- * label.
+ * Every dropdown should have a reference-unique key.
  */
-export function toggleDropdown (dropdownKey) {
-  return { type: TOGGLE_DROPDOWN, key: dropdownKey }
-}
+export const toggleDropdown = createAction(TOGGLE_DROPDOWN)
 
 export function openDropdown (dropdownKey) {
   return { type: OPEN_DROPDOWN, key: dropdownKey }
