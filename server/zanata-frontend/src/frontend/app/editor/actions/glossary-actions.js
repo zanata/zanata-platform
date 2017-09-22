@@ -61,14 +61,7 @@ export function findGlossaryTermsByPhraseId (phraseId) {
   }
 }
 
-export function copyGlossaryTerm (termTranslation) {
-  return {
-    type: COPY_GLOSSARY_TERM,
-    payload: {
-      termTranslation
-    }
-  }
-}
+export const copyGlossaryTerm = createAction(COPY_GLOSSARY_TERM)
 
 const MAX_GLOSSARY_TERMS = 15
 
