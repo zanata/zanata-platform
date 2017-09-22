@@ -77,12 +77,8 @@ const containsLocale = (localeList, localeId) => {
 
 export const selectDoc = createAction(DOCUMENT_SELECTED)
 export const selectLocale = createAction(LOCALE_SELECTED)
-
 export const statsFetched = createAction(STATS_FETCHED)
-
-export function headerDataFetched (data) {
-  return {type: HEADER_DATA_FETCHED, data: data}
-}
+export const headerDataFetched = createAction(HEADER_DATA_FETCHED)
 
 // this is a get all action that will wait until all promises are resovled
 export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
