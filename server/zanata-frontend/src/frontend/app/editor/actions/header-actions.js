@@ -24,12 +24,7 @@ import { equals } from '../utils/string-utils'
 
 export const toggleGlossary = createAction(TOGGLE_GLOSSARY)
 export const toggleHeader = createAction(TOGGLE_HEADER)
-
-export function toggleKeyboardShortcutsModal () {
-  return {
-    type: TOGGLE_KEY_SHORTCUTS
-  }
-}
+export const toggleKeyboardShortcutsModal = createAction(TOGGLE_KEY_SHORTCUTS)
 
 const fetchFailed = (error) => {
   return {type: FETCH_FAILED, error: error}
