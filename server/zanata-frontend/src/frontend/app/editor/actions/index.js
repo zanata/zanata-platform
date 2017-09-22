@@ -16,14 +16,8 @@ export const routingParamsChanged = createAction(ROUTING_PARAMS_CHANGED)
  * Every dropdown should have a reference-unique key.
  */
 export const toggleDropdown = createAction(TOGGLE_DROPDOWN)
-
-export function openDropdown (dropdownKey) {
-  return { type: OPEN_DROPDOWN, key: dropdownKey }
-}
-
-export function closeDropdown () {
-  return { type: CLOSE_DROPDOWN }
-}
+export const openDropdown = createAction(OPEN_DROPDOWN)
+export const closeDropdown = createAction(CLOSE_DROPDOWN)
 
 /**
  * Fetch the list of documents for the current project-version
