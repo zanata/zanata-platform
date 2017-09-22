@@ -1,3 +1,4 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import contextReducer from './context-reducer'
@@ -22,7 +23,7 @@ describe('context-reducer test', () => {
     const updated = contextReducer(initial, {
       type: ROUTING_PARAMS_CHANGED,
       // Note: the reducer does not check for valid internal structure of params
-      params: {
+      payload: {
         a: 'a',
         b: 'B',
         d: 'd'
