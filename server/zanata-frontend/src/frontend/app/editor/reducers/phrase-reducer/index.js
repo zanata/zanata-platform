@@ -111,7 +111,7 @@ export const phraseReducer = (state = defaultState, action) => {
 
     case COPY_GLOSSARY_TERM:
       return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
-        return insertTextAtRange(phrase, action.payload.termTranslation,
+        return insertTextAtRange(phrase, action.payload,
           state.selectedTextRange)
       }})
 

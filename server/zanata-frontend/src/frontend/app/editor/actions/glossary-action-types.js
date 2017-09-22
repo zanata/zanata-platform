@@ -1,5 +1,5 @@
 export const GLOSSARY_SEARCH_TEXT_CHANGE = 'GLOSSARY_SEARCH_TEXT_CHANGE'
-export const COPY_GLOSSARY_TERM = Symbol('COPY_GLOSSARY_TERM')
+export const COPY_GLOSSARY_TERM = 'COPY_GLOSSARY_TERM'
 /* API request for glossary search has started. */
 export const GLOSSARY_TERMS_REQUEST = Symbol('GLOSSARY_TERMS_REQUEST')
 /* API request for glossary search has completed successfully. */

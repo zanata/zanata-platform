@@ -169,10 +169,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const copied = phraseReducer(withTextSelection, {
-      type: COPY_GLOSSARY_TERM,
-      payload: {
-        termTranslation: 'TERM'
-      }
+      type: COPY_GLOSSARY_TERM, payload: 'TERM'
     })
     expect(copied.detail).toEqual({
       'p01': {
