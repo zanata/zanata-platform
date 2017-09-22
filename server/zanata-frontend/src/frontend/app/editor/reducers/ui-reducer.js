@@ -92,7 +92,7 @@ const ui = (state = defaultState, action) => {
       })
 
     case UI_LOCALES_FETCHED:
-      const locales = prepareLocales(action.data)
+      const locales = prepareLocales(action.payload)
       return update({
         uiLocales: {
           $set: locales

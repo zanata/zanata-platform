@@ -33,12 +33,8 @@ const unwrapResponse = (dispatch, errorMsg, response) => {
   return response.json()
 }
 
-export function uiLocaleFetched (uiLocales) {
-  return {
-    type: UI_LOCALES_FETCHED,
-    data: uiLocales
-  }
-}
+export const uiLocaleFetched = createAction(UI_LOCALES_FETCHED)
+
 export function fetchUiLocales () {
   return (dispatch) => {
     fetchLocales()
