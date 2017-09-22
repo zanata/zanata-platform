@@ -1,4 +1,5 @@
 import { fetchDocuments } from '../api'
+import { createAction } from 'redux-actions'
 import {
   ROUTING_PARAMS_CHANGED,
   SET_SIDEBAR_VISIBILITY,
@@ -7,14 +8,7 @@ import {
   CLOSE_DROPDOWN
 } from './action-types'
 
-export function routingParamsChanged (newParams) {
-  // TODO pahuang should we start fetching thing here?
-
-  return {
-    type: ROUTING_PARAMS_CHANGED,
-    params: newParams
-  }
-}
+export const routingParamsChanged = createAction(ROUTING_PARAMS_CHANGED)
 
 /**
  * Every dropdown should have a reference-unique key. A symbol is recommended
