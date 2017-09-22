@@ -23,12 +23,7 @@ import { some, curry, isEmpty } from 'lodash'
 import { equals } from '../utils/string-utils'
 
 export const toggleGlossary = createAction(TOGGLE_GLOSSARY)
-
-export function toggleHeader () {
-  return {
-    type: TOGGLE_HEADER
-  }
-}
+export const toggleHeader = createAction(TOGGLE_HEADER)
 
 export function toggleKeyboardShortcutsModal () {
   return {
