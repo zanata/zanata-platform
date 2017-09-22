@@ -6,7 +6,7 @@ export const GLOSSARY_TERMS_REQUEST = 'GLOSSARY_TERMS_REQUEST'
 /* API request for glossary search has completed successfully. */
 export const GLOSSARY_TERMS_SUCCESS = 'GLOSSARY_TERMS_SUCCESS'
 /* API request for glossary search has failed. */
-export const GLOSSARY_TERMS_FAILURE = Symbol('GLOSSARY_TERMS_FAILURE')
+export const GLOSSARY_TERMS_FAILURE = 'GLOSSARY_TERMS_FAILURE'
 
 /* Indicates the index in glossary results that should have details displayed */
 export const SET_GLOSSARY_DETAILS_INDEX = Symbol('SET_GLOSSARY_DETAILS_INDEX')
