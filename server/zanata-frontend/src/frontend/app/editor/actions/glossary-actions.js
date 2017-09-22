@@ -145,9 +145,7 @@ function getGlossaryDetails (term) {
             type: GLOSSARY_DETAILS_SUCCESS,
             meta: { sourceIdList }
           },
-          {
-            type: GLOSSARY_DETAILS_FAILURE
-          }
+          GLOSSARY_DETAILS_FAILURE
         ]
       }
     })
