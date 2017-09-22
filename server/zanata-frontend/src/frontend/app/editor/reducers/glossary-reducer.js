@@ -104,7 +104,7 @@ const glossary = (state = defaultState, action) => {
     case SET_GLOSSARY_DETAILS_INDEX:
       return update({
         details: {
-          resultIndex: {$set: action.payload.index}
+          resultIndex: {$set: action.payload}
         }
       })
 
