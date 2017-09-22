@@ -50,9 +50,6 @@ export function fetchUiLocales () {
 
 export const changeUiLocale = createAction(CHANGE_UI_LOCALE)
 
-// TODO check if this is needed
-export const FETCHING = 'FETCHING'
-
 const decodeDocId = (docId) => {
   return docId ? docId.replace(/,/g, '/') : docId
 }
