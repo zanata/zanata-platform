@@ -104,12 +104,7 @@ function findGlossaryTerms (searchText) {
   }
 }
 
-function setGlossaryDetailsIndex (index) {
-  return {
-    type: SET_GLOSSARY_DETAILS_INDEX,
-    payload: { index }
-  }
-}
+const setGlossaryDetailsIndex = createAction(SET_GLOSSARY_DETAILS_INDEX)
 
 export function showGlossaryDetails (show) {
   return {

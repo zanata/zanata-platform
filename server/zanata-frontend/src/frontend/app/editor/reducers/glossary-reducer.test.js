@@ -196,9 +196,7 @@ describe('glossary-reducer test', () => {
     const initial = glossaryReducer(undefined, { type: 'any' })
     const withIndex = glossaryReducer(initial, {
       type: SET_GLOSSARY_DETAILS_INDEX,
-      payload: {
-        index: 5
-      }
+      payload: 5
     })
     expect(initial.details.resultIndex).toEqual(0)
     expect(withIndex.details.resultIndex).toEqual(5)
