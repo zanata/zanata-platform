@@ -104,7 +104,7 @@ export default (state = defaultState, action) => {
         context: {
           selectedDoc: {
             id: {
-              $set: action.data.selectedDocId
+              $set: action.payload
             }
           }
         }
