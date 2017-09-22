@@ -16,6 +16,6 @@ export const SHOW_GLOSSARY_DETAILS = 'SHOW_GLOSSARY_DETAILS'
 /* API request for glossary details has started. */
 export const GLOSSARY_DETAILS_REQUEST = 'GLOSSARY_DETAILS_REQUEST'
 /* API request for glossary details has completed successfully. */
-export const GLOSSARY_DETAILS_SUCCESS = Symbol('GLOSSARY_DETAILS_SUCCESS')
+export const GLOSSARY_DETAILS_SUCCESS = 'GLOSSARY_DETAILS_SUCCESS'
 /* API request for glossary details has failed. */
 export const GLOSSARY_DETAILS_FAILURE = Symbol('GLOSSARY_DETAILS_FAILURE')
