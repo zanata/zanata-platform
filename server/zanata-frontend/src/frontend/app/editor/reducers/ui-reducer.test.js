@@ -101,7 +101,7 @@ describe('ui-reducer test', () => {
   it('can record fetched UI locales', () => {
     const withUiLocales = uiReducer(undefined, {
       type: UI_LOCALES_FETCHED,
-      data: [
+      payload: [
         {
           localeId: 'en-US',
           displayName: 'English (United States)'
