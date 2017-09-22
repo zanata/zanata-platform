@@ -4,7 +4,7 @@ export const COPY_GLOSSARY_TERM = 'COPY_GLOSSARY_TERM'
 /* API request for glossary search has started. */
 export const GLOSSARY_TERMS_REQUEST = 'GLOSSARY_TERMS_REQUEST'
 /* API request for glossary search has completed successfully. */
-export const GLOSSARY_TERMS_SUCCESS = Symbol('GLOSSARY_TERMS_SUCCESS')
+export const GLOSSARY_TERMS_SUCCESS = 'GLOSSARY_TERMS_SUCCESS'
 /* API request for glossary search has failed. */
 export const GLOSSARY_TERMS_FAILURE = Symbol('GLOSSARY_TERMS_FAILURE')
 
