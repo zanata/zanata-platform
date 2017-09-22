@@ -50,11 +50,11 @@ describe('ui-reducer test', () => {
   it('can set sidebar visibility', () => {
     const visible = uiReducer(undefined, {
       type: SET_SIDEBAR_VISIBILITY,
-      visible: true
+      payload: true
     })
     const invisible = uiReducer(visible, {
       type: SET_SIDEBAR_VISIBILITY,
-      visible: false
+      payload: false
     })
     expect(visible.panels.sidebar.visible).toEqual(true)
     expect(invisible.panels.sidebar.visible).toEqual(false)

@@ -148,7 +148,7 @@ const ui = (state = defaultState, action) => {
       return update({
         panels: {
           sidebar: {
-            visible: {$set: action.visible}
+            visible: {$set: action.payload}
           }
         }
       })
