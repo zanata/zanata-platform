@@ -111,7 +111,7 @@ const glossary = (state = defaultState, action) => {
     case SHOW_GLOSSARY_DETAILS:
       return update({
         details: {
-          show: {$set: action.payload.show}
+          show: {$set: action.payload}
         }
       })
 

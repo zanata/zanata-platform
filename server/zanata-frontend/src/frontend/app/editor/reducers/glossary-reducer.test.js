@@ -206,11 +206,11 @@ describe('glossary-reducer test', () => {
     const initial = glossaryReducer(undefined, { type: 'any' })
     const shown = glossaryReducer(initial, {
       type: SHOW_GLOSSARY_DETAILS,
-      payload: { show: true }
+      payload: true
     })
     const hidden = glossaryReducer(shown, {
       type: SHOW_GLOSSARY_DETAILS,
-      payload: { show: false }
+      payload: false
     })
     expect(initial.details.show).toEqual(false)
     expect(shown.details.show).toEqual(true)
