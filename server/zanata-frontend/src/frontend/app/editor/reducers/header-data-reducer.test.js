@@ -85,9 +85,7 @@ describe('header-data-reducer test', () => {
     })
     const selected = headerDataReducer(withData, {
       type: DOCUMENT_SELECTED,
-      data: {
-        selectedDocId: 'something.doc'
-      }
+      payload: 'something.doc'
     })
     expect(selected.context.selectedDoc.id).toEqual('something.doc')
   })
