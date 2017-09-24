@@ -1,5 +1,4 @@
 import stateChangeDispatchMiddleware from './state-change-dispatch'
-import { requestDocumentList } from '../actions'
 import { createAction } from 'redux-actions'
 import {
   fetchHeaderInfo,
@@ -36,15 +35,6 @@ const getPageIndexFromQuery = (state) => {
  */
 const fetchDocsMiddleware = stateChangeDispatchMiddleware(
   // FIXME replace with watcher
-  (dispatch, oldState, newState) => {
-    const pre = oldState.context
-    const post = newState.context
-    const needDocs = pre.projectSlug !== post.projectSlug ||
-                     pre.versionSlug !== post.versionSlug
-    if (needDocs) {
-      dispatch(requestDocumentList())
-    }
-  },
   (dispatch, oldState, newState) => {
     const { lang, docId } = newState.context
 
