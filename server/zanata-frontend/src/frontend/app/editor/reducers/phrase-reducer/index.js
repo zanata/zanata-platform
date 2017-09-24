@@ -228,7 +228,7 @@ export const phraseReducer = (state = defaultState, action) => {
 
     case SET_SAVE_AS_MODE:
       return update({
-        saveAsMode: {$set: action.active}
+        saveAsMode: {$set: action.payload}
       })
 
     case TRANSLATION_TEXT_INPUT_CHANGED:

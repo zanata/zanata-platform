@@ -755,11 +755,11 @@ describe('phrase-reducer test', () => {
   it('can set save as mode on and off', () => {
     const saveAs = phraseReducer(undefined, {
       type: SET_SAVE_AS_MODE,
-      active: true
+      payload: true
     })
     const notSaveAs = phraseReducer(saveAs, {
       type: SET_SAVE_AS_MODE,
-      active: false
+      payload: false
     })
     expect(saveAs.saveAsMode).toEqual(true)
     expect(notSaveAs.saveAsMode).toEqual(false)
