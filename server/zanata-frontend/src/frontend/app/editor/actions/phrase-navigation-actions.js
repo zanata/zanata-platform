@@ -1,10 +1,7 @@
+import { createAction } from 'redux-actions'
 
-export const MOVE_NEXT = Symbol('MOVE_NEXT')
-export function moveNext () {
-  return { type: MOVE_NEXT }
-}
+export const MOVE_NEXT = 'MOVE_NEXT'
+export const moveNext = createAction(MOVE_NEXT)
 
-export const MOVE_PREVIOUS = Symbol('MOVE_PREVIOUS')
-export function movePrevious () {
-  return { type: MOVE_PREVIOUS }
-}
+export const MOVE_PREVIOUS = 'MOVE_PREVIOUS'
+export const movePrevious = createAction(MOVE_PREVIOUS)
