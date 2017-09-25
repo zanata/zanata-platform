@@ -186,7 +186,7 @@ describe('suggestions-reducer test', () => {
     })
     const copying = suggestionsReducer(withTextSuggestions, {
       type: TEXT_SUGGESTION_STARTED_COPYING,
-      index: 1
+      payload: 1
     })
     const doneCopying = suggestionsReducer(copying, {
       type: TEXT_SUGGESTION_FINISHED_COPYING,
