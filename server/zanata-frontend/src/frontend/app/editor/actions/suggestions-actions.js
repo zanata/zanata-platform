@@ -291,12 +291,8 @@ export function findPhraseSuggestions (phrase) {
   }
 }
 
-export function saveSuggestionPanelHeight (percentageHeight) {
-  return {
-    type: SUGGESTION_PANEL_HEIGHT_CHANGE,
-    percentageHeight
-  }
-}
+export const saveSuggestionPanelHeight =
+  createAction(SUGGESTION_PANEL_HEIGHT_CHANGE)
 
 /**
  * Open or close the suggestion detail modal.
