@@ -109,6 +109,15 @@ const saveInitiated = createAction(SAVE_INITIATED,
 
 const pendingSaveInitiated = createAction(PENDING_SAVE_INITIATED)
 
+// FIXME should use status and serverStatus to disambiguate
+//       (these would be separate types if there were types.)
+const saveFinished = createAction(SAVE_FINISHED,
+  (phraseId, transUnitStatus, revision) => ({
+    phraseId,
+    status: transUnitStatusToPhraseStatus(transUnitStatus),
+    revision
+  }))
+
 export function savePhraseWithStatus (phrase, status) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
@@ -165,17 +174,6 @@ export function savePhraseWithStatus (phrase, status) {
         doSave(pendingSave)
       }
     }
-  }
-}
-
-// FIXME should use status and serverStatus to disambiguate
-//       (these would be separate types if there were types.)
-function saveFinished (phraseId, transUnitStatus, revision) {
-  return {
-    type: SAVE_FINISHED,
-    phraseId,
-    status: transUnitStatusToPhraseStatus(transUnitStatus),
-    revision
   }
 }
 

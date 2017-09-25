@@ -201,15 +201,15 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case SAVE_FINISHED:
-      const phrase = state.detail[action.phraseId]
+      const phrase = state.detail[action.payload.phraseId]
       const { newTranslations } = phrase
-      return updatePhrase(action.phraseId, {
+      return updatePhrase(action.payload.phraseId, {
         inProgressSave: {$set: undefined},
         // FIXME check whether this should be action.translations instead
         translations: {$set: newTranslations},
         // TODO same as inProgressSave.status unless the server adjusted it
-        status: {$set: action.status},
-        revision: {$set: action.revision}
+        status: {$set: action.payload.status},
+        revision: {$set: action.payload.revision}
       })
 
     case SAVE_INITIATED:

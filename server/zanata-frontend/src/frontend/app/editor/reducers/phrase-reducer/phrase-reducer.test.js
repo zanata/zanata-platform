@@ -449,9 +449,11 @@ describe('phrase-reducer test', () => {
     })
     const saved = phraseReducer(saving, {
       type: SAVE_FINISHED,
-      phraseId: 'p01',
-      status: 'translated',
-      revision: 3
+      payload: {
+        phraseId: 'p01',
+        status: 'translated',
+        revision: 3
+      }
     })
     expect(saved.detail['p01'].inProgressSave).toBeUndefined()
     expect(saved.detail['p01'].translations).toEqual(['翻訳', '翻訳'])
