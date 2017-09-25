@@ -45,11 +45,7 @@ export const cancelEdit = createAction(CANCEL_EDIT)
  * whatever translations are currently saved.
  * After this action, a phrase may still be in editing state.
  */
-export function undoEdit () {
-  return {
-    type: UNDO_EDIT
-  }
-}
+export const undoEdit = createAction(UNDO_EDIT)
 
 /**
  * Set the selected phrase to the given ID.
