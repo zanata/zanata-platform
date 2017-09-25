@@ -551,8 +551,10 @@ describe('phrase-reducer test', () => {
     })
     const selected = phraseReducer(withPhraseDetail, {
       type: SELECT_PHRASE_SPECIFIC_PLURAL,
-      phraseId: 'p02',
-      index: 1,
+      payload: {
+        phraseId: 'p02',
+        index: 1
+      },
       getState: () => {
         return {
           context: {
