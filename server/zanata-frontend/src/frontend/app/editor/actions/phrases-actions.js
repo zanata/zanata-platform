@@ -107,6 +107,8 @@ const queueSave = createAction(QUEUE_SAVE,
 const saveInitiated = createAction(SAVE_INITIATED,
   (phraseId, saveInfo) => ({ phraseId, saveInfo }))
 
+const pendingSaveInitiated = createAction(PENDING_SAVE_INITIATED)
+
 export function savePhraseWithStatus (phrase, status) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
@@ -163,13 +165,6 @@ export function savePhraseWithStatus (phrase, status) {
         doSave(pendingSave)
       }
     }
-  }
-}
-
-function pendingSaveInitiated (phraseId) {
-  return {
-    type: PENDING_SAVE_INITIATED,
-    phraseId
   }
 }
 
