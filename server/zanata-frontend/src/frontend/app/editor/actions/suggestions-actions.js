@@ -48,9 +48,7 @@ export function togglePhraseSuggestions () {
   }
 }
 
-export function diffSettingChanged () {
-  return { type: DIFF_SETTING_CHANGED }
-}
+export const diffSettingChanged = createAction(DIFF_SETTING_CHANGED)
 
 export function clearSearch () {
   return changeSearchText('')

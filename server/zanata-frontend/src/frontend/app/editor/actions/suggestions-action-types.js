@@ -1,4 +1,5 @@
-export const DIFF_SETTING_CHANGED = Symbol('DIFF_SETTING_CHANGED')
+// FIXME this should probably be called TOGGLE_DIFF_SETTING or similar
+export const DIFF_SETTING_CHANGED = 'DIFF_SETTING_CHANGED'
 export const SET_SUGGESTION_SEARCH_TYPE = Symbol('SET_SUGGESTION_SEARCH_TYPE')
 export const RESET_SUGGESTIONS_COPYING = Symbol('RESET_SUGGESTIONS_COPYING')
 // FIXME may be unused
