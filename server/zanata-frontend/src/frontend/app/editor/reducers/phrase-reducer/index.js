@@ -218,7 +218,7 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case SELECT_PHRASE:
-      return selectPhrase(state, action.phraseId)
+      return selectPhrase(state, action.payload)
 
     case SELECT_PHRASE_SPECIFIC_PLURAL:
       const withNewPluralIndex = updatePhrase(action.phraseId, {
