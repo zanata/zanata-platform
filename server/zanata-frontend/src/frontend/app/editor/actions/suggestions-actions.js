@@ -69,7 +69,7 @@ export function setSuggestionSearchType (type) {
   if (type !== 'phrase' && type !== 'text') {
     console.error('invalid search type', type)
   }
-  return { type: SET_SUGGESTION_SEARCH_TYPE, searchType: type }
+  return createAction(SET_SUGGESTION_SEARCH_TYPE)(type)
 }
 
 export function toggleSearchType () {
