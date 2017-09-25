@@ -82,7 +82,7 @@ const suggestions = (state = defaultState, action) => {
       return update({searchType: {$set: action.payload}})
 
     case SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX:
-      return update({showDetailModalForIndex: {$set: action.index}})
+      return update({showDetailModalForIndex: {$set: action.payload}})
 
     case SUGGESTION_SEARCH_TEXT_CHANGE:
       return update({search: {input: {text: {$set: action.payload}}}})

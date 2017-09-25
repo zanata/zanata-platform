@@ -300,9 +300,5 @@ export const saveSuggestionPanelHeight =
  * @param indexOrUndefined undefined to hide the modal, index of suggestion in
  *   the current suggestion list to show detail for that suggestion in the modal
  */
-export function showDetailForSuggestionByIndex (indexOrUndefined) {
-  return {
-    type: SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX,
-    index: indexOrUndefined
-  }
-}
+export const showDetailForSuggestionByIndex =
+  createAction(SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX)
