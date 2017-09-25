@@ -101,6 +101,9 @@ export const phraseTextSelectionRange =
 export const translationTextInputChanged = createAction(
   TRANSLATION_TEXT_INPUT_CHANGED, (id, index, text) => ({ id, index, text }))
 
+const queueSave = createAction(QUEUE_SAVE,
+  (phraseId, saveInfo) => ({ phraseId, saveInfo }))
+
 export function savePhraseWithStatus (phrase, status) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
@@ -157,14 +160,6 @@ export function savePhraseWithStatus (phrase, status) {
         doSave(pendingSave)
       }
     }
-  }
-}
-
-function queueSave (phraseId, saveInfo) {
-  return {
-    type: QUEUE_SAVE,
-    phraseId,
-    saveInfo
   }
 }
 
