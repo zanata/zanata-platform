@@ -234,9 +234,9 @@ export const phraseReducer = (state = defaultState, action) => {
     case TRANSLATION_TEXT_INPUT_CHANGED:
       return update({
         detail: {
-          [action.id]: {
+          [action.payload.id]: {
             newTranslations: {
-              [action.index]: {$set: action.text}
+              [action.payload.index]: {$set: action.payload.text}
             }
           }
         }

@@ -592,9 +592,11 @@ describe('phrase-reducer test', () => {
     })
     const textEntered = phraseReducer(withPhrases, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 0,
-      text: 'translation'
+      payload: {
+        id: '123',
+        index: 0,
+        text: 'translation'
+      }
     })
     expect(textEntered.detail).toEqual({
       '123': {
@@ -607,9 +609,11 @@ describe('phrase-reducer test', () => {
 
     const textUpdated = phraseReducer(textEntered, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 0,
-      text: 'NEW IMPROVED translation'
+      payload: {
+        id: '123',
+        index: 0,
+        text: 'NEW IMPROVED translation'
+      }
     })
     expect(textUpdated.detail).toEqual({
       '123': {
@@ -622,9 +626,11 @@ describe('phrase-reducer test', () => {
 
     const pluralEntered = phraseReducer(textUpdated, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 1,
-      text: 'translations'
+      payload: {
+        id: '123',
+        index: 1,
+        text: 'translations'
+      }
     })
     expect(pluralEntered.detail).toEqual({
       '123': {
@@ -637,9 +643,11 @@ describe('phrase-reducer test', () => {
 
     const otherPhraseTextEntered = phraseReducer(pluralEntered, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '124',
-      index: 0,
-      text: 'another translation'
+      payload: {
+        id: '124',
+        index: 0,
+        text: 'another translation'
+      }
     })
     expect(otherPhraseTextEntered.detail).toEqual({
       '123': {
@@ -652,9 +660,11 @@ describe('phrase-reducer test', () => {
 
     const textBackspaced = phraseReducer(otherPhraseTextEntered, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 0,
-      text: ''
+      payload: {
+        id: '123',
+        index: 0,
+        text: ''
+      }
     })
     expect(textBackspaced.detail).toEqual({
       '123': {
@@ -695,9 +705,11 @@ describe('phrase-reducer test', () => {
     })
     const textEntered = phraseReducer(withDetail, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '1',
-      index: 0,
-      text: 'originally'
+      payload: {
+        id: '1',
+        index: 0,
+        text: 'originally'
+      }
     })
     const undone = phraseReducer(textEntered, {
       type: UNDO_EDIT
