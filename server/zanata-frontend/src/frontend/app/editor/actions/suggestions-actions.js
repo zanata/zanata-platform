@@ -235,6 +235,8 @@ export function findPhraseSuggestionsById (phraseId) {
 
 const PHRASE_SEARCH_STALE_AGE_MILLIS = 60000
 
+const phraseSuggestionsUpdated = createAction(PHRASE_SUGGESTIONS_UPDATED)
+
 export function findPhraseSuggestions (phrase) {
   return (dispatch, getState) => {
     const phraseId = phrase.id
@@ -279,18 +281,6 @@ export function findPhraseSuggestions (phrase) {
         // TODO report error visible to user
         console.error(error)
       })
-  }
-}
-
-export function phraseSuggestionsUpdated (
-    {phraseId, loading, searchStrings, suggestions, timestamp}) {
-  return {
-    type: PHRASE_SUGGESTIONS_UPDATED,
-    phraseId,
-    loading,
-    searchStrings,
-    suggestions,
-    timestamp
   }
 }
 
