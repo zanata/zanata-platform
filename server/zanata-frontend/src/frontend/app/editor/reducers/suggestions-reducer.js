@@ -90,7 +90,7 @@ const suggestions = (state = defaultState, action) => {
     case TEXT_SUGGESTION_FINISHED_COPYING:
       return update({
         textSearch: {
-          suggestions: {[action.index]: {copying: {$set: false}}}
+          suggestions: {[action.payload]: {copying: {$set: false}}}
         }
       })
 
