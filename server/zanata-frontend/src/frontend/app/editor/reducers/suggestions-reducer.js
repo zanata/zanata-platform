@@ -103,10 +103,10 @@ const suggestions = (state = defaultState, action) => {
 
     case TEXT_SUGGESTIONS_UPDATED:
       return update({textSearch: {
-        loading: {$set: action.loading},
-        searchStrings: {$set: action.searchStrings},
-        suggestions: {$set: action.suggestions},
-        timestamp: {$set: action.timestamp}
+        loading: {$set: action.payload.loading},
+        searchStrings: {$set: action.payload.searchStrings},
+        suggestions: {$set: action.payload.suggestions},
+        timestamp: {$set: action.payload.timestamp}
       }})
 
     default:
