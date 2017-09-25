@@ -56,7 +56,7 @@ const ui = (state = defaultState, action) => {
       return update({
         panels: {
           suggestions: {
-            heightPercent: {$set: action.percentageHeight}
+            heightPercent: {$set: action.payload}
           }
         }
       })

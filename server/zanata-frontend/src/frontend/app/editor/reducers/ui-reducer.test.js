@@ -140,7 +140,7 @@ describe('ui-reducer test', () => {
   it('can record suggestion panel height change', () => {
     const changedHeight = uiReducer(undefined, {
       type: SUGGESTION_PANEL_HEIGHT_CHANGE,
-      percentageHeight: 0.4
+      payload: 0.4
     })
     expect(changedHeight.panels.suggestions.heightPercent).toEqual(0.4)
   })
