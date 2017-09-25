@@ -38,11 +38,7 @@ export const copyFromAlignedSource = createAction(COPY_FROM_ALIGNED_SOURCE)
  * Stop editing the currently focused phrase and discard all entered text.
  * After this action, no phrase should be in editing state.
  */
-export function cancelEdit () {
-  return {
-    type: CANCEL_EDIT
-  }
-}
+export const cancelEdit = createAction(CANCEL_EDIT)
 
 /**
  * Discard all entered text for the currently selected phrase, reverting to
