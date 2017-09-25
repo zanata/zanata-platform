@@ -1,3 +1,4 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import {
@@ -130,11 +131,11 @@ describe('suggestions-reducer test', () => {
   it('can set suggestion search type', () => {
     const text = suggestionsReducer(undefined, {
       type: SET_SUGGESTION_SEARCH_TYPE,
-      searchType: 'text'
+      payload: 'text'
     })
     const phrase = suggestionsReducer(text, {
       type: SET_SUGGESTION_SEARCH_TYPE,
-      searchType: 'phrase'
+      payload: 'phrase'
     })
     expect(text.searchType).toEqual('text')
     expect(phrase.searchType).toEqual('phrase')

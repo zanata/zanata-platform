@@ -79,7 +79,7 @@ const suggestions = (state = defaultState, action) => {
       })
 
     case SET_SUGGESTION_SEARCH_TYPE:
-      return update({searchType: {$set: action.searchType}})
+      return update({searchType: {$set: action.payload}})
 
     case SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX:
       return update({showDetailModalForIndex: {$set: action.index}})
