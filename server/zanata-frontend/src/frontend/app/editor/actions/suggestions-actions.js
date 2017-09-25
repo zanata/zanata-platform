@@ -5,7 +5,6 @@ import { debounce, isUndefined } from 'lodash'
 import {
   DIFF_SETTING_CHANGED,
   SET_SUGGESTION_SEARCH_TYPE,
-  RESET_SUGGESTIONS_COPYING,
   COPY_SUGGESTION,
   TEXT_SUGGESTION_STARTED_COPYING,
   TEXT_SUGGESTION_FINISHED_COPYING,
@@ -87,10 +86,6 @@ export function toggleSearchType () {
     }
     dispatch(setSuggestionSearchType(wasTypeText ? 'phrase' : 'text'))
   }
-}
-
-export function resetSuggestionsCopying () {
-  return { type: RESET_SUGGESTIONS_COPYING }
 }
 
 export function copySuggestionN (index) {
