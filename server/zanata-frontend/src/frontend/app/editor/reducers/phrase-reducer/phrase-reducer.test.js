@@ -393,11 +393,13 @@ describe('phrase-reducer test', () => {
     })
     const withQueuedSave = phraseReducer(withPhraseDetail, {
       type: QUEUE_SAVE,
-      phraseId: 'p01',
-      saveInfo: {
-        localeId: 'ja',
-        status: 'translated',
-        translations: ['翻訳', '翻訳']
+      payload: {
+        phraseId: 'p01',
+        saveInfo: {
+          localeId: 'ja',
+          status: 'translated',
+          translations: ['翻訳', '翻訳']
+        }
       }
     })
     const withSaveInitiated = phraseReducer(withQueuedSave, {

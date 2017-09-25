@@ -196,8 +196,8 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case QUEUE_SAVE:
-      return updatePhrase(action.phraseId, {
-        pendingSave: {$set: action.saveInfo}
+      return updatePhrase(action.payload.phraseId, {
+        pendingSave: {$set: action.payload.saveInfo}
       })
 
     case SAVE_FINISHED:
