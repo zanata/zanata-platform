@@ -1,3 +1,4 @@
+import { createAction } from 'redux-actions'
 import { getSuggestions } from '../api/suggestions'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 import { debounce, isUndefined } from 'lodash'
