@@ -48,25 +48,27 @@ describe('suggestions-reducer test', () => {
   it('can begin and end phrase copying', () => {
     const withPhraseSuggestions = suggestionsReducer(undefined, {
       type: PHRASE_SUGGESTIONS_UPDATED,
-      phraseId: 'p01',
-      loading: false,
-      searchStrings: [ 'source', 'sources' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        phraseId: 'p01',
+        loading: false,
+        searchStrings: [ 'source', 'sources' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     const copying = suggestionsReducer(withPhraseSuggestions, {
       type: PHRASE_SUGGESTION_STARTED_COPYING,
@@ -90,25 +92,27 @@ describe('suggestions-reducer test', () => {
   it('can receive phrase suggestions', () => {
     const withPhraseSuggestions = suggestionsReducer(undefined, {
       type: PHRASE_SUGGESTIONS_UPDATED,
-      phraseId: 'p01',
-      loading: false,
-      searchStrings: [ 'source', 'sources' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        phraseId: 'p01',
+        loading: false,
+        searchStrings: [ 'source', 'sources' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     expect(withPhraseSuggestions.searchByPhrase['p01']).toEqual({
       loading: false,

@@ -69,11 +69,11 @@ const suggestions = (state = defaultState, action) => {
       return update({
         searchByPhrase: {
           // must $set a new object because the key may not yet be defined
-          [action.phraseId]: {$set: {
-            loading: action.loading,
-            searchStrings: action.searchStrings,
-            suggestions: action.suggestions,
-            timestamp: action.timestamp
+          [action.payload.phraseId]: {$set: {
+            loading: action.payload.loading,
+            searchStrings: action.payload.searchStrings,
+            suggestions: action.payload.suggestions,
+            timestamp: action.payload.timestamp
           }}
         }
       })
