@@ -70,8 +70,10 @@ describe('suggestions-reducer test', () => {
     })
     const copying = suggestionsReducer(withPhraseSuggestions, {
       type: PHRASE_SUGGESTION_STARTED_COPYING,
-      phraseId: 'p01',
-      index: 1
+      payload: {
+        phraseId: 'p01',
+        index: 1
+      }
     })
     const doneCopying = suggestionsReducer(copying, {
       type: PHRASE_SUGGESTION_FINISHED_COPYING,

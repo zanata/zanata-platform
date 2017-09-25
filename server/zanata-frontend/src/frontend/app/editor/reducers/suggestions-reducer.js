@@ -57,9 +57,9 @@ const suggestions = (state = defaultState, action) => {
     case PHRASE_SUGGESTION_STARTED_COPYING:
       return update({
         searchByPhrase: {
-          [action.phraseId]: {
+          [action.payload.phraseId]: {
             suggestions: {
-              [action.index]: {copying: {$set: true}}
+              [action.payload.index]: {copying: {$set: true}}
             }
           }
         }
