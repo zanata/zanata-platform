@@ -148,16 +148,7 @@ function copyPhraseSuggestionN (phraseId, index) {
   }
 }
 
-export function textSuggestionsUpdated (
-  {loading, searchStrings, suggestions, timestamp}) {
-  return {
-    type: TEXT_SUGGESTIONS_UPDATED,
-    loading,
-    searchStrings,
-    suggestions,
-    timestamp
-  }
-}
+const textSuggestionsUpdated = createAction(TEXT_SUGGESTIONS_UPDATED)
 
 export function suggestionSearchTextChange (text) {
   return { type: SUGGESTION_SEARCH_TEXT_CHANGE, text: text }

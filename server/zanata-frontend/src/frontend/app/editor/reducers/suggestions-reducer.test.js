@@ -169,24 +169,26 @@ describe('suggestions-reducer test', () => {
   it('can begin and end text suggestion copying', () => {
     const withTextSuggestions = suggestionsReducer(undefined, {
       type: TEXT_SUGGESTIONS_UPDATED,
-      loading: false,
-      searchStrings: [ 'searching' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        loading: false,
+        searchStrings: [ 'searching' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     const copying = suggestionsReducer(withTextSuggestions, {
       type: TEXT_SUGGESTION_STARTED_COPYING,
@@ -203,24 +205,26 @@ describe('suggestions-reducer test', () => {
   it('can receive text suggestions', () => {
     const withTextSuggestions = suggestionsReducer(undefined, {
       type: TEXT_SUGGESTIONS_UPDATED,
-      loading: false,
-      searchStrings: [ 'searching' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        loading: false,
+        searchStrings: [ 'searching' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     expect(withTextSuggestions.textSearch).toEqual({
       loading: false,
