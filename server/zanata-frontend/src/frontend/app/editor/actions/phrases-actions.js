@@ -54,7 +54,7 @@ export const undoEdit = createAction(UNDO_EDIT)
 export function selectPhrase (phraseId) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
-    dispatch({type: SELECT_PHRASE, phraseId})
+    dispatch(createAction(SELECT_PHRASE)(phraseId))
   }
 }
 
