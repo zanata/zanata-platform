@@ -116,9 +116,8 @@ export const phraseReducer = (state = defaultState, action) => {
       }})
 
     case COPY_SUGGESTION:
-      const { suggestion } = action
       return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
-        return copyFromSuggestion(phrase, suggestion)
+        return copyFromSuggestion(phrase, action.payload)
       }})
 
     case PHRASE_DETAIL_REQUEST:

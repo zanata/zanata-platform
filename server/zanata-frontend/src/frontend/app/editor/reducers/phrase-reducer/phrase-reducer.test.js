@@ -760,7 +760,7 @@ describe('phrase-reducer test', () => {
     })
     const copied = phraseReducer(withPhraseDetail, {
       type: COPY_SUGGESTION,
-      suggestion: {
+      payload: {
         targetContents: [ 'SUGGESTION', 'SUGGESTIONS' ]
       }
     })
