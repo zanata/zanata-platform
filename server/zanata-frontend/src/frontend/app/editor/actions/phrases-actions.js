@@ -58,6 +58,9 @@ export function selectPhrase (phraseId) {
   }
 }
 
+const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
+  (phraseId, index) => ({ phraseId, index }))
+
 /**
  * Select a phrase and set which of its plurals is selected.
  * The selected plural index should persist even when the phrase loses focus
@@ -67,7 +70,7 @@ export function selectPhrase (phraseId) {
 export function selectPhrasePluralIndex (phraseId, index) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
-    dispatch({ type: SELECT_PHRASE_SPECIFIC_PLURAL, phraseId, index })
+    dispatch(selectPhraseSpecificPlural(phraseId, index))
   }
 }
 
