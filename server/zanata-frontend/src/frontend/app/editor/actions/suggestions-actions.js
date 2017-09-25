@@ -101,6 +101,8 @@ export function copySuggestionN (index) {
   }
 }
 
+const copySuggestion = createAction(COPY_SUGGESTION)
+
 function copyTextSuggestionN (index) {
   return (dispatch, getState) => {
     const { suggestions } = getState().suggestions.textSearch
@@ -126,10 +128,6 @@ function copyPhraseSuggestionN (phraseId, index) {
         500)
     }
   }
-}
-
-function copySuggestion (suggestion) {
-  return { type: COPY_SUGGESTION, suggestion }
 }
 
 function textSuggestionStartedCopying (index) {
