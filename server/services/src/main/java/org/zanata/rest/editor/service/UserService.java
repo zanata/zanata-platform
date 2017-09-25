@@ -41,7 +41,6 @@ import com.google.common.base.Strings;
 @Path(UserResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class UserService implements UserResource {
-    private static final long serialVersionUID = 6392233836993864627L;
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
@@ -60,9 +59,6 @@ public class UserService implements UserResource {
 
     @Inject
     private IdentityManager identityManager;
-
-    private static final Logger log =
-            LoggerFactory.getLogger(UserService.class);
 
     @Override
     @CheckLoggedIn

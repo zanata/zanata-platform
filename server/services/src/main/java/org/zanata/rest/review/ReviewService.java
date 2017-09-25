@@ -45,7 +45,6 @@ import org.zanata.model.ReviewCriteria;
 import org.zanata.rest.review.dto.TransReviewCriteria;
 import org.zanata.security.annotations.CheckRole;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

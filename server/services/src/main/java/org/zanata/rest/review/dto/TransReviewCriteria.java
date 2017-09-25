@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.review.dto;
 
-import java.util.Objects;
-
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.zanata.model.IssuePriority;
 import org.zanata.model.ReviewCriteria;
@@ -36,7 +34,6 @@ public class TransReviewCriteria {
     private String description;
     private boolean editable;
 
-    @SuppressWarnings("unused")
     public TransReviewCriteria() {
     }
 
