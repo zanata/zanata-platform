@@ -1,7 +1,6 @@
 // FIXME this should probably be called TOGGLE_DIFF_SETTING or similar
 export const DIFF_SETTING_CHANGED = 'DIFF_SETTING_CHANGED'
 export const SET_SUGGESTION_SEARCH_TYPE = 'SET_SUGGESTION_SEARCH_TYPE'
-export const RESET_SUGGESTIONS_COPYING = Symbol('RESET_SUGGESTIONS_COPYING')
 // FIXME may be unused
 export const COPY_SUGGESTION_N = Symbol('COPY_SUGGESTION_N')
 export const COPY_SUGGESTION = Symbol('COPY_SUGGESTION')
