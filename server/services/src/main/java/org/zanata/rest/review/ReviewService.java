@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
@@ -49,6 +50,7 @@ import com.google.common.annotations.VisibleForTesting;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RequestScoped
 @Path("review")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -68,20 +70,31 @@ public class ReviewService {
         this.uriInfo = uriInfo;
     }
 
+    private static TransReviewCriteria fromModel(ReviewCriteria criteria) {
+        return new TransReviewCriteria(criteria.getId(), criteria.getPriority(),
+                criteria.getDescription(), criteria.isEditable());
+    }
+
     @POST
     @CheckRole("admin")
     @Path("criteria")
     @Transactional
     public Response addCriteria(TransReviewCriteria criteria) {
-        ReviewCriteria reviewCriteria = criteria.toModel();
+        ReviewCriteria reviewCriteria =
+                new ReviewCriteria(criteria.getPriority(),
+                        criteria.isEditable(), criteria.getDescription());
         entityManager.persist(reviewCriteria);
         try {
             return Response.created(new URI(uriInfo.getRequestUri() + "/" + reviewCriteria.getId()))
-                    .entity(TransReviewCriteria.fromModel(reviewCriteria))
+                    .entity(fromModel(reviewCriteria))
                     .build();
         } catch (URISyntaxException e) {
             throw new ZanataServiceException(e);
         }
+    }
+
+    private static ReviewCriteria dtoToModel(TransReviewCriteria dto) {
+        return new ReviewCriteria(dto.getPriority(), dto.isEditable(), dto.getDescription());
     }
 
     @PUT
@@ -97,7 +110,7 @@ public class ReviewService {
         reviewCriteria.setDescription(criteria.getDescription());
         reviewCriteria.setEditable(criteria.isEditable());
         reviewCriteria.setPriority(criteria.getPriority());
-        return Response.ok(TransReviewCriteria.fromModel(reviewCriteria)).build();
+        return Response.ok(fromModel(reviewCriteria)).build();
     }
 
     @DELETE
@@ -111,7 +124,7 @@ public class ReviewService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         TransReviewCriteria dto =
-                TransReviewCriteria.fromModel(reviewCriteria);
+                fromModel(reviewCriteria);
         entityManager.remove(reviewCriteria);
         return Response.ok(dto).build();
     }
@@ -123,7 +136,7 @@ public class ReviewService {
                 .createQuery("from ReviewCriteria", ReviewCriteria.class)
                 .getResultList();
         List<TransReviewCriteria> entity =
-                resultList.stream().map(TransReviewCriteria::fromModel).collect(
+                resultList.stream().map(ReviewService::fromModel).collect(
                         Collectors.toList());
         return Response.ok(entity).build();
     }

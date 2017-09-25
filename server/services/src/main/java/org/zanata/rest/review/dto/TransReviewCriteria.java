@@ -22,7 +22,6 @@ package org.zanata.rest.review.dto;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.zanata.model.IssuePriority;
-import org.zanata.model.ReviewCriteria;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -45,16 +44,6 @@ public class TransReviewCriteria {
         this.editable = editable;
     }
 
-
-
-    public ReviewCriteria toModel() {
-        return new ReviewCriteria(priority, editable, description);
-    }
-
-    public static TransReviewCriteria fromModel(ReviewCriteria criteria) {
-        return new TransReviewCriteria(criteria.getId(), criteria.getPriority(),
-                criteria.getDescription(), criteria.isEditable());
-    }
 
     public IssuePriority getPriority() {
         return priority;
