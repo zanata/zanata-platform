@@ -1,3 +1,4 @@
+import { createAction } from 'redux-actions'
 import { getSuggestions } from '../api/suggestions'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 import { debounce, isUndefined } from 'lodash'
@@ -17,11 +18,8 @@ import {
   SUGGESTION_PANEL_HEIGHT_CHANGE,
   SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX
 } from './suggestions-action-types'
-export function toggleSuggestions () {
-  return {
-    type: TOGGLE_SUGGESTIONS
-  }
-}
+
+export const toggleSuggestions = createAction(TOGGLE_SUGGESTIONS)
 
 /**
  * Make phrase search visible or hidden.
