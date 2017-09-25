@@ -152,7 +152,7 @@ describe('suggestions-reducer test', () => {
   it('can set index for detail modal to show', () => {
     const showing = suggestionsReducer(undefined, {
       type: SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX,
-      index: 42
+      payload: 42
     })
     expect(showing.showDetailModalForIndex).toEqual(42)
   })
