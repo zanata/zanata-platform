@@ -21,6 +21,9 @@
 package org.zanata.model;
 
 import java.util.Objects;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,10 +38,12 @@ import javax.persistence.NamedQuery;
 @NamedQueries(
         @NamedQuery(name = ReviewCriteria.QUERY_BY_DESCRIPTION, query = "from ReviewCriteria where description = :description")
 )
+@Access(AccessType.FIELD)
 public class ReviewCriteria extends ModelEntityBase {
     public static final String QUERY_BY_DESCRIPTION = "ReviewCriteriaByDescription";
     private static final long serialVersionUID = -8213113671271711837L;
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar")
     private IssuePriority priority;
     private boolean editable;
     private String description;
