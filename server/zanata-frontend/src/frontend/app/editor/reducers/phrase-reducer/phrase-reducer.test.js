@@ -504,7 +504,7 @@ describe('phrase-reducer test', () => {
     })
     const selected = phraseReducer(initialState, {
       type: SELECT_PHRASE,
-      phraseId: 'p02',
+      payload: 'p02',
       getState: () => {
         return {
           context: {
