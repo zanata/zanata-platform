@@ -190,7 +190,7 @@ describe('suggestions-reducer test', () => {
     })
     const doneCopying = suggestionsReducer(copying, {
       type: TEXT_SUGGESTION_FINISHED_COPYING,
-      index: 1
+      payload: 1
     })
     expect(copying.textSearch.suggestions[1].copying).toEqual(true)
     expect(doneCopying.textSearch.suggestions[1].copying).toEqual(false)
