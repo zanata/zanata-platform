@@ -1,8 +1,6 @@
 import { savePhrase } from '../api'
 import { toggleDropdown } from '.'
 import {
-  PHRASE_DETAIL_SUCCESS,
-  PHRASE_DETAIL_FAILURE,
   COPY_FROM_SOURCE,
   COPY_FROM_ALIGNED_SOURCE,
   CANCEL_EDIT,
@@ -21,15 +19,6 @@ import {
   transUnitStatusToPhraseStatus
 } from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
-
-// detail for phrases has been fetched from API
-export function phraseDetailFetched (phrases) {
-  return { type: PHRASE_DETAIL_SUCCESS, phrases: phrases }
-}
-
-export function phraseDetailFetchFailed (error) {
-  return { type: PHRASE_DETAIL_FAILURE, error: error }
-}
 
 /**
  * Copy from source text to the focused translation input.
