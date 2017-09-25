@@ -97,7 +97,7 @@ const suggestions = (state = defaultState, action) => {
     case TEXT_SUGGESTION_STARTED_COPYING:
       return update({
         textSearch: {
-          suggestions: {[action.index]: {copying: {$set: true}}}
+          suggestions: {[action.payload]: {copying: {$set: true}}}
         }
       })
 
