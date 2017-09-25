@@ -438,11 +438,13 @@ describe('phrase-reducer test', () => {
     })
     const saving = phraseReducer(withPhraseDetail, {
       type: SAVE_INITIATED,
-      phraseId: 'p01',
-      saveInfo: {
-        localeId: 'ja',
-        status: 'translated',
-        translations: ['翻訳', '翻訳']
+      payload: {
+        phraseId: 'p01',
+        saveInfo: {
+          localeId: 'ja',
+          status: 'translated',
+          translations: ['翻訳', '翻訳']
+        }
       }
     })
     const saved = phraseReducer(saving, {
@@ -480,11 +482,13 @@ describe('phrase-reducer test', () => {
     })
     const saving = phraseReducer(withPhraseDetail, {
       type: SAVE_INITIATED,
-      phraseId: 'p01',
-      saveInfo: {
-        localeId: 'ja',
-        status: 'translated',
-        translations: ['翻訳', '翻訳']
+      payload: {
+        phraseId: 'p01',
+        saveInfo: {
+          localeId: 'ja',
+          status: 'translated',
+          translations: ['翻訳', '翻訳']
+        }
       }
     })
     expect(saving.detail['p01'].inProgressSave).toEqual({

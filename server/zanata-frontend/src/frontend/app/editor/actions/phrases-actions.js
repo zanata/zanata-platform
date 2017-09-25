@@ -104,6 +104,9 @@ export const translationTextInputChanged = createAction(
 const queueSave = createAction(QUEUE_SAVE,
   (phraseId, saveInfo) => ({ phraseId, saveInfo }))
 
+const saveInitiated = createAction(SAVE_INITIATED,
+  (phraseId, saveInfo) => ({ phraseId, saveInfo }))
+
 export function savePhraseWithStatus (phrase, status) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
@@ -160,14 +163,6 @@ export function savePhraseWithStatus (phrase, status) {
         doSave(pendingSave)
       }
     }
-  }
-}
-
-function saveInitiated (phraseId, saveInfo) {
-  return {
-    type: SAVE_INITIATED,
-    phraseId,
-    saveInfo
   }
 }
 

@@ -213,8 +213,8 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case SAVE_INITIATED:
-      return updatePhrase(action.phraseId, {
-        inProgressSave: {$set: action.saveInfo}
+      return updatePhrase(action.payload.phraseId, {
+        inProgressSave: {$set: action.payload.saveInfo}
       })
 
     case SELECT_PHRASE:
