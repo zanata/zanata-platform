@@ -236,8 +236,10 @@ describe('phrase-reducer test', () => {
     })
     const copied = phraseReducer(withPhraseDetail, {
       type: COPY_FROM_SOURCE,
-      phraseId: 'p01',
-      sourceIndex: 1
+      payload: {
+        phraseId: 'p01',
+        sourceIndex: 1
+      }
     })
     expect(copied.detail).toEqual({
       'p01': {

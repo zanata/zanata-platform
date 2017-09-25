@@ -104,7 +104,7 @@ export const phraseReducer = (state = defaultState, action) => {
       }})
 
     case COPY_FROM_SOURCE:
-      const { phraseId, sourceIndex } = action
+      const { phraseId, sourceIndex } = action.payload
       return updatePhrase(phraseId, {$apply: (phrase) => {
         return copyFromSource(phrase, sourceIndex)
       }})

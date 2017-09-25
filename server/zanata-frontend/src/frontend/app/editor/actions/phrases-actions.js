@@ -1,5 +1,6 @@
 import { savePhrase } from '../api'
 import { toggleDropdown } from '.'
+import { createAction } from 'redux-actions'
 import {
   COPY_FROM_SOURCE,
   COPY_FROM_ALIGNED_SOURCE,
@@ -24,12 +25,8 @@ import { hasTranslationChanged } from '../utils/phrase-util'
  * Copy from source text to the focused translation input.
  * Only change the input text, not the saved translation value.
  */
-export function copyFromSource (phraseId, sourceIndex) {
-  return { type: COPY_FROM_SOURCE,
-           phraseId: phraseId,
-           sourceIndex: sourceIndex
-         }
-}
+export const copyFromSource = createAction(COPY_FROM_SOURCE,
+  (phraseId, sourceIndex) => ({ phraseId, sourceIndex }))
 
 /**
  * Copy the source that is at the same plural index to the focused translation
