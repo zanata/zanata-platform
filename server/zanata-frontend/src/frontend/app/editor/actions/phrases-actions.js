@@ -98,14 +98,8 @@ export const phraseTextSelectionRange =
   createAction(PHRASE_TEXT_SELECTION_RANGE, (start, end) => ({ start, end }))
 
 // User has typed/pasted/etc. text for a translation (not saved yet)
-export function translationTextInputChanged (id, index, text) {
-  return {
-    type: TRANSLATION_TEXT_INPUT_CHANGED,
-    id: id,
-    index: index,
-    text: text
-  }
-}
+export const translationTextInputChanged = createAction(
+  TRANSLATION_TEXT_INPUT_CHANGED, (id, index, text) => ({ id, index, text }))
 
 export function savePhraseWithStatus (phrase, status) {
   return (dispatch, getState) => {
