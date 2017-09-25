@@ -32,9 +32,7 @@ export const copyFromSource = createAction(COPY_FROM_SOURCE,
  * Copy the source that is at the same plural index to the focused translation
  * plural. If there are not enough source plural forms, the highest one is used.
  */
-export function copyFromAlignedSource () {
-  return { type: COPY_FROM_ALIGNED_SOURCE }
-}
+export const copyFromAlignedSource = createAction(COPY_FROM_ALIGNED_SOURCE)
 
 /**
  * Stop editing the currently focused phrase and discard all entered text.
