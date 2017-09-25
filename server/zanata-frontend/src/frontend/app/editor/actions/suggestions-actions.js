@@ -110,6 +110,9 @@ const textSuggestionFinishedCopying =
 
 const phraseSuggestionStartedCopying = createAction(
   PHRASE_SUGGESTION_STARTED_COPYING, (phraseId, index) => ({ phraseId, index }))
+const phraseSuggestionFinishedCopying = createAction(
+  PHRASE_SUGGESTION_FINISHED_COPYING,
+  (phraseId, index) => ({ phraseId, index }))
 
 function copyTextSuggestionN (index) {
   return (dispatch, getState) => {
@@ -136,10 +139,6 @@ function copyPhraseSuggestionN (phraseId, index) {
         500)
     }
   }
-}
-
-function phraseSuggestionFinishedCopying (phraseId, index) {
-  return { type: PHRASE_SUGGESTION_FINISHED_COPYING, phraseId, index }
 }
 
 export function textSuggestionsUpdated (
