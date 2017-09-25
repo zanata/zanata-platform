@@ -77,8 +77,10 @@ describe('suggestions-reducer test', () => {
     })
     const doneCopying = suggestionsReducer(copying, {
       type: PHRASE_SUGGESTION_FINISHED_COPYING,
-      phraseId: 'p01',
-      index: 1
+      payload: {
+        phraseId: 'p01',
+        index: 1
+      }
     })
     expect(copying.searchByPhrase['p01'].suggestions[1].copying).toEqual(true)
     expect(doneCopying.searchByPhrase['p01'].suggestions[1].copying)
