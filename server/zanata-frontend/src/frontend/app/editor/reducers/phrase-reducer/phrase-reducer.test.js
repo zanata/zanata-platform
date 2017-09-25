@@ -404,7 +404,7 @@ describe('phrase-reducer test', () => {
     })
     const withSaveInitiated = phraseReducer(withQueuedSave, {
       type: PENDING_SAVE_INITIATED,
-      phraseId: 'p01'
+      payload: 'p01'
     })
     expect(withQueuedSave.detail['p01'].pendingSave).toEqual({
       localeId: 'ja',

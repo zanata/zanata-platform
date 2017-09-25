@@ -138,7 +138,7 @@ export const phraseReducer = (state = defaultState, action) => {
       }
 
     case PENDING_SAVE_INITIATED:
-      return updatePhrase(action.phraseId, {
+      return updatePhrase(action.payload, {
         pendingSave: {$set: undefined}
       })
 
