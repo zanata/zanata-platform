@@ -85,7 +85,7 @@ const suggestions = (state = defaultState, action) => {
       return update({showDetailModalForIndex: {$set: action.index}})
 
     case SUGGESTION_SEARCH_TEXT_CHANGE:
-      return update({search: {input: {text: {$set: action.text}}}})
+      return update({search: {input: {text: {$set: action.payload}}}})
 
     case TEXT_SUGGESTION_FINISHED_COPYING:
       return update({

@@ -57,6 +57,8 @@ const dispatchFindTextSuggestionsWhenInactive = debounce(
     dispatch(findTextSuggestions(searchText))
   }, 250)
 
+const suggestionSearchTextChange = createAction(SUGGESTION_SEARCH_TEXT_CHANGE)
+
 export function changeSearchText (searchText) {
   return (dispatch, getState) => {
     dispatch(suggestionSearchTextChange(searchText))
@@ -142,10 +144,6 @@ function copyPhraseSuggestionN (phraseId, index) {
 }
 
 const textSuggestionsUpdated = createAction(TEXT_SUGGESTIONS_UPDATED)
-
-export function suggestionSearchTextChange (text) {
-  return { type: SUGGESTION_SEARCH_TEXT_CHANGE, text: text }
-}
 
 // TODO may want to throttle as well to prevent generating too many concurrent
 //      requests on a slow connection (e.g. 5s latency = 20 requests)

@@ -156,11 +156,11 @@ describe('suggestions-reducer test', () => {
   it('can change search text', () => {
     const withText = suggestionsReducer(undefined, {
       type: SUGGESTION_SEARCH_TEXT_CHANGE,
-      text: 'get schwifty'
+      payload: 'get schwifty'
     })
     const withOtherText = suggestionsReducer(withText, {
       type: SUGGESTION_SEARCH_TEXT_CHANGE,
-      text: 'get schwiftier'
+      payload: 'get schwiftier'
     })
     expect(withText.search.input.text).toEqual('get schwifty')
     expect(withOtherText.search.input.text).toEqual('get schwiftier')
