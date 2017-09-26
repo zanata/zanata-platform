@@ -71,7 +71,7 @@ public class HPoTargetHeaderTest {
 
     // Better to duplicate this method (EntityTestData.setId) than to add
     // another module (or add this to zanata-model's public API!)
-    @SuppressWarnings("Duplicates")
+    @SuppressWarnings("all")
     private static void setId(ModelEntityBase entity, Long id) {
         try {
             Method setIdMethod = ModelEntityBase.class

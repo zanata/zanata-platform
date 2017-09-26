@@ -61,7 +61,6 @@ import com.google.common.base.Joiner;
 @Transactional(readOnly = true)
 public class SuggestionsService implements SuggestionsResource {
     public static final String SEARCH_TYPES = Joiner.on(", ").join(SearchType.values());
-    private static final long serialVersionUID = 1476086661647147017L;
 
     @Inject
     private TranslationMemoryService transMemoryService;

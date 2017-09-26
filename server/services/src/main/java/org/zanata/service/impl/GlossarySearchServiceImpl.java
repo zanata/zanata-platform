@@ -79,6 +79,7 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         this.contextPath = contextPath;
     }
 
+    @SuppressWarnings("unused")
     public GlossarySearchServiceImpl() {
     }
 
@@ -196,7 +197,7 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         }
         boolean hasFilter = StringUtils.isNotBlank(filter);
         if (hasFilter) {
-            url += "?filter=" + urlUtil.encodeString(filter);
+            url += "?filter=" + UrlUtil.encodeString(filter);
         }
         if (localeId != null) {
             String prefix = hasFilter ? "&" : "?";

@@ -129,9 +129,10 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
 
         File originalFile = getTestFile("test-json-untranslated.json");
         OutputStream outputStream = new ByteArrayOutputStream();
-        IFilterWriter writer = createWriter(outputStream);
-        adapter.generateTranslatedFile(originalFile.toURI(), translations,
-                this.localeId, writer, Optional.absent());
+        try (IFilterWriter writer = createWriter(outputStream)) {
+            adapter.generateTranslatedFile(originalFile.toURI(), translations,
+                    this.localeId, writer, Optional.absent());
+        }
 
         assertThat(outputStream.toString()).isEqualTo("{\n"+
             "  \"test\": {\n" +

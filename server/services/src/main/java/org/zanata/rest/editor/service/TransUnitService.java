@@ -47,7 +47,6 @@ import org.zanata.service.LocaleService;
 @Path(TransUnitResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class TransUnitService implements TransUnitResource {
-    private static final long serialVersionUID = 6606947362909857593L;
     @Inject
     private LocaleService localeServiceImpl;
 

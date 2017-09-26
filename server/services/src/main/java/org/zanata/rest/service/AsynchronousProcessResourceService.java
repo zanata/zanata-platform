@@ -87,6 +87,7 @@ public class AsynchronousProcessResourceService
     @Inject
     private ZanataIdentity identity;
 
+    @Deprecated
     @Override
     public ProcessStatus startSourceDocCreation(final String idNoSlash,
             final String projectSlug, final String iterationSlug,
@@ -124,6 +125,7 @@ public class AsynchronousProcessResourceService
         // progress
     }
 
+    @Deprecated
     @Override
     public ProcessStatus startSourceDocCreationOrUpdate(final String idNoSlash,
             final String projectSlug, final String iterationSlug,
@@ -180,17 +182,7 @@ public class AsynchronousProcessResourceService
         });
     }
 
-    /**
-     * @param idNoSlash
-     * @param projectSlug
-     * @param iterationSlug
-     * @param locale
-     * @param translatedDoc
-     * @param extensions
-     * @param merge
-     * @param assignCreditToUploader
-     * @return
-     */
+    @Deprecated
     @Override
     public ProcessStatus startTranslatedDocCreationOrUpdate(
             final String idNoSlash, final String projectSlug,
