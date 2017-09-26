@@ -164,6 +164,7 @@ timestamps {
   // allocate a node for build+unit tests
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
     // generate logs in colour
     ansicolor {
       try {
@@ -185,7 +186,6 @@ timestamps {
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
-            -Dbuildtime.output.log \
             com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
             -pl :zanata-war -am -DexcludeFrontend \
           """
@@ -200,7 +200,7 @@ timestamps {
           // -Dmaven.test.failure.ignore: Continue building other modules
           // even after test failures.
           sh """./run-clean.sh ./mvnw -e -V -T 1 \
-            -Dbuildtime.output.log \
+            -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             clean install jxr:aggregate \
             --batch-mode \
             --update-snapshots \
@@ -255,7 +255,7 @@ timestamps {
           // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
-          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
@@ -373,6 +373,8 @@ void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
+
     echo "WORKSPACE=${env.WORKSPACE}"
     // we want parallel builds to use different directories so we can distinguish the archived files
     dir(appserver) {
@@ -420,7 +422,7 @@ void integrationTests(String appserver) {
 
           def mvnResult = sh returnStatus: true, script: """\
             ./run-clean.sh ./mvnw -e -V -T 1 \
-            -Dbuildtime.output.log \
+            -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             install \
             --batch-mode \
             --update-snapshots \
@@ -436,10 +438,10 @@ void integrationTests(String appserver) {
         -DskipShade \
          */
 
-          // retain traceability report
+          // retain traceability report and build time info
           // work from parent directory so that $appserver will appear at the beginning of the archive paths
           dir('..') {
-            archive('*/server/functional-test/target/**/traceability.json')
+            archive('*/server/functional-test/target/**/traceability.json,*/target/buildtime.csv')
           }
           if (mvnResult != 0) {
             notify.testResults(appserver, 'UNSTABLE',
