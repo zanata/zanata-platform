@@ -376,37 +376,39 @@ void integrationTests(String appserver) {
     currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
 
     echo "WORKSPACE=${env.WORKSPACE}"
-    checkout scm
-    // Clean the workspace
-    sh "git clean -fdx"
+    // we want parallel builds to use different directories so we can distinguish the archived files
+    dir(appserver) {
+      checkout scm
+      // Clean the workspace
+      sh "git clean -fdx"
 
-    unstash 'generated-files'
+      unstash 'generated-files'
 
-    /* touch all target */
-    //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
+      /* touch all target */
+      //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
 
-    xvfb {
-      withPorts {
-        echo "Running maven build for integration tests"
+      xvfb {
+        withPorts {
+          echo "Running maven build for integration tests"
 
-        // Run the maven build
-        echo "env.DISPLAY=${env.DISPLAY}"
-        echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
-        echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
+          // Run the maven build
+          echo "env.DISPLAY=${env.DISPLAY}"
+          echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
+          echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
 
-        // Build up Maven options for running functional tests:
+          // Build up Maven options for running functional tests:
 
-        // avoid port conflict for debugger:
-        def ftOpts = '-Dcargo.debug.jvm.args= '
+          // disable debugging:
+          def ftOpts = '-Dcargo.debug.jvm.args= '
 
-        // run *all* functional tests in these branches only:
-        if (env.BRANCH_NAME in mainlineBranches || resolveAllFuncTests()) {
-          ftOpts += '-DallFuncTests '
-        }
+          // run *all* functional tests in these branches only:
+          if (env.BRANCH_NAME in mainlineBranches || resolveAllFuncTests()) {
+            ftOpts += '-DallFuncTests '
+          }
 
-        // skip recompilation, unit tests, static analysis
-        // (done in Build stage):
-        ftOpts += """\
+          // skip recompilation, unit tests, static analysis
+          // (done in Build stage):
+          ftOpts += """\
               -Dgwt.compiler.skip \
               -Dmaven.main.skip \
               -Dskip.npminstall \
@@ -418,7 +420,7 @@ void integrationTests(String appserver) {
               $gwtOpts \
         """
 
-        def mvnResult = sh returnStatus: true, script: """\
+          def mvnResult = sh returnStatus: true, script: """\
             ./run-clean.sh ./mvnw -e -V -T 1 \
             -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             install \
@@ -430,41 +432,48 @@ void integrationTests(String appserver) {
             -Dwebdriver.chrome.driver=/opt/chromedriver \
             ${ftOpts}
         """
-        /* TODO
+          /* TODO
         -Dassembly.skipAssembly \
         -DskipAppassembler \
         -DskipShade \
          */
 
-        // retain traceability report and build time info
-        archive(includes: "server/functional-test/target/**/traceability.json,target/buildtime.csv")
+          // retain traceability report and build time info
+          // work from parent directory so that $appserver will appear at the beginning of the archive paths
+          dir('..') {
+            archive('*/server/functional-test/target/**/traceability.json,*/target/buildtime.csv')
+          }
+          if (mvnResult != 0) {
+            notify.testResults(appserver, 'UNSTABLE',
+                    'Failed maven build for integration tests')
+            currentBuild.result = 'UNSTABLE'
 
-        if (mvnResult != 0) {
-          notify.testResults(appserver, 'UNSTABLE', 'Failed maven build for integration tests')
-          currentBuild.result = 'UNSTABLE'
+            // gather db/app/gc logs, heap dumps and screenshots to help debugging
+            // work from parent directory so that $appserver will appear at the beginning of the archive paths
+            dir('..') {
+              archive(
+                      includes: '*/server/functional-test/target/**/*.log,*/server/functional-test/target/screenshots/**,*/server/*/target/**/gc.log*,*/server/*/target/**/*.hprof',
+                      excludes: '**/BACKUP-*.log')
+            }
+          } else {
+            notify.testResults(appserver, 'SUCCESS')
+          }
 
-          // gather db/app logs and screenshots to help debugging
-          archive(
-                  includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
-                  excludes: '**/BACKUP-*.log')
-        } else {
-          notify.testResults(appserver, 'SUCCESS')
-        }
-
-        echo "Capturing JUnit results"
-        if (setJUnitPrefix(appserver, failsafeTestReports)) {
-          junit(testResults: "**/${failsafeTestReports}",
-                  // NB: if this is enabled, make sure (a) max history in Jenkins
-                  // Configuration is small (eg 3) or
-                  // (b) https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed.
-                  testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-          )
-          // Reduce workspace size
-          sh "git clean -fdx"
-        } else {
-          notify.error("No integration test result for $appserver")
-          currentBuild.result = 'FAILURE'
-          error "no integration test results for $appserver"
+          echo "Capturing JUnit results"
+          if (setJUnitPrefix(appserver, failsafeTestReports)) {
+            junit(testResults: "**/${failsafeTestReports}",
+                    // NB: if this is enabled, make sure (a) max history in Jenkins
+                    // Configuration is small (eg 3) or
+                    // (b) https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed.
+                    testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+            )
+            // Reduce workspace size
+            sh "git clean -fdx"
+          } else {
+            notify.error("No integration test result for $appserver")
+            currentBuild.result = 'FAILURE'
+            error "no integration test results for $appserver"
+          }
         }
       }
     }
