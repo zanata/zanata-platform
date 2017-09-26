@@ -9,22 +9,21 @@
 @Field
 public static final String PIPELINE_LIBRARY_BRANCH = 'ZNTA-2201-correctSHA'
 
-library 'zanata-pipeline-library@' + PIPELINE_LIBRARY_BRANCH
-import org.zanata.jenkins.Notifier
-import org.zanata.jenkins.PullRequests
-import static org.zanata.jenkins.StackTraces.getStackTrace
-
 import groovy.transform.Field
 
 // The first milestone step starts tracking concurrent build order
 milestone()
 
-PullRequests.ensureJobDescription(env, manager, steps)
+@Field
+def pipelineLib
+// initialiser must be run separately (bindings not available during compilation phase)
+pipelineLib=library('zanata-pipeline-library@' + PIPELINE_LIBRARY_BRANCH).org.zanata.jenkins
+
+pipelineLib.PullRequests.ensureJobDescription(env, manager, steps)
 
 @Field
 def notify
-// initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps, currentBuild,
+notify = pipelineLib.Notifier.new(env, steps, currentBuild,
     'https://github.com/zanata/zanata-platform.git',
     'Jenkinsfile', PIPELINE_LIBRARY_BRANCH,
 )
@@ -32,6 +31,7 @@ notify = new Notifier(env, steps, currentBuild,
 // we can't set these values yet, because we need a node to look at the environment
 @Field
 def defaultNodeLabel
+
 @Field
 def jobName
 
@@ -90,12 +90,12 @@ String getLabel() {
   } catch (e1) {
     // workaround for https://issues.jenkins-ci.org/browse/JENKINS-38813
     echo '[WARNING] unable to access `params`'
-    echo getStackTrace(e1)
+    echo pipelineLib.StackTraces.getStackTrace(e1)
     try {
       labelParam = LABEL
     } catch (e2) {
       echo '[WARNING] unable to access `LABEL`'
-      echo getStackTrace(e2)
+      echo pipelineLib.StackTraces.getStackTrace(e2)
     }
   }
 
@@ -116,12 +116,12 @@ boolean resolveAllFuncTests() {
   } catch (e1) {
     // workaround for https://issues.jenkins-ci.org/browse/JENKINS-38813
     echo '[WARNING] unable to access `params`'
-    echo getStackTrace(e1)
+    echo pipelineLib.StackTraces.getStackTrace(e1)
     try {
       paramVal = allFuncTests
     } catch (e2) {
       echo '[WARNING] unable to access `allFuncTests`'
-      echo getStackTrace(e2)
+      echo pipelineLib.StackTraces.getStackTrace(e2)
     }
   }
 
