@@ -97,14 +97,9 @@ export const getKeyShortcutsVisible =
 const $toggle = {$apply: bool => !bool}
 
 export default handleActions({
-  [SUGGESTION_PANEL_HEIGHT_CHANGE]: (state, { payload }) =>
-    update(state, {
-      panels: {
-        suggestions: {
-          heightPercent: {$set: payload}
-        }
-      }
-    }),
+  [SUGGESTION_PANEL_HEIGHT_CHANGE]: (state, { payload }) => update(state,
+    { panels: { suggestions: { heightPercent: {$set: payload} } } }),
+
 
   // selectedTab and showSettings will always be the same after this toggle,
   // either they already had the values below, or we needed to set them.
