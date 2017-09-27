@@ -63,7 +63,7 @@ class ConnectionWrapper implements InvocationHandler {
                 && getInvocationHandler(conn) instanceof ConnectionWrapper) {
             return conn;
         }
-        return ProxyUtil.newProxy(conn, new ConnectionWrapper(conn));
+        return (Connection) ProxyUtil.newProxy(conn, new ConnectionWrapper(conn));
     }
 
     @VisibleForTesting

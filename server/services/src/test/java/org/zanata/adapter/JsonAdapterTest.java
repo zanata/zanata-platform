@@ -147,6 +147,8 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
             "}\n");
     }
 
+    // we do clean up the writer, but in the caller
+    @SuppressWarnings("all")
     private IFilterWriter createWriter(OutputStream outputStream) {
         IFilterWriter writer = new JSONFilter().createFilterWriter();
         writer.setOptions(this.localeId, Charsets.UTF_8.name());
