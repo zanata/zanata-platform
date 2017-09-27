@@ -81,6 +81,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Inject
     private ActivityLockManager activityLockManager;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private TransactionUtil transactionUtil;
 

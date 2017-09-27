@@ -67,15 +67,13 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
 
     private GlossaryDAO glossaryDAO;
     private LocaleService localeServiceImpl;
-    private UrlUtil urlUtil;
     private String contextPath;
 
     @Inject
     public GlossarySearchServiceImpl(GlossaryDAO glossaryDAO,
-            LocaleService localeServiceImpl, UrlUtil urlUtil, @ContextPath String contextPath) {
+            LocaleService localeServiceImpl, @ContextPath String contextPath) {
         this.glossaryDAO = glossaryDAO;
         this.localeServiceImpl = localeServiceImpl;
-        this.urlUtil = urlUtil;
         this.contextPath = contextPath;
     }
 
