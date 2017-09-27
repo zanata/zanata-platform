@@ -1167,7 +1167,7 @@ public class SearchResultsPresenter extends
      */
     private boolean replaceSelectedAllowed() {
         boolean requirePreview = display.getRequirePreviewChk().getValue();
-        @SuppressWarnings("UnnecessaryLocalVariable")
+        //noinspection UnnecessaryLocalVariable
         boolean canReplace =
                 countSelectedFlows() != 0
                         && (!requirePreview || allSelectedHavePreview());
