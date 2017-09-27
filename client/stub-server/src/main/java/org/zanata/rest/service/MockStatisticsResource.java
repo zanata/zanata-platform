@@ -63,6 +63,7 @@ public class MockStatisticsResource implements StatisticsResource {
         return stats;
     }
 
+    @Deprecated
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,

@@ -38,6 +38,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Path(TranslatedDocResource.SERVICE_PATH)
 public class MockTranslatedDocResource implements TranslatedDocResource {
 
+    @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean createSkeletons,
@@ -55,6 +56,7 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
         return Response.ok(transResource).build();
     }
 
+    @Deprecated
     @Override
     public Response deleteTranslations(String idNoSlash, LocaleId locale) {
         return deleteTranslationsWithDocId(locale, idNoSlash);
@@ -65,6 +67,7 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
         return MockResourceUtil.notUsedByClient();
     }
 
+    @Deprecated
     @Override
     public Response putTranslations(String idNoSlash, LocaleId locale,
             TranslationsResource messageBody, Set<String> extensions,

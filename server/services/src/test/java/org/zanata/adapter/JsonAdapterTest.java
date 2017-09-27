@@ -129,9 +129,10 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
 
         File originalFile = getTestFile("test-json-untranslated.json");
         OutputStream outputStream = new ByteArrayOutputStream();
-        IFilterWriter writer = createWriter(outputStream);
-        adapter.generateTranslatedFile(originalFile.toURI(), translations,
-                this.localeId, writer, Optional.absent());
+        try (IFilterWriter writer = createWriter(outputStream)) {
+            adapter.generateTranslatedFile(originalFile.toURI(), translations,
+                    this.localeId, writer, Optional.absent());
+        }
 
         assertThat(outputStream.toString()).isEqualTo("{\n"+
             "  \"test\": {\n" +
@@ -146,6 +147,8 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
             "}\n");
     }
 
+    // we do clean up the writer, but in the caller
+    @SuppressWarnings("all")
     private IFilterWriter createWriter(OutputStream outputStream) {
         IFilterWriter writer = new JSONFilter().createFilterWriter();
         writer.setOptions(this.localeId, Charsets.UTF_8.name());

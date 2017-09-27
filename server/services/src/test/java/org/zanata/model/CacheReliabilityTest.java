@@ -23,10 +23,6 @@ package org.zanata.model;
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hibernate.Session;
-import org.hibernate.stat.SecondLevelCacheStatistics;
-import org.hibernate.stat.SessionStatistics;
-import org.hibernate.stat.Statistics;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 
@@ -119,16 +115,4 @@ public class CacheReliabilityTest extends ZanataDbunitJpaTest {
         em2.close();
     }
 
-    private SessionStatistics getSessionStatistics(EntityManager em) {
-        return ((Session) em.getDelegate()).getStatistics();
-    }
-
-    private SecondLevelCacheStatistics getSecondLevelCacheStatistics(
-            EntityManager em, String regionName) {
-        Statistics sessFactoryStats =
-                ((Session) em.getDelegate()).getSessionFactory()
-                        .getStatistics();
-        sessFactoryStats.setStatisticsEnabled(true);
-        return sessFactoryStats.getSecondLevelCacheStatistics(regionName);
-    }
 }

@@ -56,6 +56,7 @@ import static org.zanata.common.ProjectType.fileProjectSourceDocTypes;
  */
 @Path(FileResource.SERVICE_PATH)
 public class MockFileResource implements FileResource {
+
     @Override
     @Deprecated
     public Response acceptedFileTypes() {

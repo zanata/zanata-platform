@@ -39,6 +39,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
  */
 @Path(SourceDocResource.SERVICE_PATH)
 public class MockSourceDocResource implements SourceDocResource {
+
     @Override
     public Response head() {
         return Response.ok(new EntityTag(new Date().toString())).build();
@@ -61,6 +62,7 @@ public class MockSourceDocResource implements SourceDocResource {
         return MockResourceUtil.notUsedByClient();
     }
 
+    @Deprecated
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
        return getResourceWithDocId(idNoSlash, extensions);
@@ -72,6 +74,7 @@ public class MockSourceDocResource implements SourceDocResource {
         return Response.ok(new Resource(docId)).build();
     }
 
+    @Deprecated
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copyTrans) {
@@ -85,6 +88,7 @@ public class MockSourceDocResource implements SourceDocResource {
         return Response.ok(resource.getName()).build();
     }
 
+    @Deprecated
     @Override
     public Response deleteResource(String idNoSlash) {
         return deleteResourceWithDocId(idNoSlash);
@@ -95,6 +99,7 @@ public class MockSourceDocResource implements SourceDocResource {
         return Response.ok().build();
     }
 
+    @Deprecated
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
         return getResourceMetaWithDocId(idNoSlash, extensions);
@@ -106,6 +111,7 @@ public class MockSourceDocResource implements SourceDocResource {
         return MockResourceUtil.notUsedByClient();
     }
 
+    @Deprecated
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta resourceMeta,
             Set<String> extensions) {

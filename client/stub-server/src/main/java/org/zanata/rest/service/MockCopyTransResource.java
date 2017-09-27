@@ -31,6 +31,7 @@ import org.zanata.rest.dto.CopyTransStatus;
  */
 @Path(CopyTransResource.SERVICE_PATH)
 public class MockCopyTransResource implements CopyTransResource {
+
     @Override
     public CopyTransStatus startCopyTrans(String projectSlug,
             String iterationSlug, String docId) {
