@@ -1,5 +1,5 @@
-import updateObject from 'immutability-helper'
-
+import { handleActions } from 'redux-actions'
+import update from 'immutability-helper'
 import {
   DIFF_SETTING_CHANGED,
   PHRASE_SUGGESTION_STARTED_COPYING,
@@ -37,90 +37,52 @@ const defaultState = {
   }
 }
 
-const suggestions = (state = defaultState, action) => {
-  switch (action.type) {
-    case DIFF_SETTING_CHANGED:
-      return update({showDiff: {$set: !state.showDiff}})
+const suggestionsReducer = handleActions({
+  [DIFF_SETTING_CHANGED]: state =>
+    update(state, {showDiff: {$set: !state.showDiff}}),
 
-    // could add action.copying and combine started+finished actions
-    case PHRASE_SUGGESTION_FINISHED_COPYING:
-      return update({
-        searchByPhrase: {
-          [action.payload.phraseId]: {
-            suggestions: {
-              [action.payload.index]: {copying: {$set: false}}
-            }
-          }
-        }
-      })
+  // could add action.copying and combine started+finished actions
+  [PHRASE_SUGGESTION_FINISHED_COPYING]: (state, {payload: {phraseId, index}}) =>
+    update(state, { searchByPhrase: { [phraseId]: { suggestions: { [index]: {
+      copying: {$set: false}} } } } }),
 
-    case PHRASE_SUGGESTION_STARTED_COPYING:
-      return update({
-        searchByPhrase: {
-          [action.payload.phraseId]: {
-            suggestions: {
-              [action.payload.index]: {copying: {$set: true}}
-            }
-          }
-        }
-      })
+  [PHRASE_SUGGESTION_STARTED_COPYING]: (state, {payload: {phraseId, index}}) =>
+    update(state, { searchByPhrase: { [phraseId]: { suggestions: { [index]: {
+      copying: {$set: true}} } } } }),
 
-    case PHRASE_SUGGESTIONS_UPDATED:
-      return update({
-        searchByPhrase: {
-          // must $set a new object because the key may not yet be defined
-          [action.payload.phraseId]: {$set: {
-            loading: action.payload.loading,
-            searchStrings: action.payload.searchStrings,
-            suggestions: action.payload.suggestions,
-            timestamp: action.payload.timestamp
-          }}
-        }
-      })
+  [PHRASE_SUGGESTIONS_UPDATED]: (state, { payload:
+    {phraseId, loading, searchStrings, suggestions, timestamp}}) =>
+    update(state, { searchByPhrase: { [phraseId]:
+        // must $set a new object because the key may not yet be defined
+        {$set: { loading, searchStrings, suggestions, timestamp }}
+      }
+    }),
 
-    case SET_SUGGESTION_SEARCH_TYPE:
-      return update({searchType: {$set: action.payload}})
+  [SET_SUGGESTION_SEARCH_TYPE]: (state, { payload }) =>
+    update(state, {searchType: {$set: payload}}),
 
-    case SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX:
-      return update({showDetailModalForIndex: {$set: action.payload}})
+  [SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX]: (state, { payload }) =>
+    update(state, {showDetailModalForIndex: {$set: payload}}),
 
-    case SUGGESTION_SEARCH_TEXT_CHANGE:
-      return update({search: {input: {text: {$set: action.payload}}}})
+  [SUGGESTION_SEARCH_TEXT_CHANGE]: (state, { payload }) =>
+    update(state, {search: {input: {text: {$set: payload}}}}),
 
-    case TEXT_SUGGESTION_FINISHED_COPYING:
-      return update({
-        textSearch: {
-          suggestions: {[action.payload]: {copying: {$set: false}}}
-        }
-      })
+  [TEXT_SUGGESTION_FINISHED_COPYING]: (state, { payload }) =>
+    update(state,
+      {textSearch: {suggestions: {[payload]: {copying: {$set: false}}}}}),
 
-    case TEXT_SUGGESTION_STARTED_COPYING:
-      return update({
-        textSearch: {
-          suggestions: {[action.payload]: {copying: {$set: true}}}
-        }
-      })
+  [TEXT_SUGGESTION_STARTED_COPYING]: (state, { payload }) =>
+    update(state,
+      {textSearch: {suggestions: {[payload]: {copying: {$set: true}}}}}),
 
-    case TEXT_SUGGESTIONS_UPDATED:
-      return update({textSearch: {
-        loading: {$set: action.payload.loading},
-        searchStrings: {$set: action.payload.searchStrings},
-        suggestions: {$set: action.payload.suggestions},
-        timestamp: {$set: action.payload.timestamp}
+  [TEXT_SUGGESTIONS_UPDATED]: (state, { payload:
+    {loading, searchStrings, suggestions, timestamp} }) => update(state,
+      {textSearch: {
+        loading: {$set: loading},
+        searchStrings: {$set: searchStrings},
+        suggestions: {$set: suggestions},
+        timestamp: {$set: timestamp}
       }})
+}, defaultState)
 
-    default:
-      return state
-  }
-
-  /**
-   * Apply the given commands to state.
-   *
-   * Just a shortcut to avoid having to pass state to update over and over.
-   */
-  function update (commands) {
-    return updateObject(state, commands)
-  }
-}
-
-export default suggestions
+export default suggestionsReducer
