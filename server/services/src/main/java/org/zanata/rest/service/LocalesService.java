@@ -70,7 +70,6 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 @Path(LocalesResource.SERVICE_PATH)
 public class LocalesService implements LocalesResource {
 
-    private static final long serialVersionUID = 8093381226182123148L;
     /**
      * Maximum result for per page.
      */
