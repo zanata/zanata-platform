@@ -65,12 +65,6 @@ export const getShortcuts = createSelector(getEnterSavesImmediately,
       keyConfig: {
         keys: {$apply: keys => keys.map(v => v === 'mod+enter' ? 'enter' : v)}
       }
-    },
-    GOTO_PREVIOUS_ROW: {
-      keyConfig: {
-        keys: {$apply: keys => keys.map(
-          v => v === 'mod+shift+enter' ? 'shift+enter' : v)}
-      }
     }
   }) : SHORTCUTS)
 
