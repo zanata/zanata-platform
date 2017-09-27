@@ -3,7 +3,7 @@ package org.zanata.rest.editor.service;
 import java.io.Serializable;
 import java.util.List;
 import com.google.common.base.Optional;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;

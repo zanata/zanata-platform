@@ -27,7 +27,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
