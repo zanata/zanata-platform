@@ -70,7 +70,14 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                     @SuppressWarnings("unchecked")
                     Map<String, ?> a = (Map<String, ?>) args;
                     if (TRUE.equals(a.get("returnStdout"))) {
-                        return "JBOSS_HTTP_PORT=51081\nSMTP_PORT=34765\n";
+                        String script = a.get("script").toString();
+                        if (script.contains("allocate-jboss-ports")) {
+                            return "JBOSS_HTTP_PORT=51081\nSMTP_PORT=34765\n";
+                        }
+                        // Notifier.groovy in zanata-pipeline-library uses this:
+                        if (script.contains("git ls-remote")) {
+                            return "1234567890 abcdef\n";
+                        }
                     }
                     if (TRUE.equals(a.get("returnStatus"))) {
                         return 0;
