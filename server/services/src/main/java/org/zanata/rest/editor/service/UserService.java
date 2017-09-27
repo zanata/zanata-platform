@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;

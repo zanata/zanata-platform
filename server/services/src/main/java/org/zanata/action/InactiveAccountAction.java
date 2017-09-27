@@ -2,7 +2,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.Date;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;

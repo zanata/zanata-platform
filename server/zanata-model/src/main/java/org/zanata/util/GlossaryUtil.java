@@ -21,7 +21,7 @@
 
 package org.zanata.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.service.GlossaryResource;
 

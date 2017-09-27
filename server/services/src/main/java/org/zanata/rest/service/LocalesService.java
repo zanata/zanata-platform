@@ -36,7 +36,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import javax.inject.Inject;
 import javax.inject.Named;

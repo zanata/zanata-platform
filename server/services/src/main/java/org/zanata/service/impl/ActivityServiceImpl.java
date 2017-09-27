@@ -32,7 +32,7 @@ import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 
