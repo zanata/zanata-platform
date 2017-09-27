@@ -53,7 +53,6 @@ import com.google.common.base.Objects;
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
 public class ProjectService implements ProjectResource {
-    private static final long serialVersionUID = -3670404109711592923L;
     /** Project Identifier. */
     @PathParam("projectSlug")
     String projectSlug;
