@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Panel, Row, Table } from 'react-bootstrap'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { Icon, LoaderText, Modal } from '../../../components'
+import { isEmpty } from 'lodash'
+import cx from 'classnames'
 
 /**
  * Modal to show detail for a single glossary term
@@ -88,8 +90,11 @@ class GlossaryTermModal extends React.Component {
             <span className="modal-term">{term.source}</span>
           </Panel>
           <Panel className={directionClassTarget + ' split-panel'}>
-            <h3>Target Term : {targetLocale}</h3>
-            <span className="modal-term">{term.target}</span>
+            <h3>Translation : {targetLocale}</h3>
+            <span className={
+              cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
+                {isEmpty(term.target) ? '-none-' : term.target}
+            </span>
           </Panel>
           <br />
           <Panel className="gloss-details-panel">
