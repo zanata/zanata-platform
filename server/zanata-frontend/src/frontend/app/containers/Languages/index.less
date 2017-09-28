@@ -81,6 +81,57 @@ span.languageCode {
   vertical-align: text-bottom;
 }
 
+.reactList {
+  height: auto;
+}
+
+.reactAutoSuggest-container {
+  position: relative;
+}
+
+.reactAutoSuggest-input {
+  border: 0;
+  width: 100%;
+}
+
+.reactAutoSuggest-input:focus {
+  outline: 0;
+}
+
+.reactAutoSuggest-container--open .reactAutoSuggest-input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.reactAutoSuggest-suggestionsContainer {
+  display: none;
+}
+
+.reactAutoSuggest-container--open .reactAutoSuggest-suggestionsContainer {
+  display: block;
+  position: absolute;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  border-bottom-left-radius: @border-radius-base;
+  border-bottom-right-radius: @border-radius-base;
+  z-index: 2;
+}
+
+.reactAutoSuggest-suggestionsList {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.reactAutoSuggest-suggestion {
+  cursor: pointer;
+  padding: 0.4em 0.5rem;
+}
+
+.reactAutoSuggest-suggestion--highlighted {
+  background-color: @color-neutral;
+}
+
 input.react-autosuggest__input {
   padding: 0;
   border: none;
@@ -88,6 +139,11 @@ input.react-autosuggest__input {
 
 input.react-autosuggest__input:focus  {
   outline: 0;
+}
+
+.noSuggestions {
+  margin-top: @spacing-large-horizontal;
+  padding-left: @spacing-base;
 }
 
 @media (min-width: @screen-md-min) {
