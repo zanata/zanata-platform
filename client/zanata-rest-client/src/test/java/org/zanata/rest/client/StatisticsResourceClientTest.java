@@ -59,11 +59,22 @@ public class StatisticsResourceClientTest {
         assertThat(statistics.getStats(), Matchers.hasSize(3));
     }
 
+    @Deprecated
     @Test
     public void testGetDocStatistics() {
         String docId = "About-Fedora";
         ContainerTranslationStatistics statistics =
                 client.getStatistics("about-fedora", "master", docId,
+                        true, new String[] { "de-DE", "zh-CN" });
+        assertThat(statistics.getId(), Matchers.equalTo(docId));
+        assertThat(statistics.getStats(), Matchers.hasSize(2));
+    }
+
+    @Test
+    public void testGetDocStatisticsWithDocId() {
+        String docId = "About-Fedora";
+        ContainerTranslationStatistics statistics =
+                client.getStatisticsWithDocId("about-fedora", "master", docId,
                         true, new String[] { "de-DE", "zh-CN" });
         assertThat(statistics.getId(), Matchers.equalTo(docId));
         assertThat(statistics.getStats(), Matchers.hasSize(2));

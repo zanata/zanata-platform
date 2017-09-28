@@ -24,8 +24,6 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 
 import org.zanata.config.AllowAnonymousAccess;
-import org.zanata.config.OAuthTokenExpiryInSeconds;
-import org.zanata.config.SupportOAuth;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>

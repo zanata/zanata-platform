@@ -37,8 +37,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 public class MockAsynchronousProcessResource implements
         AsynchronousProcessResource {
-    private static final long serialVersionUID = 8841332691985560066L;
 
+    @Deprecated
     @Override
     // TODO: remove this test when parent method is removed
     public ProcessStatus startSourceDocCreation(String idNoSlash,
@@ -47,6 +47,7 @@ public class MockAsynchronousProcessResource implements
         return MockResourceUtil.notUsedByClient();
     }
 
+    @Deprecated
     @Override
     public ProcessStatus startSourceDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
@@ -66,6 +67,7 @@ public class MockAsynchronousProcessResource implements
         return processStatus;
     }
 
+    @Deprecated
     @Override
     public ProcessStatus startTranslatedDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, LocaleId locale,

@@ -85,8 +85,9 @@ public class Deployments {
     private static void printArchiveContents(Archive archive) {
         // We could just use archive.toString(verbose=true), but it's
         // nicer to have sorting.
+        @SuppressWarnings("unchecked")
         ArrayList<ArchivePath> paths =
-                new ArrayList<>(archive.getContent().keySet());
+                new ArrayList<ArchivePath>(archive.getContent().keySet());
         Collections.sort(paths);
         log.info("Deployment contents:");
         paths.forEach(it -> log.info("  " + it.get()));

@@ -40,7 +40,7 @@ class ResultSetWrapper implements InvocationHandler {
                 .getInvocationHandler(resultSet) instanceof ResultSetWrapper) {
             return resultSet;
         }
-        return ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet,
+        return (ResultSet) ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet,
                 statementProxy, connectionProxy, streaming));
     }
 

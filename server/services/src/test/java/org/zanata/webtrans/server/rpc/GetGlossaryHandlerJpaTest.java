@@ -23,7 +23,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossarySearchServiceImpl;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.GlossaryUtil;
-import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
@@ -54,9 +53,6 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     @Produces
     @Mock
     private LocaleService localeService;
-    @Produces
-    @Mock
-    private UrlUtil urlUtil;
     @Produces
     @Mock
     @FullText
@@ -90,7 +86,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         glossaryDAO = spy(dao);
         targetHLocale = getEm().find(HLocale.class, 2L);
         glossarySearchService =
-                new GlossarySearchServiceImpl(glossaryDAO, localeService, urlUtil, "/");
+                new GlossarySearchServiceImpl(glossaryDAO, localeService, "/");
     }
 
     @Test
