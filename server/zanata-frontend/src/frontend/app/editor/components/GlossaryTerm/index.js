@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
+import cx from 'classnames'
 
 class GlossaryTerm extends React.Component {
   static propTypes = {
@@ -57,11 +58,12 @@ class GlossaryTerm extends React.Component {
         <td data-filetype="text" className="GlossaryText long-string">
           <OverlayTrigger placement="top" overlay={targetTip}>
             <Button bsStyle="link">
-              <span>
+              <span className={
+                cx({'u-textMuted': isEmpty(term.target)})}>
                 <span className="hide-mdplus u-textMeta">
-                  Target
+                  Translation
                 </span>
-                {term.target}
+                {isEmpty(term.target) ? '-none-' : term.target}
               </span>
             </Button>
           </OverlayTrigger>
