@@ -84,7 +84,7 @@ class GlossaryTab extends React.Component {
         <thead className="hide-small">
           <tr>
             <th>Source</th>
-            <th>Target</th>
+            <th>Translation</th>
             <th></th>
             <th></th>
           </tr>
