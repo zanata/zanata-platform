@@ -935,7 +935,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public String encodeDocId(String docId) {
-        return urlUtil.encodeString(docId);
+        return UrlUtil.encodeString(docId);
     }
 
     public String uploadTranslationFile(HLocale hLocale) {

@@ -146,7 +146,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         this.urlUtil = urlUtil;
     }
 
-    @SuppressWarnings("unused")
     public TranslationMemoryServiceImpl() {
     }
 
