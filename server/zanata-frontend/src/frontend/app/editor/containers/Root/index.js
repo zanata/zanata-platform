@@ -7,7 +7,7 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
-import { setSidebarVisibility } from '../../actions'
+import { getSuggestionsPanelVisible } from '../../reducers'
 import { fetchUiLocales } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
@@ -20,10 +20,8 @@ import Sidebar from '../Sidebar'
 class Root extends Component {
   static propTypes = {
     percentHeight: PropTypes.number.isRequired,
-    showSidebar: PropTypes.bool.isRequired,
     showSuggestion: PropTypes.bool,
     requestUiLocales: PropTypes.func.isRequired,
-    setSidebarVisible: PropTypes.func.isRequired,
     saveSuggestionPanelHeight: PropTypes.func.isRequired
   }
 
@@ -76,8 +74,7 @@ class Root extends Component {
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
           <Icons />
           <EditorHeader />
-          <Sidebar open={this.props.showSidebar}
-            setSidebarVisible={this.props.setSidebarVisible}>
+          <Sidebar>
             <SplitPane ref="suggestionResizer"
               split="horizontal"
               defaultSize={pixelHeight}
@@ -94,19 +91,17 @@ class Root extends Component {
   }
 }
 
-function mapStateToProps ({ ui }) {
+function mapStateToProps (state) {
+  const { sidebar, suggestions } = state.ui.panels
   return {
-    percentHeight: ui.panels.suggestions.heightPercent,
-    showSidebar: ui.panels.sidebar.visible,
-    showSuggestion: ui.panels.suggestions.visible
+    percentHeight: suggestions.heightPercent,
+    showSidebar: sidebar.visible,
+    showSuggestion: getSuggestionsPanelVisible(state)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSidebarVisible: (visible) => {
-      dispatch(setSidebarVisibility(visible))
-    },
     saveSuggestionPanelHeight: (pixelHeight) => {
       const percent = pixelHeight / window.innerHeight
       dispatch(saveSuggestionPanelHeight(percent))
