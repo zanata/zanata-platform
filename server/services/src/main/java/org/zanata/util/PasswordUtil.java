@@ -1,13 +1,6 @@
 package org.zanata.util;
 
-import java.nio.charset.Charset;
-import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-
-import javax.annotation.Nullable;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 

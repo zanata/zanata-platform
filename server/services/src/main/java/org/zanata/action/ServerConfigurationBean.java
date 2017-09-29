@@ -34,9 +34,6 @@ import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.validator.DomainList;
@@ -63,7 +60,7 @@ public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
     @Inject
     private FacesMessages facesMessages;
-    public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
+    public static final String DEFAULT_HELP_URL = "http://docs.zanata.org/en/release/";
     public static final String DEFAULT_TERM_OF_USE_URL =
             "http://zanata.org/terms";
     @Inject

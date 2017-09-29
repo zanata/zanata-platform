@@ -15,6 +15,7 @@ import com.google.common.annotations.VisibleForTesting;
  */
 public class BeanHolder<T> implements Provider<T>, AutoCloseable,
         Serializable {
+    private static final long serialVersionUID = -3155740403828822415L;
     private final DependentProvider<T> provider;
     private final T bean;
 

@@ -52,9 +52,6 @@ import org.zanata.util.UrlUtil;
 @Transactional
 public class NewProfileAction extends AbstractProfileAction
         implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(NewProfileAction.class);
-
     private static final long serialVersionUID = 1L;
     @Inject
     private ZanataOpenId zanataOpenId;

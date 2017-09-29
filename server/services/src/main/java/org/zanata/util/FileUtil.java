@@ -20,12 +20,9 @@
  */
 package org.zanata.util;
 
-import org.apache.commons.io.FilenameUtils;
-import org.zanata.exception.FileFormatAdapterException;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 

@@ -58,6 +58,8 @@ import com.google.common.collect.Lists;
 public class ProjectIterationDAO extends
         AbstractDAOImpl<HProjectIteration, Long> {
 
+    private static final long serialVersionUID = 5643663448633778779L;
+
     public ProjectIterationDAO() {
         super(HProjectIteration.class);
     }
@@ -89,7 +91,7 @@ public class ProjectIterationDAO extends
     public List<HProjectIteration> getByProjectSlug(
             @Nonnull String projectSlug, EntityStatus... includeStatus) {
         if (StringUtils.isEmpty(projectSlug)) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         StringBuilder sb = new StringBuilder();
         sb.append("from HProjectIteration version where ").
@@ -107,6 +109,7 @@ public class ProjectIterationDAO extends
                     Lists.newArrayList(includeStatus));
         }
         q.setComment("ProjectIterationDAO.getByProjectSlug");
+        @SuppressWarnings("unchecked")
         List<HProjectIteration> results = q.list();
         return results;
 
@@ -418,7 +421,7 @@ public class ProjectIterationDAO extends
 
     public int getTotalProjectIterCount() {
         String query = "select count(*) from HProjectIteration";
-        Query q = getSession().createQuery(query.toString());
+        Query q = getSession().createQuery(query);
         q.setCacheable(true).setComment(
                 "ProjectIterationDAO.getTotalProjectIterCount");
         Long totalCount = (Long) q.uniqueResult();
@@ -487,7 +490,9 @@ public class ProjectIterationDAO extends
         q.setCacheable(false).setComment(
                 "ProjectIterationDAO.searchLikeSlugOrProjectSlug");
 
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> result = q.list();
+        return result;
     }
 
     public List<HProjectIteration> searchByProjectId(Long projectId) {
@@ -498,7 +503,9 @@ public class ProjectIterationDAO extends
                                 + "order by t.creationDate DESC");
         q.setParameter("projectId", projectId);
         q.setCacheable(false).setComment("ProjectIterationDAO.findByProjectId");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> result = q.list();
+        return result;
     }
 
     public List<HProjectIteration> searchByProjectsExcludeObsolete(
@@ -518,7 +525,9 @@ public class ProjectIterationDAO extends
                 .setParameter("status", EntityStatus.OBSOLETE)
                 .setCacheable(false).setComment(
                         "ProjectIterationDAO.searchByProjectIdsExcludeObsolete");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> result = q.list();
+        return result;
     }
 
     public List<HAccount> getContributors(String projectSlug, String versionSlug,
@@ -545,18 +554,19 @@ public class ProjectIterationDAO extends
         q.setTimestamp("toDate", dataRange.getToDate().toDate());
         q.setCacheable(true).setComment(
             "ProjectIterationDAO.getContributors");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HAccount> result = q.list();
+        return result;
     }
 
     public int getTotalDocCount(String projectSlug, String iterationSlug) {
-        StringBuilder query = new StringBuilder();
-        query.append("select count(doc) from HDocument doc ")
-                .append("where doc.projectIteration.slug=:iterationSlug")
-                .append("and doc.projectIteration.project.slug=:projectSlug ")
-                .append("and doc.projectIteration.status <> :obsolete ")
-                .append("and doc.obsolete = false");
+        String query = "select count(doc) from HDocument doc " +
+                "where doc.projectIteration.slug=:iterationSlug" +
+                "and doc.projectIteration.project.slug=:projectSlug " +
+                "and doc.projectIteration.status <> :obsolete " +
+                "and doc.obsolete = false";
 
-        Query q = getSession().createQuery(query.toString())
+        Query q = getSession().createQuery(query)
                 .setParameter("iterationSlug", iterationSlug)
                 .setParameter("projectSlug", projectSlug)
                 .setParameter("obsolete", EntityStatus.OBSOLETE);

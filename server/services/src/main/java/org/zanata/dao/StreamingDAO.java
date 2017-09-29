@@ -37,6 +37,7 @@ import java.io.Serializable;
  */
 public abstract class StreamingDAO<T> implements Serializable {
 
+    private static final long serialVersionUID = 7776499188380358099L;
     private SessionFactory sessionFactory;
 
     public StreamingDAO(SessionFactory sessionFactory) {
@@ -50,7 +51,6 @@ public abstract class StreamingDAO<T> implements Serializable {
      * @return a CloseableIterator
      */
     StreamingEntityIterator<T> createIterator() {
-        @SuppressWarnings("null")
         @Nonnull
         Session session =
                 sessionFactory.openSession();

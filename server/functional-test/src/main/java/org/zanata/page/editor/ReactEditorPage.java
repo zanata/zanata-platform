@@ -87,4 +87,9 @@ public class ReactEditorPage extends CorePage {
     private List<WebElement> getTextUnits() {
         return getDriver().findElements(transUnitText);
     }
+
+    public void expectNumberOfTargets(int expected) {
+      waitForAMoment().until(it ->
+          getTransunitTargets().size() == expected);
+    }
 }

@@ -67,6 +67,7 @@ public class TranslationMemoryResourceService
         implements TranslationMemoryResource, Serializable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslationMemoryResourceService.class);
+    private static final long serialVersionUID = -8860942738710793736L;
 
     @Inject
     private LocaleService localeServiceImpl;

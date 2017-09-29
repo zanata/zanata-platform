@@ -13,7 +13,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,7 +39,6 @@ import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 
 /**
@@ -77,7 +75,6 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private Provider<Boolean> allowAnonymousAccessProvider;
 
 
-    @SuppressWarnings("unused")
     public ZanataRestSecurityInterceptor() {
     }
 

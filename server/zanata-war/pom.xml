@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -307,25 +307,6 @@
           <skip>${allow.deploy.skip}</skip>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <extensions>true</extensions>
-
-        <configuration>
-          <!-- Recompile all sources if any source is recompiled! Hurts
-               incremental build performance.
-               Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=447546
-               If this proves too expensive, we could remove
-               org.atteo.classindex, return null in JaxRSApplication and
-               just let RESTEasy scan for @Path and @Provider classes at runtime.
-           -->
-          <proc>procEX</proc>
-          <annotationProcessors>org.zanata.util.JaxRSClassIndexProcessor</annotationProcessors>
-        </configuration>
-      </plugin>
-
     </plugins>
 
     <pluginManagement>
@@ -736,7 +717,6 @@
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
-      <version>2.0.5</version>
     </dependency>
 
     <dependency>
@@ -801,6 +781,10 @@
           <groupId>org.jboss.weld.se</groupId>
           <artifactId>weld-se-core</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>annotations</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
+        </exclusion>
       </exclusions>
       <scope>test</scope>
     </dependency>
@@ -809,11 +793,6 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.atteo.classindex</groupId>
-      <artifactId>classindex</artifactId>
     </dependency>
 
     <!-- Zanata-specific dependencies -->
@@ -1400,19 +1379,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId>
-      <version>0.9.10</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
       <groupId>javax.xml.stream</groupId>
       <artifactId>stax-api</artifactId>
       <scope>provided</scope>
@@ -1567,6 +1533,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.googlecode.junit-toolbox</groupId>
+      <artifactId>junit-toolbox</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -1795,6 +1767,7 @@
       <version>1.27</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -1920,7 +1893,6 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>gwt-test</artifactId>
-      <version>4.3.0-SNAPSHOT</version>
     </dependency>
 
 

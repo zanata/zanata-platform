@@ -3,7 +3,6 @@ package org.zanata.events;
 import java.io.Serializable;
 import java.util.List;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import com.google.common.collect.ImmutableList;

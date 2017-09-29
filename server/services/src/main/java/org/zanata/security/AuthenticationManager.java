@@ -62,8 +62,7 @@ import io.undertow.security.idm.Account;
 @Named("authenticationManager")
 @RequestScoped
 public class AuthenticationManager implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(AuthenticationManager.class);
+    private static final long serialVersionUID = 4786777732709831213L;
 
     @Inject
     private ZanataIdentity identity;

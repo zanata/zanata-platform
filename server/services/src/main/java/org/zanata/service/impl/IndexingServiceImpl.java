@@ -35,7 +35,6 @@ import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
@@ -56,12 +55,11 @@ import org.zanata.util.Zanata;
 public class IndexingServiceImpl implements IndexingService {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(IndexingServiceImpl.class);
+    private static final long serialVersionUID = 8853710030204952940L;
 
     @Inject
     @Zanata
     private EntityManagerFactory entityManagerFactory;
-    @Inject
-    private HTextFlowTargetStreamingDAO hTextFlowTargetStreamingDAO;
 
     @Override
     @Async

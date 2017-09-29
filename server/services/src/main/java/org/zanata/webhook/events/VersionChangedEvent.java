@@ -20,11 +20,7 @@
  */
 package org.zanata.webhook.events;
 
-import java.util.Date;
-import java.util.Map;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 import org.zanata.events.WebhookEventType;
 import org.zanata.model.type.WebhookType;
 
@@ -37,6 +33,7 @@ import org.zanata.model.type.WebhookType;
 public class VersionChangedEvent extends WebhookEventType {
     private static final String EVENT_TYPE =
             WebhookType.VersionChangedEvent.name();
+    private static final long serialVersionUID = -6169769592792396417L;
 
     public static enum ChangeType {
         CREATE,

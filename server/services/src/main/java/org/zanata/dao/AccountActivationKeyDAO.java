@@ -24,13 +24,14 @@ import org.hibernate.Session;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 
 @Named("accountActivationKeyDAO")
 @RequestScoped
 public class AccountActivationKeyDAO extends
         AbstractDAOImpl<HAccountActivationKey, String> {
+
+    private static final long serialVersionUID = -2780971657155151510L;
 
     public AccountActivationKeyDAO() {
         super(HAccountActivationKey.class);

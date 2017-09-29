@@ -35,6 +35,7 @@ import javax.annotation.Nullable;
 @GroupedConversationScoped
 @ConversationGroup(RoleAssignmentRuleId.class)
 public class RoleAssignmentRuleId implements Serializable {
+    private static final long serialVersionUID = -9139170676497744477L;
     private @Nullable Long id;
 
     public Long getId() {

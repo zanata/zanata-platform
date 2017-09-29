@@ -85,7 +85,6 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Before
-    @SuppressWarnings("unchecked")
     public void beforeMethod() {
         when(localeService.validateLocaleByProjectIteration(localeId,
                 workspaceId.getProjectIterationId().getProjectSlug(),
@@ -120,7 +119,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
                 workspaceId.getProjectIterationId().getProjectSlug(),
                 workspaceId.getProjectIterationId().getIterationSlug()))
                         .thenThrow(new ZanataServiceException("bad"));
-        GetProjectTransUnitListsResult result = handler.execute(action, null);
+        handler.execute(action, null);
     }
 
     @Test

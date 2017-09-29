@@ -32,6 +32,8 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.RunnableEx;
 import org.zanata.util.ServiceLocator;
@@ -52,6 +54,7 @@ import static javax.transaction.Status.STATUS_ROLLEDBACK;
  */
 @ApplicationScoped
 public class TransactionUtilImpl implements TransactionUtil {
+    private static final long serialVersionUID = 6994028912066823356L;
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TransactionUtilImpl.class);
 
@@ -59,6 +62,7 @@ public class TransactionUtilImpl implements TransactionUtil {
         return ServiceLocator.instance().getInstance(TransactionUtilImpl.class);
     }
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject

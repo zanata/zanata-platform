@@ -78,7 +78,7 @@ class Entry extends Component {
             {locale.memberCount} &nbsp;
             {permission.canAddLocale &&
               <span>
-                <Icon name='comment' className='s1 usericon' />
+                <Icon name='notification' className='s1 usericon' />
                 {locale.requestCount}
               </span>
             }

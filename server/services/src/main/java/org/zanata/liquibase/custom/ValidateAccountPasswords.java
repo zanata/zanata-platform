@@ -49,6 +49,7 @@ import liquibase.resource.ResourceAccessor;
 public class ValidateAccountPasswords implements CustomTaskChange {
     private int emptyPasswordsFound = 0;
 
+    @SuppressWarnings("deprecation")
     @Override
     public void execute(Database database) throws CustomChangeException {
         JdbcConnection conn = (JdbcConnection) database.getConnection();

@@ -30,12 +30,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.rest.dto.ProjectIteration;
-
+@SuppressWarnings("deprecation")
 @RequestScoped
 @Named("projectIterationService")
 @Path(ProjectIterationResource.SERVICE_PATH)
 @Transactional
 public class ProjectIterationService implements ProjectIterationResource {
+    private static final long serialVersionUID = 6876026336472721574L;
     /** Project Identifier. */
     @PathParam("projectSlug")
     private String projectSlug;
@@ -47,13 +48,11 @@ public class ProjectIterationService implements ProjectIterationResource {
     @Inject
     private ProjectVersionService projectVersionService;
 
-    @SuppressWarnings("null")
     @Nonnull
     public String getProjectSlug() {
         return projectSlug;
     }
 
-    @SuppressWarnings("null")
     @Nonnull
     public String getIterationSlug() {
         return iterationSlug;

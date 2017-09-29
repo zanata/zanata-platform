@@ -22,6 +22,8 @@ import org.zanata.model.HProject;
 @RequestScoped
 public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
 
+    private static final long serialVersionUID = -4963071695863386845L;
+
     public AccountRoleDAO() {
         super(HAccountRole.class);
     }

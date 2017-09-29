@@ -99,7 +99,6 @@ abstract class TMXStreamingOutputTest {
         assertLangAbsent("fr", doc);
     }
 
-    @SuppressWarnings("deprecation")
     void assertSingleTU(String docId, String resId, Document doc)
             throws XpathException, SAXException, IOException {
         String xpathTU = "//tu[@tuid='" + docId + ":" + resId + "']";

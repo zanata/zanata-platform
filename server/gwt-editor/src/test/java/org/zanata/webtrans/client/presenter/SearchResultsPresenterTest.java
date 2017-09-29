@@ -97,8 +97,6 @@ public class SearchResultsPresenterTest {
     private static final long TEST_TU_ID_1 = 7L;
     private static final String TEST_RES_ID_1 = "resId1";
 
-    private static final int TOTAL_KEY_SHORTCUTS = 5;
-
     private static final String TEST_MESSAGE_FOCUS_SEARCH_PHRASE_KEY_SHORTCUT =
             "Focus search phrase";
     private static final String TEST_MESSAGE_FOCUS_REPLACEMENT_PHRASE_KEY_SHORTCUT =
@@ -585,7 +583,6 @@ public class SearchResultsPresenterTest {
                 queryStringDocuments);
     }
 
-    @SuppressWarnings("unchecked")
     private void expectDispatchSearch(
             Answer<GetProjectTransUnitListsResult> searchResponse) {
         doAnswer(searchResponse).when(mockDispatcher).execute(

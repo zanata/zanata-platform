@@ -191,19 +191,6 @@ public final class QueryBuilder {
         }
     }
 
-    private static class SimpleExpression implements WhereExpression {
-        private String exp;
-
-        private SimpleExpression(String exp) {
-            this.exp = exp;
-        }
-
-        @Override
-        public String toWhereClause() {
-            return exp;
-        }
-    }
-
     private enum LogicalOperator {
         OR,
         AND,

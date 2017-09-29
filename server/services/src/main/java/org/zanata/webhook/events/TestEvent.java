@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @JsonPropertyOrder({ "username", "project", "date" })
 public class TestEvent extends WebhookEventType {
 
+    private static final long serialVersionUID = -2532666665321005931L;
+
     public TestEvent(String username, String project) {
         this.username = username;
         this.project = project;

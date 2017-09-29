@@ -37,7 +37,6 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
@@ -64,7 +63,6 @@ import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
 
-import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.VersionUtility;
 import org.zanata.util.WithRequestScope;
 
@@ -239,23 +237,22 @@ public class ZanataInit {
                 log.warn("Could not create lucene index directory");
             }
         }
-        // TODO switch between native and simple locks based on this check?
-        if (mightUseNFS(indexDir)) {
+        boolean mightUseNFS = mightUseNFS(indexDir);
+        if (mightUseNFS) {
             // we don't trust Lucene's NativeFSLockFactory for NFS locks
             String docURL =
                     "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
             log.info("The Hibernate Search index dir \'{}\' might be NFS. ",
-                    "Using NativeFSLockFactory would not be safe: See {}",
+                    "Native locks may not be reliable. See {}",
                     indexDir, docURL);
-        }
-        Collection<File> lockFiles =
-                FileUtils.listFiles(indexDir, new String[] { "lock" }, true);
-        if (!lockFiles.isEmpty()) {
-            String msg =
-                    "Lucene lock files found. Check if Zanata is already running. Otherwise, Zanata was not shut down cleanly: delete the lock files: "
-                            + lockFiles;
-            // TODO just log a warning if using native locks
-            throw new ZanataInitializationException(msg);
+            Collection<File> lockFiles =
+                    FileUtils.listFiles(indexDir, new String[] { "lock" }, true);
+            if (!lockFiles.isEmpty()) {
+                log.warn("Lucene lock files found. Lucene will attempt to " +
+                        "determine if the locks are stale, but this is not " +
+                        "fully reliable on NFS, so please make sure only one " +
+                        "copy of Zanata is running.");
+            }
         }
     }
 

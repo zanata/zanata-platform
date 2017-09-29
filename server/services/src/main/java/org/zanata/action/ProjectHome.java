@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -39,9 +38,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -227,6 +223,9 @@ public class ProjectHome extends SlugHome<HProject>
     private ProjectMaintainersAutocomplete maintainerAutocomplete;
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
+
+                private static final long serialVersionUID =
+                        8259700829800303578L;
 
                 @Override
                 protected List<HPerson> fetchAll() {
@@ -950,46 +949,34 @@ public class ProjectHome extends SlugHome<HProject>
 
     public List<HAccountRole> getAvailableRoles() {
         List<HAccountRole> allRoles = accountRoleDAO.findAll();
-        Collections.sort(allRoles, ComparatorUtil.ACCOUNT_ROLE_COMPARATOR);
+        allRoles.sort(ComparatorUtil.ACCOUNT_ROLE_COMPARATOR);
         return allRoles;
     }
 
     private @NotNull List<HProjectIteration> fetchVersions() {
-        List<HProjectIteration> results = Lists.newArrayList(Iterables
-                .filter(getInstance().getProjectIterations(), IS_NOT_OBSOLETE));
-        Collections.sort(results, new Comparator<HProjectIteration>() {
-
-            @Override
-            public int compare(HProjectIteration o1, HProjectIteration o2) {
-                EntityStatus fromStatus = o1.getStatus();
-                EntityStatus toStatus = o2.getStatus();
-                if (fromStatus.equals(toStatus)) {
-                    return 0;
-                }
-                if (fromStatus.equals(EntityStatus.ACTIVE)) {
-                    return -1;
-                }
-                if (fromStatus.equals(EntityStatus.READONLY)) {
-                    if (toStatus.equals(EntityStatus.ACTIVE)) {
-                        return 1;
+        return getInstance()
+                .getProjectIterations()
+                .stream()
+                .filter(it -> it.getStatus() != EntityStatus.OBSOLETE)
+                .sorted((o1, o2) -> {
+                    EntityStatus fromStatus = o1.getStatus();
+                    EntityStatus toStatus = o2.getStatus();
+                    if (fromStatus.equals(toStatus)) {
+                        return 0;
                     }
-                    return -1;
-                }
-                return 0;
-            }
-        });
-        return results;
+                    if (fromStatus.equals(EntityStatus.ACTIVE)) {
+                        return -1;
+                    }
+                    if (fromStatus.equals(EntityStatus.READONLY)) {
+                        if (toStatus.equals(EntityStatus.ACTIVE)) {
+                            return 1;
+                        }
+                        return -1;
+                    }
+                    return 0;
+                })
+                .collect(Collectors.toList());
     }
-
-    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
-    private final Predicate IS_NOT_OBSOLETE =
-            new Predicate<HProjectIteration>() {
-
-                @Override
-                public boolean apply(HProjectIteration input) {
-                    return input.getStatus() != EntityStatus.OBSOLETE;
-                }
-            };
 
     @Override
     public boolean isIdDefined() {
@@ -1184,15 +1171,11 @@ public class ProjectHome extends SlugHome<HProject>
         // Disable the default message from Seam
     }
 
-    private boolean checkViewObsolete() {
-        return identity != null
-                && identity.hasPermission("HProject", "view-obsolete");
-    }
-
     @ViewScoped
     public static class ProjectMaintainersAutocomplete
             extends MaintainerAutocomplete {
 
+        private static final long serialVersionUID = -6765972032876700000L;
         @Inject
         private ProjectHome projectHome;
         @Inject

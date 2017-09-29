@@ -20,6 +20,7 @@
  */
 package org.zanata.util;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-public interface IServiceLocator {
+public interface IServiceLocator extends Serializable {
 
     /**
      * Returns a BeanHolder for the relevant CDI bean, which must be

@@ -38,7 +38,6 @@ import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.richfaces.exception.FileUploadException;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -84,6 +83,7 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 public class ResourceUtils implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ResourceUtils.class);
+    private static final long serialVersionUID = -969189290416018542L;
 
     /**
      * Newline character used for multi-line comments
@@ -438,9 +438,9 @@ public class ResourceUtils implements Serializable {
         List<String> flagList = from.getFlags();
         // rhbz1012502 - should not store fuzzy tag in source document
         if (flagList.contains("fuzzy")) {
-            throw new FileUploadException(String.format(
+            throw new WebApplicationException(String.format(
                     "Please remove fuzzy flags from document. First fuzzy flag was found on text flow %s with content %s",
-                    textFlow.getId(), textFlow.getContents()));
+                    textFlow.getId(), textFlow.getContents()), 422);
         }
         String flags = StringUtil.concat(flagList, ',');
         if (flagList.isEmpty()) {
@@ -1314,6 +1314,7 @@ public class ResourceUtils implements Serializable {
      * @param apiVersion
      * @todo merge with {@link #transferToTextFlowTargetExtensions}
      */
+    @SuppressWarnings("deprecation")
     public void transferToTextFlowTarget(HTextFlowTarget from,
             TextFlowTarget to, Optional<String> apiVersion) {
         if (from.getTextFlow().isPlural()) {

@@ -35,6 +35,7 @@ import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.RegisterWorkFlow;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.EmailQuery.LinkType.ACTIVATE;
 
@@ -44,8 +45,6 @@ import static org.zanata.util.EmailQuery.LinkType.ACTIVATE;
  */
 @Category(DetailedTest.class)
 public class InactiveUserLoginTest extends ZanataTestCase {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(InactiveUserLoginTest.class);
 
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
@@ -67,8 +66,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
         assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
                 .as("The email contains the activation link");
         String activationLink = EmailQuery.getLink(message, ACTIVATE);
-        SignInPage page =
-                new BasicWorkFlow().goToUrl(activationLink, SignInPage.class);
+        new BasicWorkFlow().goToUrl(activationLink, SignInPage.class);
         /*
          * This fails in functional test, for reasons unknown
          * assertThat(signInPage.getNotificationMessage())
@@ -138,7 +136,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .as("The new email address is used");
         assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
                 .as("The second email contains the activation link");
-        SignInPage page = new BasicWorkFlow().goToUrl(
+        new BasicWorkFlow().goToUrl(
                 EmailQuery.getLink(message, ACTIVATE), SignInPage.class);
         /*
          * This fails in functional test, for reasons unknown

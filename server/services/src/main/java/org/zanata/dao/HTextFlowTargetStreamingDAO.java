@@ -38,8 +38,6 @@ import org.zanata.model.HTextFlowTarget;
 @RequestScoped
 public class HTextFlowTargetStreamingDAO
         extends AbstractDAOImpl<HTextFlowTarget, Long> {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(HTextFlowTargetStreamingDAO.class);
     private static final long serialVersionUID = -1L;
 
     public HTextFlowTargetStreamingDAO() {

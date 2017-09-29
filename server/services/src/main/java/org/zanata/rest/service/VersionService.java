@@ -2,10 +2,10 @@ package org.zanata.rest.service;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import javax.inject.Named;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.util.VersionUtility;
 
@@ -14,6 +14,7 @@ import org.zanata.util.VersionUtility;
 @Path(VersionResource.SERVICE_PATH)
 public class VersionService implements VersionResource {
 
+    private static final long serialVersionUID = -7379405952512823733L;
     private VersionInfo version;
 
     @PostConstruct

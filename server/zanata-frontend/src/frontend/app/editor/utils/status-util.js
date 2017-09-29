@@ -65,3 +65,21 @@ function allValidSaveStatuses (phrase) {
     return [STATUS_TRANSLATED, STATUS_NEEDS_WORK]
   }
 }
+
+/**
+ * Correct the incoming status keys to match what is expected in
+ * the app. No status is assumed to mean new.
+ *
+ * Expect: untranslated/needswork/translated/approved
+ */
+export function transUnitStatusToPhraseStatus (mixedCaseStatus) {
+  const status = mixedCaseStatus && mixedCaseStatus.toLowerCase()
+  if (!status || status === STATUS_NEW) {
+    return STATUS_UNTRANSLATED
+  }
+  if (status === STATUS_NEEDS_WORK_SERVER) {
+    return STATUS_NEEDS_WORK
+  }
+  // remaining status should be ok just lowercased
+  return status
+}

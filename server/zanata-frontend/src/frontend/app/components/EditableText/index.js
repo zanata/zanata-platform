@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { Row } from 'react-bootstrap'
-import { TextInput } from '../../components'
+import {Row} from 'react-bootstrap'
+import {TextInput} from '../../components'
 
 /**
  * Text input that can switch between text field and label
@@ -82,11 +82,12 @@ class EditableText extends Component {
       )
     }
     const emptyText = editable ? placeholder : emptyReadOnlyText
-    const text = children || emptyText
+    const content = children ||
+      <span className='text-muted'>{emptyText}</span>
     return (
       <Row className='text-input text-state-classes text'
         onClick={this.handleClick} title={title}>
-        {text}
+        {content}
       </Row>
       ) }
  }

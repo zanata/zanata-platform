@@ -117,7 +117,7 @@ const getGlossaryTerms = (state) => {
   const srcQuery = '?srcLocale=' + (src || DEFAULT_LOCALE.localeId)
   const localeQuery = locale ? `&transLocale=${locale}` : ''
   const pageQuery = `&page=${page}&sizePerPage=${pageSize}`
-  const filterQuery = filter ? `&filter=${filter}` : ''
+  const filterQuery = filter ? ('&filter=' + encodeURIComponent(filter)) : ''
   const sortQuery = sort
     ? `&sort=${GlossaryHelper.convertSortToParam(sort)}` : ''
   const qualifiedNameQuery = '&qualifiedName=' + qualifiedName
@@ -234,6 +234,7 @@ const getProjectDetails = (projectSlug) => {
 }
 
 const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
+  const headers = getHeaders()
   const endpoint = apiUrl + '/glossary'
   let formData = new FormData()
   formData.append('file', data.file, data.file.name)
@@ -258,8 +259,7 @@ const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
     GLOSSARY_UPLOAD_FAILURE
   ]
   return {
-    [CALL_API]: buildAPIRequest(endpoint, 'POST',
-      getJsonHeaders(), apiTypes, formData)
+    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes, formData)
   }
 }
 

@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,7 +44,6 @@ import org.zanata.rest.service.AsynchronousProcessResource;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class AsyncProcessClient implements AsynchronousProcessResource {
-    private static final long serialVersionUID = -591366219174873189L;
 
     private final RestClientFactory factory;
     private final URI baseUri;
@@ -53,6 +53,7 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
         baseUri = factory.getBaseUri();
     }
 
+    @Deprecated
     @Override
     public ProcessStatus startSourceDocCreation(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
@@ -91,20 +92,22 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(iterationSlug)
                 .path("resource");
-        Response response = webResource
-                .queryParam("docId", docId)
-                .queryParam("ext", extensions.toArray())
-                .request(MediaType.APPLICATION_XML_TYPE)
-                .put(Entity.xml(resource));
-        if (RestUtil.isNotFound(response)) {
-            response.close();
-            // fallback to old endpoint
-            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
-            return startSourceDocCreationOrUpdate(idNoSlash, projectSlug,
-                    iterationSlug, resource, extensions, false);
-        } else {
+        try {
+            Response response = webResource
+                    .queryParam("docId", docId)
+                    .queryParam("ext", extensions.toArray())
+                    .request(MediaType.APPLICATION_XML_TYPE)
+                    .put(Entity.xml(resource));
             response.bufferEntity();
             return response.readEntity(ProcessStatus.class);
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                // fallback to old endpoint
+                String idNoSlash = RestUtil.convertToDocumentURIId(docId);
+                return startSourceDocCreationOrUpdate(idNoSlash, projectSlug,
+                        iterationSlug, resource, extensions, false);
+            }
+            throw e;
         }
     }
 
@@ -145,23 +148,26 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
                 .path("iterations").path("i").path(iterationSlug)
                 .path("resource")
                 .path("translations").path(locale.toString());
-        Response response = webResource
-                .queryParam("docId", docId)
-                .queryParam("ext", extensions.toArray())
-                .queryParam("merge", merge)
-                .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
-                .request(MediaType.APPLICATION_XML_TYPE)
-                .put(Entity.xml(translatedDoc));
-        if (RestUtil.isNotFound(response)) {
-            // fallback to old endpoint
-            response.close();
-            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
-            return startTranslatedDocCreationOrUpdate(idNoSlash, projectSlug,
-                    iterationSlug, locale, translatedDoc, extensions, merge,
-                    assignCreditToUploader);
-        } else {
+        try {
+            Response response = webResource
+                    .queryParam("docId", docId)
+                    .queryParam("ext", extensions.toArray())
+                    .queryParam("merge", merge)
+                    .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
+                    .request(MediaType.APPLICATION_XML_TYPE)
+                    .put(Entity.xml(translatedDoc));
             response.bufferEntity();
             return response.readEntity(ProcessStatus.class);
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                // fallback to old endpoint
+                String idNoSlash = RestUtil.convertToDocumentURIId(docId);
+                return startTranslatedDocCreationOrUpdate(idNoSlash,
+                        projectSlug,
+                        iterationSlug, locale, translatedDoc, extensions, merge,
+                        assignCreditToUploader);
+            }
+            throw e;
         }
     }
 

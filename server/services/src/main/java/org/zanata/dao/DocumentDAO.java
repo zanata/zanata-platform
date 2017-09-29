@@ -37,8 +37,7 @@ import com.google.common.base.Optional;
 @Named("documentDAO")
 @RequestScoped
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(DocumentDAO.class);
+    private static final long serialVersionUID = -2202234119056531154L;
 
     public DocumentDAO() {
         super(HDocument.class);
@@ -137,12 +136,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     public HTextFlowTarget getLastTranslatedTarget(Long documentId,
             LocaleId localeId) {
         Session session = getSession();
-        StringBuilder query = new StringBuilder();
-        query.append("from HTextFlowTarget tft ");
-        query.append("where tft.textFlow.document.id = :docId ");
-        query.append("and tft.locale.localeId = :localeId ");
-        query.append("order by tft.lastChanged DESC");
-        return (HTextFlowTarget) session.createQuery(query.toString())
+        String query = "from HTextFlowTarget tft " +
+                "where tft.textFlow.document.id = :docId " +
+                "and tft.locale.localeId = :localeId " +
+                "order by tft.lastChanged DESC";
+        return (HTextFlowTarget) session.createQuery(query)
                 .setParameter("docId", documentId)
                 .setParameter("localeId", localeId).setCacheable(true)
                 .setMaxResults(1).setComment("DocumentDAO.getLastTranslated")
@@ -152,11 +150,10 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     @Nullable
     public HTextFlowTarget getLastTranslatedTargetOrNull(Long documentId) {
         Session session = getSession();
-        StringBuilder query = new StringBuilder();
-        query.append("from HTextFlowTarget tft ");
-        query.append("where tft.textFlow.document.id = :docId ");
-        query.append("order by tft.lastChanged DESC");
-        return (HTextFlowTarget) session.createQuery(query.toString())
+        String query = "from HTextFlowTarget tft " +
+                "where tft.textFlow.document.id = :docId " +
+                "order by tft.lastChanged DESC";
+        return (HTextFlowTarget) session.createQuery(query)
                 .setParameter("docId", documentId).setCacheable(true)
                 .setMaxResults(1).setComment("DocumentDAO.getLastTranslated")
                 .uniqueResult();
@@ -271,7 +268,6 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         query.append("  and tft.textFlow.obsolete = false ");
         query.append("group by tft.state, tft.locale");
         // calculate unit counts
-        @SuppressWarnings("unchecked")
         Query hQuery =
                 session.createQuery(query.toString()).setParameter("id", docId)
                         .setComment(
@@ -280,6 +276,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         if (localeIds != null && localeIds.length > 0) {
             hQuery.setParameterList("locales", localeIds);
         }
+        @SuppressWarnings("unchecked")
         List<Map<String, Object>> stats = hQuery.list();
         // Collect the results for all states
         for (Map<String, Object> row : stats) {
@@ -304,11 +301,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         }
         for (TransUnitCount stat : transUnitCountMap.values()) {
             stat.set(ContentState.New, StatisticsUtil
-                    .calculateUntranslated(Long.valueOf(stat.getTotal()), stat));
+                    .calculateUntranslated((long) stat.getTotal(), stat));
         }
         for (TransUnitWords stat : transUnitWordsMap.values()) {
             stat.set(ContentState.New, StatisticsUtil
-                    .calculateUntranslated(Long.valueOf(stat.getTotal()), stat));
+                    .calculateUntranslated((long) stat.getTotal(), stat));
         }
         // Merge into a single Stats object
         for (Map.Entry<String, TransUnitCount> entry : transUnitCountMap
@@ -345,7 +342,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 .setParameter("docId", docId);
         q.setComment("DocumentDAO.getByProjectIterationAndDocId");
         q.setCacheable(true);
-        final HDocument doc = (HDocument) q.uniqueResult();
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        HDocument doc = (HDocument) q.uniqueResult();
         return doc;
     }
 
@@ -360,6 +358,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 .setParameterList("docIdList", docIdList);
         q.setComment("DocumentDAO.getByProjectIterationAndDocIdList");
         q.setCacheable(true);
+        @SuppressWarnings("unchecked")
         List<HDocument> docs = q.list();
         return docs;
     }
@@ -379,7 +378,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 .setParameter("obsolete", obsolete);
         q.setComment("DocumentDAO.getByProjectIteration");
         // TODO q.setCacheable(true); ??
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HDocument> result = q.list();
+        return result;
     }
 
     public List<HDocument> findAllByVersionId(Long versionId, int offset,
@@ -390,7 +391,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         q.setFirstResult(offset);
         q.setMaxResults(maxResults);
         q.setCacheable(true).setComment("DocumentDAO.getDocByVersionId");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HDocument> result = q.list();
+        return result;
     }
 
     public int getDocCountByVersion(String projectSlug, String versionSlug) {
@@ -493,12 +496,12 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     }
 
     public List<HDocument> getDocumentsByIds(List<Long> docIds) {
-        StringBuilder query = new StringBuilder();
-        query.append("from HDocument doc where doc.id in (:docIds)");
-        Query q = getSession().createQuery(query.toString());
+        Query q = getSession().createQuery(
+                "from HDocument doc where doc.id in (:docIds)");
         q.setParameterList("docIds", docIds);
         q.setCacheable(true);
         q.setComment("DocumentDAO.getDocumentsByIds");
+        @SuppressWarnings("unchecked")
         List<HDocument> docs = q.list();
         return docs;
     }
@@ -508,13 +511,12 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     }
 
     public int getTotalDocCount() {
-        StringBuilder query = new StringBuilder();
-        query.append("select count(doc) from HDocument doc ")
-                .append("where doc.projectIteration.status <> :obsolete ")
-                .append("and doc.projectIteration.project.status <> :obsolete ")
-                .append("and doc.obsolete = false");
+        String query = "select count(doc) from HDocument doc " +
+                "where doc.projectIteration.status <> :obsolete " +
+                "and doc.projectIteration.project.status <> :obsolete " +
+                "and doc.obsolete = false";
 
-        Query q = getSession().createQuery(query.toString())
+        Query q = getSession().createQuery(query)
                 .setParameter("obsolete", EntityStatus.OBSOLETE);
         return ((Long) q.uniqueResult()).intValue();
     }

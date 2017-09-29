@@ -210,7 +210,8 @@ public class TMMergeForm extends Composite implements
             return "label--unsure l--pad-v-quarter l--pad-h-half";
         case REJECT:
             return "label--danger l--pad-v-quarter l--pad-h-half";
-
+        case IGNORE_CHECK:
+            return "label--neutral l--pad-v-quarter l--pad-h-half";
         }
         return "label--success l--pad-v-quarter l--pad-h-half";
     }

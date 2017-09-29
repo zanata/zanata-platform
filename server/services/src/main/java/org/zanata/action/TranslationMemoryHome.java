@@ -26,8 +26,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.seam.framework.EntityHome;
@@ -46,8 +44,6 @@ import org.zanata.ui.faces.FacesMessages;
 @Transactional
 @CheckRole("admin")
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(TranslationMemoryHome.class);
     private static final long serialVersionUID = -8557363011909155662L;
     @Inject
     private SlugEntityService slugEntityServiceImpl;

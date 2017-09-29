@@ -23,10 +23,12 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.service.StatisticsResource;
@@ -36,7 +38,6 @@ import org.zanata.rest.service.StatisticsResource;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class StatisticsResourceClient implements StatisticsResource {
-    private static final long serialVersionUID = 477496423207257099L;
     private final RestClientFactory factory;
     private final URI baseUri;
 
@@ -63,10 +64,19 @@ public class StatisticsResourceClient implements StatisticsResource {
                 .get(ContainerTranslationStatistics.class);
     }
 
+    @Deprecated
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,
             @DefaultValue("false") boolean includeWordStats, String[] locales) {
+        return getStatisticsWithDocId(projectSlug, iterationSlug, docId,
+                includeWordStats, locales);
+    }
+
+    @Override
+    public ContainerTranslationStatistics getStatisticsWithDocId(
+            String projectSlug, String iterationSlug, String docId,
+            boolean includeWordStats, String[] locales) {
         WebTarget webResource =
                 factory.getClient().target(baseUri).path("stats")
                         .path("proj")
@@ -74,11 +84,30 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .path("iter")
                         .path(iterationSlug)
                         .path("doc")
-                        .path(docId)
+                        .queryParam("docId", docId)
                         .queryParam("word", String.valueOf(includeWordStats))
                         .queryParam("locale", (Object[]) locales);
-        return webResource.request(MediaType.APPLICATION_XML_TYPE)
-                .get(ContainerTranslationStatistics.class);
+        try {
+            return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                    .get(ContainerTranslationStatistics.class);
+        } catch (ResponseProcessingException e) {
+            if (RestUtil.isNotFound(e.getResponse())) {
+                // fallback to old endpoint
+                webResource =
+                        factory.getClient().target(baseUri).path("stats")
+                                .path("proj")
+                                .path(projectSlug)
+                                .path("iter")
+                                .path(iterationSlug)
+                                .path("doc")
+                                .path(docId)
+                                .queryParam("word", String.valueOf(includeWordStats))
+                                .queryParam("locale", (Object[]) locales);
+                return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                        .get(ContainerTranslationStatistics.class);
+            }
+            throw e;
+        }
     }
 
     @Override

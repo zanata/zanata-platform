@@ -25,7 +25,6 @@ import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.SlugEntityBase;
 
 import java.io.Serializable;
 import java.util.Map;

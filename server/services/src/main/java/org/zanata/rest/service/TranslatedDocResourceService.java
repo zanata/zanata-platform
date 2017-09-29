@@ -122,6 +122,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Inject
     private LocaleService localeServiceImpl;
 
+    @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean skeletons, String eTag) {
@@ -177,6 +178,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 .build();
     }
 
+    @Deprecated
     @Override
     public Response deleteTranslations(String idNoSlash, LocaleId locale) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -217,6 +219,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         return Response.ok().build();
     }
 
+    @Deprecated
     @Override
     public Response putTranslations(String idNoSlash, LocaleId locale,
             TranslationsResource messageBody, Set<String> extensions,

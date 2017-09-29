@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.1.2-4</kotlin.version>
+    <kotlin.version>1.1.4-3</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -60,10 +60,10 @@
 
     <richfaces.version>4.5.17.Final</richfaces.version>
 
-    <arquillian.version>1.1.11.Final</arquillian.version>
+    <arquillian.version>1.1.13.Final</arquillian.version>
     <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
     <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
-    <shrinkwrap.desc.version>2.0.0-alpha-10</shrinkwrap.desc.version>
+    <shrinkwrap.desc.version>2.0.0</shrinkwrap.desc.version>
     <maven.model.version>3.3.9</maven.model.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
@@ -106,6 +106,28 @@
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
     <jackson2.version>2.7.2</jackson2.version>
+
+    <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
+    <server.jvmargs>
+      <!-- NB: JDom parser doesn't like comments starting with '-' -->
+      -server
+      -showversion
+      -XX:+PrintCommandLineFlags
+      -Xmx1536m
+      -XX:MaxMetaspaceSize=1g
+      -XX:-OmitStackTraceInFastThrow
+      -XX:+PrintGCDateStamps
+      -verbose:gc
+      -XX:+PrintGCDetails
+      -Xloggc:gc.log
+      -XX:+UseGCLogFileRotation
+      -XX:NumberOfGCLogFiles=10
+      -XX:GCLogFileSize=100M
+      -XX:+HeapDumpOnOutOfMemoryError
+      -XX:HeapDumpPath=.
+      -Djava.net.preferIPv4Stack=true
+      -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0
+    </server.jvmargs>
   </properties>
 
   <dependencyManagement>
@@ -219,6 +241,12 @@
       </dependency>
 
       <dependency>
+        <groupId>com.googlecode.junit-toolbox</groupId>
+        <artifactId>junit-toolbox</artifactId>
+        <version>2.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
         <version>${resteasy.version}</version>
@@ -277,7 +305,12 @@
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-runtime</artifactId>
+        <artifactId>kotlin-stdlib-jre7</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib-jre8</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
@@ -477,12 +510,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.atteo.classindex</groupId>
-        <artifactId>classindex</artifactId>
-        <version>3.4</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.jboss.byteman</groupId>
         <artifactId>byteman</artifactId>
         <version>${byteman.version}</version>
@@ -608,7 +635,7 @@
       <dependency>
         <groupId>org.jglue.cdi-unit</groupId>
         <artifactId>cdi-unit</artifactId>
-        <version>3.1.4</version>
+        <version>4.0.0</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
@@ -908,6 +935,12 @@
             <artifactId>hibernate-jpa-2.0-api</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang</artifactId>
+        <version>2.0.6</version>
       </dependency>
 
       <dependency>
@@ -1378,7 +1411,7 @@
       <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
-        <version>3.19.0-GA</version>
+        <version>3.21.0-GA</version>
       </dependency>
 
       <dependency>
@@ -2045,6 +2078,8 @@
                 <exclude>javax.el:javax.el-api</exclude>
                 <exclude>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</exclude>
 
+                <!-- Use kotlin-stdlib -->
+                <exclude>org.jetbrains.kotlin:kotlin-runtime</exclude>
 
                 <!-- Use com.sun.mail:javax.mail -->
                 <exclude>javax.mail:mail</exclude>
@@ -2177,6 +2212,12 @@
               <goals>
                 <goal>integration-test</goal>
               </goals>
+              <configuration>
+                <systemPropertyVariables combine.children="append">
+                  <!-- Override gc.log and heapdump dir for Arquillian tests -->
+                  <server.jvmargs>${server.jvmargs} -Xloggc:target/gc.log -XX:HeapDumpPath=target</server.jvmargs>
+                </systemPropertyVariables>
+              </configuration>
             </execution>
             <execution>
               <id>verify</id>

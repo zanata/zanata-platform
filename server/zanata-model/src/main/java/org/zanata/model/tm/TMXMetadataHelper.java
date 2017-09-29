@@ -48,9 +48,6 @@ import com.ibm.icu.util.ULocale;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class TMXMetadataHelper {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(TMXMetadataHelper.class);
-
     private static final String EMPTY_NAMESPACE = XMLConstants.NULL_NS_URI;
     private static final String TMX_ELEMENT_CHILDREN =
             "__TMX_ELEMENT_CHILDREN__";
@@ -172,7 +169,7 @@ public class TMXMetadataHelper {
         return m.build();
     }
 
-    @SuppressWarnings({"null", "unchecked"})
+    @SuppressWarnings("unchecked")
     @Nonnull
     private static Map<String, String>
             getGenericMetadata(HasTMMetadata fromEntity) {
@@ -290,13 +287,11 @@ public class TMXMetadataHelper {
         }
     }
 
-    @SuppressWarnings("null")
     @Nonnull
     public static Date toDate(String dateString) {
         return ISO8601Z.parseDateTime(dateString).toDate();
     }
 
-    @SuppressWarnings("null")
     @Nonnull
     public static String toString(Date date) {
         return ISO8601Z.print(date.getTime());

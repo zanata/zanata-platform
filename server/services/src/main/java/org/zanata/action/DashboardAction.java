@@ -21,8 +21,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import com.google.common.base.Function;
@@ -38,10 +36,8 @@ import org.zanata.dao.VersionGroupDAO;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
 import org.zanata.seam.security.IdentityManager;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.i18n.Messages;
@@ -53,11 +49,8 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.ui.AbstractListFilter;
-import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
-import org.zanata.util.IServiceLocator;
-import org.zanata.util.ServiceLocator;
 import javax.annotation.Nullable;
 
 @Named("dashboardAction")
@@ -89,10 +82,6 @@ public class DashboardAction implements Serializable {
     private ProjectFilter projectList;
     @Inject
     private GroupFilter groupList;
-    private final java.util.concurrent.atomic.AtomicReference<Object> userMaintainedProjectsCount =
-            new java.util.concurrent.atomic.AtomicReference<Object>();
-    private final java.util.concurrent.atomic.AtomicReference<Object> userMaintainedProjects =
-            new java.util.concurrent.atomic.AtomicReference<Object>();
     @Inject
     private IdentityManager identityManager;
 
@@ -134,29 +123,6 @@ public class DashboardAction implements Serializable {
         return StringUtils.join(roles, ", ");
     }
 
-    private int countUserMaintainedProjects() {
-        return projectDAO.getMaintainedProjectCount(
-                authenticatedAccount.getPerson(), null);
-    }
-
-    private List<HProject> fetchUserMaintainedProjects() {
-        List<HProject> sortedList = new ArrayList<HProject>();
-        if (canViewObsolete()) {
-            sortedList.addAll(
-                    authenticatedAccount.getPerson().getMaintainerProjects());
-        } else {
-            for (HProject project : authenticatedAccount.getPerson()
-                    .getMaintainerProjects()) {
-                if (project.getStatus() != EntityStatus.OBSOLETE) {
-                    sortedList.add(project);
-                }
-            }
-        }
-        Collections.sort(sortedList,
-                ComparatorUtil.PROJECT_CREATION_DATE_COMPARATOR);
-        return sortedList;
-    }
-
     public String getLastTranslatedTimeLapseMessage(HProject project) {
         Date lastTranslatedDate = projectDAO.getLastTranslatedDate(project);
         // TODO i18n needed
@@ -166,11 +132,6 @@ public class DashboardAction implements Serializable {
 
     public String getShortTime(Date date) {
         return DateUtil.formatShortDate(date);
-    }
-
-    public boolean canViewObsolete() {
-        return identity != null
-                && identity.hasPermission("HProject", "view-obsolete");
     }
 
     public DashboardUserStats getTodayStats() {
@@ -231,6 +192,7 @@ public class DashboardAction implements Serializable {
     public static class ProjectFilter extends AbstractListFilter<HProject>
             implements Serializable {
 
+        private static final long serialVersionUID = -2473428615946542483L;
         @Inject
         @Authenticated
         private HAccount authenticatedAccount;
@@ -257,6 +219,7 @@ public class DashboardAction implements Serializable {
     public static class GroupFilter extends AbstractListFilter<HIterationGroup>
             implements Serializable {
 
+        private static final long serialVersionUID = 5698872972627107893L;
         @Inject
         @Authenticated
         private HAccount authenticatedAccount;

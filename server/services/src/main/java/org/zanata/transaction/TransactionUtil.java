@@ -20,6 +20,7 @@
  */
 package org.zanata.transaction;
 
+import java.io.Serializable;
 import java.util.concurrent.Callable;
 
 import org.zanata.util.RunnableEx;
@@ -28,7 +29,8 @@ import org.zanata.util.RunnableEx;
  * An interface to facilitate CDIUnit tests that needs to inject a mock
  * TransactionUtil.
  */
-public interface TransactionUtil {
+// TODO there seems to be no reason for implementations to be Serializable
+public interface TransactionUtil extends Serializable {
     <R> R call(Callable<R> function) throws Exception;
 
     void run(Runnable runnable) throws Exception;

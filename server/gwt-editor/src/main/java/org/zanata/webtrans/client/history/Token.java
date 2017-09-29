@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.zanata.webtrans.shared.util.TokenUtil;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 
 /**

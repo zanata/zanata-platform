@@ -171,6 +171,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         projectDAO.makePersistent(project);
         // Run the copy trans scenario (very liberal, but nothing should be
         // translated)
+        @SuppressWarnings("unused")
         CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE,
                 IGNORE, true, true, true, true, Approved).expectUntranslated();
         // testCopyTrans(execution);
@@ -196,6 +197,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
             }
         }
         // Run the copy trans scenario
+        @SuppressWarnings("unused")
         CopyTransExecution execution =
                 new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true,
                         true, Approved).expectTransState(Approved);
@@ -248,11 +250,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
             return this;
         }
 
-        public CopyTransExecution withContents(String... contents) {
-            this.expectedContents = contents;
-            return this;
-        }
-
         public ConditionRuleAction getContextMismatchAction() {
             return this.contextMismatchAction;
         }
@@ -295,55 +292,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
 
         public ContentState getMatchState() {
             return this.matchState;
-        }
-
-        public void setContextMismatchAction(
-                final ConditionRuleAction contextMismatchAction) {
-            this.contextMismatchAction = contextMismatchAction;
-        }
-
-        public void setProjectMismatchAction(
-                final ConditionRuleAction projectMismatchAction) {
-            this.projectMismatchAction = projectMismatchAction;
-        }
-
-        public void setDocumentMismatchAction(
-                final ConditionRuleAction documentMismatchAction) {
-            this.documentMismatchAction = documentMismatchAction;
-        }
-
-        public void setContextMatches(final Boolean contextMatches) {
-            this.contextMatches = contextMatches;
-        }
-
-        public void setProjectMatches(final Boolean projectMatches) {
-            this.projectMatches = projectMatches;
-        }
-
-        public void setDocumentMatches(final Boolean documentMatches) {
-            this.documentMatches = documentMatches;
-        }
-
-        public void setRequireTranslationReview(
-                final Boolean requireTranslationReview) {
-            this.requireTranslationReview = requireTranslationReview;
-        }
-
-        public void setExpectedTranslationState(
-                final ContentState expectedTranslationState) {
-            this.expectedTranslationState = expectedTranslationState;
-        }
-
-        public void setExpectUntranslated(final boolean expectUntranslated) {
-            this.expectUntranslated = expectUntranslated;
-        }
-
-        public void setExpectedContents(final String[] expectedContents) {
-            this.expectedContents = expectedContents;
-        }
-
-        public void setMatchState(final ContentState matchState) {
-            this.matchState = matchState;
         }
 
         @Override

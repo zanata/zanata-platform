@@ -25,8 +25,6 @@ import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import com.google.common.base.Objects;
-
 public class GetTransUnitsNavigation {
     private DocumentId documentId;
     private ContentStateGroup activeStates;

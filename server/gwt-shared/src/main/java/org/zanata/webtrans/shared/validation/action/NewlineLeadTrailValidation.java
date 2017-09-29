@@ -27,7 +27,6 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
-import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -43,7 +42,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction {
 
     private final static String leadNewlineRegex = "^\n";
     private final static String endNewlineRegex = "\n$";
-    private final static String newlineRegex = "\n";
 
     private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
     private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);

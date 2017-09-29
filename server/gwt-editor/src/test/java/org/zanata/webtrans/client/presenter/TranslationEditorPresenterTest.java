@@ -59,7 +59,6 @@ public class TranslationEditorPresenterTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void onBind() {
         when(transFilterPresenter.getDisplay()).thenReturn(transFilterDisplay);
         when(transUnitNavigationPresenter.getDisplay()).thenReturn(

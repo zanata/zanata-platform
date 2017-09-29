@@ -16,7 +16,6 @@ public class DocumentId implements Identifier<Long>, Comparable<DocumentId>,
     private String docId;
 
     // for GWT
-    @SuppressWarnings("unused")
     public DocumentId() {
     }
 

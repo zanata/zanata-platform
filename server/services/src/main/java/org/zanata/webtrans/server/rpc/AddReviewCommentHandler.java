@@ -57,9 +57,6 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @RequestScoped
 public class AddReviewCommentHandler extends
         AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult> {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(AddReviewCommentHandler.class);
-
     @Inject
     private SecurityService securityServiceImpl;
     @Inject

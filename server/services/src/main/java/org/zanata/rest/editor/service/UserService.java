@@ -8,20 +8,19 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.inject.Named;
-import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.rest.dto.Account;
-import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.resource.UserResource;
@@ -33,7 +32,6 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 import com.google.common.base.Strings;
-import org.zanata.service.impl.LocaleServiceImpl;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -61,6 +59,9 @@ public class UserService implements UserResource {
 
     @Inject
     private IdentityManager identityManager;
+
+    private static final Logger log =
+            LoggerFactory.getLogger(UserService.class);
 
     @Override
     @CheckLoggedIn
@@ -153,7 +154,7 @@ public class UserService implements UserResource {
         if (StringUtils.isBlank(username)) {
             return null;
         }
-        HAccount account = accountDAO.getByUsername(username);
+        HAccount account = accountDAO.getEnabledByUsername(username);
         if (account == null) {
             return null;
         }

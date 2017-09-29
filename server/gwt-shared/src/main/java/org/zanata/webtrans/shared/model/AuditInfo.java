@@ -10,7 +10,8 @@ public class AuditInfo implements IsSerializable, Serializable {
     private Date date;
     private String username;
 
-    private AuditInfo() {
+    // for GWT
+    public AuditInfo() {
     }
 
     public AuditInfo(Date date, String username) {

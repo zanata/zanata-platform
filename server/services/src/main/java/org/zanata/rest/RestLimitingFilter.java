@@ -32,7 +32,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.common.base.Throwables;
+
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
@@ -56,23 +56,18 @@ import org.zanata.util.RunnableEx;
  */
 @WebFilter(filterName = "RestLimitingFilter")
 public class RestLimitingFilter implements Filter {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(RestLimitingFilter.class);
     private final RateLimitingProcessor processor;
-    private final AccountDAO accountDAO;
     private final HAccount authenticatedUser;
 
     @Inject
     public RestLimitingFilter(RateLimitingProcessor processor,
-            AccountDAO accountDAO, HAccount authenticatedUser) {
+            HAccount authenticatedUser) {
         this.processor = processor;
-        this.accountDAO = accountDAO;
         this.authenticatedUser = authenticatedUser;
     }
 
-    @SuppressWarnings("unused")
     public RestLimitingFilter() {
-        this(null, null, null);
+        this(null, null);
     }
 
     @Override

@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.testharness;
 
-import org.assertj.core.util.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
@@ -36,9 +35,8 @@ import org.openqa.selenium.WebDriver;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.util.AllowAnonymousAccessRule;
 import org.zanata.util.EnsureLogoutRule;
-import org.zanata.util.SampleProjectRule;
+import org.zanata.util.SampleDataRule;
 import org.zanata.util.ZanataRestCaller;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -86,7 +84,7 @@ public class ZanataTestCase {
     @Rule
     public RuleChain theOneRule = RuleChain
             .outerRule(new AllowAnonymousAccessRule())
-            .around(new EnsureLogoutRule()).around(new SampleProjectRule());
+            .around(new EnsureLogoutRule()).around(new SampleDataRule());
     /*
      * rhbz1096552 - disable test timeout for now see
      * https://bugzilla.redhat.com/show_bug.cgi?id=1096552

@@ -45,6 +45,7 @@ import org.zanata.rest.editor.service.resource.TextFlowResource;
 @Path(TextFlowResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class TextFlowService implements TextFlowResource {
+    private static final long serialVersionUID = 398061565537835416L;
     @Inject
     private TextFlowDAO textFlowDAO;
     @Inject

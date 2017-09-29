@@ -28,9 +28,6 @@ import javax.faces.application.FacesMessage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import com.google.common.collect.Lists;
-import org.apache.deltaspike.core.api.scope.GroupedConversation;
-import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
@@ -42,6 +39,7 @@ import org.zanata.util.ServiceLocator;
 @Named("conversationScopeMessages")
 public class ConversationScopeMessages implements Serializable {
 
+    private static final long serialVersionUID = -2695736976437263909L;
     @Inject
     private FacesMessages jsfMessages;
 

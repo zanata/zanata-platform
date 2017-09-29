@@ -38,6 +38,7 @@ import org.zanata.model.type.WebhookType;
 public class ManuallyTriggeredEvent extends WebhookEventType {
     private static final String EVENT_TYPE =
             WebhookType.ManuallyTriggeredEvent.name();
+    private static final long serialVersionUID = -6839103910511637271L;
 
     private String zanataServer;
     private String username;

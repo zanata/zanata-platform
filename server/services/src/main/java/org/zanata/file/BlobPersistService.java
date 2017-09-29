@@ -34,6 +34,7 @@ import org.zanata.model.HDocumentUploadPart;
 
 public class BlobPersistService implements UploadPartPersistService {
 
+    private static final long serialVersionUID = 7592477450107639535L;
     @Inject
     private Session session;
 

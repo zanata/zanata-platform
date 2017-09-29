@@ -32,11 +32,7 @@ import javax.validation.constraints.NotNull;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.deltaspike.core.api.scope.ConversationGroup;
-import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountRoleDAO;
@@ -56,8 +52,6 @@ import org.zanata.security.AuthenticationType;
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         implements Serializable {
-    private static final Logger log =
-            LoggerFactory.getLogger(RoleAssignmentRuleAction.class);
     private static final long serialVersionUID = 1L;
 
     @Inject

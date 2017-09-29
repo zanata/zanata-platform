@@ -6,7 +6,6 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.ModelEntityBase;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 
@@ -72,7 +71,7 @@ public class HPoTargetHeaderTest {
 
     // Better to duplicate this method (EntityTestData.setId) than to add
     // another module (or add this to zanata-model's public API!)
-    @SuppressWarnings("Duplicates")
+    @SuppressWarnings("all")
     private static void setId(ModelEntityBase entity, Long id) {
         try {
             Method setIdMethod = ModelEntityBase.class

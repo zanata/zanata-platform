@@ -33,7 +33,6 @@ public class SaveOptionsAction implements DispatchAction<SaveOptionsResult> {
 
     private Map<UserOptions, String> configurationMap;
 
-    @SuppressWarnings("unused")
     public SaveOptionsAction() {
     }
 

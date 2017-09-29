@@ -32,7 +32,6 @@ public class AddReviewCommentResult implements DispatchResult {
 
     private ReviewComment comment;
 
-    @SuppressWarnings("unused")
     public AddReviewCommentResult() {
     }
 

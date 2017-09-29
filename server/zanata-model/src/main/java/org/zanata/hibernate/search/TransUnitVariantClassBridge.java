@@ -23,7 +23,6 @@ package org.zanata.hibernate.search;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
-import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 

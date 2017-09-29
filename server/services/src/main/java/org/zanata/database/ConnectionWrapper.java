@@ -23,7 +23,6 @@ package org.zanata.database;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Set;
@@ -64,7 +63,7 @@ class ConnectionWrapper implements InvocationHandler {
                 && getInvocationHandler(conn) instanceof ConnectionWrapper) {
             return conn;
         }
-        return ProxyUtil.newProxy(conn, new ConnectionWrapper(conn));
+        return (Connection) ProxyUtil.newProxy(conn, new ConnectionWrapper(conn));
     }
 
     @VisibleForTesting

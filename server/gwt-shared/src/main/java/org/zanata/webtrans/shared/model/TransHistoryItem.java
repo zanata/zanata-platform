@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;

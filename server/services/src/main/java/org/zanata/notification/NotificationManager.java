@@ -27,7 +27,6 @@ import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
-import com.google.common.base.Throwables;
 
 /**
  * Centralized place to handle all events that needs to send out notifications.
@@ -37,9 +36,6 @@ import com.google.common.base.Throwables;
  */
 @ApplicationScoped
 public class NotificationManager {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(NotificationManager.class);
-
     public void onLanguageTeamPermissionChanged(
             @Observes final LanguageTeamPermissionChangedEvent event,
             @InVMJMS final QueueSession queueSession,

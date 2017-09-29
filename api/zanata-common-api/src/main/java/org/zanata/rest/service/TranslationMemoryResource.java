@@ -49,7 +49,7 @@ import org.zanata.common.LocaleId;
 @Produces({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
 @Consumes({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
 @ResourceLabel("Translation Memory")
-public interface TranslationMemoryResource extends RestResource {
+public interface TranslationMemoryResource {
     public static final String SERVICE_PATH = "/tm";
 
     public static final String PREFERRED_MEDIA_TYPE = MediaType.APPLICATION_XML;

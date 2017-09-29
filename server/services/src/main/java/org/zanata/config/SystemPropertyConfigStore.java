@@ -21,7 +21,6 @@
 package org.zanata.config;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,6 @@ import java.util.stream.Stream;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -71,6 +69,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
     private static final String KEY_SUPPORT_OAUTH = "zanata.support.oauth";
     private static final Logger log =
             LoggerFactory.getLogger(SystemPropertyConfigStore.class);
+    private static final long serialVersionUID = 1086764656937071302L;
 
     @Override
     public String get(String propertyName) {

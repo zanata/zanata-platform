@@ -1,3 +1,37 @@
+## 4.3.0
+##### Changes
+ * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2184) - A better icon for role Requests in language
+ * [ZNTA-2172](https://zanata.atlassian.net/browse/ZNTA-2172) - Profile page should not render anything with inactive/non-existing account
+ * [ZNTA-2015](https://zanata.atlassian.net/browse/ZNTA-2015) - Allow admin to change a user's name
+ * [ZNTA-1969](https://zanata.atlassian.net/browse/ZNTA-1969) - Add Project Name to Version Sort in Version Merge Modal Story
+ * [ZNTA-1865](https://zanata.atlassian.net/browse/ZNTA-1865) - Feature: Enhance Version Merge feature
+ * [ZNTA-1684](https://zanata.atlassian.net/browse/ZNTA-1684) - Replace 'tribes' with 'languages/locales'
+
+##### Bug Fixes
+ * [ZNTA-2220](https://zanata.atlassian.net/browse/ZNTA-2220) - Dialogs have a "scroll line" on the right
+ * [ZNTA-2208](https://zanata.atlassian.net/browse/ZNTA-2208) - NotSupportedException on po/csv glossary import
+ * [ZNTA-2206](https://zanata.atlassian.net/browse/ZNTA-2206) - 404 page not found on help from more options
+ * [ZNTA-2191](https://zanata.atlassian.net/browse/ZNTA-2191) - Need HAccount index to find enabled users efficiently
+ * [ZNTA-2187](https://zanata.atlassian.net/browse/ZNTA-2187) - Version "Settings" tab does not show up
+ * [ZNTA-2186](https://zanata.atlassian.net/browse/ZNTA-2186) - CSS conflict in editor inputs
+ * [ZNTA-2178](https://zanata.atlassian.net/browse/ZNTA-2178) - Zanata Client API (old endpoints support)
+ * [ZNTA-2152](https://zanata.atlassian.net/browse/ZNTA-2152) - Remove css that overrides frontend dropdown + icons
+ * [ZNTA-2149](https://zanata.atlassian.net/browse/ZNTA-2149) - TM Merge pop-up closes on second mouse click.
+ * [ZNTA-2148](https://zanata.atlassian.net/browse/ZNTA-2148) - Fix alignment of notification modal icons
+ * [ZNTA-1970](https://zanata.atlassian.net/browse/ZNTA-1970) - Side nav doesn't align correctly on some devices
+
+-----------------------
+
+## 4.2.4
+##### Changes
+ * [ZNTA-2035](https://zanata.atlassian.net/browse/ZNTA-2035) - Fix Jenkin's CI reporting to Github
+
+##### Bug Fixes
+ * [ZNTA-2114](https://zanata.atlassian.net/browse/ZNTA-2114) - Online help broken
+ * [ZNTA-128](https://zanata.atlassian.net/browse/ZNTA-128) - Chunk split failed when pushing big files (more than 1MiB)
+
+-----------------------
+
 ## 4.2.0
 ##### Changes
  * [ZNTA-1973](https://zanata.atlassian.net/browse/ZNTA-1973) - If source have plural, but target does not, translation cannot save as translated
@@ -45,7 +79,7 @@
  * [ZNTA-1735](https://zanata.atlassian.net/browse/ZNTA-1735) - Add Glossary Tab to Editor Sidebar
  * [ZNTA-1733](https://zanata.atlassian.net/browse/ZNTA-1733) - Add Details to Editor Sidebar
  * [ZNTA-1732](https://zanata.atlassian.net/browse/ZNTA-1732) - Add Editor sidebar
- * [ZNTA-1726](https://zanata.atlassian.net/browse/ZNTA-1726) - Doc: Missing manual webhook documentation 
+ * [ZNTA-1726](https://zanata.atlassian.net/browse/ZNTA-1726) - Doc: Missing manual webhook documentation
  * [ZNTA-1705](https://zanata.atlassian.net/browse/ZNTA-1705) - Allow TM Merge for a whole document (in a single language)
  * [ZNTA-1661](https://zanata.atlassian.net/browse/ZNTA-1661) - Enable Kotlin as additional language for production/test code
  * [ZNTA-1582](https://zanata.atlassian.net/browse/ZNTA-1582) - http://zanata-client.readthedocs.io/en/latest/ is not available
@@ -69,7 +103,7 @@
  * [ZNTA-1868](https://zanata.atlassian.net/browse/ZNTA-1868) - Make hibernate schema validation pass
  * [ZNTA-1863](https://zanata.atlassian.net/browse/ZNTA-1863) - TM details modal source text incorrectly aligned on small screens
  * [ZNTA-1860](https://zanata.atlassian.net/browse/ZNTA-1860) - Projects should be clickable for going back to the projects list from create project page
- * [ZNTA-1853](https://zanata.atlassian.net/browse/ZNTA-1853) - Langauge and dashboard should be clickable on lnaguages page and settings page. 
+ * [ZNTA-1853](https://zanata.atlassian.net/browse/ZNTA-1853) - Langauge and dashboard should be clickable on lnaguages page and settings page.
  * [ZNTA-1840](https://zanata.atlassian.net/browse/ZNTA-1840) - Unnecessary 'introduce yourself' field when auto join enabled
  * [ZNTA-1834](https://zanata.atlassian.net/browse/ZNTA-1834) - Reword TM merge pop up and messages
  * [ZNTA-1826](https://zanata.atlassian.net/browse/ZNTA-1826) - Eliminate log warning "encountered non-rewritten url /404.xhtml"
@@ -82,7 +116,7 @@
  * [ZNTA-1774](https://zanata.atlassian.net/browse/ZNTA-1774) - Only first page of document visible in Alpha Editor
  * [ZNTA-1767](https://zanata.atlassian.net/browse/ZNTA-1767) - Cannot add translation if field is empty in Alpha Editor
  * [ZNTA-1760](https://zanata.atlassian.net/browse/ZNTA-1760) - Missing constraints on Project locale table
- * [ZNTA-1729](https://zanata.atlassian.net/browse/ZNTA-1729) - Source locale is not excluded in target file mappings 
+ * [ZNTA-1729](https://zanata.atlassian.net/browse/ZNTA-1729) - Source locale is not excluded in target file mappings
  * [ZNTA-1710](https://zanata.atlassian.net/browse/ZNTA-1710) - Delete all button css changed on glossary delete.
  * [ZNTA-1706](https://zanata.atlassian.net/browse/ZNTA-1706) - Filter error on Languages page
  * [ZNTA-1686](https://zanata.atlassian.net/browse/ZNTA-1686) - After search and delete language search field should have to clear/reset automatically.
