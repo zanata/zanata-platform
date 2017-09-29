@@ -531,6 +531,14 @@ ul.u-listInline li .u-textHighlight {
   outline: none;
 }
 
+ul.u-listInline li .u-textSuccess {
+  width:120%;
+}
+
+ul.u-listInline li .u-textHighlight {
+  width:120%;
+}
+
 .tab-content > .tab-pane {
   display: none;
 }
