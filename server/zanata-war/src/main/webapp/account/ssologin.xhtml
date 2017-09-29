@@ -4,10 +4,9 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   template="/WEB-INF/template/template.xhtml">
-
-  <f:metadata>
-  </f:metadata>
-
-  <ui:define name="page_title">#{msgs['jsf.ActivateAccount']}</ui:define>
+  
+  <ui:remove>
+    <!-- Just a virtual view to make JSF happy -->
+  </ui:remove>
 
 </ui:composition>

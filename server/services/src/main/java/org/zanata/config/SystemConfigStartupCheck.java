@@ -24,6 +24,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.zanata.security.AuthenticationType.*;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
@@ -32,6 +33,7 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.security.AuthenticationType;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * This servlet context listener will check the correctness of required system
@@ -44,6 +46,13 @@ public class SystemConfigStartupCheck implements ServletContextListener {
             LoggerFactory.getLogger(SystemConfigStartupCheck.class);
     @Inject
     private SystemPropertyConfigStore sysPropConfigStore;
+
+    private Set<Set<AuthenticationType>> validAuthCombinations = ImmutableSet.<Set<AuthenticationType>>builder()
+            .add(ImmutableSet.of(INTERNAL, OPENID))
+            .add(ImmutableSet.of(INTERNAL, SSO))
+            .add(ImmutableSet.of(OPENID, SSO))
+            .add(ImmutableSet.of(INTERNAL, OPENID, SSO))
+            .build();
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -77,27 +86,16 @@ public class SystemConfigStartupCheck implements ServletContextListener {
     private boolean validateAuthenticationConfig() {
         Map<AuthenticationType, String> loginModuleNames =
                 sysPropConfigStore.getLoginModuleNames();
-        // Validate that only internal / openid authentication is enabled at
-        // once
-        if (loginModuleNames.size() > 2) {
-            if (loginModuleNames.containsKey(SSO)
-                    && loginModuleNames.containsKey(INTERNAL) && loginModuleNames.containsKey(OPENID)) {
-                log.info("========== internal, openid and SSO are both enabled ==========");
+        // Validate multiple auth
+        // TODO figure out how we handle username conflict. See NewProfileAction, org.zanata.ApplicationConfiguration.isEnforceMatchingUsernames()
+        if (loginModuleNames.size() > 1) {
+            if (validAuthCombinations.contains(loginModuleNames.keySet())) {
+                log.info("Multiple authentication types are enabled: {}", loginModuleNames);
                 return true;
             }
             log.error(
                     "Multiple invalid authentication types present in Zanata configuration.");
             return false;
-        } else if (loginModuleNames.size() == 2) {
-            // Internal and Open id are the only allowed combined authentication
-            // types
-            if (!(loginModuleNames.containsKey(OPENID) &&
-                    loginModuleNames
-                            .containsKey(INTERNAL))) {
-                log.error(
-                        "Multiple invalid authentication types present in Zanata configuration.");
-                return false;
-            }
         } else if (loginModuleNames.size() < 1) {
             log.error(
                     "At least one authentication type must be configured in Zanata configuration.");

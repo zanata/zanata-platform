@@ -382,7 +382,7 @@ public class AuthenticationManager implements Serializable {
                 message = "User " + username
                         + " has been disabled. Please contact server admin.";
             }
-            // TODO pahuang temp hack
+            // TODO temp hack. When coming back from SSO, windowScope is not active
             if (ContextUtils.isContextActive(WindowScoped.class)) {
                 facesMessages.clear();
                 facesMessages.addGlobal(message);
