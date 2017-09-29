@@ -247,7 +247,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     @Test
     public void getSimpleDocumentStatisticsForAllLocales() {
         ContainerTranslationStatistics stats =
-                statisticsService.getStatistics("sample-project", "1.0",
+                statisticsService.getStatisticsWithDocId("sample-project", "1.0",
                         "my/path/document.txt", false, new String[] {});
 
         // Make sure the id matches
@@ -280,7 +280,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
         String[] locales = new String[] { "en-US", "es", "as" };
 
         ContainerTranslationStatistics stats =
-                statisticsService.getStatistics("sample-project", "1.0",
+                statisticsService.getStatisticsWithDocId("sample-project", "1.0",
                         "my/path/document.txt", true, locales);
 
         // Make sure the id matches

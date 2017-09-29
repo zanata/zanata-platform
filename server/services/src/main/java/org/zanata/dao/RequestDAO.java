@@ -37,7 +37,9 @@ public class RequestDAO extends AbstractDAOImpl<Request, Long> {
             .setParameter("entityId", entityId)
             .setCacheable(true).setComment(
                 "requestDAO.getHistoryByEntityId");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<Request> result = q.list();
+        return result;
     }
 
     public Request getEntityById(String entityId) {

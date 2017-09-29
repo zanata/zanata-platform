@@ -1,10 +1,13 @@
 import { fetchDocuments } from '../api'
+import { createAction } from 'redux-actions'
 import {
   ROUTING_PARAMS_CHANGED,
   SET_SIDEBAR_VISIBILITY,
   TOGGLE_DROPDOWN,
   OPEN_DROPDOWN,
-  CLOSE_DROPDOWN
+  CLOSE_DROPDOWN,
+  TOGGLE_SHOW_SETTINGS,
+  HIDE_SETTINGS
 } from './action-types'
 
 export function routingParamsChanged (newParams) {
@@ -104,3 +107,6 @@ export function setSidebarVisibility (visible) {
     visible
   }
 }
+
+export const toggleShowSettings = createAction(TOGGLE_SHOW_SETTINGS)
+export const hideSettings = createAction(HIDE_SETTINGS)

@@ -55,7 +55,6 @@ import com.google.common.collect.Lists;
 public class TranslationService implements TranslationResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationService.class);
-    private static final long serialVersionUID = 8277023760710788030L;
 
     @Inject
     private ZanataIdentity identity;
