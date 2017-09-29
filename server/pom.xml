@@ -2335,21 +2335,6 @@
       </properties>
     </profile>
 
-    <!-- Deploy to sonatype for release -->
-    <profile>
-      <id>release</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>sonatype-nexus-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-          <id>sonatype-nexus-staging</id>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
-    </profile>
-
     <profile>
       <id>wildfly8</id>
       <activation>
@@ -2511,25 +2496,7 @@
         </plugins>
       </build>
     </profile>
-
   </profiles>
-
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>cloudbees-private-release-repository</id>
-      <name>cloudbees-private-release-repository</name>
-      <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>cloudbees-private-snapshot-repository</id>
-      <name>cloudbees-private-snapshot-repository</name>
-      <url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
-      <layout>default</layout>
-    </snapshotRepository>
-  </distributionManagement>
 
   <modules>
     <module>zanata-liquibase</module>
