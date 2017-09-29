@@ -2496,25 +2496,7 @@
         </plugins>
       </build>
     </profile>
-
   </profiles>
-
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>cloudbees-private-release-repository</id>
-      <name>cloudbees-private-release-repository</name>
-      <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>cloudbees-private-snapshot-repository</id>
-      <name>cloudbees-private-snapshot-repository</name>
-      <url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
-      <layout>default</layout>
-    </snapshotRepository>
-  </distributionManagement>
 
   <modules>
     <module>zanata-liquibase</module>
