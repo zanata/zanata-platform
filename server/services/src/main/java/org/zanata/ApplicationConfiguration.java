@@ -152,6 +152,11 @@ public class ApplicationConfiguration implements Serializable {
         loginModuleNames = sysPropConfigStore.getLoginModuleNames();
     }
 
+
+    public Set<AuthenticationType> getAuthTypes() {
+        return loginModuleNames.keySet();
+    }
+
     /**
      * Apply logging configuration.
      */
