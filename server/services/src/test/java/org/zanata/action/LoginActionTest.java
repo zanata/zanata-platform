@@ -30,6 +30,8 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.*;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
+
 import static org.mockito.Mockito.*;
 
 import javax.enterprise.inject.Produces;
@@ -66,6 +68,10 @@ public class LoginActionTest implements Serializable {
     private UserRedirectBean userRedirect;
     @Produces
     private AuthenticationType authenticationType = AuthenticationType.INTERNAL;
+
+    @Mock
+    @Produces
+    private UrlUtil urlUtil;
 
     @Inject
     private LoginAction loginAction;

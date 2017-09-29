@@ -22,10 +22,7 @@ package org.zanata.security;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
