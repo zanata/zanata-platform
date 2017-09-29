@@ -514,7 +514,7 @@ nav.flex.flex-wrapper {
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-  color: #555;
+  color: #20718a;
   cursor: default;
   background-color: #fff;
   border: 1px solid #ddd;
