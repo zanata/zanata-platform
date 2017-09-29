@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
-import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang3.ClassUtils;
 
 /**
  * @author Sean Flanigan <a
@@ -37,12 +37,9 @@ class ProxyUtil {
     /**
      * Returns a proxy which implements all the same interfaces as the object
      */
-    @SuppressWarnings("unchecked")
     static Object newProxy(Object object, InvocationHandler handler) {
         Class<?> clazz = object.getClass();
         ClassLoader cl = clazz.getClassLoader();
-        // Using commons-lang v2 in JDBC-related code since WildFly/EAP
-        // doesn't come with v3:
          List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(clazz);
         Class<?>[] interfaces = allInterfaces.toArray(new Class<?>[0]);
         return Proxy.newProxyInstance(cl, interfaces, handler);
