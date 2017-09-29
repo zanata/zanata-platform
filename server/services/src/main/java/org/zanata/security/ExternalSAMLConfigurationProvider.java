@@ -52,11 +52,7 @@ public class ExternalSAMLConfigurationProvider
             LoggerFactory.getLogger(ExternalSAMLConfigurationProvider.class);
 
     private static final String DEFAULT_CONFIG_PROTOCOL = "file://";
-    private static  @Nullable String configFile;
-
-    public ExternalSAMLConfigurationProvider() {
-        configFile = System.getProperty("picketlink.file");
-    }
+    private static @Nullable String configFile = System.getProperty("picketlink.file");
 
     @Override
     public IDPType getIDPConfiguration() throws ProcessingException {

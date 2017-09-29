@@ -358,6 +358,12 @@
       <groupId>org.picketlink</groupId>
       <artifactId>picketlink-federation</artifactId>
       <version>${picketlink.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>provided</scope>
     </dependency>
 

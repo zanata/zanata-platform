@@ -303,8 +303,7 @@ public class AuthenticationManager implements Serializable {
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
             }
-        }
-        else {
+        } else {
             authenticatedCredentials = credentialsDAO.findByUser(username);
             authenticatedAccount = accountDAO.getByUsername(username);
         }
