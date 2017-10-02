@@ -617,13 +617,13 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     @Transactional
-    public void setInviteOnly(boolean inviteOnly) {
+    public void setPrivateProject(boolean privateProject) {
         identity.checkPermission(getInstance(), "update");
-        getInstance().setAllowGlobalTranslation(!inviteOnly);
+        getInstance().setPrivateProject(privateProject);
         update();
-        String message = inviteOnly
-                ? msgs.get("jsf.translation.permission.inviteOnly.Active")
-                : msgs.get("jsf.translation.permission.inviteOnly.Inactive");
+        String message = privateProject
+                ? msgs.get("jsf.permission.private.Active")
+                : msgs.get("jsf.permission.private.Inactive");
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO, message);
     }
 
