@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -39,8 +38,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -685,18 +682,9 @@ public class ProjectHome extends SlugHome<HProject>
     // Verify it still works properly */
 
     public void initialize() {
-        if (getInstance().isPrivateProject()) {
-            if (authenticatedAccount == null) {
-                throw new EntityNotFoundException();
-            }
-            boolean isProjectMember = projectMemberDAO
-                    .isProjectMember(authenticatedAccount.getPerson(),
-                            getInstance());
-            if (!isProjectMember) {
-                throw new EntityNotFoundException();
-            }
+        if (!identity.hasPermission(getInstance(), "read")) {
+            throw new EntityNotFoundException();
         }
-        identity.checkPermission(getInstance(), "read");
         validateSuppliedId();
         if (getInstance().getDefaultCopyTransOpts() != null) {
             copyTransOptionsModel
@@ -967,46 +955,34 @@ public class ProjectHome extends SlugHome<HProject>
 
     public List<HAccountRole> getAvailableRoles() {
         List<HAccountRole> allRoles = accountRoleDAO.findAll();
-        Collections.sort(allRoles, ComparatorUtil.ACCOUNT_ROLE_COMPARATOR);
+        allRoles.sort(ComparatorUtil.ACCOUNT_ROLE_COMPARATOR);
         return allRoles;
     }
 
     private @NotNull List<HProjectIteration> fetchVersions() {
-        List<HProjectIteration> results = Lists.newArrayList(Iterables
-                .filter(getInstance().getProjectIterations(), IS_NOT_OBSOLETE));
-        Collections.sort(results, new Comparator<HProjectIteration>() {
-
-            @Override
-            public int compare(HProjectIteration o1, HProjectIteration o2) {
-                EntityStatus fromStatus = o1.getStatus();
-                EntityStatus toStatus = o2.getStatus();
-                if (fromStatus.equals(toStatus)) {
-                    return 0;
-                }
-                if (fromStatus.equals(EntityStatus.ACTIVE)) {
-                    return -1;
-                }
-                if (fromStatus.equals(EntityStatus.READONLY)) {
-                    if (toStatus.equals(EntityStatus.ACTIVE)) {
-                        return 1;
+        return getInstance()
+                .getProjectIterations()
+                .stream()
+                .filter(it -> it.getStatus() != EntityStatus.OBSOLETE)
+                .sorted((o1, o2) -> {
+                    EntityStatus fromStatus = o1.getStatus();
+                    EntityStatus toStatus = o2.getStatus();
+                    if (fromStatus.equals(toStatus)) {
+                        return 0;
                     }
-                    return -1;
-                }
-                return 0;
-            }
-        });
-        return results;
+                    if (fromStatus.equals(EntityStatus.ACTIVE)) {
+                        return -1;
+                    }
+                    if (fromStatus.equals(EntityStatus.READONLY)) {
+                        if (toStatus.equals(EntityStatus.ACTIVE)) {
+                            return 1;
+                        }
+                        return -1;
+                    }
+                    return 0;
+                })
+                .collect(Collectors.toList());
     }
-
-    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
-    private final Predicate IS_NOT_OBSOLETE =
-            new Predicate<HProjectIteration>() {
-
-                @Override
-                public boolean apply(HProjectIteration input) {
-                    return input.getStatus() != EntityStatus.OBSOLETE;
-                }
-            };
 
     @Override
     public boolean isIdDefined() {

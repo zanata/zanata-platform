@@ -45,9 +45,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
-import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.SearchResult;
@@ -57,7 +55,6 @@ import org.zanata.rest.search.dto.ProjectSearchResult;
 import org.zanata.rest.search.dto.ProjectVersionSearchResult;
 import org.zanata.rest.search.dto.SearchResults;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 
@@ -73,7 +70,6 @@ import com.google.common.collect.Maps;
 @Transactional(readOnly = true)
 public class SearchService {
 
-    private static final long serialVersionUID = 8924030399679653241L;
     @Inject
     private ProjectDAO projectDAO;
 
@@ -95,9 +91,6 @@ public class SearchService {
     @Inject
     private ZanataIdentity identity;
 
-    @Inject @Authenticated
-    private HAccount authenticatedAccount;
-
     private static final int MAX_RESULT = 20;
 
     @GET
@@ -113,11 +106,10 @@ public class SearchService {
         try {
             int totalCount;
             List<HProject> projects;
-            HPerson person = authenticatedAccount != null ? authenticatedAccount.getPerson() : null;
             if (StringUtils.isEmpty(query)) {
-                totalCount = projectDAO.getFilterProjectSize(false, false, true, person);
+                totalCount = projectDAO.getFilterProjectSize(false, false, true);
                 projects = projectDAO.getOffsetList(offset,
-                        validatePageSize(sizePerPage), false, false, true, person);
+                        validatePageSize(sizePerPage), false, false, true);
             } else {
                 totalCount = projectDAO.getQueryProjectSize(query, false);
                 projects =

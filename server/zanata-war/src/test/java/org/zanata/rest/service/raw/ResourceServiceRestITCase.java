@@ -48,9 +48,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         sr = data.get(randomData);
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPutGetResourceWithExtensionDeprecated() {
         log.debug("put resource:" + sr.toString());
         getSourceDocResource().putResource(sr.getName(), sr, new StringSet(
@@ -79,9 +79,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(get).isEqualTo(sr);
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPutGetNoExtensionResourceDeprecated() {
         log.debug("put resource:" + sr.toString());
         getSourceDocResource().putResource(sr.getName(), sr, null, false);
@@ -129,9 +129,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(get.toString()).isEqualTo(base.toString());
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPutGetResourceDeprecated() {
         getSourceDocResource().putResource(sr.getName(), sr, null, false);
         Resource base = getTestDocWithTextFlow();
@@ -167,9 +167,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(get.toString()).isEqualTo(base.toString());
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPostGetResourceWithExtensionDeprecated() {
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
         Resource get = getResourceFromResponse(
@@ -196,9 +196,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(get.toString()).isEqualTo(sr.toString());
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPostGetNoExtensionResourceDeprecated() {
         log.debug("post resource:" + sr.toString());
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
@@ -245,9 +245,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(get.toString()).isEqualTo(base.toString());
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPutGetResourceMetaDeprecated() {
         log.debug("test put get resource meta service");
         Resource res = getTestDocWithTextFlow();
@@ -309,9 +309,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(get).isEqualTo(base);
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPutGetNoExtensionResourceMetaDeprecated() {
         log.debug("test put get resource meta service");
         Resource res = getTestDocWithTextFlow();
@@ -350,9 +350,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         assertThat(get).isEqualTo(base);
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testDeleteResourceDeprecated() {
         Resource rs1 = getTestDocWith2TextFlows();
         getSourceDocResource().post(rs1, null, true);
@@ -385,9 +385,9 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                 .isEqualTo(Status.NOT_FOUND.getStatusCode());
     }
 
+    @Deprecated
     @Test
     @RunAsClient
-    @SuppressWarnings("deprecation")
     public void testPostGetResourceWithUnderscoreInFileNameWithExtensionDeprecated() {
         Resource resource = new Resource("_test1.file-a");
         resource.setContentType(sr.getContentType());

@@ -77,13 +77,11 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
-import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
-import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.search.FilterConstraints;
@@ -201,36 +199,6 @@ public class TransMemoryMergeServiceImplTest {
     private static TransMemoryDetails tmDetail() {
         return new TransMemoryDetails("", "", "project a", "master",
                 "pot/msg.pot", "resId", null, null, null, null, null);
-    }
-
-    private TransMemoryQuery
-            prepareTMQuery(List<String> contents,
-                    HasSearchType.SearchType searchType, MergeOptions opts,
-                    String resId) {
-
-        if (opts == null) {
-            return new TransMemoryQuery(contents, searchType,
-                    new TransMemoryQuery.Condition(false, projectSlug),
-                    new TransMemoryQuery.Condition(false, docId),
-                    new TransMemoryQuery.Condition(false, resId), fromVersions);
-        } else {
-            TransMemoryQuery.Condition projectCondition =
-                    new TransMemoryQuery.Condition(
-                            opts.getDifferentProject() == MergeRule.REJECT,
-                            projectSlug);
-
-            TransMemoryQuery.Condition documentCondition =
-                    new TransMemoryQuery.Condition(
-                            opts.getDifferentDocument() == MergeRule.REJECT,
-                            docId);
-
-            TransMemoryQuery.Condition resCondition =
-                    new TransMemoryQuery.Condition(
-                            opts.getDifferentResId() == MergeRule.REJECT, resId);
-
-            return new TransMemoryQuery(contents, searchType, projectCondition,
-                    documentCondition, resCondition, fromVersions);
-        }
     }
 
     @Before

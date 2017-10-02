@@ -179,9 +179,6 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "read")
     public boolean canReadProject(HProject target) {
-        if (isAdmin()) {
-            return true;
-        }
         if (!target.isPrivateProject()) {
             return true;
         }
@@ -194,9 +191,6 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "read")
     public boolean canReadProjectIteration(HProjectIteration target) {
-        if (isAdmin()) {
-            return true;
-        }
         if (!target.getProject().isPrivateProject()) {
             return true;
         }

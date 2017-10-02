@@ -26,6 +26,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
@@ -50,6 +51,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
+import org.zanata.security.annotations.Authenticated;
 
 import static org.zanata.hibernate.search.IndexFieldLabels.FULL_SLUG_FIELD;
 
@@ -59,6 +61,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @FullText
     private FullTextEntityManager entityManager;
+    @Inject @Authenticated
+    private HAccount authenticatedAccount;
 
     public ProjectDAO() {
         super(HProject.class);
@@ -85,7 +89,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @SuppressWarnings("unchecked")
     public List<HProject> getOffsetList(int offset, int count,
                     boolean filterOutActive, boolean filterOutReadOnly,
-                    boolean filterOutObsolete, @Nullable HPerson person) {
+                    boolean filterOutObsolete) {
+
+        HPerson person = authenticatedAccount != null ?
+                authenticatedAccount.getPerson() : null;
 
         String condition =
                 constructFilterCondition(filterOutActive, filterOutReadOnly,
@@ -114,7 +121,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     public int getFilterProjectSize(boolean filterOutActive,
-            boolean filterOutReadOnly, boolean filterOutObsolete, @Nullable HPerson person) {
+            boolean filterOutReadOnly, boolean filterOutObsolete) {
+        HPerson person = authenticatedAccount != null ?
+                authenticatedAccount.getPerson() : null;
+
         String condition = constructFilterCondition(filterOutActive,
                 filterOutReadOnly, filterOutObsolete, person);
         String query = "select count(*) from HProject p " + condition;
@@ -132,7 +142,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     private String constructFilterCondition(boolean filterOutActive,
-            boolean filterOutReadOnly, boolean filterOutObsolete, @Nullable HPerson person) {
+            boolean filterOutReadOnly, boolean filterOutObsolete,
+            @Nullable HPerson person) {
         StringBuilder condition = new StringBuilder();
 
         if (person != null) {
@@ -478,5 +489,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                 .setParameter("projectSlug", projectSlug)
                 .setParameter("obsolete", EntityStatus.OBSOLETE);
         return ((Long) q.uniqueResult()).intValue();
+    }
+
+    @VisibleForTesting
+    protected void setAuthenticatedAccount(HAccount authenticatedAccount) {
+        this.authenticatedAccount = authenticatedAccount;
     }
 }

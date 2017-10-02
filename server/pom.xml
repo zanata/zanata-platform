@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -106,6 +106,28 @@
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
     <jackson2.version>2.7.2</jackson2.version>
+
+    <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
+    <server.jvmargs>
+      <!-- NB: JDom parser doesn't like comments starting with '-' -->
+      -server
+      -showversion
+      -XX:+PrintCommandLineFlags
+      -Xmx1536m
+      -XX:MaxMetaspaceSize=1g
+      -XX:-OmitStackTraceInFastThrow
+      -XX:+PrintGCDateStamps
+      -verbose:gc
+      -XX:+PrintGCDetails
+      -Xloggc:gc.log
+      -XX:+UseGCLogFileRotation
+      -XX:NumberOfGCLogFiles=10
+      -XX:GCLogFileSize=100M
+      -XX:+HeapDumpOnOutOfMemoryError
+      -XX:HeapDumpPath=.
+      -Djava.net.preferIPv4Stack=true
+      -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0
+    </server.jvmargs>
   </properties>
 
   <dependencyManagement>
@@ -283,7 +305,12 @@
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-runtime</artifactId>
+        <artifactId>kotlin-stdlib-jre7</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib-jre8</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
@@ -608,7 +635,7 @@
       <dependency>
         <groupId>org.jglue.cdi-unit</groupId>
         <artifactId>cdi-unit</artifactId>
-        <version>3.1.4</version>
+        <version>4.0.0</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
@@ -2051,6 +2078,8 @@
                 <exclude>javax.el:javax.el-api</exclude>
                 <exclude>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</exclude>
 
+                <!-- Use kotlin-stdlib -->
+                <exclude>org.jetbrains.kotlin:kotlin-runtime</exclude>
 
                 <!-- Use com.sun.mail:javax.mail -->
                 <exclude>javax.mail:mail</exclude>
@@ -2183,6 +2212,12 @@
               <goals>
                 <goal>integration-test</goal>
               </goals>
+              <configuration>
+                <systemPropertyVariables combine.children="append">
+                  <!-- Override gc.log and heapdump dir for Arquillian tests -->
+                  <server.jvmargs>${server.jvmargs} -Xloggc:target/gc.log -XX:HeapDumpPath=target</server.jvmargs>
+                </systemPropertyVariables>
+              </configuration>
             </execution>
             <execution>
               <id>verify</id>

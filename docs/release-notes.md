@@ -1,3 +1,27 @@
+## 4.3.0
+##### Changes
+ * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2184) - A better icon for role Requests in language
+ * [ZNTA-2172](https://zanata.atlassian.net/browse/ZNTA-2172) - Profile page should not render anything with inactive/non-existing account
+ * [ZNTA-2015](https://zanata.atlassian.net/browse/ZNTA-2015) - Allow admin to change a user's name
+ * [ZNTA-1969](https://zanata.atlassian.net/browse/ZNTA-1969) - Add Project Name to Version Sort in Version Merge Modal Story
+ * [ZNTA-1865](https://zanata.atlassian.net/browse/ZNTA-1865) - Feature: Enhance Version Merge feature
+ * [ZNTA-1684](https://zanata.atlassian.net/browse/ZNTA-1684) - Replace 'tribes' with 'languages/locales'
+
+##### Bug Fixes
+ * [ZNTA-2220](https://zanata.atlassian.net/browse/ZNTA-2220) - Dialogs have a "scroll line" on the right
+ * [ZNTA-2208](https://zanata.atlassian.net/browse/ZNTA-2208) - NotSupportedException on po/csv glossary import
+ * [ZNTA-2206](https://zanata.atlassian.net/browse/ZNTA-2206) - 404 page not found on help from more options
+ * [ZNTA-2191](https://zanata.atlassian.net/browse/ZNTA-2191) - Need HAccount index to find enabled users efficiently
+ * [ZNTA-2187](https://zanata.atlassian.net/browse/ZNTA-2187) - Version "Settings" tab does not show up
+ * [ZNTA-2186](https://zanata.atlassian.net/browse/ZNTA-2186) - CSS conflict in editor inputs
+ * [ZNTA-2178](https://zanata.atlassian.net/browse/ZNTA-2178) - Zanata Client API (old endpoints support)
+ * [ZNTA-2152](https://zanata.atlassian.net/browse/ZNTA-2152) - Remove css that overrides frontend dropdown + icons
+ * [ZNTA-2149](https://zanata.atlassian.net/browse/ZNTA-2149) - TM Merge pop-up closes on second mouse click.
+ * [ZNTA-2148](https://zanata.atlassian.net/browse/ZNTA-2148) - Fix alignment of notification modal icons
+ * [ZNTA-1970](https://zanata.atlassian.net/browse/ZNTA-1970) - Side nav doesn't align correctly on some devices
+
+-----------------------
+
 ## 4.2.4
 ##### Changes
  * [ZNTA-2035](https://zanata.atlassian.net/browse/ZNTA-2035) - Fix Jenkin's CI reporting to Github

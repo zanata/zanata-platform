@@ -43,20 +43,16 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
-import org.zanata.security.annotations.Authenticated;
 
 @RequestScoped
 @Named("projectsService")
 @Path(ProjectsResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class ProjectsService implements ProjectsResource {
-
-    private static final long serialVersionUID = 851866433537828355L;
 
     /** Type of media requested. */
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
@@ -68,9 +64,6 @@ public class ProjectsService implements ProjectsResource {
     @Inject
     private ProjectDAO projectDAO;
 
-    @Inject @Authenticated
-    private HAccount authenticatedAccount;
-
     @Override
     @GET
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML,
@@ -79,9 +72,7 @@ public class ProjectsService implements ProjectsResource {
     @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
     public Response get() {
         List<HProject> projects =
-                projectDAO.getOffsetList(-1, -1, false, false, true,
-                        authenticatedAccount != null ?
-                                authenticatedAccount.getPerson() : null);
+                projectDAO.getOffsetList(-1, -1, false, false, true);
 
         List<Project> projectRefs = new ArrayList<Project>(projects.size());
 

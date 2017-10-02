@@ -206,6 +206,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         return iterationStats;
     }
 
+    @Deprecated
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId, boolean includeWordStats,
@@ -357,7 +358,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
             localeStatsMap.put(localeId, localeStatistics);
         }
         return new ContributionStatistics(username,
-                new ArrayList(localeStatsMap.values()));
+                new ArrayList<>(localeStatsMap.values()));
     }
 
     private HPerson findPersonOrExceptionOnNotFound(String username) {

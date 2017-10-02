@@ -41,7 +41,6 @@ import org.zanata.rest.dto.GlossaryResults;
  */
 @Path(GlossaryResource.SERVICE_PATH)
 public class MockGlossaryResource implements GlossaryResource {
-    private static final long serialVersionUID = 4701897409671046397L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     UriInfo uriInfo;
