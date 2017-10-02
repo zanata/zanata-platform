@@ -87,9 +87,18 @@ This script will start a docker container with the database. You can inspect the
 
 The container by default will map the mysql data directory to `$HOME/docker-volumes/zanata-mariadb`. This can be changed from the script file.
 
-If you give the script ```-e`` option (stands for ephemeral), it will not use any volume mapping. This means any data you save in Zanata using this mode will be lost once the container is stopped. It will also remove itself once stopped (e.g. no need to call docker rm zanatadb). This is useful for testing a fresh copy of Zanata instance.
+If you give the script ```-e``` option (stands for ephemeral), it will not use any volume mapping. This means any data you save in Zanata using this mode will be lost once the container is stopped. It will also remove itself once stopped (e.g. no need to call docker rm zanatadb). This is useful for testing a fresh copy of Zanata instance.
 
-The database can be accessed via tcp via the `mysql` command or by using any database administration tool. You need to get the actual mapped port on the host by typing `docker ps`. After you have the port, you can connect locally to the database. The following is an example to accomplish this using a locally installed mysql client:
+The database can be accessed via tcp via the `mysql` command or by using any database administration tool. You need to get the actual mapped port on the host by typing `docker ps`, e.g. based on the below output I would use port 32768:
+
+```sh
+$ docker ps
+... PORTS                     NAMES
+... 0.0.0.0:32768->3306/tcp      zanatadb
+```
+
+After you have the port, you can connect locally to the database. The following is an example to accomplish this using a locally installed mysql client:
+
 
 ```sh
 mysql --protocol=tcp -h localhost --port=<PORT> -uzanata -pzanatapw zanata

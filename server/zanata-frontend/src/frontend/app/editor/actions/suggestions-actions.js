@@ -2,7 +2,6 @@ import { getSuggestions } from '../api/suggestions'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 import { debounce, isUndefined } from 'lodash'
 import {
-  TOGGLE_SUGGESTIONS,
   DIFF_SETTING_CHANGED,
   SET_SUGGESTION_SEARCH_TYPE,
   RESET_SUGGESTIONS_COPYING,
@@ -17,9 +16,14 @@ import {
   SUGGESTION_PANEL_HEIGHT_CHANGE,
   SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX
 } from './suggestions-action-types'
+import { updateSetting } from './settings-actions'
+import { KEY_SUGGESTIONS_VISIBLE } from '../reducers/settings-reducer'
+import { getSuggestionsPanelVisible } from '../reducers'
+
 export function toggleSuggestions () {
-  return {
-    type: TOGGLE_SUGGESTIONS
+  return (dispatch, getState) => {
+    const visible = getSuggestionsPanelVisible(getState())
+    dispatch(updateSetting(KEY_SUGGESTIONS_VISIBLE, !visible))
   }
 }
 
@@ -32,7 +36,7 @@ export function toggleSuggestions () {
  */
 export function togglePhraseSuggestions () {
   return (dispatch, getState) => {
-    const panelVisible = getState().ui.panels.suggestions.visible
+    const panelVisible = getSuggestionsPanelVisible(getState())
     const phraseSearchVisible =
       panelVisible && getState().suggestions.searchType === 'phrase'
 
@@ -98,7 +102,7 @@ export function copySuggestionN (index) {
   return (dispatch, getState) => {
     const { searchType } = getState().suggestions
     const { selectedPhraseId } = getState().phrases
-    const panelVisible = getState().ui.panels.suggestions.visible
+    const panelVisible = getSuggestionsPanelVisible(getState())
 
     const isTextSuggestions = panelVisible && searchType === 'text'
 

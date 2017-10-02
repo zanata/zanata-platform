@@ -20,10 +20,15 @@
  */
 package org.zanata.rest;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.security.annotations.NoSecurityCheck;
+import org.zanata.test.SessionTracker;
 
 /**
  * Default implementation for the Remote Signaler interface.
@@ -36,13 +41,17 @@ import org.zanata.security.annotations.NoSecurityCheck;
 @Path("/remote/signal")
 @NoSecurityCheck
 public class RemoteTestSignalerImpl {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(RemoteTestSignalerImpl.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(RemoteTestSignalerImpl.class);
+
+    @Inject
+    private SessionTracker sessionTracker;
 
     @POST
     @Path("/before")
     public void signalBeforeTest(@QueryParam("testClass") String testClass,
             @QueryParam("method") String testMethod) throws Exception {
+        sessionTracker.invalidateAllSessions();
         log.info("Starting test {}:{}", testClass, testMethod);
     }
 
@@ -50,6 +59,9 @@ public class RemoteTestSignalerImpl {
     @Path("/after")
     public void signalAfterTest(@QueryParam("testClass") String testClass,
             @QueryParam("method") String testMethod) throws Exception {
+        // Note: this will also trigger SessionChecker to check the
+        // serializability of remaining sessions as they are destroyed:
+        sessionTracker.invalidateAllSessions();
         log.info("Finished test {}:{}", testClass, testMethod);
     }
 }

@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * The environment that a <code>ResourceRequest</code> should be executed with.
  * Provides default headers, etc to be included in the request.

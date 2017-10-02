@@ -4,34 +4,35 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
-import Pager from '.'
+import { mount } from 'enzyme'
+import { Pager } from '.'
 import { Icon } from '../../../components'
 import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
+
+const callback = () => {}
 
 describe('PagerTest', () => {
   it('Pager markup', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(<Pager
-      actions={{
-        firstPage: () => {},
-        previousPage: () => {},
-        nextPage: () => {},
-        lastPage: () => {}
-      }}
+      firstPage={callback}
+      previousPage={callback}
+      nextPage={callback}
+      lastPage={callback}
       pageNumber={7}
       pageCount={11}
-      gettextCatalog={mockGettextCatalog}/>)
+      gettextCatalog={mockGettextCatalog} />)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <ul className='u-listHorizontal u-textCenter'>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
-             title='First page'>
+            title='First page'>
             <Icon name='previous' title='First page' className="s2" />
           </a>
         </li>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
-             title='Previous page'>
+            title='Previous page'>
             <Icon name='chevron-left' title='Previous page' className="s2" />
           </a>
         </li>
@@ -42,13 +43,13 @@ describe('PagerTest', () => {
         </li>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
-             title='Next page'>
+            title='Next page'>
             <Icon name='chevron-right' title='Next page' className="s2" />
           </a>
         </li>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
-             title='Last page'>
+            title='Last page'>
             <Icon name='next' title='Last page' className="s2" />
           </a>
         </li>
@@ -58,43 +59,36 @@ describe('PagerTest', () => {
   })
 
   it('Pager events', () => {
-    const blank = 'no event'
-    let event
+    const goFirst = jest.fn()
+    const goPrev = jest.fn()
+    const goNext = jest.fn()
+    const goLast = jest.fn()
 
-    const d20 = TestUtils.renderIntoDocument(
+    const d20 = mount(
       <Pager
-        actions={{
-          firstPage: () => event = 'critical fumble',
-          previousPage: () => event = 'fumble',
-          nextPage: () => event = 'success',
-          lastPage: () => event = 'critical hit'
-        }}
+        firstPage={goFirst}
+        previousPage={goPrev}
+        nextPage={goNext}
+        lastPage={goLast}
         pageNumber={2}
         pageCount={20}
-        gettextCatalog={mockGettextCatalog}/>
+        gettextCatalog={mockGettextCatalog} />
     )
+
     // click events are expected on the <a> tags
-    const [ first, prev, next, last ] =
-      TestUtils.scryRenderedDOMComponentsWithTag(d20, 'a')
+    d20.find('a').at(0).simulate('click')
+    expect(goFirst).toHaveBeenCalled()
 
-    event = blank
-    TestUtils.Simulate.click(first)
-    expect(event).toEqual('critical fumble',
-      'first-page button should trigger given event')
+    expect(goPrev).not.toHaveBeenCalled()
+    d20.find('a').at(1).simulate('click')
+    expect(goPrev).toHaveBeenCalled()
 
-    event = blank
-    TestUtils.Simulate.click(prev)
-    expect(event).toEqual('fumble',
-      'previous-page button should trigger given event')
+    expect(goNext).not.toHaveBeenCalled()
+    d20.find('a').at(2).simulate('click')
+    expect(goNext).toHaveBeenCalled()
 
-    event = blank
-    TestUtils.Simulate.click(next)
-    expect(event).toEqual('success',
-      'next-page button should trigger given event')
-
-    event = blank
-    TestUtils.Simulate.click(last)
-    expect(event).toEqual('critical hit',
-      'last-page button should trigger given event')
+    expect(goLast).not.toHaveBeenCalled()
+    d20.find('a').at(3).simulate('click')
+    expect(goLast).toHaveBeenCalled()
   })
 })

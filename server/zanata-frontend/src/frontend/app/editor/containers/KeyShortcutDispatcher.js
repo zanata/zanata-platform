@@ -1,6 +1,7 @@
 import Combokeys from 'combokeys'
 import globalBind from 'combokeys/plugins/global-bind'
-import { setSaveAsMode, SHORTCUTS } from '../actions/key-shortcuts-actions'
+import { setSaveAsMode } from '../actions/key-shortcuts-actions'
+import { getShortcuts } from '../reducers'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -19,7 +20,7 @@ class KeyShortcutDispatcher extends React.Component {
         sequenceKeys: PropTypes.arrayOf(PropTypes.shape({
           // Note: these are nested ShortcutInfos, but specifying infinite
           //       recursion with PropTypes is too much bother (i.e. I don't
-          //       think it is possible). - damason
+          //       think it is possible). Flow can probably handle it. - damason
           keyConfig: PropTypes.object,
           handler: PropTypes.func.isRequired
         })),
@@ -77,23 +78,36 @@ class KeyShortcutDispatcher extends React.Component {
     this.combokeys.unbind(keys, eventType)
   }
 
+  bindShortcuts = (shortcuts) => {
+    shortcuts.forEach(shortcutInfo => {
+      const { keyConfig, handler } = shortcutInfo
+      const sequenceKeys = keyConfig.sequenceKeys
+      if (sequenceKeys) {
+        this.enableKeysFor(keyConfig,
+          this.makeSequenceHandler(handler, sequenceKeys))
+      } else {
+        this.enableKeysFor(keyConfig, handler)
+      }
+    })
+  }
+
   componentDidMount () {
     const elem = this.shortcutContainer
     this.combokeys = globalBind(new Combokeys(elem))
     if (elem) {
-      this.props.shortcutInfoList.forEach(shortcutInfo => {
-        const { keyConfig, handler } = shortcutInfo
-        const sequenceKeys = keyConfig.sequenceKeys
-        if (sequenceKeys) {
-          this.enableKeysFor(keyConfig,
-            this.makeSequenceHandler(handler, sequenceKeys))
-        } else {
-          this.enableKeysFor(keyConfig, handler)
-        }
-      })
+      this.bindShortcuts(this.props.shortcutInfoList)
     } else {
       console.error('No shortcut container element is bound for this ' +
                     'KeyShortcutDispatcher')
+    }
+  }
+
+  /* Ensure bindings are updated whenever the shortcuts change. */
+  componentWillReceiveProps (newProps) {
+    if (this.props.shortcutInfoList !== newProps.shortcutInfoList) {
+      // reset removes all the bindings
+      this.combokeys.reset()
+      this.bindShortcuts(newProps.shortcutInfoList)
     }
   }
 
@@ -119,10 +133,14 @@ class KeyShortcutDispatcher extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = state => ({
+  shortcuts: getShortcuts(state)
+})
+
+const mapDispatchToProps = dispatch => {
   return {
     cancelSaveAs: () => { dispatch(setSaveAsMode(false)) },
-    shortcutInfoList: map(SHORTCUTS, addHandlersRecursively)
+    addHandlersRecursively
   }
 
   function addHandlersRecursively (shortcut) {
@@ -142,5 +160,12 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(undefined, mapDispatchToProps
+const mergeProps =
+  ({ shortcuts }, { addHandlersRecursively, ...dispatchProps }, ownProps) => ({
+    ...ownProps,
+    ...dispatchProps,
+    shortcutInfoList: map(shortcuts, addHandlersRecursively)
+  })
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps
   )(KeyShortcutDispatcher)

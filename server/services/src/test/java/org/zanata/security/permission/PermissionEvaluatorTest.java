@@ -22,7 +22,6 @@ package org.zanata.security.permission;
 
 import org.assertj.core.api.SoftAssertions;
 import org.jglue.cdiunit.AdditionalClasses;
-import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +32,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.SecurityFunctions;
+import org.zanata.test.CdiUnitRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @SupportDeltaspikeCore
-@RunWith(CdiRunner.class)
+@RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ PermissionEvaluatorTest.SimpleTestEvaluators.class,
         PermissionEvaluatorTest.ComplexTestEvaluators.class})
 public class PermissionEvaluatorTest {

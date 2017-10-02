@@ -43,7 +43,6 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpSession;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.core.api.literal.DeltaSpikeLiteral;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
