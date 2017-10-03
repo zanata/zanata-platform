@@ -40,8 +40,10 @@ import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.i18n.Messages;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.LocaleService;
@@ -98,6 +100,10 @@ public class FileServiceTest extends ZanataTest {
     // needed to override the producers of the original class
     @Produces @Mock ApplicationConfiguration applicationConfiguration;
     @Produces @Mock Messages messages;
+    @Produces
+    @Authenticated
+    @Mock
+    HAccount authenticatedAccount;
 
     @Captor
     private ArgumentCaptor<DocumentFileUploadForm> formCaptor;

@@ -21,11 +21,10 @@
  */
 package org.zanata.ui;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.zanata.common.ActivityType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -49,7 +48,7 @@ import static org.zanata.common.ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
 
 /**
  * Provides data and operations needed to display an activity entry.
- * <p>
+ *
  * This is used by template activity-entry.xhtml
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -71,26 +70,26 @@ public class ActivityEntry {
     public String getActivityTypeIconClass(Activity activity) {
         return activity.getActivityType() == UPDATE_TRANSLATION ? "i--translate"
                 : activity.getActivityType() == REVIEWED_TRANSLATION
-                ? "i--review"
-                : activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT
-                ? "i--document"
-                : activity
-                .getActivityType() == UPLOAD_TRANSLATION_DOCUMENT
-                ? "i--translate-up" : "";
+                        ? "i--review"
+                        : activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT
+                                ? "i--document"
+                                : activity
+                                        .getActivityType() == UPLOAD_TRANSLATION_DOCUMENT
+                                                ? "i--translate-up" : "";
     }
 
     public String getActivityTitle(Activity activity) {
         return activity.getActivityType() == UPDATE_TRANSLATION
                 ? msgs.get("jsf.Translation")
                 : activity.getActivityType() == REVIEWED_TRANSLATION
-                ? msgs.get("jsf.Reviewed")
-                : activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT
-                ? msgs.get("jsf.UploadedSource")
-                : activity
-                .getActivityType() == UPLOAD_TRANSLATION_DOCUMENT
-                ? msgs.get(
-                "jsf.UploadedTranslations")
-                : "";
+                        ? msgs.get("jsf.Reviewed")
+                        : activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT
+                                ? msgs.get("jsf.UploadedSource")
+                                : activity
+                                        .getActivityType() == UPLOAD_TRANSLATION_DOCUMENT
+                                                ? msgs.get(
+                                                        "jsf.UploadedTranslations")
+                                                : "";
     }
 
     public String getActivityMessage(Activity activity) {
@@ -105,21 +104,21 @@ public class ActivityEntry {
                             "jsf.dashboard.activity.translate.message.projectPrivate",
                             activity.getWordCount(), getProjectName(activity),
                             StringEscapeUtils
-                                    .escapeHtml(
+                                    .escapeHtml4(
                                             getLastTextFlowContent(activity)));
                 } else if (isProjectDeleted) {
                     return msgs.format(
                             "jsf.dashboard.activity.translate.message.projectDeleted",
                             activity.getWordCount(), getProjectName(activity),
                             StringEscapeUtils
-                                    .escapeHtml(
+                                    .escapeHtml4(
                                             getLastTextFlowContent(activity)));
                 } else if (isVersionDeleted) {
                     return msgs.format(
                             "jsf.dashboard.activity.translate.message.versionDeleted",
                             activity.getWordCount(), getProjectUrl(activity),
                             getProjectName(activity), StringEscapeUtils
-                                    .escapeHtml(
+                                    .escapeHtml4(
                                             getLastTextFlowContent(activity)));
                 } else {
                     return msgs
@@ -129,7 +128,7 @@ public class ActivityEntry {
                                     getProjectName(activity),
                                     getEditorUrl(activity),
                                     StringEscapeUtils
-                                            .escapeHtml(getLastTextFlowContent(
+                                            .escapeHtml4(getLastTextFlowContent(
                                                     activity)));
                 }
             case REVIEWED_TRANSLATION:
@@ -138,28 +137,28 @@ public class ActivityEntry {
                             "jsf.dashboard.activity.review.message.projectPrivate",
                             activity.getWordCount(), getProjectName(activity),
                             StringEscapeUtils
-                                    .escapeHtml(
+                                    .escapeHtml4(
                                             getLastTextFlowContent(activity)));
                 } else if (isProjectDeleted) {
                     return msgs.format(
                             "jsf.dashboard.activity.review.message.projectDeleted",
                             activity.getWordCount(), getProjectName(activity),
                             StringEscapeUtils
-                                    .escapeHtml(
+                                    .escapeHtml4(
                                             getLastTextFlowContent(activity)));
                 } else if (isVersionDeleted) {
                     return msgs.format(
                             "jsf.dashboard.activity.review.message.versionDeleted",
                             activity.getWordCount(), getProjectUrl(activity),
                             getProjectName(activity), StringEscapeUtils
-                                    .escapeHtml(
+                                    .escapeHtml4(
                                             getLastTextFlowContent(activity)));
                 } else {
                     return msgs.format("jsf.dashboard.activity.review.message",
                             activity.getWordCount(), getProjectUrl(activity),
                             getProjectName(activity), getEditorUrl(activity),
                             StringEscapeUtils
-                                    .escapeHtml(
+                                    .escapeHtml4(
                                             getLastTextFlowContent(activity)));
                 }
             case UPLOAD_SOURCE_DOCUMENT:
@@ -213,10 +212,9 @@ public class ActivityEntry {
                 getEntity(activity.getContextType(), activity.getContextId());
         if (isTranslationUpdateActivity(activity.getActivityType())
                 || activity
-                .getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+                        .getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
                 || activity
-                .getActivityType() ==
-                ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+                        .getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
             HProjectIteration version = (HProjectIteration) context;
             return urlUtil.projectUrl(version.getProject().getSlug());
         }
@@ -245,8 +243,7 @@ public class ActivityEntry {
                 .getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT) {
             // not supported for upload source action
         } else if (activity
-                .getActivityType() ==
-                ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+                .getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
             HProjectIteration version = (HProjectIteration) context;
             HDocument document = (HDocument) lastTarget;
             HTextFlowTarget tft =
@@ -351,10 +348,9 @@ public class ActivityEntry {
                 getEntity(activity.getContextType(), activity.getContextId());
         if (isTranslationUpdateActivity(activity.getActivityType())
                 || activity
-                .getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+                        .getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
                 || activity
-                .getActivityType() ==
-                ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+                        .getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
             HProjectIteration version = (HProjectIteration) context;
             return version.getProject().getName();
         }
@@ -375,10 +371,9 @@ public class ActivityEntry {
                 getEntity(activity.getContextType(), activity.getContextId());
         if (isTranslationUpdateActivity(activity.getActivityType())
                 || activity
-                .getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+                        .getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
                 || activity
-                .getActivityType() ==
-                ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+                        .getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
             return (HProjectIteration) context;
         }
         return null;

@@ -105,6 +105,11 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     @Produces @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ZanataIdentity identity;
 
+    @Produces
+    @Authenticated
+    @Mock
+    protected HAccount authenticatedAccount;
+
     @Override
     @Produces
     protected Session getSession() {

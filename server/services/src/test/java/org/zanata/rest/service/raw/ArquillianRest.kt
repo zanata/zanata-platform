@@ -38,6 +38,7 @@ object ArquillianRest {
                 "io.javaslang:javaslang",
                 "net.sf.okapi.steps:okapi-step-tokenization",
                 "net.sourceforge.openutils:openutils-log4j",
+                "org.apache.commons:commons-lang3",
                 "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
                 "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
                 "org.apache.deltaspike.modules:deltaspike-security-module-api",

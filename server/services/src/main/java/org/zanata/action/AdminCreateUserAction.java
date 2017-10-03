@@ -27,7 +27,6 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +39,7 @@ import org.zanata.service.RegisterService;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
 
+import static org.zanata.util.RandomStringUtils.randomAlphanumeric;
 
 @Named("adminCreateUserAction")
 @ViewScoped
@@ -92,7 +92,7 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
 
         String activationKey =
                 registerService.register(username,
-                        RandomStringUtils.randomAlphanumeric(8), username,
+                        randomAlphanumeric(8), username,
                         email);
         log.info("get register key:" + activationKey);
 

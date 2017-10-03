@@ -39,7 +39,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -54,7 +54,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.exception.ProjectNotFoundException;
 import org.zanata.i18n.Messages;
@@ -141,8 +140,6 @@ public class ProjectHome extends SlugHome<HProject>
     private PersonDAO personDAO;
     @Inject
     private AccountRoleDAO accountRoleDAO;
-    @Inject
-    private ProjectMemberDAO projectMemberDAO;
     @Inject
     private WebHookDAO webHookDAO;
     @Inject

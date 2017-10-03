@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;

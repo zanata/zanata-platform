@@ -39,7 +39,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.NaturalId;
 import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;

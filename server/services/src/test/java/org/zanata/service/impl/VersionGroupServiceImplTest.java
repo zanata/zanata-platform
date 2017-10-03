@@ -40,9 +40,11 @@ import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.impl.VersionStateCacheImpl.VersionStatisticLoader;
 import org.zanata.test.CdiUnitRunner;
@@ -79,6 +81,10 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
             new InfinispanTestCacheContainer();
     @Produces @FullText @Mock FullTextEntityManager fullTextEntityManager;
     @Produces IServiceLocator serviceLocator = ServiceLocator.instance();
+
+    @Produces @Authenticated
+    @Mock
+    HAccount authenticatedAccount;
 
     @Override
     @Produces
