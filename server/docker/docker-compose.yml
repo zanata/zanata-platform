@@ -8,7 +8,7 @@ zanatadb:
     MYSQL_USER: zanata
     MYSQL_PASSWORD: zanatapw
   volumes:
-    - $HOME/docker-volumes/zanata-mariadb:/var/lib/mysql
+    - $HOME/docker-volumes/zanata-mariadb:/var/lib/mysql:Z
 zanata:
   # build: .
   image: zanata-dev
