@@ -97,13 +97,13 @@ Zanata will store some files on file system. You will need to define a system pr
 The value should be a path that has read and write permission from jboss user. You can define individual system properties for each storage below or they will derive from above zanata.home directory (e.g. as sub directory).
 
 - zanata.file.directory
-- hibernate.search.default.indexBase
 
-You can also define a system property for Javamelody (the server monitoring tool Zanata uses)
+You can also define a system property for Javamelody (the server monitoring tool Zanata uses) and for Hibernate search index. It's recommended you define them as sub directory of zanata.home.
 ```xml
 <system-properties>
   ...
   <property name="javamelody.storage-directory" value="${zanata.home}/stats"/>
+  <property name="hibernate.search.default.indexBase" value="${zanata.home}/indexes"/>
   ...
 </system-properties>
 ``` 
