@@ -7,7 +7,9 @@ import {
   fetchVersionLocales
 } from '../api'
 import {
+  HIDE_SIDEBAR,
   TOGGLE_GLOSSARY,
+  TOGGLE_INFO_PANEL,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
   FETCH_FAILED,
@@ -19,25 +21,14 @@ import {
   HEADER_DATA_FETCHED
 } from './header-action-types'
 import { some, curry, isEmpty } from 'lodash'
+import { createAction } from 'redux-actions'
 import { equals } from '../utils/string-utils'
 
-export function toggleGlossary () {
-  return {
-    type: TOGGLE_GLOSSARY
-  }
-}
-
-export function toggleHeader () {
-  return {
-    type: TOGGLE_HEADER
-  }
-}
-
-export function toggleKeyboardShortcutsModal () {
-  return {
-    type: TOGGLE_KEY_SHORTCUTS
-  }
-}
+export const hideSidebar = createAction(HIDE_SIDEBAR)
+export const toggleGlossary = createAction(TOGGLE_GLOSSARY)
+export const toggleInfoPanel = createAction(TOGGLE_INFO_PANEL)
+export const toggleHeader = createAction(TOGGLE_HEADER)
+export const toggleKeyboardShortcutsModal = createAction(TOGGLE_KEY_SHORTCUTS)
 
 const fetchFailed = (error) => {
   return {type: FETCH_FAILED, error: error}

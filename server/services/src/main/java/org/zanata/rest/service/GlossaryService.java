@@ -43,7 +43,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.StreamingOutput;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.adapter.glossary.GlossaryCSVWriter;
 import org.zanata.adapter.glossary.GlossaryPoWriter;

@@ -1,6 +1,6 @@
 package org.zanata.servlet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.ocpsoft.rewrite.config.Configuration;

@@ -14,6 +14,7 @@ import addWatchers from './watchers'
 
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
+import { fetchSettings } from './actions/settings-actions'
 
 // Set the path that webpack will try to load extra chunks from
 // This is needed to load intl-polyfill
@@ -61,6 +62,9 @@ function runApp () {
   //       URL. As soon as it has the /translate part of the URL it grabs the
   //       first doc and language in the list and goes ahead.
   //   Should be able to do better than that.
+
+  // Load user settings once
+  store.dispatch(fetchSettings())
 
   // TODO when translations are available, load user locale translations with
   //   require.ensure and pass to IntlProvider as messages={...}

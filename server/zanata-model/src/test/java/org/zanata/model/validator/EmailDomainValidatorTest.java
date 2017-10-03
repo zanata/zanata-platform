@@ -4,7 +4,6 @@ import java.util.Set;
 import javax.inject.Provider;
 import javax.validation.ConstraintValidatorContext;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,6 +13,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.zanata.util.RandomStringUtils.randomAlphabetic;
 
 public class EmailDomainValidatorTest {
 
@@ -37,9 +37,9 @@ public class EmailDomainValidatorTest {
     }
 
     @Test
-    public void anyEmailIsvalidWhenNoRestrictionOnEmailDomain() {
+    public void anyEmailIsValidWhenNoRestrictionOnEmailDomain() {
         when(emailDomainsProvider.get()).thenReturn(emptySet());
-        assertThat(validator.isValid(RandomStringUtils.randomAlphabetic(5), context)).isTrue();
+        assertThat(validator.isValid(randomAlphabetic(5), context)).isTrue();
 
     }
 

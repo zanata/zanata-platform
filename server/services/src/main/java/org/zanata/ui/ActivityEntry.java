@@ -21,9 +21,10 @@
  */
 package org.zanata.ui;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.text.StringEscapeUtils;
 import org.zanata.common.ActivityType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -97,19 +98,19 @@ public class ActivityEntry {
                         "jsf.dashboard.activity.translate.message.projectDeleted",
                         activity.getWordCount(), getProjectName(activity),
                         StringEscapeUtils
-                                .escapeHtml(getLastTextFlowContent(activity)));
+                                .escapeHtml4(getLastTextFlowContent(activity)));
             } else if (isVersionDeleted) {
                 return msgs.format(
                         "jsf.dashboard.activity.translate.message.versionDeleted",
                         activity.getWordCount(), getProjectUrl(activity),
                         getProjectName(activity), StringEscapeUtils
-                                .escapeHtml(getLastTextFlowContent(activity)));
+                                .escapeHtml4(getLastTextFlowContent(activity)));
             } else {
                 return msgs.format("jsf.dashboard.activity.translate.message",
                         activity.getWordCount(), getProjectUrl(activity),
                         getProjectName(activity), getEditorUrl(activity),
                         StringEscapeUtils
-                                .escapeHtml(getLastTextFlowContent(activity)));
+                                .escapeHtml4(getLastTextFlowContent(activity)));
             }
 
         case REVIEWED_TRANSLATION:
@@ -118,19 +119,19 @@ public class ActivityEntry {
                         "jsf.dashboard.activity.review.message.projectDeleted",
                         activity.getWordCount(), getProjectName(activity),
                         StringEscapeUtils
-                                .escapeHtml(getLastTextFlowContent(activity)));
+                                .escapeHtml4(getLastTextFlowContent(activity)));
             } else if (isVersionDeleted) {
                 return msgs.format(
                         "jsf.dashboard.activity.review.message.versionDeleted",
                         activity.getWordCount(), getProjectUrl(activity),
                         getProjectName(activity), StringEscapeUtils
-                                .escapeHtml(getLastTextFlowContent(activity)));
+                                .escapeHtml4(getLastTextFlowContent(activity)));
             } else {
                 return msgs.format("jsf.dashboard.activity.review.message",
                         activity.getWordCount(), getProjectUrl(activity),
                         getProjectName(activity), getEditorUrl(activity),
                         StringEscapeUtils
-                                .escapeHtml(getLastTextFlowContent(activity)));
+                                .escapeHtml4(getLastTextFlowContent(activity)));
             }
 
         case UPLOAD_SOURCE_DOCUMENT:
