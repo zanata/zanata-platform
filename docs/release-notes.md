@@ -1,8 +1,7 @@
 ## 4.4.0
 ##### Infrastructure Changes
 Zanata now requires a system propery 'zanata.home' as the root for all its file system storage needs.
-Previously defined 'zanata.file.directory' will still work.
-But if you omit it, it will be derived from 'zanata.home' as sub directories.
+The property 'zanata.file.directory' is still supported, but if it is missing, a sub-directory of 'zanata.home' will be used.
 
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it

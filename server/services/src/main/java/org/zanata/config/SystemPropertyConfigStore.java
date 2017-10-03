@@ -62,6 +62,9 @@ public class SystemPropertyConfigStore implements ConfigStore {
     private static final String KEY_JAVAMELODY_STORAGE_DIRECTORY =
             "javamelody.storage-directory";
     private static final String KEY_ZANATA_HOME = "zanata.home";
+    /**
+     * @see SystemConfigStartupCheck
+     */
     private static final Set<String> REQUIRED_PROP_KEYS = ImmutableSet
             .of(KEY_ZANATA_HOME, KEY_JAVAMELODY_STORAGE_DIRECTORY, KEY_HIBERNATE_SEARCH_INDEX_BASE);
 
@@ -135,7 +138,9 @@ public class SystemPropertyConfigStore implements ConfigStore {
     }
 
     public String getZanataHome() {
-        return System.getProperty(KEY_ZANATA_HOME);
+        String zanataHome = System.getProperty(KEY_ZANATA_HOME);
+        assert !Strings.isNullOrEmpty(zanataHome);
+        return zanataHome;
     }
 
     public Map<AuthenticationType, String> getLoginModuleNames() {
