@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.security.AuthenticationType;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -56,12 +57,12 @@ public class SystemPropertyConfigStore implements ConfigStore {
             "zanata.file.directory";
     private static final String KEY_HIBERNATE_SEARCH_INDEX_BASE =
             "hibernate.search.default.indexBase";
+    // unfortunately we can't derive javamelody directory from zanata.home because it's used inside javamelody
     private static final String KEY_JAVAMELODY_STORAGE_DIRECTORY =
             "javamelody.storage-directory";
-
+    private static final String KEY_ZANATA_HOME = "zanata.home";
     private static final Set<String> REQUIRED_PROP_KEYS = ImmutableSet
-            .of(KEY_DOCUMENT_FILE_STORE, KEY_JAVAMELODY_STORAGE_DIRECTORY,
-                    KEY_HIBERNATE_SEARCH_INDEX_BASE);
+            .of(KEY_ZANATA_HOME, KEY_JAVAMELODY_STORAGE_DIRECTORY);
 
     /**
      * Server-wide switch to enable/disable OAuth support
@@ -125,11 +126,15 @@ public class SystemPropertyConfigStore implements ConfigStore {
     }
 
     public String getDocumentFileStorageLocation() {
-        return System.getProperty(KEY_DOCUMENT_FILE_STORE);
+        return System.getProperty(KEY_DOCUMENT_FILE_STORE, new File(getZanataHome(), "file").getAbsolutePath());
     }
 
     public String getHibernateSearchIndexBase() {
-        return System.getProperty(KEY_HIBERNATE_SEARCH_INDEX_BASE);
+        return System.getProperty(KEY_HIBERNATE_SEARCH_INDEX_BASE, new File(getZanataHome(), "indexes").getAbsolutePath());
+    }
+
+    public String getZanataHome() {
+        return System.getProperty(KEY_ZANATA_HOME);
     }
 
     public Map<AuthenticationType, String> getLoginModuleNames() {
