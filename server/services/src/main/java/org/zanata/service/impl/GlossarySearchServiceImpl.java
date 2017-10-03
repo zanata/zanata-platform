@@ -157,12 +157,12 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
                                String qualifiedName) {
         for (Object[] match : matches) {
             HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
-            HGlossaryTerm targetTerm = null;
-            if (sourceTerm != null) {
-                targetTerm = glossaryDAO.getTermByEntryAndLocale(
-                        sourceTerm.getGlossaryEntry().getId(), localeId,
-                        qualifiedName);
+            if (sourceTerm == null) {
+                continue;
             }
+            HGlossaryTerm targetTerm = glossaryDAO.getTermByEntryAndLocale(
+                    sourceTerm.getGlossaryEntry().getId(), localeId,
+                    qualifiedName);
             String srcTermContent = sourceTerm.getContent();
             String targetTermContent = targetTerm == null ? "" : targetTerm.getContent();
             GlossaryResultItem item = getOrCreateGlossaryResultItem(matchesMap,
