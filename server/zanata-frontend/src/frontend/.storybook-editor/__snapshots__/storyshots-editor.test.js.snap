@@ -5640,13 +5640,15 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            
+            -none-
           </span>
         </button>
       </td>
@@ -5731,13 +5733,15 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            
+            -none-
           </span>
         </button>
       </td>
@@ -5822,13 +5826,15 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            
+            -none-
           </span>
         </button>
       </td>
@@ -5938,11 +5944,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             Krankenwagen
           </span>
@@ -6029,11 +6037,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             Krankenhaus
           </span>
@@ -6120,11 +6130,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             Arzt
           </span>
@@ -6220,11 +6232,13 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             Krankenwagen
           </span>
