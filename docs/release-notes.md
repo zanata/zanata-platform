@@ -1,3 +1,12 @@
+## 4.4.0
+##### Infrastructure Changes
+Zanata now requires a system propery 'zanata.home' as the root for all its file system storage needs.
+Previously defined 'zanata.file.directory' and 'hibernate.search.default.indexBase' will still work.
+But if you omit them, they will be derived from 'zanata.home' as sub directories.
+
+##### Changes
+ * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+
 ## 4.3.0
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2184) - A better icon for role Requests in language

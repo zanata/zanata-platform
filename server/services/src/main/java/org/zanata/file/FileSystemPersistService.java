@@ -89,15 +89,10 @@ public class FileSystemPersistService implements FilePersistService {
     }
 
     private File ensureDocsDirectory() {
-        String basePathStringOrNull =
+        String basePathString =
                 appConfig.getDocumentFileStorageLocation();
-        if (basePathStringOrNull == null) {
-            throw new RuntimeException(
-                    "Document storage location is not configured as system property:"
-                            + SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE);
-        }
         File docsDirectory =
-                new File(basePathStringOrNull, RAW_DOCUMENTS_SUBDIRECTORY);
+                new File(basePathString, RAW_DOCUMENTS_SUBDIRECTORY);
         boolean created = docsDirectory.mkdirs();
         log.debug(created ? "Directory created" : "Unable to create directory");
         return docsDirectory;
