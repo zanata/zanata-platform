@@ -20,6 +20,7 @@
  */
 package org.zanata.servlet
 
+import com.google.common.annotations.VisibleForTesting
 import io.undertow.security.idm.Account
 import org.picketlink.common.constants.GeneralConstants
 import org.picketlink.identity.federation.bindings.wildfly.sp.SPFormAuthenticationMechanism
@@ -38,11 +39,18 @@ import javax.servlet.http.HttpServletResponse
  * *         [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
 @WebFilter(filterName = "ssoFilter")
-class SAMLFilter : Filter {
+class SAMLFilter() : Filter {
     @Inject
     lateinit private var authenticationManager: AuthenticationManager
     @Inject
     lateinit private var urlUtil: UrlUtil
+
+    @VisibleForTesting
+    constructor(authenticationManager: AuthenticationManager, urlUtil: UrlUtil) : this() {
+        this.authenticationManager = authenticationManager
+        this.urlUtil = urlUtil
+    }
+
 
     @Throws(ServletException::class)
     override fun init(filterConfig: FilterConfig) {}
@@ -51,26 +59,24 @@ class SAMLFilter : Filter {
     override fun doFilter(request: ServletRequest, response: ServletResponse,
                           chain: FilterChain) {
         if (request is HttpServletRequest) {
-            val account: Account? = request.session.getAttribute(
+            val session = request.session
+            val account: Account? = session.getAttribute(
                     SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE) as? Account
-            if (account != null) {
+            if (account != null && account.roles.contains("authenticated")) {
+                val principalName = account.principal.name
 
-                if (account.roles.contains("authenticated")) {
-                    val principalName = account.principal.name
-
-                    val samlAttributeMap: Map<String, List<String>?> =
-                            request.session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP) as? Map<String, List<String>?>? ?: mapOf()
-                    // These assumes IDP follow standard SAML assertion names
-                    val usernameFromSSO= getValueFromSessionAttribute(samlAttributeMap, "uid", { _ -> principalName})
-                    val emailFromSSO = getValueFromSessionAttribute(samlAttributeMap, "email")
-                    val nameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "cn")
-                    log.info("SSO login: username: {}, name: {}, uuid: {}",
-                            usernameFromSSO, nameFromSSO, principalName)
-                    authenticationManager.ssoLogin(account,
-                            usernameFromSSO, emailFromSSO, nameFromSSO)
-                    performRedirection(response as HttpServletResponse)
-                    return
-                }
+                val samlAttributeMap: Map<String, List<String>?> =
+                        session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP) as? Map<String, List<String>?>? ?: mapOf()
+                // These assumes IDP follow standard SAML assertion names
+                val usernameFromSSO= getValueFromSessionAttribute(samlAttributeMap, "uid", { _ -> principalName})
+                val emailFromSSO = getValueFromSessionAttribute(samlAttributeMap, "email")
+                val nameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "cn")
+                log.info("SSO login: username: {}, name: {}, uuid: {}",
+                        usernameFromSSO, nameFromSSO, principalName)
+                authenticationManager.ssoLogin(account,
+                        usernameFromSSO, emailFromSSO, nameFromSSO)
+                performRedirection(response as HttpServletResponse)
+                return
             }
         }
         chain.doFilter(request, response)
