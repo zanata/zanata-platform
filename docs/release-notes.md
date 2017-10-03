@@ -2,23 +2,39 @@
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2184) - A better icon for role Requests in language
  * [ZNTA-2172](https://zanata.atlassian.net/browse/ZNTA-2172) - Profile page should not render anything with inactive/non-existing account
+ * [ZNTA-2171](https://zanata.atlassian.net/browse/ZNTA-2171) - Storybook: reject with reason HISTORY UI
+ * [ZNTA-2156](https://zanata.atlassian.net/browse/ZNTA-2156) - Storybook: reject with reason MODAL UI
+ * [ZNTA-2147](https://zanata.atlassian.net/browse/ZNTA-2147) - Editor heading -> flex
+ * [ZNTA-2134](https://zanata.atlassian.net/browse/ZNTA-2134) - Help pages required for Version TM Merge
+ * [ZNTA-2119](https://zanata.atlassian.net/browse/ZNTA-2119) - Turn on storybook addons
+ * [ZNTA-2118](https://zanata.atlassian.net/browse/ZNTA-2118) - Upgrade webpack to 2.x or 3.x (if 3.x looks stable enough)
+ * [ZNTA-2116](https://zanata.atlassian.net/browse/ZNTA-2116) - Create tri-state checkbox component
+ * [ZNTA-2093](https://zanata.atlassian.net/browse/ZNTA-2093) - TM Merge no longer has "Next Condition"
+ * [ZNTA-2091](https://zanata.atlassian.net/browse/ZNTA-2091) - Please widen the vertical scroll bar on the right hand side of the editor
  * [ZNTA-2015](https://zanata.atlassian.net/browse/ZNTA-2015) - Allow admin to change a user's name
  * [ZNTA-1969](https://zanata.atlassian.net/browse/ZNTA-1969) - Add Project Name to Version Sort in Version Merge Modal Story
  * [ZNTA-1865](https://zanata.atlassian.net/browse/ZNTA-1865) - Feature: Enhance Version Merge feature
  * [ZNTA-1684](https://zanata.atlassian.net/browse/ZNTA-1684) - Replace 'tribes' with 'languages/locales'
+ * [ZNTA-975](https://zanata.atlassian.net/browse/ZNTA-975) - Add advanced search dropdown to React editor
+ * [ZNTA-709](https://zanata.atlassian.net/browse/ZNTA-709) - Set up consistent node versioning in projects
 
 ##### Bug Fixes
  * [ZNTA-2220](https://zanata.atlassian.net/browse/ZNTA-2220) - Dialogs have a "scroll line" on the right
  * [ZNTA-2208](https://zanata.atlassian.net/browse/ZNTA-2208) - NotSupportedException on po/csv glossary import
  * [ZNTA-2206](https://zanata.atlassian.net/browse/ZNTA-2206) - 404 page not found on help from more options
+ * [ZNTA-2201](https://zanata.atlassian.net/browse/ZNTA-2201) - updateGitHubCommitStatus should use the correct SHA in correct repo
  * [ZNTA-2191](https://zanata.atlassian.net/browse/ZNTA-2191) - Need HAccount index to find enabled users efficiently
  * [ZNTA-2187](https://zanata.atlassian.net/browse/ZNTA-2187) - Version "Settings" tab does not show up
  * [ZNTA-2186](https://zanata.atlassian.net/browse/ZNTA-2186) - CSS conflict in editor inputs
  * [ZNTA-2178](https://zanata.atlassian.net/browse/ZNTA-2178) - Zanata Client API (old endpoints support)
+ * [ZNTA-2168](https://zanata.atlassian.net/browse/ZNTA-2168) - Editor background for active translation needs fixing
  * [ZNTA-2152](https://zanata.atlassian.net/browse/ZNTA-2152) - Remove css that overrides frontend dropdown + icons
  * [ZNTA-2149](https://zanata.atlassian.net/browse/ZNTA-2149) - TM Merge pop-up closes on second mouse click.
  * [ZNTA-2148](https://zanata.atlassian.net/browse/ZNTA-2148) - Fix alignment of notification modal icons
+ * [ZNTA-2131](https://zanata.atlassian.net/browse/ZNTA-2131) - #, %, & are not treated as search chars on glossary search.
  * [ZNTA-1970](https://zanata.atlassian.net/browse/ZNTA-1970) - Side nav doesn't align correctly on some devices
+ * [ZNTA-1786](https://zanata.atlassian.net/browse/ZNTA-1786) - write lock when shutting down application server
+ * [ZNTA-234](https://zanata.atlassian.net/browse/ZNTA-234) - [REST] /stats/proj/gcc2/iter/4.9.0/doc/{docId} failed to handle the file with directory
 
 -----------------------
 
