@@ -24,7 +24,7 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -55,7 +55,6 @@ import com.google.common.collect.Lists;
 public class TranslationService implements TranslationResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationService.class);
-    private static final long serialVersionUID = 8277023760710788030L;
 
     @Inject
     private ZanataIdentity identity;

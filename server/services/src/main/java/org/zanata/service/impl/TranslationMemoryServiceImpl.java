@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
@@ -146,6 +146,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         this.urlUtil = urlUtil;
     }
 
+    @SuppressWarnings("unused")
     public TranslationMemoryServiceImpl() {
     }
 

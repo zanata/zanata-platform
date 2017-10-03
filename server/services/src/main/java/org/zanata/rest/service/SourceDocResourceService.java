@@ -182,6 +182,7 @@ public class SourceDocResourceService implements SourceDocResource {
                 .tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -230,6 +231,7 @@ public class SourceDocResourceService implements SourceDocResource {
                 .lastModified(doc.getLastChanged()).build();
     }
 
+    @Deprecated
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, boolean copytrans) {
@@ -268,6 +270,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return response.tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response deleteResource(String idNoSlash) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -294,6 +297,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return Response.ok().build();
     }
 
+    @Deprecated
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -330,6 +334,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return Response.ok().entity(entity).tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta messageBody,
             Set<String> extensions) {

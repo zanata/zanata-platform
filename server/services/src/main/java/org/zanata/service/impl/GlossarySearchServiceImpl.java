@@ -30,7 +30,7 @@ import java.util.Map;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.queryparser.classic.ParseException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -67,18 +67,17 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
 
     private GlossaryDAO glossaryDAO;
     private LocaleService localeServiceImpl;
-    private UrlUtil urlUtil;
     private String contextPath;
 
     @Inject
     public GlossarySearchServiceImpl(GlossaryDAO glossaryDAO,
-            LocaleService localeServiceImpl, UrlUtil urlUtil, @ContextPath String contextPath) {
+            LocaleService localeServiceImpl, @ContextPath String contextPath) {
         this.glossaryDAO = glossaryDAO;
         this.localeServiceImpl = localeServiceImpl;
-        this.urlUtil = urlUtil;
         this.contextPath = contextPath;
     }
 
+    @SuppressWarnings("unused")
     public GlossarySearchServiceImpl() {
     }
 
@@ -196,7 +195,7 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         }
         boolean hasFilter = StringUtils.isNotBlank(filter);
         if (hasFilter) {
-            url += "?filter=" + urlUtil.encodeString(filter);
+            url += "?filter=" + UrlUtil.encodeString(filter);
         }
         if (localeId != null) {
             String prefix = hasFilter ? "&" : "?";

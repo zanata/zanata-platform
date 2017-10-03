@@ -25,7 +25,7 @@ package org.zanata.util;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.common.ProjectType;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;

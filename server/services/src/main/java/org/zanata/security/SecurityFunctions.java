@@ -234,7 +234,7 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = { "add-translation", "modify-translation" })
     public boolean canTranslate(HProject project, HLocale lang) {
-        return project.isAllowGlobalTranslation()
+        return !project.isPrivateProject()
                 && isUserAllowedAccess(project)
                 && isUserTranslatorOfLanguage(lang);
     }
@@ -307,7 +307,7 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = { "review-translation", "translation-review" })
     public boolean canReviewTranslation(HProject project, HLocale locale) {
-        return project.isAllowGlobalTranslation()
+        return !project.isPrivateProject()
                 && isUserAllowedAccess(project)
                 && isUserReviewerOfLanguage(locale);
     }
@@ -542,7 +542,7 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "review-comment")
     public boolean canCommentOnReview(HLocale locale, HProject project) {
-        return project.isAllowGlobalTranslation()
+        return !project.isPrivateProject()
                 && isUserAllowedAccess(project) && isLanguageTeamMember(locale);
     }
 

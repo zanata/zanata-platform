@@ -35,7 +35,7 @@ import net.sf.okapi.common.resource.TextUnit;
 import net.sf.okapi.filters.ts.Parameters;
 import net.sf.okapi.filters.ts.TsFilter;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.DocumentType;

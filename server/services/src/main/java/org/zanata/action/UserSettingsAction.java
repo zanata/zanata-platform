@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.annotation.PostConstruct;
@@ -277,7 +277,7 @@ public class UserSettingsAction implements Serializable {
      */
     public String getRegenerateAPiKeyMsg() {
         String msg = msgs.get("jsf.apikey.ConfirmGenerate");
-        return StringEscapeUtils.escapeJavaScript(msg);
+        return StringEscapeUtils.escapeEcmaScript(msg);
     }
 
     public void regenerateApiKey() {

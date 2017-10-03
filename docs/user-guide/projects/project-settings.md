@@ -38,6 +38,11 @@ For example, a git checkout URL is provided for the Zanata server project that c
 $ git clone git@github.com:zanata/zanata-platform.git
 ```
 
+### Private
+
+This setting determines if the project will be visible to all Zanata users or just subset of users.
+When it is activated, the project will only visible to assigned users and only translators in your [project team](/user-guide/projects/project-team/) are allowed to translate your project.
+
 ### Make this project read only
 
 This button is used to set a project to read-only, which prevents translations being entered. This may be useful in some cases, but should be used sparingly so that translators are able to work on your project.
@@ -90,12 +95,6 @@ To remove a language from the list of available locales, first move the cursor o
 </figure>
 
 ------------
-### Invite only
-
-This setting determines which users will be allowed to translate your project.
-When it is inactive, any translator can translate your project into their language,
-as long as their language is enabled in your project. When the setting is active,
-only translators in your [project team](/user-guide/projects/project-team/) are allowed to translate your project.
 
 ### Validations
 
@@ -154,7 +153,7 @@ Types of events available:
 Trigger when document has reached 100% Translated or Approved
 ```
 {
-  "type": "org.zanata.events.DocumentMilestoneEvent",
+  "type": "DocumentMilestoneEvent",
   "milestone": "100% Translated",
   "locale": "de",
   "docId": "zanata-war/src/main/resources/messages",
@@ -199,8 +198,8 @@ Trigger when a source document is added or removed from project version
 #### Manual event
 Trigger by user manually.
 
-To trigger such event, first project maintainer will need to add and enable the webhook.
-Then translator can select the language he/she has access to from the version page, then from the top right dropdown menu, you should be able to fire the event to registered webhook endpoint.
+To trigger such an event, first the project maintainer will need to add and enable the webhook.
+Then the translator can select the language they have access to from the languages tab on the version overview page. Then from the top right dropdown menu of the documents column, they should be able to fire the event to the registered webhook endpoint.
 ```json
 {
   "project": "zanata",
@@ -208,7 +207,7 @@ Then translator can select the language he/she has access to from the version pa
   "username": "triggerer",
   "zanataServer": "translate.zanata.org",
   "locale": "zh",
-  "type": "Manual event"
+  "type": "ManuallyTriggeredEvent"
 }
 ```
 

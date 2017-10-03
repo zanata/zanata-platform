@@ -35,7 +35,7 @@ function shortcutInfo (keys, eventActionCreator, description, eventType) {
  * See shortcutInfo(...) for the expected structure.
  *
  * CAUTION: with sequence keys, shortcuts are added and removed. They will
- *          clobber any other shotrcut that uses the same keys. Never use the
+ *          clobber any other shortcut that uses the same keys. Never use the
  *          same key combination for a sequence that is used in any of the top-
  *          level shortcuts.
  *          Note: this could be fixed if we make use of Combokeys' sequences,

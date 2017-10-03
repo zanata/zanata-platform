@@ -38,7 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.transform.ResultTransformer;
 import javax.inject.Inject;
@@ -79,7 +79,7 @@ import org.zanata.util.DateUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-import static org.apache.commons.lang.StringUtils.abbreviate;
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 /**
  * Default implementation for the
@@ -202,6 +202,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         return iterationStats;
     }
 
+    @Deprecated
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId, boolean includeWordStats,
@@ -353,7 +354,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
             localeStatsMap.put(localeId, localeStatistics);
         }
         return new ContributionStatistics(username,
-                new ArrayList(localeStatsMap.values()));
+                new ArrayList<>(localeStatsMap.values()));
     }
 
     private HPerson findPersonOrExceptionOnNotFound(String username) {

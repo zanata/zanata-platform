@@ -765,7 +765,7 @@
 
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib</artifactId>
+      <artifactId>kotlin-stdlib-jre8</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -1893,7 +1893,6 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>gwt-test</artifactId>
-      <version>4.4.0-SNAPSHOT</version>
     </dependency>
 
 
