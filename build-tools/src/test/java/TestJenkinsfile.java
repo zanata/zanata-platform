@@ -113,6 +113,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         steps.put("emailext", Closure.IDENTITY);
         steps.put("emailextrecipients", Closure.IDENTITY);
         steps.put("library", Closure.IDENTITY);
+        steps.put("sh", Closure.IDENTITY);
         steps.put("step", Closure.IDENTITY);
         // we need this for CPS mode
         MethodClosure.ALLOW_RESOLVE = true;
