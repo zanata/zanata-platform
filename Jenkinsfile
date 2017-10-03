@@ -6,6 +6,11 @@
 
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
+@Field
+public static final String PIPELINE_LIBRARY_BRANCH = 'master'
+
+// GROOVY-3278:
+//   Using referenced String constant as value of Annotation causes compile error
 @Library('zanata-pipeline-library@master')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
@@ -21,7 +26,10 @@ PullRequests.ensureJobDescription(env, manager, steps)
 @Field
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps, currentBuild, 'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile')
+notify = new Notifier(env, steps, currentBuild,
+    'https://github.com/zanata/zanata-platform.git',
+    'Jenkinsfile', PIPELINE_LIBRARY_BRANCH,
+)
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -183,6 +191,8 @@ timestamps {
         // Build and Unit Tests
         // The built files are stashed for integration tests in other nodes.
         stage('Build') {
+          // Now SCM commit info is available (after checkout scm)
+          notify.startBuilding()
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
