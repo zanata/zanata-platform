@@ -11,9 +11,9 @@
   </ui:define>
 
   <ui:define name="center_content">
-    <div class="more-content">
+    <div class="moreContent">
           <ul class="list--no-bullets l--pad-h-quarter">
-            <li class="more-list-item">
+            <li class="moreContent-listItem">
               <a href="#{applicationConfigurationAction.helpUrl}" id="more_help"
                 target="_blank">
                 #{msgs['jsf.Help']}</a>
@@ -32,13 +32,13 @@
             </li>
             <ui:fragment rendered="#{identity.loggedIn}">
               <ui:include src="/WEB-INF/layout/admin/contact_admin_modal.xhtml"/>
-              <li class="more-contact">
+              <li class="moreContent-contact">
                 <a href="#" data-toggle="modal"
                    data-target="#contactAdminDialog" id="more_contact_admin">
                   #{msgs['jsf.ContactAdmin']}</a>
               </li>
             </ui:fragment>
-            <li class="more-language">
+            <li class="moreContent-language">
               <h:form id="localeSelector_form" styleClass="l--push-bottom-0">
                 <h:selectOneMenu id="Select"
                   value="#{localeSelectorAction.localeString}"
@@ -49,7 +49,7 @@
                 </h:selectOneMenu>
               </h:form>
             </li>
-            <li class="more-info">
+            <li class="moreContent-info">
               <h:outputText escape="false"
                 value="#{msgs.format('jsf.RunningVersionInfo',
                   msgs['jsf.Zanata'], applicationConfiguration.version,
