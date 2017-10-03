@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.inject.Model;

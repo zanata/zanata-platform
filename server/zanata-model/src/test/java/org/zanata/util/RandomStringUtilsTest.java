@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,31 +18,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.util;
 
-package org.zanata.database;
+import java.util.regex.Pattern;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.util.List;
+import org.junit.Test;
 
-import org.apache.commons.lang3.ClassUtils;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-class ProxyUtil {
-
-    /**
-     * Returns a proxy which implements all the same interfaces as the object
-     */
-    static Object newProxy(Object object, InvocationHandler handler) {
-        Class<?> clazz = object.getClass();
-        ClassLoader cl = clazz.getClassLoader();
-         List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(clazz);
-        Class<?>[] interfaces = allInterfaces.toArray(new Class<?>[0]);
-        return Proxy.newProxyInstance(cl, interfaces, handler);
+public class RandomStringUtilsTest {
+    @Test
+    public void testAlphabetic() {
+        String alphabetic = RandomStringUtils.randomAlphabetic(999);
+        assertThat(alphabetic).matches(Pattern.compile("[a-zA-Z]{999}"));
     }
 
+    @Test
+    public void testAlphanumeric() {
+        String alphabetic = RandomStringUtils.randomAlphanumeric(999);
+        assertThat(alphabetic).matches(Pattern.compile("[a-zA-Z0-9]{999}"));
+    }
 }

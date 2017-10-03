@@ -23,7 +23,7 @@ package org.zanata.service.impl;
 import com.google.common.base.Optional;
 import com.google.common.collect.MapMaker;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
