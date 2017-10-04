@@ -89,12 +89,12 @@ class UserProfile extends Component {
           <div className='u-flexColumn details-text'>
             {name &&
               <div className='username h2 ellipsis'
-                id='userProfile-displayName'>
+                id='profile-displayname'>
               {name}
               </div>
             }
             <ul className='largeFontList'>
-              <li className='u-flexCenter' id='profileUsername'>
+              <li className='u-flexCenter' id='profile-username'>
                 <Icon name='user' className='s0' title='Username' />
                 {username}
               </li>
