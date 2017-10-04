@@ -26,7 +26,7 @@ services:
       DB_USER: zanata
       DB_PASSWORD: zanatapw
       # TODO MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
-      JAVA_OPTS: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata"
+      PREPEND_JAVA_OPTS: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata"
     ports:
       - 8080:8080
     volumes:
