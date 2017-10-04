@@ -50,7 +50,9 @@ object ArquillianRest {
                 "org.dbunit:dbunit",
 //                "org.hibernate:hibernate-core",
                 "org.reflections:reflections",
-                "org.jetbrains.kotlin:kotlin-stdlib")
+                "org.jetbrains.kotlin:kotlin-stdlib",
+                "org.jetbrains.kotlin:kotlin-stdlib-jre7",
+                "org.jetbrains.kotlin:kotlin-stdlib-jre8")
     }
 
     @JvmOverloads

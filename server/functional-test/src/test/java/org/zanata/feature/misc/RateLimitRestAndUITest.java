@@ -167,15 +167,16 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("RHBZ1218458")
+    @Ignore("ZNTA-434")
     public void canLimitConcurrentRestRequestsPerAPIKey() throws Exception {
         // translator creates the project/version
         final String projectSlug = "project";
         final String iterationSlug = "version";
         new ZanataRestCaller(TRANSLATOR, TRANSLATOR_API)
                 .createProjectAndVersion(projectSlug, iterationSlug, "gettext");
-        Invocation.Builder clientRequest = clientRequestAsAdminWithQueryParam(
+        Invocation.Builder configRequest = clientRequestAsAdminWithQueryParam(
                 "rest/configurations/" + maxConcurrentPathParam, "configValue", 2);
+        configRequest.put(null).close();
         // prepare to fire multiple REST requests
         final AtomicInteger atomicInteger = new AtomicInteger(1);
         // requests from translator user

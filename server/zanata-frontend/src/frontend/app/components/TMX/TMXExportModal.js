@@ -113,7 +113,7 @@ class TMXExportModal extends Component {
         <tr key={localeId}>
           <td>
             <OverlayTrigger placement='left' overlay={tooltip}>
-              <Button bsStyle='link' className='button--link'>
+              <Button bsStyle='link'>
                 {localeId}
               </Button>
             </OverlayTrigger>
@@ -126,10 +126,10 @@ class TMXExportModal extends Component {
             </OverlayTrigger>
           </td>
           <td>
-            <span className='tmx-dl'>
+            <span className='tmxDownload'>
               <OverlayTrigger placement='top' overlay={downloadTooltip}>
                 <Button
-                  className={'button--primary ' +
+                  className={'btn-primary ' +
                   (downloading[localeId] ? 'disabled' : '')}
                   disabled={downloading[localeId]}
                   bsStyle='primary'
@@ -148,22 +148,22 @@ class TMXExportModal extends Component {
      'selected source language will be included.'
 
     return (
-      <Modal id='tmx-export-modal' show={show} onHide={handleOnClose}
+      <Modal id='tmxExportModal' show={show} onHide={handleOnClose}
         keyboard backdrop>
         <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <span className='tmx-export'>
+          <span className='tmxExport'>
             <p>{question}</p>
             {size(srcLangRows) > 1 &&
               <p className='lead'>Source languages</p>}
-            <Table className='tmx-table'>
+            <Table className='tmxTable'>
               <tbody>
                 {srcLangRows}
               </tbody>
             </Table>
-            <p className='text-warning'>
+            <p className='u-textWarning'>
               {warningText}
             </p>
           </span>
