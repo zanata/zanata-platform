@@ -94,7 +94,7 @@ class UserProfile extends Component {
               </div>
             }
             <ul className='largeFontList'>
-              <li className='u-flexCenter' id='profileUsername'>
+              <li className='u-flexCenter' id='profile-username'>
                 <Icon name='user' className='s0' title='Username' />
                 {username}
               </li>
