@@ -68,7 +68,7 @@ class SAMLFilter() : Filter {
                 val samlAttributeMap: Map<String, List<String>?> =
                         session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP) as? Map<String, List<String>?>? ?: mapOf()
                 // These assumes IDP follow standard SAML assertion names
-                val usernameFromSSO= getValueFromSessionAttribute(samlAttributeMap, "uid", { _ -> principalName})
+                val usernameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "uid", { _ -> principalName})
                 val emailFromSSO = getValueFromSessionAttribute(samlAttributeMap, "email")
                 val nameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "cn")
                 log.info("SSO login: username: {}, name: {}, uuid: {}",
