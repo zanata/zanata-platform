@@ -89,7 +89,7 @@ class UserProfile extends Component {
           <div className='u-flexColumn details-text'>
             {name &&
               <div className='username h2 ellipsis'
-                id='profile-displayName'>
+                id='profile-displayname'>
               {name}
               </div>
             }
