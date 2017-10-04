@@ -147,8 +147,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         StringBuilder condition = new StringBuilder();
 
         if (person != null) {
-            condition
-                    .append("left join p.localeMembers lm left join p.members m ")
+            condition.append("left join p.localeMembers lm left join p.members m ")
                     .append("where (p.privateProject is TRUE and ((m.person =:person) or (lm.person =:person))) or (p.privateProject is FALSE) ");
         } else {
             condition.append("where p.privateProject is FALSE ");

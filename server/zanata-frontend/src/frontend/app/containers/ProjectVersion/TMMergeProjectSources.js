@@ -100,20 +100,20 @@ class TMMergeProjectSources extends Component {
             </InputGroup.Addon>
             <FormControl type='text'
               value={mergeOptions.projectSearchTerm}
-              className='vmerge-searchinput'
+              className='versionMergeSearch-input'
               onChange={this.projectSearchTermChanged}
               onKeyDown={flushProjectSearch}
             />
           </InputGroup>
         </Col>
         <Col xs={6}>
-          <span className='vmerge-adjtitle vmerge-title'>
+          <span className='versionMergeTitle-adjusted VersionMergeTitle'>
           Select source project versions to merge
           </span>
           <div>
             <LoaderText loading={fetchingProject}
               loadingText={'Fetching Projects'} />
-            <span className="text-muted">{noResults}</span>
+            <span className="u-textMuted">{noResults}</span>
           </div>
           <ProjectVersionPanels projectVersions={projectVersions}
             selectedVersions={mergeOptions.selectedVersions}
@@ -133,7 +133,7 @@ class TMMergeProjectSources extends Component {
     return (
       <Panel>
         <Col xs={12}>
-          <div className='vmerge-title vmerge-title-flex'>
+          <div className='VersionMergeTitle versionMergeTitle-flex'>
             <span>
               <Toggle icons={false} defaultChecked
                 onChange={this.toggleChange} />
@@ -143,12 +143,12 @@ class TMMergeProjectSources extends Component {
             <OverlayTrigger placement='right'
               overlay={fromProjectSourceTooltip}>
               <a className="btn-link tooltip-btn" role="button">
-                <Icon name="info" className="s0 info-icon" />
+                <Icon name="info" className="s0 iconInfoVersionMerge" />
               </a>
             </OverlayTrigger>
           </div>
         </Col>
-        <Col xs={12} className='vmerge-searchbox'>
+        <Col xs={12} className='versionMergeSearch'>
           <span>Search TM from</span>
           <Radio name="fromProjectSelection" inline disabled={disabled}
             checked={this.state.fromProjectSelection === SAME}
@@ -170,7 +170,7 @@ class TMMergeProjectSources extends Component {
         <Col xs={12}>
           <Well>
             <p>Translations which satisfy all conditions will copy as
-              <span className="text-bold text-success"> translated</span>.
+              <span className="u-textBold u-textSuccess"> translated</span>.
             </p>
           </Well>
         </Col>

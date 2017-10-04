@@ -23,22 +23,22 @@ class LogoLoader extends React.Component {
       loading
     } = this.props
 
-    const className = cx('LogoLoader', {
-      'LogoLoader--inverted': inverted,
+    const className = cx('logoLoader', {
+      'logoLoader-inverted': inverted,
       'is-loading': loading
     })
 
     /* eslint-disable max-len  */
     return (
       <span className={className} title='Zanata'>
-        <span className='LogoLoader-logo'>
-          <svg className='LogoLoader-svg LogoLoader-circle' viewBox='0 0 512 512'>
+        <span className='logoLoader-logo'>
+          <svg className='logoLoader-svg LogoLoader-circle' viewBox='0 0 512 512'>
             <g><path d='M256.040517,26.9020538 C129.377614,26.9020538 26.4050036,130.259367 26.4050036,257.280952 C26.4050036,384.302988 129.377614,487.660302 256.040517,487.660302 C382.703464,487.660302 485.676029,384.302988 485.676075,257.280952 C485.676029,130.259367 382.703464,26.9020538 256.040517,26.9020538 Z M256.040517,66.3898734 C361.786714,66.3898734 447.229385,152.099354 447.229431,258.282844 C447.229385,364.466785 361.786714,450.176266 256.040517,450.176266 C150.294319,450.176266 64.8516476,364.466785 64.8516476,258.282844 C64.8516476,152.099354 150.294319,66.3898734 256.040517,66.3898734 Z' id='Circle'></path></g>
           </svg>
-          <svg className='LogoLoader-svg LogoLoader-circlePulse' viewBox='0 0 512 512'>
+          <svg className='logoLoader-svg LogoLoader-circlePulse' viewBox='0 0 512 512'>
             <g><path d='M256.040517,26.9020538 C129.377614,26.9020538 26.4050036,130.259367 26.4050036,257.280952 C26.4050036,384.302988 129.377614,487.660302 256.040517,487.660302 C382.703464,487.660302 485.676029,384.302988 485.676075,257.280952 C485.676029,130.259367 382.703464,26.9020538 256.040517,26.9020538 Z M256.040517,66.3898734 C361.786714,66.3898734 447.229385,152.099354 447.229431,258.282844 C447.229385,364.466785 361.786714,450.176266 256.040517,450.176266 C150.294319,450.176266 64.8516476,364.466785 64.8516476,258.282844 C64.8516476,152.099354 150.294319,66.3898734 256.040517,66.3898734 Z' id='Circle'></path></g>
           </svg>
-          <svg className='LogoLoader-svg LogoLoader-z' viewBox='0 0 512 512'>
+          <svg className='logoLoader-svg logoLoader-z' viewBox='0 0 512 512'>
             <g>
               <g id='Shadow' transform='translate(26.377192, 25.222456)'>
                 <mask id='mask-2' fill='white'>

@@ -101,7 +101,7 @@ class Languages extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='page wide-view-theme'>
+      <div className='page wideView'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -110,17 +110,17 @@ class Languages extends Component {
         )
         }
         <Helmet title='Languages' />
-        <div className='center-block'>
+        <div className='u-centerBlock'>
           <div className='clearfix'
             id='languages-form'>
-            <h2>
+            <h1>
               Languages {!loading &&
                 <Badge className='default'>{totalCount}</Badge>}
-            </h2>
+            </h1>
             {permission.canAddLocale &&
               <div>
                 <Button bsStyle='primary' bsSize='small'
-                  id='btn-language-add-new'
+                  id='btnLanguageAdd'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
                     title='plus' />
@@ -129,52 +129,49 @@ class Languages extends Component {
                 <NewLanguageModal />
               </div>
             }
-            <div className='toolbar col-xs-12'>
-              <FormGroup className='search-box col-xs-6 col-sm-5 col-md-6
-                col-lg-7'>
-                <InputGroup>
-                  <FormControl type='text'
-                    value={this.state.searchText}
-                    onChange={this.onUpdateSearch} />
-                  <InputGroup.Addon>
-                    <Icon name='search'
-                      className='s1'
-                      title='search' />
-                  </InputGroup.Addon>
-                </InputGroup>
-              </FormGroup>
-
+            <div className='col-xs-12'>
               {loading
-                ? <div className='content-view-container'>
-                  <span className='list-inline'>
+                ? <div className='containerContentView'>
+                  <span className='listInline'>
                     <LoaderText loading />
                   </span>
                 </div>
-                : (<div>
-                  <div className='sort-items
-                    col-xs-6 col-sm-4 col-md-4 col-lg-3'>
+                : (
+                <div className='toolbar'>
+                  <FormGroup className='searchBox'>
+                    <InputGroup>
+                      <FormControl type='text'
+                        value={this.state.searchText}
+                        onChange={this.onUpdateSearch} />
+                      <InputGroup.Addon>
+                        <Icon name='search'
+                          className='s1'
+                          title='search' />
+                      </InputGroup.Addon>
+                    </InputGroup>
+                  </FormGroup>
+                  <div className='sortItems'>
                     <FormControl componentClass='select'
-                      className='pull-right' id='sort-options'
+                      id='sort-options'
                       onChange={handleOnUpdateSort} value={sort.value}>
-                    {sortOption.map(function (sort, i) {
-                      return <option key={i} value={sort.value}>
+                      {sortOption.map(function (sort, i) {
+                        return <option key={i} value={sort.value}>
                         {sort.display}</option>
-                    })}
+                      })}
                     </FormControl>
                   </div>
-                  <div className='show-items pull-right col-xs-5
-                    col-sm-3 col-md-2 col-lg-2'>
+                  <div className='showItems u-pullRight'>
                     <span>Show</span>
                     <FormControl componentClass='select'
                       onChange={handleOnUpdatePageSize} value={size}
                       id='page-size-options'>
-                    {pageSizeOption.map(function (value, i) {
-                      return <option key={i} value={value}>
+                      {pageSizeOption.map(function (value, i) {
+                        return <option key={i} value={value}>
                         {value}</option>
-                    })}
+                      })}
                     </FormControl>
                   </div>
-                  <div className='page-count col-xs-7 col-sm-8
+                  <div className='pageCount col-xs-7 col-sm-8
                     col-md-12'>
                     <Pagination
                       prev
@@ -184,35 +181,33 @@ class Languages extends Component {
                       activePage={page}
                       onSelect={handlePageChanged} />
                   </div>
-                </div>)
-              }
+                </div>)}
+                {!loading &&
+                  <div className='left-form u-tablePadding col-xs-12'>
+                    <table className='table' id='languages-table'>
+                      <thead>
+                        <tr className='hidden'>
+                          <th>Language</th>
+                          <th>&nbsp;</th>
+                          <th>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                       {results.map(function (value, i) {
+                         return <Entry key={i} locale={value}
+                           userLanguageTeams={user.languageTeams}
+                           permission={permission}
+                           handleDelete={resetSearchText}
+                           isDeleting={deleting} />
+                       })}
+                      </tbody>
+                    </table>
+                  </div>}
             </div>
-            {!loading &&
-              <div className='left-form tablepadding col-xs-12'>
-                <table className='table' id='languages-table'>
-                  <thead>
-                    <tr className='hidden'>
-                      <th>Language</th>
-                      <th>&nbsp;</th>
-                      <th>&nbsp;</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.map(function (value, i) {
-                      return <Entry key={i} locale={value}
-                        userLanguageTeams={user.languageTeams}
-                        permission={permission}
-                        handleDelete={resetSearchText}
-                        isDeleting={deleting} />
-                    })}
-                  </tbody>
-                </table>
-              </div>}
           </div>
         </div>
-      </div>
-    )
-    /* eslint-enable react/jsx-no-bind */
+      </div>)
+      /* eslint-enable react/jsx-no-bind */
   }
 }
 

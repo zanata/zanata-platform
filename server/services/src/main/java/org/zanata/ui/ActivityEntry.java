@@ -472,13 +472,14 @@ public class ActivityEntry {
     }
 
     @java.beans.ConstructorProperties({ "activityServiceImpl", "urlUtil",
-            "documentDAO", "msgs" })
+            "documentDAO", "msgs", "identity" })
     protected ActivityEntry(final ActivityService activityServiceImpl,
             final UrlUtil urlUtil, final DocumentDAO documentDAO,
-            final Messages msgs) {
+            final Messages msgs, final ZanataIdentity identity) {
         this.activityServiceImpl = activityServiceImpl;
         this.urlUtil = urlUtil;
         this.documentDAO = documentDAO;
         this.msgs = msgs;
+        this.identity = identity;
     }
 }

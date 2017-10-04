@@ -77,7 +77,6 @@ import com.google.common.collect.Lists;
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Transactional
 public class ProjectVersionService implements ProjectVersionResource {
-    private static final long serialVersionUID = -6323736463512112239L;
     @Inject
     private TextFlowDAO textFlowDAO;
     @Inject

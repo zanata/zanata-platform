@@ -70,7 +70,6 @@ public class AsynchronousProcessResourceService
         implements AsynchronousProcessResource {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(AsynchronousProcessResourceService.class);
-    private static final long serialVersionUID = -5915271018788588841L;
 
     @Inject
     private LocaleService localeServiceImpl;

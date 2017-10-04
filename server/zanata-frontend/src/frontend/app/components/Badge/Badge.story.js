@@ -9,12 +9,12 @@ storiesOf('Badge', module)
     .add('in nav item', () => (
         <Nav bsStyle='pills' stacked className='sg-nav-pills'>
           <NavItem className='active'>
-            <Badge className='pull-right'>42</Badge>
+            <Badge className='u-pullRight'>42</Badge>
             Home
           </NavItem>
           <NavItem>Profile</NavItem>
           <NavItem>
-            <Badge className='pull-right'>3</Badge>
+            <Badge className='u-pullRight'>3</Badge>
             Messages
           </NavItem>
         </Nav>
