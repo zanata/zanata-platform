@@ -28,7 +28,6 @@ import javax.enterprise.event.Event
 import javax.inject.Inject
 
 import org.zanata.events.AlreadyLoggedInEvent
-import org.zanata.util.ServiceLocator
 import org.zanata.util.Synchronized
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
@@ -43,9 +42,14 @@ class SamlIdentity : Serializable {
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     lateinit private var alreadyLoggedInEvent: Event<AlreadyLoggedInEvent>
-    lateinit var uniqueNameId: String
-    lateinit var email: String
-    lateinit var name: String
+    lateinit private var uniqueNameId: String
+    lateinit private var email: String
+    lateinit private var name: String
+
+    // lateinit properties can't have custom getter and CDI complains about public fields
+    fun getUniqueNameId() = uniqueNameId
+    fun getEmail() = email
+    fun getName()  = name
 
     fun authenticate(uniqueNameId: String, username: String?,
                      email: String?, name: String?) {
