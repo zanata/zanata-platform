@@ -3,12 +3,12 @@
 docker build --tag wildfly-zanata-base .
 
 # First transform flattens everything
-# Second transform removes the version in zanata.war
+# Second transform renames the versioned zanata war to ROOT.war
 tar --create \
   Dockerfile.zanata \
   ../zanata-war/target/zanata-*.war \
   --transform 's,.*/,,' \
-  --transform 's/zanata-.*\.war/zanata.war/' |
+  --transform 's/zanata-.*\.war/ROOT.war/' |
     docker build -t zanata-dev --file Dockerfile.zanata -
 
 docker-compose up
