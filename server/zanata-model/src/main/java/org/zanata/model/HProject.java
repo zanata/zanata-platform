@@ -105,7 +105,7 @@ public class HProject extends SlugEntityBase
     private String sourceCheckoutURL;
     private boolean overrideLocales = false;
     private boolean restrictedByRoles = false;
-    private boolean allowGlobalTranslation = true;
+    private boolean privateProject = false;
     @OneToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "default_copy_trans_opts_id")
     private HCopyTransOptions defaultCopyTransOpts;
@@ -265,9 +265,8 @@ public class HProject extends SlugEntityBase
         this.restrictedByRoles = restrictedByRoles;
     }
 
-    public void
-            setAllowGlobalTranslation(final boolean allowGlobalTranslation) {
-        this.allowGlobalTranslation = allowGlobalTranslation;
+    public void setPrivateProject(final boolean privateProject) {
+        this.privateProject = privateProject;
     }
 
     public void setDefaultCopyTransOpts(
@@ -346,8 +345,8 @@ public class HProject extends SlugEntityBase
         return this.restrictedByRoles;
     }
 
-    public boolean isAllowGlobalTranslation() {
-        return this.allowGlobalTranslation;
+    public boolean isPrivateProject() {
+        return this.privateProject;
     }
 
     public HCopyTransOptions getDefaultCopyTransOpts() {

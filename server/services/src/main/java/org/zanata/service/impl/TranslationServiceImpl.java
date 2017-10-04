@@ -34,7 +34,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import javax.inject.Inject;
 import javax.inject.Named;

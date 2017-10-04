@@ -19,7 +19,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import javaslang.control.Either;
-import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -215,7 +214,9 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         }
 
         private static Optional<String> optionalNotEmptyString(String value) {
-            return StringUtils.isNotEmpty(value) ? Optional.of(value) : Optional.empty();
+            return value == null || value.isEmpty() ?
+                    Optional.empty() :
+                    Optional.of(value);
         }
 
         boolean hasApiKey() {

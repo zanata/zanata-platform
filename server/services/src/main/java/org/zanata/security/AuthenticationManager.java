@@ -22,13 +22,12 @@ package org.zanata.security;
 
 import java.io.Serializable;
 import java.util.List;
-
+import org.apache.commons.lang3.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.deltaspike.core.util.ContextUtils;
 import org.zanata.ApplicationConfiguration;
