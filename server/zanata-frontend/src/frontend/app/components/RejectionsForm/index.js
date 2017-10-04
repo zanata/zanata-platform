@@ -15,11 +15,11 @@ const DO_NOT_RENDER = undefined
 function priorityToTextState (priority) {
   switch (priority) {
     case CRITICAL:
-      return 'text-danger'
+      return 'u-textDanger'
     case MAJOR:
-      return 'text-warning'
+      return 'u-textWarning'
     case MINOR:
-      return 'text-info'
+      return 'u-textInfo'
   }
 }
 
@@ -109,7 +109,7 @@ class RejectionsForm extends Component {
     const deleteBtn = displayDelete
       ? (
       <Button bsStyle='danger' className={className} onClick={this.onDelete}>
-        <Icon name='trash' className='s0 editicon' />
+        <Icon name='trash' className='s0 iconEdit' />
       </Button>
       ) : DO_NOT_RENDER
     const editableToggle = isAdminMode ? (
@@ -124,14 +124,14 @@ class RejectionsForm extends Component {
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
         <Button bsStyle='primary' className={className} onClick={this.onSave}>
-          <Icon name='edit' className='s0 editicon' />
+          <Icon name='edit' className='s0 iconEdit' />
         </Button>
         {deleteBtn}
       </FormGroup>
     ) : DO_NOT_RENDER
     return (
-      <Form className='rejections' inline>
-        <FormGroup className='flex-grow1' controlId='formInlineCriteria'>
+      <Form className='rejectionsForm' inline>
+        <FormGroup className='flexGrow1' controlId='formInlineCriteria'>
           <ControlLabel>Criteria</ControlLabel><br />
           <TextInput multiline editable={isAdminMode || editable}
             type='text' numberOfLines={2} onChange={this.onTextChange}

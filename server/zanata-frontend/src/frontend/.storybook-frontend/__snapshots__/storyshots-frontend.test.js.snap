@@ -90,7 +90,7 @@ exports[`Frontend Storyshots Badge in nav item 1`] = `
       role="button"
     >
       <span
-        className="pull-right badge"
+        className="u-pullRight badge"
       >
         42
       </span>
@@ -121,7 +121,7 @@ exports[`Frontend Storyshots Badge in nav item 1`] = `
       role="button"
     >
       <span
-        className="pull-right badge"
+        className="u-pullRight badge"
       >
         3
       </span>
@@ -586,7 +586,7 @@ exports[`Frontend Storyshots EditableText editing 1`] = `
   aria-label={undefined}
   autoComplete={undefined}
   autoFocus={false}
-  className="text-input"
+  className="textInput"
   id={undefined}
   onBlur={[Function]}
   onChange={undefined}
@@ -602,7 +602,7 @@ exports[`Frontend Storyshots EditableText editing 1`] = `
 
 exports[`Frontend Storyshots EditableText not editing 1`] = `
 <div
-  className="text-input text-state-classes text row"
+  className="textInput textState text row"
   onClick={[Function]}
   title={undefined}
 >
@@ -1029,10 +1029,10 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
   className="container"
 >
   <div
-    className="show-grid row"
+    className="showGrid row"
   >
     <div
-      className="show-grid col-md-8 col-xs-12"
+      className="showGrid col-md-8 col-xs-12"
     >
       <code>
         &lt;
@@ -1041,7 +1041,7 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
       </code>
     </div>
     <div
-      className="show-grid col-md-4 col-xs-6"
+      className="showGrid col-md-4 col-xs-6"
     >
       <code>
         &lt;
@@ -1051,10 +1051,10 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
     </div>
   </div>
   <div
-    className="show-grid row"
+    className="showGrid row"
   >
     <div
-      className="show-grid col-md-4 col-xs-6"
+      className="showGrid col-md-4 col-xs-6"
     >
       <code>
         &lt;
@@ -1063,7 +1063,7 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
       </code>
     </div>
     <div
-      className="show-grid col-md-4 col-xs-6"
+      className="showGrid col-md-4 col-xs-6"
     >
       <code>
         &lt;
@@ -1072,7 +1072,7 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
       </code>
     </div>
     <div
-      className="show-grid col-md-4 hidden-xs"
+      className="showGrid col-md-4 hidden-xs"
     >
       <code>
         &lt;
@@ -1082,10 +1082,10 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
     </div>
   </div>
   <div
-    className="show-grid row"
+    className="showGrid row"
   >
     <div
-      className="show-grid col-xs-6 col-xs-offset-6"
+      className="showGrid col-xs-6 col-xs-offset-6"
     >
       <code>
         &lt;
@@ -1095,10 +1095,10 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
     </div>
   </div>
   <div
-    className="show-grid row"
+    className="showGrid row"
   >
     <div
-      className="show-grid col-md-6 col-md-push-6"
+      className="showGrid col-md-6 col-md-push-6"
     >
       <code>
         &lt;
@@ -1107,7 +1107,7 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
       </code>
     </div>
     <div
-      className="show-grid col-md-6 col-md-pull-6"
+      className="showGrid col-md-6 col-md-pull-6"
     >
       <code>
         &lt;
@@ -1222,52 +1222,52 @@ exports[`Frontend Storyshots Foundation typography 1`] = `
     .
   </p>
   <p
-    className="text-left"
+    className="u-textLeft"
   >
     Left aligned text.
   </p>
   <p
-    className="text-center"
+    className="u-textCenter"
   >
     Center aligned text.
   </p>
   <p
-    className="text-right"
+    className="u-textRight"
   >
     Right aligned text.
   </p>
   <p
-    className="text-justify"
+    className="u-textJustify"
   >
     Justified text.
   </p>
   <p
-    className="text-muted"
+    className="u-textMuted"
   >
     Muted: Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.
   </p>
   <p
-    className="text-primary"
+    className="u-textPrimary"
   >
     Primary: Nullam id dolor id nibh ultricies vehicula ut id elit.
   </p>
   <p
-    className="text-warning"
+    className="u-textWarning"
   >
     Warning: Etiam porta sem malesuada magna mollis euismod.
   </p>
   <p
-    className="text-danger"
+    className="u-textDanger"
   >
     Danger: Donec ullamcorper nulla non metus auctor fringilla.
   </p>
   <p
-    className="text-success"
+    className="u-textSuccess"
   >
     Success: Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
   </p>
   <p
-    className="text-info"
+    className="u-textInfo"
   >
     Info: Maecenas sed diam eget risus varius blandit sit amet non magna.
   </p>
@@ -13077,7 +13077,7 @@ exports[`Frontend Storyshots List with links 1`] = `
 
 exports[`Frontend Storyshots LoaderText default 1`] = `
 <span
-  className="loader-text"
+  className="loaderText"
 >
   <span>
     Updating
@@ -13808,10 +13808,10 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     Reject translations settings
   </h1>
   <form
-    className="rejections form-inline"
+    className="rejectionsForm form-inline"
   >
     <div
-      className="flex-grow1 form-group"
+      className="flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -13824,7 +13824,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="text-input"
+        className="textInput"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -13866,7 +13866,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           type="button"
         >
           <span
-            className="text-danger"
+            className="u-textDanger"
           >
             Critical
           </span>
@@ -13892,7 +13892,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-info"
+                className="u-textInfo"
               >
                 Minor
               </span>
@@ -13910,7 +13910,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-warning"
+                className="u-textWarning"
               >
                 Major
               </span>
@@ -13928,7 +13928,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-danger"
+                className="u-textDanger"
               >
                 Critical
               </span>
@@ -13939,10 +13939,10 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     </div>
   </form>
   <form
-    className="rejections form-inline"
+    className="rejectionsForm form-inline"
   >
     <div
-      className="flex-grow1 form-group"
+      className="flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -13955,7 +13955,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="text-input"
+        className="textInput"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -13997,7 +13997,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           type="button"
         >
           <span
-            className="text-warning"
+            className="u-textWarning"
           >
             Major
           </span>
@@ -14023,7 +14023,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-info"
+                className="u-textInfo"
               >
                 Minor
               </span>
@@ -14041,7 +14041,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-warning"
+                className="u-textWarning"
               >
                 Major
               </span>
@@ -14059,7 +14059,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-danger"
+                className="u-textDanger"
               >
                 Critical
               </span>
@@ -14070,10 +14070,10 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     </div>
   </form>
   <form
-    className="rejections form-inline"
+    className="rejectionsForm form-inline"
   >
     <div
-      className="flex-grow1 form-group"
+      className="flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14086,7 +14086,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="text-input"
+        className="textInput"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14128,7 +14128,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           type="button"
         >
           <span
-            className="text-warning"
+            className="u-textWarning"
           >
             Major
           </span>
@@ -14154,7 +14154,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-info"
+                className="u-textInfo"
               >
                 Minor
               </span>
@@ -14172,7 +14172,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-warning"
+                className="u-textWarning"
               >
                 Major
               </span>
@@ -14190,7 +14190,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-danger"
+                className="u-textDanger"
               >
                 Critical
               </span>
@@ -14201,10 +14201,10 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     </div>
   </form>
   <form
-    className="rejections form-inline"
+    className="rejectionsForm form-inline"
   >
     <div
-      className="flex-grow1 form-group"
+      className="flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14217,7 +14217,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="text-input"
+        className="textInput"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14259,7 +14259,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           type="button"
         >
           <span
-            className="text-info"
+            className="u-textInfo"
           >
             Minor
           </span>
@@ -14285,7 +14285,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-info"
+                className="u-textInfo"
               >
                 Minor
               </span>
@@ -14303,7 +14303,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-warning"
+                className="u-textWarning"
               >
                 Major
               </span>
@@ -14321,7 +14321,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-danger"
+                className="u-textDanger"
               >
                 Critical
               </span>
@@ -14332,10 +14332,10 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     </div>
   </form>
   <form
-    className="rejections form-inline"
+    className="rejectionsForm form-inline"
   >
     <div
-      className="flex-grow1 form-group"
+      className="flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14348,7 +14348,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="text-input"
+        className="textInput"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14390,7 +14390,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           type="button"
         >
           <span
-            className="text-info"
+            className="u-textInfo"
           >
             Minor
           </span>
@@ -14416,7 +14416,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-info"
+                className="u-textInfo"
               >
                 Minor
               </span>
@@ -14434,7 +14434,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-warning"
+                className="u-textWarning"
               >
                 Major
               </span>
@@ -14452,7 +14452,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-danger"
+                className="u-textDanger"
               >
                 Critical
               </span>
@@ -14463,10 +14463,10 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     </div>
   </form>
   <form
-    className="rejections form-inline"
+    className="rejectionsForm form-inline"
   >
     <div
-      className="flex-grow1 form-group"
+      className="flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14479,7 +14479,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="text-input"
+        className="textInput"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14521,7 +14521,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           type="button"
         >
           <span
-            className="text-danger"
+            className="u-textDanger"
           >
             Critical
           </span>
@@ -14547,7 +14547,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-info"
+                className="u-textInfo"
               >
                 Minor
               </span>
@@ -14565,7 +14565,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-warning"
+                className="u-textWarning"
               >
                 Major
               </span>
@@ -14583,7 +14583,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
               tabIndex="-1"
             >
               <span
-                className="text-danger"
+                className="u-textDanger"
               >
                 Critical
               </span>
@@ -14650,10 +14650,10 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
 
 exports[`Frontend Storyshots RejectionsForm editable 1`] = `
 <form
-  className="rejections form-inline"
+  className="rejectionsForm form-inline"
 >
   <div
-    className="flex-grow1 form-group"
+    className="flexGrow1 form-group"
   >
     <label
       className="control-label"
@@ -14666,7 +14666,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
       aria-label={undefined}
       autoComplete={undefined}
       autoFocus={undefined}
-      className="text-input"
+      className="textInput"
       id={undefined}
       onBlur={undefined}
       onChange={[Function]}
@@ -14708,7 +14708,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
         type="button"
       >
         <span
-          className="text-info"
+          className="u-textInfo"
         >
           Minor
         </span>
@@ -14734,7 +14734,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
             tabIndex="-1"
           >
             <span
-              className="text-info"
+              className="u-textInfo"
             >
               Minor
             </span>
@@ -14752,7 +14752,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
             tabIndex="-1"
           >
             <span
-              className="text-warning"
+              className="u-textWarning"
             >
               Major
             </span>
@@ -14770,7 +14770,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
             tabIndex="-1"
           >
             <span
-              className="text-danger"
+              className="u-textDanger"
             >
               Critical
             </span>
@@ -14784,10 +14784,10 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
 
 exports[`Frontend Storyshots RejectionsForm read only 1`] = `
 <form
-  className="rejections form-inline"
+  className="rejectionsForm form-inline"
 >
   <div
-    className="flex-grow1 form-group"
+    className="flexGrow1 form-group"
   >
     <label
       className="control-label"
@@ -14800,7 +14800,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
       aria-label={undefined}
       autoComplete={undefined}
       autoFocus={undefined}
-      className="text-input"
+      className="textInput"
       id={undefined}
       onBlur={undefined}
       onChange={[Function]}
@@ -14842,7 +14842,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
         type="button"
       >
         <span
-          className="text-info"
+          className="u-textInfo"
         >
           Minor
         </span>
@@ -14868,7 +14868,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
             tabIndex="-1"
           >
             <span
-              className="text-info"
+              className="u-textInfo"
             >
               Minor
             </span>
@@ -14886,7 +14886,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
             tabIndex="-1"
           >
             <span
-              className="text-warning"
+              className="u-textWarning"
             >
               Major
             </span>
@@ -14904,7 +14904,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
             tabIndex="-1"
           >
             <span
-              className="text-danger"
+              className="u-textDanger"
             >
               Critical
             </span>
@@ -14935,7 +14935,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             onClick={[Function]}
           >
             <span
-              className="projicon"
+              className="iconProject"
             >
               <svg
                 className={undefined}
@@ -14983,7 +14983,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   role="button"
                 >
                   <span
-                    className="s1 sidebar-icon"
+                    className="s1 iconSidebar"
                   >
                     <svg
                       className={undefined}
@@ -15013,7 +15013,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   role="button"
                 >
                   <span
-                    className="s1 sidebar-icon"
+                    className="s1 iconSidebar"
                   >
                     <svg
                       className={undefined}
@@ -15043,7 +15043,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   role="button"
                 >
                   <span
-                    className="s1 sidebar-icon"
+                    className="s1 iconSidebar"
                   >
                     <svg
                       className={undefined}
@@ -15071,7 +15071,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 aria-haspopup={true}
                 className="btn-sm btn-default dropdown-toggle btn btn-default"
                 disabled={false}
-                id="options-dropdown"
+                id="optionsDropdown"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="button"
@@ -15084,7 +15084,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 />
               </button>
               <ul
-                aria-labelledby="options-dropdown"
+                aria-labelledby="optionsDropdown"
                 className="dropdown-menu"
                 role="menu"
               >
@@ -15166,13 +15166,13 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
               </ul>
             </div>
             <div
-              id="version"
+              id="sidebarVersion"
             >
               <div
-                className="version-inline"
+                className="sidebarVersion-inline"
               >
                 <span
-                  className="sidebar-version-title"
+                  className="sidebarVersion-title"
                 >
                   <span
                     className="s2"
@@ -15192,7 +15192,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                     />
                   </span>
                   <span
-                    className="v-heading"
+                    className="versionHeading"
                   >
                     VERSION
                   </span>
@@ -15256,7 +15256,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 </div>
               </div>
               <p
-                className="version-settings"
+                className="sidebarVersion-settings"
               >
                 <a
                   href=""
@@ -15265,7 +15265,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 </a>
               </p>
               <div
-                className="version-percent"
+                className="sidebarVersion-percent"
               >
                 <p>
                   <span
@@ -15283,7 +15283,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   aria-valuemax={100}
                   aria-valuemin={0}
                   aria-valuenow={10}
-                  className="progress-bar-translated progress-bar"
+                  className="progress-bar-success progress-bar"
                   role="progressbar"
                   style={
                     Object {
@@ -15295,7 +15295,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   aria-valuemax={100}
                   aria-valuemin={0}
                   aria-valuenow={7}
-                  className="progress-bar-fuzzy progress-bar"
+                  className="progress-bar-warning progress-bar"
                   role="progressbar"
                   style={
                     Object {
@@ -15307,7 +15307,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   aria-valuemax={100}
                   aria-valuemin={0}
                   aria-valuenow={3}
-                  className="progress-bar-rejected progress-bar"
+                  className="progress-bar-danger progress-bar"
                   role="progressbar"
                   style={
                     Object {
@@ -15319,7 +15319,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   aria-valuemax={100}
                   aria-valuemin={0}
                   aria-valuenow={10}
-                  className="progress-bar-approved progress-bar"
+                  className="progress-bar-info progress-bar"
                   role="progressbar"
                   style={
                     Object {
@@ -15379,7 +15379,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
     </div>
   </div>
   <div
-    className="flextab"
+    className="flexTab"
   >
     <p>
       This sidebar example has the active tag applied to both the People and Languages pages to provide examples of how this design handles sidebar links.
@@ -15651,7 +15651,7 @@ exports[`Frontend Storyshots TextInput default 1`] = `
   aria-label="TextInput"
   autoComplete={undefined}
   autoFocus={undefined}
-  className="text-input"
+  className="textInput"
   id="demo"
   onBlur={undefined}
   onChange={undefined}
@@ -15734,7 +15734,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="tri-checkbox"
+        className="triCheckbox"
         onChange={[Function]}
         type="checkbox"
       />
@@ -15747,7 +15747,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="tri-checkbox"
+        className="triCheckbox"
         name="リンゴ"
         onChange={[Function]}
         type="checkbox"
@@ -15759,7 +15759,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="tri-checkbox"
+        className="triCheckbox"
         name="apple"
         onChange={[Function]}
         type="checkbox"
@@ -15771,7 +15771,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="tri-checkbox"
+        className="triCheckbox"
         name="梨"
         onChange={[Function]}
         type="checkbox"
@@ -15783,7 +15783,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="tri-checkbox"
+        className="triCheckbox"
         name="pear"
         onChange={[Function]}
         type="checkbox"
@@ -15972,7 +15972,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={true}
-        className="tri-checkbox"
+        className="triCheckbox"
         onChange={[Function]}
         type="checkbox"
       />
@@ -15980,7 +15980,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="tri-checkbox"
+        className="triCheckbox"
         onChange={[Function]}
         type="checkbox"
       />
@@ -15988,7 +15988,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="tri-checkbox"
+        className="triCheckbox"
         onChange={[Function]}
         type="checkbox"
       />
@@ -16003,7 +16003,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={true}
-        className="tri-checkbox s1"
+        className="triCheckbox s1"
         onChange={[Function]}
         type="checkbox"
       />
@@ -16011,7 +16011,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="tri-checkbox s1"
+        className="triCheckbox s1"
         onChange={[Function]}
         type="checkbox"
       />
@@ -16019,7 +16019,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="tri-checkbox s1"
+        className="triCheckbox s1"
         onChange={[Function]}
         type="checkbox"
       />

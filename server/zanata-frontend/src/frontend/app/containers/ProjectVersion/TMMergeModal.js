@@ -67,7 +67,7 @@ const MergeOptions = (
     : (
     <span>
       <SelectableDropdown
-        id='language-dropdown-basic' className='vmerge-ddown'
+        id="languageDropdown" className='versionMergeDropdown'
         onSelectDropdownItem={onLanguageSelection}
         selectedValue={mergeOptions.selectedLanguage}
         valueToDisplay={localeToDisplay}
@@ -82,7 +82,9 @@ const MergeOptions = (
         Copy existing <strong>translations</strong> from similar documents
         in other projects and versions into this project version.
         <Link useHref link={docLink} target="_blank">
-          <span title='help'><Icon name='help' className='s0' /></span>
+          <span title='help'>
+            <Icon name='help' className='iconHelp s0' />&nbsp;Need help?
+          </span>
         </Link>
       </p>
       <Accordion>
@@ -98,10 +100,10 @@ const MergeOptions = (
             alt="Version TM Merge workflow" /></p>
         </Panel>
       </Accordion>
-      <Col xs={12} className='vmerge-boxes'>
+      <Col xs={12} className='versionMergeContainer'>
         <Panel>
-          <div className='vmerge-target'>
-            <div className='vmerge-title'>
+          <div className='versionMergeTarget'>
+            <div className='VersionMergeTitle'>
               <span>To</span>
               <span className="panel-name">Target</span>
             </div>
@@ -109,28 +111,30 @@ const MergeOptions = (
               <li className='list-group-item to' title='target project version'>
                 <ProjectVersionHorizontal projectSlug={projectSlug}
                   versionSlug={versionSlug} />
-                <span className='item' id="languages-dd">
-                  <Icon name="language" className="s1 tmx-icon" />
-                  {localesSelection}
+                <span className='item' id="languageDropdown">
+                  <Icon name="language" className="s1 iconTMX" />
+                  <span className="languageDropdown-field">
+                    {localesSelection}
+                  </span>
                 </span>
               </li>
             </ul>
           </div>
         </Panel>
       </Col>
-      <Col xs={12} className='vmerge-row'>
+      <Col xs={12} className='versionMergeRow'>
         <p className="lead">For every potential translation:</p>
-        <div className="vmerge-title text-new-blue">
+        <div className="VersionMergeTitle u-textNewBlue">
           If text is less than
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
-            id='percent-dropdown-basic' className='vmerge-ddown'
+            id="percentDropdown" className='versionMergeDropdown'
             onSelectDropdownItem={onPercentSelection}
             selectedValue={mergeOptions.matchPercentage}
             valueToDisplay={percentValueToDisplay}
             values={[80, 90, 100]} /> similar, don't use it.
         </div>
       </Col>
-      <Col xs={12} className='vmerge-boxes'>
+      <Col xs={12} className='versionMergeContainer'>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
           flushProjectSearch, onAllVersionCheckboxChange,
@@ -452,11 +456,11 @@ class TMMergeModal extends Component {
       </span>
     )
     return (
-      <Modal id="TM-merge-modal" show={showTMMergeModal}
+      <Modal id="tmMergeModal" show={showTMMergeModal}
         onHide={toggleTMMergeModal} keyboard backdrop>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
-          <p className="text-danger modal-danger">
+          <p className="u-textDanger modalText-danger">
             {notification && notification.message}</p>
         </Modal.Header>
         <Modal.Body>{modalBody}</Modal.Body>

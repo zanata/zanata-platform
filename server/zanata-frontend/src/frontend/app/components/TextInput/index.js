@@ -199,7 +199,7 @@ class TextInput extends Component {
       'aria-label': accessibilityLabel,
       autoComplete: autoComplete && 'on',
       autoFocus,
-      className: 'text-input',
+      className: 'textInput',
       onBlur: onBlur && this._onBlur,
       onChange: (onChange || onChangeText) && this._onChange,
       onFocus: this._onFocus,

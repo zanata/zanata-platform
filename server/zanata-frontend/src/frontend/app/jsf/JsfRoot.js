@@ -7,7 +7,7 @@ import Project from '../containers/Project'
 import Admin from '../containers/Admin'
 
 const App = ({children}) => {
-  return (<div className='container-sidebar'>{children}</div>)
+  return (<div className='containerSidebar'>{children}</div>)
 }
 App.propTypes = {
   children: PropTypes.element
