@@ -6,11 +6,11 @@ export const ProjectVersionVertical = ({projectSlug, versionSlug}) => {
   return (
     <ul>
       <li className='list-group-item' title='target project' >
-        <Icon name='project' className='s0 tmx-icon' />
+        <Icon name='project' className='s0 iconTMX' />
         {projectSlug}
       </li>
       <li className='list-group-item' title='target version'>
-        <Icon name='version' className='s0 tmx-icon' />
+        <Icon name='version' className='s0 iconTMX' />
         {versionSlug}
       </li>
     </ul>
@@ -26,10 +26,10 @@ export const ProjectVersionHorizontal = ({projectSlug, versionSlug}) => {
   return (
     <span>
       <span className="item">
-        <Icon name='project' className='s1 tmx-icon' />{projectSlug}
+        <Icon name='project' className='s1 iconTMX' />{projectSlug}
       </span>
       <span className="item">
-        <Icon name='version' className='s1 tmx-icon' />{versionSlug}
+        <Icon name='version' className='s1 iconTMX' />{versionSlug}
       </span>
     </span>
   )

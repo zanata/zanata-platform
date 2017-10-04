@@ -68,13 +68,14 @@ class RecentContributions extends React.Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='matrix-heading' id='profile-matrix'>
-        <div className='flex-center'>
-          <h2 className='recent-contrib'>Recent Contributions</h2>
-          <div className='daterange-container'>
-            <Button bsStyle='link' className='pull-right'
+      <div className='matrixHeading' id='userProfile-matrix'>
+        <div className='u-flexCenter'>
+          <h2 className='userProfile-recentContributions'>
+          Recent Contributions</h2>
+          <div className='dateRange-container'>
+            <Button bsStyle='link' className='u-pullRight'
               onClick={() => this.onToggleShowDateRange()}>
-              <span className='daterange-textfield'>
+              <span className='dateRange-textField'>
                 <TextInput editable={false} value={displayDateRange} />
               </span>
             </Button>
@@ -84,18 +85,18 @@ class RecentContributions extends React.Component {
                 onHide={() => this.onToggleShowDateRange()}>
                 <Modal.Header>
                   <Modal.Title>Date range selection</Modal.Title>
-                  <span className='text-muted'>(Maximum 365 days)</span>
+                  <span className='u-textMuted'>(Maximum 365 days)</span>
                 </Modal.Header>
                 <Modal.Body>
                   <DateRange
                     startDate={this.state.dateRange.startDate}
                     endDate={this.state.dateRange.endDate}
                     ranges={utilsDate.getDefaultDateRange()}
-                    className='calendar-daterange'
+                    className='dateRange-calendar'
                     onChange={this.onDateRangeChanged} />
                 </Modal.Body>
                 <Modal.Footer>
-                  <span className='pull-right'>
+                  <span className='u-pullRight'>
                     <Button bsStyle='link'
                       onClick={() => this.onToggleShowDateRange()}>
                       Cancel
@@ -111,7 +112,7 @@ class RecentContributions extends React.Component {
             }
           </div>
         </div>
-        <div className='flex-chart-container'>
+        <div className='flexChart-container'>
           <ContributionChart
             wordCountForEachDay={matrixForAllDays}
             dateRange={dateRange} />

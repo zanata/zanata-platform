@@ -50,12 +50,11 @@ public class ETagUtils implements Serializable {
     public EntityTag generateTagForProject(String slug) {
         HProject project =
                 restSlugValidator.retrieveAndCheckProject(slug, false);
+        String query =
+                "select i.versionNum from HProjectIteration i where i.project.slug =:slug and status not in (:statusList)";
         @SuppressWarnings("unchecked")
         List<Integer> iterationVersions =
-                session.createQuery(
-                        "select i.versionNum from HProjectIteration i "
-                                +
-                                "where i.project.slug =:slug and status not in (:statusList)")
+                session.createQuery(query)
                         .setParameter("slug", slug)
                         .setParameterList("statusList",
                                 new Object[]{ OBSOLETE })

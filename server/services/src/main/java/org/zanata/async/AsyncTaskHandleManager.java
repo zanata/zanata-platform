@@ -71,7 +71,7 @@ public class AsyncTaskHandleManager implements Serializable {
         return genericKey.id();
     }
 
-    void taskFinished(AsyncTaskHandle taskHandle) {
+    void taskFinished(AsyncTaskHandle<?> taskHandle) {
         synchronized (handlesByKey) {
             // TODO This operation is O(n). Maybe we can do better?
             for (Map.Entry<String, AsyncTaskHandle<?>> entry : handlesByKey

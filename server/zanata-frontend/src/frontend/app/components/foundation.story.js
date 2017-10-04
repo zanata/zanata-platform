@@ -9,28 +9,28 @@ import { Grid, Row, Col } from 'react-bootstrap'
 storiesOf('Foundation', module)
     .add('grid', () => (
         <Grid>
-          <Row className='show-grid'>
-            <Col className='show-grid' xs={12} md={8}><code>
+          <Row className='showGrid'>
+            <Col className='showGrid' xs={12} md={8}><code>
               &lt;{'Col xs={12} md={8}'} /&gt;</code></Col>
-            <Col className='show-grid' xs={6} md={4}><code>
+            <Col className='showGrid' xs={6} md={4}><code>
               &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
           </Row>
-          <Row className='show-grid'>
-            <Col className='show-grid' xs={6} md={4}><code>
+          <Row className='showGrid'>
+            <Col className='showGrid' xs={6} md={4}><code>
               &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-            <Col className='show-grid' xs={6} md={4}><code>
+            <Col className='showGrid' xs={6} md={4}><code>
               &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-            <Col className='show-grid' xsHidden md={4}><code>
+            <Col className='showGrid' xsHidden md={4}><code>
               &lt;{'Col xsHidden md={4}'} /&gt;</code></Col>
           </Row>
-          <Row className='show-grid'>
-            <Col className='show-grid' xs={6} xsOffset={6}><code>
+          <Row className='showGrid'>
+            <Col className='showGrid' xs={6} xsOffset={6}><code>
               &lt;{'Col xs={6} xsOffset={6}'} /&gt;</code></Col>
           </Row>
-          <Row className='show-grid'>
-            <Col className='show-grid' md={6} mdPush={6}><code>
+          <Row className='showGrid'>
+            <Col className='showGrid' md={6} mdPush={6}><code>
               &lt;{'Col md={6} mdPush={6}'} /&gt;</code></Col>
-            <Col className='show-grid' md={6} mdPull={6}><code>
+            <Col className='showGrid' md={6} mdPull={6}><code>
               &lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
           </Row>
         </Grid>
@@ -113,22 +113,22 @@ storiesOf('Foundation', module)
         italicized text</em>.</p>
         <p>An abbreviation of the word attribute is
         <abbr title='attribute'>attr</abbr>.</p>
-        <p className='text-left'>Left aligned text.</p>
-        <p className='text-center'>Center aligned text.</p>
-        <p className='text-right'>Right aligned text.</p>
-        <p className='text-justify'>Justified text.</p>
-        <p className='text-muted'>Muted: Fusce dapibus,
+        <p className='u-textLeft'>Left aligned text.</p>
+        <p className='u-textCenter'>Center aligned text.</p>
+        <p className='u-textRight'>Right aligned text.</p>
+        <p className='u-textJustify'>Justified text.</p>
+        <p className='u-textMuted'>Muted: Fusce dapibus,
         tellus ac cursus commodo,
         tortor mauris nibh.</p>
-        <p className='text-primary'>Primary: Nullam id dolor id nibh
+        <p className='u-textPrimary'>Primary: Nullam id dolor id nibh
         ultricies vehicula ut id elit.</p>
-        <p className='text-warning'>Warning: Etiam porta sem malesuada
+        <p className='u-textWarning'>Warning: Etiam porta sem malesuada
         magna mollis euismod.</p>
-        <p className='text-danger'>Danger: Donec ullamcorper nulla non
+        <p className='u-textDanger'>Danger: Donec ullamcorper nulla non
         metus auctor fringilla.</p>
-        <p className='text-success'>Success: Duis mollis, est non commodo
+        <p className='u-textSuccess'>Success: Duis mollis, est non commodo
         luctus, nisi erat porttitor ligula.</p>
-        <p className='text-info'>Info: Maecenas sed diam eget risus varius
+        <p className='u-textInfo'>Info: Maecenas sed diam eget risus varius
         blandit sit amet non magna.</p>
       </span>
     ))

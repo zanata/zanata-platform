@@ -22,6 +22,7 @@ package org.zanata.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,6 +52,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 
 import static org.zanata.hibernate.search.IndexFieldLabels.FULL_SLUG_FIELD;
@@ -63,6 +65,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     private FullTextEntityManager entityManager;
     @Inject @Authenticated
     private HAccount authenticatedAccount;
+    @Inject
+    private ZanataIdentity identity;
 
     public ProjectDAO() {
         super(HProject.class);
@@ -147,8 +151,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         StringBuilder condition = new StringBuilder();
 
         if (person != null) {
-            condition
-                    .append("left join p.localeMembers lm left join p.members m ")
+            condition.append("left join p.localeMembers lm left join p.members m ")
                     .append("where (p.privateProject is TRUE and ((m.person =:person) or (lm.person =:person))) or (p.privateProject is FALSE) ");
         } else {
             condition.append("where p.privateProject is FALSE ");
@@ -297,8 +300,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         if(maxResult > 0) {
             query.setMaxResults(maxResult);
         }
-        return query.setFirstResult(firstResult)
+        List<HProject> projects = query.setFirstResult(firstResult)
                 .getResultList();
+        return projects.stream()
+                .filter(project -> identity.hasPermission(project, "read"))
+                .collect(Collectors.toList());
     }
 
     public int getQueryProjectSize(@Nonnull String searchQuery,

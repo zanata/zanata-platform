@@ -179,10 +179,7 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "read")
     public boolean canReadProject(HProject target) {
-        if (!target.isPrivateProject()) {
-            return true;
-        }
-        return isProjectMember(target);
+        return !target.isPrivateProject() || isProjectMember(target);
     }
 
     /**
@@ -191,10 +188,8 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "read")
     public boolean canReadProjectIteration(HProjectIteration target) {
-        if (!target.getProject().isPrivateProject()) {
-            return true;
-        }
-        return isProjectMember(target.getProject());
+        return !target.getProject().isPrivateProject() ||
+                isProjectMember(target.getProject());
     }
     /*
      * Project maintainers may edit (but not delete) a project, or add an
