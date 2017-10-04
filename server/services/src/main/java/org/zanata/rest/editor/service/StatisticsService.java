@@ -47,7 +47,6 @@ import com.google.common.collect.Lists;
 @Path(StatisticResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class StatisticsService implements StatisticResource {
-    private static final long serialVersionUID = 8893180330356263431L;
     @Inject
     private DocumentDAO documentDAO;
 
