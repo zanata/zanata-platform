@@ -254,8 +254,8 @@ public class TranslationMemoryResourceService
             @Nonnull CloseableIterator<TF> iter,
             @Nullable LocaleId srcLocale, @Nullable LocaleId locale,
             @Nonnull String filename) {
-        TMXStreamingOutput<TF> output = new TMXStreamingOutput<TF>(jobName,
-                iter, new TranslationsTMXExportStrategy(srcLocale, locale));
+        TMXStreamingOutput<TF> output = new TMXStreamingOutput<>(jobName,
+                iter, new TranslationsTMXExportStrategy<>(srcLocale, locale));
         return okResponse(filename, output);
     }
 

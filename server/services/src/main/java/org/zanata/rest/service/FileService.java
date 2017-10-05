@@ -233,6 +233,8 @@ public class FileService implements FileResource {
             extensions.add("gettext");
             extensions.add("comment");
             // Perform translation of Hibernate DTOs to JAXB DTOs
+
+            // FIXME getTranslations expects an idNoSlash, but what type is docId?
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
                             .getTranslations(docId, new LocaleId(locale),
@@ -253,6 +255,7 @@ public class FileService implements FileResource {
             }
             Resource res = this.resourceUtils.buildResource(document);
             final Set<String> extensions = Collections.<String> emptySet();
+            // FIXME getTranslations expects an idNoSlash, but what type is docId?
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
                             .getTranslations(docId, new LocaleId(locale),
