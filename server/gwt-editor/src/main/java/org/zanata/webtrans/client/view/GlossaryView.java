@@ -196,12 +196,21 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
 
             resultTable.setWidget(i + 1, SOURCE_COL,
                     new HighlightingLabel(item.getSource()));
-            resultTable.setWidget(i + 1, TARGET_COL,
-                    new HighlightingLabel(item.getTarget()));
+
+            HighlightingLabel targetLabel = new HighlightingLabel();
+            boolean targetEmpty = item.getTarget().isEmpty();
+            if (targetEmpty) {
+                targetLabel.setText(messages.noGlossaryTranslationLabel());
+                targetLabel.setStyleName("u-textItalic");
+            } else {
+                 targetLabel.setText(item.getTarget());
+            }
+            resultTable.setWidget(i + 1, TARGET_COL, targetLabel);
 
             Button copyButton = new Button(messages.copy());
             copyButton.setTitle(messages.copyTooltip());
             copyButton.addStyleName("button--small");
+            copyButton.setEnabled(!targetEmpty);
             copyButton.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
