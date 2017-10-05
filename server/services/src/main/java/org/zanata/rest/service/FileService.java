@@ -65,6 +65,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
@@ -234,10 +235,11 @@ public class FileService implements FileResource {
             extensions.add("comment");
             // Perform translation of Hibernate DTOs to JAXB DTOs
 
-            // FIXME getTranslations expects an idNoSlash, but what type is docId?
+            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+            String convertedId = RestUtil.convertFromDocumentURIId(docId);
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
+                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
                                     extensions, true, null)
                             .getEntity();
             Resource res = this.resourceUtils.buildResource(document);
@@ -255,10 +257,11 @@ public class FileService implements FileResource {
             }
             Resource res = this.resourceUtils.buildResource(document);
             final Set<String> extensions = Collections.<String> emptySet();
-            // FIXME getTranslations expects an idNoSlash, but what type is docId?
+            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+            String convertedId = RestUtil.convertFromDocumentURIId(docId);
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
+                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
                                     extensions, true, null)
                             .getEntity();
             // Filter to only provide translated targets. "Preview" downloads
