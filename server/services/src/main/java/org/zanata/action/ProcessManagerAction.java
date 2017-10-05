@@ -47,9 +47,9 @@ public class ProcessManagerAction {
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
-    public Collection<AsyncTaskHandle> getRunningProcesses() {
-        ArrayList<AsyncTaskHandle> allHandles =
-                new ArrayList<AsyncTaskHandle>();
+    public Collection<AsyncTaskHandle<?>> getRunningProcesses() {
+        ArrayList<AsyncTaskHandle<?>> allHandles =
+                new ArrayList<>();
         allHandles.addAll(asyncTaskHandleManager.getAllHandles());
 
         return allHandles;
@@ -57,7 +57,7 @@ public class ProcessManagerAction {
 
     public int getRunningCount() {
         int running = 0;
-        for (AsyncTaskHandle h : asyncTaskHandleManager.getAllHandles()) {
+        for (AsyncTaskHandle<?> h : asyncTaskHandleManager.getAllHandles()) {
             if (!h.isDone()) {
                 running++;
             }
@@ -74,7 +74,7 @@ public class ProcessManagerAction {
         return new Date(value);
     }
 
-    public void cancel(AsyncTaskHandle handle) {
+    public void cancel(AsyncTaskHandle<?> handle) {
         handle.cancel(true);
     }
 

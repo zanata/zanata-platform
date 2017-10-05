@@ -224,16 +224,11 @@ public class ProjectHomeAction extends AbstractSortAction
 
     private List<Activity> fetchProjectLastActivity() {
         if (StringUtils.isEmpty(slug) || !identity.isLoggedIn()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         Collection<Long> versionIds = Collections2.transform(
-                getProjectVersions(), new Function<HProjectIteration, Long>() {
-
-                    @Override
-                    public Long apply(@Nullable HProjectIteration input) {
-                        return input != null ? input.getId(): null;
-                    }
-                });
+                getProjectVersions(),
+                input -> input != null ? input.getId(): null);
         return activityServiceImpl.findLatestVersionActivitiesByUser(
                 authenticatedAccount.getPerson().getId(),
                 Lists.newArrayList(versionIds), 0, 1);
@@ -366,12 +361,12 @@ public class ProjectHomeAction extends AbstractSortAction
             return localeServiceImpl.getSupportedLanguageByProjectIteration(
                     slug, version.getSlug());
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public List<HLocale> getUserJoinedLocales(HProjectIteration version) {
         if (authenticatedAccount == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<HLocale> userJoinedLocales = Lists.newArrayList();
         Long personId = authenticatedAccount.getPerson().getId();
@@ -597,7 +592,7 @@ public class ProjectHomeAction extends AbstractSortAction
         final ListMultimap<HLocale, LocaleRole> localeRolesMultimap =
                 getPersonLocaleRoles().get(person);
         if (localeRolesMultimap == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<String> displayNames = Lists.newArrayList(
                 Collections2.transform(localeRolesMultimap.asMap().entrySet(),

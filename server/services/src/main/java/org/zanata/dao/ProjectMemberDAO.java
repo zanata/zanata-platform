@@ -30,10 +30,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectMember;
 import org.zanata.model.ProjectRole;
 
-import java.util.HashSet;
-import java.util.Set;
-
-
 /**
  * Provides methods to access data related to membership in a project.
  */

@@ -31,9 +31,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectLocaleMember;
 import org.zanata.model.LocaleRole;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Provides methods to access data related to membership in a locale for a project.
  */
