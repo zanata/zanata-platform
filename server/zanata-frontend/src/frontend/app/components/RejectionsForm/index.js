@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, FormGroup, ControlLabel, Button }
+import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
   from 'react-bootstrap'
 import { Icon, TextInput, SelectableDropdown } from '../../components'
 import Toggle from 'react-toggle'
@@ -11,6 +11,8 @@ export const MINOR = 'Minor'
 export const MAJOR = 'Major'
 export const CRITICAL = 'Critical'
 const DO_NOT_RENDER = undefined
+
+const tooltip = (<Tooltip id='tooltip'>Save criteria</Tooltip>)
 
 function priorityToTextState (priority) {
   switch (priority) {
@@ -93,7 +95,6 @@ class RejectionsForm extends Component {
   onDelete = () => {
     this.props.onDelete(this.props.entityId)
   }
-
   render () {
     const {
       editable,
@@ -123,15 +124,17 @@ class RejectionsForm extends Component {
     const formBtn = isAdminMode ? (
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
-        <Button bsStyle='primary' className={className} onClick={this.onSave}>
-          <Icon name='edit' className='s0 iconEdit' />
-        </Button>
+        <OverlayTrigger placement='top' overlay={tooltip}>
+          <Button bsStyle='primary' className={className} onClick={this.onSave}>
+            <Icon name='tick' className='s0 iconEdit' />
+          </Button>
+        </OverlayTrigger>
         {deleteBtn}
       </FormGroup>
     ) : DO_NOT_RENDER
     return (
       <Form className='rejectionsForm' inline>
-        <FormGroup className='flexGrow1' controlId='formInlineCriteria'>
+        <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
           <ControlLabel>Criteria</ControlLabel><br />
           <TextInput multiline editable={isAdminMode || editable}
             type='text' numberOfLines={2} onChange={this.onTextChange}
