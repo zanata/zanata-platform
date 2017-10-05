@@ -53,21 +53,6 @@ public class ProjectLocaleMemberDAO
     }
 
     /**
-     * Retrieve all of a person's roles in a locale for a project.
-     */
-    public Set<LocaleRole> getRolesInProjectLocale(HPerson person, HProject project, HLocale locale) {
-        Query query = getSession().createQuery(
-                "from HProjectLocaleMember as m where m.person = :person " +
-                        "and m.project = :project " +
-                        "and m.locale = :locale")
-                .setParameter("person", person)
-                .setParameter("project", project)
-                .setParameter("locale", locale)
-                .setComment("ProjectLocaleMemberDAO.getRolesInProjectLocale");
-        return new HashSet<>(query.list());
-    }
-
-    /**
      * Check whether a person has a specified role in a locale for a project.
      *
      * @return true if the given person has the given role in the given project

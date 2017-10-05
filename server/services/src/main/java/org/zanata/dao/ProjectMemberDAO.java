@@ -53,20 +53,6 @@ public class ProjectMemberDAO
     }
 
     /**
-     * Retrieve all of a person's roles in a project.
-     */
-    public Set<ProjectRole> getRolesInProject(HPerson person, HProject project) {
-        Query query = getSession().createQuery(
-                "from HProjectMember as m where m.person = :person " +
-                        "and m.project = :project")
-                .setParameter("person", person)
-                .setParameter("project", project)
-                .setComment("ProjectMemberDAO.getRolesInProject")
-                .setCacheable(true);
-        return new HashSet<>(query.list());
-    }
-
-    /**
      * Check whether a person has a specified role in a project.
      *
      * @return true if the given person has the given role in the given project.
