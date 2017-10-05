@@ -46,10 +46,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang
@@ -93,12 +90,12 @@ public class PushPullFileProjectITCase {
         pushCommand.run();
 
         mockServerRule.verifyPushRawFileSource(2);
-        assertThat(mockServerRule.getDocIdCaptor().getAllValues(),
-                contains("test-ods.ods", "test-odt.odt"));
+        assertThat(mockServerRule.getDocIdCaptor().getAllValues())
+                .contains("test-ods.ods", "test-odt.odt");
 
         mockServerRule.verifyPushRawFileTranslation(1);
-        assertThat(mockServerRule.getDocIdCaptor().getValue(),
-                equalTo("test-odt.odt"));
+        assertThat(mockServerRule.getDocIdCaptor().getValue())
+                .isEqualTo("test-odt.odt");
 
     }
 
@@ -120,8 +117,8 @@ public class PushPullFileProjectITCase {
         pushCommand.run();
 
         mockServerRule.verifyPushRawFileTranslation(1);
-        assertThat(mockServerRule.getDocIdCaptor().getValue(),
-                equalTo("test-odt.odt"));
+        assertThat(mockServerRule.getDocIdCaptor().getValue())
+                .isEqualTo("test-odt.odt");
     }
 
     @Test
@@ -146,10 +143,12 @@ public class PushPullFileProjectITCase {
 
         pullCommand.run();
 
-        assertThat(new File(pullBaseDir, "test-ods.ods").exists(), is(true));
-        assertThat(new File(pullBaseDir, "test-odt.odt").exists(), is(true));
-        assertThat(new File(pullBaseDir, "zh-CN/test-odt.odt").exists(), is(true));
-        assertThat(new File(pullBaseDir, "zh-CN/test-ods.ods").exists(), is(true));
+        assertThat(new File(pullBaseDir, "test-ods.ods").exists()).isTrue();
+        assertThat(new File(pullBaseDir, "test-odt.odt").exists()).isTrue();
+        assertThat(new File(pullBaseDir, "zh-CN/test-odt.odt").exists())
+                .isTrue();
+        assertThat(new File(pullBaseDir, "zh-CN/test-ods.ods").exists())
+                .isTrue();
     }
 
     @Test
@@ -179,8 +178,10 @@ public class PushPullFileProjectITCase {
 
         pullCommand.run();
 
-        assertThat(new File(pullBaseDir, "odt/zh-CN/test-odt.odt").exists(), is(true));
-        assertThat(new File(pullBaseDir, "ods/zh_CN/test-ods.ods").exists(), is(true));
+        assertThat(new File(pullBaseDir, "odt/zh-CN/test-odt.odt").exists())
+                .isTrue();
+        assertThat(new File(pullBaseDir, "ods/zh_CN/test-ods.ods").exists())
+                .isTrue();
     }
 }
 
