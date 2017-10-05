@@ -129,7 +129,7 @@ public class PermissionGranter {
      *         been granted. False otherwise.
      */
     public boolean invoke(String action, Object... targets) {
-        Class componentClass = granterMethod.getDeclaringClass();
+        Class<?> componentClass = granterMethod.getDeclaringClass();
         Object[] granterParams = new Object[acceptedParameterTypes.size()];
         int paramIdx = 0;
         for (Class<?> paramType : acceptedParameterTypes) {
@@ -142,14 +142,10 @@ public class PermissionGranter {
             }
             paramIdx++;
         }
-        try (BeanHolder componentHolder =
+        try (BeanHolder<?> componentHolder =
                 ServiceLocator.instance().getDependent(componentClass)) {
             return (Boolean) granterMethod.invoke(componentHolder.get(),
                     granterParams);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

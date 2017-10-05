@@ -77,7 +77,6 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         this.contextPath = contextPath;
     }
 
-    @SuppressWarnings("unused")
     public GlossarySearchServiceImpl() {
     }
 
