@@ -58,7 +58,7 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Source Term")
     String srcTermLabel();
 
-    @DefaultMessage("Target Term")
+    @DefaultMessage("Translation")
     String targetTermLabel();
 
     @DefaultMessage("Project glossary")
@@ -82,8 +82,11 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Source Term [{0}]:")
     String glossarySourceTermLabel(String locale);
 
-    @DefaultMessage("Target Term [{0}]:")
+    @DefaultMessage("Translation [{0}]:")
     String glossaryTargetTermLabel(String locale);
+
+    @DefaultMessage("-none-")
+    String noGlossaryTranslationLabel();
 
     @DefaultMessage("Send")
     String sendLabel();
