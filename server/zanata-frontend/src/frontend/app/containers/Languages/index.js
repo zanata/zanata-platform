@@ -119,11 +119,11 @@ class Languages extends Component {
             </h1>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary' bsSize='small'
+                <Button bsStyle='primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
-                    title='plus' />
+                    title='plus' />&nbsp;
                   Add new language
                 </Button>
                 <NewLanguageModal />

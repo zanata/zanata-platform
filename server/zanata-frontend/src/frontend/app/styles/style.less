@@ -873,8 +873,8 @@ button {
   overflow: visible;
   color: #fff;
   font-weight: 600;
-  padding-left: @spacing-button;
-  padding-right: @spacing-button;
+  padding: @spacing-re @spacing-rq;
+  line-height: @line-height-button;
   font-size: 1rem;
   display: inline-block;
   margin-bottom: 0;
@@ -886,11 +886,14 @@ button {
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
-  border: 1px solid transparent;
   border-radius: @border-radius-base;
   background-image: none;
   -ms-touch-action: manipulation;
   touch-action: manipulation;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
 }
 
 button, select {
@@ -2320,6 +2323,7 @@ a.btn-primary {
 .btn-link {
   font-weight: 400;
   border-radius: 0;
+  box-shadow: none;
 }
 
 button.btn-link {
@@ -2378,14 +2382,14 @@ button.btn-link.delete-link, button.btn-link.delete-link .loaderText {
 
 .btn-group-sm>.btn, .btn-sm {
   font-size: 0.857rem;
-  line-height: @line-height-small;
+  line-height: @line-height-button;
   padding: @spacing-small-horizontal @spacing-large-horizontal;
   border-radius: @border-radius-small;
 }
 
 .btn-group-xs>.btn, .btn-xs {
   font-size: 0.857rem;
-  line-height: @line-height-small;
+  line-height: @line-height-button;
   padding: @spacing-small-vertical @spacing-small-horizontal;
   border-radius: @border-radius-small;
 }
@@ -4914,6 +4918,7 @@ button.close {
   z-index: 1;
   padding: @spacing-rq;
   outline: none;
+  box-shadow: none;
 }
 
 button.close:focus, button.close:hover, button.close:active:focus {
