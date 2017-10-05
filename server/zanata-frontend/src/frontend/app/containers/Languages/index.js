@@ -101,7 +101,7 @@ class Languages extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='page wideView'>
+      <div className='page wideView languages'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
