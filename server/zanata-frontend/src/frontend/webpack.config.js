@@ -214,7 +214,6 @@ module.exports = function (env) {
     },
 
     plugins: _.compact([
-
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
       new ExtractTextPlugin({
@@ -238,8 +237,10 @@ module.exports = function (env) {
             dev || storybook ? 'development' : 'production')
         }
       }),
-        new webpack.HashedModuleIdsPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
+
+      fullBuild ? new webpack.HashedModuleIdsPlugin() : undefined,
+
+      new webpack.optimize.CommonsChunkPlugin({
           name: 'runtime',
          }),
 
