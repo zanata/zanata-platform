@@ -79,13 +79,4 @@ else
 	yarn test:watch
 endif
 
-# Run a server that implements some of the Zanata API with some dummy data.
-# The server runs on localhost:7878 and has 0.5 to 5s of random latency.
-fakeserver:
-	cd node_modules/fake-zanata-server && yarn start
-
-# Run a local development server backed by a fake Zanata server
-watch-fakeserver:
-	${MAKE} -j2 watch fakeserver
-
 .PHONY: test build
