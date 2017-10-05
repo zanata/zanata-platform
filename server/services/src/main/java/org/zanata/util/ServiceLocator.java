@@ -95,7 +95,7 @@ public class ServiceLocator implements IServiceLocator {
             throws NamingException {
         Context ctx = new InitialContext();
         Object found = ctx.lookup(jndiName);
-        if (clazz.isInstance(found)) {
+        if (found == null || clazz.isInstance(found)) {
             return (T) found;
         } else {
             throw new RuntimeException(
