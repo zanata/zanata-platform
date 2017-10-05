@@ -7,7 +7,6 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var postcssImport = require('postcss-import')
 var postcssCustomProperties = require('postcss-custom-properties')
