@@ -94,7 +94,6 @@ import static org.apache.commons.lang3.StringUtils.abbreviate;
 @RequestScoped
 @Transactional(readOnly = true)
 public class StatisticsServiceImpl implements StatisticsResource {
-    private static final long serialVersionUID = 4936614337971433129L;
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;
@@ -514,6 +513,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public List transformList(List collection) {
             return collection;
         }
@@ -556,6 +556,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public List transformList(List collection) {
             return collection;
         }

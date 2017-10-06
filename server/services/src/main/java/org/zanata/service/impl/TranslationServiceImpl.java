@@ -497,7 +497,7 @@ public class TranslationServiceImpl implements TranslationService {
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
             MergeType mergeType, boolean assignCreditToUploader, boolean lock,
-            AsyncTaskHandle handle,
+            AsyncTaskHandle<?> handle,
             TranslationSourceType translationSourceType) {
         // Lock this document for push
         Lock transLock = null;
@@ -570,7 +570,7 @@ public class TranslationServiceImpl implements TranslationService {
             final String iterationSlug, final String docId,
             final LocaleId locale, final TranslationsResource translations,
             final Set<String> extensions, final MergeType mergeType,
-            final boolean assignCreditToUploader, AsyncTaskHandle handle,
+            final boolean assignCreditToUploader, AsyncTaskHandle<?> handle,
             final TranslationSourceType translationSourceType) {
         final HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
@@ -593,7 +593,7 @@ public class TranslationServiceImpl implements TranslationService {
         final HLocale hLocale =
                 localeServiceImpl.validateLocaleByProjectIteration(locale,
                         projectSlug, iterationSlug);
-        final Optional<AsyncTaskHandle> handleOp =
+        final Optional<AsyncTaskHandle<?>> handleOp =
                 Optional.fromNullable(handle);
         if (handleOp.isPresent()) {
             handleOp.get()
@@ -681,7 +681,7 @@ public class TranslationServiceImpl implements TranslationService {
             final List<String> warnings, final HLocale locale,
             HDocument document, final MergeType mergeType,
             final Collection<Long> removedTextFlowTargetIds,
-            final Optional<AsyncTaskHandle> handleOp,
+            final Optional<AsyncTaskHandle<?>> handleOp,
             final Long projectIterationId, final List<TextFlowTarget> batch,
             final boolean assignCreditToUploader,
             final TranslationSourceType translationSourceType) {

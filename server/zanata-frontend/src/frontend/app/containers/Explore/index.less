@@ -1,0 +1,186 @@
+@import "../../styles/variables.less";
+
+:root {
+  --ExploreSearch-width: 80%;
+  --ExploreSearchTextInput-width: 70%;
+}
+
+.containerContentView {
+  max-width: 48rem;
+  width: 100%;
+  margin-top: @spacing-base;
+  margin-left: @spacing-base;
+  margin-right: @spacing-base;
+}
+
+.scrollView {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  overflow: hidden;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-width: 48rem;
+  width: inherit;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: @spacing-base;
+  padding-right: @spacing-base;
+}
+
+.scrollView h2 {
+  padding-left: @spacing-re;
+  margin-top: 0;
+}
+
+.searchView .textInput {
+  background-color: '';
+  border: @color-neutral solid 2px !important;
+  border-radius: @border-radius-text-input;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  font-size: 1.1rem;
+  font-style: inherit;
+  outline: 0;
+  width: 80%;
+  padding-left: @spacing-hr;
+  padding-right: @spacing-hr;
+  margin-left: -1.5rem;
+}
+
+.searchView .listInline {
+  vertical-align: text-bottom;
+}
+
+.teaserList {
+  margin-bottom: 2.25rem;
+}
+
+.teaserList .listTheme {
+  margin-top: @spacing-base-and-a-half;
+}
+
+.teaserView {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  margin-bottom: @spacing-rh;
+}
+
+.teaserHeader {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  display: inline-flex;
+  vertical-align: sub;
+  padding-bottom: @spacing-base;
+}
+
+.teaser-inner {
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  flex: 1;
+  -webkit-box-flex: 1;
+  -moz-flex: 1;
+  -webkit-flex: 1;
+}
+
+.userTeaser-inner {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+
+.teaserHeader-inner {
+  margin-left: @spacing-rh;
+  color: @color-light;
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+}
+
+.teamTeaser {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  margin-bottom: @spacing-rq;
+}
+
+.languageTeamTeaser-id {
+  margin-left: @spacing-rq;
+}
+
+.languageTeamTeaser-members {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  margin-left: auto;
+  float: right;
+  padding-right: @spacing-xlarge;
+}
+
+.metaInfo {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  font-size: 0.833rem;
+}
+
+.wordsTranslatedView {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  margin-left: auto;
+}
+
+.searchView {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  color: @color-dark;
+  position: relative;
+  width: var(--ExploreSearch-width);
+  margin-top: @spacing-rq;
+  margin-bottom: @spacing-base;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.searchView svg {
+  vertical-align: sub;
+}
+
+#explore h1 {
+  font-size: 1.2em !important;
+  margin-bottom: 0;
+}
+
+// @screen-xs variable depreciated
+@media (max-width: 29.375rem) {
+  .teaser-inner {
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    flex: 1;
+    -webkit-box-flex: 1;
+    -moz-flex: 1;
+    -webkit-flex: 1;
+  }
+  .metaInfo {
+    margin-left: auto;
+  }
+  .searchView span svg {
+    font-size: 1.4rem;
+  }
+  .searchView .textInput {
+    width: var(--ExploreSearchTextInput-width);
+  }
+}

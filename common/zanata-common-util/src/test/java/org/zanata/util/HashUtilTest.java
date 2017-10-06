@@ -34,10 +34,7 @@ import org.zanata.common.io.DigestWriter;
 
 import com.google.common.base.Charsets;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a
@@ -62,7 +59,7 @@ public class HashUtilTest {
         String digestWriterHash = new String(Hex.encodeHex(md5.digest()));
         String hashUtilHash = HashUtil.getMD5Checksum(tmpFile);
 
-        assertThat(digestWriterHash, equalTo(hashUtilHash));
+        assertThat(digestWriterHash).isEqualTo(hashUtilHash);
     }
 
     @Test
@@ -70,7 +67,7 @@ public class HashUtilTest {
         String testSingleContent = "test single content";
         String testSingleContentHash = "18ee57a0cd282965a4e6a5e772352dba";
         String hashUtilHash = HashUtil.sourceHash(testSingleContent);
-        assertThat(hashUtilHash, is(testSingleContentHash));
+        assertThat(hashUtilHash).isEqualTo(testSingleContentHash);
     }
 
     @Test(expected = NullPointerException.class)
@@ -81,7 +78,7 @@ public class HashUtilTest {
 
     @Test
     public void singleSourceHashNullIfEmpty() {
-        assertThat(HashUtil.sourceHash(""), nullValue());
+        assertThat(HashUtil.sourceHash("")).isNull();
     }
 
     @Test
@@ -94,13 +91,13 @@ public class HashUtilTest {
         String pipeJoined = "content 1|content 2|content 3";
         String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
 
-        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+        assertThat(HashUtil.sourceHash(contents)).isEqualTo(hashOfPipeJoined);
     }
 
     @Test
     public void sourceHashNullIfEmpty() {
         List<String> emptyContents = new ArrayList<>();
-        assertThat(HashUtil.sourceHash(emptyContents), nullValue());
+        assertThat(HashUtil.sourceHash(emptyContents)).isNull();
     }
 
     @Test
@@ -113,7 +110,7 @@ public class HashUtilTest {
         String pipeJoined = "content 1||";
         String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
 
-        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+        assertThat(HashUtil.sourceHash(contents)).isEqualTo(hashOfPipeJoined);
     }
 
     @Test
@@ -126,7 +123,7 @@ public class HashUtilTest {
         String pipeJoined = "content 1||content 3";
         String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
 
-        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+        assertThat(HashUtil.sourceHash(contents)).isEqualTo(hashOfPipeJoined);
     }
 
     @Test
@@ -147,7 +144,7 @@ public class HashUtilTest {
                 "content 5|content 6|content 7|content 8|content 9|content 10";
         String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
 
-        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+        assertThat(HashUtil.sourceHash(contents)).isEqualTo(hashOfPipeJoined);
     }
 
 }

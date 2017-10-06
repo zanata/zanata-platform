@@ -43,8 +43,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -107,12 +106,10 @@ public class PropertiesStrategyTest {
                 sourceResource, visitor);
 
         verify(visitor).visit(eq(deMapping), transResourceCaptor.capture());
-        assertThat(transResourceCaptor.getValue().getTextFlowTargets(),
-                hasSize(1));
+        assertThat(transResourceCaptor.getValue().getTextFlowTargets()).hasSize(1);
 
         verify(visitor).visit(eq(zhMapping), transResourceCaptor.capture());
-        assertThat(transResourceCaptor.getValue().getTextFlowTargets(),
-                hasSize(1));
+        assertThat(transResourceCaptor.getValue().getTextFlowTargets()).hasSize(1);
 
         verifyNoMoreInteractions(visitor);
     }
@@ -150,12 +147,10 @@ public class PropertiesStrategyTest {
                 sourceResource, visitor);
 
         verify(visitor).visit(eq(deMapping), transResourceCaptor.capture());
-        assertThat(transResourceCaptor.getValue().getTextFlowTargets(),
-                hasSize(1));
+        assertThat(transResourceCaptor.getValue().getTextFlowTargets()).hasSize(1);
 
         verify(visitor).visit(eq(zhMapping), transResourceCaptor.capture());
-        assertThat(transResourceCaptor.getValue().getTextFlowTargets(),
-                hasSize(1));
+        assertThat(transResourceCaptor.getValue().getTextFlowTargets()).hasSize(1);
 
         verifyNoMoreInteractions(visitor);
     }

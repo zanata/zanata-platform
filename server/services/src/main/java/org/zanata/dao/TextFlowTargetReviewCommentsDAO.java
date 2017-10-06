@@ -51,6 +51,7 @@ public class TextFlowTargetReviewCommentsDAO extends
         super(HTextFlowTargetReviewComment.class, session);
     }
 
+    @SuppressWarnings("unchecked")
     public List<HTextFlowTargetReviewComment> getReviewComments(
             TransUnitId textFlowId, LocaleId localeId) {
         Query query =

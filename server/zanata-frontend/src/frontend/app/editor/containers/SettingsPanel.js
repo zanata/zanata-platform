@@ -18,7 +18,7 @@ export const SettingsPanel = ({
     <div className="sidebar-settings">
       <h1 className="sidebar-heading">
         <Icon name="settings" className="s1" /> Settings
-        <span className="s1 pull-right">
+        <span className="s1 u-pullRight">
           <Button bsStyle="link" onClick={hideSettings}>
             <Icon name="cross" />
           </Button>

@@ -21,7 +21,6 @@
 
 package org.zanata.rest.client;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import org.zanata.rest.service.StubbingServerRule;
 
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProjectClientTest {
     @ClassRule
@@ -49,14 +48,14 @@ public class ProjectClientTest {
     public void testGet() throws Exception {
         Project project = client.get();
 
-        assertThat(project.getId(), Matchers.equalTo("about-fedora"));
+        assertThat(project.getId()).isEqualTo("about-fedora");
     }
 
     @Test
     public void testPut() throws Exception {
         Response response = client.put(new Project("a", "b", "gettext"));
-        assertThat("server returns successful status code",
-                response.getStatus(), Matchers.is(201));
+        assertThat(response.getStatus())
+                .as("server returns successful status code").isEqualTo(201);
     }
 
 }

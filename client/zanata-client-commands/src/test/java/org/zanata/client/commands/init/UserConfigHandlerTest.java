@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,7 +17,7 @@ import org.zanata.client.commands.MockConsoleInteractor;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.client.commands.Messages.get;
 
 public class UserConfigHandlerTest {
@@ -80,10 +79,9 @@ public class UserConfigHandlerTest {
     @Test
     public void willUseUserConfigIfThereIsOnlyOneServer() throws Exception {
         handler.verifyUserConfig();
-        assertThat(handler.getOpts().getUrl().toString(),
-                Matchers.equalTo("http://localhost:8080/zanata/"));
-        assertThat(handler.getOpts().getUsername(), Matchers.equalTo("admin"));
-        assertThat(handler.getOpts().getKey(), Matchers.equalTo("abcde"));
+        assertThat(handler.getOpts().getUrl().toString()).isEqualTo("http://localhost:8080/zanata/");
+        assertThat(handler.getOpts().getUsername()).isEqualTo("admin");
+        assertThat(handler.getOpts().getKey()).isEqualTo("abcde");
     }
 
     @Test
@@ -99,10 +97,10 @@ public class UserConfigHandlerTest {
         handler = new UserConfigHandler(console, opts);
 
         handler.verifyUserConfig();
-        assertThat(handler.getOpts().getUrl().toString(),
-                Matchers.equalTo("https://translate.zanata.org"));
-        assertThat(handler.getOpts().getUsername(), Matchers.equalTo("admin"));
-        assertThat(handler.getOpts().getKey(), Matchers.equalTo("blah"));
+        assertThat(handler.getOpts().getUrl().toString())
+                .isEqualTo("https://translate.zanata.org");
+        assertThat(handler.getOpts().getUsername()).isEqualTo("admin");
+        assertThat(handler.getOpts().getKey()).isEqualTo("blah");
     }
 
 }

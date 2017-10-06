@@ -1,16 +1,16 @@
 package org.zanata.client.commands;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.IOException;
 import java.net.URL;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.MockitoAnnotations;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.client.commands.Messages.get;
 
 public class PutUserOptionsImplTest {
@@ -35,11 +35,11 @@ public class PutUserOptionsImplTest {
     @Test
     public void testValidEnabledOptions() throws Exception {
         opts.setUserEnabled("true");
-        assertThat(opts.isUserEnabled(), Matchers.equalTo("true"));
+        assertThat(opts.isUserEnabled()).isEqualTo("true");
         opts.setUserEnabled("false");
-        assertThat(opts.isUserEnabled(), Matchers.equalTo("false"));
+        assertThat(opts.isUserEnabled()).isEqualTo("false");
         opts.setUserEnabled("auto");
-        assertThat(opts.isUserEnabled(), Matchers.equalTo("auto"));
+        assertThat(opts.isUserEnabled()).isEqualTo("auto");
         expectException.expect(RuntimeException.class);
         expectException.expectMessage("--user-enabled requires true or false (or auto)");
         opts.setUserEnabled("invalid");
@@ -48,13 +48,12 @@ public class PutUserOptionsImplTest {
     @Test
     public void testUserKeyCannotBeBlank() {
         opts.setUserKey("   ");
-        assertThat(opts.getUserKey(), Matchers.equalTo(null));
+        assertThat(opts.getUserKey()).isNull();
     }
 
     @Test
     public void testCommandDescription() {
-        assertThat(opts.getCommandName(), Matchers.equalTo("put-user"));
-        assertThat(opts.getCommandDescription(),
-                Matchers.equalTo(get("command.description.put-user")));
+        assertThat(opts.getCommandName()).isEqualTo("put-user");
+        assertThat(opts.getCommandDescription()).isEqualTo(get("command.description.put-user"));
     }
 }

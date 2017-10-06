@@ -121,13 +121,13 @@ public class AsyncTaskHandle<V> implements Serializable {
         return isAdminOrSameUser(this, identity);
     }
 
-    private static boolean isAdminOrSameUser(AsyncTaskHandle taskHandle,
+    private static boolean isAdminOrSameUser(AsyncTaskHandle<?> taskHandle,
             ZanataIdentity identity) {
         return identity != null && (identity.hasRole("admin")
                 || triggeredBySameUser(taskHandle, identity));
     }
 
-    private static boolean triggeredBySameUser(AsyncTaskHandle taskHandle,
+    private static boolean triggeredBySameUser(AsyncTaskHandle<?> taskHandle,
             ZanataIdentity identity) {
         return taskHandle instanceof UserTriggeredTaskHandle && Objects.equals(
                 ((UserTriggeredTaskHandle) taskHandle).getTriggeredBy(),

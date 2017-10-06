@@ -10,10 +10,10 @@ const CategoryItemMatrix = ({
   return (
     <tr>
       <td className='l--pad-left-0 l--pad-v-0 w--1'>
-        {itemTitle} <span className='txt--understated'>({itemName})</span>
+        {itemTitle} <span className='u-textUnderstated'>({itemName})</span>
       </td>
       <td className='txt--align-right l--pad-right-0 l--pad-v-0 txt--nowrap'>
-        {wordCount} <span className='l--pad-left-quarter txt--understated'>
+        {wordCount} <span className='l--pad-left-quarter u-textUnderstated'>
         words</span>
       </td>
     </tr>

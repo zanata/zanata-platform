@@ -21,12 +21,9 @@
 
 package org.zanata.rest.client;
 
-import static org.junit.Assert.assertThat;
-
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -34,6 +31,8 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.service.StubbingServerRule;
 import com.google.common.collect.Sets;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SourceDocResourceClientTest {
     @ClassRule
@@ -54,27 +53,27 @@ public class SourceDocResourceClientTest {
     @Test
     public void testGetResourceMeta() {
         List<ResourceMeta> resourceMeta = client.getResourceMeta(null);
-        assertThat(resourceMeta, Matchers.hasSize(2));
+        assertThat(resourceMeta).hasSize(2);
     }
 
     @Test
     public void testGetResource() {
         Resource resource = client.getResource("test",
                 Sets.newHashSet("gettext", "comment"));
-        assertThat(resource.getName(), Matchers.equalTo("test"));
+        assertThat(resource.getName()).isEqualTo("test");
     }
 
     @Test
     public void testPutResource() {
         String result = client.putResource("test", new Resource("newName"),
                 Sets.newHashSet("gettext"), true);
-        assertThat(result, Matchers.equalTo("newName"));
+        assertThat(result).isEqualTo("newName");
     }
 
     @Test
     public void testDeleteResource() {
         String result = client.deleteResource("test");
-        assertThat(result, Matchers.isEmptyOrNullString());
+        assertThat(result).isNullOrEmpty();
     }
 }
 

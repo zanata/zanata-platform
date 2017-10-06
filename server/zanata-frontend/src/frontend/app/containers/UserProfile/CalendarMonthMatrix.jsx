@@ -28,7 +28,7 @@ const CalendarMonthMatrix = ({
     return <table><tbody><tr><td>Loading</td></tr></tbody></table>
   }
 
-  const calClass = 'activity-graph' + classes.calendar
+  const calClass = 'userProfile-activityGraph' + classes.calendar
       .types[selectedContentState.toLowerCase().replace(' ', '')]
 
   let days = []
@@ -82,10 +82,10 @@ const CalendarMonthMatrix = ({
       utilsDate.formatDate(dateRange.endDate, utilsDate.dateRangeDisplayFmt)
   /* eslint-disable react/jsx-no-bind */
   return (
-    <div id='activity-table'>
-      <div className='activity-table-inner'>
+    <div id='userProfile-activityTable'>
+      <div className='userProfile-activityTable-inner'>
         <div>
-          <h3 className='text-bold-uppercase'>
+          <h3 className='u-textUppercaseBold'>
             {header}
           </h3>
         </div>

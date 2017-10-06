@@ -1,7 +1,6 @@
 package org.zanata.dao;
 
 import java.util.List;
-import org.hibernate.transform.ResultTransformer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -12,7 +11,6 @@ import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.TranslationMatrix;
-import org.zanata.rest.service.StatisticsServiceImpl;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -28,6 +26,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import org.zanata.rest.service.StatisticsServiceImpl.UserMatrixResultTransformer;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
@@ -39,14 +39,14 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     private DateTime yesterday = new DateTime().minusDays(1);
     private DateTime twoDaysAgo = new DateTime().minusDays(2);
     private HDocument hDocument;
-    private ResultTransformer resultTransformer;
+    private UserMatrixResultTransformer resultTransformer;
     private static final DateTimeFormatter dateFormatter =
             DateTimeFormat.mediumDate();
 
     @Before
     public void setUp() throws Exception {
         resultTransformer =
-                new StatisticsServiceImpl.UserMatrixResultTransformer(getEm(),
+                new UserMatrixResultTransformer(getEm(),
                         dateFormatter);
         historyDAO = new TextFlowTargetHistoryDAO(getSession()) {
 

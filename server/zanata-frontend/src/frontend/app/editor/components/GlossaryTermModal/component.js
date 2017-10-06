@@ -74,7 +74,7 @@ class GlossaryTermModal extends React.Component {
         key="glosssary-term-modal"
         id="GlossaryTermModal">
         <Modal.Header>
-          <Modal.Title><small><span className="pull-left">
+          <Modal.Title><small><span className="u-pullLeft">
           Glossary details</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -102,7 +102,7 @@ class GlossaryTermModal extends React.Component {
             </Table>
           </Panel>
 
-          <span className="pull-right u-textMeta">
+          <span className="u-pullRight u-textMeta">
             <Row>
               <Icon name="history" className="s0 history-icon" />
               <span className="u-sML-1-4">

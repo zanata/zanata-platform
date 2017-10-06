@@ -89,7 +89,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         account.setApiKey(apikey);
     }
 
-    public static String createSaltedApiKey(String username) {
+    private static String createSaltedApiKey(String username) {
         try {
             byte[] salt = new byte[16];
             SecureRandom.getInstance("SHA1PRNG").nextBytes(salt);
@@ -142,10 +142,9 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     // return fullTextQuery.getResultList();
     // }
 
-    @SuppressWarnings("unchecked")
     // TODO: use hibernate search
-            public
-            List<HAccount> searchQuery(String searchQuery, int maxResults, int firstResult) {
+    public List<HAccount> searchQuery(String searchQuery, int maxResults,
+            int firstResult) {
         String userName = "%" + searchQuery + "%";
         Query query =
                 getSession().createQuery(
@@ -156,7 +155,9 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         }
         query.setFirstResult(firstResult);
         query.setComment("AccountDAO.searchQuery/username");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HAccount> list = query.list();
+        return list;
     }
 
     public List<String> getUserNames(String filter, int offset, int maxResults) {
@@ -173,7 +174,9 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         query.setFirstResult(offset);
         query.setCacheable(true);
         query.setComment("accountDAO.getUserNames");
-        return (List<String>) query.list();
+        @SuppressWarnings("unchecked")
+        List<String> list = query.list();
+        return list;
     }
 
     public int getUserCount(String filter) {
@@ -218,6 +221,8 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
                         "from HAccount as a where a.mergedInto = :mergedInto");
         query.setParameter("mergedInto", mergedInto);
         query.setComment("AccountDAO.getAllMergedAccounts");
-        return (List<HAccount>) query.list();
+        @SuppressWarnings("unchecked")
+        List<HAccount> list = query.list();
+        return list;
     }
 }
