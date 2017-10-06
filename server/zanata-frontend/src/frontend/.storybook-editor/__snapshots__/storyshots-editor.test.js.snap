@@ -5590,7 +5590,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         Source
       </th>
       <th>
-        Target
+        Translation
       </th>
       <th />
       <th
@@ -5894,7 +5894,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         Source
       </th>
       <th>
-        Target
+        Translation
       </th>
       <th />
       <th
