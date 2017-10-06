@@ -4719,9 +4719,9 @@ a.lineClamp:after {
   word-spacing: normal;
   word-wrap: normal;
   font-size: 14px;
-  background-color: #fff;
+  background-color: @color-dark;
+  color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, .2);
   border-radius: 6px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
 }
@@ -4729,6 +4729,7 @@ a.lineClamp:after {
 h3.popover-title {
   font-size: 1rem;
   text-transform: uppercase;
+  color: @color-neutral;
 }
 
 .popover-content p {
@@ -4739,8 +4740,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -11px;
   border-bottom-width: 0;
-  border-top-color: #999;
-  border-top-color: rgba(0, 0, 0, .25);
+  border-top-color: @color-dark;
   bottom: -11px;
 }
 
@@ -4762,7 +4762,7 @@ h3.popover-title {
   bottom: 1px;
   margin-left: -10px;
   border-bottom-width: 0;
-  border-top-color: #fff;
+  border-top-color: @color-dark;
 }
 
 .popover>.arrow:after {
@@ -4775,9 +4775,9 @@ h3.popover-title {
   padding: @spacing-half-base;
   color: #fff;
   text-align: center;
-  background-color: #333;
+  background-color: @color-dark;
   border-radius: @border-radius-base;
-  border: solid 2px #333;
+  border: solid 2px @color-dark;
 }
 
 .tooltip {
@@ -4799,7 +4799,7 @@ h3.popover-title {
   word-spacing: normal;
   word-wrap: normal;
   font-size: 0.857rem;
-  border-color: #333;
+  border-color: @color-dark;
 }
 
 .tooltip-arrow {
@@ -4835,7 +4835,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -@spacing-small-horizontal;
   border-width: 5px 5px 0;
-  border-top-color: #333;
+  border-top-color: @color-dark;
 }
 
 .tooltip.right .tooltip-arrow {
@@ -4843,7 +4843,7 @@ h3.popover-title {
   left: 0;
   margin-top: -@spacing-small-horizontal;
   border-width: 5px 5px 5px 0;
-  border-right-color: #333;
+  border-right-color: @color-dark;
 }
 
 .tooltip.left .tooltip-arrow {
@@ -4851,7 +4851,7 @@ h3.popover-title {
   right: 0;
   margin-top: -@spacing-small-horizontal;
   border-width: 5px 0 5px 5px;
-  border-left-color: #333;
+  border-left-color: @color-dark;
 }
 
 .tooltip.bottom .tooltip-arrow {
@@ -4859,7 +4859,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -@spacing-small-horizontal;
   border-width: 0 5px 5px;
-  border-bottom-color: #333;
+  border-bottom-color: @color-dark;
 }
 
 //
