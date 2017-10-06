@@ -90,7 +90,7 @@ ul.sidebar-details {
   clear: both;
 }
 
-td.info-icon {
+td.iconInfoVersionMerge {
   text-align: right;
 }
 
@@ -509,6 +509,14 @@ img.activity-avatar {
 
 .well-approved {
   border-left: solid 5px var(--Editor-color-approved);
+}
+
+.revision-box .well-sm {
+  background-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.criteria-text {
+  font-weight: 600;
 }
 
 .trans-comment-box {

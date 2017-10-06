@@ -24,7 +24,7 @@ import java.io.Serializable;
 import javax.faces.model.DataModel;
 import org.zanata.exception.ZanataServiceException;
 
-public abstract class PagedListDataModel<E> extends DataModel
+public abstract class PagedListDataModel<E> extends DataModel<E>
         implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(PagedListDataModel.class);
@@ -70,7 +70,7 @@ public abstract class PagedListDataModel<E> extends DataModel
         return page;
     }
 
-    public Object getRowData() {
+    public E getRowData() {
         if (rowIndex < 0) {
             throw new IllegalArgumentException(
                     "Invalid rowIndex (< 0): " + rowIndex);

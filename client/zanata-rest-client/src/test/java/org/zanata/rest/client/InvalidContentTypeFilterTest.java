@@ -5,10 +5,9 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.core.MediaType;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.rest.client.InvalidContentTypeFilter.isContentTypeCompatible;
 
 public class InvalidContentTypeFilterTest {
@@ -34,59 +33,46 @@ public class InvalidContentTypeFilterTest {
 
         Matcher matcher = pattern.matcher(sampleText.replaceAll("\\n", " "));
 
-        MatcherAssert.assertThat(matcher.matches(), equalTo(true));
-        MatcherAssert.assertThat(matcher.group(1), equalTo("Zanata: Home"));
+        assertThat(matcher.matches()).isTrue();
+        assertThat(matcher.group(1)).isEqualTo("Zanata: Home");
     }
 
     @Test
     public void testValidateContentTypes() {
-
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(MediaType.TEXT_HTML_TYPE),
-                equalTo(false));
-        MatcherAssert.assertThat(
+        assertThat(
+                isContentTypeCompatible(MediaType.TEXT_HTML_TYPE)).isFalse();
+        assertThat(
                 isContentTypeCompatible(
-                                MediaType.APPLICATION_FORM_URLENCODED_TYPE),
-                equalTo(true));
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(MediaType.MULTIPART_FORM_DATA_TYPE),
-                equalTo(false));
-
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(MediaType.APPLICATION_XML_TYPE),
-                equalTo(true));
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(MediaType.APPLICATION_JSON_TYPE),
-                equalTo(true));
-
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(MediaType.APPLICATION_OCTET_STREAM_TYPE),
-                equalTo(true));
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(MediaType.WILDCARD_TYPE),
-                equalTo(true));
+                        MediaType.APPLICATION_FORM_URLENCODED_TYPE)).isTrue();
+        assertThat(
+                isContentTypeCompatible(MediaType.MULTIPART_FORM_DATA_TYPE))
+                .isFalse();
+        assertThat(
+                isContentTypeCompatible(MediaType.APPLICATION_XML_TYPE))
+                .isTrue();
+        assertThat(
+                isContentTypeCompatible(MediaType.APPLICATION_JSON_TYPE))
+                .isTrue();
+        assertThat(
+                isContentTypeCompatible(
+                        MediaType.APPLICATION_OCTET_STREAM_TYPE)).isTrue();
+        assertThat(
+                isContentTypeCompatible(MediaType.WILDCARD_TYPE)).isTrue();
 
         MediaType zanataXmlType = new MediaType(
                 "application", "vnd.zanata+xml");
-        MatcherAssert.assertThat(isContentTypeCompatible(zanataXmlType),
-                equalTo(true));
-        MatcherAssert.assertThat(isContentTypeCompatible(
-                zanataXmlType.withCharset(LATIN_1)),
-                equalTo(true));
+        assertThat(isContentTypeCompatible(zanataXmlType)).isTrue();
+        assertThat(isContentTypeCompatible(
+                zanataXmlType.withCharset(LATIN_1))).isTrue();
 
         MediaType zanataVersionXmlType = new MediaType(
                 "application", "vnd.zanata.version+xml");
-        MatcherAssert.assertThat(isContentTypeCompatible(zanataVersionXmlType),
-                equalTo(true));
-        MatcherAssert.assertThat(isContentTypeCompatible(
-                zanataVersionXmlType.withCharset(LATIN_1)),
-                equalTo(true));
-
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(MediaType.TEXT_PLAIN_TYPE),
-                equalTo(true));
-        MatcherAssert.assertThat(
-                isContentTypeCompatible(null),
-                equalTo(true));
+        assertThat(isContentTypeCompatible(zanataVersionXmlType)).isTrue();
+        assertThat(isContentTypeCompatible(
+                zanataVersionXmlType.withCharset(LATIN_1))).isTrue();
+        assertThat(
+                isContentTypeCompatible(MediaType.TEXT_PLAIN_TYPE)).isTrue();
+        assertThat(
+                isContentTypeCompatible(null)).isTrue();
     }
 }

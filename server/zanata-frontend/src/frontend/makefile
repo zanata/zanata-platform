@@ -4,8 +4,14 @@
 # Instead we can just invoke `make <command>`.
 # We also get tab-completion of the make commands.
 
+# Check that the correct node and yarn versions are active
+# Confusing errors can happen when using older versions, so
+# this fails fast to save developers some anguish.
+check:
+	yarn run check
+
 # Ensure all dependencies are present at appropriate versions.
-install:
+install: check
 	@echo `tput setaf 6`If you see \"`tput setaf 1`error`tput sgr0` Your lockfile needs to be updated...`tput setaf 6`\",
 	@echo you have added dependencies to package.json without yarn.
 	@echo Add them to yarn.lock using: `tput sgr0`yarn add [dependency]
@@ -53,7 +59,7 @@ storybook-static:
 	yarn build-storybook --ignore-scripts=false
 
 # Run the script to create boilerplate for a new component.
-component:
+component: check
 	node ./scripts/codemods/create-component.js
 
 # Run the tests.
@@ -72,14 +78,5 @@ ifdef coverage
 else
 	yarn test:watch
 endif
-
-# Run a server that implements some of the Zanata API with some dummy data.
-# The server runs on localhost:7878 and has 0.5 to 5s of random latency.
-fakeserver:
-	cd node_modules/fake-zanata-server && yarn start
-
-# Run a local development server backed by a fake Zanata server
-watch-fakeserver:
-	${MAKE} -j2 watch fakeserver
 
 .PHONY: test build

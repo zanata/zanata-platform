@@ -23,7 +23,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked={false} indeterminate={false} onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="tri-checkbox"
+      <input type="checkbox" className="triCheckbox"
         checked={false} onChange={callback} />
     )
     const utilRendered = utilRender(false, false, callback)
@@ -34,7 +34,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked={false} indeterminate onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="tri-checkbox"
+      <input type="checkbox" className="triCheckbox"
         checked={false} onChange={callback} />
     )
     const utilRendered = utilRender(false, true, callback)
@@ -45,7 +45,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked indeterminate={false} onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="tri-checkbox"
+      <input type="checkbox" className="triCheckbox"
         checked onChange={callback} />
     )
     const utilRendered = utilRender(true, false, callback)
@@ -56,7 +56,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked indeterminate onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="tri-checkbox"
+      <input type="checkbox" className="triCheckbox"
         checked onChange={callback} />
     )
     const utilRendered = utilRender(true, true, callback)

@@ -25,7 +25,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -45,7 +45,6 @@ import org.zanata.rest.editor.service.resource.TextFlowResource;
 @Path(TextFlowResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class TextFlowService implements TextFlowResource {
-    private static final long serialVersionUID = 398061565537835416L;
     @Inject
     private TextFlowDAO textFlowDAO;
     @Inject

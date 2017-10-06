@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -71,10 +71,8 @@
     <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
     <webdriver.wait>20</webdriver.wait>
     <googleopenid.credentials>zanata.user.1:</googleopenid.credentials>
-    <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
     <cargo.debug.jvm.args>
-      -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
-      -Xnoagent -Djava.compiler=NONE
+      -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0
     </cargo.debug.jvm.args>
     <!-- this property can be used to control what test needs to be run by failsafe -->
     <default.test.patterns>**/BasicAcceptanceTestSuite.java</default.test.patterns>
@@ -300,9 +298,10 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <dependency>
@@ -352,7 +351,7 @@
 
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib</artifactId>
+      <artifactId>kotlin-stdlib-jre8</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -753,14 +752,7 @@
                 <configuration>
                   <configuration>
                     <properties>
-                      <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                        -XX:-OmitStackTraceInFastThrow
-                        -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target
-                        -XX:PermSize=512m -XX:MaxPermSize=1024
-                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
+                      <cargo.jvmargs>${server.jvmargs}</cargo.jvmargs>
                     </properties>
                   </configuration>
                 </configuration>
@@ -770,14 +762,7 @@
                 <configuration>
                   <configuration>
                     <properties>
-                      <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                        -XX:-OmitStackTraceInFastThrow
-                        -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target
-                        -XX:PermSize=512m -XX:MaxPermSize=1024
-                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
+                      <cargo.jvmargs>${server.jvmargs}</cargo.jvmargs>
                     </properties>
                   </configuration>
                 </configuration>
@@ -1023,7 +1008,7 @@
                 <echo />
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
                 <echo />
-                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
+                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to a random port.</echo>
                 <echo />
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
                 <echo>-Dzanata.instance.url=http://${cargo.host}:${cargo.servlet.port}/${context.path}</echo>

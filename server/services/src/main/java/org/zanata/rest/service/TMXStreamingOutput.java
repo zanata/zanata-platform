@@ -109,7 +109,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
 
     /**
      * Goes through the translation units returned by this object's iterator
-     * (see {@link #TMXStreamingOutput(Iterator, TMXExportStrategy)} and writes
+     * (see {@link #TMXStreamingOutput(String, CloseableIterator, TMXExportStrategy)} and writes
      * each one to the OutputStream in TMX form.
      * <p>
      * Any resources associated with the iterator will be closed before this

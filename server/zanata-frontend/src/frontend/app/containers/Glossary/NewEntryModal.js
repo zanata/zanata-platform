@@ -85,11 +85,11 @@ class NewEntryModal extends Component {
         <Modal.Header>
           <Modal.Title>New Term</Modal.Title>
         </Modal.Header>
-        <Modal.Body className='text-left'>
+        <Modal.Body className='u-textLeft'>
           <div className='modal-section'>
             <label className='text-bold'>Term</label>
             <EditableText
-              className='editable text-state-classes'
+              className='editable textState'
               editable
               editing
               placeholder='The new term'
@@ -101,7 +101,7 @@ class NewEntryModal extends Component {
           <div className='modal-section'>
             <label className='text-bold'>Part of speech</label>
             <EditableText
-              className='text-input modal-section'
+              className='textInput modal-section'
               editable
               editing
               placeholder='Noun, Verb, etc'
@@ -113,7 +113,7 @@ class NewEntryModal extends Component {
           <div className='modal-section'>
             <label className='text-bold'>Description</label>
             <EditableText
-              className='text-input'
+              className='textInput'
               editable
               editing
               placeholder='The definition of this term'
@@ -124,7 +124,7 @@ class NewEntryModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='pull-right'>
+          <ButtonGroup className='u-pullRight'>
             <Button bsStyle='link'
               disabled={isSaving}
               onClick={() => this.handleCancel()}>

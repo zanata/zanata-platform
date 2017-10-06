@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,7 +53,6 @@ import com.google.common.base.Objects;
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
 public class ProjectService implements ProjectResource {
-    private static final long serialVersionUID = -3670404109711592923L;
     /** Project Identifier. */
     @PathParam("projectSlug")
     String projectSlug;

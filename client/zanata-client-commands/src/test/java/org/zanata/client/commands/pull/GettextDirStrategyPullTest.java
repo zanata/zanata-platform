@@ -10,8 +10,7 @@ import org.zanata.client.config.LocaleMapping;
 
 import java.io.File;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
 public class GettextDirStrategyPullTest {
@@ -38,13 +37,12 @@ public class GettextDirStrategyPullTest {
         File deTransFile =
             strategy.getTransFileToWrite("message", deMapping);
 
-        assertThat(deTransFile,
-            equalTo(new File(opts.getTransDir(), "de/message.po")));
+        assertThat(deTransFile).isEqualTo(new File(opts.getTransDir(), "de/message.po"));
 
         File zhTransFile =
             strategy.getTransFileToWrite("message", zhMapping);
-        assertThat(zhTransFile, equalTo(
-            new File(opts.getTransDir(), "zh-Hans/message.po")));
+        assertThat(zhTransFile).isEqualTo(
+            new File(opts.getTransDir(), "zh-Hans/message.po"));
 
     }
 
@@ -62,13 +60,12 @@ public class GettextDirStrategyPullTest {
         File deTransFile =
             strategy.getTransFileToWrite("message", deMapping);
 
-        assertThat(deTransFile,
-            equalTo(new File(opts.getTransDir(), "de/message.po")));
+        assertThat(deTransFile).isEqualTo(new File(opts.getTransDir(), "de/message.po"));
 
         File zhTransFile =
             strategy.getTransFileToWrite("message", zhMapping);
-        assertThat(zhTransFile, equalTo(
-            new File(opts.getTransDir(), "zh-Hans/message.po")));
+        assertThat(zhTransFile).isEqualTo(
+            new File(opts.getTransDir(), "zh-Hans/message.po"));
 
     }
 

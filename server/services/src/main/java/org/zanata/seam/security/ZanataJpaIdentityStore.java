@@ -55,7 +55,6 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -197,15 +196,11 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     public List<String> listUsers() {
+        @SuppressWarnings("unchecked")
         List<String> users =
                 entityManager.createQuery("select u.username from HAccount u")
                         .getResultList();
-        Collections.sort(users, new Comparator<String>() {
-
-            public int compare(String value1, String value2) {
-                return value1.compareTo(value2);
-            }
-        });
+        users.sort(Comparator.naturalOrder());
         return users;
     }
 
@@ -429,10 +424,12 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     private List<String> listUserMembers(String role) {
         HAccountRole roleEntity = lookupRole(role);
-        return entityManager
+        @SuppressWarnings("unchecked")
+        List<String> resultList = entityManager
                 .createQuery(
                         "select u.username from HAccount u where :role member of u.roles")
                 .setParameter("role", roleEntity).getResultList();
+        return resultList;
     }
 
     public List<String> getImpliedRoles(String name) {
@@ -544,22 +541,29 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     public List<String> listGrantableRoles() {
-        return entityManager
+        @SuppressWarnings("unchecked")
+        List<String> resultList = entityManager
                 .createQuery(
                         "select r.name from HAccountRole r where r.conditional = false")
                 .getResultList();
+        return resultList;
     }
 
     public List<String> listRoles() {
-        return entityManager.createQuery("select r.name from HAccountRole r")
-                .getResultList();
+        @SuppressWarnings("unchecked")
+        List<String> resultList =
+                entityManager.createQuery("select r.name from HAccountRole r")
+                        .getResultList();
+        return resultList;
     }
 
     private List<String> listRoleMembers(String role) {
         HAccountRole roleEntity = lookupRole(role);
-        return entityManager
+        @SuppressWarnings("unchecked")
+        List<String> resultList = entityManager
                 .createQuery(
                         "select r.name from HAccountRole r where :role member of r.groups")
                 .setParameter("role", roleEntity).getResultList();
+        return resultList;
     }
 }

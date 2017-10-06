@@ -12,14 +12,14 @@ const UserTeaser = ({
   ...props
 }) => {
   const wordsTranslated = details.wordsTranslated &&
-    (<div className='words-translated-view'>
-      <Icon className='translateicon-muted' />
+    (<div className='wordsTranslatedView'>
+      <Icon className='iconTranslate-muted' />
         {details.wordsTranslated}
     </div>)
   const url = getProfileUrl(details.id)
   return (
-    <div className='teaser-view-theme' name={name}>
-      <div className='user-teaser-inner'>
+    <div className='teaserView' name={name}>
+      <div className='userTeaser-inner'>
         <img
           src={details.avatarUrl}
           alt={details.id}

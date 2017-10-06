@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -465,7 +465,7 @@ public class VersionGroupHomeAction extends AbstractSortAction
         if (getMissingLocaleVersionMap().containsKey(localeId)) {
             return getMissingLocaleVersionMap().get(localeId);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public String getMissingVersionTitle(LocaleId localeId) {

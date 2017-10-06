@@ -68,17 +68,17 @@ class Entry extends Component {
             }
           </a>
           <br />
-          <span className='langcode'>
+          <span className='languageCode'>
             {localeDetails.displayName}
           </span>
         </td>
         <td>
-          <span className='text-muted'>
-            <Icon name='user' className='s1 usericon' />
+          <span className='u-textMuted'>
+            <Icon name='user' className='s1 iconUser' />
             {locale.memberCount} &nbsp;
             {permission.canAddLocale &&
               <span>
-                <Icon name='notification' className='s1 usericon' />
+                <Icon name='notification' className='s1 iconUser' />
                 {locale.requestCount}
               </span>
             }

@@ -21,7 +21,6 @@
 
 package org.zanata.rest.client;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -33,7 +32,7 @@ import org.zanata.rest.service.StubbingServerRule;
 
 import com.google.common.collect.Sets;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AsyncProcessClientTest {
     @ClassRule
@@ -56,8 +55,8 @@ public class AsyncProcessClientTest {
                         new Resource("message"), Sets.newHashSet("gettext"),
                         "message");
 
-        assertThat(processStatus.getStatusCode(), Matchers.equalTo(
-                ProcessStatus.ProcessStatusCode.Running));
+        assertThat(processStatus.getStatusCode()).isEqualTo(
+                ProcessStatus.ProcessStatusCode.Running);
     }
 
     @Test
@@ -70,16 +69,16 @@ public class AsyncProcessClientTest {
                         Sets.newHashSet("gettext"),
                         "auto", false);
 
-        assertThat(processStatus.getStatusCode(), Matchers.equalTo(
-                ProcessStatus.ProcessStatusCode.Running));
+        assertThat(processStatus.getStatusCode()).isEqualTo(
+                ProcessStatus.ProcessStatusCode.Running);
     }
 
     @Test
     public void testGetProcessStatus() throws Exception {
         ProcessStatus processStatus = client.getProcessStatus("a");
 
-        assertThat(processStatus.getStatusCode(), Matchers.equalTo(
-                ProcessStatus.ProcessStatusCode.Finished));
+        assertThat(processStatus.getStatusCode()).isEqualTo(
+                ProcessStatus.ProcessStatusCode.Finished);
     }
 }
 

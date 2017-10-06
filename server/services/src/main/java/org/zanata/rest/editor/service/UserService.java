@@ -1,6 +1,8 @@
 package org.zanata.rest.editor.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -9,15 +11,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.AccountOptionDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountOption;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.rest.dto.Account;
@@ -41,7 +43,6 @@ import com.google.common.base.Strings;
 @Path(UserResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class UserService implements UserResource {
-    private static final long serialVersionUID = 6392233836993864627L;
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
@@ -49,6 +50,8 @@ public class UserService implements UserResource {
     private GravatarService gravatarServiceImpl;
     @Inject
     private AccountDAO accountDAO;
+    @Inject
+    private AccountOptionDAO accountOptionDAO;
     @Inject
     private PersonDAO personDAO;
     @Inject
@@ -60,9 +63,6 @@ public class UserService implements UserResource {
 
     @Inject
     private IdentityManager identityManager;
-
-    private static final Logger log =
-            LoggerFactory.getLogger(UserService.class);
 
     @Override
     @CheckLoggedIn
@@ -227,4 +227,52 @@ public class UserService implements UserResource {
         this.applicationConfiguration = applicationConfiguration;
         this.identityManager = identityManager;
     }
+
+    /**
+     * Retrieve settings for the current authenticated user that begin with prefix.
+     * The prefix is stripped
+     *
+     * @param prefix only return settings that begin with this prefix, separated
+     *               from the name with '.'
+     * @return a JSON object with keys of setting name (without prefix) and values
+     *         of setting value.
+     */
+    public Response getSettings(String prefix) {
+        String dotPrefix = prefix + ".";
+        int trim = dotPrefix.length();
+        HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+        Map<String, String> options = new HashMap<String, String>();
+        account.getEditorOptions().values().stream()
+            .filter(o -> o.getName().startsWith(dotPrefix))
+            .forEach(o -> options.put(o.getName().substring(trim), o.getValue()));
+        return Response.ok(options).build();
+    }
+
+    /**
+     * Add or update some settings for the current authenticated user.
+     *
+     * @param prefix add prefix then '.' to the front of each setting before persisting.
+     * @param settings JSON object with setting names as keys
+     */
+    @Transactional(readOnly = false)
+    public Response postSettings(String prefix, Map<String, String> settings) {
+        HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+        for (Map.Entry<String, String> entry : settings.entrySet()) {
+            String name = prefix + "." + entry.getKey();
+            // Look up the existing option
+            HAccountOption option = account.getEditorOptions().get(name);
+            if (option == null) {
+                // need a new one
+                option = new HAccountOption(name, entry.getValue());
+                option.setAccount(account);
+                account.getEditorOptions().put(name, option);
+            } else {
+                option.setValue(entry.getValue());
+            }
+            accountOptionDAO.makePersistent(option);
+        }
+        accountOptionDAO.flush();
+        return Response.ok().build();
+    }
+
 }

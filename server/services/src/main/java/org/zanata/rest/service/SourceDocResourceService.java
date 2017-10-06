@@ -43,6 +43,8 @@ import javax.inject.Named;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -72,9 +74,8 @@ import org.zanata.service.LocaleService;
 @Path(SourceDocResource.SERVICE_PATH)
 @Transactional
 public class SourceDocResourceService implements SourceDocResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(SourceDocResourceService.class);
-    private static final long serialVersionUID = 7787405987851272827L;
+    private static final Logger log =
+            LoggerFactory.getLogger(SourceDocResourceService.class);
 
     @Context
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
@@ -182,6 +183,7 @@ public class SourceDocResourceService implements SourceDocResource {
                 .tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -230,6 +232,7 @@ public class SourceDocResourceService implements SourceDocResource {
                 .lastModified(doc.getLastChanged()).build();
     }
 
+    @Deprecated
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, boolean copytrans) {
@@ -268,6 +271,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return response.tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response deleteResource(String idNoSlash) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -294,6 +298,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return Response.ok().build();
     }
 
+    @Deprecated
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -330,6 +335,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return Response.ok().entity(entity).tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta messageBody,
             Set<String> extensions) {

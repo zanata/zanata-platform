@@ -39,12 +39,9 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest {
 
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    private LocaleDAO localeDAO;
-
     @Before
     public void setup() {
         textFlowTargetDAO = new TextFlowTargetDAO(getSession());
-        localeDAO = new LocaleDAO(getSession());
     }
 
     @Override

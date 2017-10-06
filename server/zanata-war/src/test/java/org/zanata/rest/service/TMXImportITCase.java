@@ -36,8 +36,8 @@ import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.base.Charsets;
 
-import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
-import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
+import static org.zanata.util.RandomStringUtils.randomAlphabetic;
+import static org.zanata.util.RandomStringUtils.randomAlphanumeric;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

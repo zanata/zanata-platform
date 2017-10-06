@@ -1167,6 +1167,7 @@ public class SearchResultsPresenter extends
      */
     private boolean replaceSelectedAllowed() {
         boolean requirePreview = display.getRequirePreviewChk().getValue();
+        //noinspection UnnecessaryLocalVariable
         boolean canReplace =
                 countSelectedFlows() != 0
                         && (!requirePreview || allSelectedHavePreview());
@@ -1182,9 +1183,11 @@ public class SearchResultsPresenter extends
                 .values()) {
             for (TransUnitReplaceInfo info : model.getSelectedSet()) {
                 switch (info.getPreviewState()) {
-                case NotFetched:
-                case Fetching:
-                    return false;
+                    case NotFetched:
+                    case Fetching:
+                        return false;
+                    default:
+                        // keep looking
                 }
             }
         }

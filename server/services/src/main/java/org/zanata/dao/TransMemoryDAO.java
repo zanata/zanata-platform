@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 
@@ -69,7 +69,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
     public Optional<TransMemory> getBySlug(@Nonnull String slug) {
         if (!StringUtils.isEmpty(slug)) {
             TransMemory tm =
-                    (TransMemory) getSession().byNaturalId(TransMemory.class)
+                    getSession().byNaturalId(TransMemory.class)
                             .using("slug", slug).load();
             return Optional.ofNullable(tm);
         }
@@ -102,6 +102,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
                 throw new RuntimeException(e);
             }
 
+            @SuppressWarnings("unchecked")
             List<TransMemoryUnit> toRemove =
                     session.createQuery(
                             "from TransMemoryUnit tu where tu.translationMemory = :tm")

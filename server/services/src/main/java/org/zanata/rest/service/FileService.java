@@ -46,6 +46,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
@@ -62,6 +65,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
@@ -78,9 +82,8 @@ import com.google.common.collect.Lists;
 @Path(FileResource.SERVICE_PATH)
 @Transactional
 public class FileService implements FileResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(FileService.class);
-    private static final long serialVersionUID = 4889228720900655523L;
+    private static final Logger log =
+            LoggerFactory.getLogger(FileService.class);
 
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
     private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
@@ -231,9 +234,12 @@ public class FileService implements FileResource {
             extensions.add("gettext");
             extensions.add("comment");
             // Perform translation of Hibernate DTOs to JAXB DTOs
+
+            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+            String convertedId = RestUtil.convertFromDocumentURIId(docId);
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
+                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
                                     extensions, true, null)
                             .getEntity();
             Resource res = this.resourceUtils.buildResource(document);
@@ -251,9 +257,11 @@ public class FileService implements FileResource {
             }
             Resource res = this.resourceUtils.buildResource(document);
             final Set<String> extensions = Collections.<String> emptySet();
+            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+            String convertedId = RestUtil.convertFromDocumentURIId(docId);
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
+                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
                                     extensions, true, null)
                             .getEntity();
             // Filter to only provide translated targets. "Preview" downloads

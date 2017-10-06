@@ -15,7 +15,7 @@
   --Editor-color-bright: #1ba7d9;
 }
 
-.stretched-box {
+.matrixBox {
   top: 0;
   right: 0;
   bottom: 0;
@@ -23,7 +23,7 @@
   position: absolute;
 }
 
-.LogoLoader {
+.logoLoader {
   position: relative;
   display: inline-block;
   width: calc(1.5rem * 1.625);
@@ -32,11 +32,11 @@
   border-radius: 100px;
 }
 
-.LogoLoader--inverted {
+.logoLoader-inverted {
   color: #20718A;
 }
 
-.LogoLoader-logo {
+.logoLoader-logo {
   position: absolute;
   top: 0;
   right: 0;
@@ -46,7 +46,7 @@
   fill: currentColor;
 }
 
-.LogoLoader-svg {
+.logoLoader-svg {
   position: absolute;
   top: 0;
   left: 0;
@@ -55,39 +55,39 @@
   overflow: visible;
 }
 
-.LogoLoader path {
+.logoLoader path {
   transform-origin: 50% 50% 0;
 }
 
-.LogoLoader:hover .LogoLoader-z {
+.logoLoader:hover .logoLoader-z {
   animation: pop 0.3s var(--LogoLoader-transition-ease);
   animation-iteration-count: 2;
   animation-direction: alternate;
 }
 
-.LogoLoader-z {
+.logoLoader-z {
   transform: scale(1, 1);
   transition: all 0.25s var(--LogoLoader-transition-ease);
 }
 
-.LogoLoader .LogoLoader-logo {
+.logoLoader .logoLoader-logo {
   transform-origin: 50% 50% 0;
 }
 
-.LogoLoader .LogoLoader-circle, .LogoLoader .LogoLoader-circlePulse {
+.logoLoader .logoLoader-circle, .logoLoader .logoLoader-circlePulse {
   transform: scale(1, 1);
 }
 
-.LogoLoader.is-loading .LogoLoader-z {
+.logoLoader.is-loading .logoLoader-z {
   animation: pulseBegin 1s infinite linear;
 }
 
-.LogoLoader.is-loading .LogoLoader-circle {
+.logoLoader.is-loading .logoLoader-circle {
   animation: pulseBegin 1s infinite linear;
   animation-delay: 0.1s;
 }
 
-.LogoLoader.is-loading .LogoLoader-circlePulse {
+.logoLoader.is-loading .logoLoader-circlePulse {
   animation: pulse 1s infinite linear;
   animation-delay: 0.1s;
 }
@@ -188,11 +188,11 @@
   overflow: hidden;
 }
 
-.TransUnit-panel .u-textMeta .loader-text span span {
+.TransUnit-panel .u-textMeta .loaderText span span {
   padding-left: 1em;
 }
 
-.Editor-suggestionsBody .loader-text span span {
+.Editor-suggestionsBody .loaderText span span {
   color: var(--Editor-color-light);
   font-weight: 600;
 }
@@ -325,7 +325,7 @@ h4.modal-title {
   font-size: 1.2em;
 }
 
-.list-inline li {
+.listInline li {
   display: inline-flex;
 }
 
@@ -371,7 +371,7 @@ h4.modal-title {
   fill: var(--Editor-color-light) !important;
 }
 
-ul.list-inline li.s1 {
+ul.listInline li.s1 {
   margin-right: 0.375em;
 }
 
@@ -444,6 +444,11 @@ ul.source-infolist {
   height: 6.192rem;
 }
 
+nav.flex.flex-wrapper {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
 .nav {
   padding-left: 0;
   margin-bottom: 0;
@@ -509,7 +514,7 @@ ul.source-infolist {
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-  color: #555;
+  color: #20718a;
   cursor: default;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -524,6 +529,14 @@ ul.u-listInline li .u-textHighlight {
 /* bootstrap override */
 :focus, button:focus {
   outline: none;
+}
+
+ul.u-listInline li .u-textSuccess {
+  width:120%;
+}
+
+ul.u-listInline li .u-textHighlight {
+  width:120%;
 }
 
 .tab-content > .tab-pane {
@@ -546,7 +559,7 @@ ul.u-listInline li .u-textHighlight {
   border-top-right-radius: 0;
 }
 
-.pull-right {
+.u-pullRight {
   float: right !important;
 }
 
@@ -556,10 +569,16 @@ ul.u-listInline li .u-textHighlight {
 
 .flex {
   display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .flex ul.u-listHorizontal {
   z-index: 1000;
+}
+
+.control-header-bg {
+  background-color: #fff;
 }
 
 /* FIXME z-index for Header is already defined */
@@ -591,7 +610,7 @@ button.close:focus, button.close:hover, button.close:active:focus {
   background-color: #fff;
 }
 
-.closeIcon svg {
+.iconClose svg {
   opacity: 0.7;
   height: 1rem;
   width: 1rem;
@@ -635,7 +654,7 @@ label span.n1 {
   }
 }
 
-@media (max-width: 740px) {
+@media (max-width:740px) {
   .TransUnit-heading {
     padding-left: 1.5em;
   }
@@ -655,11 +674,14 @@ label span.n1 {
   .TransUnit-heading {
     padding-left: 0 !important;
   }
+  .control-header-bg {
+    background-color: transparent;
+  }
 }
 
 @media (max-width: 909px) {
 
-  .info-icon {
+  .iconInfoVersionMerge {
     text-align: left;
   }
 
@@ -712,7 +734,7 @@ label span.n1 {
     margin-right: 0;
   }
 
-  .info-icon, th.hide-md {
+  .iconInfoVersionMerge, th.hide-md {
     text-align: right !important;
   }
 

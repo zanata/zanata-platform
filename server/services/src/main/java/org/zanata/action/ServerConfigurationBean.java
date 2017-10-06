@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -60,7 +61,7 @@ public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
     @Inject
     private FacesMessages facesMessages;
-    public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
+    public static final String DEFAULT_HELP_URL = "http://docs.zanata.org/en/release/";
     public static final String DEFAULT_TERM_OF_USE_URL =
             "http://zanata.org/terms";
     @Inject
@@ -264,16 +265,16 @@ public class ServerConfigurationBean implements Serializable {
     }
 
     private void persistPropertyToDatabase(PropertyWithKey<String> property) {
-        HApplicationConfiguration value =
+        HApplicationConfiguration configItem =
                 applicationConfigurationDAO.findByKey(property.getKey());
         try {
             ServerConfigurationService.persistApplicationConfig(
-                    property.getKey(), value, property.get(),
+                    property.getKey(), configItem, property.getAsString(),
                     applicationConfigurationDAO);
         } catch (IllegalAccessException | NoSuchMethodException
                 | InvocationTargetException e) {
             log.error("error persisting property value:" + property.getKey()
-                    + " -> " + value, e);
+                    + " -> " + configItem, e);
         }
     }
 
@@ -291,13 +292,13 @@ public class ServerConfigurationBean implements Serializable {
                     value);
         }
 
-        public T get() throws IllegalAccessException, NoSuchMethodException,
+        public String getAsString() throws IllegalAccessException, NoSuchMethodException,
                 InvocationTargetException {
-            return (T) BeanUtils.getProperty(ServerConfigurationBean.this,
+            return BeanUtils.getProperty(ServerConfigurationBean.this,
                     propertyName);
         }
 
-        @java.beans.ConstructorProperties({ "propertyName", "key" })
+        @ConstructorProperties({ "propertyName", "key" })
         public PropertyWithKey(final String propertyName, final String key) {
             this.propertyName = propertyName;
             this.key = key;

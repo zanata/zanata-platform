@@ -1,0 +1,145 @@
+@import "../../styles/variables.less";
+
+:root {
+  --LanguagesLangCode-fontSize: 0.9rem;
+}
+
+.toolbar {
+  padding-top: @spacing-hr;
+  flex-direction: row;
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+span.languageCode {
+  font-size: var(--LanguagesLangCode-fontSize);
+  color: #aaa;
+}
+
+#btn-language-add-new {
+  margin-left: @spacing-large-vertical;
+}
+
+.toolbar .sortItems {
+  padding-bottom: @spacing-large-horizontal;
+  padding-right: 0;
+}
+
+.toolbar .showItems {
+  padding-bottom: @spacing-large-horizontal;
+  padding-right: 0;
+  width: auto;
+}
+
+.toolbar .pageCount {
+  padding-bottom: @spacing-base;
+  padding-left: 0;
+}
+
+.searchBox {
+  width: 50%;
+  flex-grow: 1;
+}
+
+.showItems {
+  display: inline-flex;
+  flex-grow: 0;
+}
+
+.showItems .form-control {
+  margin-left: @spacing-label-large;
+}
+
+.sortItems {
+  margin-left: @spacing-large-horizontal;
+}
+
+.showItems span {
+  margin-top: @spacing-small-horizontal;
+  margin-left: @spacing-large-horizontal;
+}
+
+.showItems {
+  display: inline-flex;
+}
+
+.showItems .form-control {
+  margin-left: @spacing-label-large;
+}
+
+.glossaryHeader .Select-menu-outer {
+  top: 0 !important;
+  position: relative;
+}
+
+.toolbar .pageCount {
+  padding-bottom: @spacing-large-horizontal;
+  padding-left: 0;
+}
+
+.searchBox svg {
+  vertical-align: text-bottom;
+}
+
+.react-list {
+  height: auto;
+}
+
+.react-autosuggest__container {
+  position: relative;
+}
+
+.react-autosuggest__input {
+  border: 0;
+  width: 100%;
+}
+
+.react-autosuggest__input:focus {
+  outline: 0;
+}
+
+.react-autosuggest__container--open .react-autosuggest__input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.react-autosuggest__suggestions-container {
+  display: none;
+}
+
+.react-autosuggest__container--open .react-autosuggest__suggestions-container {
+  display: block;
+  position: absolute;
+  border: 1px solid @color-muted;
+  background-color: #fff;
+  border-bottom-left-radius: @border-radius-base;
+  border-bottom-right-radius: @border-radius-base;
+  z-index: 2;
+  margin-top: 0.2rem;
+}
+
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 0.4em 0.5rem;
+}
+
+.react-autosuggest__suggestion--highlighted {
+  background-color: @color-neutral;
+}
+
+.no-suggestions {
+  margin-top: @spacing-large-horizontal;
+  padding-left: @spacing-base;
+}
+
+@media (min-width: @screen-md-min) {
+  .showItems {
+    clear: none !important;
+  }
+}

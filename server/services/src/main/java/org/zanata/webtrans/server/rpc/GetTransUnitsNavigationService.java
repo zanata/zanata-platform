@@ -122,7 +122,7 @@ public class GetTransUnitsNavigationService {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         public List<HTextFlow> transformList(List collection) {
             return collection;
         }

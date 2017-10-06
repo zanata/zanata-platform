@@ -19,14 +19,18 @@
  * site: http://www.fsf.org.
  */
 
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { FormattedMessage } from 'react-intl'
+import {FormattedMessage} from 'react-intl'
 import Icon from '../../../components/Icon'
 import Link from '../../../components/Link'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
-import { Well } from 'react-bootstrap'
-import { profileUrl } from '../../api'
+import {Well} from 'react-bootstrap'
+import {profileUrl} from '../../api'
+
+export const MINOR = 'Minor'
+export const MAJOR = 'Major'
+export const CRITICAL = 'Critical'
 
 const statusToWellClass = {
   approved: 'well-approved',
@@ -39,27 +43,54 @@ const statusToWellClass = {
 
 class ActivityFeedItem extends Component {
   static propTypes = {
-    type: PropTypes.oneOf(['comment', 'revision']).isRequired,
-
+    criteria: PropTypes.string.isRequired,
+    commentText: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
     // TODO damason define type for status
+    priority: PropTypes.oneOf([
+      MINOR,
+      MAJOR,
+      CRITICAL
+    ]).isRequired,
     status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
       'untranslated']),
+    textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']).isRequired,
+    type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired
+      imageUrl: PropTypes.string.isRequired,
     }).isRequired
   }
 
   getMessage = () => {
-    const { user, type, status } = this.props
+    const {user, type, status} = this.props
     // Uses href because editor app is separate from frontend app
+    const comment = (
+      <span className="comment">
+        <Well bsSize="small">
+        <Icon name="comment" className="s0"/>
+          {this.props.commentText}
+        </Well>
+      </span>
+    )
+    const criteria = (
+      <span className="criteria-text">
+        {this.props.criteria}
+      </span>
+    )
     const name = (
       <Link useHref link={profileUrl(user.username)}>{user.name}</Link>
     )
-
+    const priority = (
+      <span className="criteria-text">
+        <Icon name="warning" className="s0"/>
+        <span className={this.props.textStatus}>
+          {this.props.priority}
+        </span>
+      </span>
+    )
     if (type === 'comment') {
       return (
         <FormattedMessage id="ActivityFeedItem.comment"
@@ -80,7 +111,7 @@ class ActivityFeedItem extends Component {
             <FormattedMessage id="ActivityFeedItem.approved.approvedTranslation"
               description={
                 'Highlighted section inserted into ActivityFeedItem.approved'}
-              defaultMessage="approved a translation" />
+              defaultMessage="approved a translation"/>
           </span>
         )
         return (
@@ -93,7 +124,7 @@ class ActivityFeedItem extends Component {
             values={{
               name,
               approvedTranslation
-            }} />
+          }}/>
         )
 
       case 'rejected':
@@ -103,7 +134,7 @@ class ActivityFeedItem extends Component {
             <FormattedMessage id="ActivityFeedItem.rejected.rejectedTranslation"
               description={
                 'Highlighted section inserted into ActivityFeedItem.rejected'}
-              defaultMessage="rejected a translation" />
+              defaultMessage="rejected a translation"/>
           </span>
         )
         return (
@@ -112,11 +143,14 @@ class ActivityFeedItem extends Component {
               'Title for an item in the activity feed showing a reviewer ' +
               'rejected the translation. The inserted section is from ' +
               'ActivityFeedItem.rejected.rejectedTranslation'}
-            defaultMessage="{name} has {rejectedTranslation}"
+            defaultMessage="{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}"
             values={{
+              comment,
+              criteria,
               name,
+              priority,
               rejectedTranslation
-            }} />
+          }}/>
         )
 
       case 'translated':
@@ -127,7 +161,7 @@ class ActivityFeedItem extends Component {
               id="ActivityFeedItem.translated.translatedRevision"
               description={
                 'Highlighted section inserted into ActivityFeedItem.translated'}
-              defaultMessage="created a translation revision" />
+              defaultMessage="created a translation revision"/>
           </span>
         )
         return (
@@ -140,7 +174,7 @@ class ActivityFeedItem extends Component {
             values={{
               name,
               translatedRevision
-            }} />
+          }}/>
         )
 
       case 'fuzzy':
@@ -150,7 +184,7 @@ class ActivityFeedItem extends Component {
             <FormattedMessage id="ActivityFeedItem.fuzzy.fuzzyRevision"
               description={
                 'Highlighted section inserted into ActivityFeedItem.fuzzy'}
-              defaultMessage="created a fuzzy revision" />
+              defaultMessage="created a fuzzy revision"/>
           </span>
         )
         return (
@@ -164,7 +198,7 @@ class ActivityFeedItem extends Component {
             values={{
               name,
               fuzzyRevision
-            }} />
+          }}/>
         )
 
       case 'untranslated':
@@ -174,7 +208,7 @@ class ActivityFeedItem extends Component {
             <FormattedMessage id="ActivityFeedItem.deleted.deletedTranslation"
               description={
                 'Highlighted section inserted into ActivityFeedItem.deleted'}
-              defaultMessage="deleted a translation" />
+              defaultMessage="deleted a translation"/>
           </span>
         )
         return (
@@ -187,7 +221,7 @@ class ActivityFeedItem extends Component {
             values={{
               name,
               deletedTranslation
-            }} />
+          }}/>
         )
 
       default:
@@ -195,17 +229,17 @@ class ActivityFeedItem extends Component {
     }
   }
 
-  render () {
-    const { content, lastModifiedTime, status, type, user } = this.props
+  render() {
+    const {content, lastModifiedTime, status, type, user} = this.props
     const isComment = type === 'comment'
 
     return (
       <div className="revision-box">
         <p>
-          <Icon name={isComment ? 'comment' : 'refresh'} className="s0" />
+          <Icon name={isComment ? 'comment' : 'refresh'} className="s0"/>
           <Link useHref link={profileUrl(user.username)}>
             {/* TODO use component for avatar image */}
-            <img className="u-round activity-avatar" src={user.imageUrl} />
+            <img className="u-round activity-avatar" src={user.imageUrl}/>
           </Link>
           {this.getMessage()}
         </p>
@@ -213,7 +247,7 @@ class ActivityFeedItem extends Component {
           {content}</Well>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
           className="u-block small u-sMT-1-2 u-sPB-1-4
-             u-textMuted u-textSecondary" />
+          u-textMuted u-textSecondary"/>
       </div>
     )
   }

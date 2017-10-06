@@ -70,7 +70,6 @@ public class AsynchronousProcessResourceService
         implements AsynchronousProcessResource {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(AsynchronousProcessResourceService.class);
-    private static final long serialVersionUID = -5915271018788588841L;
 
     @Inject
     private LocaleService localeServiceImpl;
@@ -87,6 +86,7 @@ public class AsynchronousProcessResourceService
     @Inject
     private ZanataIdentity identity;
 
+    @Deprecated
     @Override
     public ProcessStatus startSourceDocCreation(final String idNoSlash,
             final String projectSlug, final String iterationSlug,
@@ -124,6 +124,7 @@ public class AsynchronousProcessResourceService
         // progress
     }
 
+    @Deprecated
     @Override
     public ProcessStatus startSourceDocCreationOrUpdate(final String idNoSlash,
             final String projectSlug, final String iterationSlug,
@@ -180,17 +181,7 @@ public class AsynchronousProcessResourceService
         });
     }
 
-    /**
-     * @param idNoSlash
-     * @param projectSlug
-     * @param iterationSlug
-     * @param locale
-     * @param translatedDoc
-     * @param extensions
-     * @param merge
-     * @param assignCreditToUploader
-     * @return
-     */
+    @Deprecated
     @Override
     public ProcessStatus startTranslatedDocCreationOrUpdate(
             final String idNoSlash, final String projectSlug,

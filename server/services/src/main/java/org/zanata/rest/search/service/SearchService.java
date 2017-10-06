@@ -36,7 +36,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.zanata.common.EntityStatus;
@@ -72,7 +72,6 @@ import com.google.common.collect.Maps;
 @Transactional(readOnly = true)
 public class SearchService {
 
-    private static final long serialVersionUID = 8924030399679653241L;
     @Inject
     private ProjectDAO projectDAO;
 

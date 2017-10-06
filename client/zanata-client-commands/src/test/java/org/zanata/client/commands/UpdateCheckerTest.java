@@ -9,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 import org.fedorahosted.openprops.Properties;
-import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -29,7 +28,7 @@ import org.simpleframework.transport.connect.SocketConnection;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,19 +72,17 @@ public class UpdateCheckerTest {
     @Test
     public void noMarkerFileYetWillCreateFileAndCheckUpdate() throws Exception {
         boolean result = checker.needToCheckUpdates(true);
-        assertThat(result, Matchers.is(true));
+        assertThat(result).isTrue();
 
-        assertThat(marker.exists(), Matchers.is(true));
+        assertThat(marker.exists()).isTrue();
         Properties properties = new Properties();
         properties.load(new FileReader(marker));
         String today = dateFormat.print(new DateTime());
 
-        assertThat(properties.getProperty("lastChecked"),
-                Matchers.equalTo(today));
-        assertThat(properties.getProperty("frequency"), Matchers.equalTo(
-                "weekly"));
-        assertThat(properties.getComment("frequency"), Matchers.equalTo(
-                get("valid.frequency")));
+        assertThat(properties.getProperty("lastChecked")).isEqualTo(today);
+        assertThat(properties.getProperty("frequency")).isEqualTo("weekly");
+        assertThat(properties.getComment("frequency")).isEqualTo(
+                get("valid.frequency"));
     }
     @Test
     public void willNotCheckIfUserSaysNo() throws Exception {
@@ -95,7 +92,7 @@ public class UpdateCheckerTest {
         checker = new UpdateChecker("localhost", marker, console, "3.3.3");
 
         boolean result = checker.needToCheckUpdates(true);
-        assertThat(result, Matchers.is(false));
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -106,7 +103,7 @@ public class UpdateCheckerTest {
 
         when(mockConsole.expectAnswerWithRetry(ConsoleInteractor.AnswerValidator.YES_NO)).thenReturn("y");
         boolean result = checker.needToCheckUpdates(true);
-        assertThat(result, Matchers.is(true));
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -117,7 +114,7 @@ public class UpdateCheckerTest {
         writeLinesToMarkerFile("lastChecked=" + twoDaysAgo);
 
         boolean result = checker.needToCheckUpdates(true);
-        assertThat(result, Matchers.is(false));
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -127,7 +124,7 @@ public class UpdateCheckerTest {
         when(mockConsole.expectAnswerWithRetry(ConsoleInteractor.AnswerValidator.YES_NO)).thenReturn("y");
 
         boolean result = checker.needToCheckUpdates(true);
-        assertThat(result, Matchers.is(true));
+        assertThat(result).isTrue();
     }
 
     private void writeLinesToMarkerFile(String... lines)
@@ -146,7 +143,7 @@ public class UpdateCheckerTest {
                 HTTPMockContainer.Builder
                         .builder()
                         .onPathReturnOk(
-                                Matchers.endsWith("/artifact/maven/resolve"),
+                                "/artifact/maven/resolve",
                                 // simplified response
                                 "<artifact-resolution><version>3.3.2</version></artifact-resolution>")
                         .build();
@@ -165,13 +162,13 @@ public class UpdateCheckerTest {
                 outputStringCaptor.capture(), outputArgsCaptor.capture());
         List<String> allValues = outputStringCaptor.getAllValues();
         String lastMessage = allValues.get(allValues.size() - 1);
-        assertThat(lastMessage, Matchers.equalTo(expectedString));
-        assertThat(outputArgsCaptor.getAllValues(), Matchers.contains("3.3.2"));
+        assertThat(lastMessage).isEqualTo(expectedString);
+        assertThat(outputArgsCaptor.getAllValues()).contains("3.3.2");
 
         Properties props = new Properties();
         props.load(new FileReader(marker));
-        assertThat(props.getProperty("lastChecked"),
-                Matchers.equalTo(dateFormat.print(new DateTime())));
+        assertThat(props.getProperty("lastChecked"))
+                .isEqualTo(dateFormat.print(new DateTime()));
 
     }
     private String startMockServer(Container container) throws IOException {

@@ -43,8 +43,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.StreamingOutput;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.adapter.glossary.GlossaryCSVWriter;
 import org.zanata.adapter.glossary.GlossaryPoWriter;
 import org.zanata.common.GlossarySortField;
@@ -79,10 +81,9 @@ import org.zanata.webtrans.shared.rpc.HasSearchType;
 @Path(GlossaryResource.SERVICE_PATH)
 @Transactional
 public class GlossaryService implements GlossaryResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(GlossaryService.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(GlossaryService.class);
 
-    private static final long serialVersionUID = -3052284922608257034L;
     public static final String PROJECT_QUALIFIER_PREFIX = "project/";
     private static final int REQUESTED_MAX_RESULTS_UPPER_LIMIT = 1000;
 

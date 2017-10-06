@@ -1,4 +1,6 @@
-export const TOGGLE_GLOSSARY = Symbol('TOGGLE_GLOSSARY')
+export const HIDE_SIDEBAR = 'HIDE_SIDEBAR'
+export const TOGGLE_GLOSSARY = 'TOGGLE_GLOSSARY'
+export const TOGGLE_INFO_PANEL = 'TOGGLE_INFO_PANEL'
 export const TOGGLE_HEADER = Symbol('TOGGLE_HEADER')
 export const TOGGLE_KEY_SHORTCUTS = Symbol('TOGGLE_KEY_SHORTCUTS')
 export const FETCH_FAILED = Symbol('FETCH_FAILED')
