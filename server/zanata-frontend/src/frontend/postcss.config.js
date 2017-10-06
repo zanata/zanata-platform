@@ -2,7 +2,7 @@
 
 // FIXME just put the postcss config in here
 module.exports = {
-  parser: 'sugarss',
+  parser: 'postcss-js',
   plugins: {
     'postcss-import': {},
     'postcss-cssnext': {},

@@ -180,7 +180,8 @@ module.exports = function (env) {
               {
                 loader: 'css-loader',
                 options: {
-                  minimize: prod
+                  minimize: prod,
+                  importLoaders: 2
                 }
               },
               draft ? undefined : 'csso-loader',
@@ -201,7 +202,8 @@ module.exports = function (env) {
               {
                 loader: 'css-loader',
                 options: {
-                  minimize: prod
+                  minimize: prod,
+                  importLoaders: 2
                 }
               },
               postCssLoader,
