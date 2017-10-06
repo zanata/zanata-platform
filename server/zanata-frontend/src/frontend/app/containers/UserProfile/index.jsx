@@ -88,7 +88,7 @@ class UserProfile extends Component {
             src={user.imageUrl ? user.imageUrl : ''} alt={username} />
           <div className='u-flexColumn details-text'>
             {name &&
-              <div className='username h2 ellipsis'
+              <div className='username h1 ellipsis'
                 id='profile-displayname'>
               {name}
               </div>

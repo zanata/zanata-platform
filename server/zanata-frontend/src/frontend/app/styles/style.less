@@ -869,7 +869,7 @@ button, input, optgroup, select, textarea {
   line-height: 2.25rem;
 }
 
-button {
+button, {
   overflow: visible;
   color: #fff;
   font-weight: 600;
@@ -1142,14 +1142,6 @@ h1:not(:first-of-type) {
   color: #777;
 }
 
-.h1, h1 {
-  color: @color-new-zanata-blue;
-  font-weight: 500;
-  font-size: 2.25em;
-  line-height: 1em;
-  letter-spacing: -.05em;
-}
-
 .h2, .h3, h2, h3 {
   margin-top: @spacing-heading;
   margin-bottom: @spacing-heading;
@@ -1171,6 +1163,10 @@ h1:not(:first-of-type) {
 
 .h1, h1 {
   font-size: 2.25rem;
+  color: @color-new-zanata-blue;
+  font-weight: 500;
+  line-height: 1em;
+  letter-spacing: -.05em;
 }
 
 .h2, h2 {
@@ -4938,6 +4934,11 @@ button.close:focus, button.close:hover, button.close:active:focus {
   width: 1rem;
   text-align: center;
   color: #f00;
+}
+
+//fix for admin panel icons
+.panel__header i.i--add:not(.i--large) {
+  color: inherit !important;
 }
 
 .btn-group-vertical>.btn-group:before, .btn-group:after, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container--fluid:after, .container--fluid:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .modal-header:after, .modal-header:before, .nav:after, .nav:before, .navbar-collapse:after, .navbar-collapse:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
