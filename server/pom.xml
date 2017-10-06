@@ -2386,13 +2386,14 @@
     </profile>
 
     <profile>
-      <id>staticAnalysis</id>
+      <id>staticAnalysisCI</id>
       <activation>
         <property>
-          <name>staticAnalysis</name>
+          <name>staticAnalysisCI</name>
           <value>true</value>
         </property>
       </activation>
+      <!-- With kotlin-maven-plugin 1.2, we should be able to use <args>-Werror</args> -->
       <build>
         <plugins>
           <plugin>
