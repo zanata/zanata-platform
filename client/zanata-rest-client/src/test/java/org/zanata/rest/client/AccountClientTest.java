@@ -21,7 +21,6 @@
 
 package org.zanata.rest.client;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -30,8 +29,7 @@ import org.zanata.rest.service.StubbingServerRule;
 
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AccountClientTest {
     @ClassRule
@@ -50,15 +48,15 @@ public class AccountClientTest {
     public void testGet() throws Exception {
         Account account = client.get("admin");
 
-        assertThat(account.getEmail(), Matchers.equalTo("admin@zanata.org"));
+        assertThat(account.getEmail()).isEqualTo("admin@zanata.org");
     }
 
     @Test
     public void testPut() throws Exception {
         Response response =
                 client.put("admin", new Account("a@b.c", "d", "e", "f"));
-        assertThat("server returns successful status code",
-                response.getStatus(), Matchers.is(201));
+        assertThat(response.getStatus()).isEqualTo(201)
+                .as("server returns successful status code");
     }
 }
 

@@ -1,6 +1,6 @@
 package org.zanata.client.commands.init;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.zanata.client.TestUtils.readFromClasspath;
 import static org.zanata.client.commands.Messages.get;
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -70,11 +69,11 @@ public class InitCommandTest {
         File configFileDest = new File(tempFolder.getRoot(), "zanata.xml");
         command.downloadZanataXml("gcc", "master", configFileDest);
 
-        assertThat(configFileDest.exists(), Matchers.is(true));
+        assertThat(configFileDest.exists()).isTrue();
         List<String> lines = FileUtils.readLines(configFileDest, Charsets.UTF_8);
         String content = Joiner.on("\n").join(lines);
-        assertThat(content, Matchers.containsString("<project>"));
-        assertThat(opts.getProjectConfig(), Matchers.equalTo(configFileDest));
+        assertThat(content).contains("<project>");
+        assertThat(opts.getProjectConfig()).isEqualTo(configFileDest);
     }
 
     @Test
@@ -92,16 +91,16 @@ public class InitCommandTest {
             log.debug(line);
             content.append(line.trim());
         }
-        assertThat(content.toString(), Matchers.containsString(
-                "<src-dir>pot</src-dir><trans-dir>po</trans-dir>"));
+        assertThat(content.toString()).contains(
+                "<src-dir>pot</src-dir><trans-dir>po</trans-dir>");
     }
 
     @Test
     public void willQuitIfServerApiVersionDoesNotSupportInit()
             throws Exception {
         expectException.expect(RuntimeException.class);
-        expectException.expectMessage(Matchers.equalTo(Messages
-                .get("server.incompatible")));
+        expectException.expectMessage(Messages
+                .get("server.incompatible"));
 
         when(clientFactory.getServerVersionInfo()).thenReturn(
                 new VersionInfo("3.3.1", "unknown", "unknown"));

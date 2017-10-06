@@ -34,9 +34,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.service.GlossaryResource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -62,8 +60,8 @@ public class GlossaryPoReaderTest {
 
         Map<LocaleId, List<GlossaryEntry>> glossaries =
                 reader.extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
-        assertThat(glossaries.keySet(), contains(localeId));
-        assertThat(glossaries.get(localeId).size(), equalTo(sourceSize1));
+        assertThat(glossaries.keySet()).contains(localeId);
+        assertThat(glossaries.get(localeId)).hasSize(sourceSize1);
     }
 
 }

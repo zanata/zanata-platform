@@ -21,12 +21,12 @@
 
 package org.zanata.rest.client;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.service.StubbingServerRule;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestClientFactoryTest {
 
@@ -39,8 +39,7 @@ public class RestClientFactoryTest {
                 stubbingServerRule.getServerBaseUri())
                 .getServerVersionInfo();
 
-        MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
-                Matchers.equalTo("3.6.0-SNAPSHOT"));
+        assertThat(serverVersionInfo.getVersionNo()).isEqualTo("3.6.0-SNAPSHOT");
     }
 
 }
