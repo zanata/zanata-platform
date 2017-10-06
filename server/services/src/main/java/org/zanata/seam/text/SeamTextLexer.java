@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Hashtable;
 
+import antlr.ANTLRHashString;
 import antlr.ByteBuffer;
 import antlr.CharBuffer;
 import antlr.CharStreamException;
@@ -42,7 +43,7 @@ public class SeamTextLexer extends antlr.CharScanner implements
         super(state);
         caseSensitiveLiterals = true;
         setCaseSensitive(true);
-        literals = new Hashtable();
+        literals = new Hashtable<ANTLRHashString, Integer>();
     }
 
     public Token nextToken() throws TokenStreamException {

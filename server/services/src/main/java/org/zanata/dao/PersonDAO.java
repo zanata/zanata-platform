@@ -209,7 +209,9 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
                         .setParameter("person", person);
         q.setCacheable(false).setComment(
                 "PersonDAO.getAllLanguageTeamMemberships");
-        return (List<HLocaleMember>) q.list();
+        @SuppressWarnings("unchecked")
+        List<HLocaleMember> list = q.list();
+        return list;
     }
 
 }

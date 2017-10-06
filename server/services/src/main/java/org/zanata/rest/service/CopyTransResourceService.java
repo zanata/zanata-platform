@@ -43,7 +43,6 @@ import org.zanata.security.ZanataIdentity;
 @Path(CopyTransResource.SERVICE_PATH)
 // Not @Transactional, because we use CopyTransWorkFactory.runCopyTransInNewTx
 public class CopyTransResourceService implements CopyTransResource {
-    private static final long serialVersionUID = -2012807139460738732L;
     @Inject
     private ZanataIdentity identity;
 

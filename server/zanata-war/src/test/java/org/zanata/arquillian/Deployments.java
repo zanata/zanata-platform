@@ -82,12 +82,12 @@ public class Deployments {
 //                .exportExplodedInto(exploded);
     }
 
-    private static void printArchiveContents(Archive archive) {
+    private static void printArchiveContents(Archive<?> archive) {
         // We could just use archive.toString(verbose=true), but it's
         // nicer to have sorting.
         @SuppressWarnings("unchecked")
         ArrayList<ArchivePath> paths =
-                new ArrayList<ArchivePath>(archive.getContent().keySet());
+                new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);
         log.info("Deployment contents:");
         paths.forEach(it -> log.info("  " + it.get()));
@@ -185,10 +185,4 @@ public class Deployments {
                         !context.contains("/org/zanata/webtrans/server");
     }
 
-    private static <T> void forEachRemaining(Enumeration<T> enumeration,
-            Consumer<? super T> consumer) {
-        while (enumeration.hasMoreElements()) {
-            consumer.accept(enumeration.nextElement());
-        }
-    }
 }
