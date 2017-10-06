@@ -140,7 +140,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
         if (group != null) {
             return group.getActiveLocales();
         }
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     @Override

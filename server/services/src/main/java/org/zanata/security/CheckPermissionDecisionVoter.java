@@ -59,7 +59,7 @@ public class CheckPermissionDecisionVoter extends
             String permissionName = checkPermission.value();
             InvocationContext invocationCtx =
                     accessDecisionVoterContext.<InvocationContext> getSource();
-            List permissionTargets = getPermissionTargets(invocationCtx);
+            List<Object> permissionTargets = getPermissionTargets(invocationCtx);
             if (!identity.hasPermission(permissionTargets.toArray(),
                     permissionName)) {
                 violations.add(newSecurityViolation("You don't have permission to do this"));
@@ -68,8 +68,8 @@ public class CheckPermissionDecisionVoter extends
         }
     }
 
-    private List getPermissionTargets(InvocationContext ctx) {
-        List targets = Lists.newArrayList();
+    private List<Object> getPermissionTargets(InvocationContext ctx) {
+        List<Object> targets = Lists.newArrayList();
         Annotation[][] paramAnnotations =
                 ctx.getMethod().getParameterAnnotations();
         int pos = 0;

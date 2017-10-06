@@ -47,7 +47,7 @@ public class MessagesProxy extends GenericProxy {
         if (isA(arg.getClass(), Number.class)) {
             n = ((Number) arg).intValue();
         } else if (isA(arg.getClass(), Collection.class)) {
-            n = ((Collection) arg).size();
+            n = ((Collection<?>) arg).size();
         }
         return n;
     }
