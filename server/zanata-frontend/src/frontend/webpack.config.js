@@ -175,10 +175,10 @@ module.exports = function (env) {
           test: /\.css$/,
           exclude: /node_modules/,
           use: ExtractTextPlugin.extract({
-            fallback: 'csslint-loader',
+            fallback: postCssLoader,
             use: _.compact([
               {
-                loader: 'csslint-loader',
+                loader: 'css-loader',
                 options: {
                   minimize: prod
                 }
@@ -196,10 +196,10 @@ module.exports = function (env) {
           test: /\.less$/,
           exclude: /node_modules/,
           use: ExtractTextPlugin.extract({
-            fallback: 'csslint-loader',
+            fallback: postCssLoader,
             use: [
               {
-                loader: 'less-loader',
+                loader: 'css-loader',
                 options: {
                   minimize: prod
                 }
