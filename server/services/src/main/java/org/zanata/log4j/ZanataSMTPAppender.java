@@ -73,7 +73,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
         }
     }
 
-    InternetAddress getAddress(String addressStr) {
+    private InternetAddress getAddress(String addressStr) {
         try {
             return new InternetAddress(addressStr);
         } catch (AddressException e) {
@@ -83,7 +83,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
         }
     }
 
-    InternetAddress[] parseAddress(String addressStr) {
+    private InternetAddress[] parseAddress(String addressStr) {
         try {
             return InternetAddress.parse(addressStr, true);
         } catch (AddressException | NullPointerException e) {

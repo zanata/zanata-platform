@@ -32,7 +32,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
