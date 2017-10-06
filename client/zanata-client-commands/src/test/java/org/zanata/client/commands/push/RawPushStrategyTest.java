@@ -21,8 +21,7 @@
 
 package org.zanata.client.commands.push;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -91,10 +90,10 @@ public class RawPushStrategyTest {
             Optional.<String>absent());
 
         verify(visitor).visit(eq(deMapping), fileCaptor.capture());
-        assertThat(fileCaptor.getValue(), equalTo(deTransFile));
+        assertThat(fileCaptor.getValue()).isEqualTo(deTransFile);
 
         verify(visitor).visit(eq(zhMapping), fileCaptor.capture());
-        assertThat(fileCaptor.getValue(), equalTo(zhTransFile));
+        assertThat(fileCaptor.getValue()).isEqualTo(zhTransFile);
 
         verifyNoMoreInteractions(visitor);
     }
@@ -126,10 +125,10 @@ public class RawPushStrategyTest {
             Optional.<String>absent());
 
         verify(visitor).visit(eq(deMapping), fileCaptor.capture());
-        assertThat(fileCaptor.getValue(), equalTo(deTransFile));
+        assertThat(fileCaptor.getValue()).isEqualTo(deTransFile);
 
         verify(visitor).visit(eq(zhMapping), fileCaptor.capture());
-        assertThat(fileCaptor.getValue(), equalTo(zhTransFile));
+        assertThat(fileCaptor.getValue()).isEqualTo(zhTransFile);
 
         verifyNoMoreInteractions(visitor);
     }

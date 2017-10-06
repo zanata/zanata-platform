@@ -1,6 +1,6 @@
 package org.zanata.client.commands.init;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -73,9 +72,9 @@ public class ProjectPromptTest {
 
         prompt.selectOrCreateNewProjectAndVersion();
 
-        assertThat(opts.getProj(), Matchers.equalTo("gcc"));
-        assertThat(opts.getProjectType(), Matchers.equalTo("gettext"));
-        assertThat(opts.getProjectVersion(), Matchers.equalTo("master"));
+        assertThat(opts.getProj()).isEqualTo("gcc");
+        assertThat(opts.getProjectType()).isEqualTo("gettext");
+        assertThat(opts.getProjectVersion()).isEqualTo("master");
     }
 
     @Test
@@ -97,8 +96,8 @@ public class ProjectPromptTest {
                         mock(ProjectIterationPrompt.class), clientFactory);
         prompt.selectProject();
 
-        assertThat(opts.getProj(), Matchers.equalTo("project-99"));
-        assertThat(opts.getProjectType(), Matchers.equalTo("gettext"));
+        assertThat(opts.getProj()).isEqualTo("project-99");
+        assertThat(opts.getProjectType()).isEqualTo("gettext");
     }
 
     private static Project makeProject(String slug, String name) {
@@ -126,9 +125,9 @@ public class ProjectPromptTest {
                 Lists.newArrayList(gcc, ibus, tar);
         prompt.setAllProjectsAndFilteredProjects(allProjects, filteredProjects);
 
-        assertThat(prompt.filterBy(""), Matchers.equalTo(allProjects));
-        assertThat(prompt.filterBy("gnu"), Matchers.contains(gcc, tar));
-        assertThat(prompt.filterBy("bus"), Matchers.contains(ibus));
+        assertThat(prompt.filterBy("")).isEqualTo(allProjects);
+        assertThat(prompt.filterBy("gnu")).contains(gcc, tar);
+        assertThat(prompt.filterBy("bus")).contains(ibus);
     }
 
     // this test uses mock for REST call and everything.
@@ -153,9 +152,9 @@ public class ProjectPromptTest {
         verify(projectClient).put(projectCaptor.capture());
         verify(iterationPrompt).createNewVersion();
         Project project = projectCaptor.getValue();
-        assertThat(project.getId(), Matchers.equalTo(projectId));
-        assertThat(project.getName(), Matchers.equalTo("C compiler"));
-        assertThat(project.getDefaultType(), Matchers.equalTo(projectType));
+        assertThat(project.getId()).isEqualTo(projectId);
+        assertThat(project.getName()).isEqualTo("C compiler");
+        assertThat(project.getDefaultType()).isEqualTo(projectType);
     }
 
 }

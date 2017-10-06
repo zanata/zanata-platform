@@ -21,14 +21,13 @@
 
 package org.zanata.rest.client;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.service.StubbingServerRule;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CopyTransClientTest {
     @ClassRule
@@ -46,14 +45,14 @@ public class CopyTransClientTest {
     public void testStartCopyTrans() throws Exception {
         CopyTransStatus copyTransStatus =
                 client.startCopyTrans("about-fedora", "master", "Authors");
-        assertThat(copyTransStatus.isInProgress(), Matchers.is(true));
+        assertThat(copyTransStatus.isInProgress()).isTrue();
     }
 
     @Test
     public void testGetCopyTransStatus() throws Exception {
         CopyTransStatus copyTransStatus =
                 client.getCopyTransStatus("about-fedora", "master", "Authors");
-        assertThat(copyTransStatus.isInProgress(), Matchers.is(false));
+        assertThat(copyTransStatus.isInProgress()).isFalse();
     }
 }
 

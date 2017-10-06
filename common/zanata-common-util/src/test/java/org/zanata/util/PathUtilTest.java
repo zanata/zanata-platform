@@ -1,12 +1,11 @@
 package org.zanata.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import java.io.File;
 
 import org.junit.Test;
 import org.zanata.util.PathUtil.PathResolutionException;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathUtilTest {
 
@@ -14,35 +13,35 @@ public class PathUtilTest {
     public void testSubPath1() throws Exception {
         File dir = new File(".");
         File file = new File(dir, "sub/myfile.pot");
-        assertThat(PathUtil.getSubPath(file, dir), is("sub" + File.separator
-                + "myfile.pot"));
+        assertThat(PathUtil.getSubPath(file, dir)).isEqualTo("sub" + File.separator
+                + "myfile.pot");
     }
 
     @Test
     public void testSubPath2() throws Exception {
         File dir = new File("pot");
         File file = new File("pot/sub/myfile.pot");
-        assertThat(PathUtil.getSubPath(file, dir), is("sub" + File.separator
-                + "myfile.pot"));
+        assertThat(PathUtil.getSubPath(file, dir)).isEqualTo("sub" + File.separator
+                + "myfile.pot");
     }
 
     @Test
     public void testSubPath3() throws Exception {
         File dir = new File("/tmp/pot");
         File file = new File("/tmp/pot/sub/myfile.pot");
-        assertThat(PathUtil.getSubPath(file, dir), is("sub" + File.separator
-                + "myfile.pot"));
+        assertThat(PathUtil.getSubPath(file, dir)).isEqualTo("sub" + File.separator
+                + "myfile.pot");
     }
 
     @Test
     public void testGetRelativePathsUnix() {
         assertThat(PathUtil.getRelativePath("/var/data/stuff/xyz.dat",
-                "/var/data/", "/"), is("stuff/xyz.dat"));
-        assertThat(PathUtil.getRelativePath("/a/b/c", "/a/x/y/", "/"),
-                is("../../b/c"));
+                "/var/data/", "/")).isEqualTo("stuff/xyz.dat");
+        assertThat(PathUtil.getRelativePath("/a/b/c", "/a/x/y/", "/"))
+                .isEqualTo("../../b/c");
         assertThat(
-                PathUtil.getRelativePath("/m/n/o/a/b/c", "/m/n/o/a/x/y/", "/"),
-                is("../../b/c"));
+                PathUtil.getRelativePath("/m/n/o/a/b/c", "/m/n/o/a/x/y/", "/"))
+                .isEqualTo("../../b/c");
     }
 
     @Test
@@ -51,7 +50,7 @@ public class PathUtilTest {
         String base = "C:\\Windows\\Speech\\Common\\sapisvr.exe";
 
         String relPath = PathUtil.getRelativePath(target, base, "\\");
-        assertThat(relPath, is("..\\..\\Boot\\Fonts\\chs_boot.ttf"));
+        assertThat(relPath).isEqualTo("..\\..\\Boot\\Fonts\\chs_boot.ttf");
     }
 
     @Test
@@ -60,7 +59,7 @@ public class PathUtilTest {
         String base = "C:\\Windows\\Speech\\Common\\";
 
         String relPath = PathUtil.getRelativePath(target, base, "\\");
-        assertThat(relPath, is("..\\..\\Boot\\Fonts\\chs_boot.ttf"));
+        assertThat(relPath).isEqualTo("..\\..\\Boot\\Fonts\\chs_boot.ttf");
     }
 
     @Test
@@ -69,7 +68,7 @@ public class PathUtilTest {
         String base = "C:\\Windows\\Speech\\Common\\foo.txt";
 
         String relPath = PathUtil.getRelativePath(target, base, "\\");
-        assertThat(relPath, is("..\\..\\Boot\\Fonts"));
+        assertThat(relPath).isEqualTo("..\\..\\Boot\\Fonts");
     }
 
     @Test
@@ -79,7 +78,7 @@ public class PathUtilTest {
         String expected = "..\\..\\Boot";
 
         String relPath = PathUtil.getRelativePath(target, base, "\\");
-        assertThat(relPath, is(expected));
+        assertThat(relPath).isEqualTo(expected);
     }
 
     @Test(expected = PathResolutionException.class)

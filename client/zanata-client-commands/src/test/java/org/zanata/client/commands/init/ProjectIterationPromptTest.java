@@ -1,12 +1,11 @@
 package org.zanata.client.commands.init;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -71,8 +70,8 @@ public class ProjectIterationPromptTest {
         prompt.selectVersion();
 
         verify(projectClient).get();
-        assertThat(opts.getProjectVersion(), Matchers.equalTo("4.8.2"));
-        assertThat(opts.getProjectType(), Matchers.equalTo("gettext"));
+        assertThat(opts.getProjectVersion()).isEqualTo("4.8.2");
+        assertThat(opts.getProjectType()).isEqualTo("gettext");
     }
 
     private static ProjectIteration newIteration(String id, EntityStatus status) {
@@ -100,9 +99,9 @@ public class ProjectIterationPromptTest {
 
         verify(projectIterationClient).put(iterationCaptor.capture());
         ProjectIteration iteration = iterationCaptor.getValue();
-        assertThat(iteration.getId(), Matchers.equalTo(versionId));
-        assertThat(iteration.getProjectType(), Matchers.equalTo(projectType));
-        assertThat(opts.getProjectVersion(), Matchers.equalTo("master"));
+        assertThat(iteration.getId()).isEqualTo(versionId);
+        assertThat(iteration.getProjectType()).isEqualTo(projectType);
+        assertThat(opts.getProjectVersion()).isEqualTo("master");
     }
 
 }

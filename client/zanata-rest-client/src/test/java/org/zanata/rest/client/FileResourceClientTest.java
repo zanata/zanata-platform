@@ -35,7 +35,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -52,7 +51,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.StubbingServerRule;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileResourceClientTest {
     private static final Logger log =
@@ -79,9 +78,9 @@ public class FileResourceClientTest {
         for (DocumentType docType : serverAcceptedTypes) {
             allExtension.addAll(docType.getSourceExtensions());
         }
-        assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
+        assertThat(allExtension).containsExactlyInAnyOrder("dtd", "pot",
                 "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts", "json"));
+                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts", "json");
     }
 
     @Test
@@ -93,9 +92,9 @@ public class FileResourceClientTest {
         for (FileTypeInfo docType : serverAcceptedTypes) {
             allExtension.addAll(docType.getSourceExtensions());
         }
-        assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
+        assertThat(allExtension).containsExactlyInAnyOrder("dtd", "pot",
                 "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts", "json"));
+                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts", "json");
     }
 
     @Test
@@ -121,7 +120,7 @@ public class FileResourceClientTest {
                         "test.odt",
                         uploadForm);
         log.info("response: {}", uploadResponse);
-        assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
+        assertThat(uploadResponse.getAcceptedChunks()).isEqualTo(1);
     }
 
     private static InputStream loadFromClasspath(String resource) {
@@ -152,7 +151,7 @@ public class FileResourceClientTest {
                         "test.odt", "auto",
                         uploadForm);
         log.info("response: {}", uploadResponse);
-        assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
+        assertThat(uploadResponse.getAcceptedChunks()).isEqualTo(1);
     }
 
     private Pair<String, Long> calculateFileHashAndSize(InputStream in) {
@@ -181,7 +180,7 @@ public class FileResourceClientTest {
         Resource resource =
                 reader.extractTemplate(new InputSource(inputStream),
                         LocaleId.EN_US, "About-Fedora");
-        assertThat(resource.getTextFlows(), Matchers.hasSize(1));
+        assertThat(resource.getTextFlows()).hasSize(1);
     }
 
     @Test
@@ -192,8 +191,7 @@ public class FileResourceClientTest {
         PoReader2 reader = new PoReader2();
         TranslationsResource translationsResource =
                 reader.extractTarget(new InputSource(inputStream));
-        assertThat(translationsResource.getTextFlowTargets(),
-                Matchers.hasSize(1));
+        assertThat(translationsResource.getTextFlowTargets()).hasSize(1);
     }
 
 }
