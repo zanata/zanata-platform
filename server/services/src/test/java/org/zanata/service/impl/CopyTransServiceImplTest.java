@@ -46,6 +46,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
@@ -108,6 +109,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     @Produces
     @Mock
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
+    @Produces
+    @Mock
+    private ZanataIdentity identity;
 
     @Override
     @Produces

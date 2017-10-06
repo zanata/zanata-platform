@@ -76,9 +76,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         super(HProject.class, session);
     }
 
-    public ProjectDAO(FullTextEntityManager entityManager, Session session) {
+    public ProjectDAO(FullTextEntityManager entityManager, Session session,
+            ZanataIdentity identity) {
         super(HProject.class, session);
         this.entityManager = entityManager;
+        this.identity = identity;
     }
 
     public @Nullable

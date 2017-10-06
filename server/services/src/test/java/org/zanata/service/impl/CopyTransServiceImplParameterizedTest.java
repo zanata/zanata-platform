@@ -56,6 +56,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunnerWithParameters;
@@ -144,6 +145,9 @@ public class CopyTransServiceImplParameterizedTest {
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
     @Parameterized.Parameter(0)
     CopyTransExecution copyTransExecution;
+    @Produces
+    @Mock
+    private ZanataIdentity identity;
 
     @Produces
     protected EntityManager getEm() {

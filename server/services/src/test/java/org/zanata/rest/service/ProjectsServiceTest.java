@@ -12,6 +12,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.rest.dto.Project;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.test.CdiUnitRunner;
 
@@ -53,6 +54,10 @@ public class ProjectsServiceTest extends ZanataDbunitJpaTest {
     @Produces @Authenticated
     @Mock
     protected HAccount authenticatedAccount;
+
+    @Produces
+    @Mock
+    private ZanataIdentity identity;
 
     @Override
     protected void prepareDBUnitOperations() {
