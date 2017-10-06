@@ -188,6 +188,11 @@
   overflow: hidden;
 }
 
+.Editor-loader.is-minimised .logoLoader {
+  display: none;
+  visibility: hidden;
+}
+
 .TransUnit-panel .u-textMeta .loaderText span span {
   padding-left: 1em;
 }
