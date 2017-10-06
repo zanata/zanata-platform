@@ -1,6 +1,6 @@
 ## 4.4.0
 ##### Infrastructure Changes
-Zanata now requires a system propery 'zanata.home' as the root for all its file system storage needs.
+Zanata now requires a system property 'zanata.home' as the root for all its file system storage needs.
 The property 'zanata.file.directory' is still supported, but if it is missing, a sub-directory of 'zanata.home' will be used.
 
 ##### Changes
