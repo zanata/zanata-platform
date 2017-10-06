@@ -26,7 +26,6 @@ import java.io.IOException;
 
 import javax.xml.bind.Unmarshaller;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,7 +42,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -104,8 +103,7 @@ public class XmlStrategyTest {
         verify(visitor).visit(eq(deMapping), transResourceCaptor.capture());
         verify(visitor).visit(eq(zhMapping), transResourceCaptor.capture());
         verify(unmarshaller, times(2)).unmarshal(fileCapture.capture());
-        assertThat(fileCapture.getAllValues(),
-                Matchers.contains(deTransFile, zhTransFile));
+        assertThat(fileCapture.getAllValues()).contains(deTransFile, zhTransFile);
 
         verifyNoMoreInteractions(visitor);
     }
@@ -139,8 +137,7 @@ public class XmlStrategyTest {
         verify(visitor).visit(eq(deMapping), transResourceCaptor.capture());
         verify(visitor).visit(eq(zhMapping), transResourceCaptor.capture());
         verify(unmarshaller, times(2)).unmarshal(fileCapture.capture());
-        assertThat(fileCapture.getAllValues(),
-                Matchers.contains(deTransFile, zhTransFile));
+        assertThat(fileCapture.getAllValues()).contains(deTransFile, zhTransFile);
 
         verifyNoMoreInteractions(visitor);
     }

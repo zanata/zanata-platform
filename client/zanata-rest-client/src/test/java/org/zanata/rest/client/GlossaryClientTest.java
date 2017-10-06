@@ -24,7 +24,6 @@ package org.zanata.rest.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -35,7 +34,7 @@ import org.zanata.rest.service.StubbingServerRule;
 
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GlossaryClientTest {
     @ClassRule
@@ -54,8 +53,8 @@ public class GlossaryClientTest {
         List<GlossaryEntry> glossaryEntries = new ArrayList<>();
         Response response = client.post(glossaryEntries, LocaleId.DE,
                 GlossaryResource.GLOBAL_QUALIFIED_NAME);
-        assertThat("server returns successful status code",
-                response.getStatus(), Matchers.is(200));
+        assertThat(response.getStatus()).isEqualTo(200)
+                .as("server returns successful status code");
     }
 }
 

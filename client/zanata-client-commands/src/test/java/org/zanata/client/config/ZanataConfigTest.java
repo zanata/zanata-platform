@@ -12,7 +12,6 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,7 +19,7 @@ import org.junit.rules.TemporaryFolder;
 
 import com.google.common.collect.Lists;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ZanataConfigTest {
     @Rule
@@ -67,15 +66,15 @@ public class ZanataConfigTest {
     void readProject() throws Exception {
         ZanataConfig config =
                 (ZanataConfig) unmarshaller.unmarshal(zanataProjectXml);
-        assertEquals(new URL("http://example.com"), config.getUrl());
-        assertEquals("project", config.getProject());
-        assertEquals("version", config.getProjectVersion());
+        assertThat(config.getUrl()).isEqualTo(new URL("http://example.com"));
+        assertThat(config.getProject()).isEqualTo("project");
+        assertThat(config.getProjectVersion()).isEqualTo("version");
         LocaleList locales = config.getLocales();
-        assertEquals(2, locales.size());
-        assertEquals("fr", locales.get(0).getLocale());
-        assertEquals("fr-FR", locales.get(0).getMapFrom());
-        assertEquals("zh-CN", locales.get(1).getLocale());
-        assertNull(locales.get(1).getMapFrom());
+        assertThat(locales).hasSize(2);
+        assertThat(locales.get(0).getLocale()).isEqualTo("fr");
+        assertThat(locales.get(0).getMapFrom()).isEqualTo("fr-FR");
+        assertThat(locales.get(1).getLocale()).isEqualTo("zh-CN");
+        assertThat(locales.get(1).getMapFrom()).isNull();
     }
 
     @Test
@@ -100,12 +99,9 @@ public class ZanataConfigTest {
         CompositeConfiguration config = new CompositeConfiguration();
         config.addConfiguration(new SystemConfiguration());
         config.addConfiguration(new HierarchicalINIConfiguration(zanataUserFile));
-        String user = config.getString("zanata.username");
-        assertEquals("admin", user);
-        boolean debug = config.getBoolean("zanata.debug");
-        assertFalse(debug);
-        boolean errors = config.getBoolean("zanata.errors");
-        assertTrue(errors);
+        assertThat(config.getString("zanata.username")).isEqualTo("admin");
+        assertThat(config.getBoolean("zanata.debug")).isFalse();
+        assertThat(config.getBoolean("zanata.errors")).isTrue();
     }
 
     @Test
@@ -117,11 +113,10 @@ public class ZanataConfigTest {
 
         ZanataConfig config =
                 (ZanataConfig) unmarshaller.unmarshal(zanataProjectXml);
-        assertThat(config.getRules(), Matchers.hasSize(1));
+        assertThat(config.getRules()).hasSize(1);
         FileMappingRule rule = config.getRules().get(0);
-        assertThat(rule.getPattern(), Matchers.equalTo("*.odt"));
-        assertThat(rule.getRule(),
-                Matchers.equalTo("{filename}_{locale}.{extension}"));
+        assertThat(rule.getPattern()).isEqualTo("*.odt");
+        assertThat(rule.getRule()).isEqualTo("{filename}_{locale}.{extension}");
     }
 
 }
