@@ -517,6 +517,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public List transformList(List collection) {
             return collection;
         }
@@ -565,6 +566,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public List transformList(List collection) {
             return collection;
         }

@@ -89,11 +89,19 @@ public class ServiceLocator implements IServiceLocator {
         return getInstance(EntityManagerFactory.class);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getJndiComponent(String jndiName, Class<T> clazz)
             throws NamingException {
         Context ctx = new InitialContext();
-        return (T) ctx.lookup(jndiName);
+        Object found = ctx.lookup(jndiName);
+        if (found == null || clazz.isInstance(found)) {
+            return (T) found;
+        } else {
+            throw new RuntimeException(
+                    "JNDI object at " + jndiName + " is of unexpected type: " +
+                            found.getClass());
+        }
     }
 
 }

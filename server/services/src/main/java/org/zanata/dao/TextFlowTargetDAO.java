@@ -47,6 +47,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                 .using("locale", locale).load();
     }
 
+    @SuppressWarnings("unchecked")
     public List<HTextFlowTarget> getByTextFlowId(Long tfId, int offset,
             int maxResults) {
         Query q =
