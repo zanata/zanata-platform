@@ -73,6 +73,7 @@ public class WrappedDatasourceConnectionProvider
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public boolean isUnwrappableAs(Class unwrapType) {
         return delegate.isUnwrappableAs(unwrapType);
     }
@@ -83,6 +84,7 @@ public class WrappedDatasourceConnectionProvider
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void configure(Map configurationValues) {
         ((Configurable) delegate).configure(configurationValues);
     }

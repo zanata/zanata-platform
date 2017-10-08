@@ -83,7 +83,7 @@ public class ProjectIterationDAO extends
         if (project == null || StringUtils.isEmpty(iterationSlug)) {
             return null;
         }
-        return (HProjectIteration) getSession()
+        return getSession()
                 .byNaturalId(HProjectIteration.class)
                 .using("slug", iterationSlug).using("project", project).load();
     }
@@ -358,11 +358,10 @@ public class ProjectIterationDAO extends
         q.setComment("ProjectIterationDAO.getAllStatisticsForContainer");
 
         @SuppressWarnings("unchecked")
-        List<Map> stats = q.list();
-        Map<String, TransUnitCount> retVal =
-                new HashMap<String, TransUnitCount>();
+        List<Map<String, Object>> stats = q.list();
+        Map<String, TransUnitCount> retVal = new HashMap<>();
 
-        for (Map row : stats) {
+        for (Map<String, Object> row : stats) {
             ContentState state = (ContentState) row.get("state");
             Long count = (Long) row.get("count");
             LocaleId localeId = (LocaleId) row.get("locale");

@@ -91,6 +91,7 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
         return query.list();
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<HAccountRole> getByProject(HProject project) {
         return getSession()
                 .createQuery(

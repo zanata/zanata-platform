@@ -30,10 +30,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectMember;
 import org.zanata.model.ProjectRole;
 
-import java.util.HashSet;
-import java.util.Set;
-
-
 /**
  * Provides methods to access data related to membership in a project.
  */
@@ -50,20 +46,6 @@ public class ProjectMemberDAO
 
     public ProjectMemberDAO(Session session) {
         super(HProjectMember.class, session);
-    }
-
-    /**
-     * Retrieve all of a person's roles in a project.
-     */
-    public Set<ProjectRole> getRolesInProject(HPerson person, HProject project) {
-        Query query = getSession().createQuery(
-                "from HProjectMember as m where m.person = :person " +
-                        "and m.project = :project")
-                .setParameter("person", person)
-                .setParameter("project", project)
-                .setComment("ProjectMemberDAO.getRolesInProject")
-                .setCacheable(true);
-        return new HashSet<>(query.list());
     }
 
     /**

@@ -42,8 +42,8 @@ import com.google.common.collect.Sets;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ParametersAreNonnullByDefault
-public class TranslationsTMXExportStrategy
-        implements TMXExportStrategy<ITextFlow> {
+public class TranslationsTMXExportStrategy <T extends ITextFlow>
+        implements TMXExportStrategy<T> {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslationsTMXExportStrategy.class);
 

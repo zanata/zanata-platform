@@ -204,18 +204,12 @@ public class WebhookServiceImpl implements Serializable {
     }
 
     public static Set<WebhookType> getTypesFromString(String strTypes) {
-        return new HashSet(Lists.transform(
+        return new HashSet<>(Lists.transform(
                 Lists.newArrayList(strTypes.split(",")), convertToWebHookType));
     }
 
-    private static Function convertToWebHookType =
-            new Function<String, WebhookType>() {
-
-                @Override
-                public WebhookType apply(String input) {
-                    return WebhookType.valueOf(input);
-                }
-            };
+    private static Function<String, WebhookType> convertToWebHookType =
+            input -> WebhookType.valueOf(input);
 
     /**
      * Object for all available webhook list
