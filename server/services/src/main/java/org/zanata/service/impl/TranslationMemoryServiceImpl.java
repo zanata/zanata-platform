@@ -146,7 +146,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         this.urlUtil = urlUtil;
     }
 
-    @SuppressWarnings("unused")
     public TranslationMemoryServiceImpl() {
     }
 
@@ -671,6 +670,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             ftQuery.setMaxResults(maxResult);
         }
         ftQuery.setSort(lastChangedSort);
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = (List<Object[]>) ftQuery.getResultList();
         if (!resultList.isEmpty() && resultList.size() == maxResult) {
             log.warn(

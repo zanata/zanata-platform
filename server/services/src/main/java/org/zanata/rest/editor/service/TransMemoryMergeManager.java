@@ -90,7 +90,7 @@ public class TransMemoryMergeManager implements Serializable {
         TMMergeForDocTaskKey key =
                 new TMMergeForDocTaskKey(
                         request.documentId, request.localeId);
-        AsyncTaskHandle handleByKey =
+        AsyncTaskHandle<?> handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (taskIsNotRunning(handleByKey)) {
             TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
@@ -103,7 +103,7 @@ public class TransMemoryMergeManager implements Serializable {
     }
 
     @VisibleForTesting
-    protected static boolean taskIsNotRunning(@Nullable AsyncTaskHandle handleByKey) {
+    protected static boolean taskIsNotRunning(@Nullable AsyncTaskHandle<?> handleByKey) {
         return handleByKey == null || handleByKey.isCancelled()
                 || handleByKey.isDone();
     }
@@ -112,7 +112,7 @@ public class TransMemoryMergeManager implements Serializable {
         TMMergeForDocTaskKey key =
                 new TMMergeForDocTaskKey(
                         request.documentId, request.localeId);
-        AsyncTaskHandle handleByKey =
+        AsyncTaskHandle<?> handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (taskIsNotRunning(handleByKey)) {
             return false;

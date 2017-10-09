@@ -214,7 +214,7 @@ timestamps {
             clean install jxr:aggregate \
             --batch-mode \
             --update-snapshots \
-            -DstaticAnalysis \
+            -DstaticAnalysisCI \
             $gwtOpts \
             -DskipFuncTests \
             -DskipArqTests \
@@ -285,7 +285,6 @@ timestamps {
           //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
           //step([$class: 'DryPublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/cpd/cpdCheck.xml', unHealthy: ''])
 
-          // TODO reduce unstableTotal thresholds as bugs are eliminated
           step([$class: 'FindBugsPublisher',
                 pattern: '**/findbugsXml.xml',
                 unstableTotalAll: '0'])
@@ -300,7 +299,7 @@ timestamps {
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '127',
+                unstableTotalAll: '0',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)

@@ -9,13 +9,13 @@ embed-server --std-out=echo --server-config=standalone-full.xml
 batch
 
 # ==== system properties /system-property=foo:add(value=bar) ====
-/system-property="javamelody.storage-directory":add(value="${user.home}/zanata/stats: ")
-/system-property="hibernate.search.default.indexBase":add(value="${user.home}/zanata/indexes: ")
+/system-property="zanata.home":add(value="${user.home}/zanata")
+/system-property="javamelody.storage-directory":add(value="${zanata.home}/stats")
+/system-property="hibernate.search.default.indexBase":add(value="${zanata.home}/indexes")
 /system-property="jboss.as.management.blocking.timeout":add(value="1000")
 /system-property="zanata.security.authpolicy.internal":add(value="zanata.internal")
 /system-property="zanata.security.authpolicy.openid":add(value="zanata.openid")
 /system-property="zanata.email.defaultfromaddress":add(value="no-reply@zanata.org")
-/system-property="zanata.file.directory":add(value="${user.home}/zanata/files: ")
 /system-property="zanata.support.oauth":add(value="true")
 ## Allows the editor development server to use the docker server as a backend.
 ## The editor development server is run with `make watch` in zanata-frontend/src/editor
