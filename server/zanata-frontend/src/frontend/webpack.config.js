@@ -181,6 +181,7 @@ module.exports = function (env) {
                 loader: 'css-loader',
                 options: {
                   minimize: prod,
+                  importLoaders: 1,
                 }
               },
               draft ? undefined : 'csso-loader',
