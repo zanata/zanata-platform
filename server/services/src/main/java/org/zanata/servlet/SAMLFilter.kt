@@ -65,6 +65,7 @@ class SAMLFilter() : Filter {
             if (account != null && account.roles.contains("authenticated")) {
                 val principalName = account.principal.name
 
+                @Suppress("UNCHECKED_CAST")
                 val samlAttributeMap: Map<String, List<String>?> =
                         session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP) as? Map<String, List<String>?>? ?: mapOf()
                 // These assumes IDP follow standard SAML assertion names
