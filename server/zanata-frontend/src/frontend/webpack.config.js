@@ -7,6 +7,7 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
+var stylelint = require('stylelint')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var postcssImport = require('postcss-import')
 var postcssCustomProperties = require('postcss-custom-properties')
@@ -173,15 +174,13 @@ module.exports = function (env) {
          */
         {
           test: /\.css$/,
-          exclude: /node_modules/,
           use: ExtractTextPlugin.extract({
-            fallback: postCssLoader,
+            fallback: 'style-loader',
             use: _.compact([
               {
                 loader: 'css-loader',
                 options: {
                   minimize: prod,
-                  importLoaders: 2
                 }
               },
               draft ? undefined : 'csso-loader',
@@ -197,13 +196,14 @@ module.exports = function (env) {
           test: /\.less$/,
           exclude: /node_modules/,
           use: ExtractTextPlugin.extract({
-            fallback: postCssLoader,
+            fallback: 'style-loader',
             use: [
               {
-                loader: 'css-loader',
+                loader: 'postcss-loader',
                 options: {
-                  minimize: prod,
-                  importLoaders: 2
+                  plugins: [
+                    require('stylelint'),
+                  ]
                 }
               },
               postCssLoader,

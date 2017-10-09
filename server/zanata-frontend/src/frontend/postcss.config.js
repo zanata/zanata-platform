@@ -2,11 +2,11 @@
 
 // FIXME just put the postcss config in here
 module.exports = {
-  parser: 'postcss-js',
+  parser: 'postcss-less',
+  exec: true,
   plugins: {
-    'postcss-import': {},
     'postcss-cssnext': {},
-    'autoprefixer': {},
+    'cssnano': {},
     'stylelint': {},
   }
 }
