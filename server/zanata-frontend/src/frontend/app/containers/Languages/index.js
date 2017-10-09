@@ -103,7 +103,7 @@ class Languages extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='page wideView'>
+      <div className='page wideView languages'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -121,11 +121,11 @@ class Languages extends Component {
             </h1>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary' bsSize='small'
+                <Button bsStyle='primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
-                    title='plus' />
+                    title='plus' />&nbsp;
                   Add new language
                 </Button>
                 <NewLanguageModal />
