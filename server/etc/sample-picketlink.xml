@@ -13,8 +13,8 @@
   <ValidatingAlias> for each server/domain containing an IDP.
 -->
   <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" BindingType="POST" SupportsSignatures="true">
-    <IdentityURL>${idp.url::https://auth.dev.redhat.com/auth/realms/EmployeeIDP/protocol/saml}</IdentityURL>
-    <ServiceURL>${service.url::http://pahuang.usersys.redhat.com/account/ssologin}</ServiceURL>
+    <IdentityURL>${idp.url::https://idp.example.com/saml}</IdentityURL>
+    <ServiceURL>${service.url::http://myhostname.example.com/account/ssologin}</ServiceURL>
 
     <KeyProvider ClassName="org.picketlink.identity.federation.core.impl.KeyStoreKeyManager">
       <!--
@@ -31,9 +31,9 @@
       <Auth Key="SigningKeyAlias" Value="zanataserv" />
       <!--
         This auth server key needs to be imported to the keystore above with the alias as below Value. e.g.
-        keytool -importcert -file ./auth-dev.pem -keystore ./sso_keystore.jks -alias lqTXjioEOGnpOzuKJYI8k8UqTM8RjpJ9g6neHozWVog -storepass store123
+        keytool -importcert -file ./idp.pem -keystore ./sso_keystore.jks -alias idpAlias -storepass store123
       -->
-      <ValidatingAlias Key="auth.dev.redhat.com" Value="lqTXjioEOGnpOzuKJYI8k8UqTM8RjpJ9g6neHozWVog" />
+      <ValidatingAlias Key="idp.example.com" Value="idpAlias" />
 
     </KeyProvider>
 

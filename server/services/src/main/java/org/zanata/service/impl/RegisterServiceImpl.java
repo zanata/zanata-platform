@@ -170,7 +170,7 @@ public class RegisterServiceImpl implements RegisterService {
         }.addRole("admin").run();
 
         HAccount account = accountDAO.getByUsername(username);
-        Preconditions.checkNotNull(account);
+        assert account != null;
         if (authType == AuthenticationType.OPENID) {
             account.getCredentials().add(
                     new HOpenIdCredentials(account, externalId, email));
