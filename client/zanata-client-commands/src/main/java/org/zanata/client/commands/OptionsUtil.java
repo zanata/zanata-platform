@@ -84,15 +84,16 @@ public class OptionsUtil {
             throws JAXBException {
         Optional<ZanataConfig> projectConfig =
                 readProjectConfigFile(opts);
-        if (projectConfig.isPresent()) {
-            // local project config is supposed to override user's
-            // zanata.ini,
-            // so we apply it first
-            applyProjectConfig(opts, projectConfig.get());
-        } else if (opts.getProjectConfig() != null) {
-            log.warn("Project config file '{}' not found; ignoring.",
-                    opts.getProjectConfig());
+        if (!projectConfig.isPresent()) {
+            projectConfig = Optional.of(new ZanataConfig());
+            if (opts.getProjectConfig() != null) {
+                log.warn("Project config file '{}' not found; ignoring.",
+                        opts.getProjectConfig());
+            }
         }
+        // local project config is supposed to override user's
+        // zanata.ini, so we apply it first
+        applyProjectConfig(opts, projectConfig.get());
         return projectConfig;
     }
 
