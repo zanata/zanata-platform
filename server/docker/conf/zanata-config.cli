@@ -18,7 +18,7 @@ batch
 /system-property="zanata.security.authpolicy.sso":add(value="zanata.sso")
 /system-property="zanata.email.defaultfromaddress":add(value="no-reply@zanata.org")
 /system-property="zanata.support.oauth":add(value="true")
-/system-property="picketlink.file":add(value="/opt/jboss/wildfly/standalone/deployments/picketlink.xml")
+/system-property="picketlink.file":add(value="${zanata.home}/picketlink.xml")
 
 ## Allows the editor development server to use the docker server as a backend.
 ## The editor development server is run with `make watch` in zanata-frontend/src/editor
