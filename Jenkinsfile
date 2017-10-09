@@ -214,7 +214,7 @@ timestamps {
             clean install jxr:aggregate \
             --batch-mode \
             --update-snapshots \
-            -DstaticAnalysis \
+            -DstaticAnalysisCI \
             $gwtOpts \
             -DskipFuncTests \
             -DskipArqTests \
@@ -285,7 +285,6 @@ timestamps {
           //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
           //step([$class: 'DryPublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/cpd/cpdCheck.xml', unHealthy: ''])
 
-          // TODO reduce unstableTotal thresholds as bugs are eliminated
           step([$class: 'FindBugsPublisher',
                 pattern: '**/findbugsXml.xml',
                 unstableTotalAll: '0'])
