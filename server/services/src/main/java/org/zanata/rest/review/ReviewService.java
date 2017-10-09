@@ -93,10 +93,6 @@ public class ReviewService {
         }
     }
 
-    private static ReviewCriteria dtoToModel(TransReviewCriteria dto) {
-        return new ReviewCriteria(dto.getPriority(), dto.isEditable(), dto.getDescription());
-    }
-
     @PUT
     @Path("criteria/{id}")
     @CheckRole("admin")
