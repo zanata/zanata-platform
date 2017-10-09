@@ -63,12 +63,14 @@ class SAMLFilter() : Filter {
             val account: Account? = session.getAttribute(
                     SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE) as? Account
             if (account != null && account.roles.contains("authenticated")) {
+                // in some cases, this is the UUID
                 val principalName = account.principal.name
 
                 @Suppress("UNCHECKED_CAST")
-                val samlAttributeMap: Map<String, List<String>?> =
-                        session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP) as? Map<String, List<String>?>? ?: mapOf()
-                // These assumes IDP follow standard SAML assertion names
+                val samlAttributeMap =
+                        session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP) as? Map<String, List<String>> ?: mapOf()
+                // These assumes the IDP follows standard SAML assertion names.
+                // In some IDPs, this may be a more readable username than principal name.
                 val usernameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "uid", { _ -> principalName})
                 val emailFromSSO = getValueFromSessionAttribute(samlAttributeMap, "email")
                 val nameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "cn")

@@ -153,6 +153,7 @@ public class ApplicationConfiguration implements Serializable {
     }
 
 
+    @Produces
     public Set<AuthenticationType> getAuthTypes() {
         return loginModuleNames.keySet();
     }

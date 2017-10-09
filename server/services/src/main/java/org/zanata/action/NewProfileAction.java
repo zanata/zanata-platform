@@ -99,7 +99,6 @@ public class NewProfileAction extends AbstractProfileAction
             email = samlIdentity.getEmail();
             name = samlIdentity.getName();
             username = identity.getCredentials().getUsername();
-
         } else {
             // Open id user names are url's so they don't make good defaults
             username = identity.getCredentials().getUsername();

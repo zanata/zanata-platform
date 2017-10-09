@@ -173,6 +173,25 @@ public class AuthenticationManager implements Serializable {
         return null;
     }
 
+    public void ssoLogin(Account account, String usernameFromSSO, String email, String name) {
+        if (applicationConfiguration.isSSO()) {
+            String uniqueNameId = account.getPrincipal().getName();
+            HCredentials credentials = credentialsDAO.findSSOUser(uniqueNameId);
+            // when sign in with SSO the first time, there is no HCredentials or HAccount in database
+            String username = usernameFromSSO;
+            if (credentials != null) {
+                username = credentials.getAccount().getUsername();
+            }
+            samlIdentity.authenticate(uniqueNameId, username, email, name);
+            if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
+                    && isAccountEnabledAndActivated()) {
+                samlIdentity.login(account.getPrincipal());
+                this.onLoginCompleted(
+                        new LoginCompleted(AuthenticationType.SSO));
+            }
+        }
+    }
+
     /**
      * Logs in an Open Id user. Uses the values set in {@link ZanataCredentials}
      * for authentication. This method should be invoked to authenticate AND log
@@ -402,22 +421,5 @@ public class AuthenticationManager implements Serializable {
         setAuthenticateUser(username);
     }
 
-    public void ssoLogin(Account account, String usernameFromSSO, String email, String name) {
-        if (applicationConfiguration.isSSO()) {
-            String uniqueNameId = account.getPrincipal().getName();
-            HCredentials credentials = credentialsDAO.findSSOUser(uniqueNameId);
-            // when sign in with SSO the first time, there is no HCredentials or HAccount in database
-            String username = usernameFromSSO;
-            if (credentials != null) {
-                username = credentials.getAccount().getUsername();
-            }
-            samlIdentity.authenticate(uniqueNameId, username, email, name);
-            if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
-                    && isAccountEnabledAndActivated()) {
-                samlIdentity.login(account.getPrincipal());
-                this.onLoginCompleted(
-                        new LoginCompleted(AuthenticationType.SSO));
-            }
-        }
-    }
+
 }

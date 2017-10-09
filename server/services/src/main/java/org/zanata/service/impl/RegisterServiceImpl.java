@@ -53,8 +53,6 @@ import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 
-import com.google.common.base.Preconditions;
-
 import static org.zanata.model.ProjectRole.Maintainer;
 
 @Named("registerServiceImpl")

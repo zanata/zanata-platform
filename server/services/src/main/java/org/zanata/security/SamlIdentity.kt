@@ -20,36 +20,27 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
  */
 package org.zanata.security
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+import org.zanata.events.AlreadyLoggedInEvent
+import org.zanata.util.Synchronized
 import java.io.Serializable
 import java.security.Principal
-
 import javax.enterprise.context.SessionScoped
 import javax.enterprise.event.Event
 import javax.inject.Inject
 
-import org.zanata.events.AlreadyLoggedInEvent
-import org.zanata.util.Synchronized
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
-
 @SessionScoped
 @Synchronized
-class SamlIdentity : Serializable {
+class SamlIdentity
+@Inject constructor(private val identity: ZanataIdentity,
+                    @field:SuppressFBWarnings("SE_BAD_FIELD")
+                    private val alreadyLoggedInEvent: Event<AlreadyLoggedInEvent>) : Serializable {
 
-    @Inject
-    lateinit private var identity: ZanataIdentity
-
-    @SuppressFBWarnings("SE_BAD_FIELD")
-    @Inject
-    lateinit private var alreadyLoggedInEvent: Event<AlreadyLoggedInEvent>
-    lateinit private var uniqueNameId: String
-    lateinit private var email: String
-    lateinit private var name: String
-
-    // lateinit properties can't have custom getter and CDI complains about public fields
-    fun getUniqueNameId() = uniqueNameId
-    fun getEmail() = email
-    fun getName()  = name
+    var uniqueNameId: String? = null
+    var email: String? = null
+        protected set
+    var name: String? = null
+        protected set
 
     fun authenticate(uniqueNameId: String, username: String?,
                      email: String?, name: String?) {
@@ -62,7 +53,7 @@ class SamlIdentity : Serializable {
             return
         }
 
-        with (identity) {
+        with(identity) {
             credentials.username = username
             credentials.password = ""
             credentials.authType = AuthenticationType.SSO
