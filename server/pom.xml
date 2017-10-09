@@ -2238,12 +2238,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <ignores>
-            <!-- not part of java18 sig, but seems to be public API -->
-            <ignore>jdk.nashorn.api.*</ignore>
-          </ignores>
-        </configuration>
       </plugin>
 
         <plugin>
