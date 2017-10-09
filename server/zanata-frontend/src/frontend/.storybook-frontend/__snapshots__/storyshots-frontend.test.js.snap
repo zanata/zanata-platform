@@ -13811,7 +13811,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -13942,7 +13942,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14073,7 +14073,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14204,7 +14204,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14335,7 +14335,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14466,7 +14466,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14653,7 +14653,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
   className="rejectionsForm form-inline"
 >
   <div
-    className="flexGrow1 form-group"
+    className="u-flexGrow1 form-group"
   >
     <label
       className="control-label"
@@ -14787,7 +14787,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
   className="rejectionsForm form-inline"
 >
   <div
-    className="flexGrow1 form-group"
+    className="u-flexGrow1 form-group"
   >
     <label
       className="control-label"
