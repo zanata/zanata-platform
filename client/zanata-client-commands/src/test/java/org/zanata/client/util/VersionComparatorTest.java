@@ -21,10 +21,9 @@
 
 package org.zanata.client.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class VersionComparatorTest {
     public static final int GREATER = 1;
@@ -34,14 +33,14 @@ public class VersionComparatorTest {
 
     @Test
     public void canCompareVersions() {
-        assertThat(comparator.compare("3.3.1", "3.3"), equalTo(GREATER));
-        assertThat(comparator.compare("3.3.1", "3.3.1"), equalTo(EQUAL));
-        assertThat(comparator.compare("3.3.1", "3.3.2"), equalTo(LESS));
-        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3"), equalTo(GREATER));
-        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3-SNAPSHOT"), equalTo(GREATER));
-        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3.1"), equalTo(LESS));
-        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3.2-SNAPSHOT"), equalTo(LESS));
-        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3.1-SNAPSHOT"), equalTo(EQUAL));
+        assertThat(comparator.compare("3.3.1", "3.3")).isEqualTo(GREATER);
+        assertThat(comparator.compare("3.3.1", "3.3.1")).isEqualTo(EQUAL);
+        assertThat(comparator.compare("3.3.1", "3.3.2")).isEqualTo(LESS);
+        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3")).isEqualTo(GREATER);
+        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3-SNAPSHOT")).isEqualTo(GREATER);
+        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3.1")).isEqualTo(LESS);
+        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3.2-SNAPSHOT")).isEqualTo(LESS);
+        assertThat(comparator.compare("3.3.1-SNAPSHOT", "3.3.1-SNAPSHOT")).isEqualTo(EQUAL);
     }
 
 }

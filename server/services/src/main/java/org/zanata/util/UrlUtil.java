@@ -30,7 +30,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;

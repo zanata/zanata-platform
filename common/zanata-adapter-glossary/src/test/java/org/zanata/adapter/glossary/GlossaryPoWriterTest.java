@@ -1,6 +1,5 @@
 package org.zanata.adapter.glossary;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -65,8 +64,8 @@ public class GlossaryPoWriterTest extends AbstractGlossaryWriterTest {
         Map<LocaleId, List<GlossaryEntry>> glossaries =
                 reader.extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
         br.close();
-        assertThat(glossaries.size(), Matchers.equalTo(1));
-        assertThat(glossaries.get(LocaleId.DE).size(), Matchers.equalTo(3));
-        assertThat(glossaries.get(transLocale).size(), Matchers.equalTo(3));
+        assertThat(glossaries).hasSize(1);
+        assertThat(glossaries.get(LocaleId.DE)).hasSize(3);
+        assertThat(glossaries.get(transLocale)).hasSize(3);
     }
 }

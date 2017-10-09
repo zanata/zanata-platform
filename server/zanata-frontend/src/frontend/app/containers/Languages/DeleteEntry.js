@@ -25,10 +25,10 @@ class DeleteEntry extends Component {
     } = this.props
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='block-inline'>
-        <Button bsSize='small' className='langdel-btn'
+      <div className='u-blockInline'>
+        <Button bsSize='small'
           onClick={() => handleDeleteEntryDisplay(true)}>
-          <Icon name='cross' className='n2 crossicon' title='cross' />
+          <Icon name='cross' className='n2 iconCross' title='cross' />
           Delete
         </Button>
         <Overlay show={show} placement='top'
@@ -38,11 +38,11 @@ class DeleteEntry extends Component {
               <strong>{locale.displayName}</strong>?&nbsp;
             </p>
             <span className='button-spacing'>
-              <Button bsStyle='default'
+              <Button bsStyle='default' bsSize='small'
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='button'
+              <Button bsStyle='danger' bsSize='small' type='button'
                 onClick={() => {
                   handleDeleteEntry(locale.localeId)
                   handleDeleteEntryDisplay(false)

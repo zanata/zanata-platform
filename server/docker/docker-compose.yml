@@ -1,0 +1,33 @@
+---
+# TODO upgrade to version 2.1 after Fedora 27 is GA (when F25 is EOL)
+version: '2.0'
+services:
+  zanatadb:
+    image: mariadb:10.1
+    command: --character-set-server=utf8 --collation-server=utf8_general_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_DATABASE: zanata
+      MYSQL_USER: zanata
+      MYSQL_PASSWORD: zanatapw
+    volumes:
+      - $HOME/docker-volumes/zanata-mariadb:/var/lib/mysql:Z
+    # This requires docker-compose file version 2.1
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin", "ping", "--silent"]
+  zanata:
+    # build: .
+    image: zanata-dev
+    links:
+      - zanatadb
+    environment:
+      DB_HOSTNAME: zanatadb
+      DB_NAME: zanata
+      DB_USER: zanata
+      DB_PASSWORD: zanatapw
+      # TODO MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
+      PREPEND_JAVA_OPTS: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata"
+    ports:
+      - 8080:8080
+    volumes:
+      - $HOME/docker-volumes/zanata:/opt/jboss/zanata:Z

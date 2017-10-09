@@ -57,6 +57,8 @@ public class LanguageRequestDAO extends AbstractDAOImpl<LanguageRequest, Long> {
             .setParameter("state", RequestState.NEW)
             .setCacheable(true).setComment(
                 "requestDAO.findPendingRequests");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<LanguageRequest> list = q.list();
+        return list;
     }
 }

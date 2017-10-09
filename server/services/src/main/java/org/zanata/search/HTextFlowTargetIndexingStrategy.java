@@ -67,7 +67,7 @@ public class HTextFlowTargetIndexingStrategy
     }
 
     public void reindexForProject(HProject project, FullTextSession session,
-            AsyncTaskHandle handle) {
+            AsyncTaskHandle<?> handle) {
         // it must use the same session in the DAO and to do the indexing
         HTextFlowTargetStreamingDAO dao =
                 new HTextFlowTargetStreamingDAO(HTextFlowTarget.class, session);
@@ -77,7 +77,7 @@ public class HTextFlowTargetIndexingStrategy
     }
 
     private static void reindexScrollableResultSet(FullTextSession session,
-            ScrollableResults scrollableResults, AsyncTaskHandle handle) {
+            ScrollableResults scrollableResults, AsyncTaskHandle<?> handle) {
         session.setFlushMode(FlushMode.MANUAL);
         session.setCacheMode(CacheMode.IGNORE);
         int rowNum = 0;
