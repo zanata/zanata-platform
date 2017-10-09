@@ -98,6 +98,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
                 .addRule(Join.path("/{path}").to("/a/index.xhtml"))
                 .where("path").matches(anyOf(
+                        "admin/review",
                         "explore",
                         "glossary",
                         "glossary/project/[^/]*",
