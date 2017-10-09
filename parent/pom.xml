@@ -567,6 +567,11 @@
               <artifactId>library-detectors</artifactId>
               <version>1.1</version>
             </plugin>
+            <plugin>
+              <groupId>jp.skypencil.findbugs.slf4j</groupId>
+              <artifactId>bug-pattern</artifactId>
+              <version>1.3.0</version>
+            </plugin>
           </plugins>
         </configuration>
         <dependencies>

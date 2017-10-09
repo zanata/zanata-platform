@@ -116,7 +116,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
                 log.debug("{}", writer);
             }
         } catch (JAXBException e) {
-            log.debug(e.toString(), e);
+            log.debug("{}", e.toString(), e);
         }
     }
 

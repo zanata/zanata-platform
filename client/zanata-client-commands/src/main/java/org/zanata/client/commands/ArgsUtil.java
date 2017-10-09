@@ -105,7 +105,7 @@ public class ArgsUtil {
         if (outputErrors) {
             log.error("Execution failed: ", e);
         } else {
-            log.error("Execution failed: " + e.getMessage());
+            log.error("Execution failed: {}", e.getMessage());
             log.error("Use -e/--errors for full stack trace (or when reporting bugs)");
         }
         abortStrategy.abort(e);

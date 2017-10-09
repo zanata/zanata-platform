@@ -148,7 +148,7 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
      */
     private void runSystemCommands(List<String> commands) throws Exception {
         for (String command : commands) {
-            log.info("[Running command]$ " + command);
+            log.info("[Running command]$ {}", command);
             try {
                 DefaultExecutor executor = new DefaultExecutor();
                 executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
@@ -160,7 +160,7 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
                             "Command returned non-zero exit value: "
                                     + exitValue);
                 }
-                log.info("    Completed with exit value: " + exitValue);
+                log.info("    Completed with exit value: {}", exitValue);
             } catch (java.io.IOException e) {
                 throw new Exception("Failed to run command. " + e.getMessage(),
                         e);
