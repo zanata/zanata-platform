@@ -96,7 +96,12 @@ public class SecurityFunctions extends PermissionProvider {
             try (AutoCloseSession autoCloseSession = newSession()) {
                 ProjectMemberDAO projectMemberDAO =
                         new ProjectMemberDAO(autoCloseSession.session);
-                return projectMemberDAO.isProjectMember(person, project);
+                if (projectMemberDAO.isProjectMember(person, project)) {
+                    return true;
+                }
+                ProjectLocaleMemberDAO projectLocaleMemberDAO =
+                        new ProjectLocaleMemberDAO(autoCloseSession.session);
+                return projectLocaleMemberDAO.isProjectLocaleMember(person, project);
             }
         }
         // No authenticated user

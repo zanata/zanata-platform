@@ -69,4 +69,16 @@ public class ProjectLocaleMemberDAO
                 .setComment("ProjectLocaleMemberDAO.hasProjectLocaleRole");
         return ((Long) query.uniqueResult()) > 0;
     }
+
+    public boolean isProjectLocaleMember(HPerson person, HProject project) {
+        Query query = getSession().createQuery(
+                "select count(m) from HProjectLocaleMember as m " +
+                        "where m.person = :person " +
+                        "and m.project = :project ")
+                .setParameter("person", person)
+                .setParameter("project", project)
+                .setComment("ProjectLocaleMemberDAO.isProjectLocaleMember")
+                .setCacheable(true);
+        return ((Long) query.uniqueResult()) > 0;
+    }
 }
