@@ -7,6 +7,7 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
+var stylelint = require('stylelint')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var postcssImport = require('postcss-import')
 var postcssCustomProperties = require('postcss-custom-properties')
@@ -14,7 +15,6 @@ var postcssCalc = require('postcss-calc')
 var postcssColorFunction = require('postcss-color-function')
 var postcssCustomMedia = require('postcss-custom-media')
 var postcssEsplit = require('postcss-esplit')
-// var postcssBemLinter = require('postcss-bem-linter')
 var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
 
@@ -35,21 +35,6 @@ var postCssLoader = {
       postcssEsplit({
         quiet: true
       }),
-
-      /*
-       * This is not called with each imported file, but only with top-level
-       * files. Some work is needed before this will give useful output.
-       */
-      // postcssBemLinter({
-      //   preset: 'suit',
-      //   implicitComponents: [
-      //     '**/components/**/*.css',
-      //     '**/containers/**/*.css'
-      //   ],
-      //   implicitUtilities: [
-      //     '**/editor/css/**/*.css'
-      //   ]
-      // }),
 
       autoprefixer({
         browsers: [
@@ -179,7 +164,8 @@ module.exports = function (env) {
               {
                 loader: 'css-loader',
                 options: {
-                  minimize: prod
+                  minimize: prod,
+                  importLoaders: 1,
                 }
               },
               draft ? undefined : 'csso-loader',
@@ -198,9 +184,11 @@ module.exports = function (env) {
             fallback: 'style-loader',
             use: [
               {
-                loader: 'css-loader',
+                loader: 'postcss-loader',
                 options: {
-                  minimize: prod
+                  plugins: [
+                    require('stylelint'),
+                  ]
                 }
               },
               postCssLoader,
