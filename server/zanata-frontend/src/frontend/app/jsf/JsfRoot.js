@@ -22,6 +22,7 @@ const JsfRoot = ({store, history}) => {
             component={ProjectVersion} />
           <Route path='project/view/:project' component={Project} />
           <Route path='admin/home' component={Admin} />
+          <Route path='admin/review' component={Admin} />
         </Route>
       </Router>
     </Provider>
