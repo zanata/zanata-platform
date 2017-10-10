@@ -56,7 +56,7 @@ class ActivityFeedItem extends Component {
     status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
       'untranslated']),
     textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']),
-    type: PropTypes.oneOf(['comment', 'revision']),
+    type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
