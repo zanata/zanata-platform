@@ -95,7 +95,7 @@ public class NewProfileAction extends AbstractProfileAction
                                     username, USERNAME_REGEX));
                 }
             }
-        } else if (authType == AuthenticationType.SSO) {
+        } else if (authType == AuthenticationType.SAML2) {
             email = samlIdentity.getEmail();
             name = samlIdentity.getName();
             username = identity.getCredentials().getUsername();
@@ -136,9 +136,9 @@ public class NewProfileAction extends AbstractProfileAction
                 || authType == AuthenticationType.JAAS) {
             key = registerServiceImpl.register(this.username, this.username,
                     this.email);
-        } else if (authType == AuthenticationType.SSO) {
+        } else if (authType == AuthenticationType.SAML2) {
             key = registerServiceImpl.register(username,
-                    samlIdentity.getUniqueNameId(), AuthenticationType.SSO,
+                    samlIdentity.getUniqueNameId(), AuthenticationType.SAML2,
                     name, email);
         } else {
             key = registerServiceImpl.register(this.username,

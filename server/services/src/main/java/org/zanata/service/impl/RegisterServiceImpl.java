@@ -172,7 +172,7 @@ public class RegisterServiceImpl implements RegisterService {
         if (authType == AuthenticationType.OPENID) {
             account.getCredentials().add(
                     new HOpenIdCredentials(account, externalId, email));
-        } else if (authType == AuthenticationType.SSO) {
+        } else if (authType == AuthenticationType.SAML2) {
             account.getCredentials().add(
                     new HSSOCredentials(account, externalId, email)
             );

@@ -35,5 +35,5 @@ public enum AuthenticationType {
     /* Any other custom username & password-based jaas authentication mechanism */
     JAAS,
     /* Single Sign On  */
-    SSO
+    SAML2
 }

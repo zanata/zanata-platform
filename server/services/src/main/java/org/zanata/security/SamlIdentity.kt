@@ -56,7 +56,7 @@ class SamlIdentity
         with(identity) {
             credentials.username = username
             credentials.password = ""
-            credentials.authType = AuthenticationType.SSO
+            credentials.authType = AuthenticationType.SAML2
             credentials.isInitialized = true
             isPreAuthenticated = true
         }

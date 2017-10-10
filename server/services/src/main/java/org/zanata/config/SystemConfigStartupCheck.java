@@ -49,9 +49,9 @@ public class SystemConfigStartupCheck implements ServletContextListener {
 
     private Set<Set<AuthenticationType>> validAuthCombinations = ImmutableSet.<Set<AuthenticationType>>builder()
             .add(ImmutableSet.of(INTERNAL, OPENID))
-            .add(ImmutableSet.of(INTERNAL, SSO))
-            .add(ImmutableSet.of(OPENID, SSO))
-            .add(ImmutableSet.of(INTERNAL, OPENID, SSO))
+            .add(ImmutableSet.of(INTERNAL, SAML2))
+            .add(ImmutableSet.of(OPENID, SAML2))
+            .add(ImmutableSet.of(INTERNAL, OPENID, SAML2))
             .build();
 
     @Override

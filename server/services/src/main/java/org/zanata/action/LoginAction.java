@@ -213,7 +213,7 @@ public class LoginAction implements Serializable {
     private boolean isOnlySSO() {
         Set<AuthenticationType> authTypes =
                 applicationConfiguration.getAuthTypes();
-        return authTypes.size() == 1 && authTypes.contains(AuthenticationType.SSO);
+        return authTypes.size() == 1 && authTypes.contains(AuthenticationType.SAML2);
     }
 
     public void checkIfIsOnlySSO() {

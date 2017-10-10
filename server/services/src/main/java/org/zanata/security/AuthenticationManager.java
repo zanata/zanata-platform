@@ -177,7 +177,7 @@ public class AuthenticationManager implements Serializable {
         if (applicationConfiguration.isSSO()) {
             String uniqueNameId = account.getPrincipal().getName();
             HCredentials credentials = credentialsDAO.findSSOUser(uniqueNameId);
-            // when sign in with SSO the first time, there is no HCredentials or HAccount in database
+            // when sign in with SAML2 the first time, there is no HCredentials or HAccount in database
             String username = usernameFromSSO;
             if (credentials != null) {
                 username = credentials.getAccount().getUsername();
@@ -187,7 +187,7 @@ public class AuthenticationManager implements Serializable {
                     && isAccountEnabledAndActivated()) {
                 samlIdentity.login(account.getPrincipal());
                 this.onLoginCompleted(
-                        new LoginCompleted(AuthenticationType.SSO));
+                        new LoginCompleted(AuthenticationType.SAML2));
             }
         }
     }
@@ -264,7 +264,7 @@ public class AuthenticationManager implements Serializable {
         AuthenticationType authType = identity.getCredentials()
                 .getAuthType();
         if (authType == AuthenticationType.KERBEROS
-                || authType == AuthenticationType.SSO) {
+                || authType == AuthenticationType.SAML2) {
             if (isAuthenticatedAccountWaitingForActivation()) {
                 return "inactive";
             } else if (identity.isPreAuthenticated() && isNewUser()) {
@@ -311,10 +311,10 @@ public class AuthenticationManager implements Serializable {
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
             }
-        } else if (authType == AuthenticationType.SSO) {
+        } else if (authType == AuthenticationType.SAML2) {
             authenticatedCredentials = credentialsDAO
                     .findByUser(samlIdentity.getUniqueNameId());
-            // on first SSO login, there might not be any stored credentials
+            // on first SAML2 login, there might not be any stored credentials
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
             }
@@ -396,7 +396,7 @@ public class AuthenticationManager implements Serializable {
                 message = "User " + username
                         + " has been disabled. Please contact server admin.";
             }
-            // TODO temp hack. When coming back from SSO, windowScope is not active
+            // TODO temp hack. When coming back from SAML2, windowScope is not active
             if (ContextUtils.isContextActive(WindowScoped.class)) {
                 facesMessages.clear();
                 facesMessages.addGlobal(message);

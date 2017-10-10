@@ -53,7 +53,7 @@ public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
     }
 
     /**
-     * Find a SSO Credentials instance by the user (e.g. uuid in the Red Hat case).
+     * Find a SAML2 Credentials instance by the user (e.g. uuid in the Red Hat case).
      * @param user
      * @return a HSSOCredentials object
      */

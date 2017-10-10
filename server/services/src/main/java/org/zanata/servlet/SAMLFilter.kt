@@ -74,7 +74,7 @@ class SAMLFilter() : Filter {
                 val usernameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "uid", { _ -> principalName})
                 val emailFromSSO = getValueFromSessionAttribute(samlAttributeMap, "email")
                 val nameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "cn")
-                log.info("SSO login: username: {}, name: {}, uuid: {}",
+                log.info("SAML2 login: username: {}, name: {}, uuid: {}",
                         usernameFromSSO, nameFromSSO, principalName)
                 authenticationManager.ssoLogin(account,
                         usernameFromSSO, emailFromSSO, nameFromSSO)

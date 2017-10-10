@@ -333,7 +333,7 @@ public class ApplicationConfiguration implements Serializable {
     }
 
     public boolean isSSO() {
-        return loginModuleNames.containsKey(AuthenticationType.SSO);
+        return loginModuleNames.containsKey(AuthenticationType.SAML2);
     }
 
     public String getOpenIdProviderUrl() {

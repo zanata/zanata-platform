@@ -78,7 +78,7 @@ public class ZanataCentralLoginModule implements LoginModule {
                 systemPropCfg.getAuthPolicyName(AuthenticationType.JAAS.name()
                         .toLowerCase());
         ssoDomain = systemPropCfg
-                .getAuthPolicyName(AuthenticationType.SSO.name().toLowerCase());
+                .getAuthPolicyName(AuthenticationType.SAML2.name().toLowerCase());
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ZanataCentralLoginModule implements LoginModule {
             ApplicationConfiguration appConfig = BeanProvider
                     .getContextualReference(ApplicationConfiguration.class);
             if (appConfig.isSSO()) {
-                authTypeCallback.setAuthType(AuthenticationType.SSO);
+                authTypeCallback.setAuthType(AuthenticationType.SAML2);
             } else {
                 authTypeCallback.setAuthType(AuthenticationType.KERBEROS);
             }
@@ -121,7 +121,7 @@ public class ZanataCentralLoginModule implements LoginModule {
         case JAAS:
             delegateName = jaasDomain;
             break;
-        case SSO:
+        case SAML2:
             delegateName = ssoDomain;
             break;
         }
