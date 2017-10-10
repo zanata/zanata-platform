@@ -7,6 +7,7 @@ import common from './common-reducer'
 import languages from './languages-reducer'
 import projectVersion from './version-reducer'
 import tmx from './tmx-reducer'
+import admin from './admin-reducer'
 
 const rootReducer = combineReducers({
   routing,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   profile,
   languages,
   projectVersion,
-  tmx
+  tmx,
+  admin
 })
 
 export default rootReducer

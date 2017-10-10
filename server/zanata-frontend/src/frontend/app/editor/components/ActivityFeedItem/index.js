@@ -43,19 +43,19 @@ const statusToWellClass = {
 
 class ActivityFeedItem extends Component {
   static propTypes = {
-    criteria: PropTypes.string.isRequired,
-    commentText: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    criteria: PropTypes.string,
+    commentText: PropTypes.string,
+    content: PropTypes.string,
     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
     // TODO damason define type for status
     priority: PropTypes.oneOf([
       MINOR,
       MAJOR,
       CRITICAL
-    ]).isRequired,
+    ]),
     status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
       'untranslated']),
-    textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']).isRequired,
+    textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']),
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,

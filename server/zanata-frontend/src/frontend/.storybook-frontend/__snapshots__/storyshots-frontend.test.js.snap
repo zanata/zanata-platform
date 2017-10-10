@@ -13811,7 +13811,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -13838,7 +13838,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             "height": 0,
           }
         }
-        value={undefined}
+        value=""
       />
     </div>
     <div
@@ -13852,21 +13852,21 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
-          className="dropdown-toggle btn btn-default"
-          disabled={false}
-          id="dropdown-basic"
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
           type="button"
         >
           <span
-            className="text-danger"
+            className="u-textDanger"
           >
             Critical
           </span>
@@ -13876,7 +13876,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           />
         </button>
         <ul
-          aria-labelledby="dropdown-basic"
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
           className="dropdown-menu"
           role="menu"
         >
@@ -13888,7 +13888,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -13907,7 +13906,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -13919,14 +13917,13 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             </a>
           </li>
           <li
-            className=""
+            className="active"
             role="presentation"
             style={undefined}
           >
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -13940,69 +13937,12 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineButtonEdit"
-      >
-         
-      </label>
-      <br />
-      <button
-        className="btn btn-primary"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-      <button
-        className="btn btn-danger"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14029,7 +13969,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             "height": 0,
           }
         }
-        value={undefined}
+        value=""
       />
     </div>
     <div
@@ -14043,21 +13983,21 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-default"
+        className="dropdown btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
-          className="dropdown-toggle btn btn-default"
+          className="dropdown-toggle btn btn-sm btn-default"
           disabled={false}
-          id="dropdown-basic"
+          id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
           type="button"
         >
           <span
-            className="text-warning"
+            className="u-textWarning"
           >
             Major
           </span>
@@ -14067,7 +14007,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           />
         </button>
         <ul
-          aria-labelledby="dropdown-basic"
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
           className="dropdown-menu"
           role="menu"
         >
@@ -14079,7 +14019,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14091,14 +14030,13 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             </a>
           </li>
           <li
-            className=""
+            className="active"
             role="presentation"
             style={undefined}
           >
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14117,7 +14055,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14131,69 +14068,12 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineButtonEdit"
-      >
-         
-      </label>
-      <br />
-      <button
-        className="active btn btn-primary"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-      <button
-        className="active btn btn-danger"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14220,7 +14100,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             "height": 0,
           }
         }
-        value={undefined}
+        value=""
       />
     </div>
     <div
@@ -14234,21 +14114,21 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
-          className="dropdown-toggle btn btn-default"
-          disabled={false}
-          id="dropdown-basic"
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
           type="button"
         >
           <span
-            className="text-warning"
+            className="u-textWarning"
           >
             Major
           </span>
@@ -14258,7 +14138,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           />
         </button>
         <ul
-          aria-labelledby="dropdown-basic"
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
           className="dropdown-menu"
           role="menu"
         >
@@ -14270,7 +14150,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14282,14 +14161,13 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             </a>
           </li>
           <li
-            className=""
+            className="active"
             role="presentation"
             style={undefined}
           >
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14308,7 +14186,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14322,69 +14199,12 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineButtonEdit"
-      >
-         
-      </label>
-      <br />
-      <button
-        className="btn btn-primary"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-      <button
-        className="btn btn-danger"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14411,7 +14231,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             "height": 0,
           }
         }
-        value={undefined}
+        value=""
       />
     </div>
     <div
@@ -14425,21 +14245,21 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
-          className="dropdown-toggle btn btn-default"
-          disabled={false}
-          id="dropdown-basic"
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
           type="button"
         >
           <span
-            className="text-info"
+            className="u-textInfo"
           >
             Minor
           </span>
@@ -14449,19 +14269,18 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           />
         </button>
         <ul
-          aria-labelledby="dropdown-basic"
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
           className="dropdown-menu"
           role="menu"
         >
           <li
-            className=""
+            className="active"
             role="presentation"
             style={undefined}
           >
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14480,7 +14299,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14499,7 +14317,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14513,69 +14330,12 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineButtonEdit"
-      >
-         
-      </label>
-      <br />
-      <button
-        className="btn btn-primary"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-      <button
-        className="btn btn-danger"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14602,7 +14362,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             "height": 0,
           }
         }
-        value={undefined}
+        value=""
       />
     </div>
     <div
@@ -14616,21 +14376,21 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
-          className="dropdown-toggle btn btn-default"
-          disabled={false}
-          id="dropdown-basic"
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
           type="button"
         >
           <span
-            className="text-info"
+            className="u-textInfo"
           >
             Minor
           </span>
@@ -14640,19 +14400,18 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           />
         </button>
         <ul
-          aria-labelledby="dropdown-basic"
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
           className="dropdown-menu"
           role="menu"
         >
           <li
-            className=""
+            className="active"
             role="presentation"
             style={undefined}
           >
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14671,7 +14430,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14690,7 +14448,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14704,69 +14461,12 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineButtonEdit"
-      >
-         
-      </label>
-      <br />
-      <button
-        className="btn btn-primary"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-      <button
-        className="btn btn-danger"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="flexGrow1 form-group"
+      className="u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14793,7 +14493,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             "height": 0,
           }
         }
-        value={undefined}
+        value=""
       />
     </div>
     <div
@@ -14807,21 +14507,21 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-default"
+        className="dropdown btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
-          className="dropdown-toggle btn btn-default"
+          className="dropdown-toggle btn btn-sm btn-default"
           disabled={false}
-          id="dropdown-basic"
+          id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
           type="button"
         >
           <span
-            className="text-danger"
+            className="u-textDanger"
           >
             Critical
           </span>
@@ -14831,7 +14531,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           />
         </button>
         <ul
-          aria-labelledby="dropdown-basic"
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
           className="dropdown-menu"
           role="menu"
         >
@@ -14843,7 +14543,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14862,7 +14561,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14874,14 +14572,13 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
             </a>
           </li>
           <li
-            className=""
+            className="active"
             role="presentation"
             style={undefined}
           >
             <a
               href="#"
               onClick={[Function]}
-              onKeyDown={[Function]}
               role="menuitem"
               tabIndex="-1"
             >
@@ -14894,63 +14591,6 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           </li>
         </ul>
       </div>
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineButtonEdit"
-      >
-         
-      </label>
-      <br />
-      <button
-        className="active btn btn-primary"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-      <button
-        className="active btn btn-danger"
-        disabled={false}
-        type="button"
-      >
-        <span
-          className="s0 iconEdit"
-        >
-          <svg
-            className={undefined}
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
     </div>
   </form>
   <div
@@ -15013,7 +14653,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
   className="rejectionsForm form-inline"
 >
   <div
-    className="flexGrow1 form-group"
+    className="u-flexGrow1 form-group"
   >
     <label
       className="control-label"
@@ -15040,7 +14680,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
           "height": 0,
         }
       }
-      value={undefined}
+      value=""
     />
   </div>
   <div
@@ -15054,21 +14694,21 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
     </label>
     <br />
     <div
-      className="dropdown btn-group btn-group-default"
+      className="dropdown btn-group btn-group-sm btn-group-default"
     >
       <button
         aria-expanded={false}
         aria-haspopup={true}
-        className="dropdown-toggle btn btn-default"
+        className="dropdown-toggle btn btn-sm btn-default"
         disabled={false}
-        id="dropdown-basic"
+        id="review-criteriareview-criteria-dropdown-basic"
         onClick={[Function]}
         onKeyDown={[Function]}
         role="button"
         type="button"
       >
         <span
-          className="text-info"
+          className="u-textInfo"
         >
           Minor
         </span>
@@ -15078,19 +14718,18 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
         />
       </button>
       <ul
-        aria-labelledby="dropdown-basic"
+        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
         className="dropdown-menu"
         role="menu"
       >
         <li
-          className=""
+          className="active"
           role="presentation"
           style={undefined}
         >
           <a
             href="#"
             onClick={[Function]}
-            onKeyDown={[Function]}
             role="menuitem"
             tabIndex="-1"
           >
@@ -15109,7 +14748,6 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
           <a
             href="#"
             onClick={[Function]}
-            onKeyDown={[Function]}
             role="menuitem"
             tabIndex="-1"
           >
@@ -15128,7 +14766,6 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
           <a
             href="#"
             onClick={[Function]}
-            onKeyDown={[Function]}
             role="menuitem"
             tabIndex="-1"
           >
@@ -15142,63 +14779,6 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
       </ul>
     </div>
   </div>
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formInlineButtonEdit"
-    >
-       
-    </label>
-    <br />
-    <button
-      className="active btn btn-primary"
-      disabled={false}
-      type="button"
-    >
-      <span
-        className="s0 iconEdit"
-      >
-        <svg
-          className={undefined}
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-            }
-          }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
-        />
-      </span>
-    </button>
-    <button
-      className="active btn btn-danger"
-      disabled={false}
-      type="button"
-    >
-      <span
-        className="s0 iconEdit"
-      >
-        <svg
-          className={undefined}
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-            }
-          }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
-        />
-      </span>
-    </button>
-  </div>
 </form>
 `;
 
@@ -15207,7 +14787,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
   className="rejectionsForm form-inline"
 >
   <div
-    className="flexGrow1 form-group"
+    className="u-flexGrow1 form-group"
   >
     <label
       className="control-label"
@@ -15234,7 +14814,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
           "height": 0,
         }
       }
-      value={undefined}
+      value=""
     />
   </div>
   <div
@@ -15248,21 +14828,21 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
     </label>
     <br />
     <div
-      className="dropdown btn-group btn-group-default"
+      className="dropdown disabled btn-group btn-group-sm btn-group-default"
     >
       <button
         aria-expanded={false}
         aria-haspopup={true}
-        className="dropdown-toggle btn btn-default"
-        disabled={false}
-        id="dropdown-basic"
+        className="dropdown-toggle btn btn-sm btn-default"
+        disabled={true}
+        id="review-criteriareview-criteria-dropdown-basic"
         onClick={[Function]}
         onKeyDown={[Function]}
         role="button"
         type="button"
       >
         <span
-          className="text-info"
+          className="u-textInfo"
         >
           Minor
         </span>
@@ -15272,19 +14852,18 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
         />
       </button>
       <ul
-        aria-labelledby="dropdown-basic"
+        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
         className="dropdown-menu"
         role="menu"
       >
         <li
-          className=""
+          className="active"
           role="presentation"
           style={undefined}
         >
           <a
             href="#"
             onClick={[Function]}
-            onKeyDown={[Function]}
             role="menuitem"
             tabIndex="-1"
           >
@@ -15303,7 +14882,6 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
           <a
             href="#"
             onClick={[Function]}
-            onKeyDown={[Function]}
             role="menuitem"
             tabIndex="-1"
           >
@@ -15322,7 +14900,6 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
           <a
             href="#"
             onClick={[Function]}
-            onKeyDown={[Function]}
             role="menuitem"
             tabIndex="-1"
           >
@@ -15335,63 +14912,6 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
         </li>
       </ul>
     </div>
-  </div>
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formInlineButtonEdit"
-    >
-       
-    </label>
-    <br />
-    <button
-      className="btn btn-primary"
-      disabled={false}
-      type="button"
-    >
-      <span
-        className="s0 iconEdit"
-      >
-        <svg
-          className={undefined}
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-            }
-          }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
-        />
-      </span>
-    </button>
-    <button
-      className="btn btn-danger"
-      disabled={false}
-      type="button"
-    >
-      <span
-        className="s0 iconEdit"
-      >
-        <svg
-          className={undefined}
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-            }
-          }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
-        />
-      </span>
-    </button>
   </div>
 </form>
 `;
