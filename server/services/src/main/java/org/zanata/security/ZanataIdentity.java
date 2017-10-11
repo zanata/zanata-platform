@@ -371,11 +371,11 @@ public class ZanataIdentity implements Identity, Serializable {
         }
     }
 
+    // based on org.jboss.seam.security.Identity
+
     public void checkPermission(Object target, String action) {
         internalCheckPermission(target, action);
     }
-
-    // based on org.jboss.seam.security.Identity
     private void internalCheckPermission(Object target, String action) {
         if (systemOp != null && Boolean.TRUE.equals(systemOp.get())) return;
 

@@ -393,10 +393,12 @@ public class SourceDocResourceService implements SourceDocResource {
         if (hProjectIteration == null) {
             throw new NoSuchEntityException("Project Iteration \'" + projectSlug
                     + ":" + iterationSlug + "\' not found.");
-        } else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)
+        } else if (!haveReadAccess(hProjectIteration) ||
+                hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)
                 || hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
-            throw new NoSuchEntityException("Project Iteration \'" + projectSlug
-                    + ":" + iterationSlug + "\' not found.");
+            throw new NoSuchEntityException(
+                    "Project Iteration \'" + projectSlug
+                            + ":" + iterationSlug + "\' not found.");
         } else if (writeOperation) {
             if (hProjectIteration.getStatus().equals(EntityStatus.READONLY)
                     || hProject.getStatus().equals(EntityStatus.READONLY)) {
@@ -429,5 +431,13 @@ public class SourceDocResourceService implements SourceDocResource {
 
     public HProjectIteration getSecuredIteration() {
         return retrieveAndCheckIteration(false);
+    }
+
+    /**
+     * Check if current user have read access to the project
+     * (checking for private project)
+     */
+    public boolean haveReadAccess(HProjectIteration version) {
+        return identity.hasPermission(version, "read");
     }
 }

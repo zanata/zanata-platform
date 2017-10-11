@@ -48,6 +48,7 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationService;
@@ -74,6 +75,9 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     @Produces
     @Mock
     private UrlUtil urlUtil;
+    @Produces
+    @Mock
+    private ZanataIdentity identity;
     private HLocale targetLocale;
     private HLocale sourceLocale;
     private TransMemory tmx;

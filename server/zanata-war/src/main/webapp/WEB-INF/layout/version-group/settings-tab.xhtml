@@ -153,14 +153,23 @@
           value="#{versionGroupHome.getSortedInstanceProjectIterations()}"
           var="version" varStatus="status">
           <li class="reveal">
-            <h:link outcome="/iteration/view.xhtml">
-              <f:param name="projectSlug" value="#{version.project.slug}"/>
-              <f:param name="iterationSlug" value="#{version.slug}"/>
-              #{version.project.name} <i class="i i--version"></i> <zanata:version-label version="#{version}"/>
-              <ui:fragment rendered="#{version.status == 'OBSOLETE'}">
-                <span class="txt--danger l--push-left-half">#{msgs['jsf.group.ArchivedVersionNotIncluded']}</span>
-              </ui:fragment>
-            </h:link>
+            <ui:param name="canViewProject" value="#{versionGroupHome.canViewProject(version)}"/>
+            <ui:fragment rendered="#{canViewProject}">
+              <h:link outcome="/iteration/view.xhtml">
+                <f:param name="projectSlug" value="#{version.project.slug}"/>
+                <f:param name="iterationSlug" value="#{version.slug}"/>
+                #{version.project.name} <i class="i i--version"></i> <zanata:version-label version="#{version}"/>
+                <ui:fragment rendered="#{version.status == 'OBSOLETE'}">
+                  <span class="txt--danger l--push-left-half">#{msgs['jsf.group.ArchivedVersionNotIncluded']}</span>
+                </ui:fragment>
+              </h:link>
+            </ui:fragment>
+            <ui:fragment rendered="#{not canViewProject}">
+              <a class="txt--neutral">
+                #{version.project.name} <i class="i i--version"></i> <zanata:version-label version="#{version}" showIcon="false"/>
+                <span class="l--push-left-half txt--neutral">#{msgs['jsf.project.private']}</span>
+              </a>
+            </ui:fragment>
             <a4j:commandLink
               styleClass="button--link l--float-right reveal__target"
               action="#{versionGroupHome.removeVersion(version)}"

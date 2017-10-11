@@ -35,10 +35,12 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.EntityType;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ShortString;
 import org.zanata.util.UrlUtil;
+
 import static org.zanata.common.ActivityType.REVIEWED_TRANSLATION;
 import static org.zanata.common.ActivityType.UPDATE_TRANSLATION;
 import static org.zanata.common.ActivityType.UPLOAD_SOURCE_DOCUMENT;
@@ -62,6 +64,8 @@ public class ActivityEntry {
     private DocumentDAO documentDAO;
     @Inject
     private Messages msgs;
+    @Inject
+    private ZanataIdentity identity;
 
     public String getActivityTypeIconClass(Activity activity) {
         return activity.getActivityType() == UPDATE_TRANSLATION ? "i--translate"
@@ -91,75 +95,104 @@ public class ActivityEntry {
     public String getActivityMessage(Activity activity) {
         boolean isVersionDeleted = isVersionDeleted(activity);
         boolean isProjectDeleted = isProjectDeleted(activity);
+        boolean canViewProject = canViewProject(activity);
+
         switch (activity.getActivityType()) {
-        case UPDATE_TRANSLATION:
-            if (isProjectDeleted) {
-                return msgs.format(
-                        "jsf.dashboard.activity.translate.message.projectDeleted",
-                        activity.getWordCount(), getProjectName(activity),
-                        StringEscapeUtils
-                                .escapeHtml4(getLastTextFlowContent(activity)));
-            } else if (isVersionDeleted) {
-                return msgs.format(
-                        "jsf.dashboard.activity.translate.message.versionDeleted",
-                        activity.getWordCount(), getProjectUrl(activity),
-                        getProjectName(activity), StringEscapeUtils
-                                .escapeHtml4(getLastTextFlowContent(activity)));
-            } else {
-                return msgs.format("jsf.dashboard.activity.translate.message",
-                        activity.getWordCount(), getProjectUrl(activity),
-                        getProjectName(activity), getEditorUrl(activity),
-                        StringEscapeUtils
-                                .escapeHtml4(getLastTextFlowContent(activity)));
-            }
-
-        case REVIEWED_TRANSLATION:
-            if (isProjectDeleted) {
-                return msgs.format(
-                        "jsf.dashboard.activity.review.message.projectDeleted",
-                        activity.getWordCount(), getProjectName(activity),
-                        StringEscapeUtils
-                                .escapeHtml4(getLastTextFlowContent(activity)));
-            } else if (isVersionDeleted) {
-                return msgs.format(
-                        "jsf.dashboard.activity.review.message.versionDeleted",
-                        activity.getWordCount(), getProjectUrl(activity),
-                        getProjectName(activity), StringEscapeUtils
-                                .escapeHtml4(getLastTextFlowContent(activity)));
-            } else {
-                return msgs.format("jsf.dashboard.activity.review.message",
-                        activity.getWordCount(), getProjectUrl(activity),
-                        getProjectName(activity), getEditorUrl(activity),
-                        StringEscapeUtils
-                                .escapeHtml4(getLastTextFlowContent(activity)));
-            }
-
-        case UPLOAD_SOURCE_DOCUMENT:
-            if (isProjectDeleted) {
-                return msgs.format(
-                        "jsf.dashboard.activity.uploadSource.message.projectDeleted",
-                        activity.getWordCount(), getProjectName(activity));
-            } else {
-                return msgs.format(
-                        "jsf.dashboard.activity.uploadSource.message",
-                        activity.getWordCount(), getProjectUrl(activity),
-                        getProjectName(activity));
-            }
-
-        case UPLOAD_TRANSLATION_DOCUMENT:
-            if (isProjectDeleted) {
-                return msgs.format(
-                        "jsf.dashboard.activity.uploadTranslation.message.projectDeleted",
-                        activity.getWordCount(), getProjectName(activity));
-            } else {
-                return msgs.format(
-                        "jsf.dashboard.activity.uploadTranslation.message",
-                        activity.getWordCount(), getProjectUrl(activity),
-                        getProjectName(activity));
-            }
-
-        default:
-            return "";
+            case UPDATE_TRANSLATION:
+                if (!canViewProject) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.translate.message.projectPrivate",
+                            activity.getWordCount(), getProjectName(activity),
+                            StringEscapeUtils
+                                    .escapeHtml4(
+                                            getLastTextFlowContent(activity)));
+                } else if (isProjectDeleted) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.translate.message.projectDeleted",
+                            activity.getWordCount(), getProjectName(activity),
+                            StringEscapeUtils
+                                    .escapeHtml4(
+                                            getLastTextFlowContent(activity)));
+                } else if (isVersionDeleted) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.translate.message.versionDeleted",
+                            activity.getWordCount(), getProjectUrl(activity),
+                            getProjectName(activity), StringEscapeUtils
+                                    .escapeHtml4(
+                                            getLastTextFlowContent(activity)));
+                } else {
+                    return msgs
+                            .format("jsf.dashboard.activity.translate.message",
+                                    activity.getWordCount(),
+                                    getProjectUrl(activity),
+                                    getProjectName(activity),
+                                    getEditorUrl(activity),
+                                    StringEscapeUtils
+                                            .escapeHtml4(getLastTextFlowContent(
+                                                    activity)));
+                }
+            case REVIEWED_TRANSLATION:
+                if (!canViewProject) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.review.message.projectPrivate",
+                            activity.getWordCount(), getProjectName(activity),
+                            StringEscapeUtils
+                                    .escapeHtml4(
+                                            getLastTextFlowContent(activity)));
+                } else if (isProjectDeleted) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.review.message.projectDeleted",
+                            activity.getWordCount(), getProjectName(activity),
+                            StringEscapeUtils
+                                    .escapeHtml4(
+                                            getLastTextFlowContent(activity)));
+                } else if (isVersionDeleted) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.review.message.versionDeleted",
+                            activity.getWordCount(), getProjectUrl(activity),
+                            getProjectName(activity), StringEscapeUtils
+                                    .escapeHtml4(
+                                            getLastTextFlowContent(activity)));
+                } else {
+                    return msgs.format("jsf.dashboard.activity.review.message",
+                            activity.getWordCount(), getProjectUrl(activity),
+                            getProjectName(activity), getEditorUrl(activity),
+                            StringEscapeUtils
+                                    .escapeHtml4(
+                                            getLastTextFlowContent(activity)));
+                }
+            case UPLOAD_SOURCE_DOCUMENT:
+                if (!canViewProject) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.uploadSource.message.projectPrivate",
+                            activity.getWordCount(), getProjectName(activity));
+                } else if (isProjectDeleted) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.uploadSource.message.projectDeleted",
+                            activity.getWordCount(), getProjectName(activity));
+                } else {
+                    return msgs.format(
+                            "jsf.dashboard.activity.uploadSource.message",
+                            activity.getWordCount(), getProjectUrl(activity),
+                            getProjectName(activity));
+                }
+            case UPLOAD_TRANSLATION_DOCUMENT:
+                if (!canViewProject) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.uploadTranslation.message.projectPrivate",
+                            activity.getWordCount(), getProjectName(activity));
+                } else if (isProjectDeleted) {
+                    return msgs.format(
+                            "jsf.dashboard.activity.uploadTranslation.message.projectDeleted",
+                            activity.getWordCount(), getProjectName(activity));
+                } else {
+                    return msgs.format(
+                            "jsf.dashboard.activity.uploadTranslation.message",
+                            activity.getWordCount(), getProjectUrl(activity),
+                            getProjectName(activity));
+                }
+            default:
+                return "";
 
         }
     }
@@ -428,17 +461,25 @@ public class ActivityEntry {
         return version.getProject().getStatus() == EntityStatus.OBSOLETE;
     }
 
+    public boolean canViewProject(Activity activity) {
+        Object context =
+                getEntity(activity.getContextType(), activity.getContextId());
+        HProjectIteration version = (HProjectIteration) context;
+        return identity.hasPermission(version, "read");
+    }
+
     public ActivityEntry() {
     }
 
     @java.beans.ConstructorProperties({ "activityServiceImpl", "urlUtil",
-            "documentDAO", "msgs" })
+            "documentDAO", "msgs", "identity" })
     protected ActivityEntry(final ActivityService activityServiceImpl,
             final UrlUtil urlUtil, final DocumentDAO documentDAO,
-            final Messages msgs) {
+            final Messages msgs, final ZanataIdentity identity) {
         this.activityServiceImpl = activityServiceImpl;
         this.urlUtil = urlUtil;
         this.documentDAO = documentDAO;
         this.msgs = msgs;
+        this.identity = identity;
     }
 }

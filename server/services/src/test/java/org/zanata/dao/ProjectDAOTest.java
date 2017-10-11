@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
 
@@ -17,10 +18,15 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     private ProjectDAO dao;
 
+    private PersonDAO personDAO;
+
     @Override
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
     }
 
@@ -32,6 +38,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
     @Before
     public void setup() {
         dao = new ProjectDAO((Session) getEm().getDelegate());
+        personDAO = new PersonDAO((Session) getEm().getDelegate());
     }
 
     @Test
@@ -103,5 +110,13 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
         List<HProject> projects =
                 dao.getOffsetList(-1, -1, false, false, false);
         assertThat(projects.size()).isEqualTo(4);
+    }
+
+    @Test
+    public void getOffsetListPrivateProject() {
+        HPerson person = personDAO.findById(4L);
+        dao.setAuthenticatedAccount(person.getAccount());
+        List<HProject> projects = dao.getOffsetList(-1, -1, false, false, false);
+        assertThat(projects).hasSize(5);
     }
 }

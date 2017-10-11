@@ -67,6 +67,18 @@ public class ProjectMemberDAO
         return ((Long) query.uniqueResult()) > 0;
     }
 
+    public boolean isProjectMember(HPerson person, HProject project) {
+        Query query = getSession().createQuery(
+                "select count(m) from HProjectMember as m " +
+                        "where m.person = :person " +
+                        "and m.project = :project ")
+                .setParameter("person", person)
+                .setParameter("project", project)
+                .setComment("ProjectMemberDAO.isProjectMember")
+                .setCacheable(true);
+        return ((Long) query.uniqueResult()) > 0;
+    }
+
 
     /**
      * Check whether a person is a maintainer for at least one project.

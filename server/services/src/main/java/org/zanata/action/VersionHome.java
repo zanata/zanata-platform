@@ -167,6 +167,9 @@ public class VersionHome extends SlugHome<HProjectIteration>
             String projectSlug = getProjectSlug();
             clearSlugs();
             setProjectSlug(projectSlug);
+            if (!identity.hasPermission(getProject(), "read")) {
+                throw new EntityNotFoundException();
+            }
             identity.checkPermission(getProject(), "insert");
             ProjectType projectType = getProject().getDefaultProjectType();
             if (projectType != null) {
@@ -176,6 +179,9 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 setDefaultCopyFromVersion();
             }
         } else {
+            if (!identity.hasPermission(getInstance(), "read")) {
+                throw new EntityNotFoundException();
+            }
             copyFromVersion = false;
             ProjectType versionProjectType = getInstance().getProjectType();
             if (versionProjectType != null) {

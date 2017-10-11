@@ -1,6 +1,8 @@
 package org.zanata.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -13,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.zanata.ZanataJpaTest;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
@@ -22,6 +25,8 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
 
     private ProjectDAO dao;
 
+    private ZanataIdentity identity;
+
     @BeforeClass
     public static void disableSecurity() {
         ZanataIdentity.setSecurityEnabled(false);
@@ -29,7 +34,9 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
 
     @Before
     public void setUp() {
-        dao = new ProjectDAO(Search.getFullTextEntityManager(getEm()), getSession());
+        identity = Mockito.mock(ZanataIdentity.class);
+        dao = new ProjectDAO(Search.getFullTextEntityManager(getEm()),
+                getSession(), identity);
     }
 
     private static void makeProject(String slug, String name, String description,
@@ -49,6 +56,7 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
     @Test
     @InRequestScope
     public void canDoFullTextSearch() throws Exception {
+        when(identity.hasPermission(any(), any())).thenReturn(true);
         String slug = "Sample-Project";
         // hibernate search only works with transaction in place
         doInTransaction(

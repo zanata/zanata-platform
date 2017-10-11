@@ -43,6 +43,7 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
@@ -53,6 +54,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.InvalidDateParamException;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
@@ -61,6 +63,8 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationStateCacheImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl.DocumentStatisticLoader;
@@ -97,6 +101,14 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock ValidationService validationService;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
+
+    @Produces @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ZanataIdentity identity;
+
+    @Produces
+    @Authenticated
+    @Mock
+    protected HAccount authenticatedAccount;
 
     @Override
     @Produces

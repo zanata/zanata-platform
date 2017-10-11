@@ -7,6 +7,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -27,12 +28,14 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import org.zanata.rest.service.StatisticsServiceImpl.UserMatrixResultTransformer;
+import org.zanata.security.ZanataIdentity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
 
     private TextFlowTargetHistoryDAO historyDAO;
+    private ZanataIdentity identity;
     private HPerson user;
     private HLocale hLocale;
     private DateTime today = new DateTime();
@@ -45,9 +48,10 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
 
     @Before
     public void setUp() throws Exception {
+        identity = Mockito.mock(ZanataIdentity.class);
         resultTransformer =
                 new UserMatrixResultTransformer(getEm(),
-                        dateFormatter);
+                        identity, dateFormatter);
         historyDAO = new TextFlowTargetHistoryDAO(getSession()) {
 
             private static final long serialVersionUID = 1L;

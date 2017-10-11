@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
@@ -73,6 +74,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.util.DateUtil;
@@ -112,6 +114,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
     private EntityManager entityManager;
     @Inject
     private TranslationStateCache translationStateCacheImpl;
+    @Inject
+    private ZanataIdentity identity;
     // TODO Need to refactor this method to get Message statistic by default.
     // This is to be consistent with the UI which uses message stats, and for
     // calculating remaining hours.
@@ -450,7 +454,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 textFlowTargetHistoryDAO.getUserTranslationMatrix(person,
                         fromDate, toDate, userZoneOpt, systemZone,
                         new UserMatrixResultTransformer(entityManager,
-                                dateFormatter));
+                                identity, dateFormatter));
         return translationMatrixList;
     }
 
@@ -533,6 +537,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         private final EntityManager entityManager;
         @SuppressFBWarnings("SE_BAD_FIELD")
         private final DateTimeFormatter dateFormatter;
+        private final ZanataIdentity identity;
 
         @Override
         public Object transformTuple(Object[] tuple, String[] aliases) {
@@ -544,6 +549,11 @@ public class StatisticsServiceImpl implements StatisticsResource {
             String projectSlug = iteration.getProject().getSlug();
             String projectName = iteration.getProject().getName();
             String versionSlug = iteration.getSlug();
+            if (!identity.hasPermission(iteration.getProject(), "read")) {
+                projectSlug = null;
+                projectName = null;
+                versionSlug = null;
+            }
             HLocale locale = entityManager.find(HLocale.class,
                     ((BigInteger) tuple[2]).longValue());
             String localeDisplayName = locale.retrieveDisplayName();
@@ -563,8 +573,10 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
         @java.beans.ConstructorProperties({ "entityManager", "dateFormatter" })
         public UserMatrixResultTransformer(final EntityManager entityManager,
+                @Nullable final ZanataIdentity identity,
                 final DateTimeFormatter dateFormatter) {
             this.entityManager = entityManager;
+            this.identity = identity;
             this.dateFormatter = dateFormatter;
         }
     }
