@@ -17,6 +17,10 @@
   --Dropdown-item-transition     : all .2s ease-out;
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .Dropdown {
   position: relative;
   z-index: var(--Dropdown-z-index);

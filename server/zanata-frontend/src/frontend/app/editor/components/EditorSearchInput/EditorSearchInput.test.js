@@ -132,7 +132,7 @@ describe('EditorSearchInputTest', () => {
                 u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
               value="chapter01.txt" />
           </div>
-          <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
+          <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
             onClick={callback}>
             Clear all
           </Button>

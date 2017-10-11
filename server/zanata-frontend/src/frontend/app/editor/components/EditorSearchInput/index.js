@@ -214,7 +214,7 @@ export class EditorSearchInput extends Component {
         </div>
         <Panel collapsible expanded={showAdvanced}>
           {advancedFields}
-          <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
+          <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
             onClick={this.clearAllAdvancedFields}>
             Clear all
           </Button>
