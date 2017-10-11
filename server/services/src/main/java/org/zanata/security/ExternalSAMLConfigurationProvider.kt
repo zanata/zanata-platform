@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.InputStream
 import java.net.URL
+import java.nio.file.Paths
 
 /**
  * This file is responsible to load the picketlink configuration file (path
@@ -51,10 +52,8 @@ class ExternalSAMLConfigurationProvider : AbstractSAMLConfigurationProvider() {
     override fun getSPConfiguration(): SPType? {
         try {
             val inputStream: InputStream? = readConfigurationFile()
-            return inputStream?.let {
-                val result = ConfigurationUtil.getSPConfiguration(it)
-                it.close()
-                result
+            return inputStream?.use {
+                ConfigurationUtil.getSPConfiguration(it)
             }
         } catch (e: Exception) {
             throw RuntimeException("Could not load SP configuration: $configurationFilePath", e)
@@ -65,10 +64,8 @@ class ExternalSAMLConfigurationProvider : AbstractSAMLConfigurationProvider() {
     override fun getPicketLinkConfiguration(): PicketLinkType? {
         try {
             val inputStream: InputStream? = readConfigurationFile()
-            return inputStream?.let {
-                val result = ConfigurationUtil.getConfiguration(it)
-                it.close()
-                result
+            return inputStream?.use {
+                ConfigurationUtil.getConfiguration(it)
             }
 
         } catch (e: Exception) {
@@ -80,14 +77,12 @@ class ExternalSAMLConfigurationProvider : AbstractSAMLConfigurationProvider() {
     companion object {
         private val log = LoggerFactory.getLogger(ExternalSAMLConfigurationProvider::class.java)
 
-        private val DEFAULT_CONFIG_PROTOCOL = "file://"
         private val configFile: String? = System.getProperty("picketlink.file")
 
         /**
          * Returns the picketlink configuration file path including protocol.
          */
-        private val configurationFilePath: String
-            get() = DEFAULT_CONFIG_PROTOCOL + configFile
+        private val configurationFilePath: URL by lazy { Paths.get(configFile).toUri().toURL() }
 
         private fun isFileExists(filePath: String): Boolean {
             val file = File(filePath)
@@ -106,7 +101,7 @@ class ExternalSAMLConfigurationProvider : AbstractSAMLConfigurationProvider() {
 
             return try {
                 val configurationFileURL: URL = Thread.currentThread()
-                        .contextClassLoader.getResource(configFile) ?: URL(configurationFilePath)
+                        .contextClassLoader.getResource(configFile) ?: configurationFilePath
 
                 configurationFileURL.openStream()
             } catch (e: Exception) {

@@ -20,14 +20,18 @@
  */
 package org.zanata.security;
 
+import static org.zanata.security.AuthenticationType.OPENID;
+import static org.zanata.security.AuthenticationType.SAML2;
+
 import java.io.Serializable;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.deltaspike.core.util.ContextUtils;
 import org.zanata.ApplicationConfiguration;
@@ -42,8 +46,6 @@ import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
-
-import io.undertow.security.idm.Account;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -173,21 +175,14 @@ public class AuthenticationManager implements Serializable {
         return null;
     }
 
-    public void ssoLogin(Account account, String usernameFromSSO, String email, String name) {
+    public void ssoLogin() {
         if (applicationConfiguration.isSSO()) {
-            String uniqueNameId = account.getPrincipal().getName();
-            HCredentials credentials = credentialsDAO.findSSOUser(uniqueNameId);
-            // when sign in with SAML2 the first time, there is no HCredentials or HAccount in database
-            String username = usernameFromSSO;
-            if (credentials != null) {
-                username = credentials.getAccount().getUsername();
-            }
-            samlIdentity.authenticate(uniqueNameId, username, email, name);
+            samlIdentity.authenticate();
+
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
                     && isAccountEnabledAndActivated()) {
-                samlIdentity.login(account.getPrincipal());
-                this.onLoginCompleted(
-                        new LoginCompleted(AuthenticationType.SAML2));
+                samlIdentity.login();
+                this.onLoginCompleted(new LoginCompleted(SAML2));
             }
         }
     }
@@ -200,7 +195,7 @@ public class AuthenticationManager implements Serializable {
      * @return A String with the result of the operation.
      */
     public String openIdLogin() {
-        String loginResult = identity.login(AuthenticationType.OPENID);
+        String loginResult = identity.login(OPENID);
         return loginResult;
     }
 
@@ -240,7 +235,7 @@ public class AuthenticationManager implements Serializable {
             OpenIdAuthCallback callback) {
         ZanataCredentials volatileCreds = new ZanataCredentials();
         volatileCreds.setUsername(openId);
-        volatileCreds.setAuthType(AuthenticationType.OPENID);
+        volatileCreds.setAuthType(OPENID);
         volatileCreds.setOpenIdProviderType(openIdProviderType);
         zanataOpenId.authenticate(volatileCreds, callback);
     }
@@ -264,7 +259,7 @@ public class AuthenticationManager implements Serializable {
         AuthenticationType authType = identity.getCredentials()
                 .getAuthType();
         if (authType == AuthenticationType.KERBEROS
-                || authType == AuthenticationType.SAML2) {
+                || authType == SAML2) {
             if (isAuthenticatedAccountWaitingForActivation()) {
                 return "inactive";
             } else if (identity.isPreAuthenticated() && isNewUser()) {
@@ -304,17 +299,13 @@ public class AuthenticationManager implements Serializable {
         HAccount authenticatedAccount = null;
         HCredentials authenticatedCredentials = null;
         String username = credentials.getUsername();
-        if (authType == AuthenticationType.OPENID) {
+        if (authType == OPENID || authType == SAML2) {
+            String credUser = authType == OPENID
+                    ? zanataOpenId.getAuthResult().getAuthenticatedId()
+                    : samlIdentity.getUniqueName();
             authenticatedCredentials = credentialsDAO.findByUser(
-                    zanataOpenId.getAuthResult().getAuthenticatedId());
-            // on first Open Id login, there might not be any stored credentials
-            if (authenticatedCredentials != null) {
-                authenticatedAccount = authenticatedCredentials.getAccount();
-            }
-        } else if (authType == AuthenticationType.SAML2) {
-            authenticatedCredentials = credentialsDAO
-                    .findByUser(samlIdentity.getUniqueNameId());
-            // on first SAML2 login, there might not be any stored credentials
+                    credUser);
+            // on first Open Id or SAML2 login, there might not be any stored credentials
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
             }
@@ -359,7 +350,7 @@ public class AuthenticationManager implements Serializable {
     }
 
     public boolean isNewUser() {
-        if (credentials.getAuthType() == AuthenticationType.OPENID
+        if (credentials.getAuthType() == OPENID
                 && applicationConfiguration.isOpenIdAuth()) {
             return credentialsDAO.findByUser(
                     zanataOpenId.getAuthResult().getAuthenticatedId()) == null;
@@ -377,7 +368,7 @@ public class AuthenticationManager implements Serializable {
     }
 
     public boolean isAuthenticated() {
-        if (credentials.getAuthType() == AuthenticationType.OPENID
+        if (credentials.getAuthType() == OPENID
                 && applicationConfiguration.isOpenIdAuth()) {
             return zanataOpenId.getAuthResult().isAuthenticated();
         }

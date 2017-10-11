@@ -37,6 +37,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.SamlIdentity;
 import org.zanata.security.ZanataOpenId;
+import org.zanata.security.annotations.SAMLAttribute;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
@@ -67,7 +68,7 @@ public class NewProfileAction extends AbstractProfileAction
     @Inject
     ApplicationConfiguration applicationConfiguration;
     @Inject
-    private SamlIdentity samlIdentity;
+    SamlIdentity samlIdentity;
 
     @PostConstruct
     public void onCreate() {
@@ -97,7 +98,7 @@ public class NewProfileAction extends AbstractProfileAction
             }
         } else if (authType == AuthenticationType.SAML2) {
             email = samlIdentity.getEmail();
-            name = samlIdentity.getName();
+            name = samlIdentity.getCommonName();
             username = identity.getCredentials().getUsername();
         } else {
             // Open id user names are url's so they don't make good defaults
@@ -138,7 +139,7 @@ public class NewProfileAction extends AbstractProfileAction
                     this.email);
         } else if (authType == AuthenticationType.SAML2) {
             key = registerServiceImpl.register(username,
-                    samlIdentity.getUniqueNameId(), AuthenticationType.SAML2,
+                    samlIdentity.getUniqueName(), AuthenticationType.SAML2,
                     name, email);
         } else {
             key = registerServiceImpl.register(this.username,

@@ -21,11 +21,8 @@
 package org.zanata.servlet
 
 import com.google.common.annotations.VisibleForTesting
-import io.undertow.security.idm.Account
-import org.picketlink.common.constants.GeneralConstants
-import org.picketlink.identity.federation.bindings.wildfly.sp.SPFormAuthenticationMechanism
-import org.slf4j.LoggerFactory
 import org.zanata.security.AuthenticationManager
+import org.zanata.security.SamlLogin
 import org.zanata.util.UrlUtil
 import java.io.IOException
 import javax.inject.Inject
@@ -41,14 +38,17 @@ import javax.servlet.http.HttpServletResponse
 @WebFilter(filterName = "ssoFilter")
 class SAMLFilter() : Filter {
     @Inject
-    lateinit private var authenticationManager: AuthenticationManager
+    private lateinit var authenticationManager: AuthenticationManager
     @Inject
-    lateinit private var urlUtil: UrlUtil
+    private lateinit var urlUtil: UrlUtil
+    @Inject
+    private lateinit var samlLogin: SamlLogin
 
     @VisibleForTesting
-    constructor(authenticationManager: AuthenticationManager, urlUtil: UrlUtil) : this() {
+    constructor(authenticationManager: AuthenticationManager, urlUtil: UrlUtil, samlLogin: SamlLogin) : this() {
         this.authenticationManager = authenticationManager
         this.urlUtil = urlUtil
+        this.samlLogin = samlLogin
     }
 
 
@@ -59,25 +59,8 @@ class SAMLFilter() : Filter {
     override fun doFilter(request: ServletRequest, response: ServletResponse,
                           chain: FilterChain) {
         if (request is HttpServletRequest) {
-            val session = request.session
-            val account: Account? = session.getAttribute(
-                    SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE) as? Account
-            if (account != null && account.roles.contains("authenticated")) {
-                // in some cases, this is the UUID
-                val principalName = account.principal.name
-
-                @Suppress("UNCHECKED_CAST")
-                val samlAttributeMap =
-                        session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP) as? Map<String, List<String>> ?: mapOf()
-                // These assumes the IDP follows standard SAML assertion names.
-                // In some IDPs, this may be a more readable username than principal name.
-                val usernameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "uid", { _ -> principalName})
-                val emailFromSSO = getValueFromSessionAttribute(samlAttributeMap, "email")
-                val nameFromSSO = getValueFromSessionAttribute(samlAttributeMap, "cn")
-                log.info("SAML2 login: username: {}, name: {}, uuid: {}",
-                        usernameFromSSO, nameFromSSO, principalName)
-                authenticationManager.ssoLogin(account,
-                        usernameFromSSO, emailFromSSO, nameFromSSO)
+            if (samlLogin.isAuthenticatedExternally()) {
+                authenticationManager.ssoLogin()
                 performRedirection(response as HttpServletResponse)
                 return
             }
@@ -103,18 +86,11 @@ class SAMLFilter() : Filter {
             "inactive" -> resp.sendRedirect(urlUtil.inactiveAccountPage())
             "dashboard" -> resp.sendRedirect(urlUtil.dashboardUrl())
             "redirect" ->
-                // sso should not have any continue url. We just send to dashboard
+                // FIXME sso won't preserve continue parameter yet. We just send to dashboard
                 resp.sendRedirect(urlUtil.dashboardUrl())
             "home" -> resp.sendRedirect(urlUtil.home())
             else -> throw RuntimeException(
                     "Unexpected authentication manager result: " + authRedirectResult)
         }
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(SAMLFilter::class.java)
-
-        private fun getValueFromSessionAttribute(map: Map<String, List<String>?>, key: String, defaultVal : (Int) -> String = {_ -> ""}) =
-            map[key]?.elementAtOrElse(0, defaultVal)
     }
 }

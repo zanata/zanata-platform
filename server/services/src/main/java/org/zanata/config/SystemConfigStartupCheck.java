@@ -21,7 +21,9 @@
 package org.zanata.config;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.zanata.security.AuthenticationType.*;
+import static org.zanata.security.AuthenticationType.INTERNAL;
+import static org.zanata.security.AuthenticationType.OPENID;
+import static org.zanata.security.AuthenticationType.SAML2;
 
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +35,7 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.security.AuthenticationType;
+
 import com.google.common.collect.ImmutableSet;
 
 /**

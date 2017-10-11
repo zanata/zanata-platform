@@ -21,7 +21,13 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
 package org.zanata.security
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+import org.slf4j.LoggerFactory
+import org.zanata.dao.CredentialsDAO
 import org.zanata.events.AlreadyLoggedInEvent
+import org.zanata.exception.NotLoggedInException
+import org.zanata.security.annotations.SAML
+import org.zanata.security.annotations.SAMLAttribute
+import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.*
 import org.zanata.util.Synchronized
 import java.io.Serializable
 import java.security.Principal
@@ -34,44 +40,48 @@ import javax.inject.Inject
 class SamlIdentity
 @Inject constructor(private val identity: ZanataIdentity,
                     @field:SuppressFBWarnings("SE_BAD_FIELD")
-                    private val alreadyLoggedInEvent: Event<AlreadyLoggedInEvent>) : Serializable {
+                    private val alreadyLoggedInEvent: Event<AlreadyLoggedInEvent>,
+                    @SAML private val principal: Principal?,
+                    @SAMLAttribute(usernameAttr) val username: String?,
+                    @SAMLAttribute(commonNameAttr) val commonName: String?,
+                    @SAMLAttribute(emailAttr) val email: String?,
+                    private val credentialsDAO: CredentialsDAO) : Serializable, ExternallyAuthenticatedIdentity {
+    val uniqueName: String?
+        get() = principal?.name
 
-    var uniqueNameId: String? = null
-    var email: String? = null
-        protected set
-    var name: String? = null
-        protected set
-
-    fun authenticate(uniqueNameId: String, username: String?,
-                     email: String?, name: String?) {
-        this.uniqueNameId = uniqueNameId
-        this.email = email ?: ""
-        this.name = name ?: ""
-
+    override fun authenticate() {
         if (identity.isLoggedIn) {
             alreadyLoggedInEvent.fire(AlreadyLoggedInEvent())
             return
         }
+        if (principal == null) throw NotLoggedInException()
 
-        with(identity) {
-            credentials.username = username
-            credentials.password = ""
-            credentials.authType = AuthenticationType.SAML2
-            credentials.isInitialized = true
-            isPreAuthenticated = true
-        }
+        log.info("SAML2 login: username: {}, common name: {}, uuid: {}",
+                usernameAttr, commonName, uniqueName)
+        val credentials = credentialsDAO.findSSOUser(uniqueName)
+        // when sign in with SAML2 the first time, there is no HCredentials or HAccount in database
+        val usernameToUse = credentials?.account?.username ?: username
+
+        identity.credentials.username = usernameToUse
+        identity.credentials.password = ""
+        identity.credentials.authType = AuthenticationType.SAML2
+        identity.credentials.isInitialized = true
+        identity.isPreAuthenticated = true
     }
 
-    fun login(principal: Principal) {
+    override fun login() {
         if (identity.isLoggedIn) {
             alreadyLoggedInEvent.fire(AlreadyLoggedInEvent())
             return
         }
 
+        if (principal == null) throw NotLoggedInException()
         identity.acceptExternallyAuthenticatedPrincipal(principal)
     }
 
     companion object {
         private const val serialVersionUID = 5341594999046279309L
+        private val log = LoggerFactory.getLogger(SamlIdentity::class.java)
+
     }
 }
