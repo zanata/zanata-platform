@@ -16,6 +16,10 @@
   --Switch-rhythm: 1.5rem;
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .Switch {
   padding-left: calc(var(--Switch-rhythm) * 1.5);
   position: relative;

@@ -12,6 +12,10 @@
   --border-width-Button: var(--ButtonGroup-button-border-width);
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .ButtonGroup--hz > .ButtonGroup-item {
   vertical-align: middle;
 }

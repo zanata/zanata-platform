@@ -7,6 +7,10 @@
 --InputGroup-transition: 0.2s cubic-bezier(.26, .47, .36, .94);
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .InputGroup {
   position: relative;
   display: table;
