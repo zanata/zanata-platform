@@ -37,7 +37,6 @@ import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.SamlIdentity;
 import org.zanata.security.ZanataOpenId;
-import org.zanata.security.annotations.SAMLAttribute;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;

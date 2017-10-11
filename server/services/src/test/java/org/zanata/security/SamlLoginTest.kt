@@ -66,7 +66,7 @@ class SamlLoginTest {
         assertThat(principal).isNotNull()
         assertThat(principal).isSameAs(simplePrincipal)
     }
-    
+
     @Test
     fun canGetUsername() {
         BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))

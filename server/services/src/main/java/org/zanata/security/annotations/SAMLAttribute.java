@@ -28,8 +28,6 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
-import org.apache.deltaspike.security.api.authorization.SecurityBindingType;
-
 /**
  * Qualifier for extracting values from SAML assertion attributes.
  */
