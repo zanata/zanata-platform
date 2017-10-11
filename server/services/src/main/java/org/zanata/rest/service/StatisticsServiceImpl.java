@@ -124,6 +124,12 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, boolean includeDetails,
             boolean includeWordStats, String[] locales) {
+        HProjectIteration iteration =
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        if (iteration == null || !identity.hasPermission(iteration, "read")) {
+            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
+        }
+
         LocaleId[] localeIds;
         // if no locales are specified, search in all locales
         if (locales.length == 0) {
@@ -142,11 +148,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 localeIds[i] = new LocaleId(locales[i]);
             }
         }
-        HProjectIteration iteration =
-                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-        if (iteration == null) {
-            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
-        }
+
         Map<String, TransUnitCount> transUnitIterationStats =
                 projectIterationDAO
                         .getAllStatisticsForContainer(iteration.getId());
@@ -218,6 +220,12 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public ContainerTranslationStatistics getStatisticsWithDocId(
             String projectSlug, String iterationSlug, String docId,
             boolean includeWordStats, String[] locales) {
+        HProjectIteration iteration =
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        if (iteration == null || !identity.hasPermission(iteration, "read")) {
+            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
+        }
+
         List<LocaleId> localeIds;
         // if no locales are specified, search in all locales
         if (locales == null || locales.length == 0) {
@@ -302,7 +310,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
         HProjectIteration version =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
         if (version == null || version.getStatus() == EntityStatus.OBSOLETE
-                || version.getProject().getStatus() == EntityStatus.OBSOLETE) {
+                || version.getProject().getStatus() == EntityStatus.OBSOLETE ||
+                !identity.hasPermission(version, "read")) {
             throw new NoSuchEntityException(projectSlug + "/" + versionSlug);
         }
         HPerson person = findPersonOrExceptionOnNotFound(username);
@@ -470,7 +479,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
         HProjectIteration version =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
-        if (version == null) {
+        if (version == null || !identity.hasPermission(version, "read")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Project version not found:" + projectSlug + "-" + versionSlug).build();
         }
