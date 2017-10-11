@@ -26,7 +26,12 @@ import org.zanata.security.SamlLogin
 import org.zanata.util.UrlUtil
 import java.io.IOException
 import javax.inject.Inject
-import javax.servlet.*
+import javax.servlet.Filter
+import javax.servlet.FilterConfig
+import javax.servlet.ServletException
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+import javax.servlet.FilterChain
 import javax.servlet.annotation.WebFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -51,7 +56,6 @@ class SAMLFilter() : Filter {
         this.samlLogin = samlLogin
     }
 
-
     @Throws(ServletException::class)
     override fun init(filterConfig: FilterConfig) {}
 
@@ -68,17 +72,14 @@ class SAMLFilter() : Filter {
         chain.doFilter(request, response)
     }
 
-
     override fun destroy() {}
-
-    /**
-     * Performs the redirection based on the results from the authentication
-     * process.
-     * This is logic that would normally be in faces-config.xml, but as this is
-     * a servlet filter, it cannot take advantage of that.
-     */
+    
     @Throws(IOException::class)
     private fun performRedirection(resp: HttpServletResponse) {
+        // Performs the redirection based on the results from the authentication
+        // process.
+        // This is logic that would normally be in faces-config.xml, but as this is
+        // a servlet filter, it cannot take advantage of that.
         val authRedirectResult = authenticationManager.authenticationRedirect
         when (authRedirectResult) {
             "login" -> resp.sendRedirect(urlUtil.signInPage())

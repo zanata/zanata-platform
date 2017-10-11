@@ -79,9 +79,7 @@ class ExternalSAMLConfigurationProvider : AbstractSAMLConfigurationProvider() {
 
         private val configFile: String? = System.getProperty("picketlink.file")
 
-        /**
-         * Returns the picketlink configuration file path including protocol.
-         */
+        // Returns the picketlink configuration file path including protocol.
         private val configurationFilePath: URL by lazy { Paths.get(configFile).toUri().toURL() }
 
         private fun isFileExists(filePath: String): Boolean {
@@ -89,9 +87,6 @@ class ExternalSAMLConfigurationProvider : AbstractSAMLConfigurationProvider() {
             return file.exists() && file.canRead()
         }
 
-        /**
-         * Loads the configuration file
-         */
         @Throws(ConfigurationException::class)
         private fun readConfigurationFile(): InputStream? {
             if (configFile == null || !isFileExists(configFile)) {

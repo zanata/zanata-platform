@@ -26,7 +26,9 @@ import org.picketlink.common.constants.GeneralConstants.SESSION_ATTRIBUTE_MAP
 import org.picketlink.identity.federation.bindings.wildfly.sp.SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE
 import org.zanata.security.annotations.SAML
 import org.zanata.security.annotations.SAMLAttribute
-import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.*
+import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.usernameAttr
+import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.commonNameAttr
+import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.emailAttr
 import java.security.Principal
 import javax.enterprise.inject.Produces
 import javax.inject.Inject
@@ -75,7 +77,6 @@ open class SamlLogin @Inject constructor(@DeltaSpike private val session: HttpSe
         if (principal == null) return null
         return getValueFromSessionAttribute(attributeMap, emailAttr.key)
     }
-
 
     companion object {
         private fun getValueFromSessionAttribute(map: Map<String, List<String>?>, key: String, defaultVal: String = "") =
