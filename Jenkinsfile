@@ -4,16 +4,21 @@
  * Jenkinsfile for zanata-platform
  */
 
+@Field
+public static final String PROJ_URL = 'https://github.com/zanata/zanata-platform'
+
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
+// TODO: change back to master
 @Field
-public static final String PIPELINE_LIBRARY_BRANCH = 'master'
+public static final String PIPELINE_LIBRARY_BRANCH = 'ZNTA-2234-codecov'
 
 // GROOVY-3278:
 //   Using referenced String constant as value of Annotation causes compile error
-@Library('zanata-pipeline-library@master')
+@Library('zanata-pipeline-library@ZNTA-2234-codecov')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
+import org.zanata.jenkins.Reporting
 import static org.zanata.jenkins.StackTraces.getStackTrace
 
 import groovy.transform.Field
@@ -27,9 +32,12 @@ PullRequests.ensureJobDescription(env, manager, steps)
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
 notify = new Notifier(env, steps, currentBuild,
-    'https://github.com/zanata/zanata-platform.git',
-    'Jenkinsfile', PIPELINE_LIBRARY_BRANCH,
+    PROJ_URL + '.git', 'Jenkinsfile', PIPELINE_LIBRARY_BRANCH,
 )
+
+@Field
+def reporting
+reporting = new Reporting(env, steps, PROJ_URL + '.git')
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -59,7 +67,7 @@ node {
     ],
     [
       $class: 'GithubProjectProperty',
-      projectUrlStr: 'https://github.com/zanata/zanata-platform'
+      projectUrlStr: PROJ_URL
     ],
     [
       $class: 'ParametersDefinitionProperty',
@@ -231,21 +239,7 @@ timestamps {
           // TODO try https://github.com/jenkinsci/github-pr-coverage-status-plugin
 
           // send test coverage data to codecov.io
-          try {
-            withCredentials(
-                    [[$class: 'StringBinding',
-                      credentialsId: 'codecov_zanata-platform',
-                      variable: 'CODECOV_TOKEN']]) {
-              // NB the codecov script uses CODECOV_TOKEN
-              sh "curl -s https://codecov.io/bash | bash -s - -K"
-            }
-          } catch (InterruptedException e) {
-            throw e
-          } catch (hudson.AbortException e) {
-            throw e
-          } catch (e) {
-            echo "[WARNING] Ignoring codecov error: $e"
-          }
+          reporting.codecov()
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
