@@ -14,7 +14,7 @@
   align-items: center;
 }
 
-#prioritytitle, #criteriatitle {
+#PriorityTitle, #CriteriaTitle {
   margin-right: var(--TM-default-margin);
 }
 
@@ -22,7 +22,7 @@
   color: var(--TM-text-color);
 }
 
-#RejectTranslationModal .priority-dd {
+#RejectTranslationModal .PriorityDropdown {
   margin-left: 1.5rem;
 }
 
@@ -35,7 +35,7 @@
   border: var(--TM-input-border) !important;
 }
 
-#RejectTranslationModal .criteria {
+#RejectTranslationModal .Criteria {
   flex-grow: 2;
 }
 
@@ -44,7 +44,7 @@
   margin-left: var(--TM-small-margin);
 }
 
-#RejectTranslationModal .InputGroup--outlined.commenting {
+#RejectTranslationModal .InputGroup--outlined.Commenting {
   margin-top: 2rem;
   max-width: 100%;
   min-width: 100%;
@@ -58,7 +58,7 @@
   margin-left: var(--TM-default-margin);
 }
 
-.priority-dd .s2, .priority-dd .s2 svg {
+.PriorityDropdown .s2, .PriorityDropdown .s2 svg {
   vertical-align: sub;
 }
 

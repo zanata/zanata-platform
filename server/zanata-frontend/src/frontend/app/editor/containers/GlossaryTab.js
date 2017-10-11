@@ -45,13 +45,13 @@ class GlossaryTab extends React.Component {
     } = this.props
 
     if (searching) {
-      return <div className="search-glos">
+      return <div className="GlossarySearch">
         <LoaderText loading loadingText='Searching' />
       </div>
     }
 
     if (isEmpty(searchText)) {
-      return <div className="enter-search-text">Enter text to search <br />
+      return <div className="Search-enterText">Enter text to search <br />
         <span>
           <Icon name='search' className="s6" />
         </span>
@@ -59,7 +59,7 @@ class GlossaryTab extends React.Component {
     }
 
     if (isEmpty(results)) {
-      return <div className="no-gloss-results">
+      return <div className="Glossary-noResults">
         No results<br />
         <span>
           <Icon name='glossary' className="s6" />
@@ -103,7 +103,7 @@ class GlossaryTab extends React.Component {
     const { eventKey, searchText, onGlossaryTextChange } = this.props
     return (
       <Tab eventKey={eventKey} title="">
-        <div className="sidebar-wrapper" id="tab1">
+        <div className="SidebarEditor-wrapper" id="tab1">
           <GlossarySearchInput
             text={searchText}
             onTextChange={onGlossaryTextChange} />

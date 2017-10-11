@@ -16,7 +16,7 @@ export const SettingsPanel = ({
 }) => {
   return (
     <div className="sidebar-settings">
-      <h1 className="sidebar-heading">
+      <h1 className="SidebarEditor-heading">
         <Icon name="settings" className="s1" /> Settings
         <span className="s1 u-pullRight">
           <Button bsStyle="link" onClick={hideSettings}>
@@ -24,9 +24,9 @@ export const SettingsPanel = ({
           </Button>
         </span>
       </h1>
-      <div className="sidebar-wrapper">
+      <div className="SidebarEditor-wrapper">
         <div>
-          <h2 className='settings-heading'>Editor options</h2>
+          <h2 className='SettingsHeading'>Editor options</h2>
           <SettingsOptions
             settings={[
               {

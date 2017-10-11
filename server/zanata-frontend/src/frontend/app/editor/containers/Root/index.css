@@ -622,7 +622,7 @@ h4.modal-title {
   vertical-align: middle;
 }
 
-.history-icon svg, .comment-icon svg {
+.history-icon svg, .icon-comment svg {
   vertical-align: sub;
 }
 
@@ -634,7 +634,7 @@ h4.modal-title {
   color: var(--Editor-color-dark);
 }
 
-.comment-icon svg {
+.icon-comment svg {
   fill: var(--Editor-color-light) !important;
 }
 
@@ -926,13 +926,13 @@ label span.n1 {
     padding-left: 1.5em;
   }
 
-  td.long-string {
+  td.stringLong {
     display: table-row !important;
     padding-bottom: 0 !important;
     max-width: 10em !important;
   }
 
-  .long-string span {
+  .stringLong span {
     max-width: 9.5em !important;
   }
 }
@@ -948,7 +948,7 @@ label span.n1 {
 
 @media (max-width: 909px) {
 
-  .iconInfoVersionMerge {
+  .icon-infoVersionMerge {
     text-align: left;
   }
 
@@ -961,13 +961,13 @@ label span.n1 {
     margin-right: 0.75em;
   }
 
-  td.long-string {
+  td.stringLong {
     display: table-row !important;
     padding-bottom: 0 !important;
     max-width: 12em !important;
   }
 
-  .long-string span {
+  .stringLong span {
     max-width: 10em !important;
   }
 
@@ -976,18 +976,18 @@ label span.n1 {
     visibility: hidden;
   }
 
-  #sidebartabs-pane-1 table tbody tr {
+  #SidebarEditor-tabsPane1 table tbody tr {
     margin-bottom: 1em;
     display: inline-table;
   }
 
-  #sidebartabs-pane-1.tab-pane.active table tbody tr {
+  #SidebarEditor-tabsPane1.tab-pane.active table tbody tr {
     width: 100%;
     border-bottom: 1px solid rgb(99, 156, 173);
     padding-bottom: 0.375em;
   }
 
-  #sidebartabs-pane-1 td .Button--primary {
+  #SidebarEditor-tabsPane1 td .Button--primary {
     float: none;
     margin-bottom: 1em;
   }
@@ -1001,38 +1001,38 @@ label span.n1 {
     margin-right: 0;
   }
 
-  .iconInfoVersionMerge, th.hide-md {
+  .icon-infoVersionMerge, th.hide-md {
     text-align: right !important;
   }
 
-  td.long-string {
+  td.stringLong {
     padding-bottom: 0.75em;
     min-width: 6em;
   }
 
-  .long-string span {
+  .stringLong span {
     max-width: 5.5em;
   }
 
-  #sidebartabs-pane-1 table tbody tr {
+  #SidebarEditor-tabsPane1 table tbody tr {
     display: table-row !important;
   }
 
-  #sidebartabs-pane-1 td .Button--primary {
+  #SidebarEditor-tabsPane1 td .Button--primary {
     float: right;
   }
 
-  #sidebartabs-pane-1 table tbody tr td {
+  #SidebarEditor-tabsPane1 table tbody tr td {
     padding-right: 0.5em;
   }
 }
 
 @media (min-width: 1100px) {
-  td.long-string {
+  td.stringLong {
     max-width: 10em;
   }
 
-  .long-string span {
+  .stringLong span {
     max-width: 9.5em;
   }
 
@@ -1041,7 +1041,7 @@ label span.n1 {
     width: 20rem;
   }
 
-  #sidebartabs-pane-1 table tbody tr {
+  #SidebarEditor-tabsPane1 table tbody tr {
     display: table-row !important;
   }
 }

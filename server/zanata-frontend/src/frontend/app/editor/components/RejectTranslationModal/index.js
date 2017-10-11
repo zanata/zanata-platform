@@ -80,12 +80,12 @@ export class RejectTranslationModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <div className="flex">
-          <span id="criteriatitle">
+          <span id="CriteriaTitle">
             Criteria
           </span>
           <Dropdown enabled isOpen={this.state.dropdownOpen}
             onToggle={this.toggleDropdown}
-            className="dropdown-menu criteria">
+            className="dropdown-menu Criteria">
             <Dropdown.Button>
             <a className="Dropdown-item">
               {this.props.criteria}
@@ -110,9 +110,9 @@ export class RejectTranslationModal extends Component {
               </ul>
             </Dropdown.Content>
           </Dropdown>
-          <span className="priority-dd">
+          <span className="PriorityDropdown">
             <Icon name="warning" className="s2 u-textWarning" />
-            <span id="prioritytitle">Priority</span>
+            <span id="PriorityTitle">Priority</span>
           <Dropdown enabled isOpen={this.state.dropdownOpen2}
                     onToggle={this.toggleDropdown2}
                     className="dropdown-menu priority">
@@ -140,7 +140,7 @@ export class RejectTranslationModal extends Component {
              placeholder="Provide a comment for why this translation has been rejected"
              cols="50"
              rows="10"
-             className='InputGroup-input is-focused InputGroup--outlined commenting' />
+             className='InputGroup-input is-focused InputGroup--outlined Commenting' />
         </Modal.Body>
         <Modal.Footer>
           <span>

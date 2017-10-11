@@ -46,7 +46,7 @@ class CommentBox extends React.Component {
 
   render () {
     return (
-      <div className="trans-comment-box">
+      <div className="TransUnit-commentBox">
         <FormGroup controlId="formControlsTextarea">
           <ControlLabel>
             <Icon name="comment" className="s0" /> Post a comment

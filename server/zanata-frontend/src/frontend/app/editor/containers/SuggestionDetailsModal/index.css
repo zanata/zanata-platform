@@ -167,7 +167,7 @@
     background-color: var(--brand-info);
 }
 
-.source-heading {
+.TransUnit-sourceHeading {
     padding-left: 1.1em;
     top: inherit;
     line-height: 3em;
@@ -175,7 +175,7 @@
     color: var(--brand-primary);
 }
 
-.target-heading {
+.TransUnit-targetHeading {
     padding-left: 1.9em;
     top: inherit;
     line-height: 3em;
@@ -218,7 +218,7 @@ span.TransUnit-details-inner {
 
 
 @media (max-width: 740px) {
-  .source-heading {
+  .TransUnit-sourceHeading {
     padding-left: 2.1em;
   }
 

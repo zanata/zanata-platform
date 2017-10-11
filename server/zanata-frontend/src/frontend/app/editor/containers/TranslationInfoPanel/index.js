@@ -45,7 +45,7 @@ class TranslationInfoPanel extends React.Component {
     } = this.props.selectedPhrase
 
     return (
-      <ul className="sidebar-details">
+      <ul className="SidebarEditor-details">
         {this.detailItem('Resource ID', resId)}
         {this.detailItem('Message Context', msgctxt)}
         {this.detailItem('Reference', sourceReferences)}
@@ -59,8 +59,8 @@ class TranslationInfoPanel extends React.Component {
 
   detailItem = (label, value) => {
     const valueDisplay = isEmpty(value)
-        ? <span className="details-nocontent">No content</span>
-        : <span className="details-content">{value}</span>
+        ? <span className="SidebarEditor-details--nocontent">No content</span>
+        : <span className="SidebarEditor-details--content">{value}</span>
     return (
       <li>
         <span>{label}</span> {valueDisplay}
@@ -127,7 +127,7 @@ class TranslationInfoPanel extends React.Component {
 
     return (
       <div>
-        <h1 className="sidebar-heading">
+        <h1 className="SidebarEditor-heading">
           <Icon name="info" className="details-svg s1" />
           <span className="hide-md">Details</span>
           <span className="s1 u-pullRight">
@@ -136,7 +136,7 @@ class TranslationInfoPanel extends React.Component {
             </Button>
           </span>
         </h1>
-        <div className="sidebar-wrapper">
+        <div className="SidebarEditor-wrapper">
           {this.sidebarDetails()}
         </div>
         <Tabs id="sidebartabs" defaultActiveKey={1}>
