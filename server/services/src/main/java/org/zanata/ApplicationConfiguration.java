@@ -332,7 +332,7 @@ public class ApplicationConfiguration implements Serializable {
                 "only supports internal, jaas, sso or kerberos authentication");
     }
 
-    public boolean isSSO() {
+    public boolean isSAML2() {
         return loginModuleNames.containsKey(AuthenticationType.SAML2);
     }
 

@@ -95,7 +95,7 @@ public class ZanataCentralLoginModule implements LoginModule {
             // server to avoid this.
             ApplicationConfiguration appConfig = BeanProvider
                     .getContextualReference(ApplicationConfiguration.class);
-            if (appConfig.isSSO()) {
+            if (appConfig.isSAML2()) {
                 authTypeCallback.setAuthType(AuthenticationType.SAML2);
             } else {
                 authTypeCallback.setAuthType(AuthenticationType.KERBEROS);

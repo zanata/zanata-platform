@@ -176,7 +176,7 @@ public class AuthenticationManager implements Serializable {
     }
 
     public void ssoLogin() {
-        if (applicationConfiguration.isSSO()) {
+        if (applicationConfiguration.isSAML2()) {
             samlIdentity.authenticate();
 
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
