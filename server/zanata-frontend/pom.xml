@@ -31,7 +31,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Directory for frontend to run the build from. -->
-    <frontend.build.directory>${project.basedir}/src/frontend</frontend.build.directory>
+    <frontend.build.directory>${project.basedir}/src</frontend.build.directory>
 
     <!-- Command to use after 'npm ' for the frontend build. Default is the faster draft build. -->
     <frontend.build.command>draft</frontend.build.command>
@@ -128,7 +128,7 @@
               <outputDirectory>${bundle.dest}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/frontend/dist</directory>
+                  <directory>src/dist</directory>
                   <include>editor.min.js</include>
                   <include>editor.css</include>
                   <include>editor.css.map</include>
