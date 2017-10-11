@@ -145,6 +145,21 @@ public class AuthenticationManager implements Serializable {
     }
 
     /**
+     * Logs in with kerberos using from based (username/password) authentication
+     */
+    public String formBasedKerberosLogin() {
+        if (applicationConfiguration.isKerberosAuth()) {
+            String loginResult = this.login(AuthenticationType.KERBEROS,
+                    credentials.getUsername(), credentials.getPassword());
+            if (isAuthenticatedAccountWaitingForActivation()) {
+                loginResult = "inactive";
+            }
+            return loginResult;
+        }
+        return null;
+    }
+
+    /**
      * Logs in with the kerberos authentication type using ticket based
      * authentication.
      */
@@ -158,21 +173,6 @@ public class AuthenticationManager implements Serializable {
                         new LoginCompleted(AuthenticationType.KERBEROS));
             }
         }
-    }
-
-    /**
-     * Logs in with kerberos using from based (username/password) authentication
-     */
-    public String formBasedKerberosLogin() {
-        if (applicationConfiguration.isKerberosAuth()) {
-            String loginResult = this.login(AuthenticationType.KERBEROS,
-                    credentials.getUsername(), credentials.getPassword());
-            if (isAuthenticatedAccountWaitingForActivation()) {
-                loginResult = "inactive";
-            }
-            return loginResult;
-        }
-        return null;
     }
 
     public void ssoLogin() {

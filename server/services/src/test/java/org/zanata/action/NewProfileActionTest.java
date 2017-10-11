@@ -26,6 +26,9 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.zanata.security.annotations.SAMLAttribute.AttributeName.CN;
+import static org.zanata.security.annotations.SAMLAttribute.AttributeName.EMAIL;
+import static org.zanata.security.annotations.SAMLAttribute.AttributeName.UID;
 
 import java.security.Principal;
 import java.util.Locale;
@@ -126,9 +129,9 @@ public class NewProfileActionTest {
     @Produces
     CredentialsDAO credentialsDAO;
 
-    @Produces @SAMLAttribute(SAMLAttribute.SAMLAttributeName.usernameAttr) String username = "admin";
-    @Produces @SAMLAttribute(SAMLAttribute.SAMLAttributeName.commonNameAttr) String commonName = "Administrator";
-    @Produces @SAMLAttribute(SAMLAttribute.SAMLAttributeName.emailAttr) String email = "admin@example.com";
+    @Produces @SAMLAttribute(UID) String username = "admin";
+    @Produces @SAMLAttribute(CN) String commonName = "Administrator";
+    @Produces @SAMLAttribute(EMAIL) String email = "admin@example.com";
     @Produces @SAML
     Principal principal = new SimplePrincipal(username);
 

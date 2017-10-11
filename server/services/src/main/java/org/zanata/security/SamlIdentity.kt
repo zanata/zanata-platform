@@ -27,7 +27,9 @@ import org.zanata.events.AlreadyLoggedInEvent
 import org.zanata.exception.NotLoggedInException
 import org.zanata.security.annotations.SAML
 import org.zanata.security.annotations.SAMLAttribute
-import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.*
+import org.zanata.security.annotations.SAMLAttribute.AttributeName.UID
+import org.zanata.security.annotations.SAMLAttribute.AttributeName.CN
+import org.zanata.security.annotations.SAMLAttribute.AttributeName.EMAIL
 import org.zanata.util.Synchronized
 import java.io.Serializable
 import java.security.Principal
@@ -42,9 +44,9 @@ class SamlIdentity
                     @field:SuppressFBWarnings("SE_BAD_FIELD")
                     private val alreadyLoggedInEvent: Event<AlreadyLoggedInEvent>,
                     @SAML private val principal: Principal?,
-                    @SAMLAttribute(usernameAttr) val username: String?,
-                    @SAMLAttribute(commonNameAttr) val commonName: String?,
-                    @SAMLAttribute(emailAttr) val email: String?,
+                    @SAMLAttribute(UID) val uid: String?,
+                    @SAMLAttribute(CN) val commonName: String?,
+                    @SAMLAttribute(EMAIL) val email: String?,
                     private val credentialsDAO: CredentialsDAO) : Serializable, ExternallyAuthenticatedIdentity {
     val uniqueName: String?
         get() = principal?.name
@@ -57,12 +59,12 @@ class SamlIdentity
         if (principal == null) throw NotLoggedInException()
 
         log.info("SAML2 login: username: {}, common name: {}, uuid: {}",
-                usernameAttr, commonName, uniqueName)
+                UID, commonName, uniqueName)
         val credentials = credentialsDAO.findSSOUser(uniqueName)
         // when sign in with SAML2 the first time, there is no HCredentials or HAccount in database
-        val usernameToUse = credentials?.account?.username ?: username
+        val username = credentials?.account?.username ?: uid
 
-        identity.credentials.username = usernameToUse
+        identity.credentials.username = username
         identity.credentials.password = ""
         identity.credentials.authType = AuthenticationType.SAML2
         identity.credentials.isInitialized = true

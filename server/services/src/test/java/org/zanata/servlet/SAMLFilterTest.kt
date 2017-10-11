@@ -55,7 +55,7 @@ class SAMLFilterTest {
 
     @Test
     fun willDoNothingIfSessionContainsNoAccount() {
-        given(samlLogin.isAuthenticatedExternally()).willReturn(false)
+        given(samlLogin.isSessionAuthenticatedBySAML()).willReturn(false)
 
         filter.doFilter(request, response, chain)
 
@@ -67,7 +67,7 @@ class SAMLFilterTest {
     @Test
     fun willDoNothingIfAccountInSessionContainsNoAuthenticatedRole() {
 
-        given(samlLogin.isAuthenticatedExternally()).willReturn(false)
+        given(samlLogin.isSessionAuthenticatedBySAML()).willReturn(false)
 
         filter.doFilter(request, response, chain)
 
@@ -78,7 +78,7 @@ class SAMLFilterTest {
 
     @Test
     fun willAuthenticateIfSessionHasAuthenticatedAccount() {
-        given(samlLogin.isAuthenticatedExternally()).willReturn(true)
+        given(samlLogin.isSessionAuthenticatedBySAML()).willReturn(true)
 
         given(authenticationManager.authenticationRedirect).willReturn("dashboard")
         given(urlUtil.dashboardUrl()).willReturn("/dashboard")

@@ -36,16 +36,16 @@ import javax.inject.Qualifier;
 @Documented
 @Qualifier
 public @interface SAMLAttribute {
-    SAMLAttributeName value();
+    AttributeName value();
 
-    enum SAMLAttributeName {
+    enum AttributeName {
         // These assumes the IDP follows standard SAML assertion names.
         // Using Attr suffix to avoid variable name conflict in kotlin.
-        usernameAttr("uid"), commonNameAttr("cn"), emailAttr("email");
+        UID("uid"), CN("cn"), EMAIL("email");
 
         private final String key;
 
-        SAMLAttributeName(String key) {
+        AttributeName(String key) {
             this.key = key;
         }
 

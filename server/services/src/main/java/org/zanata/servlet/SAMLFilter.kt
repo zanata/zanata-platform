@@ -63,7 +63,7 @@ class SAMLFilter() : Filter {
     override fun doFilter(request: ServletRequest, response: ServletResponse,
                           chain: FilterChain) {
         if (request is HttpServletRequest) {
-            if (samlLogin.isAuthenticatedExternally()) {
+            if (samlLogin.isSessionAuthenticatedBySAML()) {
                 authenticationManager.ssoLogin()
                 performRedirection(response as HttpServletResponse)
                 return

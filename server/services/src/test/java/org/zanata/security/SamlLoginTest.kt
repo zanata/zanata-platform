@@ -30,7 +30,7 @@ class SamlLoginTest {
         BDDMockito.given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(null)
 
-        assertThat(samlLogin.isAuthenticatedExternally()).isFalse()
+        assertThat(samlLogin.isSessionAuthenticatedBySAML()).isFalse()
 
     }
 
@@ -42,7 +42,7 @@ class SamlLoginTest {
         BDDMockito.given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
 
-        assertThat(samlLogin.isAuthenticatedExternally()).isFalse()
+        assertThat(samlLogin.isSessionAuthenticatedBySAML()).isFalse()
     }
 
     @Test
@@ -52,7 +52,7 @@ class SamlLoginTest {
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
         BDDMockito.given(account.principal).willReturn(SimplePrincipal("jsmith"))
 
-        assertThat(samlLogin.isAuthenticatedExternally()).isTrue()
+        assertThat(samlLogin.isSessionAuthenticatedBySAML()).isTrue()
     }
 
     @Test

@@ -26,9 +26,9 @@ import org.picketlink.common.constants.GeneralConstants.SESSION_ATTRIBUTE_MAP
 import org.picketlink.identity.federation.bindings.wildfly.sp.SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE
 import org.zanata.security.annotations.SAML
 import org.zanata.security.annotations.SAMLAttribute
-import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.usernameAttr
-import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.commonNameAttr
-import org.zanata.security.annotations.SAMLAttribute.SAMLAttributeName.emailAttr
+import org.zanata.security.annotations.SAMLAttribute.AttributeName.UID
+import org.zanata.security.annotations.SAMLAttribute.AttributeName.CN
+import org.zanata.security.annotations.SAMLAttribute.AttributeName.EMAIL
 import java.security.Principal
 import javax.enterprise.inject.Produces
 import javax.inject.Inject
@@ -39,7 +39,7 @@ import javax.servlet.http.HttpSession
  */
 open class SamlLogin @Inject constructor(@DeltaSpike private val session: HttpSession) {
 
-    open fun isAuthenticatedExternally() = principalFromSAMLResponse() != null
+    open fun isSessionAuthenticatedBySAML() = principalFromSAMLResponse() != null
 
     @Suppress("UNCHECKED_CAST")
     private val attributeMap: Map<String, List<String>> =
@@ -56,26 +56,26 @@ open class SamlLogin @Inject constructor(@DeltaSpike private val session: HttpSe
     }
 
     @Produces
-    @SAMLAttribute(usernameAttr)
+    @SAMLAttribute(UID)
     fun usernameFromSAMLResponse(@SAML principal: Principal?): String? {
         if (principal == null) return null
         val principalName = principal.name
         // In some IDPs, this may be a more readable username than principal name.
-        return getValueFromSessionAttribute(attributeMap, usernameAttr.key, defaultVal = principalName)
+        return getValueFromSessionAttribute(attributeMap, UID.key, defaultVal = principalName)
     }
 
     @Produces
-    @SAMLAttribute(commonNameAttr)
+    @SAMLAttribute(CN)
     fun commonNameFromSAMLResponse(@SAML principal: Principal?): String? {
         if (principal == null) return null
-        return getValueFromSessionAttribute(attributeMap, commonNameAttr.key)
+        return getValueFromSessionAttribute(attributeMap, CN.key)
     }
 
     @Produces
-    @SAMLAttribute(emailAttr)
+    @SAMLAttribute(EMAIL)
     fun emailFromSAMLResponse(@SAML principal: Principal?): String? {
         if (principal == null) return null
-        return getValueFromSessionAttribute(attributeMap, emailAttr.key)
+        return getValueFromSessionAttribute(attributeMap, EMAIL.key)
     }
 
     companion object {
