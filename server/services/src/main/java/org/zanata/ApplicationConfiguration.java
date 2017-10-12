@@ -60,6 +60,7 @@ import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.OpenIdLoginModule;
+import org.zanata.security.annotations.SAML;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
@@ -330,10 +331,6 @@ public class ApplicationConfiguration implements Serializable {
         }
         throw new RuntimeException(
                 "only supports internal, jaas, sso or kerberos authentication");
-    }
-
-    public boolean isSAML2() {
-        return loginModuleNames.containsKey(AuthenticationType.SAML2);
     }
 
     public String getOpenIdProviderUrl() {

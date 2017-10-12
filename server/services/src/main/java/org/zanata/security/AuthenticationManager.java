@@ -42,6 +42,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.SAML;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
@@ -86,6 +87,9 @@ public class AuthenticationManager implements Serializable {
     private Messages msgs;
     @Inject
     private SpNegoIdentity spNegoIdentity;
+    @Inject
+    @SAML
+    private boolean saml2Enabled;
     @Inject
     private SamlIdentity samlIdentity;
 
@@ -176,7 +180,7 @@ public class AuthenticationManager implements Serializable {
     }
 
     public void ssoLogin() {
-        if (applicationConfiguration.isSAML2()) {
+        if (saml2Enabled) {
             samlIdentity.authenticate();
 
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()

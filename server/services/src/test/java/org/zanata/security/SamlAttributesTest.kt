@@ -4,7 +4,7 @@ import io.undertow.security.idm.Account
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito
+import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.picketlink.common.constants.GeneralConstants
@@ -27,7 +27,7 @@ class SamlAttributesTest {
 
     @Test
     fun isNotAuthenticatedIfSessionContainsNoAccount() {
-        BDDMockito.given(session.getAttribute(
+        given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(null)
 
         assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isFalse()
@@ -38,8 +38,8 @@ class SamlAttributesTest {
     fun willDoNothingIfAccountInSessionContainsNoAuthenticatedRole() {
 
         // roles is empty. e.g. not containing "authenticated" role
-        BDDMockito.given(account.roles).willReturn(setOf())
-        BDDMockito.given(session.getAttribute(
+        given(account.roles).willReturn(setOf())
+        given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
 
         assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isFalse()
@@ -47,10 +47,10 @@ class SamlAttributesTest {
 
     @Test
     fun isAuthenticatedIfSessionContainsAccountAndHasRoleAuthenticated() {
-        BDDMockito.given(account.roles).willReturn(setOf("authenticated"))
-        BDDMockito.given(session.getAttribute(
+        given(account.roles).willReturn(setOf("authenticated"))
+        given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
-        BDDMockito.given(account.principal).willReturn(SimplePrincipal("jsmith"))
+        given(account.principal).willReturn(SimplePrincipal("jsmith"))
 
         assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isTrue()
     }
@@ -58,9 +58,9 @@ class SamlAttributesTest {
     @Test
     fun canGetPrincipal() {
         val simplePrincipal = SimplePrincipal("jsmith")
-        BDDMockito.given(account.principal).willReturn(simplePrincipal)
-        BDDMockito.given(account.roles).willReturn(setOf("authenticated"))
-        BDDMockito.given(session.getAttribute(SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
+        given(account.principal).willReturn(simplePrincipal)
+        given(account.roles).willReturn(setOf("authenticated"))
+        given(session.getAttribute(SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
 
         val principal = samlAttributes.principalFromSAMLResponse()
         assertThat(principal).isNotNull()
@@ -69,7 +69,7 @@ class SamlAttributesTest {
 
     @Test
     fun canGetUsername() {
-        BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
+        given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(mapOf("uid" to listOf("jsmith")))
         samlAttributes = SamlAttributes(session)
 
@@ -80,7 +80,7 @@ class SamlAttributesTest {
 
     @Test
     fun willUsePrincipalNameIfUsernameIsNull() {
-        BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
+        given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(emptyMap<String, List<String>>())
         samlAttributes = SamlAttributes(session)
 
@@ -91,7 +91,7 @@ class SamlAttributesTest {
 
     @Test
     fun canGetCommonName() {
-        BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
+        given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(mapOf("cn" to listOf("Joe Smith")))
         samlAttributes = SamlAttributes(session)
 
@@ -102,7 +102,7 @@ class SamlAttributesTest {
 
     @Test
     fun canGetEmail() {
-        BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
+        given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(mapOf("email" to listOf("jsmith@example.com")))
         samlAttributes = SamlAttributes(session)
 

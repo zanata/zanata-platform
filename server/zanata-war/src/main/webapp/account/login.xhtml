@@ -166,7 +166,7 @@
             </ui:remove>
             <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
-              rendered="#{applicationConfiguration.SAML2}">
+              rendered="#{saml2Enabled}">
               <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
                   class="gamma heading--sub">#{msgs['jsf.login.OrLoginUsing.label']}</h2>

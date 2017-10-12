@@ -115,6 +115,7 @@
       <to-view-id>/dashboard/home.xhtml</to-view-id>
       <redirect />
     </navigation-case>
+    <!-- make sure all the cases here is replicated in KLoginServlet and SAMLFilter -->
   </navigation-rule>
 
   <navigation-rule>
