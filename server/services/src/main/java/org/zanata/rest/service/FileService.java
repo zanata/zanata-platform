@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
@@ -56,12 +57,14 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.RawDocumentContentAccessException;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
@@ -70,6 +73,7 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
@@ -105,6 +109,10 @@ public class FileService implements FileResource {
     private TranslationDocumentUpload translationUploader;
     @Inject
     private FilePersistService filePersistService;
+    @Inject
+    private ProjectIterationDAO projectIterationDAO;
+    @Inject
+    private ZanataIdentity identity;
 
     /**
      * Deprecated.
@@ -171,6 +179,9 @@ public class FileService implements FileResource {
     @Override
     public Response downloadSourceFile(String projectSlug, String iterationSlug,
             String fileType, String docId) {
+        if (!hasProjectVersionAccess(projectSlug, iterationSlug)) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
         // TODO scan (again) for virus
         HDocument document = documentDAO.getByProjectIterationAndDocId(
                 projectSlug, iterationSlug, docId);
@@ -324,6 +335,9 @@ public class FileService implements FileResource {
         return response;
     }
 
+    /*
+     * Private class that implements PO file streaming of a document.
+     */
     @Override
     public Response download(String downloadId) {
         // TODO scan (again) for virus
@@ -344,8 +358,8 @@ public class FileService implements FileResource {
                             .header("Content-Disposition",
                                     "attachment; filename=\""
                                             + descriptorProps.getProperty(
-                                                    DownloadDescriptorProperties.DownloadFileName
-                                                            .toString())
+                                            DownloadDescriptorProperties.DownloadFileName
+                                                    .toString())
                                             + "\"")
                             .header("Content-Length", toDownload.length())
                             .entity(new FileStreamingOutput(toDownload))
@@ -357,9 +371,6 @@ public class FileService implements FileResource {
                     .build();
         }
     }
-    /*
-     * Private class that implements PO file streaming of a document.
-     */
 
     private static class POStreamingOutput implements StreamingOutput {
         private Resource resource;
@@ -472,5 +483,12 @@ public class FileService implements FileResource {
                 IOUtils.copy(input, output);
             }
         }
+    }
+
+    private boolean hasProjectVersionAccess(@NotNull String projectSlug,
+            @NotNull String versionSlug) {
+        HProjectIteration version =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        return version != null && identity.hasPermission(version, "read");
     }
 }
