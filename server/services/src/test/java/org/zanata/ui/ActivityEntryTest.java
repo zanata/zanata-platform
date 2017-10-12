@@ -1,9 +1,9 @@
 package org.zanata.ui;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.common.ActivityType;
 import org.zanata.common.ContentState;
@@ -20,9 +20,11 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.util.UrlUtil;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,6 +42,8 @@ public class ActivityEntryTest {
     private UrlUtil urlUtil;
     @Mock
     private Messages msgs;
+    @Mock
+    private ZanataIdentity identity;
     private HProjectIteration iteration;
     private HProject project;
     private int wordCount = 10;
@@ -51,7 +55,9 @@ public class ActivityEntryTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        activityEntry = new ActivityEntry(activityService, urlUtil, documentDAO, msgs);
+        activityEntry =
+                new ActivityEntry(activityService, urlUtil, documentDAO, msgs,
+                        identity);
         iteration = new HProjectIteration();
         setId(iteration, 1L);
         iteration.setSlug("master");
@@ -73,8 +79,8 @@ public class ActivityEntryTest {
 
     @Test
     public void canGetWordCountMessage() {
-        Assertions.assertThat(activityEntry.getWordsCountMessage(1)).isEqualTo("1 word");
-        Assertions.assertThat(activityEntry.getWordsCountMessage(10)).isEqualTo("10 words");
+        assertThat(activityEntry.getWordsCountMessage(1)).isEqualTo("1 word");
+        assertThat(activityEntry.getWordsCountMessage(10)).isEqualTo("10 words");
     }
 
     @Test
@@ -84,13 +90,13 @@ public class ActivityEntryTest {
         String expectedUrl = "http://localhost/project/about-fedora";
         when(urlUtil.projectUrl(project.getSlug())).thenReturn(expectedUrl);
 
-        Assertions.assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.REVIEWED_TRANSLATION,
+        assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.REVIEWED_TRANSLATION,
                 textFlowTarget))).isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.UPDATE_TRANSLATION,
+        assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.UPDATE_TRANSLATION,
                 textFlowTarget))).isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
+        assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                 textFlowTarget))).isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
+        assertThat(activityEntry.getProjectUrl(makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                 textFlowTarget))).isEqualTo(expectedUrl);
 
     }
@@ -100,19 +106,19 @@ public class ActivityEntryTest {
         when(activityService.getEntity(any(EntityType.class), anyLong()))
                 .thenReturn(iteration);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getProjectName(makeActivity(ActivityType.REVIEWED_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(project.getName());
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getProjectName(makeActivity(ActivityType.UPDATE_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(project.getName());
-        Assertions.assertThat(activityEntry.getProjectName(
+        assertThat(activityEntry.getProjectName(
                 makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo(project.getName());
-        Assertions.assertThat(activityEntry.getProjectName(
+        assertThat(activityEntry.getProjectName(
                 makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo(project.getName());
@@ -125,19 +131,19 @@ public class ActivityEntryTest {
         String expectedUrl = "http://localhost/project/about-fedora/master";
         when(urlUtil.versionUrl(project.getSlug(), iteration.getSlug())).thenReturn(expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getVersionUrl(makeActivity(ActivityType.REVIEWED_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getVersionUrl(makeActivity(ActivityType.UPDATE_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry.getVersionUrl(
+        assertThat(activityEntry.getVersionUrl(
                 makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry.getVersionUrl(
+        assertThat(activityEntry.getVersionUrl(
                 makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
@@ -148,19 +154,19 @@ public class ActivityEntryTest {
         when(activityService.getEntity(any(EntityType.class), anyLong()))
                 .thenReturn(iteration);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getVersionName(makeActivity(ActivityType.REVIEWED_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(iteration.getSlug());
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getVersionName(makeActivity(ActivityType.UPDATE_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(iteration.getSlug());
-        Assertions.assertThat(activityEntry.getVersionName(
+        assertThat(activityEntry.getVersionName(
                 makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo(iteration.getSlug());
-        Assertions.assertThat(activityEntry.getVersionName(
+        assertThat(activityEntry.getVersionName(
                 makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo(iteration.getSlug());
@@ -175,11 +181,11 @@ public class ActivityEntryTest {
         String expectedUrl = "http://localhost/goes/to/editor";
         when(urlUtil.editorTransUnitUrl(project.getSlug(), iteration.getSlug(), targetLocale.getLocaleId(), textFlow.getLocale(), document.getDocId(), textFlow.getId())).thenReturn(expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getEditorUrl(makeActivity(ActivityType.REVIEWED_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getEditorUrl(makeActivity(ActivityType.UPDATE_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
@@ -189,7 +195,7 @@ public class ActivityEntryTest {
     public void willNotGetEditorUrlIfItIsSourceUpload() {
         when(activityService.getEntity(any(EntityType.class), anyLong()))
                 .thenReturn(iteration);
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getEditorUrl(makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo("");
@@ -205,7 +211,7 @@ public class ActivityEntryTest {
         String expectedUrl = "http://localhost/goes/to/editor";
         when(urlUtil.editorTransUnitUrl(project.getSlug(), iteration.getSlug(), targetLocale.getLocaleId(), textFlow.getLocale(), document.getDocId(), textFlow.getId())).thenReturn(expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getEditorUrl(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -220,7 +226,7 @@ public class ActivityEntryTest {
                 .thenReturn(document);
         when(documentDAO.getLastTranslatedTargetOrNull(document.getId())).thenReturn(null);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getEditorUrl(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -237,11 +243,11 @@ public class ActivityEntryTest {
         when(urlUtil.editorDocumentUrl(project.getSlug(), iteration.getSlug(), targetLocale.getLocaleId(), textFlow.getLocale(), document.getDocId())).thenReturn(
                 expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentUrl(makeActivity(ActivityType.REVIEWED_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentUrl(makeActivity(ActivityType.UPDATE_TRANSLATION,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
@@ -256,7 +262,7 @@ public class ActivityEntryTest {
         String expectedUrl = "http://localhost/goes/to/source/list";
         when(urlUtil.sourceFilesViewUrl(project.getSlug(), iteration.getSlug())).thenReturn(expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentUrl(makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                         textFlowTarget)))
                 .isEqualTo(expectedUrl);
@@ -273,7 +279,7 @@ public class ActivityEntryTest {
         when(urlUtil.editorDocumentUrl(project.getSlug(), iteration.getSlug(), targetLocale.getLocaleId(), textFlow.getLocale(), document.getDocId())).thenReturn(
                 expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentUrl(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -288,7 +294,7 @@ public class ActivityEntryTest {
                 .thenReturn(document);
         when(documentDAO.getLastTranslatedTargetOrNull(document.getId())).thenReturn(null);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentUrl(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -307,12 +313,12 @@ public class ActivityEntryTest {
                 textFlow.getLocale(), false)).thenReturn(
                 expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentListUrl(
                         makeActivity(ActivityType.REVIEWED_TRANSLATION,
                                 textFlowTarget)))
                 .isEqualTo(expectedUrl);
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentListUrl(
                         makeActivity(ActivityType.UPDATE_TRANSLATION,
                                 textFlowTarget)))
@@ -326,7 +332,7 @@ public class ActivityEntryTest {
         when(activityService.getEntity(eq(EntityType.HTexFlowTarget), anyLong()))
                 .thenReturn(textFlowTarget);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentListUrl(
                         makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                                 textFlowTarget)))
@@ -346,7 +352,7 @@ public class ActivityEntryTest {
                 textFlow.getLocale(), false)).thenReturn(
                 expectedUrl);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentListUrl(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -361,7 +367,7 @@ public class ActivityEntryTest {
                 .thenReturn(document);
         when(documentDAO.getLastTranslatedTargetOrNull(document.getId())).thenReturn(null);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentListUrl(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -373,12 +379,12 @@ public class ActivityEntryTest {
         when(activityService.getEntity(eq(EntityType.HTexFlowTarget), anyLong()))
                 .thenReturn(textFlowTarget);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentName(
                         makeActivity(ActivityType.REVIEWED_TRANSLATION,
                                 textFlowTarget)))
                 .isEqualTo(document.getName());
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentName(
                         makeActivity(ActivityType.UPDATE_TRANSLATION,
                                 textFlowTarget)))
@@ -390,12 +396,12 @@ public class ActivityEntryTest {
         when(activityService.getEntity(any(EntityType.class), anyLong()))
                 .thenReturn(document);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentName(
                         makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                                 document)))
                 .isEqualTo(document.getName());
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentName(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -407,12 +413,12 @@ public class ActivityEntryTest {
         when(activityService.getEntity(eq(EntityType.HTexFlowTarget), anyLong()))
                 .thenReturn(textFlowTarget);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getLanguageName(
                         makeActivity(ActivityType.REVIEWED_TRANSLATION,
                                 textFlowTarget)))
                 .isEqualTo(textFlowTarget.getLocaleId().getId());
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getLanguageName(
                         makeActivity(ActivityType.UPDATE_TRANSLATION,
                                 textFlowTarget)))
@@ -424,7 +430,7 @@ public class ActivityEntryTest {
         when(activityService.getEntity(eq(EntityType.HTexFlowTarget), anyLong()))
                 .thenReturn(textFlowTarget);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getLanguageName(
                         makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
                                 textFlowTarget)))
@@ -437,7 +443,7 @@ public class ActivityEntryTest {
                 .thenReturn(document);
         when(documentDAO.getLastTranslatedTargetOrNull(document.getId())).thenReturn(textFlowTarget);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getLanguageName(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -450,7 +456,7 @@ public class ActivityEntryTest {
                 .thenReturn(document);
         when(documentDAO.getLastTranslatedTargetOrNull(document.getId())).thenReturn(null);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getDocumentListUrl(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
                                 document)))
@@ -462,12 +468,12 @@ public class ActivityEntryTest {
         when(activityService.getEntity(eq(EntityType.HTexFlowTarget), anyLong()))
                 .thenReturn(textFlowTarget);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getLastTextFlowContent(
                         makeActivity(ActivityType.REVIEWED_TRANSLATION,
                                 textFlowTarget)))
                 .isEqualTo(textFlow.getContents().get(0));
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getLastTextFlowContent(
                         makeActivity(ActivityType.UPDATE_TRANSLATION,
                                 textFlowTarget)))
@@ -479,16 +485,55 @@ public class ActivityEntryTest {
         when(activityService.getEntity(eq(EntityType.HTexFlowTarget), anyLong()))
                 .thenReturn(textFlowTarget);
 
-        Assertions.assertThat(activityEntry
+        assertThat(activityEntry
                 .getLastTextFlowContent(
                         makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
-                                textFlowTarget)))
-                .isEqualTo("");
-        Assertions.assertThat(activityEntry
+                                textFlowTarget))).isEqualTo("");
+        assertThat(activityEntry
                 .getLastTextFlowContent(
                         makeActivity(ActivityType.UPLOAD_SOURCE_DOCUMENT,
-                                textFlowTarget)))
-                .isEqualTo("");
+                                textFlowTarget))).isEqualTo("");
+    }
+
+    @Test
+    public void getActivityMessage() {
+        testGetActivityMessage(true);
+        testGetActivityMessage(false);
+    }
+
+    private void testGetActivityMessage(boolean canView) {
+        HTextFlow textFlow = new HTextFlow();
+        HTextFlowTarget target = Mockito.mock(HTextFlowTarget.class);
+        when(target.getId()).thenReturn(1L);
+        when(target.getTextFlow()).thenReturn(textFlow);
+
+        when(activityService.getEntity(EntityType.HProjectIteration, 1L))
+                .thenReturn(iteration);
+        when(activityService.getEntity(EntityType.HTexFlowTarget, 1L))
+                .thenReturn(target);
+        when(identity.hasPermission(iteration, "read")).thenReturn(canView);
+        when(msgs.format(any(), any(), any(), any())).thenReturn(String.valueOf(canView));
+        when(msgs.format(any(), any(), any())).thenReturn(String.valueOf(canView));
+
+        Activity activity =
+                makeActivity(ActivityType.UPLOAD_TRANSLATION_DOCUMENT, target);
+        assertThat(activityEntry.getActivityMessage(activity)).isEqualTo(String.valueOf(canView));
+    }
+
+    @Test
+    public void canViewProject() {
+        testCanViewProject(true);
+        testCanViewProject(false);
+    }
+
+    private void testCanViewProject(boolean canView) {
+        when(activityService.getEntity(EntityType.HProjectIteration, 1L))
+                .thenReturn(iteration);
+        when(identity.hasPermission(iteration, "read")).thenReturn(canView);
+
+        Activity activity =
+                makeActivity(ActivityType.UPDATE_TRANSLATION, iteration);
+        assertThat(activityEntry.canViewProject(activity)).isEqualTo(canView);
     }
 
 

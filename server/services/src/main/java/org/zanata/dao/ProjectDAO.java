@@ -22,10 +22,12 @@ package org.zanata.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.Term;
@@ -50,6 +52,8 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 
 import static org.zanata.hibernate.search.IndexFieldLabels.FULL_SLUG_FIELD;
 
@@ -59,6 +63,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @FullText
     private FullTextEntityManager entityManager;
+    @Inject @Authenticated
+    private HAccount authenticatedAccount;
+    @Inject
+    private ZanataIdentity identity;
 
     public ProjectDAO() {
         super(HProject.class);
@@ -68,9 +76,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         super(HProject.class, session);
     }
 
-    public ProjectDAO(FullTextEntityManager entityManager, Session session) {
+    public ProjectDAO(FullTextEntityManager entityManager, Session session,
+            ZanataIdentity identity) {
         super(HProject.class, session);
         this.entityManager = entityManager;
+        this.identity = identity;
     }
 
     public @Nullable
@@ -86,12 +96,15 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                     boolean filterOutActive, boolean filterOutReadOnly,
                     boolean filterOutObsolete) {
 
+        HPerson person = authenticatedAccount != null ?
+                authenticatedAccount.getPerson() : null;
+
         String condition =
                 constructFilterCondition(filterOutActive, filterOutReadOnly,
-                    filterOutObsolete);
+                    filterOutObsolete, person);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("from HProject p ")
+        sb.append("select p from HProject p ")
             .append(condition)
             .append("order by UPPER(p.name) asc");
         Query q = getSession().createQuery(sb.toString());
@@ -102,6 +115,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         if (offset > 0) {
             q.setFirstResult(offset);
         }
+
+        if (person != null) {
+            q.setParameter("person", person);
+        }
+
         q.setCacheable(true)
                 .setComment("ProjectDAO.getOffsetList");
         @SuppressWarnings("unchecked")
@@ -111,11 +129,18 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     public int getFilterProjectSize(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete) {
+        HPerson person = authenticatedAccount != null ?
+                authenticatedAccount.getPerson() : null;
+
         String condition = constructFilterCondition(filterOutActive,
-                filterOutReadOnly, filterOutObsolete);
+                filterOutReadOnly, filterOutObsolete, person);
         String query = "select count(*) from HProject p " + condition;
         Query q = getSession().createQuery(query);
-        q.setCacheable(true).setComment("ProjectDAO.getFilterProjectSize");
+        if (person != null) {
+            q.setParameter("person", person);
+        }
+        q.setCacheable(true)
+                .setComment("ProjectDAO.getFilterProjectSize");
         Long totalCount = (Long) q.uniqueResult();
 
         if (totalCount == null)
@@ -124,10 +149,20 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     private String constructFilterCondition(boolean filterOutActive,
-            boolean filterOutReadOnly, boolean filterOutObsolete) {
+            boolean filterOutReadOnly, boolean filterOutObsolete,
+            @Nullable HPerson person) {
         StringBuilder condition = new StringBuilder();
+
+        if (person != null) {
+            condition.append("left join p.localeMembers lm left join p.members m ")
+                    .append("where ((p.privateProject is TRUE and (m.person =:person or lm.person =:person)) ")
+                    .append("or (p.privateProject is FALSE)) ");
+        } else {
+            condition.append("where p.privateProject is FALSE ");
+        }
+
         if (filterOutActive || filterOutReadOnly || filterOutObsolete) {
-            condition.append("where ");
+            condition.append("and ");
         }
 
         if (filterOutActive) {
@@ -285,9 +320,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
             query.setMaxResults(maxResult);
         }
         @SuppressWarnings("unchecked")
-        List<HProject> list = query.setFirstResult(firstResult)
+        List<HProject> projects = query.setFirstResult(firstResult)
                 .getResultList();
-        return list;
+        return projects.stream()
+                .filter(project -> identity.hasPermission(project, "read"))
+                .collect(Collectors.toList());
     }
 
     public int getQueryProjectSize(@Nonnull String searchQuery,
@@ -483,5 +520,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                 .setParameter("projectSlug", projectSlug)
                 .setParameter("obsolete", EntityStatus.OBSOLETE);
         return ((Long) q.uniqueResult()).intValue();
+    }
+
+    @VisibleForTesting
+    protected void setAuthenticatedAccount(HAccount authenticatedAccount) {
+        this.authenticatedAccount = authenticatedAccount;
     }
 }

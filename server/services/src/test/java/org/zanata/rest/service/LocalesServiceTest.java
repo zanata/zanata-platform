@@ -23,6 +23,7 @@ import org.zanata.model.type.RequestType;
 import org.zanata.rest.dto.LocaleMember;
 import org.zanata.rest.dto.LocalesResults;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.RequestService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.SessionId;
@@ -52,6 +53,9 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest implements
         StaticProducer {
 
     private Response response;
+
+    @Produces @Authenticated
+    @Mock HAccount authenticatedAccount;
 
     @Inject
     private LocalesService localesService;

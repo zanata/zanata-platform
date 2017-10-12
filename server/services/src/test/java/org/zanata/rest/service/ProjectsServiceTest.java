@@ -10,7 +10,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.rest.dto.Project;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.test.CdiUnitRunner;
 
 import javax.enterprise.inject.Produces;
@@ -47,6 +50,14 @@ public class ProjectsServiceTest extends ZanataDbunitJpaTest {
     protected Session getSession() {
         return super.getSession();
     }
+
+    @Produces @Authenticated
+    @Mock
+    protected HAccount authenticatedAccount;
+
+    @Produces
+    @Mock
+    private ZanataIdentity identity;
 
     @Override
     protected void prepareDBUnitOperations() {

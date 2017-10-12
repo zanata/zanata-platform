@@ -162,6 +162,26 @@
     projectIterationId="900"
     validation="XML_ENTITY" state="ERROR" />
 
+  <HProject defaultProjectType="Gettext"
+      id="5"
+      versionNum="1"
+      creationDate="2009-09-01 20:30:16"
+      lastChanged="2009-09-01 20:30:16"
+      slug="private-project"
+      description="private-project"
+      homeContent=""
+      name="Private project"
+      privateProject="TRUE"
+      overrideLocales="FALSE"
+      restrictedByRoles="FALSE"
+      status="A"
+  />
+
+  <HProject_Member personId="4"
+      projectId="5"
+      role="M"
+  />
+
   <!-- Tell DbUnit to delete any existing documents -->
   <HDocument />
 </dataset>

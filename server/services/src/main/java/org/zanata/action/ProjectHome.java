@@ -679,6 +679,9 @@ public class ProjectHome extends SlugHome<HProject>
     // Verify it still works properly */
 
     public void initialize() {
+        if (!identity.hasPermission(getInstance(), "read")) {
+            throw new EntityNotFoundException();
+        }
         validateSuppliedId();
         if (getInstance().getDefaultCopyTransOpts() != null) {
             copyTransOptionsModel
