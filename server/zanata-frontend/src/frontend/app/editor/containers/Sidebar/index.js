@@ -66,7 +66,7 @@ class Sidebar extends Component {
             overflowY: 'auto'
           }
         }}
-        sidebarClassName="sidebar-editor">
+        sidebarClassName="SidebarEditor">
         {this.props.children}
       </ReactSidebar>
     )
