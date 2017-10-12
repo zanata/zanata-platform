@@ -18,7 +18,7 @@ public static final String PIPELINE_LIBRARY_BRANCH = 'ZNTA-2234-codecov'
 @Library('zanata-pipeline-library@ZNTA-2234-codecov')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
-import org.zanata.jenkins.Reporting
+import static org.zanata.jenkins.Reporting.codecov
 import static org.zanata.jenkins.StackTraces.getStackTrace
 
 import groovy.transform.Field
@@ -32,12 +32,8 @@ PullRequests.ensureJobDescription(env, manager, steps)
 def notify
 // initialiser must be run separately (bindings not available during compilation phase)
 notify = new Notifier(env, steps, currentBuild,
-    PROJ_URL + '.git', 'Jenkinsfile', PIPELINE_LIBRARY_BRANCH,
+    PROJ_URL, 'Jenkinsfile', PIPELINE_LIBRARY_BRANCH,
 )
-
-@Field
-def reporting
-reporting = new Reporting(env, steps, PROJ_URL + '.git')
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -239,7 +235,7 @@ timestamps {
           // TODO try https://github.com/jenkinsci/github-pr-coverage-status-plugin
 
           // send test coverage data to codecov.io
-          reporting.codecov()
+          codecov(env, steps, PROJ_URL)
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
