@@ -12,7 +12,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.zanata.security.AuthenticationManager
-import org.zanata.security.SamlLogin
+import org.zanata.security.SamlAttributes
 import org.zanata.util.UrlUtil
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -29,7 +29,7 @@ class SAMLFilterTest {
     @Mock
     private lateinit var response: HttpServletResponse
     @Mock
-    private lateinit var samlLogin: SamlLogin
+    private lateinit var samlAttributes: SamlAttributes
     @Mock
     private lateinit var authenticationManager: AuthenticationManager
     @Mock
@@ -39,7 +39,7 @@ class SAMLFilterTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        filter = SAMLFilter(authenticationManager, urlUtil, samlLogin)
+        filter = SAMLFilter(authenticationManager, urlUtil, samlAttributes)
     }
 
 
@@ -55,7 +55,7 @@ class SAMLFilterTest {
 
     @Test
     fun willDoNothingIfSessionContainsNoAccount() {
-        given(samlLogin.isSessionAuthenticatedBySAML()).willReturn(false)
+        given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(false)
 
         filter.doFilter(request, response, chain)
 
@@ -67,7 +67,7 @@ class SAMLFilterTest {
     @Test
     fun willDoNothingIfAccountInSessionContainsNoAuthenticatedRole() {
 
-        given(samlLogin.isSessionAuthenticatedBySAML()).willReturn(false)
+        given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(false)
 
         filter.doFilter(request, response, chain)
 
@@ -78,7 +78,7 @@ class SAMLFilterTest {
 
     @Test
     fun willAuthenticateIfSessionHasAuthenticatedAccount() {
-        given(samlLogin.isSessionAuthenticatedBySAML()).willReturn(true)
+        given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(true)
 
         given(authenticationManager.authenticationRedirect).willReturn("dashboard")
         given(urlUtil.dashboardUrl()).willReturn("/dashboard")

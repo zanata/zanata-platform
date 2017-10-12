@@ -11,8 +11,8 @@ import org.picketlink.common.constants.GeneralConstants
 import org.picketlink.identity.federation.bindings.wildfly.sp.SPFormAuthenticationMechanism
 import javax.servlet.http.HttpSession
 
-class SamlLoginTest {
-    private lateinit var samlLogin: SamlLogin
+class SamlAttributesTest {
+    private lateinit var samlAttributes: SamlAttributes
 
     @Mock
     private lateinit var session: HttpSession
@@ -22,7 +22,7 @@ class SamlLoginTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        samlLogin = SamlLogin(session)
+        samlAttributes = SamlAttributes(session)
     }
 
     @Test
@@ -30,7 +30,7 @@ class SamlLoginTest {
         BDDMockito.given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(null)
 
-        assertThat(samlLogin.isSessionAuthenticatedBySAML()).isFalse()
+        assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isFalse()
 
     }
 
@@ -42,7 +42,7 @@ class SamlLoginTest {
         BDDMockito.given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
 
-        assertThat(samlLogin.isSessionAuthenticatedBySAML()).isFalse()
+        assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isFalse()
     }
 
     @Test
@@ -52,7 +52,7 @@ class SamlLoginTest {
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
         BDDMockito.given(account.principal).willReturn(SimplePrincipal("jsmith"))
 
-        assertThat(samlLogin.isSessionAuthenticatedBySAML()).isTrue()
+        assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isTrue()
     }
 
     @Test
@@ -62,7 +62,7 @@ class SamlLoginTest {
         BDDMockito.given(account.roles).willReturn(setOf("authenticated"))
         BDDMockito.given(session.getAttribute(SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
 
-        val principal = samlLogin.principalFromSAMLResponse()
+        val principal = samlAttributes.principalFromSAMLResponse()
         assertThat(principal).isNotNull()
         assertThat(principal).isSameAs(simplePrincipal)
     }
@@ -71,9 +71,9 @@ class SamlLoginTest {
     fun canGetUsername() {
         BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(mapOf("uid" to listOf("jsmith")))
-        samlLogin = SamlLogin(session)
+        samlAttributes = SamlAttributes(session)
 
-        val username = samlLogin.usernameFromSAMLResponse(SimplePrincipal("abc-123-unique"))
+        val username = samlAttributes.usernameFromSAMLResponse(SimplePrincipal("abc-123-unique"))
 
         assertThat(username).isEqualTo("jsmith")
     }
@@ -82,9 +82,9 @@ class SamlLoginTest {
     fun willUsePrincipalNameIfUsernameIsNull() {
         BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(emptyMap<String, List<String>>())
-        samlLogin = SamlLogin(session)
+        samlAttributes = SamlAttributes(session)
 
-        val username = samlLogin.usernameFromSAMLResponse(SimplePrincipal("abc-123-unique"))
+        val username = samlAttributes.usernameFromSAMLResponse(SimplePrincipal("abc-123-unique"))
 
         assertThat(username).isEqualTo("abc-123-unique")
     }
@@ -93,9 +93,9 @@ class SamlLoginTest {
     fun canGetCommonName() {
         BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(mapOf("cn" to listOf("Joe Smith")))
-        samlLogin = SamlLogin(session)
+        samlAttributes = SamlAttributes(session)
 
-        val name = samlLogin.commonNameFromSAMLResponse(SimplePrincipal("abc-123-unique"))
+        val name = samlAttributes.commonNameFromSAMLResponse(SimplePrincipal("abc-123-unique"))
 
         assertThat(name).isEqualTo("Joe Smith")
     }
@@ -104,9 +104,9 @@ class SamlLoginTest {
     fun canGetEmail() {
         BDDMockito.given(session.getAttribute(GeneralConstants.SESSION_ATTRIBUTE_MAP))
                 .willReturn(mapOf("email" to listOf("jsmith@example.com")))
-        samlLogin = SamlLogin(session)
+        samlAttributes = SamlAttributes(session)
 
-        val email = samlLogin.emailFromSAMLResponse(SimplePrincipal("abc-123-unique"))
+        val email = samlAttributes.emailFromSAMLResponse(SimplePrincipal("abc-123-unique"))
 
         assertThat(email).isEqualTo("jsmith@example.com")
     }

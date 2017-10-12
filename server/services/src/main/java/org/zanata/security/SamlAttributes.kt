@@ -37,7 +37,7 @@ import javax.servlet.http.HttpSession
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-open class SamlLogin @Inject constructor(@DeltaSpike private val session: HttpSession) {
+open class SamlAttributes @Inject constructor(@DeltaSpike private val session: HttpSession) {
 
     open fun isSessionAuthenticatedBySAML() = principalFromSAMLResponse() != null
 

@@ -22,7 +22,7 @@ package org.zanata.servlet
 
 import com.google.common.annotations.VisibleForTesting
 import org.zanata.security.AuthenticationManager
-import org.zanata.security.SamlLogin
+import org.zanata.security.SamlAttributes
 import org.zanata.util.UrlUtil
 import java.io.IOException
 import javax.inject.Inject
@@ -47,13 +47,13 @@ class SAMLFilter() : Filter {
     @Inject
     private lateinit var urlUtil: UrlUtil
     @Inject
-    private lateinit var samlLogin: SamlLogin
+    private lateinit var samlAttributes: SamlAttributes
 
     @VisibleForTesting
-    constructor(authenticationManager: AuthenticationManager, urlUtil: UrlUtil, samlLogin: SamlLogin) : this() {
+    constructor(authenticationManager: AuthenticationManager, urlUtil: UrlUtil, samlAttributes: SamlAttributes) : this() {
         this.authenticationManager = authenticationManager
         this.urlUtil = urlUtil
-        this.samlLogin = samlLogin
+        this.samlAttributes = samlAttributes
     }
 
     @Throws(ServletException::class)
@@ -63,7 +63,7 @@ class SAMLFilter() : Filter {
     override fun doFilter(request: ServletRequest, response: ServletResponse,
                           chain: FilterChain) {
         if (request is HttpServletRequest) {
-            if (samlLogin.isSessionAuthenticatedBySAML()) {
+            if (samlAttributes.isSessionAuthenticatedBySAML()) {
                 authenticationManager.ssoLogin()
                 performRedirection(response as HttpServletResponse)
                 return
@@ -73,7 +73,7 @@ class SAMLFilter() : Filter {
     }
 
     override fun destroy() {}
-    
+
     @Throws(IOException::class)
     private fun performRedirection(resp: HttpServletResponse) {
         // Performs the redirection based on the results from the authentication
