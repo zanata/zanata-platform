@@ -52,7 +52,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
 import org.zanata.annotation.EntityRestrict;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -68,7 +67,6 @@ import com.google.common.collect.Sets;
 @Cacheable
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @EntityRestrict({ INSERT, UPDATE, DELETE })
-@Indexed
 @Access(AccessType.FIELD)
 public class HProjectIteration extends SlugEntityBase
         implements Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType,
