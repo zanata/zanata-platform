@@ -18,7 +18,7 @@ const dropdownReducer = (state = defaultState, action) => {
   switch (action.type) {
     case OPEN_DROPDOWN:
       return update({
-        openDropdownKey: {$set: action.key}
+        openDropdownKey: {$set: action.payload}
       })
 
     case CLOSE_DROPDOWN:
@@ -27,9 +27,9 @@ const dropdownReducer = (state = defaultState, action) => {
       })
 
     case TOGGLE_DROPDOWN:
-      const isOpen = action.key === state.openDropdownKey
+      const isOpen = action.payload === state.openDropdownKey
       return update({
-        openDropdownKey: {$set: isOpen ? undefined : action.key}
+        openDropdownKey: {$set: isOpen ? undefined : action.payload}
       })
 
     default:

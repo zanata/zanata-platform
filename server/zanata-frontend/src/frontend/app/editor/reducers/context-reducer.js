@@ -8,7 +8,7 @@ const defaultState = {
 const routingParamsReducer = (state = defaultState, action) => {
   switch (action.type) {
     case ROUTING_PARAMS_CHANGED:
-      return {...state, ...action.params}
+      return {...state, ...action.payload}
     default:
       return state
   }

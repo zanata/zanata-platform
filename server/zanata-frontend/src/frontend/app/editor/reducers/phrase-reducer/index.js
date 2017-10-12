@@ -84,7 +84,7 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case UPDATE_PAGE:
-      return updatePageIndex(action.page)
+      return updatePageIndex(action.payload)
 
     case CANCEL_EDIT:
       // Discard any newTranslations that were entered.
@@ -104,21 +104,20 @@ export const phraseReducer = (state = defaultState, action) => {
       }})
 
     case COPY_FROM_SOURCE:
-      const { phraseId, sourceIndex } = action
+      const { phraseId, sourceIndex } = action.payload
       return updatePhrase(phraseId, {$apply: (phrase) => {
         return copyFromSource(phrase, sourceIndex)
       }})
 
     case COPY_GLOSSARY_TERM:
       return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
-        return insertTextAtRange(phrase, action.payload.termTranslation,
+        return insertTextAtRange(phrase, action.payload,
           state.selectedTextRange)
       }})
 
     case COPY_SUGGESTION:
-      const { suggestion } = action
       return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
-        return copyFromSuggestion(phrase, suggestion)
+        return copyFromSuggestion(phrase, action.payload)
       }})
 
     case PHRASE_DETAIL_REQUEST:
@@ -138,7 +137,7 @@ export const phraseReducer = (state = defaultState, action) => {
       }
 
     case PENDING_SAVE_INITIATED:
-      return updatePhrase(action.phraseId, {
+      return updatePhrase(action.payload, {
         pendingSave: {$set: undefined}
       })
 
@@ -196,47 +195,47 @@ export const phraseReducer = (state = defaultState, action) => {
       })
 
     case QUEUE_SAVE:
-      return updatePhrase(action.phraseId, {
-        pendingSave: {$set: action.saveInfo}
+      return updatePhrase(action.payload.phraseId, {
+        pendingSave: {$set: action.payload.saveInfo}
       })
 
     case SAVE_FINISHED:
-      const phrase = state.detail[action.phraseId]
+      const phrase = state.detail[action.payload.phraseId]
       const { newTranslations } = phrase
-      return updatePhrase(action.phraseId, {
+      return updatePhrase(action.payload.phraseId, {
         inProgressSave: {$set: undefined},
         // FIXME check whether this should be action.translations instead
         translations: {$set: newTranslations},
         // TODO same as inProgressSave.status unless the server adjusted it
-        status: {$set: action.status},
-        revision: {$set: action.revision}
+        status: {$set: action.payload.status},
+        revision: {$set: action.payload.revision}
       })
 
     case SAVE_INITIATED:
-      return updatePhrase(action.phraseId, {
-        inProgressSave: {$set: action.saveInfo}
+      return updatePhrase(action.payload.phraseId, {
+        inProgressSave: {$set: action.payload.saveInfo}
       })
 
     case SELECT_PHRASE:
-      return selectPhrase(state, action.phraseId)
+      return selectPhrase(state, action.payload)
 
     case SELECT_PHRASE_SPECIFIC_PLURAL:
-      const withNewPluralIndex = updatePhrase(action.phraseId, {
-        selectedPluralIndex: {$set: action.index}
+      const withNewPluralIndex = updatePhrase(action.payload.phraseId, {
+        selectedPluralIndex: {$set: action.payload.index}
       })
-      return selectPhrase(withNewPluralIndex, action.phraseId)
+      return selectPhrase(withNewPluralIndex, action.payload.phraseId)
 
     case SET_SAVE_AS_MODE:
       return update({
-        saveAsMode: {$set: action.active}
+        saveAsMode: {$set: action.payload}
       })
 
     case TRANSLATION_TEXT_INPUT_CHANGED:
       return update({
         detail: {
-          [action.id]: {
+          [action.payload.id]: {
             newTranslations: {
-              [action.index]: {$set: action.text}
+              [action.payload.index]: {$set: action.payload.text}
             }
           }
         }

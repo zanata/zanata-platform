@@ -70,7 +70,7 @@ const glossary = (state = defaultState, action) => {
       })
 
     case GLOSSARY_SEARCH_TEXT_CHANGE:
-      return update({searchText: {$set: action.text}})
+      return update({searchText: {$set: action.payload}})
 
     case GLOSSARY_TERMS_REQUEST:
       return update({searching: {$set: true}})
@@ -104,14 +104,14 @@ const glossary = (state = defaultState, action) => {
     case SET_GLOSSARY_DETAILS_INDEX:
       return update({
         details: {
-          resultIndex: {$set: action.payload.index}
+          resultIndex: {$set: action.payload}
         }
       })
 
     case SHOW_GLOSSARY_DETAILS:
       return update({
         details: {
-          show: {$set: action.payload.show}
+          show: {$set: action.payload}
         }
       })
 

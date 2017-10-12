@@ -1,5 +1,5 @@
 import stateChangeDispatchMiddleware from './state-change-dispatch'
-import { requestDocumentList } from '../actions'
+import { createAction } from 'redux-actions'
 import {
   fetchHeaderInfo,
   selectDoc,
@@ -36,15 +36,6 @@ const getPageIndexFromQuery = (state) => {
 const fetchDocsMiddleware = stateChangeDispatchMiddleware(
   // FIXME replace with watcher
   (dispatch, oldState, newState) => {
-    const pre = oldState.context
-    const post = newState.context
-    const needDocs = pre.projectSlug !== post.projectSlug ||
-                     pre.versionSlug !== post.versionSlug
-    if (needDocs) {
-      dispatch(requestDocumentList())
-    }
-  },
-  (dispatch, oldState, newState) => {
     const { lang, docId } = newState.context
 
     const docChanged = oldState.context.docId !== docId
@@ -64,9 +55,9 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
         // FIXME just use selected locale from context.lang if possible
         dispatch(selectLocale(lang))
       }
-      dispatch({type: UPDATE_PAGE, page: newPageIndex})
+      dispatch(createAction(UPDATE_PAGE)(newPageIndex))
     } else if (updatePage) {
-      dispatch({type: UPDATE_PAGE, page: newPageIndex})
+      dispatch(createAction(UPDATE_PAGE)(newPageIndex))
     }
   },
   // Fetch new header data only when the full workspace is first known
