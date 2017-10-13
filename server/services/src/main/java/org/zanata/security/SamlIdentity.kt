@@ -60,7 +60,7 @@ class SamlIdentity
 
         log.info("SAML2 login: username: {}, common name: {}, uuid: {}",
                 UID, commonName, uniqueName)
-        val credentials = credentialsDAO.findSSOUser(uniqueName)
+        val credentials = credentialsDAO.findByUser(uniqueName)
         // when sign in with SAML2 the first time, there is no HCredentials or HAccount in database
         val username = credentials?.account?.username ?: uid
 

@@ -22,7 +22,6 @@ package org.zanata.dao;
 
 import javax.enterprise.context.RequestScoped;
 import org.zanata.model.security.HCredentials;
-import org.zanata.model.security.HSSOCredentials;
 
 /**
  * @author Carlos Munoz <a
@@ -37,8 +36,9 @@ public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
     }
 
     /**
-     * Finds a Credentials instance by the user. NOTE: The user passed in is not
-     * the account user, is the user stored under the credentials.
+     * Finds a Credentials instance by the 'user' field. NOTE: The user passed
+     * in is not the account user, is the user stored under the credentials
+     * (e.g. uuid in the Red Hat SAML2 case).
      *
      * @param user
      *            The user registered under the credentials object.
@@ -52,15 +52,4 @@ public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
                 .setComment("CredentialsDAO.findByUser").uniqueResult();
     }
 
-    /**
-     * Find a SAML2 Credentials instance by the user (e.g. uuid in the Red Hat case).
-     * @param user
-     * @return a HSSOCredentials object
-     */
-    public HSSOCredentials findSSOUser(String user) {
-        return (HSSOCredentials) getSession()
-                .createQuery("from HSSOCredentials c where c.user = :user")
-                .setParameter("user", user)
-                .setComment("CredentialsDAO.findSSOUser").uniqueResult();
-    }
 }
