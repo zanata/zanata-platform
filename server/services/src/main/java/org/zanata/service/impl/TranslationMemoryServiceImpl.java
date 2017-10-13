@@ -76,6 +76,7 @@ import org.zanata.rest.editor.dto.suggestion.TextFlowSuggestionDetail;
 import org.zanata.rest.editor.dto.suggestion.TransMemoryUnitSuggestionDetail;
 import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.util.SysProperties;
 import org.zanata.util.UrlUtil;
@@ -139,11 +140,15 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private FullTextEntityManager entityManager;
     private UrlUtil urlUtil;
+    private ZanataIdentity identity;
 
     @Inject
-    public TranslationMemoryServiceImpl(@FullText FullTextEntityManager entityManager, UrlUtil urlUtil) {
+    public TranslationMemoryServiceImpl(
+            @FullText FullTextEntityManager entityManager,
+            ZanataIdentity identity, UrlUtil urlUtil) {
         this.entityManager = entityManager;
         this.urlUtil = urlUtil;
+        this.identity = identity;
     }
 
     public TranslationMemoryServiceImpl() {
@@ -319,7 +324,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             // TODO filter by entityTypes as well
             // TODO returning a filtered collection might be overkill
             return Collections2.filter(matches,
-                    new ValidTargetFilterPredicate(targetLocaleId));
+                    new ValidTargetFilterPredicate(identity, targetLocaleId));
         } catch (ParseException e) {
             if (e.getCause() instanceof BooleanQuery.TooManyClauses) {
                 log.warn(
@@ -968,9 +973,12 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     private static class ValidTargetFilterPredicate
             implements Predicate<Object[]> {
         private final LocaleId localeId;
+        private final ZanataIdentity identity;
 
-        public ValidTargetFilterPredicate(LocaleId localeId) {
+        public ValidTargetFilterPredicate(ZanataIdentity identity,
+                LocaleId localeId) {
             this.localeId = localeId;
+            this.identity = identity;
         }
 
         @Override
@@ -991,7 +999,12 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 } else {
                     HProjectIteration version = target.getTextFlow()
                             .getDocument().getProjectIteration();
-                    if (version.getStatus() == EntityStatus.OBSOLETE) {
+                    if (!identity.hasPermission(version, "read")) {
+                        log.debug(
+                                "Discarding TextFlowTarget (private version {}): {}",
+                                version, target);
+                        return false;
+                    } else if (version.getStatus() == EntityStatus.OBSOLETE) {
                         log.debug(
                                 "Discarding TextFlowTarget (obsolete iteration {}): {}",
                                 version, target);
