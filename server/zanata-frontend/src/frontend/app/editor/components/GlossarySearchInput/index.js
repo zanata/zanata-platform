@@ -86,7 +86,7 @@ class GlossarySearchInput extends React.Component {
         <div className={cx('InputGroup InputGroup--outlined ' +
             'InputGroup--rounded',
           { 'is-focused': this.state.focused })}>
-          <span className="InputGroup-addon"
+          <span className="EditorInputGroup-addon"
             onClick={this.focusInput}>
             <Icon name="search" className="n1"
               title="Search glossary" />
@@ -97,7 +97,7 @@ class GlossarySearchInput extends React.Component {
             maxLength="100"
             value={this.props.text}
             onChange={this.props.onTextChange}
-            className="InputGroup-input u-sizeLineHeight-1_1-4" />
+            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
         </div>
       </div>
     )

@@ -46,7 +46,7 @@ class LanguagesDropdown extends React.Component {
       const url = this.localeUrl(locale)
       return (
         <li key={locale.id}>
-          <a href={url} className="Dropdown-item">
+          <a href={url} className="EditorDropdown-item">
             {locale.name}
           </a>
         </li>
@@ -65,7 +65,7 @@ class LanguagesDropdown extends React.Component {
           <button className="Link--invert">
             <Row>
               {localeName}
-              <div className="u-sML-1-8 Dropdown-toggleIcon">
+              <div className="u-sML-1-8 EditorDropdown-toggleIcon">
                 <Icon name="chevron-down" className="s1" />
               </div>
             </Row>

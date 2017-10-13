@@ -40,7 +40,7 @@ describe('DocsDropdownTest', () => {
           <button className="Link--invert">
             <Row>
               gastropod.txt
-              <div className="u-sML-1-8 Dropdown-toggleIcon">
+              <div className="u-sML-1-8 EditorDropdown-toggleIcon">
                 <Icon name="chevron-down" className="s1" />
               </div>
             </Row>
@@ -50,15 +50,15 @@ describe('DocsDropdownTest', () => {
           <ul>
             <li key="snail.txt">
               <a href="/project/translate/slimy/v/slick/snail.txt?lang=sluggish"
-                 className="Dropdown-item">snail.txt</a>
+                 className="EditorDropdown-item">snail.txt</a>
             </li>
             <li key="gastropod.txt">
               <a href="/project/translate/slimy/v/slick/gastropod.txt?lang=sluggish"
-                 className="Dropdown-item">gastropod.txt</a>
+                 className="EditorDropdown-item">gastropod.txt</a>
             </li>
             <li key="cephalopod.txt">
               <a href="/project/translate/slimy/v/slick/cephalopod.txt?lang=sluggish"
-                 className="Dropdown-item">cephalopod.txt</a>
+                 className="EditorDropdown-item">cephalopod.txt</a>
             </li>
           </ul>
         </Dropdown.Content>

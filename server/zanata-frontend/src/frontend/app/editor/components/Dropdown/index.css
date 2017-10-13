@@ -21,28 +21,28 @@
 not conflict with the other frontend code
  */
 
-.Dropdown {
+.EditorDropdown {
   position: relative;
   z-index: var(--Dropdown-z-index);
   display: inline-block;
   user-select: none;
 }
 
-.Dropdown.is-active {
+.EditorDropdown.is-active {
   z-index: var(--Dropdown-is-active-z-index);
 }
 
-.Dropdown-toggleIcon {
+.EditorDropdown-toggleIcon {
   display: inline-block;
   transition: var(--Dropdown-transition);
   text-align: center;
 }
 
-.Dropdown.is-active .Dropdown-toggleIcon {
+.EditorDropdown.is-active .EditorDropdown-toggleIcon {
   transform: rotate(180deg);
 }
 
-.Dropdown-content {
+.EditorDropdown-content {
   position: absolute;
   z-index: var(--Dropdown-content-z-index);
   top: 100%;
@@ -65,18 +65,18 @@ not conflict with the other frontend code
   box-shadow: 0 0 var(--Dropdown-rhythm) rgba(0,0,0,0.1);
 }
 
-.Dropdown-content--Bordered {
+.EditorDropdown-content--Bordered {
   border: var(--Dropdown-content-border);
   border-bottom-width: 2px;
 }
 
-.Dropdown.is-active > .Dropdown-content {
+.EditorDropdown.is-active > .EditorDropdown-content {
   visibility: visible;
   transform: translateY(0);
   opacity: 1;
 }
 
-.Dropdown-title {
+.EditorDropdown-title {
   font-size: calc(14/16 * 1rem);
   padding: calc(var(--Dropdown-rhythm) * .125) calc(var(--Dropdown-rhythm) * .25);
   background-color: var(--Dropdown-title-color-bg);
@@ -84,7 +84,7 @@ not conflict with the other frontend code
   color: var(--Dropdown-title-color);
 }
 
-.Dropdown-item {
+.EditorDropdown-item {
   display: block;
   line-height: calc(var(--Dropdown-rhythm) * .875);
   padding: calc(var(--Dropdown-rhythm) * .25) calc(var(--Dropdown-rhythm) * .25);
@@ -92,7 +92,7 @@ not conflict with the other frontend code
   color: var(--Dropdown-item-color);
 }
 
-.Dropdown-item:hover {
+.EditorDropdown-item:hover {
   color: var(--Dropdown-item-hover-color);
   background-color: var(--Dropdown-item-hover-color-bg);
 }
@@ -101,7 +101,7 @@ not conflict with the other frontend code
  * Modifiers
  */
 
-.Dropdown--right .Dropdown-content {
+.EditorDropdown--right .EditorDropdown-content {
   left: auto;
   right: 0;
 }

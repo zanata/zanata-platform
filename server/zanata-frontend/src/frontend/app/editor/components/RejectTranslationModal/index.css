@@ -26,11 +26,11 @@
   margin-left: 1.5rem;
 }
 
-#RejectTranslationModal .modal-body .InputGroup--outlined {
+#RejectTranslationModal .modal-body .EditorInputGroup--outlined {
   border: var(--TM-input-border) !important;
 }
 
-#RejectTranslationModal .modal-body .Dropdown {
+#RejectTranslationModal .modal-body .EditorDropdown {
   border-radius: var(--TM-input-border-radius);
   border: var(--TM-input-border) !important;
 }
@@ -39,12 +39,12 @@
   flex-grow: 2;
 }
 
-#RejectTranslationModal a.Dropdown-item span.s0 {
+#RejectTranslationModal a.EditorDropdown-item span.s0 {
   vertical-align: var(--TM-icon-vert-alignment);
   margin-left: var(--TM-small-margin);
 }
 
-#RejectTranslationModal .InputGroup--outlined.Commenting {
+#RejectTranslationModal .EditorInputGroup--outlined.Commenting {
   margin-top: 2rem;
   max-width: 100%;
   min-width: 100%;
@@ -62,20 +62,20 @@
   vertical-align: sub;
 }
 
-#RejectTranslationModal .Dropdown-item {
+#RejectTranslationModal .EditorDropdown-item {
   color: var(--TM-dropdown-text-color);
 }
 
-#RejectTranslationModal .Dropdown-item:hover {
+#RejectTranslationModal .EditorDropdown-item:hover {
   background-color: #fcfcfc;
   color: var(--TM-dropdown-text-color);
 }
 
-#RejectTranslationModal .Dropdown-toggle .Dropdown-item:hover {
+#RejectTranslationModal .Dropdown-toggle .EditorDropdown-item:hover {
   border-radius: 0.4rem;
 }
 
-#RejectTranslationModal .Dropdown-item span.n1 {
+#RejectTranslationModal .EditorDropdown-item span.n1 {
   margin-left: var(--TM-small-margin);
   vertical-align: var(--TM-icon-vert-alignment);
 }

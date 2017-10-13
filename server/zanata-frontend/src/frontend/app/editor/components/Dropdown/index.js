@@ -98,7 +98,7 @@ Dropdown.Content = class extends React.Component {
 
   render () {
     return (
-      <div className="Dropdown-content Dropdown-content--bordered">
+      <div className="EditorDropdown-content Dropdown-content--bordered">
         {this.props.children}
       </div>
     )

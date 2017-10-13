@@ -73,7 +73,7 @@ class GlossaryTerm extends React.Component {
           <Button
             onClick={this.copy}
             disabled={isEmpty(term.target)}
-            className="Button Button--small u-rounded Button--primary">
+            className="EditorButton Button--small u-rounded Button--primary">
             Copy
           </Button>
         </td>

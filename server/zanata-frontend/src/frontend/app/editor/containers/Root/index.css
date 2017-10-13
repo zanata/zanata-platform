@@ -612,7 +612,7 @@ h4.modal-title {
   padding: 1px 5px;
 }
 
-.InputGroup-addon.btn-xs.advsearch {
+.EditorInputGroup-addon.btn-xs.advsearch {
   vertical-align: middle;
 }
 
@@ -882,10 +882,7 @@ button.close:focus, button.close:hover, button.close:active:focus {
   width: 1rem;
 }
 
-/* This needs to be this specific to target a certain element in the editor that
-does not have a custom class */
-
-button.Link--neutral .row span.u-ltemd-hidden {
+.TransIndicator {
   vertical-align: super;
 }
 

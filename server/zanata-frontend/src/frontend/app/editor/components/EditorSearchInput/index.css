@@ -46,11 +46,11 @@
   vertical-align: bottom;
 }
 
-#EditorHeader .InputEditorSearch .InputGroup-addon span.n1 {
+#EditorHeader .InputEditorSearch .EditorInputGroup-addon span.n1 {
   vertical-align: middle;
 }
 
-.InputGroup-addon {
+.EditorInputGroup-addon {
   vertical-align: baseline;
 }
 

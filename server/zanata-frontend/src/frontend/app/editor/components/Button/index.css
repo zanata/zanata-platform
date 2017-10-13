@@ -29,20 +29,20 @@
 not conflict with the other frontend code
  */
 
-.Button {
+.EditorButton {
   transition: var(--Button-transition);
   min-height: calc(var(--Button-rhythm) * 1.25);
   text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
 }
 
-.Button:disabled,
-.Button.is-disabled {
+.EditorButton:disabled,
+.EditorButton.is-disabled {
   pointer-events: none;
 }
 
-.Button:hover,
-.Button:active,
-.Button.is-active {
+.EditorButton:hover,
+.EditorButton:active,
+.EditorButton.is-active {
   outline: inherit;
 }
 

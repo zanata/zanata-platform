@@ -203,14 +203,14 @@ class TransUnitTranslationFooter extends React.Component {
                       'Dropdown-toggle',
                       buttonClassByStatus[selectedButtonStatus])}
         title="Save as…">
-        <div className="Dropdown-toggleIcon">
+        <div className="EditorDropdown-toggleIcon">
           <Icon name="chevron-down" className="s0" title="Save as…" />
         </div>
       </Button>
       : undefined
 
     const otherActionButtonList = (
-      <ul className="Dropdown-content Dropdown-content--bordered
+      <ul className="EditorDropdown-content Dropdown-content--bordered
                      u-rounded">
         {otherActionButtons}
       </ul>

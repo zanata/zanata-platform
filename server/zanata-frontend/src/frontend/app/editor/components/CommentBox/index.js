@@ -56,7 +56,7 @@ class CommentBox extends React.Component {
         </FormGroup>
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
-          className="Button Button--small u-rounded Button--primary u-pullRight">
+          className="EditorButton Button--small u-rounded Button--primary u-pullRight">
          Post comment
         </Button>
       </div>

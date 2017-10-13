@@ -391,7 +391,7 @@ span.loader span div {
   vertical-align: sub;
 }
 
-.InlineSearch .InputGroup--outlined {
+.InlineSearch .EditorInputGroup--outlined {
   min-width: 8rem;
 }
 

@@ -20,12 +20,12 @@ not conflict with the other frontend code
   vertical-align: middle;
 }
 
-.ButtonGroup--round .ButtonGroup-item:first-child .Button {
+.ButtonGroup--round .ButtonGroup-item:first-child .EditorButton {
   border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
 }
 
-.ButtonGroup--round .ButtonGroup-item:last-child .Button {
+.ButtonGroup--round .ButtonGroup-item:last-child .EditorButton {
   border-top-right-radius: 100px;
   border-bottom-right-radius: 100px;
 }

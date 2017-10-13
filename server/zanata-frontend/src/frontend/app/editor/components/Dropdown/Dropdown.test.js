@@ -29,14 +29,14 @@ describe('DropdownTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div className="Dropdown boom acka lacka">
+      <div className="EditorDropdown boom acka lacka">
         <div className="Dropdown-toggle"
              aria-haspopup={true}
              aria-expanded={false}
              onClick={toggleTheDoor}>
           <button>Boom boom acka lacka lacka boom</button>
         </div>
-        <div className="Dropdown-content Dropdown-content--bordered">
+        <div className="EditorDropdown-content Dropdown-content--bordered">
           <ul>
             <li>Open the door</li>
             <li>Get on the floor</li>
@@ -72,14 +72,14 @@ describe('DropdownTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div className="Dropdown is-active boom acka lacka">
+      <div className="EditorDropdown is-active boom acka lacka">
         <div className="Dropdown-toggle"
              aria-haspopup={true}
              aria-expanded={true}
              onClick={toggleTheDoor}>
           <button>Boom boom acka lacka lacka boom</button>
         </div>
-        <div className="Dropdown-content Dropdown-content--bordered">
+        <div className="EditorDropdown-content Dropdown-content--bordered">
           <ul>
             <li>Open the door</li>
             <li>Get on the floor</li>
