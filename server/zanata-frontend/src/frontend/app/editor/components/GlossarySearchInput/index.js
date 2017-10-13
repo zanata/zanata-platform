@@ -83,8 +83,8 @@ class GlossarySearchInput extends React.Component {
   render () {
     return (
       <div className="InlineSearch">
-        <div className={cx('InputGroup InputGroup--outlined ' +
-            'InputGroup--rounded',
+        <div className={cx('EditorInputGroup EditorInputGroup--outlined ' +
+            'EditorInputGroup--rounded',
           { 'is-focused': this.state.focused })}>
           <span className="EditorInputGroup-addon"
             onClick={this.focusInput}>

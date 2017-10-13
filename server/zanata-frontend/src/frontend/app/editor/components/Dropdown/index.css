@@ -32,13 +32,13 @@ not conflict with the other frontend code
   z-index: var(--Dropdown-is-active-z-index);
 }
 
-.EditorDropdown-toggleIcon {
+.Dropdown-toggleIcon {
   display: inline-block;
   transition: var(--Dropdown-transition);
   text-align: center;
 }
 
-.EditorDropdown.is-active .EditorDropdown-toggleIcon {
+.EditorDropdown.is-active .Dropdown-toggleIcon {
   transform: rotate(180deg);
 }
 

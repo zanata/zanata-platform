@@ -192,7 +192,8 @@ export class EditorSearchInput extends Component {
         onBlur={this.onBlur}
         onFocus={this.onFocus}>
         <div className={
-          cx('InputGroup InputGroup--outlined InputGroup--rounded',
+          cx('EditorInputGroup EditorInputGroup--outlined' +
+              ' EditorInputGroup--rounded',
             { 'is-focused': this.state.focused })}>
           <span className="EditorInputGroup-addon"
             onClick={this.focusInput}>
@@ -208,7 +209,7 @@ export class EditorSearchInput extends Component {
             onClick={this.state.open}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           {this.clearButtonElement()}
-          <span className="EditorInputGroup-addon btn-xs advsearch btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link"
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>

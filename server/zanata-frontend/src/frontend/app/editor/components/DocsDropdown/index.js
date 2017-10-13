@@ -54,7 +54,7 @@ class DocsDropdown extends React.Component {
           <button className="Link--invert">
             <Row>
               {selectedDoc}
-              <div className="u-sML-1-8 EditorDropdown-toggleIcon">
+              <div className="u-sML-1-8 Dropdown-toggleIcon">
                 <Icon name="chevron-down" className="s1" />
               </div>
             </Row>

@@ -30,7 +30,7 @@ class Dropdown extends React.Component {
 
   render () {
     const className = cx({
-      'Dropdown': true,
+      'EditorDropdown': true,
       'is-active': this.props.isOpen
     }, this.props.className)
 
@@ -45,7 +45,7 @@ class Dropdown extends React.Component {
           ? { onClick: this.toggleDropdown } : {}
         return (
           <div ref={this.setButtonDiv}
-            className="Dropdown-toggle"
+            className="EditorDropdown-toggle"
             aria-haspopup
             aria-expanded={this.props.isOpen}
             {...onClick}>
@@ -98,7 +98,7 @@ Dropdown.Content = class extends React.Component {
 
   render () {
     return (
-      <div className="EditorDropdown-content Dropdown-content--bordered">
+      <div className="EditorDropdown-content EditorDropdown-content--bordered">
         {this.props.children}
       </div>
     )

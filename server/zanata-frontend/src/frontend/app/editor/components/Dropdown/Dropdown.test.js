@@ -30,7 +30,7 @@ describe('DropdownTest', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="EditorDropdown boom acka lacka">
-        <div className="Dropdown-toggle"
+        <div className="EditorDropdown-toggle"
              aria-haspopup={true}
              aria-expanded={false}
              onClick={toggleTheDoor}>

@@ -51,7 +51,7 @@
 }
 
 .EditorInputGroup-addon {
-  vertical-align: baseline;
+  vertical-align: sub !important;
 }
 
 li.InlineSearch-list {
