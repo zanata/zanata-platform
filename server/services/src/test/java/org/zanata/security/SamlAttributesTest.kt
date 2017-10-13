@@ -30,7 +30,7 @@ class SamlAttributesTest {
         given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(null)
 
-        assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isFalse()
+        assertThat(samlAttributes.isSessionAuthenticatedBySAML).isFalse()
 
     }
 
@@ -42,7 +42,7 @@ class SamlAttributesTest {
         given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
 
-        assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isFalse()
+        assertThat(samlAttributes.isSessionAuthenticatedBySAML).isFalse()
     }
 
     @Test
@@ -52,7 +52,7 @@ class SamlAttributesTest {
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
         given(account.principal).willReturn(SimplePrincipal("jsmith"))
 
-        assertThat(samlAttributes.isSessionAuthenticatedBySAML()).isTrue()
+        assertThat(samlAttributes.isSessionAuthenticatedBySAML).isTrue()
     }
 
     @Test

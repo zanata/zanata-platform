@@ -55,7 +55,7 @@ class SAMLFilterTest {
 
     @Test
     fun willNotRedirectIfItIsNotAuthenticated() {
-        given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(false)
+        given(samlAttributes.isSessionAuthenticatedBySAML).willReturn(false)
 
         filter.doFilter(request, response, chain)
 
@@ -66,7 +66,7 @@ class SAMLFilterTest {
 
     @Test
     fun willRedirectToPageIfItIsAuthenticated() {
-        given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(true)
+        given(samlAttributes.isSessionAuthenticatedBySAML).willReturn(true)
 
         given(authenticationManager.authenticationRedirect).willReturn("dashboard")
         given(urlUtil.dashboardUrl()).willReturn("/dashboard")

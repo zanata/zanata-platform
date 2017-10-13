@@ -39,7 +39,7 @@ import javax.servlet.http.HttpSession
  */
 open class SamlAttributes @Inject constructor(@DeltaSpike private val session: HttpSession) {
 
-    open fun isSessionAuthenticatedBySAML() = principalFromSAMLResponse() != null
+    open val isSessionAuthenticatedBySAML get() = principalFromSAMLResponse() != null
 
     @Suppress("UNCHECKED_CAST")
     private val attributeMap: Map<String, List<String>> =
