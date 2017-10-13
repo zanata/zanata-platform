@@ -24,14 +24,14 @@
 }
 
 .SidebarEditor {
-  position: static !important;
+  border-left: solid 1px var(--Sidebar-border);
   float: right !important;
+  height: 99.5% !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  width: 35%;
-  height: 99.5% !important;
   padding-top: 90px !important;
-  border-left: solid 1px var(--Sidebar-border);
+  position: static !important;
+  width: 35%;
 }
 
 .SidebarEditor :focus {
@@ -43,16 +43,16 @@
 }
 
 .SidebarEditor-wrapper {
-  padding: var(--Sidebar-spacing-large);
   background-color: #fff;
+  padding: var(--Sidebar-spacing-large);
 }
 
 .SidebarEditor-heading {
+  background-color: var(--Sidebar-color-muted);
+  color: var(--Sidebar-color-text);
   font-weight: var(--Sidebar-bold-text);
   height: 48px;
   padding: var(--Sidebar-spacing-large);
-  color: var(--Sidebar-color-text);
-  background-color: var(--Sidebar-color-muted);
 }
 
 .SidebarEditor-heading svg {
@@ -60,9 +60,9 @@
 }
 
 ul.SidebarEditor-details {
+  color: var(--Sidebar-color-text);
   font-size: var(--Sidebar-small-text);
   word-wrap: break-word;
-  color: var(--Sidebar-color-text);
 }
 
 #SidebarEditor-tabsPane1.tab-pane.active {
@@ -70,8 +70,8 @@ ul.SidebarEditor-details {
 }
 
 #SidebarEditor-tabsPane1.tab-pane.active table thead th {
-  padding-bottom: var(--Sidebar-spacing-large);
   color: var(--Sidebar-color-text);
+  padding-bottom: var(--Sidebar-spacing-large);
 }
 
 #SidebarEditor-tabsPane1.tab-pane.active table tbody tr {
@@ -100,13 +100,13 @@ ul.SidebarEditor-details span {
 }
 
 span.SidebarEditor-details--nocontent {
-  font-weight: 500 !important;
   color: var(--Sidebar-no-content);
+  font-weight: 500 !important;
 }
 
 .SidebarEditor-details--content *, span.SidebarEditor-details--content {
-  font-weight: 500 !important;
   color: var(--Sidebar-color-text);
+  font-weight: 500 !important;
 }
 
 .SidebarEditor-details--content .n1 {
@@ -135,22 +135,22 @@ ul.nav-tabs li.active {
 }
 
 table {
+  color: var(--Sidebar-color-text);
   font-size: var(--Sidebar-small-text);
-  width: 95%;
   margin: var(--Sidebar-spacing-large);
   text-align: left;
-  color: var(--Sidebar-color-text);
+  width: 95%;
 }
 
 .table.GlossaryDetails-table {
-  width: 100%;
-  max-width: 100%;
   margin-bottom: 1.429rem;
+  max-width: 100%;
+  width: 100%;
 }
 
 .table.GlossaryDetails-table>thead>tr>th {
-  vertical-align: bottom;
   border-bottom: 2px solid var(--Sidebar-border);
+  vertical-align: bottom;
 }
 
 .table.GlossaryDetails-table>tbody>tr>td {
@@ -158,9 +158,9 @@ table {
 }
 
 .table.GlossaryDetails-table>tbody>tr>td, .table.GlossaryDetails-table>tbody>tr>th, .table.GlossaryDetails-table>tfoot>tr>td, .table.GlossaryDetails-table>tfoot>tr>th, .table.GlossaryDetails-table>thead>tr>td, .table.GlossaryDetails-table>thead>tr>th {
+  border-top: 1px solid var(--Sidebar-border);
   line-height: 1.42857143;
   padding: .5rem;
-  border-top: 1px solid var(--Sidebar-border);
 }
 
 .table td {
@@ -169,11 +169,11 @@ table {
 }
 
 table td {
-  position: relative;
   overflow: hidden;
-  width: inherit;
-  white-space: nowrap;
+  position: relative;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  width: inherit;
 }
 
 table th {
@@ -194,8 +194,8 @@ table.GlossaryDetails-table tbody td {
 }
 
 table.GlossaryDetails-table thead th {
-  font-weight: 500;
   color: var(--Sidebar-color-highlight);
+  font-weight: 500;
 }
 
 .split-panel {
@@ -208,14 +208,14 @@ table.GlossaryDetails-table thead th {
 }
 
 .GlossaryDetails-panel.panel .panel-body {
-  overflow: auto;
   height: inherit;
   max-height: 10em;
+  overflow: auto;
 }
 
 .split-panel .panel-body, .GlossaryDetails-panel .panel-body {
-  padding-top: 0;
   padding-bottom: 0;
+  padding-top: 0;
 }
 
 .GlossaryText {
@@ -223,11 +223,11 @@ table.GlossaryDetails-table thead th {
 }
 
 .Glossary-noResults, .Search-enterText, .GlossarySearch {
+  color: var(--Sidebar-color-text);
   margin-top: var(--Sidebar-spacing-large);
   text-align: center;
   text-align: -moz-center;
   text-align: -webkit-center;
-  color: var(--Sidebar-color-text);
 }
 
 .icon-comment svg {
@@ -247,52 +247,52 @@ table.GlossaryDetails-table thead th {
 }
 
 table td button.gButton--link {
-  vertical-align: bottom;
   color: var(--Sidebar-color-highlight);
+  vertical-align: bottom;
 }
 
-.stringLong span {
+.StringLong span {
   overflow: hidden;
-  white-space: normal;
   text-overflow: ellipsis;
+  white-space: normal;
   word-break: normal;
 }
 
-.stringLong span:after {
+.StringLong span:after {
+  content: attr(data-filetype);
+  left: 100%;
   position: absolute;
   top: 0;
-  left: 100%;
-  content: attr(data-filetype);
 }
 
 .tooltip {
+  border-color: var(--Sidebar-panel-dark);
+  display: block;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: .857rem;
-  font-weight: 400;
   font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
   line-height: 1.333em;
   position: absolute;
-  z-index: 1070;
-  display: block;
   text-align: left;
-  white-space: normal;
   text-decoration: none;
-  letter-spacing: normal;
-  word-spacing: normal;
-  text-transform: none;
-  word-wrap: normal;
-  word-break: normal;
-  border-color: var(--Sidebar-panel-dark);
   text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+  z-index: 1070;
   line-break: auto;
 }
 
 .tooltip-arrow {
+  border-color: transparent;
+  border-style: solid;
+  height: 0;
   position: absolute;
   width: 0;
-  height: 0;
-  border-style: solid;
-  border-color: transparent;
 }
 
 .tooltip.top {
@@ -301,34 +301,34 @@ table td button.gButton--link {
 }
 
 .tooltip-inner {
+  background-color: var(--Sidebar-panel-dark);
+  border: solid 2px var(--Sidebar-panel-dark);
+  border-radius: 3px;
+  color: #fff;
   max-width: 15rem;
   padding: .5em;
   text-align: center;
-  color: #fff;
-  border: solid 2px var(--Sidebar-panel-dark);
-  border-radius: 3px;
-  background-color: var(--Sidebar-panel-dark);
 }
 
 .tooltip.top .tooltip-arrow {
+  border-top-color: var(--Sidebar-panel-dark);
+  border-width: 5px 5px 0;
   bottom: 0;
   left: 50%;
-  border-width: 5px 5px 0;
-  border-top-color: var(--Sidebar-panel-dark);
 }
 
 span.loader span div {
-  margin-right: auto;
   margin-left: auto;
+  margin-right: auto;
 }
 
 .panel {
-  margin-bottom: 1.3em;
+  background-color: var(--Sidebar-panel-background);
   border: 1px solid transparent;
   border-radius: 5px;
-  background-color: var(--Sidebar-panel-background);
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  margin-bottom: 1.3em;
 }
 
 .panel-default, .well blockquote {
@@ -336,37 +336,37 @@ span.loader span div {
 }
 
 .panel-body {
-  padding: .85em;
   color: var(--Sidebar-panel-dark);
+  padding: .85em;
 }
 
 .panel-title {
-  font-size: 1.143rem;
-  margin-top: 0;
-  margin-bottom: 0;
   color: inherit;
+  font-size: 1.143rem;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .panel.panel-side {
-  padding: .5em;
-  border: solid 1px var(--Sidebar-border) !important;
   background-color: #fff !important;
+  border: solid 1px var(--Sidebar-border) !important;
+  padding: .5em;
 }
 
 .panel-heading {
-  font-size: 1.1em !important;
-  font-weight: 600;
-  color: var(--Sidebar-color-highlight);
+  background-color: #fff;
   border-bottom: 1px solid transparent;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  background-color: #fff;
+  color: var(--Sidebar-color-highlight);
+  font-size: 1.1em !important;
+  font-weight: 600;
 }
 
 .panel-body h3 {
-  margin-top: .5em;
-  margin-bottom: .714rem;
   color: var(--Sidebar-color-highlight);
+  margin-bottom: .714rem;
+  margin-top: .5em;
 }
 
 .InlineSearch {
@@ -396,9 +396,9 @@ span.loader span div {
 }
 
 h2.validation {
+  color: var(--Sidebar-color-text);
   font-size: 15px;
   font-weight: 600;
-  color: var(--Sidebar-color-text);
 }
 
 li .checkbox {
@@ -422,8 +422,8 @@ li .checkbox input {
 }
 
 .Button--spacing {
-  margin-right: var(--Sidebar-spacing-small);
   margin-bottom: var(--Sidebar-spacing-small);
+  margin-right: var(--Sidebar-spacing-small);
 }
 
 .SettingsTransRef {
@@ -431,45 +431,45 @@ li .checkbox input {
 }
 
 select.SettingsSelect {
-  margin-bottom: 1em;
   color: var(--Sidebar-color-text);
+  margin-bottom: 1em;
 }
 
 #SidebarEditorTabs-pane2 {
- background-color: var(--Sidebar-tabpane);
+  background-color: var(--Sidebar-tabpane);
 }
 
 .SidebarActivity {
-  padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
 }
 
 .RevisionBox {
-  margin-top: 3rem;
+  margin-bottom: 1rem;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
-  margin-bottom: 1rem;
+  margin-top: 3rem;
 }
 
 .RevisionBox p {
-  margin-top: 1rem;
   color: var(--Sidebar-color-text);
+  margin-top: 1rem;
   padding-bottom: 0.375rem;
 
 }
 
 .RevisionBox {
-  margin-top: 3rem;
-  margin-left: 1rem;
   font-size: 0.875rem;
   margin-bottom: 1.5rem;
+  margin-left: 1rem;
+  margin-top: 3rem;
 }
 
 .RevisionBox img {
-  width: 1rem;
   height: 1rem;
-  vertical-align: sub;
   margin-right: 0.375rem;
+  vertical-align: sub;
+  width: 1rem;
 }
 
 .RevisionBox p.small .n1 {
@@ -477,27 +477,27 @@ select.SettingsSelect {
 }
 
 .RevisionBox p.small.u-textMuted {
-  margin-top: 0.375rem !important;
-  margin-left: 0.75rem;
   font-size: 0.75rem;
+  margin-left: 0.75rem;
+  margin-top: 0.375rem !important;
 }
 
 .RevisionBox p .s0 {
-  vertical-align: sub;
   padding-right: 0.375rem;
+  vertical-align: sub;
 }
 
 img.ActivityAvatar {
-  width: 1.2rem;
-  height: 1.2rem;
   display: inline-block;
+  height: 1.2rem;
   vertical-align: sub;
+  width: 1.2rem;
 }
 
 .RevisionBox .well {
   background-color: var(--Sidebar-well);
-  padding: 0.75rem;
   margin-left: 0.75rem;
+  padding: 0.75rem;
 }
 
 .well-fuzzy {
@@ -525,8 +525,8 @@ img.ActivityAvatar {
 }
 
 .TransUnit-commentBox {
-  padding: 0.75rem;
   margin-top: 1rem;
+  padding: 0.75rem;
 }
 
 .TransUnit-commentBox label {
@@ -535,12 +535,12 @@ img.ActivityAvatar {
 }
 
 .TransUnit-commentBox textarea {
+  border: solid 1px var(--Sidebar-textarea-border);
   border-radius: 0.25rem;
+  height: 5rem;
+  max-width: 100%;
   padding: 0.5625rem;
   width: 100%;
-  max-width: 100%;
-  height: 5rem;
-  border: solid 1px var(--Sidebar-textarea-border);
 }
 
 .SettingsHeading {
@@ -558,9 +558,9 @@ h3.SettingsHeading {
 }
 
 .SettingsOptions p {
-  font-weight: 500;
   color: var(--Sidebar-color-text);
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .TransUnit-commentBox .s0 {
