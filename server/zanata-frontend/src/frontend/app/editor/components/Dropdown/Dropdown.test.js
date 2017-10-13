@@ -36,7 +36,7 @@ describe('DropdownTest', () => {
              onClick={toggleTheDoor}>
           <button>Boom boom acka lacka lacka boom</button>
         </div>
-        <div className="EditorDropdown-content Dropdown-content--bordered">
+        <div className="EditorDropdown-content EditorDropdown-content--bordered">
           <ul>
             <li>Open the door</li>
             <li>Get on the floor</li>
@@ -73,13 +73,13 @@ describe('DropdownTest', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="EditorDropdown is-active boom acka lacka">
-        <div className="Dropdown-toggle"
+        <div className="EditorDropdown-toggle"
              aria-haspopup={true}
              aria-expanded={true}
              onClick={toggleTheDoor}>
           <button>Boom boom acka lacka lacka boom</button>
         </div>
-        <div className="EditorDropdown-content Dropdown-content--bordered">
+        <div className="EditorDropdown-content EditorDropdown-content--bordered">
           <ul>
             <li>Open the door</li>
             <li>Get on the floor</li>
@@ -119,7 +119,7 @@ describe('DropdownTest', () => {
     )
 
     const list = TestUtils.scryRenderedDOMComponentsWithClass(
-      dinoWalkDropdown, 'Dropdown-toggle')
+      dinoWalkDropdown, 'EditorDropdown-toggle')
     TestUtils.Simulate.click(list[0])
 
     expect(theDoor).toEqual('open',
@@ -154,7 +154,7 @@ describe('DropdownTest', () => {
     // throws if onClick is not bound
     try {
       const list = TestUtils.scryRenderedDOMComponentsWithClass(
-        dinoWalkDropdown, 'Dropdown-toggle')
+        dinoWalkDropdown, 'EditorDropdown-toggle')
       TestUtils.Simulate.click(list[0])
       // dinoWalkDropdown.toggleDropdown()
     } catch (e) {

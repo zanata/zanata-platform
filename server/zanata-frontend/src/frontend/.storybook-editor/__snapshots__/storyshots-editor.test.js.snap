@@ -1684,7 +1684,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
             >
               <li>
                 <button
-                  className="Button Button--primary"
+                  className="EditorButton Button--primary"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -1694,7 +1694,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               </li>
               <li>
                 <button
-                  className="Button Button--success"
+                  className="EditorButton Button--success"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -1704,7 +1704,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               </li>
               <li>
                 <button
-                  className="Button Button--unsure"
+                  className="EditorButton Button--unsure"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -1714,7 +1714,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               </li>
               <li>
                 <button
-                  className="Button Button--neutral"
+                  className="EditorButton Button--neutral"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -2033,7 +2033,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--primary
+                                      EditorButton Button--primary
                                       "
                                     </span>
                                   </span>
@@ -2235,7 +2235,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--success
+                                      EditorButton Button--success
                                       "
                                     </span>
                                   </span>
@@ -2437,7 +2437,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--unsure
+                                      EditorButton Button--unsure
                                       "
                                     </span>
                                   </span>
@@ -2639,7 +2639,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--neutral
+                                      EditorButton Button--neutral
                                       "
                                     </span>
                                   </span>
@@ -4627,7 +4627,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
             }
           >
             <button
-              className="Button Button--small u-rounded Button--primary"
+              className="EditorButton Button--small u-rounded Button--primary"
               disabled={false}
               onClick={[Function]}
               title="Styles from suggestion panel button"
@@ -4874,7 +4874,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                                   }
                                 >
                                   "
-                                  Button Button--small u-rounded Button--primary
+                                  EditorButton Button--small u-rounded Button--prima…
                                   "
                                 </span>
                               </span>
@@ -5290,7 +5290,7 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     />
   </div>
   <button
-    className="Button Button--small u-rounded Button--primary u-pullRight btn btn-default"
+    className="EditorButton Button--small u-rounded Button--primary u-pullRight btn btn-default"
     disabled={true}
     onClick={[Function]}
     type="button"
@@ -5501,10 +5501,10 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
   className="InlineSearch"
 >
   <div
-    className="InputGroup InputGroup--outlined InputGroup--rounded is-focused"
+    className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded is-focused"
   >
     <span
-      className="InputGroup-addon"
+      className="EditorInputGroup-addon"
       onClick={[Function]}
     >
       <span
@@ -5527,7 +5527,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
       </span>
     </span>
     <input
-      className="InputGroup-input u-sizeLineHeight-1_1-4"
+      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5543,10 +5543,10 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
   className="InlineSearch"
 >
   <div
-    className="InputGroup InputGroup--outlined InputGroup--rounded is-focused"
+    className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded is-focused"
   >
     <span
-      className="InputGroup-addon"
+      className="EditorInputGroup-addon"
       onClick={[Function]}
     >
       <span
@@ -5569,7 +5569,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
       </span>
     </span>
     <input
-      className="InputGroup-input u-sizeLineHeight-1_1-4"
+      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5654,7 +5654,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         title="No translation to copy."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={true}
           onClick={[Function]}
           type="button"
@@ -5745,7 +5745,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         title="No translation to copy."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={true}
           onClick={[Function]}
           type="button"
@@ -5836,7 +5836,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         title="No translation to copy."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={true}
           onClick={[Function]}
           type="button"
@@ -5952,7 +5952,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"
@@ -6043,7 +6043,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"
@@ -6134,7 +6134,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"
@@ -6234,7 +6234,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"

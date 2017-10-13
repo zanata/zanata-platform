@@ -48,7 +48,7 @@ describe('EditorSearchInputTest', () => {
               iconSize="n1"
               onClick={callback} />
           </span>
-          <span className="EditorInputGroup-addon btn-xs advsearch btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link"
             >Hide advanced</span>
         </div>
         <Panel collapsible expanded>
@@ -172,7 +172,7 @@ describe('EditorSearchInputTest', () => {
         TestUtils.scryRenderedDOMComponentsWithTag(inputWithText, 'button')
     const [ advancedSearchToggle ] =
         TestUtils.scryRenderedDOMComponentsWithClass(inputWithText,
-            'InputGroup-addon btn-xs advsearch btn-link')
+            'EditorInputGroup-addon btn-xs btn-link')
 
     TestUtils.Simulate.focus(textInput)
     textInput.value = textInput.value + ' times'
