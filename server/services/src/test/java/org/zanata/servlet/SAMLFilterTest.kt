@@ -44,7 +44,7 @@ class SAMLFilterTest {
 
 
     @Test
-    fun willDoNothingIfNotHttpServletRequest() {
+    fun willNotRedirectIfItIsNotHttpServletRequest() {
         val request: ServletRequest = Mockito.mock(ServletRequest::class.java)
         val response: ServletResponse = Mockito.mock(ServletResponse::class.java)
         filter.doFilter(request, response, chain)
@@ -54,7 +54,7 @@ class SAMLFilterTest {
     }
 
     @Test
-    fun willDoNothingIfSessionContainsNoAccount() {
+    fun willNotRedirectIfItIsNotAuthenticated() {
         given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(false)
 
         filter.doFilter(request, response, chain)
@@ -65,19 +65,7 @@ class SAMLFilterTest {
     }
 
     @Test
-    fun willDoNothingIfAccountInSessionContainsNoAuthenticatedRole() {
-
-        given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(false)
-
-        filter.doFilter(request, response, chain)
-
-        verify(chain).doFilter(request, response)
-        verifyZeroInteractions(authenticationManager)
-        verify(response, never()).sendRedirect(anyString())
-    }
-
-    @Test
-    fun willAuthenticateIfSessionHasAuthenticatedAccount() {
+    fun willRedirectToPageIfItIsAuthenticated() {
         given(samlAttributes.isSessionAuthenticatedBySAML()).willReturn(true)
 
         given(authenticationManager.authenticationRedirect).willReturn("dashboard")

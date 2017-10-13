@@ -60,7 +60,6 @@ import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.OpenIdLoginModule;
-import org.zanata.security.annotations.SAML;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;

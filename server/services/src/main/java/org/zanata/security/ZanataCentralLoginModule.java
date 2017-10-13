@@ -23,7 +23,6 @@ package org.zanata.security;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -34,7 +33,6 @@ import javax.security.auth.spi.LoginModule;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.zanata.config.SystemPropertyConfigStore;
-import org.zanata.security.annotations.SAML;
 
 /**
  * This is a login module that works as a central dispatcher for all other
@@ -95,10 +93,8 @@ public class ZanataCentralLoginModule implements LoginModule {
             // NB: A custom callback handler could be configured on the app
             // server to avoid this.
             boolean saml2Enabled = BeanProvider
-                    .getContextualReference(Boolean.class,
-                            new AnnotationLiteral<SAML>() {
-                                private static final long serialVersionUID = 1L;
-                            });
+                    .getContextualReference(AuthenticationConfig.class)
+                    .isSaml2Enabled();
             if (saml2Enabled) {
                 authTypeCallback.setAuthType(AuthenticationType.SAML2);
             } else {

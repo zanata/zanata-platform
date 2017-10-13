@@ -35,7 +35,7 @@ class SamlAttributesTest {
     }
 
     @Test
-    fun willDoNothingIfAccountInSessionContainsNoAuthenticatedRole() {
+    fun `is not authenticated if account in session contains no "authenticated" role`() {
 
         // roles is empty. e.g. not containing "authenticated" role
         given(account.roles).willReturn(setOf())
@@ -46,7 +46,7 @@ class SamlAttributesTest {
     }
 
     @Test
-    fun isAuthenticatedIfSessionContainsAccountAndHasRoleAuthenticated() {
+    fun `is authenticated if session contains account and has role "authenticated"`() {
         given(account.roles).willReturn(setOf("authenticated"))
         given(session.getAttribute(
                 SPFormAuthenticationMechanism.FORM_ACCOUNT_NOTE)).willReturn(account)
