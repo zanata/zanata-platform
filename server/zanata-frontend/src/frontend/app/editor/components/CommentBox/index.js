@@ -46,7 +46,7 @@ class CommentBox extends React.Component {
 
   render () {
     return (
-      <div className="trans-comment-box">
+      <div className="TransUnit-commentBox">
         <FormGroup controlId="formControlsTextarea">
           <ControlLabel>
             <Icon name="comment" className="s0" /> Post a comment
@@ -56,7 +56,7 @@ class CommentBox extends React.Component {
         </FormGroup>
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
-          className="Button Button--small u-rounded Button--primary u-pullRight">
+          className="EditorButton Button--small u-rounded Button--primary u-pullRight">
          Post comment
         </Button>
       </div>

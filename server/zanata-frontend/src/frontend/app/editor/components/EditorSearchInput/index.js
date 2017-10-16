@@ -167,7 +167,7 @@ export class EditorSearchInput extends Component {
 
   clearButtonElement = () => {
     return (
-      <span className="InputGroup-addon">
+      <span className="EditorInputGroup-addon">
         <IconButton icon="cross"
           title="Clear search"
           iconSize="n1"
@@ -192,9 +192,10 @@ export class EditorSearchInput extends Component {
         onBlur={this.onBlur}
         onFocus={this.onFocus}>
         <div className={
-          cx('InputGroup InputGroup--outlined InputGroup--rounded',
+          cx('EditorInputGroup EditorInputGroup--outlined' +
+              ' EditorInputGroup--rounded',
             { 'is-focused': this.state.focused })}>
-          <span className="InputGroup-addon"
+          <span className="EditorInputGroup-addon"
             onClick={this.focusInput}>
             <Icon name="search" title="Search"
               className="n1" />
@@ -206,15 +207,15 @@ export class EditorSearchInput extends Component {
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
             onClick={this.state.open}
-            className="InputGroup-input u-sizeLineHeight-1_1-4" />
+            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           {this.clearButtonElement()}
-          <span className="InputGroup-addon btn-xs advsearch btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link"
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
         <Panel collapsible expanded={showAdvanced}>
           {advancedFields}
-          <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
+          <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
             onClick={this.clearAllAdvancedFields}>
             Clear all
           </Button>

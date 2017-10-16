@@ -64,7 +64,7 @@ class SuggestionTranslationDetails extends React.Component {
             </li>
             <li>
               <Button
-                className="Button Button--small u-rounded Button--primary
+                className="EditorButton Button--small u-rounded Button--primary
                            u-sizeWidth-6"
                 disabled={copying}
                 onClick={copySuggestion}

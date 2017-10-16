@@ -49,7 +49,7 @@ class SuggestionDetailsSummary extends React.Component {
       ? topMatch.documentPath + '/'
       : ''
     const documentIcon = isTextFlow && (
-      <li className="docName" title={documentPath + topMatch.documentName}>
+      <li className="DocName" title={documentPath + topMatch.documentName}>
         <Row>
           <Icon name="document" className="n1" />
           <span className="ellipsis">{topMatch.documentName}</span>

@@ -66,7 +66,7 @@ describe('SuggestionDetailsSummaryTest', () => {
               <Icon name="version" className="n1"/> {'the-wurst-version'}
             </Row>
           </li>
-          <li className="docName" title="what-a-brat/i-rote-this.txt">
+          <li className="DocName" title="what-a-brat/i-rote-this.txt">
             <Row>
               <Icon name="document" className="n1"/>
               <span className="ellipsis">{'i-rote-this.txt'}</span>
