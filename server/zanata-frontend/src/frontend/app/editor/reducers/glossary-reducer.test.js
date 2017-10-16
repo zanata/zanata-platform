@@ -1,3 +1,4 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import glossaryReducer from './glossary-reducer'
@@ -109,7 +110,7 @@ describe('glossary-reducer test', () => {
     const initial = glossaryReducer(undefined, { type: 'any' })
     const withText = glossaryReducer(initial, {
       type: GLOSSARY_SEARCH_TEXT_CHANGE,
-      text: "where's my car?"
+      payload: "where's my car?"
     })
     expect(withText.searchText).toEqual("where's my car?")
   })
@@ -195,9 +196,7 @@ describe('glossary-reducer test', () => {
     const initial = glossaryReducer(undefined, { type: 'any' })
     const withIndex = glossaryReducer(initial, {
       type: SET_GLOSSARY_DETAILS_INDEX,
-      payload: {
-        index: 5
-      }
+      payload: 5
     })
     expect(initial.details.resultIndex).toEqual(0)
     expect(withIndex.details.resultIndex).toEqual(5)
@@ -207,11 +206,11 @@ describe('glossary-reducer test', () => {
     const initial = glossaryReducer(undefined, { type: 'any' })
     const shown = glossaryReducer(initial, {
       type: SHOW_GLOSSARY_DETAILS,
-      payload: { show: true }
+      payload: true
     })
     const hidden = glossaryReducer(shown, {
       type: SHOW_GLOSSARY_DETAILS,
-      payload: { show: false }
+      payload: false
     })
     expect(initial.details.show).toEqual(false)
     expect(shown.details.show).toEqual(true)

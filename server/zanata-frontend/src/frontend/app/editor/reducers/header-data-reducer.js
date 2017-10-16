@@ -1,13 +1,13 @@
 // TODO refactor all this state to a sensible structure
 // e.g. 'user' and 'context' can just be top-level items
-
+import { handleActions } from 'redux-actions'
 import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
   LOCALE_SELECTED,
   STATS_FETCHED
 } from '../actions/header-action-types'
-import updateObject from 'immutability-helper'
+import update from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
 import { dashboardUrl, projectPageUrl } from '../api'
 
@@ -47,91 +47,40 @@ const gravatarUrl = (hash, size) => {
   return `http://www.gravatar.com/avatar/${hash}?d=mm&ampr=g&amps=${size}`
 }
 
-export default (state = defaultState, action) => {
-  switch (action.type) {
-    case HEADER_DATA_FETCHED:
-      const docs = prepareDocs(action.data.documents)
-      const locales = prepareLocales(action.data.locales)
-      const versionSlug = action.data.versionSlug
-      const projectSlug = action.data.projectInfo.id
-      const projectName = action.data.projectInfo.name
-      const name = action.data.myInfo.name
-      // FIXME server is providing myInfo.imageUrl not gravatarHash
-      const gravatarHash = action.data.myInfo.gravatarHash
-
-      return updateObject(state, {
-        user: {
-          name: {
-            $set: name
+const headerDataReducer = handleActions({
+  [HEADER_DATA_FETCHED]: (state, { payload: {
+    documents, locales, versionSlug, projectInfo, myInfo } }) => {
+    const projectSlug = projectInfo.id
+    return update(state, {
+      user: {
+        name: {$set: myInfo.name},
+        // FIXME server is providing myInfo.imageUrl not gravatarHash
+        gravatarUrl: {$set: gravatarUrl(myInfo.gravatarHash, 72)},
+        dashboardUrl: { $set: dashboardUrl }
+      },
+      context: {
+        projectVersion: {
+          project: {
+            slug: {$set: projectSlug},
+            name: {$set: projectInfo.name}
           },
-          gravatarUrl: {
-            $set: gravatarUrl(gravatarHash, 72)
-          },
-          dashboardUrl: {
-            $set: dashboardUrl
-          }
-
-        },
-        context: {
-          projectVersion: {
-            project: {
-              slug: {
-                $set: projectSlug
-              },
-              name: {
-                $set: projectName
-              }
-            },
-            version: {
-              $set: versionSlug
-            },
-            url: {
-              $set: projectPageUrl(projectSlug, versionSlug)
-            },
-            docs: {
-              $set: docs
-            },
-            locales: {
-              $set: locales
-            }
-          }
+          version: {$set: versionSlug},
+          url: {$set: projectPageUrl(projectSlug, versionSlug)},
+          docs: {$set: prepareDocs(documents)},
+          locales: {$set: prepareLocales(locales)}
         }
-      })
+      }
+    })
+  },
 
-    case DOCUMENT_SELECTED:
+  [DOCUMENT_SELECTED]: (state, { payload }) =>
+    update(state, { context: { selectedDoc: { id: {$set: payload} } } }),
 
-      return updateObject(state, {
-        context: {
-          selectedDoc: {
-            id: {
-              $set: action.data.selectedDocId
-            }
-          }
-        }
-      })
+  [LOCALE_SELECTED]: (state, { payload }) =>
+    update(state, { context: { selectedLocale: {$set: payload} } }),
 
-    case LOCALE_SELECTED:
-      return updateObject(state, {
-        context: {
-          selectedLocale: {
-            $set: action.data.selectedLocaleId
-          }
-        }
-      })
+  [STATS_FETCHED]: (state, { payload }) => update(state, {
+    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } })
+}, defaultState)
 
-    case STATS_FETCHED:
-      const counts = prepareStats(action.data)
-      return updateObject(state, {
-        context: {
-          selectedDoc: {
-            counts: {
-              $set: counts
-            }
-          }
-        }
-      })
-
-    default:
-      return state
-  }
-}
+export default headerDataReducer

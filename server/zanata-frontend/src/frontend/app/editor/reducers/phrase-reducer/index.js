@@ -1,4 +1,5 @@
-import updateObject from 'immutability-helper'
+import { handleActions } from 'redux-actions'
+import update from 'immutability-helper'
 import phraseFilterReducer, { defaultState as defaultFilterState }
   from './phrase-filter-reducer'
 import { composeReducers, subReducer } from 'redux-sac'
@@ -47,7 +48,7 @@ function clamp (number, lower, upper) {
   return Math.max(lower, Math.min(number, upper))
 }
 
-const defaultState = {
+export const defaultState = {
   fetchingList: false,
   fetchingFilteredList: false,
   filteredListTimestamp: new Date(0),
@@ -73,276 +74,204 @@ const defaultState = {
   filter: defaultFilterState
 }
 
-export const phraseReducer = (state = defaultState, action) => {
-  switch (action.type) {
-    case CLAMP_PAGE:
-      return update({
-        paging: {
-          pageIndex: {$set: clamp(state.paging.pageIndex, 0,
-            getMaxPageIndex(action.getState()))}
-        }
-      })
+export const phraseReducer = handleActions({
+  // TODO use local selector if possible, so that top-level state is not needed
+  [CLAMP_PAGE]: (state, { getState }) => update(state, {
+    paging: {
+      pageIndex:
+        {$set: clamp(state.paging.pageIndex, 0, getMaxPageIndex(getState()))}
+    }
+  }),
+  [UPDATE_PAGE]: (state, { payload }) => {
+    // TODO use selector
+    const oldPageIndex = state.paging.pageIndex
+    return oldPageIndex === payload
+      ? state
+      : update(state, { paging: { pageIndex: {$set: payload} } })
+  },
 
-    case UPDATE_PAGE:
-      return updatePageIndex(action.page)
+  [CANCEL_EDIT]: state => update(state, {
+    selectedPhraseId: {$set: undefined},
+    detail: {
+      [state.selectedPhraseId]: {
+        // Discard any newTranslations that were entered.
+        newTranslations:
+          {$set: state.detail[state.selectedPhraseId].translations}
+      }
+    }
+  }),
 
-    case CANCEL_EDIT:
-      // Discard any newTranslations that were entered.
-      const currentTrans = state.detail[state.selectedPhraseId].translations
-      return update({
-        selectedPhraseId: {$set: undefined},
-        detail: {
-          [state.selectedPhraseId]: {
-            newTranslations: {$set: currentTrans}
+  [COPY_FROM_ALIGNED_SOURCE]: state => updatePhrase(
+    state, state.selectedPhraseId,
+    {$apply: phrase => copyFromSource(phrase, phrase.selectedPluralIndex)
+  }),
+
+  [COPY_FROM_SOURCE]: (state, { payload: { phraseId, sourceIndex } }) =>
+    updatePhrase(state, phraseId,
+      {$apply: (phrase) => copyFromSource(phrase, sourceIndex)}),
+
+  [COPY_GLOSSARY_TERM]: (state, { payload }) => updatePhrase(
+    state, state.selectedPhraseId, {$apply: phrase =>
+      insertTextAtRange(phrase, payload, state.selectedTextRange)}),
+
+  [COPY_SUGGESTION]: (state, { payload }) => updatePhrase(
+    state, state.selectedPhraseId,
+    {$apply: phrase => copyFromSuggestion(phrase, payload)
+  }),
+
+  [PHRASE_DETAIL_REQUEST]: state => update(state, {
+    fetchingDetail: {$set: true}}),
+
+  [PHRASE_LIST_REQUEST]: (state, { meta: { filter } }) => filter
+    ? update(state, { fetchingFilteredList: {$set: true} })
+    : update(state, { fetchingList: {$set: true} }),
+
+  [PENDING_SAVE_INITIATED]: (state, { payload }) => updatePhrase(state, payload,
+    { pendingSave: {$set: undefined} }),
+
+  [PHRASE_LIST_SUCCESS]: (state, {
+    payload: { docId, phraseList },
+    meta: { filter, timestamp }
+  }) => {
+    if (filter) {
+      return timestamp > state.filteredListTimestamp
+        ? update(state, {
+          fetchingFilteredList: {$set: false},
+          filteredListTimestamp: {$set: timestamp},
+          inDocFiltered: {
+            [docId]: {$set: phraseList}
           }
-        }
-      })
-
-    case COPY_FROM_ALIGNED_SOURCE:
-      return updatePhrase(state.selectedPhraseId, {$apply: (phrase) => {
-        return copyFromSource(phrase, phrase.selectedPluralIndex)
-      }})
-
-    case COPY_FROM_SOURCE:
-      const { phraseId, sourceIndex } = action
-      return updatePhrase(phraseId, {$apply: (phrase) => {
-        return copyFromSource(phrase, sourceIndex)
-      }})
-
-    case COPY_GLOSSARY_TERM:
-      return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
-        return insertTextAtRange(phrase, action.payload.termTranslation,
-          state.selectedTextRange)
-      }})
-
-    case COPY_SUGGESTION:
-      const { suggestion } = action
-      return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
-        return copyFromSuggestion(phrase, suggestion)
-      }})
-
-    case PHRASE_DETAIL_REQUEST:
-      return update({
-        fetchingDetail: {$set: true}
-      })
-
-    case PHRASE_LIST_REQUEST:
-      if (action.meta.filter) {
-        return update({
-          fetchingFilteredList: {$set: true}
         })
-      } else {
-        return update({
-          fetchingList: {$set: true}
-        })
-      }
-
-    case PENDING_SAVE_INITIATED:
-      return updatePhrase(action.phraseId, {
-        pendingSave: {$set: undefined}
+        // stale search, ignore results
+        : state
+    } else {
+      // FIXME use a local selector here
+      const showingFiltered = getHasAdvancedFilter({ phrases: state })
+      const selectedPhraseId = showingFiltered
+        // this list not visible, keep same value
+        ? state.selectedPhraseId
+        // list is showing, select a visible phrase
+        : decideSelectedPhrase(state, phraseList)
+      return update(state, {
+        fetchingList: {$set: false},
+        inDoc: {[docId]: {$set: phraseList}},
+        selectedPhraseId: {$set: selectedPhraseId}
       })
+    }
+  },
 
-    case PHRASE_LIST_SUCCESS:
-      if (action.meta.filter) {
-        if (action.meta.timestamp > state.filteredListTimestamp) {
-          return update({
-            fetchingFilteredList: {$set: false},
-            filteredListTimestamp: {$set: action.meta.timestamp},
-            inDocFiltered: {
-              [action.payload.docId]: {$set: action.payload.phraseList}
-            }
-          })
-        } else {
-          // stale search, ignore results
-          return state
-        }
-      } else {
-        const showingFiltered = getHasAdvancedFilter({ phrases: state })
-        const selectedPhraseId = showingFiltered
-          // this list not visible, keep same value
-          ? state.selectedPhraseId
-          // list is showing, select a visible phrase
-          : decideSelectedPhrase(state, action.payload.phraseList)
-        return update({
-          fetchingList: {$set: false},
-          inDoc: {[action.payload.docId]: {$set: action.payload.phraseList}},
-          selectedPhraseId: {$set: selectedPhraseId}
-        })
-      }
+  [PHRASE_LIST_FAILURE]: (state, { meta: { filter } }) => filter
+    ? update(state, { fetchingFilteredList: {$set: false} })
+    : update(state, { fetchingList: {$set: false} }),
 
-    case PHRASE_LIST_FAILURE:
-      if (action.meta.filter) {
-        return update({
-          fetchingFilteredList: {$set: false}
-        })
-      } else {
-        return update({
-          fetchingList: {$set: false}
-        })
-      }
+  [PHRASE_DETAIL_SUCCESS]: (state, { payload }) => update(state, {
+    fetchingDetail: {$set: false},
+    // TODO this shallow merge will lose data from other locales
+    //      ideally replace source and locale that was looked up, leaving
+    //      others unchanged (depending on caching policy)
+    detail: {$merge: payload}
+  }),
 
-    case PHRASE_DETAIL_SUCCESS:
-      // TODO this shallow merge will lose data from other locales
-      //      ideally replace source and locale that was looked up, leaving
-      //      others unchanged (depending on caching policy)
-      return update({
-        fetchingDetail: {$set: false},
-        detail: {$merge: action.payload}
-      })
+  [PHRASE_TEXT_SELECTION_RANGE]: (state, { payload }) =>
+    update(state, { selectedTextRange: {$set: payload} }),
 
-    case PHRASE_TEXT_SELECTION_RANGE:
-      return update({
-        selectedTextRange: {$set: action.payload}
-      })
+  [QUEUE_SAVE]: (state, { payload: { phraseId, saveInfo } }) =>
+    updatePhrase(state, phraseId, { pendingSave: {$set: saveInfo} }),
 
-    case QUEUE_SAVE:
-      return updatePhrase(action.phraseId, {
-        pendingSave: {$set: action.saveInfo}
-      })
+  [SAVE_FINISHED]: (state, { payload: { phraseId, status, revision } }) =>
+    updatePhrase(state, phraseId, {
+      inProgressSave: {$set: undefined},
+      // FIXME check whether this should be translations from the action
+      translations: {$set: state.detail[phraseId].newTranslations},
+      // TODO same as inProgressSave.status unless the server adjusted it
+      status: {$set: status},
+      revision: {$set: revision}
+    }),
 
-    case SAVE_FINISHED:
-      const phrase = state.detail[action.phraseId]
-      const { newTranslations } = phrase
-      return updatePhrase(action.phraseId, {
-        inProgressSave: {$set: undefined},
-        // FIXME check whether this should be action.translations instead
-        translations: {$set: newTranslations},
-        // TODO same as inProgressSave.status unless the server adjusted it
-        status: {$set: action.status},
-        revision: {$set: action.revision}
-      })
+  [SAVE_INITIATED]: (state, { payload: { phraseId, saveInfo } }) =>
+    updatePhrase(state, phraseId, { inProgressSave: {$set: saveInfo} }),
 
-    case SAVE_INITIATED:
-      return updatePhrase(action.phraseId, {
-        inProgressSave: {$set: action.saveInfo}
-      })
+  // TODO see if this is possible without using global state
+  [SELECT_PHRASE]: (state, { getState, payload }) =>
+    selectPhrase(state, getState(), payload),
 
-    case SELECT_PHRASE:
-      return selectPhrase(state, action.phraseId)
+  [SELECT_PHRASE_SPECIFIC_PLURAL]:
+    (state, { getState, payload: {phraseId, index} }) =>
+      selectPhrase(
+        updatePhrase(state, phraseId, { selectedPluralIndex: {$set: index} }),
+        getState(), phraseId),
 
-    case SELECT_PHRASE_SPECIFIC_PLURAL:
-      const withNewPluralIndex = updatePhrase(action.phraseId, {
-        selectedPluralIndex: {$set: action.index}
-      })
-      return selectPhrase(withNewPluralIndex, action.phraseId)
+  [SET_SAVE_AS_MODE]: (state, { payload }) =>
+    update(state, { saveAsMode: {$set: payload} }),
 
-    case SET_SAVE_AS_MODE:
-      return update({
-        saveAsMode: {$set: action.active}
-      })
+  [TRANSLATION_TEXT_INPUT_CHANGED]: (state, {payload: {id, index, text}}) =>
+    update(state, {
+      detail: { [id]: { newTranslations: { [index]: {$set: text} } } }
+    }),
 
-    case TRANSLATION_TEXT_INPUT_CHANGED:
-      return update({
-        detail: {
-          [action.id]: {
-            newTranslations: {
-              [action.index]: {$set: action.text}
-            }
-          }
-        }
-      })
+  [UNDO_EDIT]: (state) => updatePhrase(state, state.selectedPhraseId,
+    {$apply: (phrase) => update(phrase, {
+      newTranslations: {$set: [...phrase.translations]}
+    })
+  }),
 
-    case UNDO_EDIT:
-      return updatePhrase(state.selectedPhraseId, {$apply: (phrase) => {
-        return updateObject(phrase, {
-          newTranslations: {$set: [...phrase.translations]}
-        })
-      }})
+  [MOVE_NEXT]: (state, { getState }) =>
+    changeSelectedIndex(state, getState(), index => index + 1),
 
-    case MOVE_NEXT:
-      return changeSelectedIndex(index => index + 1)
+  [MOVE_PREVIOUS]: (state, { getState }) =>
+    changeSelectedIndex(state, getState(), index => index - 1)
+}, defaultState)
 
-    case MOVE_PREVIOUS:
-      return changeSelectedIndex(index => index - 1)
+/**
+* Generate a state with a different phrase selected.
+*
+* @param state
+* @param action
+* @param indexUpdateCallback produces new index based on previous index
+* @returns {*}
+*/
+function changeSelectedIndex (state, globalState, indexUpdateCallback) {
+  const { docId } = globalState.context
+  const { inDoc, inDocFiltered, filter, selectedPhraseId } = state
+  const phrases = hasAdvancedFilter(filter.advanced)
+    ? inDocFiltered[docId] : inDoc[docId]
+
+  const currentIndex = phrases.findIndex(x => x.id === selectedPhraseId)
+
+  const newIndex = indexUpdateCallback(currentIndex)
+  const indexOutOfBounds = newIndex < 0 || newIndex >= phrases.length
+  if (!indexOutOfBounds && newIndex !== currentIndex) {
+    const moveToId = phrases[newIndex].id
+    return selectPhrase(state, globalState, moveToId)
   }
 
   return state
+}
 
-  /**
-   * Apply the given commands to state.
-   *
-   * Just a shortcut to avoid having to pass state to update over and over.
-   */
-  function update (commands) {
-    // FIXME update to version that does not lose reference equality when
-    //       setting an identical object
-    //       see: https://github.com/facebook/react/pull/4968
-    return updateObject(state, commands)
-  }
+/**
+* Select a given phrase and ensure the correct page is showing.
+*
+* CAUTION: this calculates max page index from the previous state,
+*   so do not use this after updating page index.
+*/
+function selectPhrase (state, globalState, phraseId) {
+  const { countPerPage, pageIndex } = state.paging
+  const phrases = getFilteredPhrases(globalState)
 
-  /**
-  * Apply commands to the indicated phrase detail.
-  *
-  * Returns state with just the indicated phrase changed.
-  */
-  function updatePhrase (phraseId, commands) {
-    return update({
-      detail: {
-        [phraseId]: {$apply: (phrase) => {
-          return updateObject(phrase, commands)
-        }}
-      }
-    })
-  }
+  const phraseIndex = phrases.findIndex(x => x.id === phraseId)
+  const desiredPageIndex = phraseIndex === -1
+    // Just go to valid page nearest current page when selected phrase is
+    // invisible. Ideal would be page that shows the phrase nearest the
+    // selected one in the unfiltered document, but that is complicated.
+    ? clamp(pageIndex, 0, getMaxPageIndex(globalState))
+    : Math.floor(phraseIndex / countPerPage)
 
-  function updatePageIndex (newPageIndex) {
-    const oldPageIndex = state.paging.pageIndex
-    return oldPageIndex === newPageIndex
-      ? state
-      : update({ paging: { pageIndex: {$set: newPageIndex} } })
-  }
-
-  /**
-  * Generate a state with a different phrase selected.
-  *
-  * @param state
-  * @param action
-  * @param indexUpdateCallback produces new index based on previous index
-  * @returns {*}
-  */
-  function changeSelectedIndex (indexUpdateCallback) {
-    const { docId } = action.getState().context
-    const { inDoc, inDocFiltered, filter, selectedPhraseId } = state
-    const phrases = hasAdvancedFilter(filter.advanced)
-      ? inDocFiltered[docId] : inDoc[docId]
-
-    const currentIndex = phrases.findIndex(x => x.id === selectedPhraseId)
-
-    const newIndex = indexUpdateCallback(currentIndex)
-    const indexOutOfBounds = newIndex < 0 || newIndex >= phrases.length
-    if (!indexOutOfBounds && newIndex !== currentIndex) {
-      const moveToId = phrases[newIndex].id
-      return selectPhrase(state, moveToId)
+  return update(state, {
+    selectedPhraseId: {$set: phraseId},
+    paging: {
+      pageIndex: {$set: desiredPageIndex}
     }
-
-    return state
-  }
-
-  /**
-  * Select a given phrase and ensure the correct page is showing.
-  *
-  * CAUTION: this calculates max page index from the previous state,
-  *   so do not use this after updating page index.
-  */
-  function selectPhrase (state, phraseId) {
-    const { countPerPage, pageIndex } = state.paging
-    const phrases = getFilteredPhrases(action.getState())
-
-    const phraseIndex = phrases.findIndex(x => x.id === phraseId)
-    const desiredPageIndex = phraseIndex === -1
-      // Just go to valid page nearest current page when selected phrase is
-      // invisible. Ideal would be page that shows the phrase nearest the
-      // selected one in the unfiltered document, but that is complicated.
-      ? clamp(pageIndex, 0, getMaxPageIndex(action.getState()))
-      : Math.floor(phraseIndex / countPerPage)
-
-    return updateObject(state, {
-      selectedPhraseId: {$set: phraseId},
-      paging: {
-        pageIndex: {$set: desiredPageIndex}
-      }
-    })
-  }
+  })
 }
 
 function copyFromSource (phrase, sourceIndex) {
@@ -357,7 +286,7 @@ function copyFromSource (phrase, sourceIndex) {
   const sourceToCopy = sources[sourceIndexToCopy]
 
   const focusId = (shouldGainFocus || 0) + 1
-  return updateObject(phrase, {
+  return update(phrase, {
     shouldGainFocus: {$set: focusId},
     newTranslations: {
       // $splice represents an array of calls to Array.prototype.splice
@@ -378,7 +307,7 @@ function copyFromSuggestion (phrase, suggestion) {
     ? focusedTranslationIndex : targets.length - 1
 
   const focusId = (shouldGainFocus || 0) + 1
-  return updateObject(phrase, {
+  return update(phrase, {
     shouldGainFocus: {$set: focusId},
     newTranslations: {
       // $splice represents an array of calls to Array.prototype.splice
@@ -402,7 +331,7 @@ function insertTextAtRange (phrase, text, {start, end}) {
   // The textarea is focused when shouldGainFocus has a changed truthy value
   // so incrementing will lead to focus being gained.
   const focusId = (shouldGainFocus || 0) + 1
-  return updateObject(phrase, {
+  return update(phrase, {
     shouldGainFocus: {$set: focusId},
     newTranslations: {
       // $splice represents an array of calls to Array.prototype.splice
@@ -434,6 +363,21 @@ function decideSelectedPhrase (state, phraseList) {
 
   const firstIndex = clampedPageIndex * countPerPage
   return phraseList[firstIndex].id
+}
+
+/**
+* Apply commands to the indicated phrase detail.
+*
+* Returns state with just the indicated phrase changed.
+*/
+function updatePhrase (state, phraseId, commands) {
+  return update(state, {
+    detail: {
+      [phraseId]: {$apply: (phrase) => {
+        return update(phrase, commands)
+      }}
+    }
+  })
 }
 
 export default composeReducers(
