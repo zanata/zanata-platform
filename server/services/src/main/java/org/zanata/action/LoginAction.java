@@ -210,14 +210,14 @@ public class LoginAction implements Serializable {
         return "login";
     }
 
-    private boolean isOnlySSO() {
+    private boolean onlySaml2Enabled() {
         Set<AuthenticationType> authTypes =
                 applicationConfiguration.getAuthTypes();
         return authTypes.size() == 1 && authTypes.contains(AuthenticationType.SAML2);
     }
 
-    public void checkIfIsOnlySSO() {
-        if (isOnlySSO()) {
+    public void redirectIfOnlySSOEnabled() {
+        if (onlySaml2Enabled()) {
             urlUtil.redirectToInternal(urlUtil.singleSignOnPage());
         }
     }
