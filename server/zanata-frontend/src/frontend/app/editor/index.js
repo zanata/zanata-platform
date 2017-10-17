@@ -11,6 +11,7 @@ import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import rootReducer from './reducers'
 import addWatchers from './watchers'
+import { isEmpty } from 'lodash'
 
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
@@ -66,6 +67,9 @@ function runApp () {
   // Load user settings once
   store.dispatch(fetchSettings())
 
+  const route = '/project/translate/:projectSlug/v/:versionSlug/**'
+  const path = !isEmpty(appUrl) ? appUrl + route : route
+
   // TODO when translations are available, load user locale translations with
   //   require.ensure and pass to IntlProvider as messages={...}
   // defaultLocale will use the default messages with no errors
@@ -74,9 +78,7 @@ function runApp () {
       <Provider store={store}>
         <Router history={enhancedHistory}>
           {/* The ** is docId, captured as params.splat by react-router. */}
-          <Route
-            path="/project/translate/:projectSlug/v/:versionSlug/**"
-            component={Root} />
+          <Route path={path} component={Root} />
           <Route path="/*" component={NeedSlugMessage} />
         </Router>
       </Provider>
