@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, Col, Accordion} from 'react-bootstrap'
+import {Alert, Button, Panel, Row, Col, Accordion} from 'react-bootstrap'
 import {
   Icon, Modal, LoaderText, SelectableDropdown, Link} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
@@ -439,6 +439,9 @@ class TMMergeModal extends Component {
         )
     const hasTMSource = this.state.fromAllProjects ||
       this.state.fromImportedTM || this.state.selectedVersions.length > 0
+    const Notify = <Alert bsStyle='danger' className='modal__alert--affix'>
+      {notification && notification.message}
+    </Alert>
     const modalFooter = processStatus
     ? DO_NOT_RENDER
     : (
@@ -460,8 +463,7 @@ class TMMergeModal extends Component {
         onHide={toggleTMMergeModal} keyboard backdrop>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
-          <p className="u-textDanger modalText-danger">
-            {notification && notification.message}</p>
+          {notification && Notify}
         </Modal.Header>
         <Modal.Body>{modalBody}</Modal.Body>
         <Modal.Footer>{modalFooter}</Modal.Footer>
