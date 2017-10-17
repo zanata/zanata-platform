@@ -138,6 +138,7 @@
     "redux-sac": "0.5.3",
     "redux-thunk": "1.0.3",
     "redux-watch": "1.1.1",
+    "rtlcss": "^2.2.0",
     "stylelint": "8.2.0",
     "suitcss-components-button": "4.0.0",
     "suitcss-components-button-group": "2.2.0",

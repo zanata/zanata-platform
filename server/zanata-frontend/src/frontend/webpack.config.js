@@ -50,6 +50,10 @@ var postCssLoader = {
   }
 }
 
+var rtlcss = require("rtlcss")
+var css = "body { direction: ltr; }";
+rtlcss.process(css);
+
 /*
  * To set env on command line:
  *   webpack --env.buildtype=draft
