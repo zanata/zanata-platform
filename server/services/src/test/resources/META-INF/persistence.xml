@@ -66,7 +66,7 @@
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
     <class>org.zanata.model.AllowedApp</class>
-    <class>org.zanata.model.security.HSSOCredentials</class>
+    <class>org.zanata.model.security.HSaml2Credentials</class>
     <class>org.zanata.model.ReviewCriteria</class>
 
     <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended

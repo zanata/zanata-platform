@@ -29,17 +29,17 @@ import org.zanata.model.HAccount;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Entity
-@DiscriminatorValue("SSO")
-public class HSSOCredentials extends HCredentials {
+@DiscriminatorValue("SAML2")
+public class HSaml2Credentials extends HCredentials {
 
     private static final long serialVersionUID = 7317701097135691593L;
 
-    public HSSOCredentials(HAccount account, String user, String email) {
+    public HSaml2Credentials(HAccount account, String user, String email) {
         setAccount(account);
         setUser(user);
         setEmail(email);
     }
 
-    public HSSOCredentials() {
+    public HSaml2Credentials() {
     }
 }

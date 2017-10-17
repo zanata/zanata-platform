@@ -45,7 +45,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
-import org.zanata.model.security.HSSOCredentials;
+import org.zanata.model.security.HSaml2Credentials;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationType;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -174,7 +174,7 @@ public class RegisterServiceImpl implements RegisterService {
                     new HOpenIdCredentials(account, externalId, email));
         } else if (authType == AuthenticationType.SAML2) {
             account.getCredentials().add(
-                    new HSSOCredentials(account, externalId, email)
+                    new HSaml2Credentials(account, externalId, email)
             );
         }
         HPerson person = new HPerson();
