@@ -2,6 +2,7 @@ package org.zanata.file;
 
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jglue.cdiunit.ProducesAlternative;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.EntityStatus;
@@ -77,6 +79,16 @@ public abstract class DocumentUploadTest extends ZanataTest {
 
     protected void mockLoggedIn() {
         when(identity.isLoggedIn()).thenReturn(true);
+    }
+
+    protected void mockHasReadAccess() {
+        when(identity.hasPermission(any(HProjectIteration.class),
+                ArgumentMatchers.matches("read"))).thenReturn(true);
+    }
+
+    protected void mockNoReadAccess() {
+        when(identity.hasPermission(any(HProjectIteration.class),
+                ArgumentMatchers.matches("read"))).thenReturn(false);
     }
 
     protected void mockNotLoggedIn() {

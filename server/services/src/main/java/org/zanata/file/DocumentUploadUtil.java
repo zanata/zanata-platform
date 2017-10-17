@@ -170,7 +170,8 @@ public class DocumentUploadUtil implements Serializable {
             throws DocumentUploadException {
         HProjectIteration projectIteration = projectIterationDAO
                 .getBySlug(id.getProjectSlug(), id.getVersionSlug());
-        if (projectIteration == null) {
+        if (projectIteration == null ||
+                !identity.hasPermission(projectIteration, "read")) {
             throw new DocumentUploadException(Status.NOT_FOUND,
                     "The specified project-version \"" + id.getProjectSlug()
                             + ":" + id.getVersionSlug()
