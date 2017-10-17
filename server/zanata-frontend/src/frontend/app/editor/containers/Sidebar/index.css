@@ -23,7 +23,7 @@
   --Editor-color-rejected: #FFA800;
 }
 
-.SidebarEditor {
+.sidebar-editor {
   border-left: solid 1px var(--Sidebar-border);
   float: right !important;
   height: 99.5% !important;
@@ -34,11 +34,11 @@
   width: 35%;
 }
 
-.SidebarEditor :focus {
+.sidebar-editor :focus {
   outline: 0;
 }
 
-.SidebarEditor .nav-tabs li {
+.sidebar-editor .nav-tabs li {
   width: 50%;
 }
 
@@ -379,7 +379,7 @@ span.loader span div {
   vertical-align: sub;
 }
 
-.SidebarEditor select {
+.sidebar-editor select {
   color: var(--Sidebar-color-text);
 }
 
