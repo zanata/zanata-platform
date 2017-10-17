@@ -90,7 +90,7 @@ class SuggestionsBody extends React.Component {
 
   render () {
     return (
-      <div className="Editor-suggestionsBody u-bgHigh">
+      <div className="Editor-suggestionsBody rtl u-bgHigh">
         {this.renderContent()}
       </div>
     )

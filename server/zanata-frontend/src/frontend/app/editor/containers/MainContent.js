@@ -55,7 +55,7 @@ class MainContent extends React.Component {
       <main role="main"
         id="editor-content"
         className={className}>
-        <div className="Editor-translationsWrapper">
+        <div className="Editor-translationsWrapper rtl">
           <ul className="Editor-translations">
             {transUnits}
           </ul>

@@ -154,6 +154,16 @@
   overflow: hidden;
 }
 
+.Editor-translationsWrapper,
+.Editor-suggestionsBody {
+  direction: ltr;
+}
+
+.rtl {
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
 .Editor-header,
 .Editor-loader {
   transition: .2s all var(--Editor-transition-ease);
