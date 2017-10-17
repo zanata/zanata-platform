@@ -17,6 +17,7 @@ var postcssCustomMedia = require('postcss-custom-media')
 var postcssEsplit = require('postcss-esplit')
 var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
+var rtl = require('postcss-rtl')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
@@ -49,10 +50,6 @@ var postCssLoader = {
     ]
   }
 }
-
-var rtlcss = require("rtlcss")
-var css = "body { direction: ltr; }";
-rtlcss.process(css);
 
 /*
  * To set env on command line:
@@ -192,6 +189,7 @@ module.exports = function (env) {
                 options: {
                   plugins: [
                     require('stylelint'),
+                    require('postcss-rtl')(),
                   ]
                 }
               },
