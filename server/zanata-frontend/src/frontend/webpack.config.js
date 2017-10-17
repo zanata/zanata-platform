@@ -29,6 +29,7 @@ var postCssLoader = {
   loader: 'postcss-loader',
   options: {
     plugins: [
+      postcssDiscardDuplicates(),
       postcssImport(),
       postcssCustomProperties,
       postcssCalc,
