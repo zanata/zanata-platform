@@ -1,6 +1,8 @@
 package org.zanata.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.zanata.test.EntityTestData.makeApprovedHTextFlow;
 import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 
@@ -27,6 +29,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.LocaleId;
@@ -41,6 +44,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.test.CdiUnitRunnerWithParameters;
 import org.zanata.test.DBUnitDataSetRunner;
@@ -86,6 +90,10 @@ public class TranslationMemoryServiceImplTest {
         private UrlUtil urlUtil;
 
         @Produces
+        @Mock
+        private ZanataIdentity identity;
+
+        @Produces
         @Zanata
         EntityManagerFactory getEntityManagerFactory() {
             return jpaRule.getEntityManagerFactory();
@@ -129,6 +137,8 @@ public class TranslationMemoryServiceImplTest {
             indexingService.reindexHTextFlowTargetsForProject(
                     getEntityManager().find(HProject.class, 100L),
                     new AsyncTaskHandle<>());
+            when(identity.hasPermission(any(HProjectIteration.class),
+                    ArgumentMatchers.matches("read"))).thenReturn(true);
         }
 
         @Test
@@ -163,6 +173,20 @@ public class TranslationMemoryServiceImplTest {
                             sourceLocale.getLocaleId(), tmQuery);
             assertThat(results).hasSize(3);
             checkSourceContainQuery(results, searchString);
+        }
+
+        @Test
+        @InRequestScope
+        public void privateVersionTMSearchTest() {
+            when(identity.hasPermission(any(HProjectIteration.class),
+                    ArgumentMatchers.matches("read"))).thenReturn(false);
+            final String searchString = "file";
+            TransMemoryQuery tmQuery = new TransMemoryQuery(searchString,
+                    HasSearchType.SearchType.FUZZY);
+            List<TransMemoryResultItem> results =
+                    service.searchTransMemory(targetLocale.getLocaleId(),
+                            sourceLocale.getLocaleId(), tmQuery);
+            assertThat(results).hasSize(0);
         }
 
         @Test
@@ -259,6 +283,9 @@ public class TranslationMemoryServiceImplTest {
         @Produces
         @Mock
         private UrlUtil urlUtil;
+        @Produces
+        @Mock
+        private ZanataIdentity identity;
 
         @Produces
         @Zanata
@@ -301,6 +328,8 @@ public class TranslationMemoryServiceImplTest {
                     new AsyncTaskHandle<>());
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
             targetLocale = localeDAO.findByLocaleId(LocaleId.DE);
+            when(identity.hasPermission(any(HProjectIteration.class),
+                    ArgumentMatchers.matches("read"))).thenReturn(true);
         }
 
         @Test
