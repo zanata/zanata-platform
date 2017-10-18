@@ -154,8 +154,7 @@
   overflow: hidden;
 }
 
-.Editor-translationsWrapper,
-.Editor-suggestionsBody {
+.ltr {
   direction: ltr;
 }
 
