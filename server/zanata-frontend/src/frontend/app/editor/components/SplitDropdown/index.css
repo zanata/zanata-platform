@@ -24,6 +24,7 @@ not conflict with the other frontend code
   border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
   padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .ButtonGroup--round .ButtonGroup-item:last-child .EditorButton {
