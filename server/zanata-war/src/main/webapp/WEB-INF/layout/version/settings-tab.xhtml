@@ -85,7 +85,7 @@
   </li>
 </ul>
 
-<ul class="tabs__content js-tabs-content">
+<ul class="tabsContent js-tabs-content">
 <li class="is-active" id="settings-general">
   <h2 class="l--push-all-0 gamma d--bottom">#{msgs['jsf.General']}</h2>
 
@@ -161,7 +161,7 @@
           acceptedDescriptions="#{versionHome.acceptedSourceFile}"
           url="#{request.contextPath}/files/upload?p=#{versionHome.projectSlug}&amp;v=#{versionHome.slug}"
           maxfiles="#{applicationConfiguration.maxFilesPerUpload}">
-          <i class="i i--add"></i>
+          <i class="i i--add i i--large"></i>
         </zanata:multi-file-upload>
         <zanata:sortlist id="settings-document_sorting"
           sortAction="#{versionHomeAction.sortSettingsDocumentList()}"

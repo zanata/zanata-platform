@@ -25,33 +25,33 @@ const TeaserListHeader = ({
   const totalPage = Math.floor(totalCount / sizePerPage) +
     (totalCount % sizePerPage > 0 ? 1 : 0)
   const headerIcon = type
-    ? <Icon name={icons[type]} className='header-icons s1' /> : null
+    ? <Icon name={icons[type]} className='iconsHeader s1' /> : null
   const currentPage = page ? parseInt(page) : 1
 
   /* eslint-disable react/jsx-no-bind */
   return (
-    <div className='teaser-header-view-theme'>
+    <div className='teaserHeader'>
       {headerIcon}
-      <h2 className='text-dark text-uppercase'>
+      <h2 className='u-textDark u-textUppercase'>
         {title}
-        <span className='muted-left' title='Total records'>
+        <span className='u-textMutedLeft' title='Total records'>
           {totalCount}
         </span>
       </h2>
       {totalPage > 1 && (
-        <div className='teaser-header-inner'>
+        <div className='teaserHeader-inner'>
           <Button bsStyle='link' disabled={currentPage === 1}
             onClick={() => { updatePage(type, currentPage, totalPage, false) }}>
-            <Icon className='headericons s1' name='chevron-left' />
+            <Icon className='iconsHeader s1' name='chevron-left' />
           </Button>
-          <span className='current-page'>{currentPage} of {totalPage}</span>
+          <span className='pageCurrent'>{currentPage} of {totalPage}</span>
           <Button bsStyle='link' disabled={currentPage === totalPage}
             onClick={() => { updatePage(type, currentPage, totalPage, true) }}>
-            <Icon className='headericons s1' name='chevron-right' />
+            <Icon className='iconsHeader s1' name='chevron-right' />
           </Button>
         </div>
       )}
-      {loading && <Loader className='header-loader s1' />}
+      {loading && <Loader className='headerLoader s1' />}
     </div>
   )
   /* eslint-enable react/jsx-no-bind */

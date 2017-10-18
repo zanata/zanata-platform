@@ -37,7 +37,6 @@ import org.zanata.rest.dto.ProjectIteration;
 @Path(ProjectIterationResource.SERVICE_PATH)
 @Deprecated
 public class MockProjectIterationResource implements ProjectIterationResource {
-    private static final long serialVersionUID = -3276587657503575605L;
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Context
     UriInfo uriInfo;

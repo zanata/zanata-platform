@@ -1,5 +1,6 @@
 import { getSaveButtonStatus, hasTranslationChanged }
   from '../utils/phrase-util'
+import { createAction } from 'redux-actions'
 import {
   copyFromAlignedSource,
   undoEdit,
@@ -35,7 +36,7 @@ function shortcutInfo (keys, eventActionCreator, description, eventType) {
  * See shortcutInfo(...) for the expected structure.
  *
  * CAUTION: with sequence keys, shortcuts are added and removed. They will
- *          clobber any other shotrcut that uses the same keys. Never use the
+ *          clobber any other shortcut that uses the same keys. Never use the
  *          same key combination for a sequence that is used in any of the top-
  *          level shortcuts.
  *          Note: this could be fixed if we make use of Combokeys' sequences,
@@ -171,6 +172,12 @@ function saveAsCurrentActionCreator (event) {
 }
 
 /**
+* Indicate that save-as mode is active or inactive.
+*/
+export const SET_SAVE_AS_MODE = 'SET_SAVE_AS_MODE'
+export const setSaveAsMode = createAction(SET_SAVE_AS_MODE)
+
+/**
  * This is to mimic sequence shortcut.
  * e.g. press ctrl-shift-s then press 'n' to save as 'needs work'.
  */
@@ -182,14 +189,6 @@ function saveAsModeActionCreator (event) {
       dispatch(setSaveAsMode(true))
     }
   }
-}
-
-export const SET_SAVE_AS_MODE = Symbol('SET_SAVE_AS_MODE')
-/**
- * Indicate that save-as mode is active or inactive.
- */
-export function setSaveAsMode (active) {
-  return { type: SET_SAVE_AS_MODE, active }
 }
 
 function saveAs (status) {

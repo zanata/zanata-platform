@@ -21,13 +21,12 @@
 
 package org.zanata.rest.client;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.core.MultivaluedHashMap;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -63,12 +62,12 @@ public class ApiKeyHeaderFilterTest {
 
         filter.filter(mockRequest);
 
-        assertThat(headerMap.getFirst(RestConstant.HEADER_USERNAME).toString(),
-                Matchers.equalTo(username));
-        assertThat(headerMap.getFirst(RestConstant.HEADER_API_KEY).toString(),
-                Matchers.equalTo(apiKey));
+        assertThat(headerMap.getFirst(RestConstant.HEADER_USERNAME).toString())
+                .isEqualTo(username);
+        assertThat(headerMap.getFirst(RestConstant.HEADER_API_KEY).toString())
+                .isEqualTo(apiKey);
         assertThat(headerMap.getFirst(RestConstant.HEADER_VERSION_NO)
-                .toString(), Matchers.equalTo(ver));
+                .toString()).isEqualTo(ver);
     }
 }
 

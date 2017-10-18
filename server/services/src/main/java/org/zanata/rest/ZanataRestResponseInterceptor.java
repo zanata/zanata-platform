@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.base.Joiner;
 
 import static java.util.Collections.emptyList;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * This Interceptor is a filter for Zanata REST API requests.

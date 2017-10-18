@@ -2,7 +2,6 @@ package org.zanata.client.integration;
 
 import java.io.File;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,8 +28,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -74,20 +72,20 @@ public class PushPullGettextITCase {
 
         mockServerRule.verifyPushSource();
         String docId = mockServerRule.getDocIdCaptor().getValue();
-        assertThat(docId, equalTo("tar"));
-        assertThat(mockServerRule.getExtensionCaptor().getValue(),
-                Matchers.equalTo(new StringSet("gettext;comment")));
+        assertThat(docId).isEqualTo("tar");
+        assertThat(mockServerRule.getExtensionCaptor().getValue())
+                .isEqualTo(new StringSet("gettext;comment"));
 
         Resource resource = mockServerRule.getResourceCaptor().getValue();
-        assertThat(resource.getTextFlows(), hasSize(2));
+        assertThat(resource.getTextFlows()).hasSize(2);
 
         mockServerRule.verifyPushTranslation();
         LocaleId localeId = mockServerRule.getLocaleIdCaptor().getValue();
-        assertThat(localeId, equalTo(new LocaleId("zh-CN")));
+        assertThat(localeId).isEqualTo(new LocaleId("zh-CN"));
 
         TranslationsResource transResource =
                 mockServerRule.getTransResourceCaptor().getValue();
-        assertThat(transResource.getTextFlowTargets(), hasSize(2));
+        assertThat(transResource.getTextFlowTargets()).hasSize(2);
     }
 
     @Test
@@ -108,11 +106,11 @@ public class PushPullGettextITCase {
 
         mockServerRule.verifyPushTranslation();
         LocaleId localeId = mockServerRule.getLocaleIdCaptor().getValue();
-        assertThat(localeId, equalTo(new LocaleId("zh-CN")));
+        assertThat(localeId).isEqualTo(new LocaleId("zh-CN"));
 
         TranslationsResource transResource =
                 mockServerRule.getTransResourceCaptor().getValue();
-        assertThat(transResource.getTextFlowTargets(), hasSize(2));
+        assertThat(transResource.getTextFlowTargets()).hasSize(2);
     }
 
     @Test
@@ -138,8 +136,8 @@ public class PushPullGettextITCase {
 
         pullCommand.run();
 
-        assertThat(new File(pullBaseDir, "tar.pot").exists(), is(true));
-        assertThat(new File(pullBaseDir, "zh_CN.po").exists(), is(true));
+        assertThat(new File(pullBaseDir, "tar.pot").exists()).isTrue();
+        assertThat(new File(pullBaseDir, "zh_CN.po").exists()).isTrue();
     }
 
     @Test
@@ -168,9 +166,9 @@ public class PushPullGettextITCase {
 
         pullCommand.run();
 
-        assertThat(new File(pullBaseDir, "tar.pot").exists(), is(false));
-        assertThat(new File(pullBaseDir, "zh_CN.po").exists(), is(false));
-        assertThat(new File(pullBaseDir, "tar_zh-CN.po").exists(), is(true));
+        assertThat(new File(pullBaseDir, "tar.pot").exists()).isFalse();
+        assertThat(new File(pullBaseDir, "zh_CN.po").exists()).isFalse();
+        assertThat(new File(pullBaseDir, "tar_zh-CN.po").exists()).isTrue();
     }
 
 }

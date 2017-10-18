@@ -69,7 +69,7 @@
     </script>
   </h:head>
 
-  <h:body class="templatestyle">
+  <h:body class="templateStyle">
     <ds:windowId/>
 
     <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
@@ -99,11 +99,11 @@
     <script type="application/javascript">
       window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
     </script>
-    <div class="template-wrapper">
-      <div class="template-container">
+    <div class="templateWrapper">
+      <div class="templateContainer">
         <div id="root" />
-        <main role="main" class="root-main">
-          <div class="l__wrapper root-main-content l--pad-top-half">
+        <main role="main" class="rootMain">
+          <div class="l__wrapper rootMain-content l--pad-top-half">
             <ui:insert name="center_content"/>
           </div>
         </main>

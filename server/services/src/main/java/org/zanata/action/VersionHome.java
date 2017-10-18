@@ -29,7 +29,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -167,6 +167,9 @@ public class VersionHome extends SlugHome<HProjectIteration>
             String projectSlug = getProjectSlug();
             clearSlugs();
             setProjectSlug(projectSlug);
+            if (!identity.hasPermission(getProject(), "read")) {
+                throw new EntityNotFoundException();
+            }
             identity.checkPermission(getProject(), "insert");
             ProjectType projectType = getProject().getDefaultProjectType();
             if (projectType != null) {
@@ -176,6 +179,9 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 setDefaultCopyFromVersion();
             }
         } else {
+            if (!identity.hasPermission(getInstance(), "read")) {
+                throw new EntityNotFoundException();
+            }
             copyFromVersion = false;
             ProjectType versionProjectType = getInstance().getProjectType();
             if (versionProjectType != null) {

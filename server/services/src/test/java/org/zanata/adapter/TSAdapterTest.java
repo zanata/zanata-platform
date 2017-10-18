@@ -179,11 +179,15 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
         File originalFile = getTestFile("test-ts-untranslated.ts");
         LocaleId localeId = new LocaleId("en");
         OutputStream outputStream = new ByteArrayOutputStream();
-        IFilterWriter writer = new TsFilter().createFilterWriter();
-        writer.setOptions(localeId, Charsets.UTF_8.name());
-        writer.setOutput(outputStream);
-        getAdapter().generateTranslatedFile(originalFile.toURI(), translations,
-                localeId, writer, Optional.absent());
+        try (
+                TsFilter tsFilter = new TsFilter();
+                IFilterWriter writer = tsFilter.createFilterWriter()) {
+            writer.setOptions(localeId, Charsets.UTF_8.name());
+            writer.setOutput(outputStream);
+            getAdapter()
+                    .generateTranslatedFile(originalFile.toURI(), translations,
+                            localeId, writer, Optional.absent());
+        }
         assertThat(outputStream.toString()).isEqualTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE TS []>\n" +
                 "<TS version=\"2.1\" sourcelanguage=\"en\" language=\"sv\">\n" +
@@ -220,11 +224,15 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
     public void testFailToParseOriginalFile() throws Exception {
         exception.expect(FileFormatAdapterException.class);
         exception.expectMessage("Unable to generate translated document from original");
-        getAdapter().generateTranslatedFile(
-                getTestFile("test-ts-nonexistent.ts").toURI(),
-                new HashMap<>(),
-                new LocaleId("en"),
-                new TsFilter().createFilterWriter(), Optional.absent());
+        try (
+                TsFilter tsFilter = new TsFilter();
+                IFilterWriter filterWriter = tsFilter.createFilterWriter()) {
+            getAdapter().generateTranslatedFile(
+                    getTestFile("test-ts-nonexistent.ts").toURI(),
+                    new HashMap<>(),
+                    new LocaleId("en"),
+                    filterWriter, Optional.absent());
+        }
     }
 
     private String getContext(TextFlow textFlow) {

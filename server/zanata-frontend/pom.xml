@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.3.1-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-frontend</artifactId>
   <name>Zanata frontend</name>
@@ -22,7 +22,7 @@
   <properties>
     <!-- Node and Yarn versions that will be downloaded and used for zanata-frontend. -->
     <node.version>v8.1.3</node.version>
-    <yarn.version>v0.27.5</yarn.version>
+    <yarn.version>v1.1.0</yarn.version>
     <!-- The location to download the correct version of Node and Yarn to.
         ${download.dir} comes from zanata-server/pom.xml -->
     <yarn.install.directory>${download.dir}/zanata/node-${node.version}-yarn-${yarn.version}</yarn.install.directory>
@@ -55,7 +55,7 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.3</version>
+        <version>1.6</version>
         <configuration>
           <installDirectory>${yarn.install.directory}</installDirectory>
         </configuration>

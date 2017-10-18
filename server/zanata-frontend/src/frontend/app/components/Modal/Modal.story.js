@@ -75,7 +75,7 @@ storiesOf('Modal', module)
         <Lorem />
       </Modal.Body>
       <Modal.Footer>
-        <span className='bootstrap pull-right'>
+        <span className='bootstrap u-pullRight'>
           <Row>
             <Button bsStyle='link'
               className='btn-left'
@@ -100,7 +100,7 @@ storiesOf('Modal', module)
         <Modal.Title>Export Project to TMX</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <span className='tmx-export'>
+        <span className='tmxExport'>
           <p>Are you sure you want to export this project to TMX?<br />
             <strong>All documents in this project have the source language
               &nbsp;<a href="">en-US</a>.</strong></p>
@@ -124,10 +124,10 @@ storiesOf('Modal', module)
         <Modal.Title>Export Project to TMX</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <span className='tmx-export'>
+        <span className='tmxExport'>
           <p>Are you sure you want to export this project to TMX?</p>
           <p className='lead'>Source languages</p>
-          <Table className='tmx-table'>
+          <Table className='tmxTable'>
             <tbody>
               <tr>
                 <td>
@@ -143,7 +143,7 @@ storiesOf('Modal', module)
                   </OverlayTrigger>
                 </td>
                 <td>
-                  <span className='tmx-dl'>
+                  <span className='tmxDownload'>
                     <Button
                       bsStyle='primary'
                       bsSize='small'
@@ -169,7 +169,7 @@ storiesOf('Modal', module)
                   </OverlayTrigger>
                 </td>
                 <td>
-                  <span className='tmx-dl'>
+                  <span className='tmxDownload'>
                     <Button
                       bsStyle='primary'
                       bsSize='small'
@@ -195,7 +195,7 @@ storiesOf('Modal', module)
                   </OverlayTrigger>
                 </td>
                 <td>
-                  <span className='tmx-dl'>
+                  <span className='tmxDownload'>
                     <Button
                       bsStyle='primary'
                       bsSize='small'
@@ -226,7 +226,7 @@ storiesOf('Modal', module)
               </tr>
             </tbody>
           </Table>
-          <p className='all-warning'>
+          <p className='allWarnings'>
             <OverlayTrigger placement='top' overlay={tooltipTMX}>
               <Button bsStyle='link'>
                 <Icon name='warning' className='n1' />
@@ -234,7 +234,7 @@ storiesOf('Modal', module)
               </Button>
             </OverlayTrigger>
           </p>
-          <p className='text-warning'>* All translations of documents for
+          <p className='u-textWarning'>* All translations of documents for
             the selected source language will be included.
           </p>
         </span>
@@ -249,7 +249,7 @@ storiesOf('Modal', module)
         <Modal.Title>Export Project to TMX</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <span className='tmx-export'>
+        <span className='tmxExport'>
           <p><strong>Preparing files</strong></p>
           <p>
             1 of 445
@@ -266,7 +266,7 @@ storiesOf('Modal', module)
         <Modal.Title>Export Project to TMX</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <span className='tmx-export'>
+        <span className='tmxExport'>
           <p><strong>Files are ready for download</strong></p>
           <p>
             <Button

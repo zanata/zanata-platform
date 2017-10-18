@@ -9,6 +9,10 @@
   --Toggle-transition: all .25s cubic-bezier(.075, .820, .165, 1.000);
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .Toggle,
 .Toggle-label {
   cursor: pointer;

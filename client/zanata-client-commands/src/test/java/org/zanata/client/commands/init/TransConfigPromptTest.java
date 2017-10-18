@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
@@ -16,7 +15,7 @@ import org.zanata.client.config.LocaleMapping;
 
 import com.google.common.collect.Sets;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransConfigPromptTest {
     private TransConfigPrompt prompt;
@@ -63,12 +62,12 @@ public class TransConfigPromptTest {
 
         prompt = prompt.promptUser();
 
-        assertThat(opts.getTransDir(), Matchers.equalTo(new File(".")));
+        assertThat(opts.getTransDir()).isEqualTo(new File("."));
         List<String> capturedPrompts =
                 MockConsoleInteractor.getCapturedPrompts(console);
-        assertThat(capturedPrompts, Matchers.hasItems(
+        assertThat(capturedPrompts).contains(
                 "        ./de/a.po",
-                "        ./de/b.po"));
+                "        ./de/b.po");
     }
 
     @Test
@@ -85,12 +84,12 @@ public class TransConfigPromptTest {
 
         prompt = prompt.promptUser();
 
-        assertThat(opts.getTransDir(), Matchers.equalTo(new File(".")));
+        assertThat(opts.getTransDir()).isEqualTo(new File("."));
         List<String> capturedPrompts =
                 MockConsoleInteractor.getCapturedPrompts(console);
-        assertThat(capturedPrompts, Matchers.hasItems(
+        assertThat(capturedPrompts).contains(
                 "        ./zh/a.po",
-                "        ./zh/b.po"));
+                "        ./zh/b.po");
     }
 
     @Test
@@ -107,7 +106,7 @@ public class TransConfigPromptTest {
 
         prompt = prompt.promptUser();
 
-        assertThat(opts.getTransDir(), Matchers.equalTo(new File("po")));
+        assertThat(opts.getTransDir()).isEqualTo(new File("po"));
     }
 
     @Test
@@ -127,11 +126,11 @@ public class TransConfigPromptTest {
 
         prompt = prompt.promptUser();
 
-        assertThat(opts.getTransDir(), Matchers.equalTo(new File(".")));
+        assertThat(opts.getTransDir()).isEqualTo(new File("."));
         List<String> capturedPrompts =
                 MockConsoleInteractor.getCapturedPrompts(console);
-        assertThat(capturedPrompts, Matchers.hasItems(
+        assertThat(capturedPrompts).contains(
                 "        ./de/a.txt",
-                "        ./de/b.txt"));
+                "        ./de/b.txt");
     }
 }

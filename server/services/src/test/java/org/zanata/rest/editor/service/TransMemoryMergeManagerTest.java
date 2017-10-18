@@ -123,7 +123,7 @@ public class TransMemoryMergeManagerTest {
                         request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
-                .thenReturn(existingHandle);
+                .thenAnswer(it -> existingHandle);
         boolean result = manager.startTransMemoryMerge(request);
 
         assertThat(result).isTrue();
@@ -152,7 +152,7 @@ public class TransMemoryMergeManagerTest {
                         request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
-                .thenReturn(existingHandle);
+                .thenAnswer(it -> existingHandle);
         boolean result = manager.startTransMemoryMerge(request);
 
         assertThat(result).isTrue();
@@ -172,8 +172,9 @@ public class TransMemoryMergeManagerTest {
                 new TMMergeForDocTaskKey(
                         request.documentId,
                         request.localeId);
+        TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
-                .thenReturn(new TransMemoryMergeTaskHandle());
+                .thenAnswer(it -> handle);
         boolean result = manager.startTransMemoryMerge(request);
 
         assertThat(result).isFalse();
@@ -203,7 +204,7 @@ public class TransMemoryMergeManagerTest {
                         cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
-                .thenReturn(existingHandle);
+                .thenAnswer(it -> existingHandle);
         boolean result = manager.cancelTransMemoryMerge(cancelRequest);
 
         assertThat(result).isFalse();
@@ -225,7 +226,7 @@ public class TransMemoryMergeManagerTest {
                         cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
-                .thenReturn(existingHandle);
+                .thenAnswer(it -> existingHandle);
         boolean result = manager.cancelTransMemoryMerge(cancelRequest);
 
         assertThat(result).isFalse();
@@ -242,7 +243,7 @@ public class TransMemoryMergeManagerTest {
                         cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
-                .thenReturn(existingHandle);
+                .thenAnswer(it -> existingHandle);
         boolean result = manager.cancelTransMemoryMerge(cancelRequest);
 
         assertThat(result).isFalse();
@@ -265,7 +266,7 @@ public class TransMemoryMergeManagerTest {
                         cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
-                .thenReturn(existingHandle);
+                .thenAnswer(it -> existingHandle);
         boolean result = manager.cancelTransMemoryMerge(cancelRequest);
 
         assertThat(result).isTrue();
@@ -297,8 +298,9 @@ public class TransMemoryMergeManagerTest {
     startTMMergeForVersionIfProcessForThisRequestIsAlreadyRunning() {
         long versionId = 1L;
         LocaleId localeId = LocaleId.FR;
-        when(asyncTaskHandleManager.getHandleByKey(TransMemoryMergeManager.makeKey(
-                versionId, localeId))).thenReturn(taskHandle);
+        when(asyncTaskHandleManager.getHandleByKey(
+                TransMemoryMergeManager.makeKey(versionId, localeId)))
+                .thenAnswer(it -> taskHandle);
         VersionTMMerge versionTMMerge =
                 new VersionTMMerge(localeId, 80, MergeRule.FUZZY, MergeRule.FUZZY,
                         MergeRule.FUZZY, MergeRule.FUZZY,

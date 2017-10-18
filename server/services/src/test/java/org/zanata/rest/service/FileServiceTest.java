@@ -32,16 +32,25 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataTest;
+import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.i18n.Messages;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
+import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.LocaleService;
@@ -87,6 +96,8 @@ public class FileServiceTest extends ZanataTest {
     @Produces @Mock Session session;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
     @Produces @Mock EntityManager entityManager;
+    @Produces @Mock ProjectIterationDAO projectIterationDAO;
+    @Produces @Mock DocumentDAO documentDAO;
     @Produces @Mock LocaleService localeService;
     @Produces @Mock CopyTransService copyTransService;
     @Produces @Mock FilePersistService filePersistService;
@@ -95,9 +106,15 @@ public class FileServiceTest extends ZanataTest {
     @Produces @Mock TranslationService translationService;
     @Produces @Mock WindowContext windowContext;
     @Produces @Mock UrlUtil urlUtil;
+    @Produces @Mock ResourceUtils resourceUtils;
     // needed to override the producers of the original class
     @Produces @Mock ApplicationConfiguration applicationConfiguration;
     @Produces @Mock Messages messages;
+    @Produces @Mock ZanataIdentity identity;
+    @Produces
+    @Authenticated
+    @Mock
+    HAccount authenticatedAccount;
 
     @Captor
     private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
@@ -165,5 +182,50 @@ public class FileServiceTest extends ZanataTest {
                 fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE,
                         DOC_ID, MERGE, form);
         assertThat(response).isSameAs(okResponse);
+    }
+
+    @Test
+    @InRequestScope
+    public void downloadSourceFileNullVersion() {
+        when(projectIterationDAO.getBySlug(PROJ_SLUG, VER_SLUG))
+                .thenReturn(null);
+        response =
+                fileService.downloadSourceFile(PROJ_SLUG, VER_SLUG, LOCALE,
+                        DOC_ID);
+        assertThat(response.getStatus())
+                .isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    @InRequestScope
+    public void downloadSourceFileVersionNoPermission() {
+        HProjectIteration version = Mockito.mock(HProjectIteration.class);
+        when(projectIterationDAO.getBySlug(PROJ_SLUG, VER_SLUG))
+                .thenReturn(version);
+        when(identity.hasPermission(version, "read")).thenReturn(false);
+        response =
+                fileService.downloadSourceFile(PROJ_SLUG, VER_SLUG, LOCALE,
+                        DOC_ID);
+        assertThat(response.getStatus())
+                .isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    @InRequestScope
+    public void downloadSourceFileVersion() {
+        HProjectIteration version = Mockito.mock(HProjectIteration.class);
+        when(projectIterationDAO.getBySlug(PROJ_SLUG, VER_SLUG))
+                .thenReturn(version);
+        when(identity.hasPermission(version, "read")).thenReturn(true);
+        HDocument doc = Mockito.mock(HDocument.class);
+        when(documentDAO.getByProjectIterationAndDocId(PROJ_SLUG, VER_SLUG, DOC_ID)).thenReturn(doc);
+
+        Resource res = Mockito.mock(Resource.class);
+        when(resourceUtils.buildResource(doc)).thenReturn(res);
+
+        response =
+                fileService.downloadSourceFile(PROJ_SLUG, VER_SLUG, "pot",
+                        DOC_ID);
+        assertThat(response.getStatus()).isEqualTo(okResponse.getStatus());
     }
 }

@@ -6,7 +6,7 @@ storiesOf('Sidebar', module)
     .add('default', () => (
         <div>
           <Sidebar />
-          <div className='flextab'>
+          <div className='flexTab'>
             <p>This sidebar example has the active tag applied to both the People
               and Languages pages to provide examples of how this design handles
               sidebar links.</p>

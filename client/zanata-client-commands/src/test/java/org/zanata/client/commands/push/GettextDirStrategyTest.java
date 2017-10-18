@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,7 +35,7 @@ import org.zanata.client.config.LocaleMapping;
 import com.google.common.base.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
 public class GettextDirStrategyTest {
@@ -65,12 +64,12 @@ public class GettextDirStrategyTest {
                         opts);
 
         File deTransFile = strategy.getTransFile(deMapping, "foo/message");
-        assertThat(deTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "de/foo/message.po")));
+        assertThat(deTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "de/foo/message.po"));
 
         File zhTransFile = strategy.getTransFile(zhMapping, "foo/message");
-        assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "zh-Hans/foo/message.po")));
+        assertThat(zhTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "zh-Hans/foo/message.po"));
     }
 
     @Test
@@ -85,12 +84,12 @@ public class GettextDirStrategyTest {
                         opts);
 
         File deTransFile = strategy.getTransFile(deMapping, "foo/message");
-        assertThat(deTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "de/foo/message.po")));
+        assertThat(deTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "de/foo/message.po"));
 
         File zhTransFile = strategy.getTransFile(zhMapping, "foo/message");
-        assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "zh-Hans/foo/message.po")));
+        assertThat(zhTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "zh-Hans/foo/message.po"));
     }
 
     // rhbz1174516
@@ -116,7 +115,7 @@ public class GettextDirStrategyTest {
 
         List<LocaleMapping> locales = strategy.findLocales("foo/message");
 
-        assertThat(locales, Matchers.containsInAnyOrder(deMapping, zhMapping));
+        assertThat(locales).containsExactlyInAnyOrder(deMapping, zhMapping);
     }
 
 }

@@ -5,6 +5,9 @@
 
 package org.zanata.seam.text;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import antlr.NoViableAltException;
 import antlr.ParserSharedInputState;
 import antlr.RecognitionException;
@@ -178,8 +181,8 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "url\\s*\\(\\s*[^\\s)]+?\\s*\\)\\s*"
                         );
 
-        protected java.util.Set<String> acceptableElements =
-                new java.util.HashSet(java.util.Arrays.asList(
+        protected Set<String> acceptableElements =
+                new HashSet<>(java.util.Arrays.asList(
                         "a", "abbr", "acronym", "address", "area", "b", "bdo",
                         "big", "blockquote",
                         "br", "caption", "center", "cite", "code", "col",
@@ -195,7 +198,7 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "tr", "tt", "u", "ul", "var", "wbr"
                         ));
 
-        protected java.util.Set<String> mathmlElements = new java.util.HashSet(
+        protected Set<String> mathmlElements = new HashSet<>(
                 java.util.Arrays.asList(
                         "maction", "math", "merror", "mfrac", "mi",
                         "mmultiscripts", "mn", "mo",
@@ -206,7 +209,7 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "mtr", "munder", "munderover", "none"
                         ));
 
-        protected java.util.Set<String> svgElements = new java.util.HashSet(
+        protected Set<String> svgElements = new HashSet<>(
                 java.util.Arrays.asList(
                         "a", "animate", "animateColor", "animateMotion",
                         "animateTransform",
@@ -221,8 +224,8 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "title", "tspan", "use"
                         ));
 
-        protected java.util.Set<String> acceptableAttributes =
-                new java.util.HashSet(java.util.Arrays.asList(
+        protected Set<String> acceptableAttributes =
+                new HashSet<>(java.util.Arrays.asList(
                         "abbr", "accept", "accept-charset", "accesskey",
                         "action", "align", "alt",
                         "axis", "border", "cellpadding", "cellspacing", "char",
@@ -244,8 +247,8 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "valign", "value", "vspace", "width", "xml:lang"
                         ));
 
-        protected java.util.Set<String> mathmlAttributes =
-                new java.util.HashSet(java.util.Arrays.asList(
+        protected Set<String> mathmlAttributes =
+                new HashSet<>(java.util.Arrays.asList(
                         "actiontype", "align", "columnalign", "columnalign",
                         "columnalign",
                         "columnlines", "columnspacing", "columnspan", "depth",
@@ -264,7 +267,7 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "xmlns", "xmlns:xlink"
                         ));
 
-        protected java.util.Set<String> svgAttributes = new java.util.HashSet(
+        protected Set<String> svgAttributes = new HashSet<>(
                 java.util.Arrays.asList(
                         "accent-height", "accumulate", "additive",
                         "alphabetic", "arabic-form",
@@ -317,8 +320,8 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "zoomAndPan"
                         ));
 
-        protected java.util.Set<String> styleProperties =
-                new java.util.HashSet(java.util.Arrays.asList(
+        protected Set<String> styleProperties =
+                new HashSet<>(java.util.Arrays.asList(
                         "azimuth",
                         "background", "background-attachment",
                         "background-color", "background-image",
@@ -356,8 +359,8 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "voice-family", "volume", "white-space", "width"
                         ));
 
-        protected java.util.Set<String> stylePropertiesValues =
-                new java.util.HashSet(java.util.Arrays.asList(
+        protected Set<String> stylePropertiesValues =
+                new HashSet<>(java.util.Arrays.asList(
                         "aqua", "auto", "baseline", "black", "block", "blue",
                         "bold", "both", "bottom", "brown",
                         "center", "collapse", "dashed", "dotted", "fuchsia",
@@ -370,20 +373,20 @@ public class SeamTextParser extends antlr.LLkParser implements
                         "transparent", "underline", "white", "yellow"
                         ));
 
-        protected java.util.Set<String> svgStyleProperties =
-                new java.util.HashSet(java.util.Arrays.asList(
+        protected Set<String> svgStyleProperties =
+                new HashSet<>(java.util.Arrays.asList(
                         "fill", "fill-opacity", "fill-rule", "stroke",
                         "stroke-linecap",
                         "stroke-linejoin", "stroke-opacity", "stroke-width"
                         ));
 
-        protected java.util.Set<String> attributesWhoseValueIsAURI =
-                new java.util.HashSet(java.util.Arrays.asList(
+        protected Set<String> attributesWhoseValueIsAURI =
+                new HashSet<>(java.util.Arrays.asList(
                         "action", "cite", "href", "longdesc", "src",
                         "xlink:href", "xml:base"
                         ));
 
-        protected java.util.Set<String> uriSchemes = new java.util.HashSet(
+        protected Set<String> uriSchemes = new HashSet<>(
                 java.util.Arrays.asList(
                         "afs", "aim", "callto", "ed2k", "feed", "ftp",
                         "gopher", "http", "https",

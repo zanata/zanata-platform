@@ -122,6 +122,7 @@ public class CorePage extends AbstractPage {
         waitForAMoment().withMessage(msg)
                 .until(webDriver -> getErrors()
                         .contains(expected));
+        logFinished(msg);
         return getErrors();
     }
 
@@ -139,7 +140,7 @@ public class CorePage extends AbstractPage {
     public boolean expectNotification(final String notification) {
         String msg = "notification " + notification;
         logWaiting(msg);
-        return waitForAMoment().withMessage(msg)
+        boolean result = waitForAMoment().withMessage(msg)
                 .until(driver -> {
                     List<WebElement> messages =
                             getDriver().findElement(By.id("messages"))
@@ -154,6 +155,8 @@ public class CorePage extends AbstractPage {
                     }
                     return notifications.contains(notification);
                 });
+        logFinished(msg);
+        return result;
     }
 
     public void assertNoCriticalErrors() {

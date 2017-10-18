@@ -20,7 +20,7 @@
  */
 package org.zanata.service.impl;
 
-import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

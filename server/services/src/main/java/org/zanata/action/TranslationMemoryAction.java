@@ -95,7 +95,7 @@ public class TranslationMemoryAction implements Serializable {
 
     public void clearTransMemory(final String transMemorySlug) {
         lastTaskTMKey = new GenericAsyncTaskKey(joinFields(KEY_NAME, transMemorySlug));
-        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskHandle<?> handle = new AsyncTaskHandle<>();
         asyncTaskHandleManager.registerTaskHandle(handle, lastTaskTMKey);
         translationMemoryResource
                 .deleteTranslationUnitsUnguardedAsync(transMemorySlug, handle);
@@ -104,7 +104,7 @@ public class TranslationMemoryAction implements Serializable {
 
     private boolean isProcessing() {
         if (lastTaskTMKey != null) {
-            AsyncTaskHandle<Void> handle =
+            AsyncTaskHandle<?> handle =
                     asyncTaskHandleManager.getHandleByKey(lastTaskTMKey);
             return handle != null && !handle.isDone();
         }
@@ -129,7 +129,7 @@ public class TranslationMemoryAction implements Serializable {
             return myProcessError;
         }
         if (lastTaskTMKey != null) {
-            AsyncTaskHandle<Void> handle =
+            AsyncTaskHandle<?> handle =
                     asyncTaskHandleManager.getHandleByKey(lastTaskTMKey);
             if (handle != null && handle.isDone()) {
                 try {
@@ -163,7 +163,7 @@ public class TranslationMemoryAction implements Serializable {
         GenericAsyncTaskKey taskKey =
                 new GenericAsyncTaskKey(
                         joinFields(KEY_NAME, transMemorySlug));
-        AsyncTaskHandle<Void> handle = asyncTaskHandleManager.getHandleByKey(
+        AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKey(
                 taskKey);
         return handle != null && !handle.isDone();
     }

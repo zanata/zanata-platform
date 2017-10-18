@@ -36,7 +36,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -70,7 +70,6 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 @Path(LocalesResource.SERVICE_PATH)
 public class LocalesService implements LocalesResource {
 
-    private static final long serialVersionUID = 8093381226182123148L;
     /**
      * Maximum result for per page.
      */

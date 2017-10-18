@@ -28,7 +28,8 @@ const NavItem = ({
   cssClass += (small ? ' small' : '')
   cssClass += (isSearchLink ? ' search' : '')
 
-  const text = isLogo ? (<span className='nav-logo'>{title}</span>) : title
+  const text = isLogo
+    ? (<span className='navBar-navLogo'>{title}</span>) : title
   const inverted = false
 
   const child = isLogo

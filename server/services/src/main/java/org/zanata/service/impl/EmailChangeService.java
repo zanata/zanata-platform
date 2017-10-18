@@ -23,7 +23,7 @@ package org.zanata.service.impl;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

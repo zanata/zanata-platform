@@ -35,11 +35,13 @@ const FilterableMatrixTable = ({
         categoryTitle='projectName'
         categoryName='Projects' />
     ])
-    : <div className='text-muted'>No contributions</div>
+    : <div className='u-textMuted'>No contributions</div>
   return (
     <div>
-      <ContentStateFilter selectedContentState={selectedContentState}
-        handleFilterChanged={handleFilterChanged} />
+      <div className='u-flexRow'>
+        <ContentStateFilter selectedContentState={selectedContentState}
+          handleFilterChanged={handleFilterChanged} />
+      </div>
       <div className='matrix-table'>
         <div className='matrix-inner'>
           <CalendarMonthMatrix
@@ -49,7 +51,7 @@ const FilterableMatrixTable = ({
             dateRange={dateRange}
             handleSelectedDayChanged={handleSelectedDayChanged} />
         </div>
-        <div className='matrix-heading'>
+        <div className='matrixHeading'>
           <CalendarPeriodHeading
             dateRange={dateRange}
             selectedDay={selectedDay} />

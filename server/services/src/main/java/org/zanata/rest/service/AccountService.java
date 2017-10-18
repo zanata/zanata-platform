@@ -18,6 +18,8 @@ import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.common.LocaleId;
@@ -36,9 +38,8 @@ import org.zanata.rest.dto.Account;
 @Transactional
 @CheckRole("admin")
 public class AccountService implements AccountResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(AccountService.class);
-    private static final long serialVersionUID = 6561405744815887237L;
+    private static final Logger log =
+            LoggerFactory.getLogger(AccountService.class);
 
     /**
      * User name that identifies an account.

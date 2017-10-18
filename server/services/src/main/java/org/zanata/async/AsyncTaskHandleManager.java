@@ -52,7 +52,7 @@ public class AsyncTaskHandleManager implements Serializable {
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
-    public synchronized <K extends AsyncTaskKey> void registerTaskHandle(AsyncTaskHandle handle,
+    public synchronized <K extends AsyncTaskKey> void registerTaskHandle(AsyncTaskHandle<?> handle,
             K key) {
         AsyncTaskHandle<?> existingHandle =
                 handlesByKey.putIfAbsent(key.id(), handle);
@@ -65,13 +65,13 @@ public class AsyncTaskHandleManager implements Serializable {
      * @param handle The handle to register.
      * @return An auto generated key id to retrieve the handle later
      */
-    public synchronized String registerTaskHandle(AsyncTaskHandle handle) {
+    public synchronized String registerTaskHandle(AsyncTaskHandle<?> handle) {
         GenericAsyncTaskKey genericKey = new GenericAsyncTaskKey();
         registerTaskHandle(handle, genericKey);
         return genericKey.id();
     }
 
-    void taskFinished(AsyncTaskHandle taskHandle) {
+    void taskFinished(AsyncTaskHandle<?> taskHandle) {
         synchronized (handlesByKey) {
             // TODO This operation is O(n). Maybe we can do better?
             for (Map.Entry<String, AsyncTaskHandle<?>> entry : handlesByKey
@@ -84,7 +84,7 @@ public class AsyncTaskHandleManager implements Serializable {
         }
     }
 
-    public <K extends AsyncTaskKey> AsyncTaskHandle getHandleByKey(K key) {
+    public <K extends AsyncTaskKey> AsyncTaskHandle<?> getHandleByKey(K key) {
         return getHandleByKeyId(key.id());
     }
 
@@ -96,8 +96,8 @@ public class AsyncTaskHandleManager implements Serializable {
         return (AsyncTaskHandle<T>) finishedTasks.getIfPresent(keyId);
     }
 
-    public Collection<AsyncTaskHandle> getAllHandles() {
-        Collection<AsyncTaskHandle> handles = Lists.newArrayList();
+    public Collection<AsyncTaskHandle<?>> getAllHandles() {
+        Collection<AsyncTaskHandle<?>> handles = Lists.newArrayList();
         handles.addAll(handlesByKey.values());
         handles.addAll(finishedTasks.asMap().values());
         return handles;

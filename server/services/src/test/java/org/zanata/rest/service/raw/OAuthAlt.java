@@ -25,7 +25,6 @@ import javax.enterprise.inject.Produces;
 
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
-import org.zanata.servlet.annotations.ServerPath;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>

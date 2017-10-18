@@ -185,7 +185,7 @@ timestamps {
           checkout scm
 
           // Clean the workspace
-          sh "git clean -fdx"
+          sh "git clean -dfqx"
         }
 
         // Build and Unit Tests
@@ -214,7 +214,7 @@ timestamps {
             clean install jxr:aggregate \
             --batch-mode \
             --update-snapshots \
-            -DstaticAnalysis \
+            -DstaticAnalysisCI \
             $gwtOpts \
             -DskipFuncTests \
             -DskipArqTests \
@@ -285,7 +285,6 @@ timestamps {
           //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
           //step([$class: 'DryPublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/cpd/cpdCheck.xml', unHealthy: ''])
 
-          // TODO reduce unstableTotal thresholds as bugs are eliminated
           step([$class: 'FindBugsPublisher',
                 pattern: '**/findbugsXml.xml',
                 unstableTotalAll: '0'])
@@ -300,7 +299,7 @@ timestamps {
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '300',
+                unstableTotalAll: '0',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
@@ -323,7 +322,7 @@ timestamps {
                   includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
         // Reduce workspace size
-        sh "git clean -fdx"
+        sh "git clean -dfqx"
       } catch (e) {
         echo("Caught exception: " + e)
         notify.error(e.toString())
@@ -390,7 +389,7 @@ void integrationTests(String appserver) {
     dir(appserver) {
       checkout scm
       // Clean the workspace
-      sh "git clean -fdx"
+      sh "git clean -dfqx"
 
       unstash 'generated-files'
 
@@ -478,7 +477,7 @@ void integrationTests(String appserver) {
                     testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
             )
             // Reduce workspace size
-            sh "git clean -fdx"
+            sh "git clean -dfqx"
           } else {
             notify.error("No integration test result for $appserver")
             currentBuild.result = 'FAILURE'
@@ -509,9 +508,10 @@ void withPorts(Closure wrapped) {
 // from https://issues.jenkins-ci.org/browse/JENKINS-27395?focusedCommentId=256459&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-256459
 boolean setJUnitPrefix(prefix, files) {
   // add prefix to qualified classname
-  def reportFiles = findFiles glob: "**/${files}"
+  def fileGlob = "**/${files}"
+  def reportFiles = findFiles glob: fileGlob
   if (reportFiles.size() > 0) {
-    sh "sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
+    sh "set +x; echo 'Using sed to edit classnames in ${fileGlob}'; sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
     return true
   } else {
     echo "[WARNING] Failed to find JUnit report files **/${files}"

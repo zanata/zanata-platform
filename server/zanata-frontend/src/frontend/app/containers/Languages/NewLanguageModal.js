@@ -117,10 +117,10 @@ class NewLanguageModal extends Component {
   renderSuggestion = (suggestion) => {
     return (
       <span name='new-language-displayName'>
-        <span className='text-light'>
+        <span className='u-textLight'>
           {suggestion.displayName}
         </span>
-        <span className='text-suggestion'>
+        <span className='u-textSuggestion'>
           {suggestion.localeId}
         </span>
       </span>
@@ -201,10 +201,10 @@ class NewLanguageModal extends Component {
                 Plural forms
                 <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
                   target='_blank'>
-                  <Icon name='info' className='s0 infoicon' title='Help' />
+                  <Icon name='info' className='s0 iconInfo' title='Help' />
                 </a>
                 {showPluralFormsWarning &&
-                  <div className='small-text'
+                  <div className='u-textSmall'
                     id='new-language-pluralforms-warning'>
                     No plural information available. Assuming no plurals.
                   </div>
@@ -233,7 +233,7 @@ class NewLanguageModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <span className='bootstrap pull-right'>
+          <span className='bootstrap u-pullRight'>
             <Row>
               <Button bsStyle='link'
                 id='btn-new-language-cancel' className='btn-left'

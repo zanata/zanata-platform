@@ -12,30 +12,30 @@ class SettingOption extends React.Component {
   }
   constructor (props) {
     super(props)
-    this.state = {active:props.active}
+    this.state = {active: props.active}
   }
   updateSetting = (id, active) => {
     // record the check state in the wrapper
-    this.setState({ active:active })
+    this.setState({ active: active })
     // call the real one that was passed in
-    this.props.updateSetting( id, active)
+    this.props.updateSetting(id, active)
   }
   render () {
     return (
-        <RealSettingOption
-            updateSetting={this.updateSetting}
-            id={this.props.id}
-            label={this.props.label}
-            active={this.state.active} />
+      <RealSettingOption
+        updateSetting={this.updateSetting}
+        id={this.props.id}
+        label={this.props.label}
+        active={this.state.active} />
     )
   }
 }
 
 storiesOf('SettingOption', module)
   .add('default', () => (
-      <SettingOption
-          id='list-item-1'
-          label='List item 1'
-          active
-          updateSetting={action('updateSetting')} />
+    <SettingOption
+      id='list-item-1'
+      label='List item 1'
+      active
+      updateSetting={action('updateSetting')} />
   ))

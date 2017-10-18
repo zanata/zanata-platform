@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response.Status;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,9 +73,9 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StringUtil;
 import com.google.common.base.Optional;
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isEmpty;
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 // TODO move plural logic out of ResourceUtils into a dedicated class
 
 @Named("resourceUtils")

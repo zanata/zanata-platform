@@ -51,7 +51,7 @@ class SuggestionDetailsModal extends Component {
         onHide={this.props.onClose}
         id="SuggestionDetailsModal">
         <Modal.Header>
-          <Modal.Title><small><span className="pull-left">
+          <Modal.Title><small><span className="u-pullLeft">
           Suggestion Details</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>

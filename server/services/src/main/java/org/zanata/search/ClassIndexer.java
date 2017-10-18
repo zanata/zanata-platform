@@ -34,10 +34,10 @@ public class ClassIndexer<T> {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ClassIndexer.class);
     private final AbstractIndexingStrategy<T> indexingStrategy;
-    private AsyncTaskHandle handle;
+    private AsyncTaskHandle<?> handle;
     private Class<?> entityType;
 
-    public ClassIndexer(AsyncTaskHandle handle, Class<?> entityType,
+    public ClassIndexer(AsyncTaskHandle<?> handle, Class<?> entityType,
             AbstractIndexingStrategy<T> indexingStrategy) {
         this.handle = handle;
         this.entityType = entityType;

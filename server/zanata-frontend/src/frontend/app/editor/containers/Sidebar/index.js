@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { getSidebarVisible } from '../../reducers'
+import { setSidebarVisibility } from '../../actions'
 import ReactSidebar from 'react-sidebar'
 import SidebarContent from '../SidebarContent'
 
@@ -14,7 +17,8 @@ const defaultState = {
 class Sidebar extends Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
-    setSidebarVisible: PropTypes.func.isRequired,
+
+    setSidebarVisibility: PropTypes.func.isRequired,
     // The main content display should be passed as children to this component
     children: PropTypes.any
   }
@@ -42,15 +46,11 @@ class Sidebar extends Component {
   // }
 
   setOpen = (open) => {
-    this.props.setSidebarVisible(open)
-  }
-
-  close = () => {
-    this.props.setSidebarVisible(false)
+    this.props.setSidebarVisibility(open)
   }
 
   render () {
-    const content = <SidebarContent close={this.close} />
+    const content = <SidebarContent />
 
     return (
       <ReactSidebar
@@ -66,11 +66,21 @@ class Sidebar extends Component {
             overflowY: 'auto'
           }
         }}
-        sidebarClassName="sidebar-editor">
+        sidebarClassName="SidebarEditor">
         {this.props.children}
       </ReactSidebar>
     )
   }
 }
 
-export default Sidebar
+function mapStateToProps (state) {
+  return {
+    open: getSidebarVisible(state)
+  }
+}
+
+const mapDispatchToProps = {
+  setSidebarVisibility
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)

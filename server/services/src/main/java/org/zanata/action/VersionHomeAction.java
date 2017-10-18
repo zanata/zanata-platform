@@ -41,7 +41,7 @@ import javax.validation.ConstraintViolationException;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -947,7 +947,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public String encodeDocId(String docId) {
-        return urlUtil.encodeString(docId);
+        return UrlUtil.encodeString(docId);
     }
 
     public String uploadTranslationFile(HLocale hLocale) {

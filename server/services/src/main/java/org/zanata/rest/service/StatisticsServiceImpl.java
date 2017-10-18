@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
@@ -38,7 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.transform.ResultTransformer;
 import javax.inject.Inject;
@@ -73,13 +74,14 @@ import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.util.DateUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-import static org.apache.commons.lang.StringUtils.abbreviate;
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 /**
  * Default implementation for the
@@ -94,7 +96,6 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
 @RequestScoped
 @Transactional(readOnly = true)
 public class StatisticsServiceImpl implements StatisticsResource {
-    private static final long serialVersionUID = 4936614337971433129L;
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;
@@ -113,6 +114,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
     private EntityManager entityManager;
     @Inject
     private TranslationStateCache translationStateCacheImpl;
+    @Inject
+    private ZanataIdentity identity;
     // TODO Need to refactor this method to get Message statistic by default.
     // This is to be consistent with the UI which uses message stats, and for
     // calculating remaining hours.
@@ -121,6 +124,12 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, boolean includeDetails,
             boolean includeWordStats, String[] locales) {
+        HProjectIteration iteration =
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        if (iteration == null || !identity.hasPermission(iteration, "read")) {
+            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
+        }
+
         LocaleId[] localeIds;
         // if no locales are specified, search in all locales
         if (locales.length == 0) {
@@ -139,11 +148,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 localeIds[i] = new LocaleId(locales[i]);
             }
         }
-        HProjectIteration iteration =
-                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-        if (iteration == null) {
-            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
-        }
+
         Map<String, TransUnitCount> transUnitIterationStats =
                 projectIterationDAO
                         .getAllStatisticsForContainer(iteration.getId());
@@ -202,6 +207,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         return iterationStats;
     }
 
+    @Deprecated
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId, boolean includeWordStats,
@@ -214,6 +220,12 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public ContainerTranslationStatistics getStatisticsWithDocId(
             String projectSlug, String iterationSlug, String docId,
             boolean includeWordStats, String[] locales) {
+        HProjectIteration iteration =
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        if (iteration == null || !identity.hasPermission(iteration, "read")) {
+            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
+        }
+
         List<LocaleId> localeIds;
         // if no locales are specified, search in all locales
         if (locales == null || locales.length == 0) {
@@ -298,7 +310,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
         HProjectIteration version =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
         if (version == null || version.getStatus() == EntityStatus.OBSOLETE
-                || version.getProject().getStatus() == EntityStatus.OBSOLETE) {
+                || version.getProject().getStatus() == EntityStatus.OBSOLETE ||
+                !identity.hasPermission(version, "read")) {
             throw new NoSuchEntityException(projectSlug + "/" + versionSlug);
         }
         HPerson person = findPersonOrExceptionOnNotFound(username);
@@ -353,7 +366,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
             localeStatsMap.put(localeId, localeStatistics);
         }
         return new ContributionStatistics(username,
-                new ArrayList(localeStatsMap.values()));
+                new ArrayList<>(localeStatsMap.values()));
     }
 
     private HPerson findPersonOrExceptionOnNotFound(String username) {
@@ -450,7 +463,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 textFlowTargetHistoryDAO.getUserTranslationMatrix(person,
                         fromDate, toDate, userZoneOpt, systemZone,
                         new UserMatrixResultTransformer(entityManager,
-                                dateFormatter));
+                                identity, dateFormatter));
         return translationMatrixList;
     }
 
@@ -466,7 +479,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
         HProjectIteration version =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
-        if (version == null) {
+        if (version == null || !identity.hasPermission(version, "read")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Project version not found:" + projectSlug + "-" + versionSlug).build();
         }
@@ -513,6 +526,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public List transformList(List collection) {
             return collection;
         }
@@ -532,6 +546,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         private final EntityManager entityManager;
         @SuppressFBWarnings("SE_BAD_FIELD")
         private final DateTimeFormatter dateFormatter;
+        private final ZanataIdentity identity;
 
         @Override
         public Object transformTuple(Object[] tuple, String[] aliases) {
@@ -543,6 +558,11 @@ public class StatisticsServiceImpl implements StatisticsResource {
             String projectSlug = iteration.getProject().getSlug();
             String projectName = iteration.getProject().getName();
             String versionSlug = iteration.getSlug();
+            if (!identity.hasPermission(iteration.getProject(), "read")) {
+                projectSlug = null;
+                projectName = null;
+                versionSlug = null;
+            }
             HLocale locale = entityManager.find(HLocale.class,
                     ((BigInteger) tuple[2]).longValue());
             String localeDisplayName = locale.retrieveDisplayName();
@@ -555,14 +575,17 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public List transformList(List collection) {
             return collection;
         }
 
         @java.beans.ConstructorProperties({ "entityManager", "dateFormatter" })
         public UserMatrixResultTransformer(final EntityManager entityManager,
+                @Nullable final ZanataIdentity identity,
                 final DateTimeFormatter dateFormatter) {
             this.entityManager = entityManager;
+            this.identity = identity;
             this.dateFormatter = dateFormatter;
         }
     }

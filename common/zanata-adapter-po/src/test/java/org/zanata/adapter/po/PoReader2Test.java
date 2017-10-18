@@ -1,10 +1,7 @@
 package org.zanata.adapter.po;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +45,7 @@ public class PoReader2Test {
         log.debug("parsing template");
         Resource doc =
                 poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
-        assertThat(doc.getTextFlows().size(), is(137));
+        assertThat(doc.getTextFlows()).hasSize(137);
         return doc;
     }
 
@@ -64,9 +61,9 @@ public class PoReader2Test {
         log.debug("extracting target: " + locale);
         TranslationsResource targetDoc = poReader.extractTarget(inputSource);
         List<TextFlowTarget> textFlowTargets = targetDoc.getTextFlowTargets();
-        assertThat(textFlowTargets.size(), is(137));
+        assertThat(textFlowTargets).hasSize(137);
         TextFlowTarget target = textFlowTargets.iterator().next();
-        assertThat(target, notNullValue());
+        assertThat(target).isNotNull();
 
         JAXBContext jaxbContext =
                 JAXBContext.newInstance(Resource.class,
@@ -91,9 +88,9 @@ public class PoReader2Test {
         List<TextFlow> resources = doc.getTextFlows();
 
         TextFlow tf1 = resources.get(3);
-        assertThat(tf1.getContents(), equalTo(asList("Important")));
+        assertThat(tf1.getContents()).isEqualTo(asList("Important"));
         TextFlowTarget tfTarget = textFlowTargets.get(3);
-        assertThat(tfTarget.getContents(), equalTo(asList("キーのインポート")));
+        assertThat(tfTarget.getContents()).isEqualTo(asList("キーのインポート"));
 
         // TODO test PO headers and attributes
     }
@@ -134,7 +131,7 @@ public class PoReader2Test {
         Message m = new Message();
         m.setMsgstr("s");
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.Translated));
+        assertThat(actual1).isEqualTo(ContentState.Translated);
     }
 
     @Test
@@ -143,7 +140,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("s0", 0);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.Translated));
+        assertThat(actual1).isEqualTo(ContentState.Translated);
     }
 
     @Test
@@ -153,7 +150,7 @@ public class PoReader2Test {
         m.addMsgstrPlural("s0", 0);
         m.addMsgstrPlural("s1", 1);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.Translated));
+        assertThat(actual1).isEqualTo(ContentState.Translated);
     }
 
     @Test
@@ -161,14 +158,14 @@ public class PoReader2Test {
         Message m = new Message();
         m.setMsgstr("");
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.New));
+        assertThat(actual1).isEqualTo(ContentState.New);
     }
 
     @Test
     public void testContentStateNewSingle2() {
         Message m = new Message();
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.New));
+        assertThat(actual1).isEqualTo(ContentState.New);
     }
 
     @Test
@@ -177,7 +174,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("", 0);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.New));
+        assertThat(actual1).isEqualTo(ContentState.New);
     }
 
     @Test
@@ -187,7 +184,7 @@ public class PoReader2Test {
         m.addMsgstrPlural("", 0);
         m.addMsgstrPlural("s1", 1);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.New));
+        assertThat(actual1).isEqualTo(ContentState.New);
     }
 
     @Test
@@ -195,7 +192,7 @@ public class PoReader2Test {
         Message m = new Message();
         m.setMsgidPlural("plural");
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.New));
+        assertThat(actual1).isEqualTo(ContentState.New);
     }
 
     @Test
@@ -205,7 +202,7 @@ public class PoReader2Test {
         m.addMsgstrPlural("", 0);
         m.addMsgstrPlural("", 1);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.New));
+        assertThat(actual1).isEqualTo(ContentState.New);
     }
 
     // FIXME test where plurals < nplurals
@@ -226,7 +223,7 @@ public class PoReader2Test {
         m.setFuzzy(true);
         m.setMsgstr("s");
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.NeedReview));
+        assertThat(actual1).isEqualTo(ContentState.NeedReview);
     }
 
     @Test
@@ -236,7 +233,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("s", 0);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.NeedReview));
+        assertThat(actual1).isEqualTo(ContentState.NeedReview);
     }
 
     @Test
@@ -247,7 +244,7 @@ public class PoReader2Test {
         m.addMsgstrPlural("", 0);
         m.addMsgstrPlural("s1", 1);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.NeedReview));
+        assertThat(actual1).isEqualTo(ContentState.NeedReview);
     }
 
     @Test
@@ -258,7 +255,7 @@ public class PoReader2Test {
         m.addMsgstrPlural("s0", 0);
         m.addMsgstrPlural("s1", 1);
         ContentState actual1 = PoReader2.getContentState(m);
-        assertThat(actual1, is(ContentState.NeedReview));
+        assertThat(actual1).isEqualTo(ContentState.NeedReview);
     }
 
 }

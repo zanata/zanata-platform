@@ -362,6 +362,7 @@ public abstract class EntityHome<E extends ModelEntityBase> implements
      * Get the class of the entity being managed. <br />
      * If not explicitly specified, the generic type of implementation is used.
      */
+    @SuppressWarnings("unchecked")
     public Class<E> getEntityClass() {
         if (entityClass == null) {
             // CDI will return a proxy instance (so need an extra getSuperClass)

@@ -47,7 +47,7 @@ class IconButtonToggle extends React.Component {
 
   render () {
     const className = cx(this.props.className,
-      'Button Button--snug u-roundish Button--invisible',
+      'EditorButton Button--snug u-roundish Button--invisible',
       { 'is-active': this.props.active })
 
     return (

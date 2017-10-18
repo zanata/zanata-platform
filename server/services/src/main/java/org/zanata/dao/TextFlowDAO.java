@@ -99,7 +99,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         q.setParameter("localeId", localeId);
         q.setCacheable(true);
         q.setComment("TextFlowTargetDAO.getTextFlowTarget");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = q.list();
+        return list;
     }
 
     public int getWordCount(Long id) {
@@ -165,7 +167,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
             q.setMaxResults(maxResults);
         }
         q.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByDocumentId");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HTextFlow> list = q.list();
+        return list;
     }
 
     /**
@@ -342,7 +346,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                 .setFirstResult(startIndex).setMaxResults(maxCount)
                 .setCacheable(true)
                 .setComment("TextFlowDAO.getUntranslatedOrFuzzyTextFlowsInVersion");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HTextFlow> list = query.list();
+        return list;
     }
 
     /**

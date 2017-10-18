@@ -1,0 +1,42 @@
+@import "../../styles/variables.less";
+
+form.rejectionsForm {
+  display: inline-flex;
+  align-items: flex-start;
+  width: 100%;
+  flex-direction: row;
+  margin-bottom: @spacing-xlarge;
+}
+
+form.rejectionsForm input.textInput::placeholder,
+form.rejectionsForm textarea.textInput::placeholder {
+  color: @color-muted;
+}
+
+form.rejectionsForm .form-group {
+  padding-right: @spacing-base;
+}
+
+form.rejectionsForm .control-label {
+  font-size: @font-size-base;
+  font-weight: 500;
+}
+
+form.rejectionsForm .btn-danger {
+  margin-left: @spacing-rq;
+}
+
+form.rejectionsForm .iconEdit,
+.rejection-btns .s1 {
+  vertical-align: sub;
+}
+
+form.rejectionsForm button#dropdown-basic {
+  font-weight: 400;
+  padding-left: @spacing-rq;
+  padding-right: @spacing-rq;
+}
+
+form.rejectionsForm button, form.rejectionsForm input, form.rejectionsForm textarea {
+  line-height: @line-height-small;
+}

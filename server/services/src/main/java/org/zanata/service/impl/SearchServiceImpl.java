@@ -45,7 +45,6 @@ import org.zanata.service.SearchService;
 @CheckRole("admin")
 @RequestScoped
 public class SearchServiceImpl implements SearchService {
-    private static final long serialVersionUID = -6739102096755039518L;
     @Inject
     private SearchIndexManager searchIndexManager;
 

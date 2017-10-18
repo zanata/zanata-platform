@@ -114,7 +114,7 @@ class SuggestionSearchInput extends React.Component {
       : this.resultCountElement()
 
     return (
-      <span className="InputGroup-addon">
+      <span className="EditorInputGroup-addon">
         {innerElement}
       </span>
     )
@@ -125,7 +125,7 @@ class SuggestionSearchInput extends React.Component {
       return undefined
     }
     return (
-      <span className="InputGroup-addon">
+      <span className="EditorInputGroup-addon">
         <IconButton icon="cross"
           title="Clear search"
           className="n1"
@@ -136,9 +136,10 @@ class SuggestionSearchInput extends React.Component {
 
   render () {
     return (
-      <div className={cx('InputGroup InputGroup--outlined InputGroup--rounded',
+      <div className={cx('EditorInputGroup EditorInputGroup--outlined' +
+          ' EditorInputGroup--rounded',
                          { 'is-focused': this.state.focused })}>
-        <span className="InputGroup-addon"
+        <span className="EditorInputGroup-addon"
           onClick={this.focusInput}>
           <Icon name="search"
             title="Search suggestions"
@@ -150,7 +151,7 @@ class SuggestionSearchInput extends React.Component {
           maxLength="1000"
           value={this.props.text}
           onChange={this.props.onTextChange}
-          className="InputGroup-input u-sizeLineHeight-1_1-4" />
+          className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
         {this.resultsElement()}
         {this.clearButtonElement()}
       </div>

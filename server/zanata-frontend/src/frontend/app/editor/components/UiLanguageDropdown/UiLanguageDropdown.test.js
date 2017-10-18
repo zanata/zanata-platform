@@ -1,3 +1,4 @@
+/* global jest describe expect it */
 jest.disableAutomock()
 
 import React from 'react'
@@ -33,13 +34,13 @@ describe('UiLanguageDropdownTest', () => {
           }
         }}
         toggleDropdown={nowSeeHere}
-        isOpen={true}/>
+        isOpen />
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <Dropdown onToggle={nowSeeHere}
-                isOpen={true}
-                className="Dropdown--right u-sMV-1-2">
+        isOpen
+        className="Dropdown--right u-sMV-1-2">
         <Dropdown.Button>
           <a className="Link--invert u-inlineBlock u-textNoWrap u-sPH-1-4">
             Setswana
@@ -48,22 +49,22 @@ describe('UiLanguageDropdownTest', () => {
         <Dropdown.Content>
           <ul>
             <li key="st">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Sesotho
               </a>
             </li>
             <li key="tn">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Setswana
               </a>
             </li>
             <li key="sw">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Swahili
               </a>
             </li>
             <li key="zu">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Zulu
               </a>
             </li>
@@ -109,7 +110,7 @@ describe('UiLanguageDropdownTest', () => {
         selectedUiLocale="tn"
         uiLocales={locales}
         toggleDropdown={nowSeeHere}
-        isOpen={true}/>
+        isOpen />
     )
     const list = TestUtils.scryRenderedDOMComponentsWithTag(
       uiLangDropdown, 'a')

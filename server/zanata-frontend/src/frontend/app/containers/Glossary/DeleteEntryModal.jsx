@@ -37,7 +37,7 @@ class DeleteEntryModal extends Component {
     ) : (<p>Are you sure you want to delete this term?</p>)
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='block'>
+      <div className='u-block'>
         <Overlay
           placement='top'
           target={() => ReactDOM.findDOMNode(this)}
@@ -69,7 +69,7 @@ class DeleteEntryModal extends Component {
           type='button' disabled={isDeleting}
           onClick={() => handleDeleteEntryDisplay(true)}>
           <LoaderText loading={isDeleting} loadingText='Deleting'>
-            <Icon name='trash' className='deleteicon s1' />
+            <Icon name='trash' className='iconDelete s1' />
             <span className='hidden-lesm'>Delete</span>
           </LoaderText>
         </Button>

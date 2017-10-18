@@ -56,7 +56,6 @@ import static org.zanata.common.ProjectType.fileProjectSourceDocTypes;
  */
 @Path(FileResource.SERVICE_PATH)
 public class MockFileResource implements FileResource {
-    private static final long serialVersionUID = -9209270623148328813L;
 
     @Override
     @Deprecated

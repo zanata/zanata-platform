@@ -26,7 +26,7 @@ import java.net.URI;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;

@@ -45,11 +45,11 @@ class ActivityTab extends React.Component {
 
     return (
       <Tab eventKey={eventKey} title="">
-        <div className="sidebar-wrapper" id="tab2">
+        <div className="SidebarEditor-wrapper" id="tab2">
           <ActivitySelectList selectItem={selectActivityTypeFilter}
             selected={selectedActivites} />
         </div>
-        <div className="sidebar-activity">
+        <div className="SidebarActivity">
           <LanguageSelectList selectItem={selectLanguageFilter}
             selected={selectedLanguages} />
           <CommentBox postComment={postComment} />

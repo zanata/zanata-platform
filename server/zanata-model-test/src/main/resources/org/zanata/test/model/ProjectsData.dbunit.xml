@@ -9,7 +9,7 @@
     description="An example Project"
     homeContent=""
     name="Sample Project"
-    allowGlobalTranslation="TRUE"
+    privateProject="FALSE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="A"
@@ -49,7 +49,7 @@
     description="An example retired Project"
     homeContent=""
     name="Sample Retired Project"
-    allowGlobalTranslation="TRUE"
+    privateProject="FALSE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="R"
@@ -75,7 +75,7 @@
     description="An example obsolete Project"
     homeContent=""
     name="Sample Obsolete Project"
-    allowGlobalTranslation="TRUE"
+    privateProject="FALSE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="O"
@@ -101,7 +101,7 @@
     description="A current Project"
     homeContent=""
     name="Sample Current Project"
-    allowGlobalTranslation="TRUE"
+    privateProject="FALSE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="A"
@@ -161,6 +161,26 @@
   <HProjectIteration_Validation
     projectIterationId="900"
     validation="XML_ENTITY" state="ERROR" />
+
+  <HProject defaultProjectType="Gettext"
+      id="5"
+      versionNum="1"
+      creationDate="2009-09-01 20:30:16"
+      lastChanged="2009-09-01 20:30:16"
+      slug="private-project"
+      description="private-project"
+      homeContent=""
+      name="Private project"
+      privateProject="TRUE"
+      overrideLocales="FALSE"
+      restrictedByRoles="FALSE"
+      status="A"
+  />
+
+  <HProject_Member personId="4"
+      projectId="5"
+      role="M"
+  />
 
   <!-- Tell DbUnit to delete any existing documents -->
   <HDocument />

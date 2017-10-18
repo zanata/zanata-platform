@@ -56,6 +56,7 @@ public class AsyncMethodInterceptor {
 //        this.taskHandleManager = taskHandleManager;
 //    }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @AroundInvoke
     public Object aroundInvoke(final InvocationContext ctx) throws Exception {
 
@@ -115,10 +116,10 @@ public class AsyncMethodInterceptor {
         }
     }
 
-    private AsyncTaskHandle findHandleIfPresent(Object[] params) {
+    private AsyncTaskHandle<?> findHandleIfPresent(Object[] params) {
         for (Object param : params) {
             if (param instanceof AsyncTaskHandle) {
-                return (AsyncTaskHandle) param;
+                return (AsyncTaskHandle<?>) param;
             }
         }
         return null;

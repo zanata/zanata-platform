@@ -37,7 +37,6 @@ import org.zanata.rest.dto.Project;
  */
 @Path(ProjectResource.SERVICE_PATH)
 public class MockProjectResource implements ProjectResource {
-    private static final long serialVersionUID = -4283910776728392504L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     UriInfo uriInfo;

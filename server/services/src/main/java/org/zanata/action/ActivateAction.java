@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;

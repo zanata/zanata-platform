@@ -61,8 +61,6 @@ public class GlossaryUrlTest extends ZanataTest {
     @Produces @Mock
     LocaleService localeServiceImpl;
 
-    @Inject
-    private UrlUtil urlUtil;
     @Inject @Any
     private GlossarySearchServiceImpl impl;
 

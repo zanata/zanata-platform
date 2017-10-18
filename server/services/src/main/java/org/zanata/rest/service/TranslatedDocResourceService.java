@@ -41,6 +41,8 @@ import javax.inject.Named;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
@@ -67,9 +69,8 @@ import com.google.common.base.Optional;
 @Path(TranslatedDocResource.SERVICE_PATH)
 @Transactional
 public class TranslatedDocResourceService implements TranslatedDocResource {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+    private static final Logger log = LoggerFactory
             .getLogger(TranslatedDocResourceService.class);
-    private static final long serialVersionUID = -5855787114970845084L;
 
     // security actions
     // private static final String ACTION_IMPORT_TEMPLATE = "import-template";
@@ -122,6 +123,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Inject
     private LocaleService localeServiceImpl;
 
+    @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean skeletons, String eTag) {
@@ -177,6 +179,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 .build();
     }
 
+    @Deprecated
     @Override
     public Response deleteTranslations(String idNoSlash, LocaleId locale) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -217,6 +220,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         return Response.ok().build();
     }
 
+    @Deprecated
     @Override
     public Response putTranslations(String idNoSlash, LocaleId locale,
             TranslationsResource messageBody, Set<String> extensions,

@@ -37,12 +37,12 @@ export class Item extends Component {
     const { value: { version, projectSlug } } = this.props
     return <ListGroupItem className='v' >
       <DragHandle />
-      {version.id} <span className='text-muted'> {projectSlug}
+      {version.id} <span className='u-textMuted'> {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
       <Button bsSize='xsmall' className='close rm-version-btn'
         onClick={this.removeVersion}>
-        <Icon name='cross' className='n2 crossicon' title='remove version' />
+        <Icon name='cross' className='n2 iconCross' title='remove version' />
       </Button>
     </ListGroupItem>
   }
@@ -62,14 +62,14 @@ class Items extends Component {
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
-        <span className='vmerge-adjtitle vmerge-title'>
+        <span className='versionMergeTitle-adjusted VersionMergeTitle'>
         Adjust priority of selected versions
         </span><br />
-        <span className='text-muted vmerge-adjsub'>
+        <span className='u-textMuted versionMergeTitle-sub'>
         (best first)
         </span>
         <OverlayTrigger placement='top' overlay={tooltipSort}>
-          <Icon name='info' className='s0 info-icon' />
+          <Icon name='info' className='s0 iconInfoVersionMerge' />
         </OverlayTrigger>
         {sortableItems}
       </div>

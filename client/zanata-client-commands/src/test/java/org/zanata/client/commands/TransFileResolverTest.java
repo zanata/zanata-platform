@@ -11,8 +11,7 @@ import org.zanata.client.config.LocaleMapping;
 
 import java.io.File;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransFileResolverTest {
 
@@ -39,14 +38,13 @@ public class TransFileResolverTest {
                     "gcc/po/gcc.pot"), new LocaleMapping("de-DE"), Optional
                 .<String>absent());
 
-        assertThat(gettext.getPath(), equalTo("./gcc/po/de_DE.po"));
+        assertThat(gettext.getPath()).isEqualTo("./gcc/po/de_DE.po");
 
         File prop = resolver
             .resolveTransFile(DocNameWithExt.from(
                             "src/main/resources/messages.properties"),
                     new LocaleMapping("zh"), Optional.<String>absent());
-        assertThat(prop.getPath(), equalTo(
-            "./src/main/resources/messages_zh.properties"));
+        assertThat(prop.getPath()).isEqualTo("./src/main/resources/messages_zh.properties");
     }
 
     @Test
@@ -56,7 +54,7 @@ public class TransFileResolverTest {
         File noMatching = resolver
                 .resolveTransFile(DocNameWithExt.from(
                         "doc/marketing.odt"), new LocaleMapping("ja"), Optional.<String>absent());
-        assertThat(noMatching.getPath(), equalTo("./ja/doc/marketing.odt"));
+        assertThat(noMatching.getPath()).isEqualTo("./ja/doc/marketing.odt");
     }
 
 }

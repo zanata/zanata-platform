@@ -58,8 +58,8 @@ class Notification extends Component {
           <Modal.Title>
             <Row
               bsStyle={severityClass}
-              className='notify-row'>
-              <Icon name={icon} className='s2 list-inline' />
+              className='rowNotify'>
+              <Icon name={icon} className='s2 listInline' />
               <span>Notification</span>
             </Row>
           </Modal.Title>
@@ -69,14 +69,14 @@ class Notification extends Component {
             {message}
           </div>
           {!isEmpty(details) &&
-            (<div className='notification-modal-content'>
+            (<div className='modalNotification-content'>
               {details}
             </div>)}
         </Modal.Body>
         <Modal.Footer>
-          <span className='pull-right'>
+          <span className='u-pullRight'>
             <Row>
-              <ButtonGroup className='pull-right'>
+              <ButtonGroup className='u-pullRight'>
                 <Button bsStyle='primary'
                   id='btn-notification-close'
                   type='button' onClick={this.clearMessage}>

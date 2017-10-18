@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,10 +17,8 @@ import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
-import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.ui.CopyAction;
 import org.zanata.util.FacesNavigationUtil;
@@ -60,9 +58,6 @@ public class MergeTransAction extends CopyAction implements Serializable {
     private CopyVersionManager copyVersionManager;
     @Inject
     private Messages msgs;
-    @Inject
-    @Authenticated
-    private HAccount authenticatedAccount;
     @Inject
     private FacesMessages jsfMessages;
     @Inject

@@ -15,24 +15,24 @@ const Header = ({
   ...props
 }) => {
   return (
-    <div className='glossaryhead-wrapper'>
-      <div className='glossaryhead-base'>
-        <div className='inner-view-theme'>
-          <Link link='/' className='logo-link-theme'>
+    <div className='glossaryHeader-wrapper'>
+      <div className='glossaryHeader-base'>
+        <div className='innerView'>
+          <Link link='/' className='logoLink'>
             <Icon name='zanata' className='s3' />
           </Link>
-          <h1 className='glossaryhead-title'>
+          <h1 className='glossaryHeader-title'>
             <Row>
               {icon}{title || 'Title'}
               {extraHeadingElements}
             </Row>
           </h1>
-          <div className='glossaryhead-actions-theme'>
+          <div className='glossaryHeader-actions'>
             {extraElements}
           </div>
         </div>
         {children && (
-          <div className='inner-view-theme'>
+          <div className='innerView'>
             {children}
           </div>
         )}

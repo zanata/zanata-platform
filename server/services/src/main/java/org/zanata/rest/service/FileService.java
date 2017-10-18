@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
@@ -46,6 +47,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
@@ -53,19 +57,23 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.RawDocumentContentAccessException;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
@@ -78,9 +86,8 @@ import com.google.common.collect.Lists;
 @Path(FileResource.SERVICE_PATH)
 @Transactional
 public class FileService implements FileResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(FileService.class);
-    private static final long serialVersionUID = 4889228720900655523L;
+    private static final Logger log =
+            LoggerFactory.getLogger(FileService.class);
 
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
     private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
@@ -102,6 +109,10 @@ public class FileService implements FileResource {
     private TranslationDocumentUpload translationUploader;
     @Inject
     private FilePersistService filePersistService;
+    @Inject
+    private ProjectIterationDAO projectIterationDAO;
+    @Inject
+    private ZanataIdentity identity;
 
     /**
      * Deprecated.
@@ -168,6 +179,9 @@ public class FileService implements FileResource {
     @Override
     public Response downloadSourceFile(String projectSlug, String iterationSlug,
             String fileType, String docId) {
+        if (!hasProjectVersionAccess(projectSlug, iterationSlug)) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
         // TODO scan (again) for virus
         HDocument document = documentDAO.getByProjectIterationAndDocId(
                 projectSlug, iterationSlug, docId);
@@ -231,9 +245,12 @@ public class FileService implements FileResource {
             extensions.add("gettext");
             extensions.add("comment");
             // Perform translation of Hibernate DTOs to JAXB DTOs
+
+            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+            String convertedId = RestUtil.convertFromDocumentURIId(docId);
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
+                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
                                     extensions, true, null)
                             .getEntity();
             Resource res = this.resourceUtils.buildResource(document);
@@ -251,9 +268,11 @@ public class FileService implements FileResource {
             }
             Resource res = this.resourceUtils.buildResource(document);
             final Set<String> extensions = Collections.<String> emptySet();
+            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+            String convertedId = RestUtil.convertFromDocumentURIId(docId);
             TranslationsResource transRes =
                     (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
+                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
                                     extensions, true, null)
                             .getEntity();
             // Filter to only provide translated targets. "Preview" downloads
@@ -464,5 +483,12 @@ public class FileService implements FileResource {
                 IOUtils.copy(input, output);
             }
         }
+    }
+
+    private boolean hasProjectVersionAccess(@NotNull String projectSlug,
+            @NotNull String versionSlug) {
+        HProjectIteration version =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        return version != null && identity.hasPermission(version, "read");
     }
 }

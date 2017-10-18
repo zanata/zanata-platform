@@ -1,11 +1,10 @@
+import { createAction } from 'redux-actions'
 import { getSuggestions } from '../api/suggestions'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 import { debounce, isUndefined } from 'lodash'
 import {
-  TOGGLE_SUGGESTIONS,
   DIFF_SETTING_CHANGED,
   SET_SUGGESTION_SEARCH_TYPE,
-  RESET_SUGGESTIONS_COPYING,
   COPY_SUGGESTION,
   TEXT_SUGGESTION_STARTED_COPYING,
   TEXT_SUGGESTION_FINISHED_COPYING,
@@ -17,9 +16,14 @@ import {
   SUGGESTION_PANEL_HEIGHT_CHANGE,
   SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX
 } from './suggestions-action-types'
+import { updateSetting } from './settings-actions'
+import { KEY_SUGGESTIONS_VISIBLE } from '../reducers/settings-reducer'
+import { getSuggestionsPanelVisible } from '../reducers'
+
 export function toggleSuggestions () {
-  return {
-    type: TOGGLE_SUGGESTIONS
+  return (dispatch, getState) => {
+    const visible = getSuggestionsPanelVisible(getState())
+    dispatch(updateSetting(KEY_SUGGESTIONS_VISIBLE, !visible))
   }
 }
 
@@ -32,7 +36,7 @@ export function toggleSuggestions () {
  */
 export function togglePhraseSuggestions () {
   return (dispatch, getState) => {
-    const panelVisible = getState().ui.panels.suggestions.visible
+    const panelVisible = getSuggestionsPanelVisible(getState())
     const phraseSearchVisible =
       panelVisible && getState().suggestions.searchType === 'phrase'
 
@@ -43,9 +47,7 @@ export function togglePhraseSuggestions () {
   }
 }
 
-export function diffSettingChanged () {
-  return { type: DIFF_SETTING_CHANGED }
-}
+export const diffSettingChanged = createAction(DIFF_SETTING_CHANGED)
 
 export function clearSearch () {
   return changeSearchText('')
@@ -62,6 +64,8 @@ const dispatchFindTextSuggestionsWhenInactive = debounce(
     dispatch(findTextSuggestions(searchText))
   }, 250)
 
+const suggestionSearchTextChange = createAction(SUGGESTION_SEARCH_TEXT_CHANGE)
+
 export function changeSearchText (searchText) {
   return (dispatch, getState) => {
     dispatch(suggestionSearchTextChange(searchText))
@@ -73,7 +77,7 @@ export function setSuggestionSearchType (type) {
   if (type !== 'phrase' && type !== 'text') {
     console.error('invalid search type', type)
   }
-  return { type: SET_SUGGESTION_SEARCH_TYPE, searchType: type }
+  return createAction(SET_SUGGESTION_SEARCH_TYPE)(type)
 }
 
 export function toggleSearchType () {
@@ -86,10 +90,6 @@ export function toggleSearchType () {
   }
 }
 
-export function resetSuggestionsCopying () {
-  return { type: RESET_SUGGESTIONS_COPYING }
-}
-
 export function copySuggestionN (index) {
   // Decision: keep the logic in here to choose what to copy
   //   reason: reducers are not an easy place to follow complex logic,
@@ -98,7 +98,7 @@ export function copySuggestionN (index) {
   return (dispatch, getState) => {
     const { searchType } = getState().suggestions
     const { selectedPhraseId } = getState().phrases
-    const panelVisible = getState().ui.panels.suggestions.visible
+    const panelVisible = getSuggestionsPanelVisible(getState())
 
     const isTextSuggestions = panelVisible && searchType === 'text'
 
@@ -109,6 +109,19 @@ export function copySuggestionN (index) {
     }
   }
 }
+
+const copySuggestion = createAction(COPY_SUGGESTION)
+
+const textSuggestionStartedCopying =
+  createAction(TEXT_SUGGESTION_STARTED_COPYING)
+const textSuggestionFinishedCopying =
+  createAction(TEXT_SUGGESTION_FINISHED_COPYING)
+
+const phraseSuggestionStartedCopying = createAction(
+  PHRASE_SUGGESTION_STARTED_COPYING, (phraseId, index) => ({ phraseId, index }))
+const phraseSuggestionFinishedCopying = createAction(
+  PHRASE_SUGGESTION_FINISHED_COPYING,
+  (phraseId, index) => ({ phraseId, index }))
 
 function copyTextSuggestionN (index) {
   return (dispatch, getState) => {
@@ -137,40 +150,7 @@ function copyPhraseSuggestionN (phraseId, index) {
   }
 }
 
-function copySuggestion (suggestion) {
-  return { type: COPY_SUGGESTION, suggestion }
-}
-
-function textSuggestionStartedCopying (index) {
-  return { type: TEXT_SUGGESTION_STARTED_COPYING, index }
-}
-
-function textSuggestionFinishedCopying (index) {
-  return { type: TEXT_SUGGESTION_FINISHED_COPYING, index }
-}
-
-function phraseSuggestionStartedCopying (phraseId, index) {
-  return { type: PHRASE_SUGGESTION_STARTED_COPYING, phraseId, index }
-}
-
-function phraseSuggestionFinishedCopying (phraseId, index) {
-  return { type: PHRASE_SUGGESTION_FINISHED_COPYING, phraseId, index }
-}
-
-export function textSuggestionsUpdated (
-  {loading, searchStrings, suggestions, timestamp}) {
-  return {
-    type: TEXT_SUGGESTIONS_UPDATED,
-    loading,
-    searchStrings,
-    suggestions,
-    timestamp
-  }
-}
-
-export function suggestionSearchTextChange (text) {
-  return { type: SUGGESTION_SEARCH_TEXT_CHANGE, text: text }
-}
+const textSuggestionsUpdated = createAction(TEXT_SUGGESTIONS_UPDATED)
 
 // TODO may want to throttle as well to prevent generating too many concurrent
 //      requests on a slow connection (e.g. 5s latency = 20 requests)
@@ -262,6 +242,8 @@ export function findPhraseSuggestionsById (phraseId) {
 
 const PHRASE_SEARCH_STALE_AGE_MILLIS = 60000
 
+const phraseSuggestionsUpdated = createAction(PHRASE_SUGGESTIONS_UPDATED)
+
 export function findPhraseSuggestions (phrase) {
   return (dispatch, getState) => {
     const phraseId = phrase.id
@@ -309,24 +291,8 @@ export function findPhraseSuggestions (phrase) {
   }
 }
 
-export function phraseSuggestionsUpdated (
-    {phraseId, loading, searchStrings, suggestions, timestamp}) {
-  return {
-    type: PHRASE_SUGGESTIONS_UPDATED,
-    phraseId,
-    loading,
-    searchStrings,
-    suggestions,
-    timestamp
-  }
-}
-
-export function saveSuggestionPanelHeight (percentageHeight) {
-  return {
-    type: SUGGESTION_PANEL_HEIGHT_CHANGE,
-    percentageHeight
-  }
-}
+export const saveSuggestionPanelHeight =
+  createAction(SUGGESTION_PANEL_HEIGHT_CHANGE)
 
 /**
  * Open or close the suggestion detail modal.
@@ -334,9 +300,5 @@ export function saveSuggestionPanelHeight (percentageHeight) {
  * @param indexOrUndefined undefined to hide the modal, index of suggestion in
  *   the current suggestion list to show detail for that suggestion in the modal
  */
-export function showDetailForSuggestionByIndex (indexOrUndefined) {
-  return {
-    type: SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX,
-    index: indexOrUndefined
-  }
-}
+export const showDetailForSuggestionByIndex =
+  createAction(SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX)

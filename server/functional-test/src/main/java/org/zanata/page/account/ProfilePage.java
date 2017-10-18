@@ -34,8 +34,8 @@ public class ProfilePage extends BasePage {
             org.slf4j.LoggerFactory.getLogger(ProfilePage.class);
     private By displayNameBy = By.id("profile-displayname");
     private By userNameBy = By.id("profile-username");
-    private By languagesBy = By.id("profile-languages");
-    private By contributionsBy = By.id("profile-matrix");
+    private By languagesBy = By.id("profileLanguages");
+    private By contributionsBy = By.id("userProfile-matrix");
 
     public ProfilePage(WebDriver driver) {
         super(driver);

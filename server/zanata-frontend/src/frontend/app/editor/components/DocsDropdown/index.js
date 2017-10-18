@@ -42,7 +42,7 @@ class DocsDropdown extends React.Component {
       // TODO highlight selected
       return (
         <li key={docId}>
-          <a href={url} className="Dropdown-item">{docId}</a>
+          <a href={url} className="EditorDropdown-item">{docId}</a>
         </li>
       )
     })

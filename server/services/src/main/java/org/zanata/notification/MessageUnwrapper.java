@@ -34,6 +34,7 @@ class MessageUnwrapper {
                 tryDoOrNullOnException(new Callable<List<String>>() {
 
                     @Override
+                    @SuppressWarnings("unchecked")
                     public List<String> call() throws Exception {
                         return Collections.list(message.getPropertyNames());
                     }
@@ -49,13 +50,8 @@ class MessageUnwrapper {
 
     private static Object getPropertyValue(final Message message,
             final String propertyName) {
-        return tryDoOrNullOnException(new Callable<Object>() {
-
-            @Override
-            public Object call() throws Exception {
-                return message.getObjectProperty(propertyName);
-            }
-        });
+        return tryDoOrNullOnException(
+                () -> message.getObjectProperty(propertyName));
     }
 
     /**
@@ -87,7 +83,7 @@ class MessageUnwrapper {
         }
     }
 
-    static <T> T tryDoOrNullOnException(Callable<T> callable) {
+    private static <T> T tryDoOrNullOnException(Callable<T> callable) {
         try {
             return callable.call();
         } catch (Exception e) {

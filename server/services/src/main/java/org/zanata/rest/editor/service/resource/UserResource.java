@@ -1,10 +1,13 @@
 package org.zanata.rest.editor.service.resource;
 
+import java.util.Map;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -101,5 +104,29 @@ public interface UserResource {
     @Path("/permission/locales")
     @GET
     Response getLocalesPermission();
-}
 
+    /**
+     * Retrieve settings for the current authenticated user that begin with prefix.
+     *
+     * @param prefix only return settings that begin with this prefix, separated
+     *               from the name with '.'
+     * @return a JSON object with keys of setting name (without prefix) and values
+     *         of setting value.
+     */
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Path("/settings/{prefix}")
+    @GET
+    Response getSettings(@PathParam("prefix") String prefix);
+
+    /**
+     * Add or update some settings for the current authenticated user.
+     *
+     * @param prefix add prefix then '.' to the front of each setting before persisting.
+     * @param settings JSON object with setting names as keys
+     */
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Path("/settings/{prefix}")
+    @POST
+    Response postSettings(@PathParam("prefix") String prefix, Map<String, String> settings);
+}

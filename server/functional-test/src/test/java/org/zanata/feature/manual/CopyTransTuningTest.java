@@ -1,7 +1,6 @@
 package org.zanata.feature.manual;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,6 +14,8 @@ import org.zanata.util.SampleDataResourceClient;
 import org.zanata.util.SampleDataRule;
 import org.zanata.util.ZanataRestCaller;
 import java.util.List;
+
+import static org.zanata.util.RandomStringUtils.randomAlphabetic;
 import static org.zanata.util.ZanataRestCaller.*;
 
 /**
@@ -72,7 +73,7 @@ public class CopyTransTuningTest {
         TextFlow[] textFlows = new TextFlow[numOfTextFlows];
         for (int i = 0; i < textFlows.length; i++) {
             textFlows[i] = buildTextFlow("res" + i,
-                    RandomStringUtils.randomAlphabetic(10));
+                    randomAlphabetic(10));
         }
         return textFlows;
     }

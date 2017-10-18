@@ -58,7 +58,7 @@ class GlossarySearchInput extends React.Component {
 
   setInput = (input) => {
     this.input = input
-    if (this.state.focused) {
+    if (this.input && this.state.focused) {
       this.input.focus()
     }
   }
@@ -82,11 +82,11 @@ class GlossarySearchInput extends React.Component {
 
   render () {
     return (
-      <div className="inline-search">
-        <div className={cx('InputGroup InputGroup--outlined ' +
-            'InputGroup--rounded',
+      <div className="InlineSearch">
+        <div className={cx('EditorInputGroup EditorInputGroup--outlined ' +
+            'EditorInputGroup--rounded',
           { 'is-focused': this.state.focused })}>
-          <span className="InputGroup-addon"
+          <span className="EditorInputGroup-addon"
             onClick={this.focusInput}>
             <Icon name="search" className="n1"
               title="Search glossary" />
@@ -97,7 +97,7 @@ class GlossarySearchInput extends React.Component {
             maxLength="100"
             value={this.props.text}
             onChange={this.props.onTextChange}
-            className="InputGroup-input u-sizeLineHeight-1_1-4" />
+            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
         </div>
       </div>
     )

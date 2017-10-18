@@ -81,7 +81,7 @@ describe('phrase-reducer test', () => {
     })
     const pageTooHigh = phraseReducer(withPhrases, {
       type: UPDATE_PAGE,
-      page: 7
+      payload: 7
     })
     const clamped = phraseReducer(pageTooHigh, {
       type: CLAMP_PAGE,
@@ -169,10 +169,7 @@ describe('phrase-reducer test', () => {
       }
     })
     const copied = phraseReducer(withTextSelection, {
-      type: COPY_GLOSSARY_TERM,
-      payload: {
-        termTranslation: 'TERM'
-      }
+      type: COPY_GLOSSARY_TERM, payload: 'TERM'
     })
     expect(copied.detail).toEqual({
       'p01': {
@@ -239,8 +236,10 @@ describe('phrase-reducer test', () => {
     })
     const copied = phraseReducer(withPhraseDetail, {
       type: COPY_FROM_SOURCE,
-      phraseId: 'p01',
-      sourceIndex: 1
+      payload: {
+        phraseId: 'p01',
+        sourceIndex: 1
+      }
     })
     expect(copied.detail).toEqual({
       'p01': {
@@ -263,11 +262,11 @@ describe('phrase-reducer test', () => {
     const initialState = phraseReducer(undefined, { type: 'any' })
     const pageChanged = phraseReducer(initialState, {
       type: UPDATE_PAGE,
-      page: 7
+      payload: 7
     })
     const samePage = phraseReducer(pageChanged, {
       type: UPDATE_PAGE,
-      page: 7
+      payload: 7
     })
     expect(pageChanged.paging.pageIndex).toEqual(7)
     expect(samePage.paging.pageIndex).toEqual(7)
@@ -394,16 +393,18 @@ describe('phrase-reducer test', () => {
     })
     const withQueuedSave = phraseReducer(withPhraseDetail, {
       type: QUEUE_SAVE,
-      phraseId: 'p01',
-      saveInfo: {
-        localeId: 'ja',
-        status: 'translated',
-        translations: ['翻訳', '翻訳']
+      payload: {
+        phraseId: 'p01',
+        saveInfo: {
+          localeId: 'ja',
+          status: 'translated',
+          translations: ['翻訳', '翻訳']
+        }
       }
     })
     const withSaveInitiated = phraseReducer(withQueuedSave, {
       type: PENDING_SAVE_INITIATED,
-      phraseId: 'p01'
+      payload: 'p01'
     })
     expect(withQueuedSave.detail['p01'].pendingSave).toEqual({
       localeId: 'ja',
@@ -437,18 +438,22 @@ describe('phrase-reducer test', () => {
     })
     const saving = phraseReducer(withPhraseDetail, {
       type: SAVE_INITIATED,
-      phraseId: 'p01',
-      saveInfo: {
-        localeId: 'ja',
-        status: 'translated',
-        translations: ['翻訳', '翻訳']
+      payload: {
+        phraseId: 'p01',
+        saveInfo: {
+          localeId: 'ja',
+          status: 'translated',
+          translations: ['翻訳', '翻訳']
+        }
       }
     })
     const saved = phraseReducer(saving, {
       type: SAVE_FINISHED,
-      phraseId: 'p01',
-      status: 'translated',
-      revision: 3
+      payload: {
+        phraseId: 'p01',
+        status: 'translated',
+        revision: 3
+      }
     })
     expect(saved.detail['p01'].inProgressSave).toBeUndefined()
     expect(saved.detail['p01'].translations).toEqual(['翻訳', '翻訳'])
@@ -479,11 +484,13 @@ describe('phrase-reducer test', () => {
     })
     const saving = phraseReducer(withPhraseDetail, {
       type: SAVE_INITIATED,
-      phraseId: 'p01',
-      saveInfo: {
-        localeId: 'ja',
-        status: 'translated',
-        translations: ['翻訳', '翻訳']
+      payload: {
+        phraseId: 'p01',
+        saveInfo: {
+          localeId: 'ja',
+          status: 'translated',
+          translations: ['翻訳', '翻訳']
+        }
       }
     })
     expect(saving.detail['p01'].inProgressSave).toEqual({
@@ -505,7 +512,7 @@ describe('phrase-reducer test', () => {
     })
     const selected = phraseReducer(initialState, {
       type: SELECT_PHRASE,
-      phraseId: 'p02',
+      payload: 'p02',
       getState: () => {
         return {
           context: {
@@ -552,8 +559,10 @@ describe('phrase-reducer test', () => {
     })
     const selected = phraseReducer(withPhraseDetail, {
       type: SELECT_PHRASE_SPECIFIC_PLURAL,
-      phraseId: 'p02',
-      index: 1,
+      payload: {
+        phraseId: 'p02',
+        index: 1
+      },
       getState: () => {
         return {
           context: {
@@ -591,9 +600,11 @@ describe('phrase-reducer test', () => {
     })
     const textEntered = phraseReducer(withPhrases, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 0,
-      text: 'translation'
+      payload: {
+        id: '123',
+        index: 0,
+        text: 'translation'
+      }
     })
     expect(textEntered.detail).toEqual({
       '123': {
@@ -606,9 +617,11 @@ describe('phrase-reducer test', () => {
 
     const textUpdated = phraseReducer(textEntered, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 0,
-      text: 'NEW IMPROVED translation'
+      payload: {
+        id: '123',
+        index: 0,
+        text: 'NEW IMPROVED translation'
+      }
     })
     expect(textUpdated.detail).toEqual({
       '123': {
@@ -621,9 +634,11 @@ describe('phrase-reducer test', () => {
 
     const pluralEntered = phraseReducer(textUpdated, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 1,
-      text: 'translations'
+      payload: {
+        id: '123',
+        index: 1,
+        text: 'translations'
+      }
     })
     expect(pluralEntered.detail).toEqual({
       '123': {
@@ -636,9 +651,11 @@ describe('phrase-reducer test', () => {
 
     const otherPhraseTextEntered = phraseReducer(pluralEntered, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '124',
-      index: 0,
-      text: 'another translation'
+      payload: {
+        id: '124',
+        index: 0,
+        text: 'another translation'
+      }
     })
     expect(otherPhraseTextEntered.detail).toEqual({
       '123': {
@@ -651,9 +668,11 @@ describe('phrase-reducer test', () => {
 
     const textBackspaced = phraseReducer(otherPhraseTextEntered, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '123',
-      index: 0,
-      text: ''
+      payload: {
+        id: '123',
+        index: 0,
+        text: ''
+      }
     })
     expect(textBackspaced.detail).toEqual({
       '123': {
@@ -694,9 +713,11 @@ describe('phrase-reducer test', () => {
     })
     const textEntered = phraseReducer(withDetail, {
       type: TRANSLATION_TEXT_INPUT_CHANGED,
-      id: '1',
-      index: 0,
-      text: 'originally'
+      payload: {
+        id: '1',
+        index: 0,
+        text: 'originally'
+      }
     })
     const undone = phraseReducer(textEntered, {
       type: UNDO_EDIT
@@ -739,7 +760,7 @@ describe('phrase-reducer test', () => {
     })
     const copied = phraseReducer(withPhraseDetail, {
       type: COPY_SUGGESTION,
-      suggestion: {
+      payload: {
         targetContents: [ 'SUGGESTION', 'SUGGESTIONS' ]
       }
     })
@@ -758,11 +779,11 @@ describe('phrase-reducer test', () => {
   it('can set save as mode on and off', () => {
     const saveAs = phraseReducer(undefined, {
       type: SET_SAVE_AS_MODE,
-      active: true
+      payload: true
     })
     const notSaveAs = phraseReducer(saveAs, {
       type: SET_SAVE_AS_MODE,
-      active: false
+      payload: false
     })
     expect(saveAs.saveAsMode).toEqual(true)
     expect(notSaveAs.saveAsMode).toEqual(false)

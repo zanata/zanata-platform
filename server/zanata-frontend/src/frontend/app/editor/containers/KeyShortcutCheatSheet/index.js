@@ -1,12 +1,21 @@
 import cx from 'classnames'
 import { Icon } from '../../../components'
 import KeyCombinations from '../../components/KeyCombinations'
-import { chain, each, map } from 'lodash'
+import { chain, each, map, values } from 'lodash'
 import { connect } from 'react-redux'
 import React from 'react'
 import PropTypes from 'prop-types'
-import { SHORTCUTS } from '../../actions/key-shortcuts-actions'
+import { getShortcuts, getKeyShortcutsVisible } from '../../reducers'
 import { toggleKeyboardShortcutsModal } from '../../actions/header-actions'
+
+const KEY_SHORTCUT_TYPE = PropTypes.shape({
+  description: PropTypes.string,
+  keyConfig: PropTypes.shape({
+    keys: PropTypes.array.isRequired,
+    // array of KEY_SHORTCUT_TYPE, but not worth the workaround to define it
+    sequenceKeys: PropTypes.array
+  }).isRequired
+})
 
 /**
  * Modal showing a summary of the available key shortcuts.
@@ -14,6 +23,8 @@ import { toggleKeyboardShortcutsModal } from '../../actions/header-actions'
 class KeyShortcutCheatSheet extends React.Component {
   static propTypes = {
     show: PropTypes.bool.isRequired,
+    // could specify each shortcut key, but that is overkill here.
+    shortcuts: PropTypes.arrayOf(KEY_SHORTCUT_TYPE).isRequired,
     onClose: PropTypes.func.isRequired,
     className: PropTypes.string
   }
@@ -56,7 +67,7 @@ class KeyShortcutCheatSheet extends React.Component {
   }
 
   render () {
-    const { onClose, show } = this.props
+    const { onClose, shortcuts, show } = this.props
     const className = cx(this.props.className, 'Modal', {
       'is-active': show
     })
@@ -74,7 +85,7 @@ class KeyShortcutCheatSheet extends React.Component {
           </div>
           <div className="Modal-content u-sP-1">
             <ul>
-              {chain(SHORTCUTS).values()
+              {chain(shortcuts)
                 .map(this.expandSequences).flatten()
                 .map(this.renderShortcut)
                 .value()}
@@ -88,7 +99,8 @@ class KeyShortcutCheatSheet extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    show: state.ui.panels.keyShortcuts.visible
+    show: getKeyShortcutsVisible(state),
+    shortcuts: values(getShortcuts(state))
   }
 }
 

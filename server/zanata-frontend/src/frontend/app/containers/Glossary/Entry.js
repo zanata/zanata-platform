@@ -72,7 +72,7 @@ class Entry extends Component {
       return (
         <tr>
           <td>
-            <div className='lineclamp'>Loading…</div>
+            <div className='lineClamp'>Loading…</div>
           </td>
         </tr>
       )
@@ -97,7 +97,7 @@ class Entry extends Component {
     )
 
     const loadingDiv = (
-      <div className='lineclamp'>Loading…</div>
+      <div className='lineClamp'>Loading…</div>
     )
 
     let secondColumnContent
@@ -116,7 +116,7 @@ class Entry extends Component {
         </EditableText>
     } else {
       secondColumnContent =
-        <div className='lineclamp'>
+        <div className='lineClamp'>
           {entry.termsCount}
         </div>
     }
@@ -124,7 +124,7 @@ class Entry extends Component {
     const cssClass = 'highlight editable' + (selected ? ' selected' : '')
 
     return (
-      <Table className='glossary-entry'>
+      <Table className='glossaryEntry'>
         <tbody>
           <tr className={cssClass}
             selected={selected}
@@ -147,7 +147,7 @@ class Entry extends Component {
             {termsLoading
               ? loadingDiv
               : (<EditableText
-                className='text-state-classes'
+                className='textState'
                 title={entry.pos}
                 editable={!transSelected && editable}
                 editing={selected}
@@ -166,7 +166,7 @@ class Entry extends Component {
                     className="btn-link-end"
                     disabled={isDeleting}
                     onClick={() => this.setShowingEntryModal(true)}>
-                    <Icon name='info' className='s1 infoicon-nomargin' />
+                    <Icon name='info' className='s1 iconInfo-noMargin' />
                   </Button>
                   <EntryModal entry={entry}
                     show={this.state.showEntryModal}
@@ -180,7 +180,7 @@ class Entry extends Component {
                       handleTermFieldUpdate(field, e)}
                     handleUpdateTerm={(entry) =>
                       handleUpdateTerm(entry, false)} />
-                  <div className='trans-row row--selected
+                  <div className='u-row--transparent row--selected
                     editable-op1'>
                     <div className='hidden-lesm'>
                       <Row className='entry-row'>

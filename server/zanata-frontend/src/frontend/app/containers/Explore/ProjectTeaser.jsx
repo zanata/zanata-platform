@@ -18,17 +18,17 @@ const ProjectTeaser = ({
 }) => {
   const status = statusIcons[details.status]
   const description = details.description
-    ? (<div className='text-muted'>
+    ? (<div className='u-textMuted'>
         {details.description}
     </div>)
-    : (<div className='text-muted'>
+    : (<div className='u-textMuted'>
       <em>Project: {details.id}</em>
     </div>)
   const metaData = details.owner && (
-    <div className='meta-info'>
-      <Icon name='user' className='n1 usericon-muted' />
+    <div className='metaInfo'>
+      <Icon name='user' className='n1 iconUser-muted' />
       <Link to={details.owner}>{details.owner}</Link>
-      <Icon name='users' className='usersicon-muted n1' />
+      <Icon name='users' className='iconUsers-muted n1' />
       <Link
         to={details.owner + '/' + details.id + '/people'}>
         {details.contributorCount}
@@ -43,12 +43,12 @@ const ProjectTeaser = ({
     ? ''
     : 'This project is currently read only'
   return (
-    <div className='teaser-view-theme' name={name}>
+    <div className='teaserView' name={name}>
       <div className='teaser-inner'>
         <div>
           <Link link={link} useHref className={className} title={tooltip}>
             {status !== statusIcons.ACTIVE &&
-            (<Icon name={statusIcons[details.status]} className='s1 statusicons'
+            (<Icon name={statusIcons[details.status]} className='s1 iconsStatus'
             />)}
             {details.title}
           </Link>

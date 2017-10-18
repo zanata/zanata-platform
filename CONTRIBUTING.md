@@ -10,7 +10,39 @@ Zanata better, or just want to tell us what you think of something in Zanata,
 please let us know using our [issue system](https://zanata.atlassian.net/)
 
 ## <a name="Pull_Requests">Pull Requests</a>
-Pull requests welcome!
+
+See [Zanata Development Guidelines](https://github.com/zanata/zanata-platform/wiki/Development-Guidelines) more for information.
+
+Pull request review checklist
+
+ - Code quality
+   - Code passes style check (checkstyle/eslint)
+   - Code is clear and concise
+   - UI code is internationalised
+   - Code has adequate comments where appropriate
+   - Code is in an appropriate place
+     - Classes are in appropriate packages
+     - Code fits with class's responsibilities (SRP)
+   - Configuration files are documented enough
+   - If code is removed
+     - No remaining code references the removed code
+       - No orphaned rewrite rules
+       - No orphaned config settings
+     - No remaining comments refer to the removed code
+     - Unused imports and libraries are removed
+ - Testing
+   - New code has tests
+   - Changed code has tests
+   - All tests pass
+   - Test coverage stable or increased
+ - Documentation
+   - New features are documented
+   - Docs removed for deleted features
+   - Docs updated for all changed features
+   - Developer/sysadmin docs updated if appropriate
+ - If there are new dependencies
+   - Does each new dependency pass all the
+         [Considerations for new dependencies](https://github.com/zanata/zanata-platform/wiki/Development-Guidelines#new-technologies-and-dependencies)?
 
 ### <a name="Setup">Setup</a>
 The

@@ -16,10 +16,8 @@ import org.zanata.ServerConstants;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
-import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 // not @Transactional, because the DB work happens in other threads
@@ -47,10 +45,8 @@ public class SearchIndexManager implements Serializable {
         // TODO get the list of classes from Hibernate Search
         // ie
         // FullTextSession.getSearchFactory().getStatistics().getIndexedClassNames()
-        indexables.add(HGlossaryEntry.class);
         indexables.add(HGlossaryTerm.class);
         indexables.add(HProject.class);
-        indexables.add(HProjectIteration.class);
         indexables.add(TransMemoryUnit.class);
         // NB we put the largest tables at the bottom, so that the small
         // tables can be indexed early

@@ -110,7 +110,6 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     }
 
     public class SourceDocClient implements SourceDocResource {
-        private static final long serialVersionUID = 1L;
 
         @Override
         public Response head() {
@@ -179,6 +178,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             }.runWithResult();
         }
 
+        @Deprecated
         @Override
         public Response getResource(String idNoSlash,
                 final Set<String> extensions) {
@@ -220,6 +220,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             }.runWithResult();
         }
 
+        @Deprecated
         @Override
         public Response putResource(String idNoSlash,
                 final Resource resource,
@@ -282,6 +283,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             }.runWithResult();
         }
 
+        @Deprecated
         @Override
         public Response deleteResource(String idNoSlash) {
             return new ResourceRequest(
@@ -315,6 +317,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             }.runWithResult();
         }
 
+        @Deprecated
         @Override
         public Response getResourceMeta(String idNoSlash,
                 final Set<String> extensions) {
@@ -358,6 +361,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             }.runWithResult();
         }
 
+        @Deprecated
         @Override
         public Response putResourceMeta(String idNoSlash,
                 final ResourceMeta messageBody,
@@ -420,8 +424,8 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     }
 
     public class TranslatedDocClient implements TranslatedDocResource {
-        private static final long serialVersionUID = 1L;
 
+        @Deprecated
         @Override
         public Response getTranslations(String idNoSlash, LocaleId locale,
                 final Set<String> extensions, final boolean createSkeletons,
@@ -470,6 +474,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             }.runWithResult();
         }
 
+        @Deprecated
         @Override
         public Response deleteTranslations(String idNoSlash,
                 LocaleId locale) {
@@ -506,6 +511,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
             }.runWithResult();
         }
 
+        @Deprecated
         @Override
         public Response putTranslations(String idNoSlash, LocaleId locale,
                 final TranslationsResource messageBody, final Set<String> extensions,

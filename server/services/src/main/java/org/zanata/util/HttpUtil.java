@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.spi.HttpRequest;
 
 import com.google.common.annotations.VisibleForTesting;

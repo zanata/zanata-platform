@@ -1,17 +1,24 @@
-import { SET_SIDEBAR_VISIBILITY } from '../actions/action-types'
+/* @flow */
+import { handleActions } from 'redux-actions'
+import { createSelector } from 'reselect'
+import {
+  SET_SIDEBAR_VISIBILITY,
+  TOGGLE_SHOW_SETTINGS,
+  HIDE_SETTINGS
+} from '../actions/action-types'
 import {
   CHANGE_UI_LOCALE,
   TOGGLE_GLOSSARY,
+  TOGGLE_INFO_PANEL,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
   UI_LOCALES_FETCHED
 } from '../actions/header-action-types'
 import {
-  SUGGESTION_PANEL_HEIGHT_CHANGE,
-  TOGGLE_SUGGESTIONS
+  SUGGESTION_PANEL_HEIGHT_CHANGE
 } from '../actions/suggestions-action-types'
-import {prepareLocales} from '../utils/Util'
-import updateObject from 'immutability-helper'
+import { prepareLocales } from '../utils/Util'
+import update from 'immutability-helper'
 
 // TODO extract this to a common config
 export const DEFAULT_LOCALE = {
@@ -19,14 +26,33 @@ export const DEFAULT_LOCALE = {
   'name': 'English'
 }
 
-export const GLOSSARY_TAB = Symbol('GLOSSARY_TAB')
-export const identity = (key) => {
+export const GLOSSARY_TAB = 'GLOSSARY_TAB'
+export const identity = (key: any) => {
   // TODO pahuang implement gettextCatalog.getString
   // console.log('gettextCatalog.getString')
   return key
 }
 
-const defaultState = {
+type State = {
+  +panels: {
+    +navHeader: {
+      +visible: bool
+    },
+    +sidebar: {
+      +visible: bool,
+      +selectedTab: 'GLOSSARY_TAB'
+    },
+    +suggestions: {
+      +heightPercent: number
+    },
+    +keyShortcuts: {
+      +visible: bool
+    }
+  },
+  +showSettings: bool
+}
+
+const defaultState: State = {
   panels: {
     navHeader: {
       visible: true
@@ -36,7 +62,6 @@ const defaultState = {
       selectedTab: GLOSSARY_TAB
     },
     suggestions: {
-      visible: true,
       heightPercent: 0.3
     },
     keyShortcuts: {
@@ -45,129 +70,93 @@ const defaultState = {
   },
   uiLocales: {},
   selectedUiLocale: DEFAULT_LOCALE.localeId,
+  showSettings: false,
   gettextCatalog: {
     getString: identity
   }
 }
 
-const ui = (state = defaultState, action) => {
-  switch (action.type) {
-    case SUGGESTION_PANEL_HEIGHT_CHANGE:
-      return update({
-        panels: {
-          suggestions: {
-            heightPercent: {$set: action.percentageHeight}
-          }
-        }
-      })
+/* selectors */
+export const getNavHeaderVisible =
+  (state: State) => state.panels.navHeader.visible
+// always show sidebar when settings is on
+export const getSidebarVisible = (state: State) =>
+  state.panels.sidebar.visible || state.showSettings
+export const getSidebarTab = (state: State) => state.panels.sidebar.selectedTab
+export const getShowSettings = (state: State) => state.showSettings
+export const getGlossaryVisible = createSelector(getSidebarVisible,
+  getShowSettings, getSidebarTab,
+    (sidebar, settings, tab) => sidebar && !settings && tab === GLOSSARY_TAB)
+// info panel is always-on in the non-settings sidebar
+export const getInfoPanelVisible = createSelector(getSidebarVisible,
+  getShowSettings, (sidebar, settings) => sidebar && !settings)
+export const getKeyShortcutsVisible =
+  (state: State) => state.panels.keyShortcuts.visible
 
-    case TOGGLE_GLOSSARY:
-      const glossaryWasOpen = state.panels.sidebar.visible &&
-        state.panels.sidebar.selectedTab === GLOSSARY_TAB
-      return update({
-        panels: {
-          sidebar: {
-            visible: {$set: !glossaryWasOpen},
-            selectedTab: {$set: GLOSSARY_TAB}
-          }
-        }
-      })
+/* instruct immutability-helper to toggle a boolean value */
+const $toggle = {$apply: bool => !bool}
 
-    case TOGGLE_HEADER:
-      return update({
-        panels: {
-          navHeader: {
-            visible: {$set: !state.panels.navHeader.visible}
-          }
-        }
-      })
+export default handleActions({
+  [SUGGESTION_PANEL_HEIGHT_CHANGE]: (state, { payload }) => update(state,
+    { panels: { suggestions: { heightPercent: {$set: payload} } } }),
 
-    case TOGGLE_SUGGESTIONS:
-      return update({
-        panels: {
-          suggestions: {
-            visible: {$set: !state.panels.suggestions.visible}
-          }
-        }
-      })
+  // selectedTab and showSettings will always be the same after this toggle,
+  // either they already had the values below, or we needed to set them.
+  [TOGGLE_GLOSSARY]: state => update(state, {
+    panels: {
+      sidebar: {
+        visible: {$set: !getGlossaryVisible(state)},
+        selectedTab: {$set: GLOSSARY_TAB}
+      }
+    },
+    showSettings: {$set: false}
+  }),
 
-    case UI_LOCALES_FETCHED:
-      const locales = prepareLocales(action.data)
-      return update({
-        uiLocales: {
-          $set: locales
-        }
-      })
+  [TOGGLE_INFO_PANEL]: state => update(state, {
+    panels: {
+      sidebar: {
+        visible: {$set: !getInfoPanelVisible(state)}
+      }
+    },
+    // was either already hidden, or needs to be hidden to see info panel
+    showSettings: {$set: false}
+  }),
 
-    case TOGGLE_KEY_SHORTCUTS:
-      return update({
-        panels: {
-          keyShortcuts: {
-            visible: {$set: !state.panels.keyShortcuts.visible}
-          }
-        }
-      })
+  [TOGGLE_HEADER]: state => update(state, {
+    panels: {
+      navHeader: {
+        visible: $toggle
+      }
+    }
+  }),
 
-    case CHANGE_UI_LOCALE:
-      // TODO pahuang implement change ui locale
-      /*
-       appCtrl.myInfo.locale = locale
-       var uiLocaleId = appCtrl.myInfo.locale.localeId
-       if (!StringUtil.startsWith(uiLocaleId,RESET_STATUS_FILTERS
-       LocaleService.DEFAULT_LOCALE.localeId, true)) {
-       gettextCatalog.loadRemote(UrlService.uiTranslationURL(uiLocaleId))
-       .then(
-       function () {
-       gettextCatalog.setCurrentLanguage(uiLocaleId)
-       },
-       function (error) {
-       MessageHandler.displayInfo('Error loading UI locale. ' +
-       'Default to \'' + LocaleService.DEFAULT_LOCALE.name +
-       '\': ' + error)
-       gettextCatalog.setCurrentLanguage(
-       LocaleService.DEFAULT_LOCALE)
-       appCtrl.myInfo.locale = LocaleService.DEFAULT_LOCALE
-       })
-       } else {
-       // wrapped in apply because this MUST be run at the appropriate part of
-       // the angular cycle, or it does not remove the old strings from the UI
-       // (you end up with multiple strings displaying).
-       $scope.$apply(function () {
-       gettextCatalog.setCurrentLanguage(
-       LocaleService.DEFAULT_LOCALE.localeId)
-       })
-       }
-       */
-      return update({
-        selectedUiLocale: {
-          $set: action.data
-        }
-      })
+  [UI_LOCALES_FETCHED]: (state, { payload }) => update(state, {
+    uiLocales: {$set: prepareLocales(payload)}
+  }),
 
-    case SET_SIDEBAR_VISIBILITY:
-      return update({
-        panels: {
-          sidebar: {
-            visible: {$set: action.visible}
-          }
-        }
-      })
+  [TOGGLE_KEY_SHORTCUTS]: state => update(state, {
+    panels: {
+      keyShortcuts: {
+        visible: $toggle
+      }
+    }
+  }),
 
-    default:
-      return state
-  }
+  [CHANGE_UI_LOCALE]: (state, { payload }) => update(state, {
+    selectedUiLocale: {
+      $set: payload
+    }
+  }),
 
-  /**
-   * Apply the given commands to state.
-   *
-   * Just a shortcut to avoid having to pass state to update over and over.
-   */
-  function update (commands) {
-    // FIXME update to version that does not lose reference equality when
-    //       setting an identical object
-    //       see: https://github.com/facebook/react/pull/4968
-    return updateObject(state, commands)
-  }
-}
+  [SET_SIDEBAR_VISIBILITY]: (state, { payload }) => update(state, {
+    panels: {
+      sidebar: {
+        visible: {$set: payload}
+      }
+    }
+  }),
 
-export default ui
+  [TOGGLE_SHOW_SETTINGS]: state => update(state, { showSettings: $toggle }),
+
+  [HIDE_SETTINGS]: (state) => update(state, { showSettings: {$set: false} })
+}, defaultState)

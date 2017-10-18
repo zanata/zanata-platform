@@ -1,63 +1,160 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, FormGroup, ControlLabel, DropdownButton, MenuItem, Button }
+import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
   from 'react-bootstrap'
-import { Icon, TextInput } from '../../components'
+import { Icon, TextInput, SelectableDropdown } from '../../components'
+import Toggle from 'react-toggle'
 /**
  * Reject Translations Administration panel
  */
 export const MINOR = 'Minor'
 export const MAJOR = 'Major'
 export const CRITICAL = 'Critical'
+const DO_NOT_RENDER = undefined
+
+const tooltip = (<Tooltip id='tooltip'>Save criteria</Tooltip>)
+
+function priorityToTextState (priority) {
+  switch (priority) {
+    case CRITICAL:
+      return 'u-textDanger'
+    case MAJOR:
+      return 'u-textWarning'
+    case MINOR:
+      return 'u-textInfo'
+  }
+}
+
+const priorityToDisplay =
+  p => <span className={priorityToTextState(p)}>{p}</span>
 
 class RejectionsForm extends Component {
-  static PropTypes = {
+  static propTypes = {
+    entityId: PropTypes.number,
     priority: PropTypes.oneOf([
       MINOR,
       MAJOR,
       CRITICAL
     ]).isRequired,
-    textState: PropTypes.oneOf([
-      'text-info',
-      'text-warning',
-      'text-danger'
-    ]).isRequired,
     criteriaPlaceholder: PropTypes.string.isRequired,
-    editable: PropTypes.boolean,
-    editing: PropTypes.boolean,
-    className: PropTypes.string
+    description: PropTypes.string.isRequired,
+    onSave: PropTypes.func.isRequired,
+    onDelete: PropTypes.func,
+    editable: PropTypes.bool,
+    // if it's in admin mode, we will allow user to update
+    isAdminMode: PropTypes.bool.isRequired,
+    // whether delete button shoud be displayed
+    displayDelete: PropTypes.bool.isRequired,
+    className: PropTypes.string,
+    criterionId: PropTypes.string.isRequired
   }
 
-  render() {
-    const title = (
-        <span className={this.props.textState}>{this.props.priority}</span>
-    )
+  static defaultProps = {
+    criterionId: 'review-criteria',
+    editable: false,
+    description: '',
+    isAdminMode: false,
+    displayDelete: true,
+    onSave: () => {},
+    onDelete: () => {}
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      description: this.props.description,
+      isEditable: this.props.editable,
+      priority: this.props.priority
+    }
+  }
+
+  onEditableChange = e => {
+    const checked = e.target.checked
+    this.setState(prevState => ({
+      isEditable: checked
+    }))
+  }
+  onTextChange = e => {
+    const text = e.target.value
+    this.setState(prevState => ({
+      description: text
+    }))
+  }
+  onPriorityChange = p => {
+    this.setState(prevState => ({
+      priority: p
+    }))
+  }
+  onSave = () => {
+    this.props.onSave({
+      ...this.state,
+      id: this.props.entityId,
+      editable: this.state.isEditable
+    })
+  }
+  onDelete = () => {
+    this.props.onDelete(this.props.entityId)
+  }
+  render () {
+    const {
+      editable,
+      className,
+      isAdminMode,
+      displayDelete,
+      criteriaPlaceholder,
+      criterionId
+    } = this.props
+    const textState = priorityToTextState(this.state.priority)
+    const title = <span className={textState}>{this.state.priority}</span>
+    const priorityDisabled = !isAdminMode && !editable
+    const deleteBtn = displayDelete
+      ? (
+      <Button bsStyle='danger' className={className} onClick={this.onDelete}>
+        <Icon name='trash' className='s0 iconEdit' />
+      </Button>
+      ) : DO_NOT_RENDER
+    const editableToggle = isAdminMode ? (
+      <FormGroup controlId='formInlineEditable'>
+        <ControlLabel>Editable</ControlLabel><br />
+        <Toggle icons={false} onChange={this.onEditableChange}
+          checked={this.state.isEditable} />
+      </FormGroup>
+      )
+      : DO_NOT_RENDER
+    const formBtn = isAdminMode ? (
+      <FormGroup controlId='formInlineButtonEdit'>
+        <ControlLabel>&nbsp;</ControlLabel><br />
+        <OverlayTrigger placement='top' overlay={tooltip}>
+          <Button bsStyle='primary' className={className} onClick={this.onSave}>
+            <Icon name='tick' className='s0 iconEdit' />
+          </Button>
+        </OverlayTrigger>
+        {deleteBtn}
+      </FormGroup>
+    ) : DO_NOT_RENDER
     return (
-        <Form className='rejections' inline>
-          <FormGroup className='flex-grow1' controlId='formInlineCriteria'>
-            <ControlLabel>Criteria</ControlLabel><br/>
-            <TextInput multiline={true}  editable={this.props.editable}
-             type='text' numberOfLines={2} placeholder={this.props.criteriaPlaceholder}/>
-          </FormGroup>
-          <FormGroup controlId='formInlinePriority'>
-            <ControlLabel>Priority</ControlLabel><br/>
-            <DropdownButton bsStyle='default' title={title}
-               id='dropdown-basic'>
-              <MenuItem><span className='text-info'>Minor</span></MenuItem>
-              <MenuItem><span className='text-warning'>Major</span></MenuItem>
-              <MenuItem><span className='text-danger'>Critical</span></MenuItem>
-            </DropdownButton>
-          </FormGroup>
-          <FormGroup controlId='formInlineButtonEdit'>
-            <ControlLabel>&nbsp;</ControlLabel><br/>
-            <Button bsStyle='primary' className={this.props.className}>
-              <Icon name='edit' className='s0 editicon'/>
-            </Button>
-            <Button bsStyle='danger' className={this.props.className}>
-              <Icon name='trash' className='s0 editicon'/>
-            </Button>
-          </FormGroup>
-        </Form>
+      <Form className='rejectionsForm' inline>
+        <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
+          <ControlLabel>Criteria</ControlLabel><br />
+          <TextInput multiline editable={isAdminMode || editable}
+            type='text' numberOfLines={2} onChange={this.onTextChange}
+            placeholder={criteriaPlaceholder} value={this.state.description} />
+        </FormGroup>
+        <FormGroup controlId='formInlinePriority'>
+          <ControlLabel>Priority</ControlLabel><br />
+          <SelectableDropdown
+            id={criterionId + 'review-criteria-dropdown-basic'}
+            onSelectDropdownItem={this.onPriorityChange}
+            selectedValue={this.state.priority}
+            title={title}
+            valueToDisplay={priorityToDisplay}
+            values={[MINOR, MAJOR, CRITICAL]}
+            disabled={priorityDisabled}
+          />
+        </FormGroup>
+        {editableToggle}
+        {formBtn}
+      </Form>
     )
   }
 }

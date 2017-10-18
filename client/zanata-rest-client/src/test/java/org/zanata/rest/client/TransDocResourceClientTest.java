@@ -21,7 +21,6 @@
 
 package org.zanata.rest.client;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -31,7 +30,7 @@ import org.zanata.rest.service.StubbingServerRule;
 
 import com.google.common.collect.Sets;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransDocResourceClientTest {
     @ClassRule
@@ -54,7 +53,7 @@ public class TransDocResourceClientTest {
                         Sets.newHashSet("gettext", "comment"), true, "abc")
                         .readEntity(TranslationsResource.class);
 
-        assertThat(translations.getTextFlowTargets(), Matchers.hasSize(1));
+        assertThat(translations.getTextFlowTargets()).hasSize(1);
     }
 
 }

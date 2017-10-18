@@ -32,15 +32,15 @@ public enum UserOptions implements IsSerializable {
     private String persistentName;
 
     public static String editor() {
-        return "editor";
+        return "gwt.editor";
     }
 
     public static String doc() {
-        return "doc";
+        return "gwt.doc";
     }
 
     public static String common() {
-        return "common";
+        return "gwt.common";
     }
 
     UserOptions(String persistentName) {

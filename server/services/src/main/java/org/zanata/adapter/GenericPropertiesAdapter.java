@@ -23,7 +23,7 @@ package org.zanata.adapter;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.adapter.properties.PropWriter;
 import static org.zanata.adapter.AdapterUtils.readStream;

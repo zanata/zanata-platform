@@ -76,12 +76,12 @@ class EntryModal extends Component {
             Glossary Term
             {transSelected
               ? (<span>
-                <Icon name='language' className='languageicon-neutral s1' />
-                <span className='text-muted'>{selectedTransLocale}</span>
+                <Icon name='language' className='iconLanguage-neutral s1' />
+                <span className='u-textMuted'>{selectedTransLocale}</span>
               </span>)
               : (<span>
-                <Icon name='translate' className='translateicon-neutral s1' />
-                <span className='text-muted'>{entry.termsCount}</span>
+                <Icon name='translate' className='iconTranslate-neutral s1' />
+                <span className='u-textMuted'>{entry.termsCount}</span>
               </span>)
             }
           </Modal.Title>
@@ -100,7 +100,7 @@ class EntryModal extends Component {
             <EditableText
               editable={!transSelected}
               editing
-              className='text-state-classes'
+              className='textState'
               maxLength={255}
               placeholder='Add part of speech…'
               emptyReadOnlyText='No part of speech'
@@ -151,11 +151,11 @@ class EntryModal extends Component {
             </div>
           ) : ''}
           {!isEmpty(info) &&
-            <div className='modal-muted'>{info}</div>
+            <div className='modalText-muted'>{info}</div>
           }
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='pull-right'>
+          <ButtonGroup className='u-pullRight'>
             <Button bsStyle='link'
               onClick={
                 () => {

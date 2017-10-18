@@ -22,13 +22,16 @@
     --brand-primary:   #546677;
     --brand-info:      #00A5D9;
     --brand-success:   #62c876;
-
     --border-radius-base:       4px;
     --border-radius-small:      3px;
-
     --padding-base-vertical:    8px;
     --padding-small-horizontal: 10px;
     --padding-large-vertical:   14px;
+}
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .panel-group {
@@ -164,7 +167,7 @@
     background-color: var(--brand-info);
 }
 
-.source-heading {
+.TransUnit-sourceHeading {
     padding-left: 1.1em;
     top: inherit;
     line-height: 3em;
@@ -172,7 +175,7 @@
     color: var(--brand-primary);
 }
 
-.target-heading {
+.TransUnit-targetHeading {
     padding-left: 1.9em;
     top: inherit;
     line-height: 3em;
@@ -215,7 +218,7 @@ span.TransUnit-details-inner {
 
 
 @media (max-width: 740px) {
-  .source-heading {
+  .TransUnit-sourceHeading {
     padding-left: 2.1em;
   }
 

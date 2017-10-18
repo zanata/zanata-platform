@@ -46,7 +46,7 @@ class LanguagesDropdown extends React.Component {
       const url = this.localeUrl(locale)
       return (
         <li key={locale.id}>
-          <a href={url} className="Dropdown-item">
+          <a href={url} className="EditorDropdown-item">
             {locale.name}
           </a>
         </li>

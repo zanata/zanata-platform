@@ -16,6 +16,7 @@ import org.zanata.util.RunnableEx;
  * @see org.zanata.arquillian.Deployments#notUnitTest(org.jboss.shrinkwrap.api.ArchivePath)
  */
 public class TransactionUtilForUnitTest implements TransactionUtil {
+    private static final long serialVersionUID = 1L;
     private static final Logger log =
             LoggerFactory.getLogger(TransactionUtilForUnitTest.class);
     private boolean useTransaction = false;

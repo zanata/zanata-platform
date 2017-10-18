@@ -25,7 +25,7 @@ class DeleteAllEntriesModal extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='block'>
+      <div className='u-block'>
         <Overlay
           placement='bottom'
           target={() => ReactDOM.findDOMNode(this)}
@@ -57,7 +57,7 @@ class DeleteAllEntriesModal extends Component {
           onClick={() => handleDeleteAllEntriesDisplay(true)}
           disabled={isDeleting}>
           <span>
-            <Icon name='trash' className='deleteicon s1' />
+            <Icon name='trash' className='iconDelete s1' />
             <span className='hidden-lesm'>Delete</span>
           </span>
         </Button>

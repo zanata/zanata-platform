@@ -58,7 +58,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
             msg = new MimeMessage(session);
 
             if (getFrom() != null) {
-                msg.setFrom(getAddress(getFrom()));
+                msg.setFrom(parseSingleAddress(getFrom()));
             } else {
                 msg.setFrom();
             }
@@ -67,13 +67,13 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
                 throw new MessagingException();
             }
 
-            msg.setRecipients(Message.RecipientType.TO, parseAddress(getTo()));
+            msg.setRecipients(Message.RecipientType.TO, parseAddresses(getTo()));
         } catch (MessagingException | NamingException e) {
             LogLog.error("Could not activate SMTPAppender options.", e);
         }
     }
 
-    InternetAddress getAddress(String addressStr) {
+    private InternetAddress parseSingleAddress(String addressStr) {
         try {
             return new InternetAddress(addressStr);
         } catch (AddressException e) {
@@ -83,7 +83,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
         }
     }
 
-    InternetAddress[] parseAddress(String addressStr) {
+    private InternetAddress[] parseAddresses(String addressStr) {
         try {
             return InternetAddress.parse(addressStr, true);
         } catch (AddressException | NullPointerException e) {

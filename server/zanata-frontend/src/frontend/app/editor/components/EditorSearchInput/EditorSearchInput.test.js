@@ -32,8 +32,8 @@ describe('EditorSearchInputTest', () => {
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div>
-        <div className="InputGroup InputGroup--outlined InputGroup--rounded">
-          <span className="InputGroup-addon">
+        <div className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded">
+          <span className="EditorInputGroup-addon">
             <Icon name="search" title="Search" className="n1" />
           </span>
           <input type="search"
@@ -41,14 +41,14 @@ describe('EditorSearchInputTest', () => {
             maxLength="1000"
             value="it was the worst of"
             onChange={callback}
-            className="InputGroup-input u-sizeLineHeight-1_1-4" />
-          <span className="InputGroup-addon">
+            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
+          <span className="EditorInputGroup-addon">
             <IconButton icon="cross"
               title="Clear search"
               iconSize="n1"
               onClick={callback} />
           </span>
-          <span className="InputGroup-addon btn-xs advsearch btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link"
             >Hide advanced</span>
         </div>
         <Panel collapsible expanded>
@@ -132,7 +132,7 @@ describe('EditorSearchInputTest', () => {
                 u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
               value="chapter01.txt" />
           </div>
-          <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
+          <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
             onClick={callback}>
             Clear all
           </Button>
@@ -172,7 +172,7 @@ describe('EditorSearchInputTest', () => {
         TestUtils.scryRenderedDOMComponentsWithTag(inputWithText, 'button')
     const [ advancedSearchToggle ] =
         TestUtils.scryRenderedDOMComponentsWithClass(inputWithText,
-            'InputGroup-addon btn-xs advsearch btn-link')
+            'EditorInputGroup-addon btn-xs btn-link')
 
     TestUtils.Simulate.focus(textInput)
     textInput.value = textInput.value + ' times'

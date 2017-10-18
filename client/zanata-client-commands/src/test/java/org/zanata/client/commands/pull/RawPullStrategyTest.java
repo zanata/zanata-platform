@@ -21,8 +21,7 @@
 
 package org.zanata.client.commands.pull;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -68,8 +67,7 @@ public class RawPullStrategyTest {
             transFile, Optional.<String>absent());
 
         assertThat(
-                new File(tempTransFileRule.getTransDir(), "de/foo/test.odt").exists(),
-                is(true));
+                new File(tempTransFileRule.getTransDir(), "de/foo/test.odt").exists()).isTrue();
     }
 
     @Test
@@ -82,8 +80,7 @@ public class RawPullStrategyTest {
                 transFile, Optional.<String>absent());
 
         assertThat(
-                new File(tempTransFileRule.getTransDir(), "de/test.odt").exists(),
-                is(true));
+                new File(tempTransFileRule.getTransDir(), "de/test.odt").exists()).isTrue();
     }
 
 }

@@ -18,8 +18,9 @@
   padding-left: 1rem;
 }
 
-
 /* advanced search panel */
+
+/* bootstrap classes used throughout */
 
 .InputEditorSearch .panel {
   margin-bottom: 0.5em !important;
@@ -36,30 +37,30 @@
   box-shadow: var(--default-box-shadow-inset)
 }
 
-.InputEditorSearch .help-icon button {
+.InputEditorSearch .icon-help button {
   vertical-align: sub;
   margin-left: 0.375em;
 }
 
-.InputEditorSearch .help-icon button span {
+.InputEditorSearch .icon-help button span {
   vertical-align: bottom;
 }
 
-#editor-header .InputEditorSearch .InputGroup-addon span.n1 {
+#EditorHeader .InputEditorSearch .EditorInputGroup-addon span.n1 {
   vertical-align: middle;
 }
 
-.InputGroup-addon {
-  vertical-align: baseline;
+.EditorInputGroup-addon {
+  vertical-align: sub !important;
 }
 
-li.inline-search-list {
+li.InlineSearch-list {
   display: inline-flex;
   width: 100%;
   margin-right: 1em;
 }
 
-li.inline-search-list span {
+li.InlineSearch-list span {
   width: 60%;
   color: #20718A;
 }
@@ -76,7 +77,7 @@ li.inline-search-list span {
   border: none !important;
 }
 
-button.clearadvsearch {
+button.AdvSearch-clear {
   color: #03A6D7;
   padding: 0;
   padding-top: 0.75em;

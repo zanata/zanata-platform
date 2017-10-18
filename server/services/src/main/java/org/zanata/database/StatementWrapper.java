@@ -40,7 +40,7 @@ class StatementWrapper implements InvocationHandler {
                 .getInvocationHandler(statement) instanceof StatementWrapper) {
             return statement;
         }
-        return ProxyUtil.newProxy(statement,
+        return (Statement) ProxyUtil.newProxy(statement,
                 new StatementWrapper(statement, connectionProxy));
     }
 

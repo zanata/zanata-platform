@@ -184,7 +184,7 @@ public class FacesNavigationUtil {
             if (!containsParameter(url, parameterName)) {
                 Object parameterValue = param.getValue();
                 if (parameterValue instanceof Iterable) {
-                    for (Object value : (Iterable) parameterValue) {
+                    for (Object value : (Iterable<?>) parameterValue) {
                         builder.append('&')
                                 .append(parameterName)
                                 .append('=');

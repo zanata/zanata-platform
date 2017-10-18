@@ -25,14 +25,12 @@ import java.io.File;
 import java.util.EnumMap;
 
 import com.google.common.base.Optional;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders;
 import static org.zanata.client.commands.FileMappingRuleHandler.isRuleValid;
 
@@ -42,30 +40,25 @@ public class FileMappingRuleHandlerTest {
 
     @Test
     public void canCheckSyntaxErrorInTheRule() {
-        assertThat("unbalanced brace", isRuleValid("{a"), equalTo(false));
-        assertThat("unbalanced brace", isRuleValid("a}"), equalTo(false));
-        assertThat("missing brace", isRuleValid("a"), equalTo(false));
-        assertThat("invalid placeholder",
-                isRuleValid("{a}"), equalTo(false));
-        assertThat("missing mandatory placeholder",
-                isRuleValid("{path}"), equalTo(false));
-        assertThat(isRuleValid(
-                "{path}/{locale_with_underscore}.po"), equalTo(true));
-        assertThat(isRuleValid(
-                "{path}/../{locale}/{filename}.po"), equalTo(true));
+        assertThat(isRuleValid("{a")).as("unbalanced brace").isFalse();
+        assertThat(isRuleValid("a}")).as("unbalanced brace").isFalse();
+        assertThat(isRuleValid("a")).as("missing brace").isFalse();
+        assertThat(isRuleValid("{a}")).as("invalid placeholder").isFalse();
+        assertThat(isRuleValid("{path}")).as("missing mandatory placeholder")
+                .isFalse();
+        assertThat(isRuleValid("{path}/{locale_with_underscore}.po")).isTrue();
+        assertThat(isRuleValid("{path}/../{locale}/{filename}.po")).isTrue();
     }
 
     @Test
     public void willReturnTransFileRelativePath() {
         assertThat(getTransFile("pot/message.pot", "fr",
-                "{path}/../{locale}/{filename}.po"),
-                Matchers.equalTo("fr/message.po"));
+                "{path}/../{locale}/{filename}.po")).isEqualTo("fr/message.po");
         assertThat(getTransFile("./message.pot", "fr",
-                "{path}/{locale_with_underscore}.po"),
-                Matchers.equalTo("fr.po"));
+                "{path}/{locale_with_underscore}.po")).isEqualTo("fr.po");
         assertThat(getTransFile("a/path/message.odt", "de-DE",
-                "{path}/{locale_with_underscore}_{filename}.{extension}"),
-                Matchers.equalTo("a/path/de_DE_message.odt"));
+                "{path}/{locale_with_underscore}_{filename}.{extension}"))
+                .isEqualTo("a/path/de_DE_message.odt");
     }
 
     @Test
@@ -76,7 +69,7 @@ public class FileMappingRuleHandlerTest {
                                 "{path}/{locale_with_underscore}.po"), opts);
         assertThat(handler.getRelativeTransFilePathForSourceDoc(
                 DocNameWithExt.from("message.pot"),
-                new LocaleMapping("zh"), Optional.<String>absent()), Matchers.equalTo("zh.po"));
+                new LocaleMapping("zh"), Optional.<String>absent())).isEqualTo("zh.po");
     }
 
     private String getTransFile(String sourceFile, String locale, String rule) {
@@ -92,11 +85,11 @@ public class FileMappingRuleHandlerTest {
         EnumMap<Placeholders, String> map =
                 FileMappingRuleHandler.parseToMap("foo/message.pot",
                         new LocaleMapping("zh-CN", "zh-Hans"), Optional.<String>absent());
-        assertThat(map, Matchers.hasEntry(Placeholders.path, "foo"));
-        assertThat(map, Matchers.hasEntry(Placeholders.filename, "message"));
-        assertThat(map, Matchers.hasEntry(Placeholders.extension, "pot"));
-        assertThat(map, Matchers.hasEntry(Placeholders.locale, "zh-Hans"));
-        assertThat(map, Matchers.hasEntry(Placeholders.localeWithUnderscore, "zh_Hans"));
+        assertThat(map).containsEntry(Placeholders.path, "foo");
+        assertThat(map).containsEntry(Placeholders.filename, "message");
+        assertThat(map).containsEntry(Placeholders.extension, "pot");
+        assertThat(map).containsEntry(Placeholders.locale, "zh-Hans");
+        assertThat(map).containsEntry(Placeholders.localeWithUnderscore, "zh_Hans");
     }
 
     @Test
@@ -104,11 +97,11 @@ public class FileMappingRuleHandlerTest {
         EnumMap<Placeholders, String> map =
             FileMappingRuleHandler.parseToMap("foo/message.pot",
                 new LocaleMapping("zh-CN", "zh-Hans"), Optional.of("po"));
-        assertThat(map, Matchers.hasEntry(Placeholders.path, "foo"));
-        assertThat(map, Matchers.hasEntry(Placeholders.filename, "message"));
-        assertThat(map, Matchers.hasEntry(Placeholders.extension, "po"));
-        assertThat(map, Matchers.hasEntry(Placeholders.locale, "zh-Hans"));
-        assertThat(map, Matchers.hasEntry(Placeholders.localeWithUnderscore, "zh_Hans"));
+        assertThat(map).containsEntry(Placeholders.path, "foo");
+        assertThat(map).containsEntry(Placeholders.filename, "message");
+        assertThat(map).containsEntry(Placeholders.extension, "po");
+        assertThat(map).containsEntry(Placeholders.locale, "zh-Hans");
+        assertThat(map).containsEntry(Placeholders.localeWithUnderscore, "zh_Hans");
     }
 
     @Test
@@ -118,12 +111,12 @@ public class FileMappingRuleHandlerTest {
                 new FileMappingRule("**/*.odt",
                         "{locale}/{filename}.{extension}"), opts);
         assertThat(handler.isApplicable(
-                DocNameWithExt.from("test/doc.odt")), equalTo(true));
+                DocNameWithExt.from("test/doc.odt"))).isTrue();
         assertThat(handler.isApplicable(
-                DocNameWithExt.from("test/doc.pot")), equalTo(false));
+                DocNameWithExt.from("test/doc.pot"))).isFalse();
         assertThat(handler.isApplicable(
-                DocNameWithExt.from("doc.pot")), equalTo(false));
+                DocNameWithExt.from("doc.pot"))).isFalse();
         assertThat(handler.isApplicable(
-                DocNameWithExt.from("doc.odt")), equalTo(true));
+                DocNameWithExt.from("doc.odt"))).isTrue();
     }
 }

@@ -24,6 +24,7 @@
   </p>
 
   <ui:param name="isVersionDeleted" value="#{activityEntry.isVersionDeleted(cc.attrs.value)}"/>
+  <ui:param name="canViewProject" value="#{activityEntry.canViewProject(activity)}"/>
 
   <p class="l--push-all-0">
     <h:outputText escape="false"
@@ -41,7 +42,7 @@
       value="#{activityEntry.getDocumentName(cc.attrs.value)}"/>
     <ui:fragment rendered="#{docName != null and !docName.isEmpty()}">
       <li class="#{cc.attrs.hideInfo ? 'reveal__target': ''}">
-        <ui:fragment rendered="#{not isVersionDeleted}">
+        <ui:fragment rendered="#{not isVersionDeleted and canViewProject}">
           <a class="bx--break-all bx--block"
             href="#{activityEntry.getDocumentUrl(cc.attrs.value)}">
             <i aria-hidden="true" class="i i--document txt--neutral l--push-right-quarter"
@@ -50,7 +51,7 @@
             #{docName}
           </a>
         </ui:fragment>
-        <h:panelGroup layout="block" styleClass="bx--break-all" rendered="#{isVersionDeleted}">
+        <h:panelGroup layout="block" styleClass="bx--break-all" rendered="#{isVersionDeleted or not canViewProject}">
           <i aria-hidden="true" class="i i--document txt--neutral l--push-right-quarter"
             title="#{msgs['jsf.Document']}"></i>
           <span class="is-invisible">#{msgs['jsf.Document']}</span>
@@ -66,11 +67,11 @@
         <i aria-hidden="true" class="i i--language txt--neutral"
           title="#{msgs['jsf.Language']}"></i>
         <span class="is-invisible">#{msgs['jsf.Language']}</span>
-        <ui:fragment rendered="#{not isVersionDeleted}">
+        <ui:fragment rendered="#{not isVersionDeleted and canViewProject}">
           <a
             href="#{activityEntry.getDocumentListUrl(cc.attrs.value)}">#{languageName}</a>
         </ui:fragment>
-        <ui:fragment rendered="#{isVersionDeleted}">
+        <ui:fragment rendered="#{isVersionDeleted or not canViewProject}">
           <span class="txt--neutral">#{languageName}</span>
         </ui:fragment>
       </li>
@@ -84,13 +85,15 @@
           title="#{msgs['jsf.Version']}">
           <span class="is-invisible">#{msgs['jsf.Version']}</span>
         </i>
-        <ui:fragment rendered="#{not isVersionDeleted}">
+        <ui:fragment rendered="#{not isVersionDeleted and canViewProject}">
           <a href="#{activityEntry.getVersionUrl(cc.attrs.value)}">
             <zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}"/>
           </a>
         </ui:fragment>
-        <ui:fragment rendered="#{isVersionDeleted}">
-          <strong><zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}"/></strong>
+        <ui:fragment rendered="#{isVersionDeleted or not canViewProject}">
+          <span class="txt--neutral">
+            <zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}" showIcon="false"/>
+          </span>
         </ui:fragment>
       </li>
     </ui:fragment>

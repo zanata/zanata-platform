@@ -5,7 +5,7 @@ import { EditableText } from '../'
 storiesOf('EditableText', module)
     .add('editing', () => (
         <EditableText
-            className='editable textInput text-state-classes'
+            className='editable textInput textState'
             maxLength={255}
             editable={true}
             editing={true}
@@ -16,7 +16,7 @@ storiesOf('EditableText', module)
     ))
     .add('not editing', () => (
         <EditableText
-            className='editable textInput text-state-classes'
+            className='editable textInput textState'
             maxLength={255}
             editable={true}
             editing={false}

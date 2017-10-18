@@ -210,7 +210,7 @@ class TransUnitTranslationFooter extends React.Component {
       : undefined
 
     const otherActionButtonList = (
-      <ul className="Dropdown-content Dropdown-content--bordered
+      <ul className="EditorDropdown-content Dropdown-content--bordered
                      u-rounded">
         {otherActionButtons}
       </ul>

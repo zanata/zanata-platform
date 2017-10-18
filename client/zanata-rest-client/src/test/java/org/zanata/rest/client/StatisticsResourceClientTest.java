@@ -21,17 +21,16 @@
 
 package org.zanata.rest.client;
 
-import static org.junit.Assert.assertThat;
-
 import java.net.URISyntaxException;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.service.StubbingServerRule;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StatisticsResourceClientTest {
     @ClassRule
@@ -55,18 +54,29 @@ public class StatisticsResourceClientTest {
                 client.getStatistics("pahuang-test", versionSlug, true, true,
                         new String[] { "de-DE", "de", "zh-CN" });
 
-        assertThat(statistics.getId(), Matchers.equalTo(versionSlug));
-        assertThat(statistics.getStats(), Matchers.hasSize(3));
+        assertThat(statistics.getId()).isEqualTo(versionSlug);
+        assertThat(statistics.getStats()).hasSize(3);
     }
 
+    @Deprecated
     @Test
     public void testGetDocStatistics() {
         String docId = "About-Fedora";
         ContainerTranslationStatistics statistics =
                 client.getStatistics("about-fedora", "master", docId,
                         true, new String[] { "de-DE", "zh-CN" });
-        assertThat(statistics.getId(), Matchers.equalTo(docId));
-        assertThat(statistics.getStats(), Matchers.hasSize(2));
+        assertThat(statistics.getId()).isEqualTo(docId);
+        assertThat(statistics.getStats()).hasSize(2);
+    }
+
+    @Test
+    public void testGetDocStatisticsWithDocId() {
+        String docId = "About-Fedora";
+        ContainerTranslationStatistics statistics =
+                client.getStatisticsWithDocId("about-fedora", "master", docId,
+                        true, new String[] { "de-DE", "zh-CN" });
+        assertThat(statistics.getId()).isEqualTo(docId);
+        assertThat(statistics.getStats()).hasSize(2);
     }
 
     @Test
@@ -74,7 +84,7 @@ public class StatisticsResourceClientTest {
         ContributionStatistics statistics =
                 client.getContributionStatistics("about-fedora", "master",
                         "pahuang", "2014-10-01..2014-11-10", false);
-        assertThat(statistics.getUsername(), Matchers.equalTo("pahuang"));
+        assertThat(statistics.getUsername()).isEqualTo("pahuang");
     }
 }
 

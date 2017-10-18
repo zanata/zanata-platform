@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -78,7 +78,9 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         }
         query.setComment("VersionGroupDAO.getAllGroups");
         query.setCacheable(true);
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HIterationGroup> list = query.list();
+        return list;
     }
 
     public HIterationGroup getBySlug(@Nonnull String slug) {
@@ -97,7 +99,9 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
                                 "select g.maintainers from HIterationGroup as g where g.slug = :slug");
         q.setParameter("slug", slug);
         q.setComment("VersionGroupDAO.getMaintainersBySlug");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HPerson> list = q.list();
+        return list;
     }
 
     public List<HIterationGroup> getGroupsByMaintainer(HPerson maintainer,
@@ -115,7 +119,9 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
             .setParameter("filter", "%" + sqlFilter + "%")
             .setFirstResult(firstResult)
             .setMaxResults(maxResults);
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HIterationGroup> list = q.list();
+        return list;
     }
 
     public int getMaintainedGroupCount(HPerson maintainer, String filter) {
@@ -157,7 +163,9 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         }
         query.setComment("VersionGroupDAO.searchGroupBySlugAndName");
         query.setCacheable(true);
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HIterationGroup> list = query.list();
+        return list;
     }
 
     public int searchGroupBySlugAndNameCount(String searchTerm, EntityStatus... statuses) {

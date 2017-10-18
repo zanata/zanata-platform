@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>parent</artifactId>
-  <version>4.3.1-SNAPSHOT</version>
+  <version>4.4.0-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -924,6 +924,8 @@
     </profile>
 
     <profile>
+      <!-- This profile is for *strict* local builds - the Maven build fails
+      if there is a problem -->
       <id>staticAnalysis</id>
       <activation>
         <property>
@@ -931,16 +933,47 @@
           <value>true</value>
         </property>
       </activation>
-      <build>
-
-      </build>
       <properties>
         <animal.sniffer.skip>false</animal.sniffer.skip>
+        <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <checkstyle.skip>false</checkstyle.skip>
         <dupfind.skip>false</dupfind.skip>
         <enforcer.skip>false</enforcer.skip>
         <findbugs.skip>false</findbugs.skip>
+        <!-- takari doesn't support this yet: https://github.com/takari/takari-lifecycle/issues/39 -->
+        <maven.compiler.failOnWarning>true</maven.compiler.failOnWarning>
         <mdep.analyze.skip>false</mdep.analyze.skip>
+        <!-- restrict-maven-plugin -->
+        <restrict.skip>false</restrict.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- For Jenkins, we want to run static analysis, but for some plugins we
+      don't want Maven to fail the build - Jenkins will. (With some plugins, we
+      don't have that control, or Jenkins doesn't know how to check the
+      output.) -->
+      <id>staticAnalysisCI</id>
+      <activation>
+        <property>
+          <name>staticAnalysisCI</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <animal.sniffer.skip>false</animal.sniffer.skip>
+        <!-- These violations will be picked up by CheckStylePublisher -->
+        <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+        <checkstyle.skip>false</checkstyle.skip>
+        <dupfind.skip>false</dupfind.skip>
+        <enforcer.skip>false</enforcer.skip>
+        <!-- These violations will be picked up by FindBugsPublisher -->
+        <findbugs.failOnError>true</findbugs.failOnError>
+        <findbugs.skip>false</findbugs.skip>
+        <!-- These violations will be picked up by WarningsPublisher -->
+        <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
+        <mdep.analyze.skip>false</mdep.analyze.skip>
+        <!-- restrict-maven-plugin -->
         <restrict.skip>false</restrict.skip>
       </properties>
     </profile>

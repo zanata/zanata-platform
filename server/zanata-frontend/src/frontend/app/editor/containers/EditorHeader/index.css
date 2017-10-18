@@ -6,6 +6,10 @@
   --Header-z-index    : 900;
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .Header {
   background-color: var(--Header-background);
   position: absolute;

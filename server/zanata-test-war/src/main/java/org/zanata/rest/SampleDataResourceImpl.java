@@ -39,7 +39,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @NoSecurityCheck
 public class SampleDataResourceImpl implements SampleDataResource {
     private static final Logger log = getLogger(SampleDataResourceImpl.class);
-    private static final long serialVersionUID = -7132159610444327773L;
 
     @Inject
     private SampleDataProfile sampleDataProfile;

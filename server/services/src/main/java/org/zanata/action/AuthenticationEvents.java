@@ -25,7 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.deltaspike.core.util.ContextUtils;
 import org.zanata.events.AlreadyLoggedInEvent;

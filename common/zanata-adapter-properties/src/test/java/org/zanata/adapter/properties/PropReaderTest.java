@@ -14,7 +14,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropReaderTest {
     private static final Logger log = LoggerFactory
@@ -118,7 +117,7 @@ public class PropReaderTest {
 
         // note: this does not allow for differences in whitespace, so if tests
         // start failing this should be updated to use a less strict comparison
-        assertThat(newContent, Matchers.equalTo(newlineAdjustedOrigContent));
+        assertThat(newContent).isEqualTo(newlineAdjustedOrigContent);
     }
 
     private InputStream getResourceAsStream(String relativeResourceName)
@@ -140,9 +139,9 @@ public class PropReaderTest {
 
         List<TextFlow> textFlows = srcDoc.getTextFlows();
 
-        assertThat(textFlows.size(), Matchers.equalTo(2));
-        assertThat(textFlows.get(0).getId(), Matchers.equalTo("HELLO"));
-        assertThat(textFlows.get(1).getId(), Matchers.equalTo("GOODBYE"));
+        assertThat(textFlows).hasSize(2);
+        assertThat(textFlows.get(0).getId()).isEqualTo("HELLO");
+        assertThat(textFlows.get(1).getId()).isEqualTo("GOODBYE");
         // TODO also check comments?
     }
 
@@ -155,9 +154,9 @@ public class PropReaderTest {
 
         List<TextFlow> textFlows = srcDoc.getTextFlows();
 
-        assertThat(textFlows.size(), Matchers.equalTo(2));
-        assertThat(textFlows.get(0).getId(), Matchers.equalTo("HELLO"));
-        assertThat(textFlows.get(1).getId(), Matchers.equalTo("GOODBYE"));
+        assertThat(textFlows).hasSize(2);
+        assertThat(textFlows.get(0).getId()).isEqualTo("HELLO");
+        assertThat(textFlows.get(1).getId()).isEqualTo("GOODBYE");
         // TODO also check comments?
     }
 

@@ -85,6 +85,28 @@ Zanata does not create an admin user by default. You need to register specific u
 ```
 
  This is the default email address that will appear as the sender on Zanata emails.
+ 
+Zanata will store some files on file system. You will need to define a system property.
+```xml
+<system-properties>
+  ...
+  <property name="zanata.home" value="/example/path"/>
+  ...
+</system-properties>
+``` 
+The value should be a path that has read and write permission from jboss user. You can define individual system properties for each storage below or they will derive from above zanata.home directory (e.g. as sub directory).
+
+- zanata.file.directory
+
+You can also define a system property for Javamelody (the server monitoring tool Zanata uses) and for Hibernate search index. It's recommended you define them as sub directory of zanata.home.
+```xml
+<system-properties>
+  ...
+  <property name="javamelody.storage-directory" value="${zanata.home}/stats"/>
+  <property name="hibernate.search.default.indexBase" value="${zanata.home}/indexes"/>
+  ...
+</system-properties>
+``` 
 
  Alternatively, you can pass this and other system properties to JBoss when starting it (see JBoss documentation for details on how to do this).
 

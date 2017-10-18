@@ -81,13 +81,11 @@ describe('header-data-reducer test', () => {
   it('can select document', () => {
     const withData = headerDataReducer(undefined, {
       type: HEADER_DATA_FETCHED,
-      data: EXAMPLE_HEADER_DATA
+      payload: EXAMPLE_HEADER_DATA
     })
     const selected = headerDataReducer(withData, {
       type: DOCUMENT_SELECTED,
-      data: {
-        selectedDocId: 'something.doc'
-      }
+      payload: 'something.doc'
     })
     expect(selected.context.selectedDoc.id).toEqual('something.doc')
   })
@@ -97,7 +95,7 @@ describe('header-data-reducer test', () => {
   it('can incorporate fetched header data', () => {
     const withData = headerDataReducer(undefined, {
       type: HEADER_DATA_FETCHED,
-      data: EXAMPLE_HEADER_DATA
+      payload: EXAMPLE_HEADER_DATA
     })
     expect(withData).toEqual({
       user: {
@@ -150,13 +148,11 @@ describe('header-data-reducer test', () => {
   it('can select locale', () => {
     const withData = headerDataReducer(undefined, {
       type: HEADER_DATA_FETCHED,
-      data: EXAMPLE_HEADER_DATA
+      payload: EXAMPLE_HEADER_DATA
     })
     const selected = headerDataReducer(withData, {
       type: LOCALE_SELECTED,
-      data: {
-        selectedLocaleId: 'de'
-      }
+      payload: 'de'
     })
     expect(selected.context.selectedLocale).toEqual('de')
   })
@@ -165,7 +161,7 @@ describe('header-data-reducer test', () => {
     const withStats = headerDataReducer(undefined, {
       type: STATS_FETCHED,
       // stats pre-preparation
-      data: [
+      payload: [
         {
           approved: 0,
           fuzzy: 44,

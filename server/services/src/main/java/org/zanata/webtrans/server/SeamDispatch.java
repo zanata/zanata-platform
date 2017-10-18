@@ -221,6 +221,10 @@ public class SeamDispatch implements Dispatch, Serializable {
         }
     }
 
+    // Suppress useless warning "The annotation type ActionHandlerFor should not be
+    // used as a superinterface for ActionHandlerForLiteral" since this is just
+    // following the example in the AnnotationLiteral javadocs:
+    @SuppressWarnings("all")
     static class ActionHandlerForLiteral
             extends AnnotationLiteral<ActionHandlerFor>
             implements ActionHandlerFor {

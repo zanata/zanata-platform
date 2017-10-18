@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { GLOSSARY_TAB } from '../../reducers/ui-reducer'
+import { getSuggestionsPanelVisible } from '../../reducers'
 import TransUnitStatus from '../TransUnitStatus'
 import TransUnitSourcePanel from '../TransUnitSourcePanel'
 import TransUnitTranslationPanel from '../TransUnitTranslationPanel'
@@ -158,7 +159,7 @@ function mapStateToProps (state, ownProps) {
   const phraseSearch = suggestions.searchByPhrase[phrase.id]
   const suggestionCount = phraseSearch ? phraseSearch.suggestions.length : 0
   const suggestionSearchType = suggestions.searchType
-  const showSuggestions = ui.panels.suggestions.visible
+  const showSuggestions = getSuggestionsPanelVisible(state)
 
   const passThroughProps = pick(state, [
     'openDropdown'
