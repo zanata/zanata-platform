@@ -349,7 +349,7 @@ public class AuthenticationManager implements Serializable {
                 && isAccountWaitingForActivation(credentials.getUsername());
     }
 
-    public boolean isNewUser(String username) {
+    private boolean isNewUser(String username) {
         return identityStore.isNewUser(username);
     }
 
