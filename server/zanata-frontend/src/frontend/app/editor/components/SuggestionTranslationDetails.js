@@ -57,7 +57,7 @@ class SuggestionTranslationDetails extends React.Component {
         </div>
         <div className="u-floatRight u-sm-floatNone">
           <ul className="u-listInline u-sizeLineHeight-1">
-            <li>
+            <li className="u-floatRight">
               <SuggestionMatchPercent
                 matchType={matchType}
                 percent={similarityPercent} />
@@ -65,7 +65,7 @@ class SuggestionTranslationDetails extends React.Component {
             <li>
               <Button
                 className="EditorButton Button--small u-rounded Button--primary
-                           u-sizeWidth-6"
+                           u-sizeWidth-4"
                 disabled={copying}
                 onClick={copySuggestion}
                 title={label}>

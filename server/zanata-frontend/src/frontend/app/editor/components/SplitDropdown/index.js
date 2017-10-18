@@ -23,7 +23,7 @@ class SplitDropdown extends React.Component {
   }
 
   render () {
-    const className = cx('Dropdown', this.props.className, {
+    const className = cx('EditorDropdown', this.props.className, {
       'is-active': this.props.isOpen
     })
 
@@ -36,7 +36,7 @@ class SplitDropdown extends React.Component {
       toggleButtonItem = (
         <div className="ButtonGroup-item">
           <div ref="button"
-            className="Dropdown-toggle"
+            className="EditorDropdown-toggle"
             aria-haspopup
             aria-expanded={this.props.isOpen}
             {...buttonClick}>
