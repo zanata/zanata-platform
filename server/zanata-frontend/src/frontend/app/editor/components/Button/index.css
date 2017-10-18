@@ -33,6 +33,8 @@ not conflict with the other frontend code
   transition: var(--Button-transition);
   min-height: calc(var(--Button-rhythm) * 1.25);
   text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .EditorButton:disabled,
