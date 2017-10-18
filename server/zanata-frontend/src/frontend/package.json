@@ -32,6 +32,7 @@
     "@storybook/channels": "3.2.0",
     "@storybook/react": "3.2.3",
     "autoprefixer-loader": "3.2.0",
+    "babel-core": "6.25.0",
     "babel-eslint": "6.1.0",
     "babel-jest": "21.0.0",
     "babel-loader": "7.1.1",
