@@ -49,7 +49,7 @@ class SplitDropdown extends React.Component {
     return (
       <div className={className}>
         <div className="ButtonGroup ButtonGroup--hz
-                        ButtonGroup--borderCollapse  ButtonGroup--round">
+                        ButtonGroup--borderCollapse  u-rounded">
           <div className="ButtonGroup-item">
             {this.props.actionButton}
           </div>

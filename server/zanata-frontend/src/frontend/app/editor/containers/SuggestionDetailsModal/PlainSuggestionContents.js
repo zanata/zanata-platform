@@ -43,7 +43,7 @@ class PlainSuggestionContents extends Component {
         </div>
         {displayHeader && <span className="TransUnit-targetHeading">
         Translation</span>}
-        <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
+        <div className="TransUnit-panel TransUnit-translation rtl u-sPV-1-2">
           <SuggestionContents
             plural={sourceContents.length > 1}
             contents={targetContents} />

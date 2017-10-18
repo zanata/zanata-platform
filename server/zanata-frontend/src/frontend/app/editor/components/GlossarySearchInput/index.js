@@ -97,7 +97,7 @@ class GlossarySearchInput extends React.Component {
             maxLength="100"
             value={this.props.text}
             onChange={this.props.onTextChange}
-            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
+            className="EditorInputGroup-input rtl u-sizeLineHeight-1_1-4" />
         </div>
       </div>
     )

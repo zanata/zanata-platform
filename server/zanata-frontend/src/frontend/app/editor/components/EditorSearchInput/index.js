@@ -207,7 +207,7 @@ export class EditorSearchInput extends Component {
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
             onClick={this.state.open}
-            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
+            className="EditorInputGroup-input u-sizeLineHeight-1_1-4 rtl" />
           {this.clearButtonElement()}
           <span className="EditorInputGroup-addon btn-xs btn-link"
             onClick={this.toggleAdvanced}>
@@ -244,7 +244,7 @@ class AdvancedField extends Component {
     const { id, field, value } = this.props
     const { label, description } = field
     return (
-      <div key={id} title={description} className="u-sPB-1-2">
+      <div key={id} title={description} className="u-sPB-1-2 rtl">
         <label className="u-textSecondary u-sPB-1-4">{label}</label>
         <input ref={id}
           type="text"

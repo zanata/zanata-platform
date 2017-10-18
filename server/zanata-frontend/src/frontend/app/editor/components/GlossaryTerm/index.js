@@ -61,7 +61,7 @@ class GlossaryTerm extends React.Component {
                 <span className="hide-mdplus u-textMeta">
                   Target
                 </span>
-                {term.target}
+                <span className="rtl">{term.target}</span>
               </span>
             </Button>
           </OverlayTrigger>

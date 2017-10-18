@@ -59,7 +59,7 @@ class SuggestionContents extends React.Component {
   render () {
     const contents = this.props.contents.map((content, index) => {
       return (
-        <div key={index} className="TransUnit-item">
+        <div key={index} className="TransUnit-item rtl">
           <div className="TransUnit-itemHeader">
             {this.pluralFormLabel(index)}
           </div>

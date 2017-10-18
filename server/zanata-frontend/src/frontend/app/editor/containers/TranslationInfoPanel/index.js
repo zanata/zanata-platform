@@ -45,7 +45,7 @@ class TranslationInfoPanel extends React.Component {
     } = this.props.selectedPhrase
 
     return (
-      <ul className="SidebarEditor-details">
+      <ul className="SidebarEditor-details rtl">
         {this.detailItem('Resource ID', resId)}
         {this.detailItem('Message Context', msgctxt)}
         {this.detailItem('Reference', sourceReferences)}

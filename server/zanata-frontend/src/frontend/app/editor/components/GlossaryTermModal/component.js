@@ -77,13 +77,13 @@ class GlossaryTermModal extends React.Component {
           <Modal.Title><small><span className="u-pullLeft">
           Glossary details</span></small></Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="rtl">
           <Panel className="split-panel">
-            <h3>Source Term [{sourceLocale}]:</h3>
+            <h3>Source Term : {sourceLocale}</h3>
             <span className="modal-term">{term.source}</span>
           </Panel>
           <Panel className="split-panel">
-            <h3>Target Term [{targetLocale}]:</h3>
+            <h3>Target Term : {targetLocale}</h3>
             <span className="modal-term">{term.target}</span>
           </Panel>
           <br />

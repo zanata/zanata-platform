@@ -179,7 +179,7 @@ class TransUnitTranslationFooter extends React.Component {
       saveAsMode && statusShortcutKeys[selectedButtonStatus]
     const actionButton = (
       <Button
-        className={cx('Button u-sizeHeight-1_1-4 u-textCapitalize',
+        className={cx('EditorButton u-sizeHeight-1_1-4 u-textCapitalize',
                       buttonClassByStatus[selectedButtonStatus])}
         disabled={isSaving || !translationHasChanged}
         title={selectedButtonTitle}
@@ -199,7 +199,7 @@ class TransUnitTranslationFooter extends React.Component {
 
     const dropdownToggleButton = otherStatuses.length > 0
       ? <Button
-        className={cx('Button Button--snug u-sizeHeight-1_1-4',
+        className={cx('EditorButton Button--snug u-sizeHeight-1_1-4',
                       'Dropdown-toggle',
                       buttonClassByStatus[selectedButtonStatus])}
         title="Save as…">

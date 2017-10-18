@@ -17,15 +17,11 @@ var postcssCustomMedia = require('postcss-custom-media')
 var postcssEsplit = require('postcss-esplit')
 var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
-/* var rtlDetect = require('rtl-detect')
-var localeforrtl = require('./app/editor/config/intl').locale */
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
   return _(obj).omitBy(_.isNil).value()
 }
-
-/* var langDir = rtlDetect.getLangDir(localeforrtl) */
 
 var postCssLoader = {
   loader: 'postcss-loader',

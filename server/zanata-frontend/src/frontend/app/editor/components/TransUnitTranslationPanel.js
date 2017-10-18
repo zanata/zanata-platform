@@ -248,7 +248,7 @@ class TranslationItem extends React.Component {
         {/* TODO translate "Enter a translation..." */}
         <Textarea
           ref={this.setTextArea}
-          className="TransUnit-text"
+          className="TransUnit-text rtl"
           disabled={dropdownIsOpen}
           rows={1}
           value={translation}
