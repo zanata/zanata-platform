@@ -42,9 +42,18 @@ class GlossaryTermModal extends React.Component {
     const selectedDetail = 0
     const detail = details[selectedDetail]
 
-    const lastModifiedTime = detail
-      ? new Date(detail.lastModifiedDate) : new Date()
+    const lastModifiedTime = detail && detail.lastModifiedDate
+      ? new Date(detail.lastModifiedDate) : undefined
 
+    const lastModifiedRow = lastModifiedTime ? (<Row>
+      <Icon name="history" className="s0 history-icon" />
+      <span className="u-sML-1-4">
+      Last modified on&nbsp;
+        <FormattedDate value={lastModifiedTime} format="medium" />&nbsp;
+        <Icon name="clock" className="s0 history-icon" />&nbsp;
+        <FormattedTime value={lastModifiedTime} />
+      </span>
+    </Row>) : undefined
     const detailsDisplay = details.map(
       (detail, index) => {
         if (!detail) {
@@ -108,15 +117,7 @@ class GlossaryTermModal extends React.Component {
           </Panel>
 
           <span className="u-pullRight u-textMeta">
-            <Row>
-              <Icon name="history" className="s0 history-icon" />
-              <span className="u-sML-1-4">
-                Last modified on&nbsp;
-                <FormattedDate value={lastModifiedTime} format="medium" />&nbsp;
-                <Icon name="clock" className="s0 history-icon" />&nbsp;
-                <FormattedTime value={lastModifiedTime} />
-              </span>
-            </Row>
+          {lastModifiedRow}
           </span>
         </Modal.Body>
       </Modal>
