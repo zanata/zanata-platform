@@ -31,6 +31,11 @@ import {
   toggleAdvanced,
   updatePhraseFilter
 } from '../../actions/phrases-filter-actions'
+import { phraseTextSelectionRange } from '../actions/phrases-actions'
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../../actions/header-action-types'
+
+export const localeDetails = createAction(LOCALE_SELECTED)
 
 const fields = {
   resId: {
@@ -63,6 +68,8 @@ const fields = {
   }
 }
 
+const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
+
 /**
  * Multiple-field search input that will suggest fields as the user types.
  *
@@ -84,14 +91,17 @@ export class EditorSearchInput extends Component {
       msgContext: PropTypes.string.isRequired
     }).isRequired,
     toggleAdvanced: PropTypes.func.isRequired,
-    updateSearch: PropTypes.func.isRequired
+    updateSearch: PropTypes.func.isRequired,
+    directionClass: PropTypes.object.isRequired,
+    isRtl: PropTypes.bool.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
       focused: false,
-      open: false
+      open: false,
+      isRtl: true
     }
   }
 
@@ -207,7 +217,8 @@ export class EditorSearchInput extends Component {
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
             onClick={this.state.open}
-            className="EditorInputGroup-input u-sizeLineHeight-1_1-4 rtl" />
+            className={directionClass + 'EditorInputGroup-input' +
+              ' u-sizeLineHeight-1_1-4'} />
           {this.clearButtonElement()}
           <span className="EditorInputGroup-addon btn-xs btn-link"
             onClick={this.toggleAdvanced}>
@@ -243,8 +254,10 @@ class AdvancedField extends Component {
   render () {
     const { id, field, value } = this.props
     const { label, description } = field
+
     return (
-      <div key={id} title={description} className="u-sPB-1-2 rtl">
+      <div key={id} title={description}
+        className={directionClass + 'u-sPB-1-2 rtl'}>
         <label className="u-textSecondary u-sPB-1-4">{label}</label>
         <input ref={id}
           type="text"

@@ -23,8 +23,10 @@ import cx from 'classnames'
 import { Icon } from '../../../components'
 import React from 'react'
 import PropTypes from 'prop-types'
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../../actions/header-action-types'
 
-// FIXME copied from SuggestionSearchInput. Can pull out a common component.
+export const localeDetails = createAction(LOCALE_SELECTED)
 
 /**
  * Styled text input that displays result count.
@@ -32,15 +34,16 @@ import PropTypes from 'prop-types'
 class GlossarySearchInput extends React.Component {
   static propTypes = {
     text: PropTypes.string.isRequired,
-    onTextChange: PropTypes.func.isRequired
+    onTextChange: PropTypes.func.isRequired,
+    directionClass: PropTypes.object.isRequired,
+    isRtl: PropTypes.bool.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      // FIXME one other component is interested in this state
-      //       just deal with that when I get to it
-      focused: false
+      focused: false,
+      isRtl: true
     }
   }
 
@@ -81,6 +84,7 @@ class GlossarySearchInput extends React.Component {
   }
 
   render () {
+    const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
     return (
       <div className="InlineSearch">
         <div className={cx('EditorInputGroup EditorInputGroup--outlined ' +
@@ -97,7 +101,8 @@ class GlossarySearchInput extends React.Component {
             maxLength="100"
             value={this.props.text}
             onChange={this.props.onTextChange}
-            className="EditorInputGroup-input rtl u-sizeLineHeight-1_1-4" />
+            className={directionClass + ' EditorInputGroup-input' +
+              ' u-sizeLineHeight-1_1-4'} />
         </div>
       </div>
     )

@@ -7,6 +7,10 @@ import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { LoaderText } from '../../components'
 import { pick } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../actions/header-action-types'
+
+export const localeDetails = createAction(LOCALE_SELECTED)
 
 /**
  * Panel to display and edit translations of a phrase.
@@ -39,7 +43,16 @@ class TransUnitTranslationPanel extends React.Component {
     showSuggestions: PropTypes.bool.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
-    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired
+    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
+    directionClass: PropTypes.object.isRequired,
+    isRtl: PropTypes.bool.isRequired
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      isRtl: true
+    }
   }
 
   componentWillMount () {
@@ -100,6 +113,7 @@ class TransUnitTranslationPanel extends React.Component {
     } = this.props
     var header, footer
     const isPlural = phrase.plural
+    const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
 
     if (selected) {
       const headerProps = pick(this.props, [
@@ -172,7 +186,7 @@ class TransUnitTranslationPanel extends React.Component {
     return (
       <div className="TransUnit-panel TransUnit-translation">
         {header}
-        <span className="rtl">{translations}</span>
+        <span className={directionClass}>{translations}</span>
         {footer}
       </div>
     )
