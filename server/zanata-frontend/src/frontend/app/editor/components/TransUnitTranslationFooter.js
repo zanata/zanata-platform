@@ -83,7 +83,7 @@ class TransUnitTranslationFooter extends React.Component {
 
   saveButtonElement = (status) => {
     const { phrase, saveAsMode, savePhraseWithStatus } = this.props
-    const className = cx('Button u-sizeHeight-1_1-4',
+    const className = cx('EditorButton u-sizeHeight-1_1-4',
                          'u-sizeFull u-textLeft',
                          buttonClassByStatus[status])
 
@@ -200,7 +200,7 @@ class TransUnitTranslationFooter extends React.Component {
     const dropdownToggleButton = otherStatuses.length > 0
       ? <Button
         className={cx('EditorButton Button--snug u-sizeHeight-1_1-4',
-                      'Dropdown-toggle',
+                      'EditorDropdown-toggle',
                       buttonClassByStatus[selectedButtonStatus])}
         title="Save as…">
         <div className="Dropdown-toggleIcon">
@@ -210,7 +210,7 @@ class TransUnitTranslationFooter extends React.Component {
       : undefined
 
     const otherActionButtonList = (
-      <ul className="EditorDropdown-content Dropdown-content--bordered
+      <ul className="EditorDropdown-content EditorDropdown-content--bordered
                      u-rounded">
         {otherActionButtons}
       </ul>

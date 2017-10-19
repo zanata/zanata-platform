@@ -10,13 +10,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.rest.service.ProjectService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -32,6 +36,7 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -53,6 +58,9 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     @Produces
     @Mock
     private LocaleService localeService;
+    @Produces
+    @Mock
+    private ProjectDAO projectDAO;
     @Produces
     @Mock
     @FullText
@@ -86,7 +94,20 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         glossaryDAO = spy(dao);
         targetHLocale = getEm().find(HLocale.class, 2L);
         glossarySearchService =
-                new GlossarySearchServiceImpl(glossaryDAO, localeService, "/");
+                new GlossarySearchServiceImpl(glossaryDAO, localeService, projectDAO, identity, "/");
+    }
+
+    @Test
+    @InRequestScope
+    public void cannotGetGlossary() throws Exception {
+        HProject project = Mockito.mock(HProject.class);
+        when(projectDAO.getBySlug("progSlug")).thenReturn(project);
+        when(identity.hasPermission(project, "read")).thenReturn(false);
+
+        assertThatThrownBy(() -> glossarySearchService.searchGlossary(
+                LocaleId.EN_US, TARGET_LOCALE_ID, "fedora",
+                HasSearchType.SearchType.FUZZY, 20, "progSlug"))
+                .isInstanceOf(ZanataServiceException.class);
     }
 
     @Test
@@ -95,6 +116,9 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         // Given:
         when(localeService.getByLocaleId(TARGET_LOCALE_ID))
                 .thenReturn(targetHLocale);
+        HProject project = Mockito.mock(HProject.class);
+        when(projectDAO.getBySlug("progSlug")).thenReturn(project);
+        when(identity.hasPermission(project, "read")).thenReturn(true);
         ProjectIterationId id = new ProjectIterationId("progSlug",
                 "versionSlug", ProjectType.File);
         GetGlossary action = new GetGlossary("fedora", id, TARGET_LOCALE_ID,
