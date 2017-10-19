@@ -172,7 +172,7 @@ class TransUnitTranslationPanel extends React.Component {
     return (
       <div className="TransUnit-panel TransUnit-translation">
         {header}
-        {translations}
+        <span className="rtl">{translations}</span>
         {footer}
       </div>
     )

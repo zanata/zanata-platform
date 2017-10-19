@@ -24,7 +24,7 @@ export const SettingsPanel = ({
           </Button>
         </span>
       </h1>
-      <div className="SidebarEditor-wrapper">
+      <div className="SidebarEditor-wrapper rtl">
         <div>
           <h2 className='SettingsHeading'>Editor options</h2>
           <SettingsOptions
