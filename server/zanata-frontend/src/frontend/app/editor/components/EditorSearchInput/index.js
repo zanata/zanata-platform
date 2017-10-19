@@ -31,7 +31,6 @@ import {
   toggleAdvanced,
   updatePhraseFilter
 } from '../../actions/phrases-filter-actions'
-import { phraseTextSelectionRange } from '../actions/phrases-actions'
 import { createAction } from 'redux-actions'
 import { LOCALE_SELECTED } from '../../actions/header-action-types'
 
@@ -67,8 +66,6 @@ const fields = {
     description: 'exact Message Context for a string'
   }
 }
-
-const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
 
 /**
  * Multiple-field search input that will suggest fields as the user types.
@@ -188,6 +185,7 @@ export class EditorSearchInput extends Component {
 
   render () {
     const { showAdvanced } = this.props
+    const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
 
     const advancedFields = map(fields, (field, key) => (
       <AdvancedField key={key}
@@ -217,7 +215,7 @@ export class EditorSearchInput extends Component {
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
             onClick={this.state.open}
-            className={directionClass + 'EditorInputGroup-input' +
+            className={directionClass + ' EditorInputGroup-input' +
               ' u-sizeLineHeight-1_1-4'} />
           {this.clearButtonElement()}
           <span className="EditorInputGroup-addon btn-xs btn-link"
@@ -247,6 +245,13 @@ class AdvancedField extends Component {
     updateSearch: PropTypes.func.isRequired
   }
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      isRtl: true
+    }
+  }
+
   updateSearch = (event) => this.props.updateSearch({
     [this.props.id]: event.target.value
   })
@@ -254,10 +259,11 @@ class AdvancedField extends Component {
   render () {
     const { id, field, value } = this.props
     const { label, description } = field
+    const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
 
     return (
       <div key={id} title={description}
-        className={directionClass + 'u-sPB-1-2 rtl'}>
+        className={directionClass + ' u-sPB-1-2'}>
         <label className="u-textSecondary u-sPB-1-4">{label}</label>
         <input ref={id}
           type="text"
