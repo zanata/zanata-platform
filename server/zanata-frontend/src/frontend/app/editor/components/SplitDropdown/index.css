@@ -23,9 +23,19 @@ not conflict with the other frontend code
 .ButtonGroup--round .ButtonGroup-item:first-child .EditorButton {
   border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .ButtonGroup--round .ButtonGroup-item:last-child .EditorButton {
   border-top-right-radius: 100px;
   border-bottom-right-radius: 100px;
+}
+
+ul.EditorDropdown-content li button.EditorButton {
+  padding-left: 1rem;
+}
+
+.ButtonGroup--borderCollapse.ButtonGroup--hz > .ButtonGroup-item {
+  margin-right: 0;
 }
