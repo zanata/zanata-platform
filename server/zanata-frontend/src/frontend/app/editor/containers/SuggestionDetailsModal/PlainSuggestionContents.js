@@ -29,7 +29,8 @@ class PlainSuggestionContents extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      // TODO location detection so defaults of true/false can be removed
+      // TODO location detection so defaults isLtr* = true/false can be
+      // removed
       isLtrSource: true,
       isLtrTarget: false
     }
@@ -56,9 +57,9 @@ class PlainSuggestionContents extends Component {
         <div className="TransUnit-status" />
         {displayHeader && <span className="TransUnit-sourceHeading">
         Source</span>}
-        <div className="TransUnit-panel TransUnit-source">
+        <div className={directionClassSource + ' TransUnit-panel' +
+        ' TransUnit-source'}>
           <SuggestionContents
-            className={directionClassSource}
             plural={sourceContents.length > 1}
             contents={sourceContents} />
         </div>
