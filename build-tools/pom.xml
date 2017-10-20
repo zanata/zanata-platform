@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.lesfurets</groupId>
       <artifactId>jenkins-pipeline-unit</artifactId>
-      <version>0.12</version>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

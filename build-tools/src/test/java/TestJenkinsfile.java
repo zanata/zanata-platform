@@ -1,17 +1,17 @@
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.codehaus.groovy.runtime.MethodClosure;
+import org.junit.Before;
+import org.junit.Test;
 import com.cloudbees.groovy.cps.impl.CpsCallableInvocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.lesfurets.jenkins.unit.cps.BasePipelineTestCPS;
 import com.lesfurets.jenkins.unit.global.lib.LibraryConfiguration;
 import groovy.lang.Closure;
-import org.codehaus.groovy.runtime.MethodClosure;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.lesfurets.jenkins.unit.MethodSignature.method;
 import static com.lesfurets.jenkins.unit.global.lib.GitSource.gitSource;
@@ -66,24 +66,8 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
             throw new RuntimeException("Unmocked invocation");
         });
         getHelper().registerAllowedMethod(method("sh", Map.class),
-                args -> {
-                    @SuppressWarnings("unchecked")
-                    Map<String, ?> a = (Map<String, ?>) args;
-                    if (TRUE.equals(a.get("returnStdout"))) {
-                        String script = a.get("script").toString();
-                        if (script.contains("allocate-jboss-ports")) {
-                            return "JBOSS_HTTP_PORT=51081\nSMTP_PORT=34765\n";
-                        }
-                        // Notifier.groovy in zanata-pipeline-library uses this:
-                        if (script.contains("git ls-remote")) {
-                            return "1234567890 abcdef\n";
-                        }
-                    }
-                    if (TRUE.equals(a.get("returnStatus"))) {
-                        return 0;
-                    }
-                    return 0;
-                });
+                SH.INSTANCE);
+
         // PipelineUnit(withCredentialsInterceptor) can't handle a List<Map>
         // TODO for some reason the steps inside closure.call() are not shown as nested
         getHelper().registerAllowedMethod("withCredentials",
@@ -113,7 +97,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         steps.put("emailext", Closure.IDENTITY);
         steps.put("emailextrecipients", Closure.IDENTITY);
         steps.put("library", Closure.IDENTITY);
-        steps.put("sh", Closure.IDENTITY);
+        steps.put("sh", SH.INSTANCE);
         steps.put("step", Closure.IDENTITY);
         // we need this for CPS mode
         MethodClosure.ALLOW_RESOLVE = true;
@@ -129,12 +113,45 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         getBinding().setProperty("manager", ImmutableMap.of());
     }
 
+    static class SH<T, R> extends Closure<R> {
+        static final Closure INSTANCE = new SH();
+        SH() {
+            super(null);
+        }
+
+        @SuppressWarnings("unused")
+        protected Object doCall(T args) {
+            if (args instanceof String) return 0;
+
+            @SuppressWarnings("unchecked")
+            Map<String, ?> a = (Map<String, ?>) args;
+            if (TRUE.equals(a.get("returnStdout"))) {
+                String script = a.get("script").toString();
+                if (script.endsWith("allocate-jboss-ports")) {
+                    return "JBOSS_HTTP_PORT=51081\nSMTP_PORT=34765\n";
+                }
+                if (script.startsWith("git ls-remote")) {
+// ScmGit.getPullRequestNum in zanata-pipeline-library uses this:
+                    if (script.endsWith("refs/pull/*/head")) {
+                        return "1234567890123456789012345678901234567890 refs/pull/123/head";
+                    } else {
+// Notifier.groovy in zanata-pipeline-library uses this:
+                        return "1234567890123456789012345678901234567890 abcdef\n";
+                    }
+                }
+            }
+            if (TRUE.equals(a.get("returnStatus"))) {
+                return 0;
+            }
+            return 0;
+        }
+    }
+
     @Test
     public void shouldExecuteWithoutErrors() throws Exception {
-
         try {
             // load and execute the Jenkinsfile
-            loadScript("../Jenkinsfile");
+            runScript("../Jenkinsfile");
             printCallStack();
             assertJobStatusSuccess();
             // TODO add assertions about call stack (but not too fragile)
