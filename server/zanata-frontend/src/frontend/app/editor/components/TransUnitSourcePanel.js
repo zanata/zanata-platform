@@ -93,7 +93,7 @@ class TransUnitSourcePanel extends React.Component {
       : undefined
 
     return (
-      <div className="TransUnit-panel TransUnit-source">
+      <div className="TransUnit-source">
         {header}
         {sources}
         {footer}

@@ -20,8 +20,19 @@ class PlainSuggestionContents extends Component {
       targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
     }).isRequired,
     displayHeader: PropTypes.bool,
-    directionClass: PropTypes.object.isRequired,
-    isLtr: PropTypes.bool.isRequired
+    directionClassSource: PropTypes.object.isRequired,
+    directionClassTarget: PropTypes.object.isRequired,
+    isLtrSource: PropTypes.bool.isRequired,
+    isLtrTarget: PropTypes.bool.isRequired
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      // TODO location detection so defaults of true/false can be removed
+      isLtrSource: true,
+      isLtrTarget: false
+    }
   }
 
   matchTypeClass = (matchType) => {
@@ -37,7 +48,8 @@ class PlainSuggestionContents extends Component {
     const displayHeader = this.props.displayHeader
     const className = cx('TransUnit TransUnit--suggestion u-bgHigh u-sMB-1',
       this.matchTypeClass(this.props.matchType))
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+    const directionClassSource = localeDetails.isLtrSource ? 'ltr' : 'rtl'
+    const directionClassTarget = localeDetails.isLtrTarget ? 'ltr' : 'rtl'
 
     return (
       <div className={className}>
@@ -46,12 +58,13 @@ class PlainSuggestionContents extends Component {
         Source</span>}
         <div className="TransUnit-panel TransUnit-source">
           <SuggestionContents
+            className={directionClassSource}
             plural={sourceContents.length > 1}
             contents={sourceContents} />
         </div>
         {displayHeader && <span className="TransUnit-targetHeading">
         Translation</span>}
-        <div className={directionClass + ' TransUnit-panel' +
+        <div className={directionClassTarget + ' TransUnit-panel' +
         ' TransUnit-translation u-sPV-1-2'}>
           <SuggestionContents
             plural={sourceContents.length > 1}

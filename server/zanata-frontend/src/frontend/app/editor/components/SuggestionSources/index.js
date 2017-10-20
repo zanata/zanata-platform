@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import SuggestionContents from '../SuggestionContents'
 import SuggestionDetailsSummary from '../SuggestionDetailsSummary'
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../../actions/header-action-types'
 
+export const localeDetails = createAction(LOCALE_SELECTED)
 /**
  * Display all the source strings for a suggestion, with
  * optional diff against a set of search strings.
@@ -18,14 +21,18 @@ class SuggestionSources extends React.Component {
     }),
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
-    showDetail: PropTypes.func.isRequired
+    showDetail: PropTypes.func.isRequired,
+    directionClass: PropTypes.object.isRequired,
+    isLtr: PropTypes.bool.isRequired,
   }
 
   render () {
     const sourceContents = this.props.suggestion.sourceContents
     const diffWith = this.props.showDiff ? this.props.search : undefined
+    const directionClass = localeDetails.isLtrSource ? 'ltr' : 'rtl'
+
     return (
-      <div className="TransUnit-panel TransUnit-source">
+      <div className={directionClass + ' TransUnit-panel TransUnit-source'}>
         <SuggestionContents
           plural={sourceContents.length > 1}
           contents={sourceContents}
