@@ -17,6 +17,7 @@ import static com.lesfurets.jenkins.unit.MethodSignature.method;
 import static com.lesfurets.jenkins.unit.global.lib.GitSource.gitSource;
 import static com.lesfurets.jenkins.unit.global.lib.LibraryConfiguration.library;
 import static java.lang.Boolean.TRUE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // try 'extends BasePipelineTest' for debugging in case of weird Groovy exceptions
 public class TestJenkinsfile extends BasePipelineTestCPS {
@@ -154,7 +155,17 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
             runScript("../Jenkinsfile");
             printCallStack();
             assertJobStatusSuccess();
-            // TODO add assertions about call stack (but not too fragile)
+
+            boolean verified = getHelper().getCallStack()
+                    .stream()
+                    .filter(it -> it.getMethodName().equals("sh") && it.argsToString().contains("mvn"))
+                    // snoop on mvn commands in the stream
+//                    .peek(it -> System.out.printf("%s\n\n", it.argsToString()))
+                    .anyMatch(it -> {
+                        String args = it.argsToString();
+                        return args.contains("-Dappserver=") && args.contains("install");
+                    });
+            assertThat(verified).isTrue();
         } catch (CpsCallableInvocation e) {
             // if the script fails, we need the call stack to tell us where the problem is
             // (CpsCallableInvocation tells us very little)
