@@ -6,6 +6,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SuggestionContents from '../../components/SuggestionContents'
 import cx from 'classnames'
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../../actions/header-action-types'
+
+export const localeDetails = createAction(LOCALE_SELECTED)
 
 class PlainSuggestionContents extends Component {
   static propTypes = {
@@ -15,7 +19,9 @@ class PlainSuggestionContents extends Component {
       sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired,
       targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
     }).isRequired,
-    displayHeader: PropTypes.bool
+    displayHeader: PropTypes.bool,
+    directionClass: PropTypes.object.isRequired,
+    isLtr: PropTypes.bool.isRequired
   }
 
   matchTypeClass = (matchType) => {
@@ -31,6 +37,8 @@ class PlainSuggestionContents extends Component {
     const displayHeader = this.props.displayHeader
     const className = cx('TransUnit TransUnit--suggestion u-bgHigh u-sMB-1',
       this.matchTypeClass(this.props.matchType))
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+
     return (
       <div className={className}>
         <div className="TransUnit-status" />
@@ -43,7 +51,8 @@ class PlainSuggestionContents extends Component {
         </div>
         {displayHeader && <span className="TransUnit-targetHeading">
         Translation</span>}
-        <div className="TransUnit-panel TransUnit-translation rtl u-sPV-1-2">
+        <div className={directionClass + ' TransUnit-panel' +
+        ' TransUnit-translation u-sPV-1-2'}>
           <SuggestionContents
             plural={sourceContents.length > 1}
             contents={targetContents} />

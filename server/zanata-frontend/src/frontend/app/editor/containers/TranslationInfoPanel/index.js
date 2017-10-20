@@ -12,6 +12,11 @@ import GlossaryTab from '../GlossaryTab'
 // Use this when the activity tab is activated
 // import ActivityTab from './ActivityTab'
 
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../../actions/header-action-types'
+
+export const localeDetails = createAction(LOCALE_SELECTED)
+
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
@@ -26,8 +31,17 @@ class TranslationInfoPanel extends React.Component {
       sourceFlags: PropTypes.string,
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
-      lastModifiedTime: PropTypes.instanceOf(Date)
+      lastModifiedTime: PropTypes.instanceOf(Date),
+      directionClass: PropTypes.object.isRequired,
+      isLtr: PropTypes.bool.isRequired
     })
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      isLtr: false
+    }
   }
 
   sidebarDetails = () => {
@@ -44,8 +58,10 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime
     } = this.props.selectedPhrase
 
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+
     return (
-      <ul className="SidebarEditor-details rtl">
+      <ul className={directionClass + ' SidebarEditor-details'}>
         {this.detailItem('Resource ID', resId)}
         {this.detailItem('Message Context', msgctxt)}
         {this.detailItem('Reference', sourceReferences)}

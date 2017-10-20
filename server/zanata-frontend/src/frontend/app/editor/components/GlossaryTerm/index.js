@@ -7,6 +7,10 @@ import PropTypes from 'prop-types'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../../actions/header-action-types'
+
+export const localeDetails = createAction(LOCALE_SELECTED)
 
 class GlossaryTerm extends React.Component {
   static propTypes = {
@@ -16,7 +20,16 @@ class GlossaryTerm extends React.Component {
     term: PropTypes.shape({
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    directionClass: PropTypes.object.isRequired,
+    isLtr: PropTypes.bool.isRequired
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      isLtr: false
+    }
   }
 
   copy = () => {
@@ -39,6 +52,7 @@ class GlossaryTerm extends React.Component {
         {term.target}
       </Tooltip>
     )
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <tr key={index}>
@@ -61,7 +75,7 @@ class GlossaryTerm extends React.Component {
                 <span className="hide-mdplus u-textMeta">
                   Target
                 </span>
-                <span className="rtl">{term.target}</span>
+                <span className={directionClass}>{term.target}</span>
               </span>
             </Button>
           </OverlayTrigger>

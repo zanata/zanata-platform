@@ -45,13 +45,13 @@ class TransUnitTranslationPanel extends React.Component {
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
     directionClass: PropTypes.object.isRequired,
-    isRtl: PropTypes.bool.isRequired
+    isLtr: PropTypes.bool.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      isRtl: true
+      isLtr: false
     }
   }
 
@@ -113,7 +113,7 @@ class TransUnitTranslationPanel extends React.Component {
     } = this.props
     var header, footer
     const isPlural = phrase.plural
-    const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     if (selected) {
       const headerProps = pick(this.props, [

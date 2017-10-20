@@ -36,14 +36,14 @@ class GlossarySearchInput extends React.Component {
     text: PropTypes.string.isRequired,
     onTextChange: PropTypes.func.isRequired,
     directionClass: PropTypes.object.isRequired,
-    isRtl: PropTypes.bool.isRequired
+    isLtr: PropTypes.bool.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
       focused: false,
-      isRtl: true
+      isLtr: false
     }
   }
 
@@ -84,7 +84,7 @@ class GlossarySearchInput extends React.Component {
   }
 
   render () {
-    const directionClass = localeDetails.isRtl ? 'rtl' : 'ltr'
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
     return (
       <div className="InlineSearch">
         <div className={cx('EditorInputGroup EditorInputGroup--outlined ' +

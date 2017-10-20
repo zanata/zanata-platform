@@ -90,7 +90,7 @@ export class EditorSearchInput extends Component {
     toggleAdvanced: PropTypes.func.isRequired,
     updateSearch: PropTypes.func.isRequired,
     directionClass: PropTypes.object.isRequired,
-    isRtl: PropTypes.bool.isRequired
+    isLtr: PropTypes.bool.isRequired
   }
 
   constructor (props) {
@@ -98,7 +98,7 @@ export class EditorSearchInput extends Component {
     this.state = {
       focused: false,
       open: false,
-      isRtl: false
+      isLtr: false
     }
   }
 
@@ -185,7 +185,7 @@ export class EditorSearchInput extends Component {
 
   render () {
     const { showAdvanced } = this.props
-    const directionClass = localeDetails.isRtl ? 'ltr' : 'rtl'
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     const advancedFields = map(fields, (field, key) => (
       <AdvancedField key={key}
@@ -259,7 +259,7 @@ class AdvancedField extends Component {
   render () {
     const { id, field, value } = this.props
     const { label, description } = field
-    const directionClass = localeDetails.isRtl ? 'ltr' : 'rtl'
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <div key={id} title={description}

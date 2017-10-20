@@ -9,11 +9,22 @@ import SettingsOptions from '../components/SettingsOptions'
 import { getEnterSavesImmediately } from '../reducers'
 import { ENTER_SAVES_IMMEDIATELY } from '../reducers/settings-reducer'
 
+// TODO kgough find out how to set isLtr to false (default). Uncomment
+// The location detection will need to be set up correctly
+// and then the default of isLtr = false can be removed.
+
+// import { createAction } from 'redux-actions'
+// import { LOCALE_SELECTED } from '../actions/header-action-types'
+
+// export const localeDetails = createAction(LOCALE_SELECTED)
+
 export const SettingsPanel = ({
   enterSavesImmediately,
   hideSettings,
   updateSetting
 }) => {
+  // const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+  const directionClass = 'rtl'
   return (
     <div>
       <h1 className="SidebarEditor-heading">
@@ -24,7 +35,7 @@ export const SettingsPanel = ({
           </Button>
         </span>
       </h1>
-      <div className="SidebarEditor-wrapper rtl">
+      <div className={directionClass + ' SidebarEditor-wrapper'}>
         <div>
           <h2 className='SettingsHeading'>Editor options</h2>
           <SettingsOptions
@@ -45,7 +56,9 @@ export const SettingsPanel = ({
 SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
-  updateSetting: PropTypes.func.isRequired
+  updateSetting: PropTypes.func.isRequired,
+  directionClass: PropTypes.object.isRequired,
+  isLtr: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => {

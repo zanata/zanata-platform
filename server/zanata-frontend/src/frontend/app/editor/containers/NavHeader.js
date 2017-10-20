@@ -12,6 +12,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { toggleDropdown } from '../actions'
 import { changeUiLocale } from '../actions/header-actions'
+import { createAction } from 'redux-actions'
+import { LOCALE_SELECTED } from '../actions/header-action-types'
+
+export const localeDetails = createAction(LOCALE_SELECTED)
 
 const { any, arrayOf, func, object, shape, string } = PropTypes
 
@@ -45,7 +49,8 @@ class NavHeader extends React.Component {
         selectedLocale: string.isRequired
       }).isRequired
     }).isRequired,
-
+    directionClass: PropTypes.object.isRequired,
+    isLtr: PropTypes.bool.isRequired,
     dropdown: shape({
       openDropdownKey: any,
       docsKey: any.isRequired,
@@ -61,10 +66,18 @@ class NavHeader extends React.Component {
     }).isRequired
   }
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      isLtr: false
+    }
+  }
+
   render () {
     const props = this.props
     const ctx = props.data.context
     const dropdowns = props.dropdown
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     const docsDropdownProps = {
       context: ctx,
@@ -91,7 +104,7 @@ class NavHeader extends React.Component {
       <nav role="navigation"
         className="Editor-mainNav u-posRelative u-textCenter">
         <div className="u-posAbsoluteLeft">
-          <Row className="rtl">
+          <Row className={directionClass}>
             <ProjectVersionLink {...ctx.projectVersion} />
             <div className="u-inlineBlock u-sMH-1-4 u-textInvert
                           u-textMuted u-sm-hidden">
