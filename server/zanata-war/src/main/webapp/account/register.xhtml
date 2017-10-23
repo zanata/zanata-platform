@@ -65,7 +65,7 @@
                 <zanata:decorate id="username" componentId="usernameField">
                   <h:inputText id="username" value="#{register.username}"
                     tabindex="3">
-                    <a4j:ajax event="blur" render="usernameField" />
+                    <a4j:ajax event="blur" render="usernameField" execute="@this" limitRender="true" />
                   </h:inputText>
                 </zanata:decorate>
 
@@ -75,7 +75,7 @@
                 <zanata:decorate id="email" componentId="emailField">
                   <h:inputText id="email" value="#{register.email}"
                     tabindex="4">
-                    <a4j:ajax event="blur" render="emailField" execute="@this"/>
+                    <a4j:ajax event="blur" render="emailField" execute="@this" limitRender="true"/>
                   </h:inputText>
                 </zanata:decorate>
 
