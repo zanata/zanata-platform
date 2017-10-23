@@ -22,16 +22,13 @@ package org.zanata.adapter.glossary;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.LocaleUtils;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
@@ -46,9 +43,14 @@ import com.google.common.collect.Maps;
  *
  **/
 public class GlossaryCSVReader extends AbstractGlossaryPushReader {
+
     private final LocaleId srcLang;
     private final static String POS = "POS";
+    private final static String[] POSSYNONYMS =
+            {"POS", "PARTOFSPEECH", "PART OF SPEECH"};
     private final static String DESC = "DESCRIPTION";
+    private final static String[] DESCSYNONYMS =
+            {"DESCRIPTION", "DESC", "DEFINITION"};
     private final static int TERM = 0;
 
     /**
@@ -123,8 +125,8 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     }
 
     /**
-     * Basic validation of CVS file format - At least 2 rows in the CVS file -
-     * Empty content validation - All row must have the same column count
+     * Basic validation of CSV file format - At least 2 rows in the CSV file -
+     * Empty content validation - All rows must have the same column count.
      */
     private void validateCSVEntries(@Nonnull List<CSVRecord> records) {
         if (records.isEmpty()) {
@@ -144,14 +146,15 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     }
 
     /**
-     * Parser reads from all from first row and up to column from description
-     * map. Format of CVS: {source locale},{locale},{locale}...,pos,description
+     * Parser reads from all from first row and up to first recognised non-locale column
+     * mapping.
+     * Format of CSV: {source locale},{locale},{locale}...,pos,description
      */
     private Map<Integer, LocaleId> setupLocalesMap(List<CSVRecord> records,
             Map<String, Integer> descriptionMap) {
-        Map<Integer, LocaleId> localeColMap = new HashMap<Integer, LocaleId>();
+        Map<Integer, LocaleId> localeColMap = new HashMap<>();
         CSVRecord headerRow = records.get(0);
-        for (int column = 0; column <= headerRow.size()
+        for (int column = 0; column < headerRow.size()
                 && !descriptionMap.containsValue(column); column++) {
             LocaleId locale =
                     new LocaleId(StringUtils.trim(headerRow.get(column)));
@@ -167,12 +170,17 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
      * @param records
      */
     private Map<String, Integer> setupDescMap(List<CSVRecord> records) {
-        Map<String, Integer> descMap = new HashMap<String, Integer>();
+        Map<String, Integer> descMap = new HashMap<>();
         CSVRecord headerRow = records.get(0);
         for (int position = 1; position < headerRow.size(); position++) {
-            if (headerRow.get(position).equalsIgnoreCase(POS)) {
+            String headerItem = headerRow.get(position);
+            if (headerItem.trim().length() == 0) {
+                continue;
+            }
+            if (Arrays.asList(POSSYNONYMS).contains(headerItem.toUpperCase())) {
                 descMap.put(POS, position);
-            } else if (headerRow.get(position).equalsIgnoreCase(DESC)) {
+            } else if (Arrays.asList(DESCSYNONYMS)
+                    .contains(headerItem.toUpperCase())) {
                 descMap.put(DESC, position);
             }
         }
