@@ -29,9 +29,8 @@ class PlainSuggestionContents extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      // TODO location detection so defaults isLtr* = true/false can be
-      // removed
-      isLtrSource: true,
+      // TODO location detection
+      isLtrSource: false,
       isLtrTarget: false
     }
   }
@@ -49,7 +48,7 @@ class PlainSuggestionContents extends Component {
     const displayHeader = this.props.displayHeader
     const className = cx('TransUnit TransUnit--suggestion u-bgHigh u-sMB-1',
       this.matchTypeClass(this.props.matchType))
-    const directionClassSource = localeDetails.isLtrSource ? 'ltr' : 'rtl'
+    const directionClassSource = localeDetails.isLtrSource ? 'rtl' : 'ltr'
     const directionClassTarget = localeDetails.isLtrTarget ? 'ltr' : 'rtl'
 
     return (

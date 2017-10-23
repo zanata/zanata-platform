@@ -32,11 +32,12 @@ class SuggestionTranslations extends React.Component {
   render () {
     const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
     return (
-      <div className={directionClass + ' TransUnit-panel' +
-      ' TransUnit-translation u-sPV-1-2'}>
-        <SuggestionContents
-          plural={this.props.suggestion.sourceContents.length > 1}
-          contents={this.props.suggestion.targetContents} />
+      <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
+        <span className={directionClass}>
+          <SuggestionContents
+            plural={this.props.suggestion.sourceContents.length > 1}
+            contents={this.props.suggestion.targetContents} />
+        </span>
         <SuggestionTranslationDetails {... this.props} />
       </div>
     )

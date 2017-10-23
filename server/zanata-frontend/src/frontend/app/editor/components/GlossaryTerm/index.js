@@ -21,14 +21,17 @@ class GlossaryTerm extends React.Component {
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
     }).isRequired,
-    directionClass: PropTypes.object.isRequired,
-    isLtr: PropTypes.bool.isRequired
+    directionClassSource: PropTypes.object.isRequired,
+    isLtrSource: PropTypes.bool.isRequired,
+    directionClassTarget: PropTypes.object.isRequired,
+    isLtrTarget: PropTypes.bool.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      isLtr: false
+      isLtrSource: false,
+      isLtrTarget: false
     }
   }
 
@@ -52,7 +55,8 @@ class GlossaryTerm extends React.Component {
         {term.target}
       </Tooltip>
     )
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+    const directionClassSource = localeDetails.isLtr ? 'rtl' : 'ltr'
+    const directionClassTarget = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <tr key={index}>
@@ -63,7 +67,7 @@ class GlossaryTerm extends React.Component {
                 <span className="hide-mdplus u-textMeta">
                   Source
                 </span>
-                {term.source}
+                <span className={directionClassSource}>{term.source}</span>
               </span>
             </Button>
           </OverlayTrigger>
@@ -75,7 +79,7 @@ class GlossaryTerm extends React.Component {
                 <span className="hide-mdplus u-textMeta">
                   Target
                 </span>
-                <span className={directionClass}>{term.target}</span>
+                <span className={directionClassTarget}>{term.target}</span>
               </span>
             </Button>
           </OverlayTrigger>

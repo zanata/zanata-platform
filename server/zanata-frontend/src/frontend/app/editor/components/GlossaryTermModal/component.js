@@ -30,15 +30,18 @@ class GlossaryTermModal extends React.Component {
         targetComment: PropTypes.string
       })
     ).isRequired,
-    directionClass: PropTypes.object.isRequired,
-    isLtr: PropTypes.bool.isRequired
+    directionClassSource: PropTypes.object.isRequired,
+    isLtrSource: PropTypes.bool.isRequired,
+    directionClassTarget: PropTypes.object.isRequired,
+    isLtrTarget: PropTypes.bool.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
       // TODO location detection so default of isLtr = false can be removed
-      isLtr: false
+      isLtrSource: false,
+      isLtrTarget: false
     }
   }
 
@@ -82,7 +85,8 @@ class GlossaryTermModal extends React.Component {
         )
       })
 
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+    const directionClassSource = localeDetails.isLtr ? 'rtl' : 'ltr'
+    const directionClassTarget = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <Modal show={show}
@@ -93,18 +97,18 @@ class GlossaryTermModal extends React.Component {
           <Modal.Title><small><span className="u-pullLeft">
           Glossary details</span></small></Modal.Title>
         </Modal.Header>
-        <Modal.Body className={directionClass}>
-          <Panel className="split-panel">
+        <Modal.Body>
+          <Panel className={directionClassSource + ' split-panel'}>
             <h3>Source Term : {sourceLocale}</h3>
             <span className="modal-term">{term.source}</span>
           </Panel>
-          <Panel className="split-panel">
+          <Panel className={directionClassTarget + ' split-panel'}>
             <h3>Target Term : {targetLocale}</h3>
             <span className="modal-term">{term.target}</span>
           </Panel>
           <br />
           <Panel className="gloss-details-panel">
-            <Table className="GlossaryDetails-table">
+            <Table className={directionClassTarget + ' GlossaryDetails-table'}>
               <thead>
                 <tr>
                   <th>Description</th>

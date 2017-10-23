@@ -254,6 +254,7 @@ class TranslationItem extends React.Component {
           {headerLabel}
         </span>
       </div>
+    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <div className="TransUnit-item" key={index}>
@@ -262,7 +263,7 @@ class TranslationItem extends React.Component {
         {/* TODO translate "Enter a translation..." */}
         <Textarea
           ref={this.setTextArea}
-          className="TransUnit-text rtl"
+          className={directionClass + ' TransUnit-text'}
           disabled={dropdownIsOpen}
           rows={1}
           value={translation}
