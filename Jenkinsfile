@@ -17,6 +17,7 @@ public static final String PIPELINE_LIBRARY_BRANCH = 'ZNTA-2234-tag'
 @Library('zanata-pipeline-library@ZNTA-2234-tag')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
+import org.zanata.jenkins.ScmGit
 import static org.zanata.jenkins.Reporting.codecov
 import static org.zanata.jenkins.StackTraces.getStackTrace
 
@@ -27,12 +28,15 @@ milestone()
 
 PullRequests.ensureJobDescription(env, manager, steps)
 
+// initialiser must be run separately (bindings not available during compilation phase)
+@Field
+def pipelineLibraryScmGit
+
+@Field
+def mainScmGit
+
 @Field
 def notify
-// initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps, currentBuild,
-    PROJ_URL, 'Jenkinsfile', PIPELINE_LIBRARY_BRANCH,
-)
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -48,6 +52,13 @@ def jobName
 // we need a node to access env.DEFAULT_NODE.
 node {
   echo "running on node ${env.NODE_NAME}"
+  pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
+  pipelineLibraryScmGit.init(PIPELINE_LIBRARY_BRANCH)
+  mainScmGit = new ScmGit(env, steps, PROJ_URL)
+  mainScmGit.init(env.BRANCH_NAME)
+  notify = new Notifier(env, steps, currentBuild,
+      pipelineLibraryScmGit, mainScmGit, 'Jenkinsfile',
+  )
   defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
   // eg github-zanata-org/zanata-platform/update-Jenkinsfile
   jobName = env.JOB_NAME
@@ -234,7 +245,7 @@ timestamps {
           // TODO try https://github.com/jenkinsci/github-pr-coverage-status-plugin
 
           // send test coverage data to codecov.io
-          codecov(env, steps, PROJ_URL)
+          codecov(env, steps, mainScmGit)
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
