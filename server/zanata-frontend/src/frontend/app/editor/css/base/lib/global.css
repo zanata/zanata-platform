@@ -20,7 +20,6 @@ html {
   font-family: var(--base-font-family);
   font-size: var(--base-font-size);
   line-height: var(--base-line-height);
-  box-sizing: border-box;
   color: var(--base-color-font);
 }
 
