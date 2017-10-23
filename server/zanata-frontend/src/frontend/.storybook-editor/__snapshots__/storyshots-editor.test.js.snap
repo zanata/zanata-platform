@@ -5527,7 +5527,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
       </span>
     </span>
     <input
-      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
+      className="rtl EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5569,7 +5569,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
       </span>
     </span>
     <input
-      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
+      className="rtl EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5622,7 +5622,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Source
             </span>
-            Ambulance
+            <span
+              className="ltr"
+            >
+              Ambulance
+            </span>
           </span>
         </button>
       </td>
@@ -5646,7 +5650,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Target
             </span>
-            
+            <span
+              className="rtl"
+            >
+              
+            </span>
           </span>
         </button>
       </td>
@@ -5713,7 +5721,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Source
             </span>
-            Hospital
+            <span
+              className="ltr"
+            >
+              Hospital
+            </span>
           </span>
         </button>
       </td>
@@ -5737,7 +5749,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Target
             </span>
-            
+            <span
+              className="rtl"
+            >
+              
+            </span>
           </span>
         </button>
       </td>
@@ -5804,7 +5820,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Source
             </span>
-            Doctor
+            <span
+              className="ltr"
+            >
+              Doctor
+            </span>
           </span>
         </button>
       </td>
@@ -5828,7 +5848,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Target
             </span>
-            
+            <span
+              className="rtl"
+            >
+              
+            </span>
           </span>
         </button>
       </td>
@@ -5920,7 +5944,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Source
             </span>
-            Ambulance
+            <span
+              className="ltr"
+            >
+              Ambulance
+            </span>
           </span>
         </button>
       </td>
@@ -5944,7 +5972,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Target
             </span>
-            Krankenwagen
+            <span
+              className="rtl"
+            >
+              Krankenwagen
+            </span>
           </span>
         </button>
       </td>
@@ -6011,7 +6043,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Source
             </span>
-            Hospital
+            <span
+              className="ltr"
+            >
+              Hospital
+            </span>
           </span>
         </button>
       </td>
@@ -6035,7 +6071,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Target
             </span>
-            Krankenhaus
+            <span
+              className="rtl"
+            >
+              Krankenhaus
+            </span>
           </span>
         </button>
       </td>
@@ -6102,7 +6142,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Source
             </span>
-            Doctor
+            <span
+              className="ltr"
+            >
+              Doctor
+            </span>
           </span>
         </button>
       </td>
@@ -6126,7 +6170,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Target
             </span>
-            Arzt
+            <span
+              className="rtl"
+            >
+              Arzt
+            </span>
           </span>
         </button>
       </td>
@@ -6202,7 +6250,11 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
             >
               Source
             </span>
-            Ambulance
+            <span
+              className="ltr"
+            >
+              Ambulance
+            </span>
           </span>
         </button>
       </td>
@@ -6226,7 +6278,11 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
             >
               Target
             </span>
-            Krankenwagen
+            <span
+              className="rtl"
+            >
+              Krankenwagen
+            </span>
           </span>
         </button>
       </td>

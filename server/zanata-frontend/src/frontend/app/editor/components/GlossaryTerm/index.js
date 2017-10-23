@@ -21,10 +21,12 @@ class GlossaryTerm extends React.Component {
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
     }).isRequired,
-    directionClassSource: PropTypes.object.isRequired,
-    isLtrSource: PropTypes.bool.isRequired,
-    directionClassTarget: PropTypes.object.isRequired,
-    isLtrTarget: PropTypes.bool.isRequired
+    // No '.Required' for below since their usage depends on whether source or
+    // target text
+    directionClassSource: PropTypes.object,
+    isLtrSource: PropTypes.bool,
+    directionClassTarget: PropTypes.object,
+    isLtrTarget: PropTypes.bool
   }
 
   constructor (props) {

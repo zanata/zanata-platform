@@ -18,7 +18,8 @@ class EditorSearchInput extends React.Component {
     super(props)
     this.state = {
       search: props.search,
-      showAdvanced: props.showAdvanced
+      showAdvanced: props.showAdvanced,
+      isLtr: false
     }
   }
 

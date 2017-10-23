@@ -89,8 +89,9 @@ export class EditorSearchInput extends Component {
     }).isRequired,
     toggleAdvanced: PropTypes.func.isRequired,
     updateSearch: PropTypes.func.isRequired,
-    directionClass: PropTypes.object.isRequired,
-    isLtr: PropTypes.bool.isRequired
+    // Not required until wired up correctly
+    directionClass: PropTypes.object,
+    isLtr: PropTypes.bool
   }
 
   constructor (props) {

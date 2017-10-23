@@ -30,10 +30,12 @@ class GlossaryTermModal extends React.Component {
         targetComment: PropTypes.string
       })
     ).isRequired,
-    directionClassSource: PropTypes.object.isRequired,
-    isLtrSource: PropTypes.bool.isRequired,
-    directionClassTarget: PropTypes.object.isRequired,
-    isLtrTarget: PropTypes.bool.isRequired
+    // No '.Required' for below since their usage depends on whether source or
+    // target text
+    directionClassSource: PropTypes.object,
+    isLtrSource: PropTypes.bool,
+    directionClassTarget: PropTypes.object,
+    isLtrTarget: PropTypes.bool
   }
 
   constructor (props) {

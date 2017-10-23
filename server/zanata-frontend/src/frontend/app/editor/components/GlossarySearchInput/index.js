@@ -35,8 +35,9 @@ class GlossarySearchInput extends React.Component {
   static propTypes = {
     text: PropTypes.string.isRequired,
     onTextChange: PropTypes.func.isRequired,
-    directionClass: PropTypes.object.isRequired,
-    isLtr: PropTypes.bool.isRequired
+    // Not required until wired up correctly
+    directionClass: PropTypes.object,
+    isLtr: PropTypes.bool
   }
 
   constructor (props) {
