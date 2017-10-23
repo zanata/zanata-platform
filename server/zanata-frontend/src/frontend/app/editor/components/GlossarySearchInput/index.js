@@ -44,6 +44,7 @@ class GlossarySearchInput extends React.Component {
     super(props)
     this.state = {
       focused: false,
+      // TODO location detection
       isLtr: false
     }
   }

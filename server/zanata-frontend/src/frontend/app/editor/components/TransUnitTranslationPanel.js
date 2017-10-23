@@ -51,6 +51,7 @@ class TransUnitTranslationPanel extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      // TODO location detection so default of isLtr = false can be removed
       isLtr: false
     }
   }

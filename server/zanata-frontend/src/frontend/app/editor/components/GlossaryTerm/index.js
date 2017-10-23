@@ -32,6 +32,7 @@ class GlossaryTerm extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      // TODO location detection
       isLtrSource: false,
       isLtrTarget: false
     }

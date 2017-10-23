@@ -89,7 +89,7 @@ export class EditorSearchInput extends Component {
     }).isRequired,
     toggleAdvanced: PropTypes.func.isRequired,
     updateSearch: PropTypes.func.isRequired,
-    // Not required until wired up correctly
+    // Not .Required until wired up correctly
     directionClass: PropTypes.object,
     isLtr: PropTypes.bool
   }
@@ -99,6 +99,7 @@ export class EditorSearchInput extends Component {
     this.state = {
       focused: false,
       open: false,
+      // TODO location detection
       isLtr: false
     }
   }
