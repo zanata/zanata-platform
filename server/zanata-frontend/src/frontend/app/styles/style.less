@@ -14,12 +14,6 @@
 
 /* Base containers */
 
-* {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
 html {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
@@ -160,6 +154,7 @@ body.templateStyle {
 
 .containerSidebar {
   margin-left: 4.5rem;
+  background-color: #fff;
 }
 
 .containerEditor {
@@ -420,7 +415,6 @@ input.textInput, textarea.textInput {
   background-color: transparent;
   border: 2px solid rgb(189, 212, 220);
   border-radius: @border-radius-text-input;
-  box-sizing: border-box;
   color: @color-dark;
   font-family: inherit;
   font-weight: inherit;
@@ -869,7 +863,7 @@ button, {
   overflow: visible;
   color: #fff;
   font-weight: 600;
-  padding: @spacing-re @spacing-rq;
+  padding: @spacing-re @spacing-rq !important;
   line-height: @line-height-button;
   font-size: 1rem;
   display: inline-block;
@@ -915,9 +909,7 @@ input {
 }
 
 input[type=checkbox], input[type=radio] {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+
   padding: 0;
 }
 
@@ -965,12 +957,6 @@ label {
 label.control-label span.s0 {
   vertical-align: text-top;
   margin-left: @spacing-label-large;
-}
-
-input[type=search] {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
 }
 
 input[type=checkbox], input[type=radio] {
@@ -2153,7 +2139,6 @@ span.caret {
   color: #546675;
 }
 
-
 /* Buttons */
 
 .btnCode {
@@ -2312,7 +2297,7 @@ a.btn-primary {
 }
 
 .btn-primary .badge {
-  color: #337ab7;
+  color: @color-dark;
   background-color: #fff;
 }
 
