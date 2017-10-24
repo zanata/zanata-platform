@@ -30,8 +30,7 @@ import org.junit.rules.TemporaryFolder;
 
 import com.google.common.io.Files;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This class can be used as a JUnit rule to create temporary translation files.
@@ -57,8 +56,8 @@ public class TempTransFileRule extends TemporaryFolder {
         File file = new File(transDir, path);
         File parentFile = file.getParentFile();
         parentFile.mkdirs();
-        assertThat(parentFile.exists(), is(true));
-        assertThat(file.createNewFile(), is(true));
+        assertThat(parentFile.exists()).isTrue();
+        assertThat(file.createNewFile()).isTrue();
         return file;
     }
 

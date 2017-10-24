@@ -8,12 +8,21 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.zanata.client.TestUtils.fileFromClasspath;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.simpleframework.http.Status;
+import org.simpleframework.http.core.ContainerServer;
+import org.simpleframework.transport.connect.Connection;
+import org.simpleframework.transport.connect.SocketConnection;
+import org.zanata.client.commands.HTTPMockContainer;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.config.LocaleList;
@@ -25,11 +34,15 @@ import org.zanata.rest.client.CopyTransClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.client.SourceDocResourceClient;
 import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.rest.dto.DTOUtil;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+
+import javax.ws.rs.core.GenericType;
 
 public class PushCommandTest {
     @Mock
@@ -41,9 +54,14 @@ public class PushCommandTest {
     @Mock
     private CopyTransClient copyTransClient;
 
+    private Connection connection;
+
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         initMocks(this);
+        if (connection != null) {
+            connection.close();
+        }
         when(clientFactory.getSourceDocResourceClient(anyString(), anyString()))
                 .thenReturn(sourceDocResourceClient);
         when(clientFactory.getAsyncProcessClient()).thenReturn(
@@ -94,6 +112,7 @@ public class PushCommandTest {
 
     private void checkSplitResult(int listSize, int batchSize) throws Exception {
         PushCommand cmd = generatePushCommand(true, true);
+
         TranslationsResource transRes = new TranslationsResource();
         for (int i = 0; i < listSize; i++) {
             transRes.getTextFlowTargets().add(
@@ -143,6 +162,9 @@ public class PushCommandTest {
         opts.setExcludes("");
         opts.setSourceLang("en-US");
         opts.setMergeType("auto");
+        opts.setUsername("admin");
+        opts.setKey("key");
+
         LocaleList locales = new LocaleList();
         if (mapLocale) {
             locales.add(new LocaleMapping("ja", "ja-JP"));
@@ -150,6 +172,26 @@ public class PushCommandTest {
             locales.add(new LocaleMapping("ja-JP"));
         }
         opts.setLocaleMapList(locales);
+
+        GenericType<List<LocaleDetails>> list =
+                new GenericType<>(Collections.emptyList().getClass());
+
+        HTTPMockContainer mockContainer =
+                HTTPMockContainer.Builder
+                        .builder()
+                        .onPathReturnStatus(
+                                "/rest/projects/p/project/iterations/i/1.0/locales", Status.OK.code,
+                                DTOUtil.toXML(list))
+                        .build();
+        ContainerServer server = new ContainerServer(mockContainer);
+        connection = new SocketConnection(server);
+        InetSocketAddress address = (InetSocketAddress) connection
+                .connect(new InetSocketAddress(0));
+        int port = address.getPort();
+        String url = "http://localhost:" + port + "/";
+        opts.setUrl(new URL(url));
+
+
         OptionsUtil.applyConfigFiles(opts);
 
         return new PushCommand(opts,

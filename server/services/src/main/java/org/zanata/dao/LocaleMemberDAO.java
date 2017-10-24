@@ -59,6 +59,7 @@ public class LocaleMemberDAO extends
         return query.list();
     }
 
+    @SuppressWarnings("unchecked")
     public List<HLocaleMember> findActiveMembers(LocaleId localeId,
         @Nullable HPerson excludePerson) {
         StringBuilder sb = new StringBuilder();
@@ -91,6 +92,7 @@ public class LocaleMemberDAO extends
      * @param personId
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<HLocaleMember> findByPersonWithReviewerRole(Long personId) {
         Query query =
                 getSession()

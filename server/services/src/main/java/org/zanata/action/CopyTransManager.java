@@ -71,7 +71,7 @@ public class CopyTransManager implements Serializable {
             throw new IllegalArgumentException(
                     "Copy Trans can only run for HProjectIteration and HDocument");
         }
-        AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKey(key);
+        AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKey(key);
         return handle != null && !handle.isDone();
     }
 

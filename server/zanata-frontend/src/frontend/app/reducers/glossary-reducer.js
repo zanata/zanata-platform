@@ -122,6 +122,7 @@ const glossary = handleActions({
       return {
         ...state,
         project: undefined,
+        termsLoading: false,
         notification: {
           severity: SEVERITY.ERROR,
           message: PROJECT_ERROR_MSG
@@ -137,6 +138,7 @@ const glossary = handleActions({
   [PROJECT_GET_DETAILS_FAILURE]: (state, action) => ({
     ...state,
     project: undefined,
+    termsLoading: false,
     notification: {
       severity: SEVERITY.ERROR,
       message: PROJECT_ERROR_MSG

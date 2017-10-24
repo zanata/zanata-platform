@@ -32,7 +32,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -89,15 +88,10 @@ public class FileSystemPersistService implements FilePersistService {
     }
 
     private File ensureDocsDirectory() {
-        String basePathStringOrNull =
+        String basePathString =
                 appConfig.getDocumentFileStorageLocation();
-        if (basePathStringOrNull == null) {
-            throw new RuntimeException(
-                    "Document storage location is not configured as system property:"
-                            + SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE);
-        }
         File docsDirectory =
-                new File(basePathStringOrNull, RAW_DOCUMENTS_SUBDIRECTORY);
+                new File(basePathString, RAW_DOCUMENTS_SUBDIRECTORY);
         boolean created = docsDirectory.mkdirs();
         log.debug(created ? "Directory created" : "Unable to create directory");
         return docsDirectory;

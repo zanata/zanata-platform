@@ -56,7 +56,7 @@ public class AsyncMethodInterceptor {
 //        this.taskHandleManager = taskHandleManager;
 //    }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @AroundInvoke
     public Object aroundInvoke(final InvocationContext ctx) throws Exception {
 

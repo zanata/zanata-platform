@@ -36,16 +36,20 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
 import org.apache.lucene.search.BooleanQuery;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.rest.service.ProjectService;
 import org.zanata.search.LevenshteinUtil;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
 import org.zanata.servlet.annotations.ContextPath;
@@ -68,16 +72,20 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
     private GlossaryDAO glossaryDAO;
     private LocaleService localeServiceImpl;
     private String contextPath;
+    private ProjectDAO projectDAO;
+    private ZanataIdentity identity;
 
     @Inject
     public GlossarySearchServiceImpl(GlossaryDAO glossaryDAO,
-            LocaleService localeServiceImpl, @ContextPath String contextPath) {
+            LocaleService localeServiceImpl, ProjectDAO projectDAO,
+            ZanataIdentity identity, @ContextPath String contextPath) {
         this.glossaryDAO = glossaryDAO;
         this.localeServiceImpl = localeServiceImpl;
+        this.projectDAO = projectDAO;
+        this.identity = identity;
         this.contextPath = contextPath;
     }
 
-    @SuppressWarnings("unused")
     public GlossarySearchServiceImpl() {
     }
 
@@ -95,7 +103,11 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
             Map<GlossaryKey, GlossaryResultItem> matchesMap =
                     Maps.newLinkedHashMap();
 
-            if (projectSlug != null) {
+            if (StringUtils.isNotBlank(projectSlug)) {
+                HProject project = projectDAO.getBySlug(projectSlug);
+                if (!identity.hasPermission(project, "read")) {
+                    throw new ZanataServiceException("Project:" + projectSlug + " not found");
+                }
                 String projQualifiedName = ProjectService.getGlossaryQualifiedName(
                         projectSlug);
                 List<Object[]> projMatches = glossaryDAO.getSearchResult(searchText,

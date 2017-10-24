@@ -112,7 +112,7 @@ public interface TranslationService extends Serializable {
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
             MergeType mergeType, boolean assignCreditToUploader, boolean lock,
-            AsyncTaskHandle handle, TranslationSourceType translationSourceType);
+            AsyncTaskHandle<?> handle, TranslationSourceType translationSourceType);
 
     /**
      * Translates all text flows in a document.
@@ -143,7 +143,7 @@ public interface TranslationService extends Serializable {
     List<String> translateAllInDoc(String projectSlug, String iterationSlug,
             String docId, LocaleId locale, TranslationsResource translations,
             Set<String> extensions, MergeType mergeType,
-            boolean assignCreditToUploader, AsyncTaskHandle handle,
+            boolean assignCreditToUploader, AsyncTaskHandle<?> handle,
             TranslationSourceType translationSourceType);
 
     List<String> translateAllInDoc(String projectSlug, String iterationSlug,

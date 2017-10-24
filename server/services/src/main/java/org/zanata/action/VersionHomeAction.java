@@ -928,10 +928,22 @@ public class VersionHomeAction extends AbstractSortAction
         translationFileUpload.setDocumentType(null);
     }
 
+    /**
+     *
+     * @param sourceLocale
+     * @param docId - not encoded docId
+     * @return
+     */
     public String getEditorUrl(String sourceLocale, String docId) {
+        // encode into editor supported docId
+        String editorEncodedDocId = TokenUtil.encode(docId);
+
+        // encode into into {@code application/x-www-form-urlencoded} format
+        String encodedDocId = UrlUtil.encodeString(editorEncodedDocId);
+
         return urlUtil.editorDocumentUrl(projectSlug, versionSlug,
                 selectedLocale.getLocaleId(),
-                LocaleId.fromJavaName(sourceLocale), TokenUtil.encode(docId));
+                LocaleId.fromJavaName(sourceLocale), encodedDocId);
     }
 
     public String encodeDocId(String docId) {

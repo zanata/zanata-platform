@@ -50,6 +50,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.VersionLocaleKey;
@@ -114,6 +115,10 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock @FullText
     FullTextEntityManager fullTextEntityManager;
+
+    @Produces
+    @Mock
+    ZanataIdentity identity;
 
     @Inject
     DocumentDAO documentDAO;

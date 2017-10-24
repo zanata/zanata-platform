@@ -15,6 +15,10 @@
   --Modal-header-z-index: 100;
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .Modal {
   position: fixed;
   z-index: var(--Modal-z-index);

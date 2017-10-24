@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
 
-import org.hamcrest.Matcher;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
@@ -22,10 +21,10 @@ public class HTTPMockContainer implements Container {
     private static final Logger log =
             LoggerFactory.getLogger(HTTPMockContainer.class);
 
-    private final Map<Matcher<String>, StatusAndContent> pathToResponseMap;
+    private final Map<String, StatusAndContent> pathToResponseMap;
 
     public HTTPMockContainer(
-            Map<Matcher<String>, StatusAndContent> pathToResponseMap) {
+            Map<String, StatusAndContent> pathToResponseMap) {
         this.pathToResponseMap = pathToResponseMap;
     }
 
@@ -36,7 +35,7 @@ public class HTTPMockContainer implements Container {
             long time = System.currentTimeMillis();
 
             response.setValue("Content-Type", "text/plain");
-            response.setContentType("text/xml;charset=utf-8");
+            response.setContentType("application/xml;charset=utf-8");
             response.setDate("Date", time);
             response.setDate("Last-Modified", time);
             String path = request.getAddress().getPath().getPath();
@@ -64,9 +63,9 @@ public class HTTPMockContainer implements Container {
     }
 
     private StatusAndContent tryMatchPath(String path) {
-        for (Map.Entry<Matcher<String>, StatusAndContent> entry : pathToResponseMap
+        for (Map.Entry<String, StatusAndContent> entry : pathToResponseMap
                 .entrySet()) {
-            Matcher<String> pathMatcher = entry.getKey();
+            String pathMatcher = entry.getKey();
             if (pathMatcher.matches(path)) {
                 return entry.getValue();
             }
@@ -76,21 +75,21 @@ public class HTTPMockContainer implements Container {
     }
 
     public static class Builder {
-        private ImmutableMap.Builder<Matcher<String>, StatusAndContent> mapBuilder =
+        private ImmutableMap.Builder<String, StatusAndContent> mapBuilder =
                 ImmutableMap.builder();
 
         public static Builder builder() {
             return new Builder();
         }
 
-        public Builder onPathReturnOk(Matcher<String> pathMatcher,
+        public Builder onPathReturnOk(String pathMatcher,
                 String content) {
             mapBuilder.put(pathMatcher,
                     new StatusAndContent(Status.OK, content));
             return this;
         }
 
-        public Builder onPathReturnStatus(Matcher<String> pathMatcher,
+        public Builder onPathReturnStatus(String pathMatcher,
                 int status, String content) {
             mapBuilder.put(pathMatcher,
                     new StatusAndContent(Status.getStatus(status), content));

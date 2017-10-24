@@ -30,10 +30,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectMember;
 import org.zanata.model.ProjectRole;
 
-import java.util.HashSet;
-import java.util.Set;
-
-
 /**
  * Provides methods to access data related to membership in a project.
  */
@@ -53,20 +49,6 @@ public class ProjectMemberDAO
     }
 
     /**
-     * Retrieve all of a person's roles in a project.
-     */
-    public Set<ProjectRole> getRolesInProject(HPerson person, HProject project) {
-        Query query = getSession().createQuery(
-                "from HProjectMember as m where m.person = :person " +
-                        "and m.project = :project")
-                .setParameter("person", person)
-                .setParameter("project", project)
-                .setComment("ProjectMemberDAO.getRolesInProject")
-                .setCacheable(true);
-        return new HashSet<>(query.list());
-    }
-
-    /**
      * Check whether a person has a specified role in a project.
      *
      * @return true if the given person has the given role in the given project.
@@ -81,6 +63,18 @@ public class ProjectMemberDAO
                 .setParameter("project", project)
                 .setParameter("role", role)
                 .setComment("ProjectMemberDAO.hasProjectRole")
+                .setCacheable(true);
+        return ((Long) query.uniqueResult()) > 0;
+    }
+
+    public boolean isProjectMember(HPerson person, HProject project) {
+        Query query = getSession().createQuery(
+                "select count(m) from HProjectMember as m " +
+                        "where m.person = :person " +
+                        "and m.project = :project ")
+                .setParameter("person", person)
+                .setParameter("project", project)
+                .setComment("ProjectMemberDAO.isProjectMember")
                 .setCacheable(true);
         return ((Long) query.uniqueResult()) > 0;
     }

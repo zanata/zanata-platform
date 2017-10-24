@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.transform.ResultTransformer;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -46,6 +45,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.zanata.rest.dto.ProjectStatisticsMatrix;
+import org.zanata.rest.dto.TranslationMatrix;
+import org.zanata.rest.service.StatisticsServiceImpl.ProjectMatrixResultTransformer;
+import org.zanata.rest.service.StatisticsServiceImpl.UserMatrixResultTransformer;
 
 @Named("textFlowTargetHistoryDAO")
 @RequestScoped
@@ -88,7 +91,9 @@ public class TextFlowTargetHistoryDAO extends
         Query query = buildContributionStatisticQuery(true, versionId,
             personId, fromDate, toDate, automatedEntry);
         query.setComment("textFlowTargetHistoryDAO.getUserTranslationStatisticInVersion");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = query.list();
+        return list;
     }
 
     /**
@@ -118,7 +123,9 @@ public class TextFlowTargetHistoryDAO extends
         Query query = buildContributionStatisticQuery(false, versionId,
                 personId, fromDate, toDate, automatedEntry);
         query.setComment("textFlowTargetHistoryDAO.getUserReviewStatisticInVersion");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = query.list();
+        return list;
     }
 
     private Query buildContributionStatisticQuery(boolean translations,
@@ -166,11 +173,11 @@ public class TextFlowTargetHistoryDAO extends
         query.setParameter("personId", personId);
         if (translations) {
             query.setParameterList("states",
-                    getContentStateOrdinal(ContentState.TRANSLATED_STATES,
+                    getContentStateOrdinals(ContentState.TRANSLATED_STATES,
                             ContentState.DRAFT_STATES));
         } else {
             query.setParameterList("states",
-                    getContentStateOrdinal(ContentState.REVIEWED_STATES));
+                    getContentStateOrdinals(ContentState.REVIEWED_STATES));
         }
         query.setBoolean("automatedEntry", automatedEntry);
         query.setTimestamp("fromDate", fromDate);
@@ -178,7 +185,9 @@ public class TextFlowTargetHistoryDAO extends
         return query;
     }
 
-    private List<Integer> getContentStateOrdinal(Collection<ContentState>... contentStatesCollection) {
+    // safe because we just iterate over the varargs array
+    @SafeVarargs
+    private final List<Integer> getContentStateOrdinals(Collection<ContentState>... contentStatesCollection) {
         Set<Integer> results = Sets.newHashSet();
         for(Collection<ContentState> contentStates: contentStatesCollection) {
             results.addAll(contentStates.stream()
@@ -265,10 +274,10 @@ public class TextFlowTargetHistoryDAO extends
      * @return a list of transformed object
      */
     @NativeQuery(value = "need to use union", specificTo = "mysql due to usage of date() and convert_tz() functions.")
-    public <T> List<T> getUserTranslationMatrix(
+    public List<TranslationMatrix> getUserTranslationMatrix(
             HPerson user, DateTime fromDate, DateTime toDate,
             Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone,
-            ResultTransformer resultTransformer) {
+            UserMatrixResultTransformer resultTransformer) {
         // @formatter:off
         String queryHistory = "select history.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, history.state as state, history.lastChanged as lastChanged " +
                 "  from HTextFlowTargetHistory history " +
@@ -308,17 +317,19 @@ public class TextFlowTargetHistoryDAO extends
             .setTimestamp("fromDate", fromDate.toDate())
             .setTimestamp("toDate", toDate.toDate())
             .setResultTransformer(resultTransformer);
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<TranslationMatrix> list = query.list();
+        return list;
     }
 
     /**
      * Get words statistics of a project version in given timeframe.
      */
     @NativeQuery(value = "need to use union", specificTo = "mysql due to usage of date() and convert_tz() functions.")
-    public <T> List<T> getProjectTranslationMatrix(
+    public List<ProjectStatisticsMatrix> getProjectTranslationMatrix(
             HProjectIteration version, DateTime fromDate, DateTime toDate,
             Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone,
-            ResultTransformer resultTransformer) {
+            ProjectMatrixResultTransformer resultTransformer) {
         // @formatter:off
         String queryHistory = "select history.id, tft.locale as locale, tf.wordCount as wordCount, history.state as state, history.lastChanged as lastChanged " +
                 "  from HTextFlowTargetHistory history " +
@@ -356,7 +367,9 @@ public class TextFlowTargetHistoryDAO extends
                 .setTimestamp("fromDate", fromDate.toDate())
                 .setTimestamp("toDate", toDate.toDate())
                 .setResultTransformer(resultTransformer);
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<ProjectStatisticsMatrix> list = query.list();
+        return list;
     }
 
     @VisibleForTesting

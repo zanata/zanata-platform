@@ -43,19 +43,19 @@ const statusToWellClass = {
 
 class ActivityFeedItem extends Component {
   static propTypes = {
-    criteria: PropTypes.string.isRequired,
-    commentText: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    criteria: PropTypes.string,
+    commentText: PropTypes.string,
+    content: PropTypes.string,
     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
     // TODO damason define type for status
     priority: PropTypes.oneOf([
       MINOR,
       MAJOR,
       CRITICAL
-    ]).isRequired,
+    ]),
     status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
       'untranslated']),
-    textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']).isRequired,
+    textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']),
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
@@ -76,7 +76,7 @@ class ActivityFeedItem extends Component {
       </span>
     )
     const criteria = (
-      <span className="criteria-text">
+      <span className="CriteriaText">
         {this.props.criteria}
       </span>
     )
@@ -84,7 +84,7 @@ class ActivityFeedItem extends Component {
       <Link useHref link={profileUrl(user.username)}>{user.name}</Link>
     )
     const priority = (
-      <span className="criteria-text">
+      <span className="CriteriaText">
         <Icon name="warning" className="s0"/>
         <span className={this.props.textStatus}>
           {this.props.priority}
@@ -234,12 +234,12 @@ class ActivityFeedItem extends Component {
     const isComment = type === 'comment'
 
     return (
-      <div className="revision-box">
+      <div className="RevisionBox">
         <p>
           <Icon name={isComment ? 'comment' : 'refresh'} className="s0"/>
           <Link useHref link={profileUrl(user.username)}>
             {/* TODO use component for avatar image */}
-            <img className="u-round activity-avatar" src={user.imageUrl}/>
+            <img className="u-round ActivityAvatar" src={user.imageUrl}/>
           </Link>
           {this.getMessage()}
         </p>

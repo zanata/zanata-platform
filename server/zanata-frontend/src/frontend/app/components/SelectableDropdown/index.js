@@ -6,7 +6,8 @@ import {isEqual} from 'lodash'
 /**
  * Selectable Dropdown
  *
- * TODO: pahuang document how this is different from a react bootstrap dropdown
+ * Provide an abstraction over bootstrap dropdown.
+ * Making it easier to construct a dropdown with consistent look and feel.
  */
 const SelectableDropdown = (props) => {
   const {
@@ -17,7 +18,8 @@ const SelectableDropdown = (props) => {
     values,
     valueToDisplay,
     bsStyle,
-    bsSize
+    bsSize,
+    disabled
   } = props
   const items = values.map((v, index) => {
     return (
@@ -32,7 +34,7 @@ const SelectableDropdown = (props) => {
   const titleValue = title || selection || ''
   return (
     <DropdownButton id={id} bsStyle={bsStyle}
-      bsSize={bsSize} title={titleValue}>
+      bsSize={bsSize} title={titleValue} disabled={disabled}>
       {items}
     </DropdownButton>
   )
@@ -42,11 +44,12 @@ SelectableDropdown.propTypes = {
   onSelectDropdownItem: PropTypes.func.isRequired,
   selectedValue: PropTypes.any,
   values: PropTypes.arrayOf(PropTypes.any).isRequired,
-  // optinal function to convert value to display string
+  // optional function to convert value to display string
   valueToDisplay: PropTypes.func.isRequired,
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   bsStyle: PropTypes.string,
-  bsSize: PropTypes.string
+  bsSize: PropTypes.string,
+  disabled: PropTypes.bool
 }
 SelectableDropdown.defaultProps = {
   bsStyle: 'default',

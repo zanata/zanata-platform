@@ -27,9 +27,11 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.TextFlowSearchServiceImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl;
@@ -108,6 +110,11 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     protected EntityManager getEm() {
         return super.getEm();
     }
+
+    @Produces
+    @Authenticated
+    @Mock
+    protected HAccount authenticatedAccount;
 
     @Override
     @Produces

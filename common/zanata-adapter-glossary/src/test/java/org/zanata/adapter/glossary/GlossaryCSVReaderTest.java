@@ -29,15 +29,12 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.service.GlossaryResource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -76,14 +73,12 @@ public class GlossaryCSVReaderTest {
                 reader.extractGlossary(br,
                         GlossaryResource.GLOBAL_QUALIFIED_NAME);
 
-        assertThat(glossaries.keySet().size(), equalTo(2));
-        assertThat(glossaries.keySet(),
-                contains(LocaleId.ES, new LocaleId("zh")));
+        assertThat(glossaries.keySet()).hasSize(2);
+        assertThat(glossaries.keySet()).contains(LocaleId.ES, new LocaleId("zh"));
 
         for (Map.Entry<LocaleId, List<GlossaryEntry>> entry : glossaries
                 .entrySet()) {
-            assertThat(entry.getValue().size(),
-                    Matchers.equalTo(entryPerLocale));
+            assertThat(entry.getValue()).hasSize(entryPerLocale);
         }
     }
 
@@ -102,13 +97,11 @@ public class GlossaryCSVReaderTest {
         Map<LocaleId, List<GlossaryEntry>> glossaries =
                 reader.extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
 
-        assertThat(glossaries.keySet().size(), equalTo(2));
-        assertThat(glossaries.keySet(),
-                contains(LocaleId.ES, new LocaleId("zh")));
+        assertThat(glossaries.keySet()).hasSize(2);
+        assertThat(glossaries.keySet()).contains(LocaleId.ES, new LocaleId("zh"));
         for (Map.Entry<LocaleId, List<GlossaryEntry>> entry : glossaries
             .entrySet()) {
-            assertThat(entry.getValue().size(),
-                Matchers.equalTo(entryPerLocale));
+            assertThat(entry.getValue()).hasSize(entryPerLocale);
         }
     }
 }

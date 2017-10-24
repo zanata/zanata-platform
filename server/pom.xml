@@ -2160,7 +2160,44 @@
               </target>
             </configuration>
           </execution>
+          <execution>
+            <!-- This can be run separately with mvn antrun:run@detekt -->
+            <id>detekt</id>
+            <!-- Profiles should use 'test' to activate this -->
+            <phase>none</phase>
+            <goals><goal>run</goal></goals>
+            <configuration>
+              <target name="detekt">
+                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
+                    classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                  <arg value="--config-resource"/>
+                  <arg value="zanata-build-tools/detekt.yml"/>
+                  <arg value="--project"/>
+                  <arg value="${basedir}/src"/>
+                  <arg value="--filters"/>
+                  <arg value=".*test.*"/>
+                </java>
+              </target>
+            </configuration>
+          </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-cli</artifactId>
+            <version>1.0.0.M11</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-formatting</artifactId>
+            <version>1.0.0.M11</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
 
@@ -2201,12 +2238,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <ignores>
-            <!-- not part of java18 sig, but seems to be public API -->
-            <ignore>jdk.nashorn.api.*</ignore>
-          </ignores>
-        </configuration>
       </plugin>
 
         <plugin>
@@ -2393,49 +2424,40 @@
           <value>true</value>
         </property>
       </activation>
+      <!-- With kotlin-maven-plugin 1.2, we should be able to use <args>-Werror</args> -->
       <build>
         <plugins>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--<version>1.8</version>-->
             <executions>
               <execution>
-                <!-- This can be run separately with mvn antrun:run@detekt -DstaticAnalysis -->
                 <id>detekt</id>
-                <phase>verify</phase>
-                <configuration>
-                  <target name="detekt">
-                    <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
-                        classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
-                      <arg value="--config-resource"/>
-                      <arg value="zanata-build-tools/detekt.yml"/>
-                      <arg value="--project"/>
-                      <arg value="${basedir}/src"/>
-                      <arg value="--filters"/>
-                      <arg value=".*test.*"/>
-                    </java>
-                  </target>
-                </configuration>
-                <goals><goal>run</goal></goals>
+                <phase>test</phase>
               </execution>
             </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.zanata</groupId>
-                <artifactId>build-tools</artifactId>
-                <version>${project.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>io.gitlab.arturbosch.detekt</groupId>
-                <artifactId>detekt-cli</artifactId>
-                <version>1.0.0.M11</version>
-              </dependency>
-              <dependency>
-                <groupId>io.gitlab.arturbosch.detekt</groupId>
-                <artifactId>detekt-formatting</artifactId>
-                <version>1.0.0.M11</version>
-              </dependency>
-            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>staticAnalysisCI</id>
+      <activation>
+        <property>
+          <name>staticAnalysisCI</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>detekt</id>
+                <phase>test</phase>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

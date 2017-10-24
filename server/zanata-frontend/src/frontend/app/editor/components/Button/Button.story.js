@@ -33,28 +33,28 @@ storiesOf('Button', module)
       <li>
         <Button title="Click should trigger onClick action"
           onClick={action('onClick')}
-          className="Button Button--primary">
+          className="EditorButton Button--primary">
           Button Button--primary
         </Button>
       </li>
       <li>
         <Button title="Click should trigger onClick action"
           onClick={action('onClick')}
-          className="Button Button--success">
+          className="EditorButton Button--success">
           Button Button--success
         </Button>
       </li>
       <li>
         <Button title="Click should trigger onClick action"
           onClick={action('onClick')}
-          className="Button Button--unsure">
+          className="EditorButton Button--unsure">
           Button Button--unsure
         </Button>
       </li>
       <li>
         <Button title="Click should trigger onClick action"
           onClick={action('onClick')}
-          className="Button Button--neutral">
+          className="EditorButton Button--neutral">
           Button Button--neutral
         </Button>
       </li>
@@ -63,7 +63,7 @@ storiesOf('Button', module)
   .add('rounded and styled', withInfo()(() => (
     <Button title="Styles from suggestion panel button"
       onClick={action('onClick')}
-      className="Button Button--small u-rounded Button--primary">
+      className="EditorButton Button--small u-rounded Button--primary">
       Button Button--small u-rounded Button--primary
     </Button>
   )))

@@ -80,55 +80,55 @@ export class RejectTranslationModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <div className="flex">
-          <span id="criteriatitle">
+          <span id="CriteriaTitle">
             Criteria
           </span>
           <Dropdown enabled isOpen={this.state.dropdownOpen}
             onToggle={this.toggleDropdown}
-            className="dropdown-menu criteria">
+            className="dropdown-menu Criteria">
             <Dropdown.Button>
-            <a className="Dropdown-item">
+            <a className="EditorDropdown-item">
               {this.props.criteria}
               <Icon className="n1" name="chevron-down" />
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
               <ul>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
                   Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
                   Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring,
                   readability, word choice, not natural, too literal, style and tone, etc)
                 </li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
                   Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>Style Guide & Glossary Violations</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown}>Style Guide & Glossary Violations</li>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
                   Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)</li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
                   Other (reason may be in comment section/history if necessary)</li>
               </ul>
             </Dropdown.Content>
           </Dropdown>
-          <span className="priority-dd">
+          <span className="PriorityDropdown">
             <Icon name="warning" className="s2 u-textWarning" />
-            <span id="prioritytitle">Priority</span>
+            <span id="PriorityTitle">Priority</span>
           <Dropdown enabled isOpen={this.state.dropdownOpen2}
                     onToggle={this.toggleDropdown2}
                     className="dropdown-menu priority">
             <Dropdown.Button>
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 <span className={textState}>{this.props.priority}</span>
                 <Icon className="n1" name="chevron-down" />
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
               <ul>
-                <li className="Dropdown-item" onClick={this.toggleDropdown2}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown2}>
                   <span>Minor</span></li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown2}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown2}>
                     <span className="u-textWarning">Major</span></li>
-                <li className="Dropdown-item" onClick={this.toggleDropdown2}>
+                <li className="EditorDropdown-item" onClick={this.toggleDropdown2}>
                     <span className="u-textDanger">Critical</span></li>
               </ul>
             </Dropdown.Content>
@@ -140,15 +140,15 @@ export class RejectTranslationModal extends Component {
              placeholder="Provide a comment for why this translation has been rejected"
              cols="50"
              rows="10"
-             className='InputGroup-input is-focused InputGroup--outlined commenting' />
+             className='EditorInputGroup-input is-focused InputGroup--outlined Commenting' />
         </Modal.Body>
         <Modal.Footer>
           <span>
             <Row>
-              <Button className="Button Button--large u-rounded Button--secondary">
+              <Button className="EditorButton Button--large u-rounded Button--secondary">
                 Cancel
               </Button>
-              <Button className="Button Button--large u-rounded Button--primary">
+              <Button className="EditorButton Button--large u-rounded Button--primary">
                 Reject translation
               </Button>
             </Row>

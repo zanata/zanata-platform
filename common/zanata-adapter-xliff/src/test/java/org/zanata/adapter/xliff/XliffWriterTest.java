@@ -1,9 +1,7 @@
 package org.zanata.adapter.xliff;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,12 +44,9 @@ public class XliffWriterTest {
         TextFlow lastTextFlow =
                 doc.getTextFlows().get(doc.getTextFlows().size() - 1);
 
-        assertThat(firstTextFlow.getContents(),
-                equalTo(asList("Translation Unit 1")));
-        assertThat(secondTextFlow.getContents(),
-                equalTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)")));
-        assertThat(lastTextFlow.getContents(),
-                equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) ")));
+        assertThat(firstTextFlow.getContents()).isEqualTo(asList("Translation Unit 1"));
+        assertThat(secondTextFlow.getContents()).isEqualTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)"));
+        assertThat(lastTextFlow.getContents()).isEqualTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) "));
     }
 
     @Test
@@ -63,7 +58,7 @@ public class XliffWriterTest {
                 reader.extractTemplate(generatedFile, LocaleId.EN_US,
                         generatedDocName, ValidationType.XSD.toString());
 
-        assertThat(doc.getTextFlows().size(), is(7));
+        assertThat(doc.getTextFlows().size()).isEqualTo(7);
     }
 
     private void prepareTemplateDoc() throws FileNotFoundException {

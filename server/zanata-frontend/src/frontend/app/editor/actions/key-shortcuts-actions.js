@@ -1,5 +1,6 @@
 import { getSaveButtonStatus, hasTranslationChanged }
   from '../utils/phrase-util'
+import { createAction } from 'redux-actions'
 import {
   copyFromAlignedSource,
   undoEdit,
@@ -171,6 +172,12 @@ function saveAsCurrentActionCreator (event) {
 }
 
 /**
+* Indicate that save-as mode is active or inactive.
+*/
+export const SET_SAVE_AS_MODE = 'SET_SAVE_AS_MODE'
+export const setSaveAsMode = createAction(SET_SAVE_AS_MODE)
+
+/**
  * This is to mimic sequence shortcut.
  * e.g. press ctrl-shift-s then press 'n' to save as 'needs work'.
  */
@@ -182,14 +189,6 @@ function saveAsModeActionCreator (event) {
       dispatch(setSaveAsMode(true))
     }
   }
-}
-
-export const SET_SAVE_AS_MODE = Symbol('SET_SAVE_AS_MODE')
-/**
- * Indicate that save-as mode is active or inactive.
- */
-export function setSaveAsMode (active) {
-  return { type: SET_SAVE_AS_MODE, active }
 }
 
 function saveAs (status) {

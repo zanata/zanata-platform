@@ -24,6 +24,9 @@ package org.zanata.util;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.Assertions.*;
 
 /**
@@ -45,14 +48,31 @@ public class CommonMarkRendererTest {
     }
 
     @Test
-    // 10,000 iterations should run in a few seconds
-    // if you reuse the ScriptEngine and CompiledScript correctly
-//    @Repeat(times = 10_000)
     public void testRenderToHtmlUnsafe() throws Exception {
         String source = "This text contains an *unsafe* <script>script</script> element.";
         String expected = "<p>This text contains an <em>unsafe</em> <script>script</script> element.</p>\n";
         String rendered = renderer.renderToHtmlUnsafe(source);
         assertThat(rendered).isEqualTo(expected);
+    }
+
+    @Test
+    public void testRenderToHtmlMultithreaded() throws Exception {
+        // 10,000 iterations runs in about 10 seconds on my hardware, but
+        // we don't want to slow down the build that much:
+        int iterations = 100;
+        String source = "This text contains an *unsafe* <script>script</script> element.";
+        String expected = "<p>This text contains an <em>unsafe</em> <script>script</script> element.</p>\n";
+
+        // This is simplistic as a thread safety test, but it is enough to
+        // expose a problem if you change renderToHtmlUnsafe to use
+        // engine.getBindings(ScriptContext.ENGINE_SCOPE).
+        for (int i = 0; i < iterations; i++) {
+            ForkJoinPool.commonPool().execute(() -> {
+                String rendered = renderer.renderToHtmlUnsafe(source);
+                assertThat(rendered).isEqualTo(expected);
+            });
+        }
+        ForkJoinPool.commonPool().awaitQuiescence(20, TimeUnit.SECONDS);
     }
 
     // This test fails with commonmark.js 0.18.1 as minified by

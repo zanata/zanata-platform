@@ -45,6 +45,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;
@@ -83,6 +84,9 @@ public class VersionGroupHomeAction extends AbstractSortAction
     private ProjectIterationDAO projectIterationDAO;
     @Inject
     private LocaleDAO localeDAO;
+    @Inject
+    private ZanataIdentity identity;
+
     private String slug;
     private boolean pageRendered = false;
     private HLocale selectedLocale;
@@ -450,9 +454,6 @@ public class VersionGroupHomeAction extends AbstractSortAction
 
     public String getMissingLocaleTitle(HProjectIteration version) {
         int size = getMissingLocale(version).size();
-        if (size > 1) {
-            return msgs.format("jsf.LanguagesMissingProject", size);
-        }
         return msgs.format("jsf.LanguageMissingProject", size);
     }
 
@@ -465,7 +466,7 @@ public class VersionGroupHomeAction extends AbstractSortAction
         if (getMissingLocaleVersionMap().containsKey(localeId)) {
             return getMissingLocaleVersionMap().get(localeId);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public String getMissingVersionTitle(LocaleId localeId) {
@@ -510,6 +511,10 @@ public class VersionGroupHomeAction extends AbstractSortAction
         }
         Collections.sort(projectIterations, versionComparator);
         return projectIterations;
+    }
+
+    public boolean canViewProject(HProjectIteration version) {
+        return identity.hasPermission(version, "read");
     }
 
     @Override

@@ -69,7 +69,12 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
         for (int i = 0; i < sourceVars.size(); i++) {
             String sourceVar = sourceVars.get(i);
             int position = i + 1;
-            result.add(sourceVar.replace("%", "%" + position + "$"));
+            String replacement = "%" + position + "$";
+            if (!sourceVar.contains(replacement)) {
+                result.add(sourceVar.replace("%", replacement));
+            } else {
+                result.add(sourceVar);
+            }
         }
         return result;
     }

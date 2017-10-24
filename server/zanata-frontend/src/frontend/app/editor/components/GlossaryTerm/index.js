@@ -42,7 +42,7 @@ class GlossaryTerm extends React.Component {
 
     return (
       <tr key={index}>
-        <td data-filetype="text" className="gloss-text long-string">
+        <td data-filetype="text" className="GlossaryText long-string">
           <OverlayTrigger placement="top" overlay={sourceTip}>
             <Button bsStyle="link">
               <span>
@@ -54,7 +54,7 @@ class GlossaryTerm extends React.Component {
             </Button>
           </OverlayTrigger>
         </td>
-        <td data-filetype="text" className="gloss-text long-string">
+        <td data-filetype="text" className="GlossaryText long-string">
           <OverlayTrigger placement="top" overlay={targetTip}>
             <Button bsStyle="link">
               <span>
@@ -73,7 +73,7 @@ class GlossaryTerm extends React.Component {
           <Button
             onClick={this.copy}
             disabled={isEmpty(term.target)}
-            className="Button Button--small u-rounded Button--primary">
+            className="EditorButton Button--small u-rounded Button--primary">
             Copy
           </Button>
         </td>

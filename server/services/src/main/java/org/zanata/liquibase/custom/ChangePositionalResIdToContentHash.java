@@ -74,7 +74,7 @@ public class ChangePositionalResIdToContentHash implements CustomTaskChange {
     private static final String selectTextFlowsSql =
             "select id, contentHash, pos, resId, obsolete from HTextFlow where document_id = ? " +
                     "order by pos";
-    private static final int ID_COLUMN = 1;
+//    private static final int ID_COLUMN = 1;
     private static final int CONTENT_HASH_COLUMN = 2;
     private static final int POS_COLUMN = 3;
     private static final int RES_ID_COLUMN = 4;

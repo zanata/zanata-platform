@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.model.*;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.security.ZanataIdentity;
@@ -42,6 +43,8 @@ public class GlossarySearchServiceImplTest extends ZanataTest {
     private GlossaryDAO glossaryDAO;
     @Produces @Mock
     private LocaleService localeServiceImpl;
+    @Produces @Mock
+    private ProjectDAO projectDAO;
     @Produces @Mock
     private UrlUtil urlUtil;
     @Produces @ContextPath

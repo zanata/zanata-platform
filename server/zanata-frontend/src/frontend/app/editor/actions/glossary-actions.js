@@ -2,6 +2,7 @@
  * Actions related to the glossary.
  */
 
+import { createAction } from 'redux-actions'
 import { debounce, isEmpty } from 'lodash'
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
 
@@ -32,6 +33,10 @@ const dispatchFindGlossaryTermsWhenInactive = debounce(
       dispatch(findGlossaryTerms(searchText))
     }, 250)
 
+/* Action to set the current glossary search text. Does not trigger a search. */
+export const glossarySearchTextChange =
+  createAction(GLOSSARY_SEARCH_TEXT_CHANGE)
+
 /* Update glossary search text in state and trigger a search when text stops
  * being entered. */
 export function glossarySearchTextEntered (searchText) {
@@ -56,22 +61,7 @@ export function findGlossaryTermsByPhraseId (phraseId) {
   }
 }
 
-/* Action to set the current glossary search text. Does not trigger a search. */
-export function glossarySearchTextChange (searchText) {
-  return {
-    type: GLOSSARY_SEARCH_TEXT_CHANGE,
-    text: searchText
-  }
-}
-
-export function copyGlossaryTerm (termTranslation) {
-  return {
-    type: COPY_GLOSSARY_TERM,
-    payload: {
-      termTranslation
-    }
-  }
-}
+export const copyGlossaryTerm = createAction(COPY_GLOSSARY_TERM)
 
 const MAX_GLOSSARY_TERMS = 15
 
@@ -114,19 +104,8 @@ function findGlossaryTerms (searchText) {
   }
 }
 
-function setGlossaryDetailsIndex (index) {
-  return {
-    type: SET_GLOSSARY_DETAILS_INDEX,
-    payload: { index }
-  }
-}
-
-export function showGlossaryDetails (show) {
-  return {
-    type: SHOW_GLOSSARY_DETAILS,
-    payload: { show }
-  }
-}
+const setGlossaryDetailsIndex = createAction(SET_GLOSSARY_DETAILS_INDEX)
+export const showGlossaryDetails = createAction(SHOW_GLOSSARY_DETAILS)
 
 /**
  * Show the glossary details modal and fetch details from the API.
@@ -166,9 +145,7 @@ function getGlossaryDetails (term) {
             type: GLOSSARY_DETAILS_SUCCESS,
             meta: { sourceIdList }
           },
-          {
-            type: GLOSSARY_DETAILS_FAILURE
-          }
+          GLOSSARY_DETAILS_FAILURE
         ]
       }
     })

@@ -22,13 +22,12 @@
 package org.zanata.client.commands.push;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,12 +64,12 @@ public class GettextPushStrategyTest {
                         opts);
 
         File deTransFile = strategy.getTransFile(deMapping, "po/message");
-        assertThat(deTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "po/de.po")));
+        assertThat(deTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "po/de.po"));
 
         File zhTransFile = strategy.getTransFile(zhMapping, "po/message");
-        assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "po/zh_Hans.po")));
+        assertThat(zhTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "po/zh_Hans.po"));
     }
 
     @Test
@@ -85,11 +84,11 @@ public class GettextPushStrategyTest {
                         opts);
 
         File deTransFile = strategy.getTransFile(deMapping, "po/message");
-        assertThat(deTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "po/de.po")));
+        assertThat(deTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "po/de.po"));
 
         File zhTransFile = strategy.getTransFile(zhMapping, "po/message");
-        assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule
-                .getTransDir(), "po/zh_Hans.po")));
+        assertThat(zhTransFile).isEqualTo(new File(tempFileRule
+                .getTransDir(), "po/zh_Hans.po"));
     }
 }

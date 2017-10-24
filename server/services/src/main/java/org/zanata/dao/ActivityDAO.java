@@ -120,6 +120,7 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
         return query.list();
     }
 
+    @SuppressWarnings("unchecked")
     public List<Activity> findLatestActivities(long personId, int offset,
             int maxResults) {
         Query query =

@@ -34,13 +34,15 @@ class PlainSuggestionContents extends Component {
     return (
       <div className={className}>
         <div className="TransUnit-status" />
-        {displayHeader && <span className="source-heading">Source</span>}
+        {displayHeader && <span className="TransUnit-sourceHeading">
+        Source</span>}
         <div className="TransUnit-panel TransUnit-source">
           <SuggestionContents
             plural={sourceContents.length > 1}
             contents={sourceContents} />
         </div>
-        {displayHeader && <span className="target-heading">Translation</span>}
+        {displayHeader && <span className="TransUnit-targetHeading">
+        Translation</span>}
         <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
           <SuggestionContents
             plural={sourceContents.length > 1}

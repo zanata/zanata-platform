@@ -233,7 +233,7 @@ public class TranslationMemoryResourceService
      */
     @Async
     public Future<Object> deleteTranslationUnitsUnguardedAsync(String slug,
-            AsyncTaskHandle handle) {
+            AsyncTaskHandle<?> handle) {
         // TODO the handle is not being used for progress tracking in the
         // current implementation
         return AsyncTaskResult
@@ -250,12 +250,12 @@ public class TranslationMemoryResourceService
         return tmLock;
     }
 
-    private Response buildTMX(String jobName,
-            @Nonnull CloseableIterator<? extends ITextFlow> iter,
+    private <TF extends ITextFlow> Response buildTMX(String jobName,
+            @Nonnull CloseableIterator<TF> iter,
             @Nullable LocaleId srcLocale, @Nullable LocaleId locale,
             @Nonnull String filename) {
-        TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(jobName,
-                iter, new TranslationsTMXExportStrategy(srcLocale, locale));
+        TMXStreamingOutput<TF> output = new TMXStreamingOutput<>(jobName,
+                iter, new TranslationsTMXExportStrategy<>(srcLocale, locale));
         return okResponse(filename, output);
     }
 

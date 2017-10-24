@@ -1,3 +1,4 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import dropdownReducer from './dropdown-reducer'
@@ -25,7 +26,7 @@ describe('dropdown-reducer test', () => {
     const initial = dropdownReducer(undefined, { type: 'any' })
     const localeOpen = dropdownReducer(initial, {
       type: OPEN_DROPDOWN,
-      key: initial.localeKey
+      payload: initial.localeKey
     })
     expect(localeOpen).toEqual(expect.objectContaining({
       openDropdownKey: initial.localeKey
@@ -33,7 +34,7 @@ describe('dropdown-reducer test', () => {
 
     expect(dropdownReducer(localeOpen, {
       type: OPEN_DROPDOWN,
-      key: initial.docsKey
+      payload: initial.docsKey
     })).toEqual(expect.objectContaining({
       openDropdownKey: initial.docsKey
     }))
@@ -43,7 +44,7 @@ describe('dropdown-reducer test', () => {
     const initial = dropdownReducer(undefined, { type: 'any' })
     const localeOpen = dropdownReducer(initial, {
       type: OPEN_DROPDOWN,
-      key: initial.localeKey
+      payload: initial.localeKey
     })
     expect(dropdownReducer(localeOpen, {
       type: CLOSE_DROPDOWN
@@ -56,7 +57,7 @@ describe('dropdown-reducer test', () => {
     const initial = dropdownReducer(undefined, { type: 'any' })
     const toggleAction = {
       type: TOGGLE_DROPDOWN,
-      key: initial.localeKey
+      payload: initial.localeKey
     }
     const localeOpen = dropdownReducer(initial, toggleAction)
     expect(localeOpen).toEqual(expect.objectContaining({

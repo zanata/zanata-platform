@@ -301,7 +301,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
                     newDocumentId, batchStart, batchLength));
         } catch (Exception e) {
             log.warn("exception during copy text flow", e);
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
     }
 

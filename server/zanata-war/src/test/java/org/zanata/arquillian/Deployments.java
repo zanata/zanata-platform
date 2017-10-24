@@ -23,8 +23,6 @@ package org.zanata.arquillian;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.function.Consumer;
 
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
@@ -85,7 +83,6 @@ public class Deployments {
     private static void printArchiveContents(Archive<?> archive) {
         // We could just use archive.toString(verbose=true), but it's
         // nicer to have sorting.
-        @SuppressWarnings("unchecked")
         ArrayList<ArchivePath> paths =
                 new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);

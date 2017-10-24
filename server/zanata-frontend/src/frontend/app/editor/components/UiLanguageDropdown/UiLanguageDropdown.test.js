@@ -49,22 +49,22 @@ describe('UiLanguageDropdownTest', () => {
         <Dropdown.Content>
           <ul>
             <li key="st">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Sesotho
               </a>
             </li>
             <li key="tn">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Setswana
               </a>
             </li>
             <li key="sw">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Swahili
               </a>
             </li>
             <li key="zu">
-              <a className="Dropdown-item">
+              <a className="EditorDropdown-item">
                 Zulu
               </a>
             </li>

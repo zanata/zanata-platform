@@ -1,6 +1,6 @@
 {
   "name": "zanata-frontend",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Zanata front-end package",
   "main": "index.js",
   "scripts": {
@@ -21,10 +21,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/zanata/zanata-platform.git"
-  },
-  "engines": {
-    "node": "5.6.0",
-    "yarn": "0.18.1"
   },
   "license": "LGPL-2.1",
   "devDependencies": {
@@ -60,7 +56,6 @@
     "eslint-plugin-react": "4.2.3",
     "eslint-plugin-standard": "1.3.2",
     "extract-text-webpack-plugin": "3.0.0",
-    "fake-zanata-server": "3.0.5",
     "faucet": "0.0.1",
     "flow-bin": "0.54.1",
     "isomorphic-fetch": "2.2.1",
@@ -97,6 +92,7 @@
   },
   "dependencies": {
     "babel-polyfill": "6.9.1",
+    "caniuse-lite": "1.0.30000745",
     "chart.js": "2.6.0",
     "check-node-version": "2.1.0",
     "cli-color": "1.2.0",
@@ -115,6 +111,8 @@
     "moment-range": "2.2.0",
     "normalize.css": "3.0.1",
     "normalizr": "2.1.0",
+    "postcss": "6.0.13",
+    "postcss-cssnext": "3.0.2",
     "prop-types": "15.5.10",
     "react": "15.6.1",
     "react-autosuggest": "9.0.1",
@@ -141,6 +139,7 @@
     "redux-sac": "0.5.3",
     "redux-thunk": "1.0.3",
     "redux-watch": "1.1.1",
+    "stylelint": "8.2.0",
     "suitcss-components-button": "4.0.0",
     "suitcss-components-button-group": "2.2.0",
     "suitcss-components-grid": "2.0.1",

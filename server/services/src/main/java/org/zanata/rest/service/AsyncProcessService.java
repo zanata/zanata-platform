@@ -175,7 +175,7 @@ public class AsyncProcessService {
     @POST
     @Path("cancel/key/{keyId}")
     public Response cancelAsyncProcess(@PathParam("keyId") String keyId) {
-        AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
+        AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

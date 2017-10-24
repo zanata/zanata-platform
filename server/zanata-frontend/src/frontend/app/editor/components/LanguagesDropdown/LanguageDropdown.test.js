@@ -63,25 +63,25 @@ describe('LanguageDropdownTest', () => {
           <ul>
             <li key="wes">
               <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=wes"
-                 className="Dropdown-item">
+                 className="EditorDropdown-item">
                 Westron
               </a>
             </li>
             <li key="roh">
               <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=roh"
-                 className="Dropdown-item">
+                 className="EditorDropdown-item">
                 Rohirric
               </a>
             </li>
             <li key="khu">
               <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=khu"
-                 className="Dropdown-item">
+                 className="EditorDropdown-item">
                 Khuzdul
               </a>
             </li>
             <li key="val">
               <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=val"
-                 className="Dropdown-item">
+                 className="EditorDropdown-item">
                 Valarin
               </a>
             </li>

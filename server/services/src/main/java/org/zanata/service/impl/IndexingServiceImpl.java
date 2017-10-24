@@ -130,7 +130,7 @@ public class IndexingServiceImpl implements IndexingService {
      */
     private int getTotalOperations(FullTextSession session,
             Map<Class<?>, ReindexClassOptions> indexingOptions,
-            AsyncTaskHandle handle) {
+            AsyncTaskHandle<?> handle) {
         // set up progress counter
         int totalOperations = 0;
         for (Map.Entry<Class<?>, ReindexClassOptions> entry : indexingOptions
@@ -151,8 +151,9 @@ public class IndexingServiceImpl implements IndexingService {
         return totalOperations;
     }
 
+    @SuppressWarnings("unchecked")
     private <T> ClassIndexer<T> getIndexer(Class<T> clazz,
-            AsyncTaskHandle handle) {
+            AsyncTaskHandle<?> handle) {
         AbstractIndexingStrategy<T> strategy;
         // TODO add a strategy which uses TransMemoryStreamingDAO
         if (clazz.equals(HTextFlowTarget.class)) {

@@ -7,6 +7,9 @@
   h1 {
     height: 1.1em;
   }
+  .h1, h1 {
+    font-weight: 500 !important;
+  }
   .g {
     align-self: center;
     padding-bottom: 1rem;
@@ -17,7 +20,7 @@
     background-color: transparent;
     border: none;
     outline: none;
-    padding: 0.75rem
+    padding: 0.75rem;
   }
   .bg--pop-highest thead, &.bg--pop-highest tbody {
     border: 1px solid rgba(32, 113, 138, .15);
@@ -56,7 +59,18 @@
   table .projectWideSearchResultsDocumentBody {
     display: table !important;
   }
+  // Bugfix for a container, do not remove
   .GNM0BIKDBN {
     min-width: unset;
+  }
+  // GWT cancel buttons at bottom of pages
+  form .button.button--link {
+    padding: 0.1875em 0.75em
+  }
+  #cacheStatisticsTable {
+    overflow: auto;
+    overflow-x: scroll;
+    width: 48rem;
+    font-size: 0.875rem;
   }
 }

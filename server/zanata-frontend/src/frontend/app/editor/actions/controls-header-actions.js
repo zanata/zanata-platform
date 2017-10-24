@@ -1,15 +1,14 @@
 import { getLocation, getPageIndex, getMaxPageIndex } from '../selectors'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
+import { createAction } from 'redux-actions'
 
 /* Adjust the page number so it is in the valid range.
  * Dispatch after changing the filter.
  */
-export const CLAMP_PAGE = Symbol('CLAMP_PAGE')
-export function clampPage () {
-  return { type: CLAMP_PAGE }
-}
+export const CLAMP_PAGE = 'CLAMP_PAGE'
+export const clampPage = createAction(CLAMP_PAGE)
 
-export const UPDATE_PAGE = Symbol('UPDATE_PAGE')
+export const UPDATE_PAGE = 'UPDATE_PAGE'
 
 export function firstPage () {
   return (dispatch, getState) => {
@@ -46,5 +45,5 @@ function updatePage (dispatch, location, pageIndex) {
   replaceRouteQuery(location, {
     page: pageIndex + 1
   })
-  dispatch({type: UPDATE_PAGE, page: pageIndex})
+  dispatch(createAction(UPDATE_PAGE)(pageIndex))
 }

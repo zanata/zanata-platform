@@ -21,7 +21,7 @@
 
 package org.zanata.client.commands.push;
 
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,7 +31,6 @@ import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 import java.io.File;
 import java.io.IOException;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -105,8 +104,7 @@ public class XliffStrategyTest {
         verify(visitor).visit(eq(deMapping), transResourceCaptor.capture());
         verify(visitor).visit(eq(zhMapping), transResourceCaptor.capture());
         verify(reader, times(2)).extractTarget(fileCapture.capture());
-        assertThat(fileCapture.getAllValues(),
-                Matchers.contains(deTransFile, zhTransFile));
+        assertThat(fileCapture.getAllValues()).contains(deTransFile, zhTransFile);
 
         verifyNoMoreInteractions(visitor);
     }
@@ -140,8 +138,7 @@ public class XliffStrategyTest {
         verify(visitor).visit(eq(deMapping), transResourceCaptor.capture());
         verify(visitor).visit(eq(zhMapping), transResourceCaptor.capture());
         verify(reader, times(2)).extractTarget(fileCapture.capture());
-        assertThat(fileCapture.getAllValues(),
-                Matchers.contains(deTransFile, zhTransFile));
+        assertThat(fileCapture.getAllValues()).contains(deTransFile, zhTransFile);
 
         verifyNoMoreInteractions(visitor);
     }

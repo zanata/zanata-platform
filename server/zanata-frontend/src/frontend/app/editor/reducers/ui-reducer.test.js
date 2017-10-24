@@ -49,11 +49,11 @@ describe('ui-reducer test', () => {
   it('can set sidebar visibility', () => {
     const visible = uiReducer(undefined, {
       type: SET_SIDEBAR_VISIBILITY,
-      visible: true
+      payload: true
     })
     const invisible = uiReducer(visible, {
       type: SET_SIDEBAR_VISIBILITY,
-      visible: false
+      payload: false
     })
     expect(visible.panels.sidebar.visible).toEqual(true)
     expect(invisible.panels.sidebar.visible).toEqual(false)
@@ -62,7 +62,7 @@ describe('ui-reducer test', () => {
   it('can change UI locale', () => {
     const withLocale = uiReducer(undefined, {
       type: CHANGE_UI_LOCALE,
-      data: 'jp'
+      payload: 'jp'
     })
     expect(withLocale.selectedUiLocale).toEqual('jp')
   })
@@ -101,7 +101,7 @@ describe('ui-reducer test', () => {
   it('can record fetched UI locales', () => {
     const withUiLocales = uiReducer(undefined, {
       type: UI_LOCALES_FETCHED,
-      data: [
+      payload: [
         {
           localeId: 'en-US',
           displayName: 'English (United States)'
@@ -139,7 +139,7 @@ describe('ui-reducer test', () => {
   it('can record suggestion panel height change', () => {
     const changedHeight = uiReducer(undefined, {
       type: SUGGESTION_PANEL_HEIGHT_CHANGE,
-      percentageHeight: 0.4
+      payload: 0.4
     })
     expect(changedHeight.panels.suggestions.heightPercent).toEqual(0.4)
   })

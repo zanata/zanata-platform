@@ -342,9 +342,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 .setParameter("docId", docId);
         q.setComment("DocumentDAO.getByProjectIterationAndDocId");
         q.setCacheable(true);
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        HDocument doc = (HDocument) q.uniqueResult();
-        return doc;
+        return (HDocument) q.uniqueResult();
     }
 
     public List<HDocument> getByProjectIterationAndDocIdList(

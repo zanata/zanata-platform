@@ -6,7 +6,7 @@ import {
   Badge, Pagination
 } from 'react-bootstrap'
 import Helmet from 'react-helmet'
-import {debounce, find} from 'lodash'
+import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
 import {Icon, Notification, LoaderText} from '../../components'
@@ -99,9 +99,11 @@ class Languages extends Component {
     const totalPage = Math.floor(totalCount / size) +
       (totalCount % size > 0 ? 1 : 0)
 
+    const noResults = isEmpty(results)
+
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='page wideView'>
+      <div className='page wideView languages'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -119,11 +121,11 @@ class Languages extends Component {
             </h1>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary' bsSize='small'
+                <Button bsStyle='primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
-                    title='plus' />
+                    title='plus' />&nbsp;
                   Add new language
                 </Button>
                 <NewLanguageModal />
@@ -182,7 +184,15 @@ class Languages extends Component {
                       onSelect={handlePageChanged} />
                   </div>
                 </div>)}
-                {!loading &&
+                {noResults &&
+                  <div className='loader-loadingContainer'>
+                    <span className='u-textLoadingMuted'>
+                      <Icon name='language' />
+                    </span>
+                    <p className='glossaryText-muted'>No results</p>
+                  </div>
+                }
+                {!loading && !noResults &&
                   <div className='left-form u-tablePadding col-xs-12'>
                     <table className='table' id='languages-table'>
                       <thead>
