@@ -17,6 +17,7 @@ var postcssEsplit = require('postcss-esplit')
 // var postcssBemLinter = require('postcss-bem-linter')
 var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
+var ManifestPlugin = require('webpack-manifest-plugin')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
@@ -130,8 +131,8 @@ module.exports = function (env) {
 
     output: storybook ? undefined : dropUndef({
       path: join(__dirname, 'dist'),
-      filename: fullBuild ? '[name].[chunkhash].cache.js' : '[name].js',
-      chunkFilename: fullBuild ? '[name].[chunkhash].cache.js' : '[name].js',
+      filename: fullBuild ? '[name].[chunkhash:8].cache.js' : '[name].js',
+      chunkFilename: fullBuild ? '[name].[chunkhash:8].cache.js' : '[name].js',
       // includes comments in the generated code about where the code came from
       pathinfo: dev,
       // required for hot module replacement
@@ -216,7 +217,7 @@ module.exports = function (env) {
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
       new ExtractTextPlugin({
-        filename: '[name].[chunkhash].cache.css',
+        filename: '[name].[chunkhash:8].cache.css',
         // storybook should use the fallback: style-loader
         disable: storybook
       }),
@@ -261,7 +262,9 @@ module.exports = function (env) {
           // dist/messages/[locale-id].json
           langOutputDir: 'messages'
         })
-        : undefined
+        : undefined,
+
+      new ManifestPlugin()
     ]),
 
 

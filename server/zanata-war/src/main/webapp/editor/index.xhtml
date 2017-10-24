@@ -39,7 +39,7 @@
 
     <link type="image/x-icon" rel="shortcut icon"
         href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
-    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/editor.css"/>
+    <link type="text/css" rel="stylesheet" href="#{frontendAction.editorCss}"/>
     <link rel="stylesheet" type="text/css" async="async"
             href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
   </head>
@@ -68,7 +68,8 @@
     </script>
 
     <div id="appRoot"/>
-    <script type="text/javascript" src="#{request.contextPath}/editor.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="#{frontendAction.runtime}" charset="utf-8"></script>
+    <script type="text/javascript" src="#{frontendAction.editorJs}" charset="utf-8"></script>
   </body>
   </html>
 </f:view>
