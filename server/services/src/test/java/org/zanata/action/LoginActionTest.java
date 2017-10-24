@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.InSessionScope;
 import org.junit.Test;
@@ -29,6 +30,8 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.*;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.UrlUtil;
 
@@ -38,6 +41,7 @@ import static org.zanata.security.AuthenticationType.SAML2;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 
 import com.google.common.collect.Sets;
@@ -70,6 +74,22 @@ public class LoginActionTest implements Serializable {
     @Mock
     @Produces
     private UserRedirectBean userRedirect;
+
+    @Produces
+    @Named("dswidParam")
+    private String dswidParam = "";
+    @Produces
+    @Named("dswidQuery")
+    String dswidQuery = "";
+    @Produces
+    @ServerPath
+    private String serverPath = "/";
+    @Produces @Mock
+    private WindowContext windowContext;
+    @Produces
+    @ContextPath
+    String contextPath = "";
+
     @Produces
     private AuthenticationType authenticationType = AuthenticationType.INTERNAL;
 

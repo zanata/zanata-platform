@@ -28,6 +28,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.zanata.ApplicationConfiguration;
@@ -109,7 +111,7 @@ public class LoginAction implements Serializable {
                     "login() only supports internal, jaas, or kerberos authentication");
 
         }
-        if ("loggedIn".equals(loginResult)) {
+        if (StringUtils.equals(loginResult, "loggedIn")) {
             if (authenticationManager.isAuthenticated()
                     && authenticationManager.isNewUser()) {
                 return "createUser";
@@ -124,9 +126,10 @@ public class LoginAction implements Serializable {
                     && userRedirect.isRedirect()) {
                 // TODO [CDI] seam will create a conversation when you return
                 // view id directly or redirect to external url
-                return continueToPreviousUrl();
+                continueToPreviousUrl();
+                return "";
             }
-        } else if ("inactive".equals(loginResult)) {
+        } else if (StringUtils.equals(loginResult, "inactive")) {
             // TODO [CDI] commented out programmatically ending conversation
             // Conversation.instance().end();
             return "inactive";
@@ -134,14 +137,17 @@ public class LoginAction implements Serializable {
         return loginResult;
     }
 
-    private String continueToPreviousUrl() {
+    private void continueToPreviousUrl() {
         try {
-            FacesNavigationUtil.redirect(FacesContext.getCurrentInstance(),
-                    userRedirect.getUrl());
+            if (StringUtils.isNotBlank(userRedirect.getUrl())) {
+                FacesNavigationUtil.redirect(FacesContext.getCurrentInstance(),
+                        userRedirect.getUrl());
+            } else {
+                urlUtil.redirectToInternal(urlUtil.dashboardUrl());
+            }
         } catch (IOException e) {
-            return "dashboard";
+            urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
-        return "continue";
     }
 
     /**
@@ -197,9 +203,9 @@ public class LoginAction implements Serializable {
      * @return A string indicating where the user should be redirected when
      *         trying to access the login page.
      */
-    public String getLoginPageRedirect() {
+    public String init() {
         if (identity.isLoggedIn()) {
-            return "dashboard";
+            urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
         if (applicationConfiguration.isOpenIdAuth()
                 && applicationConfiguration.isSingleOpenIdProvider()) {

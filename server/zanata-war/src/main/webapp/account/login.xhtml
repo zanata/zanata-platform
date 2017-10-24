@@ -8,7 +8,7 @@
   template="/WEB-INF/template/template_nobanner.xhtml">
 
   <f:metadata>
-    <f:event type="preRenderView" listener="#{loginAction.getLoginPageRedirect()}"/>
+    <f:event type="preRenderView" listener="#{loginAction.init()}"/>
     <f:event type="preRenderView" listener="#{loginAction.redirectIfOnlySSOEnabled()}"/>
     <f:viewParam name="continue" value="#{userRedirect.encodedUrl}"/>
   </f:metadata>
