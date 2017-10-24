@@ -27,7 +27,7 @@
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
-    <picketlink.version>2.5.5.SP1</picketlink.version>
+    <picketlink.version>2.5.5.SP2</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
     <weld.version>2.3.2.Final</weld.version>
@@ -1941,8 +1941,9 @@
             <!-- JUnit tests (CDI-Unit or Mockito) -->
             <option>all-open:annotation=org.junit.runner.RunWith</option>
 
-            <!-- Create synthetic no-arg constructors for JPA entities: -->
+            <!-- Create synthetic no-arg constructors for JPA entities and CDI beans: -->
             <option>no-arg:annotation=javax.persistence.Entity</option>
+            <option>no-arg:annotation=javax.enterprise.context.NormalScope</option>
           </pluginOptions>
         </configuration>
         <dependencies>

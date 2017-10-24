@@ -108,12 +108,12 @@ class TranslationInfoPanel extends React.Component {
     const { glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
       // TODO kgough display as a badge instead of text in parens
-      ? <span>({this.props.glossaryCount})</span>
+      ? <span className="badge">{this.props.glossaryCount}</span>
       : undefined
     const glossaryTitle = (
       <span>
         <Icon name="glossary" className="s1 gloss-tab-svg" />
-        <span className="hide-md">Glossary{glossaryCountDisplay}</span>
+        <span className="hide-md">Glossary</span>{glossaryCountDisplay}
       </span>
     )
 
@@ -139,7 +139,7 @@ class TranslationInfoPanel extends React.Component {
         <div className="SidebarEditor-wrapper">
           {this.sidebarDetails()}
         </div>
-        <Tabs id="sidebartabs" defaultActiveKey={1}>
+        <Tabs id="SidebarEditor-tabsPane1" defaultActiveKey={1}>
           { /* <Tab eventKey={2} title={activityTitle}>
             <div className="sidebar-wrapper" id="tab1">
               Tab 1 content

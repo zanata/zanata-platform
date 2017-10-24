@@ -36,8 +36,9 @@ public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
     }
 
     /**
-     * Finds a Credentials instance by the user. NOTE: The user passed in is not
-     * the account user, is the user stored under the credentials.
+     * Finds a Credentials instance by the 'user' field. NOTE: The user passed
+     * in is not the account user, is the user stored under the credentials
+     * (e.g. uuid in the Red Hat SAML2 case).
      *
      * @param user
      *            The user registered under the credentials object.
@@ -50,4 +51,5 @@ public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
                 .setParameter("user", user)
                 .setComment("CredentialsDAO.findByUser").uniqueResult();
     }
+
 }

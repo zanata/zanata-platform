@@ -141,6 +141,8 @@ public class ZanataInit {
             log.info("SPNEGO/Kerberos authentication: enabled");
             authlogged = true;
         }
+        log.info("Configured authentications: {}", applicationConfiguration.getAuthTypes());
+
         if (!authlogged) {
             log.info("Using JAAS authentication");
         }

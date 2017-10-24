@@ -33,12 +33,18 @@ import org.zanata.security.*;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
+
 import static org.mockito.Mockito.*;
+import static org.zanata.security.AuthenticationType.INTERNAL;
+import static org.zanata.security.AuthenticationType.SAML2;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+
+import com.google.common.collect.Sets;
 
 /**
  * @author Damian Jansen
@@ -87,6 +93,10 @@ public class LoginActionTest implements Serializable {
     @Produces
     private AuthenticationType authenticationType = AuthenticationType.INTERNAL;
 
+    @Mock
+    @Produces
+    private UrlUtil urlUtil;
+
     @Inject
     private LoginAction loginAction;
 
@@ -107,5 +117,27 @@ public class LoginActionTest implements Serializable {
 
         verify(accountDAO, times(1)).getByEmail("aloy@test.com");
         verify(credentials, times(1)).setUsername("aloy");
+    }
+
+    @Test
+    public void willRedirectIfSaml2IsTheOnlyAuthType() {
+        when(applicationConfiguration.getAuthTypes()).thenReturn(
+                Sets.newHashSet(SAML2));
+        String ssoUrl = "/account/ssologin";
+        when(urlUtil.singleSignOnPage()).thenReturn(ssoUrl);
+
+        loginAction.redirectIfOnlySSOEnabled();
+
+        verify(urlUtil).redirectToInternal(ssoUrl);
+    }
+
+    @Test
+    public void willNotRedirectIfSaml2IsNotTheOnlyAuthType() {
+        when(applicationConfiguration.getAuthTypes()).thenReturn(
+                Sets.newHashSet(SAML2, INTERNAL));
+
+        loginAction.redirectIfOnlySSOEnabled();
+
+        verifyZeroInteractions(urlUtil);
     }
 }
