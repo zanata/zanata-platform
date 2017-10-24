@@ -17,6 +17,7 @@ import static com.lesfurets.jenkins.unit.MethodSignature.method;
 import static com.lesfurets.jenkins.unit.global.lib.GitSource.gitSource;
 import static com.lesfurets.jenkins.unit.global.lib.LibraryConfiguration.library;
 import static java.lang.Boolean.TRUE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // try 'extends BasePipelineTest' for debugging in case of weird Groovy exceptions
 public class TestJenkinsfile extends BasePipelineTestCPS {
@@ -131,9 +132,12 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                     return "JBOSS_HTTP_PORT=51081\nSMTP_PORT=34765\n";
                 }
                 if (script.startsWith("git ls-remote")) {
-// ScmGit.getPullRequestNum in zanata-pipeline-library uses this:
+// ScmGit.init in zanata-pipeline-library uses these:
                     if (script.endsWith("refs/pull/*/head")) {
                         return "1234567890123456789012345678901234567890 refs/pull/123/head";
+                    } else if (script.endsWith("refs/heads/*")) {
+                        return "fc2b7c527e4401c03bcaf2833739d16e77698ab6 refs/heads/master\n" +
+                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/ZNTA-2234-tag" ;
                     } else {
 // Notifier.groovy in zanata-pipeline-library uses this:
                         return "1234567890123456789012345678901234567890 abcdef\n";
@@ -154,7 +158,17 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
             runScript("../Jenkinsfile");
             printCallStack();
             assertJobStatusSuccess();
-            // TODO add assertions about call stack (but not too fragile)
+
+            boolean verified = getHelper().getCallStack()
+                    .stream()
+                    .filter(it -> it.getMethodName().equals("sh") && it.argsToString().contains("mvn"))
+                    // snoop on mvn commands in the stream
+//                    .peek(it -> System.out.printf("%s\n\n", it.argsToString()))
+                    .anyMatch(it -> {
+                        String args = it.argsToString();
+                        return args.contains("-Dappserver=") && args.contains("install");
+                    });
+            assertThat(verified).isTrue();
         } catch (CpsCallableInvocation e) {
             // if the script fails, we need the call stack to tell us where the problem is
             // (CpsCallableInvocation tells us very little)
