@@ -325,6 +325,10 @@ public class UrlUtil implements Serializable {
                 + dswidQuery;
     }
 
+    public String singleSignOnPage() {
+        return contextPath + "/account/ssologin" + dswidQuery;
+    }
+
     /**
      * Get home url with dswid parameter
      */

@@ -42,7 +42,7 @@ class GlossaryTerm extends React.Component {
 
     return (
       <tr key={index}>
-        <td data-filetype="text" className="GlossaryText long-string">
+        <td data-filetype="text" className="GlossaryText StringLong">
           <OverlayTrigger placement="top" overlay={sourceTip}>
             <Button bsStyle="link">
               <span>
@@ -54,7 +54,7 @@ class GlossaryTerm extends React.Component {
             </Button>
           </OverlayTrigger>
         </td>
-        <td data-filetype="text" className="GlossaryText long-string">
+        <td data-filetype="text" className="GlossaryText StringLong">
           <OverlayTrigger placement="top" overlay={targetTip}>
             <Button bsStyle="link">
               <span>

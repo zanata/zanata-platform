@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Set;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -77,6 +78,8 @@ public class LoginAction implements Serializable {
     private UserRedirectBean userRedirect;
     @Inject
     private AuthenticationType authenticationType;
+    @Inject
+    private UrlUtil urlUtil;
 
     @Inject
     private UrlUtil urlUtil;
@@ -214,6 +217,18 @@ public class LoginAction implements Serializable {
                     applicationConfiguration.getOpenIdProviderUrl());
         }
         return "login";
+    }
+
+    private boolean onlySaml2Enabled() {
+        Set<AuthenticationType> authTypes =
+                applicationConfiguration.getAuthTypes();
+        return authTypes.size() == 1 && authTypes.contains(AuthenticationType.SAML2);
+    }
+
+    public void redirectIfOnlySSOEnabled() {
+        if (onlySaml2Enabled()) {
+            urlUtil.redirectToInternal(urlUtil.singleSignOnPage());
+        }
     }
 
     public String getUsername() {

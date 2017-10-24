@@ -37,6 +37,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.dto.Project;
+
 import com.google.common.collect.ImmutableMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
