@@ -80,25 +80,32 @@ public class UrlUtil implements Serializable {
      * @return local part of url from original request
      */
     public String getLocalUrl(HttpServletRequest request) {
-        String url;
+        StringBuilder url = new StringBuilder();
         String queryString;
         if (request.getAttribute("javax.servlet.forward.request_uri") != null) {
-            url = (String) request
+            Object contextPath = request
                     .getAttribute("javax.servlet.forward.context_path");
-            url += (String) request
-                    .getAttribute("javax.servlet.forward.servlet_path");
+            if (contextPath != null) {
+                url.append((String) contextPath);
+            }
+            Object servletPath =
+                    request.getAttribute("javax.servlet.forward.servlet_path");
+            if (servletPath != null) {
+                url.append((String) servletPath);
+            }
             queryString = (String) request
                     .getAttribute("javax.servlet.forward.query_string");
         } else {
-            url = request.getRequestURI();
+            url.append(request.getRequestURI());
             queryString = request.getQueryString();
             log.warn("encountered non-rewritten url {} with query string {}",
-                    url, queryString);
+                    url.toString(), queryString);
         }
-        if (queryString != null && queryString.length() > 0) {
-            url += "?" + queryString;
+        if (StringUtils.isNotBlank(queryString)) {
+            url.append("?");
+            url.append(queryString);
         }
-        return url;
+        return url.toString();
     }
 
     /**
