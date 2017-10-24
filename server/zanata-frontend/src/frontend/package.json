@@ -17,7 +17,7 @@
     "storybook-build": "yarn run check && build-storybook -s ./dist",
     "test": "yarn run check && jest --coverage",
     "test:watch": "yarn run check && jest --watch --coverage",
-    "type-coverage": "yarn run check && flow-coverage-report -i 'app/**/*.js' -i 'app/**/*.jsx' -t html -t text"
+    "type-coverage": "yarn run check && flow-coverage-report -i 'app/**/*.js' -i 'app/**/*.jsx' -o build/flow-coverage -t html -t text"
   },
   "repository": {
     "type": "git",
