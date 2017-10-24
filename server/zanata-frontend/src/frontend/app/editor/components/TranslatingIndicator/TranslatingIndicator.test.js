@@ -21,7 +21,7 @@ describe('TranslatingIndicatorTest', () => {
                        u-sizeHeight-1_1-2 u-sMR-1-4">
         <Row>
           <Icon name="translate" className="s2"/> <span
-          className="u-ltemd-hidden u-sMR-1-4">
+          className="u-ltemd-hidden TransIndicator u-sMR-1-4">
           Translating
           </span>
         </Row>

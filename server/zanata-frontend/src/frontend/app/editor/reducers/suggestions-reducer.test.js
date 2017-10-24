@@ -1,3 +1,4 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import {
@@ -47,35 +48,41 @@ describe('suggestions-reducer test', () => {
   it('can begin and end phrase copying', () => {
     const withPhraseSuggestions = suggestionsReducer(undefined, {
       type: PHRASE_SUGGESTIONS_UPDATED,
-      phraseId: 'p01',
-      loading: false,
-      searchStrings: [ 'source', 'sources' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        phraseId: 'p01',
+        loading: false,
+        searchStrings: [ 'source', 'sources' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     const copying = suggestionsReducer(withPhraseSuggestions, {
       type: PHRASE_SUGGESTION_STARTED_COPYING,
-      phraseId: 'p01',
-      index: 1
+      payload: {
+        phraseId: 'p01',
+        index: 1
+      }
     })
     const doneCopying = suggestionsReducer(copying, {
       type: PHRASE_SUGGESTION_FINISHED_COPYING,
-      phraseId: 'p01',
-      index: 1
+      payload: {
+        phraseId: 'p01',
+        index: 1
+      }
     })
     expect(copying.searchByPhrase['p01'].suggestions[1].copying).toEqual(true)
     expect(doneCopying.searchByPhrase['p01'].suggestions[1].copying)
@@ -85,25 +92,27 @@ describe('suggestions-reducer test', () => {
   it('can receive phrase suggestions', () => {
     const withPhraseSuggestions = suggestionsReducer(undefined, {
       type: PHRASE_SUGGESTIONS_UPDATED,
-      phraseId: 'p01',
-      loading: false,
-      searchStrings: [ 'source', 'sources' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        phraseId: 'p01',
+        loading: false,
+        searchStrings: [ 'source', 'sources' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     expect(withPhraseSuggestions.searchByPhrase['p01']).toEqual({
       loading: false,
@@ -130,11 +139,11 @@ describe('suggestions-reducer test', () => {
   it('can set suggestion search type', () => {
     const text = suggestionsReducer(undefined, {
       type: SET_SUGGESTION_SEARCH_TYPE,
-      searchType: 'text'
+      payload: 'text'
     })
     const phrase = suggestionsReducer(text, {
       type: SET_SUGGESTION_SEARCH_TYPE,
-      searchType: 'phrase'
+      payload: 'phrase'
     })
     expect(text.searchType).toEqual('text')
     expect(phrase.searchType).toEqual('phrase')
@@ -143,7 +152,7 @@ describe('suggestions-reducer test', () => {
   it('can set index for detail modal to show', () => {
     const showing = suggestionsReducer(undefined, {
       type: SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX,
-      index: 42
+      payload: 42
     })
     expect(showing.showDetailModalForIndex).toEqual(42)
   })
@@ -151,11 +160,11 @@ describe('suggestions-reducer test', () => {
   it('can change search text', () => {
     const withText = suggestionsReducer(undefined, {
       type: SUGGESTION_SEARCH_TEXT_CHANGE,
-      text: 'get schwifty'
+      payload: 'get schwifty'
     })
     const withOtherText = suggestionsReducer(withText, {
       type: SUGGESTION_SEARCH_TEXT_CHANGE,
-      text: 'get schwiftier'
+      payload: 'get schwiftier'
     })
     expect(withText.search.input.text).toEqual('get schwifty')
     expect(withOtherText.search.input.text).toEqual('get schwiftier')
@@ -164,32 +173,34 @@ describe('suggestions-reducer test', () => {
   it('can begin and end text suggestion copying', () => {
     const withTextSuggestions = suggestionsReducer(undefined, {
       type: TEXT_SUGGESTIONS_UPDATED,
-      loading: false,
-      searchStrings: [ 'searching' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        loading: false,
+        searchStrings: [ 'searching' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     const copying = suggestionsReducer(withTextSuggestions, {
       type: TEXT_SUGGESTION_STARTED_COPYING,
-      index: 1
+      payload: 1
     })
     const doneCopying = suggestionsReducer(copying, {
       type: TEXT_SUGGESTION_FINISHED_COPYING,
-      index: 1
+      payload: 1
     })
     expect(copying.textSearch.suggestions[1].copying).toEqual(true)
     expect(doneCopying.textSearch.suggestions[1].copying).toEqual(false)
@@ -198,24 +209,26 @@ describe('suggestions-reducer test', () => {
   it('can receive text suggestions', () => {
     const withTextSuggestions = suggestionsReducer(undefined, {
       type: TEXT_SUGGESTIONS_UPDATED,
-      loading: false,
-      searchStrings: [ 'searching' ],
-      suggestions: [
-        {
-          sourceContents: [ 'source', 'sources' ],
-          targetContents: [ 'target', 'targets' ],
-          copying: false,
-          relevanceScore: 2,
-          similarityPercent: 100
-        }, {
-          sourceContents: [ 'horse', 'horses' ],
-          targetContents: [ 'Pferd', 'Pferde' ],
-          copying: false,
-          relevanceScore: 1.5,
-          similarityPercent: 80
-        }
-      ],
-      timestamp: 12345
+      payload: {
+        loading: false,
+        searchStrings: [ 'searching' ],
+        suggestions: [
+          {
+            sourceContents: [ 'source', 'sources' ],
+            targetContents: [ 'target', 'targets' ],
+            copying: false,
+            relevanceScore: 2,
+            similarityPercent: 100
+          }, {
+            sourceContents: [ 'horse', 'horses' ],
+            targetContents: [ 'Pferd', 'Pferde' ],
+            copying: false,
+            relevanceScore: 1.5,
+            similarityPercent: 80
+          }
+        ],
+        timestamp: 12345
+      }
     })
     expect(withTextSuggestions.textSearch).toEqual({
       loading: false,

@@ -12,7 +12,6 @@ import {
   TOGGLE_INFO_PANEL,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
-  FETCH_FAILED,
   UI_LOCALES_FETCHED,
   CHANGE_UI_LOCALE,
   DOCUMENT_SELECTED,
@@ -30,23 +29,16 @@ export const toggleInfoPanel = createAction(TOGGLE_INFO_PANEL)
 export const toggleHeader = createAction(TOGGLE_HEADER)
 export const toggleKeyboardShortcutsModal = createAction(TOGGLE_KEY_SHORTCUTS)
 
-const fetchFailed = (error) => {
-  return {type: FETCH_FAILED, error: error}
-}
-
 const unwrapResponse = (dispatch, errorMsg, response) => {
   if (response.status >= 400) {
-    dispatch(fetchFailed(new Error(errorMsg)))
+    // FIXME replace with api middleware and use standard error handling
+    // new Error(errorMsg))
   }
   return response.json()
 }
 
-export function uiLocaleFetched (uiLocales) {
-  return {
-    type: UI_LOCALES_FETCHED,
-    data: uiLocales
-  }
-}
+export const uiLocaleFetched = createAction(UI_LOCALES_FETCHED)
+
 export function fetchUiLocales () {
   return (dispatch) => {
     fetchLocales()
@@ -54,20 +46,13 @@ export function fetchUiLocales () {
         .then(uiLocales => dispatch(uiLocaleFetched(uiLocales)))
         .catch(err => {
           console.error('Failed to fetch UI locales', err)
-          return {type: FETCH_FAILED, error: err}
+          // FIXME replace with api middleware and use standard error handling
+          // return {type: FETCH_FAILED, error: err}
         })
   }
 }
 
-export function changeUiLocale (locale) {
-  return {
-    type: CHANGE_UI_LOCALE,
-    data: locale
-  }
-}
-
-// TODO check if this is needed
-export const FETCHING = 'FETCHING'
+export const changeUiLocale = createAction(CHANGE_UI_LOCALE)
 
 const decodeDocId = (docId) => {
   return docId ? docId.replace(/,/g, '/') : docId
@@ -87,34 +72,10 @@ const containsLocale = (localeList, localeId) => {
   return hasCaseInsensitiveMatchingProp(localeList, 'localeId', localeId)
 }
 
-export function selectDoc (docId) {
-  return {
-    type: DOCUMENT_SELECTED,
-    data: {
-      selectedDocId: docId
-    }
-  }
-}
-
-export function selectLocale (localeId) {
-  return {
-    type: LOCALE_SELECTED,
-    data: {
-      selectedLocaleId: localeId
-    }
-  }
-}
-
-export function statsFetched (stats) {
-  return {
-    type: STATS_FETCHED,
-    data: stats
-  }
-}
-
-export function headerDataFetched (data) {
-  return {type: HEADER_DATA_FETCHED, data: data}
-}
+export const selectDoc = createAction(DOCUMENT_SELECTED)
+export const selectLocale = createAction(LOCALE_SELECTED)
+export const statsFetched = createAction(STATS_FETCHED)
+export const headerDataFetched = createAction(HEADER_DATA_FETCHED)
 
 // this is a get all action that will wait until all promises are resovled
 export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
@@ -222,7 +183,8 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
         })
         .catch(err => {
           console.error('Failed to fetch all header info', err)
-          return {type: FETCH_FAILED, error: err}
+          // FIXME replace with api middleware and use standard error handling
+          // return {type: FETCH_FAILED, error: err}
         })
   }
 }

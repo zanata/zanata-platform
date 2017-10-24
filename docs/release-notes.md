@@ -11,6 +11,7 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2184) - A better icon for role Requests in language
  * [ZNTA-2172](https://zanata.atlassian.net/browse/ZNTA-2172) - Profile page should not render anything with inactive/non-existing account
  * [ZNTA-2171](https://zanata.atlassian.net/browse/ZNTA-2171) - Storybook: reject with reason HISTORY UI
+ * [ZNTA-2161](https://zanata.atlassian.net/browse/ZNTA-2161) - Tooling to help developers use the correct yarn version
  * [ZNTA-2156](https://zanata.atlassian.net/browse/ZNTA-2156) - Storybook: reject with reason MODAL UI
  * [ZNTA-2147](https://zanata.atlassian.net/browse/ZNTA-2147) - Editor heading -> flex
  * [ZNTA-2134](https://zanata.atlassian.net/browse/ZNTA-2134) - Help pages required for Version TM Merge
@@ -28,6 +29,7 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
 
 ##### Bug Fixes
  * [ZNTA-2220](https://zanata.atlassian.net/browse/ZNTA-2220) - Dialogs have a "scroll line" on the right
+ * [ZNTA-2218](https://zanata.atlassian.net/browse/ZNTA-2218) - Translation Memory broken in GWT editor
  * [ZNTA-2208](https://zanata.atlassian.net/browse/ZNTA-2208) - NotSupportedException on po/csv glossary import
  * [ZNTA-2206](https://zanata.atlassian.net/browse/ZNTA-2206) - 404 page not found on help from more options
  * [ZNTA-2201](https://zanata.atlassian.net/browse/ZNTA-2201) - updateGitHubCommitStatus should use the correct SHA in correct repo

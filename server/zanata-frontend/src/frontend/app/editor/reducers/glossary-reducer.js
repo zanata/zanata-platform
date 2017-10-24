@@ -1,9 +1,9 @@
 /**
  * Reducer for glossary search in the editor.
  */
-
+import { handleActions } from 'redux-actions'
 import { chain } from 'lodash'
-import updateObject from 'immutability-helper'
+import update from 'immutability-helper'
 import {
   GLOSSARY_DETAILS_REQUEST,
   GLOSSARY_DETAILS_SUCCESS,
@@ -21,7 +21,7 @@ const defaultState = {
   searching: false,
   // searchText -> results array
   results: new Map(),
-  // FIXME should have a result per set of results in the map
+  // FIXME should have a timestamp per set of results in the map
   // this works unless the code is sent back in time to the 1960s or earlier.
   resultsTimestamp: new Date(0),
   details: {
@@ -35,98 +35,65 @@ const defaultState = {
   }
 }
 
-const glossary = (state = defaultState, action) => {
-  switch (action.type) {
-    case GLOSSARY_DETAILS_REQUEST:
-      return update({
-        details: {
-          fetching: {$set: true}
-        }
+const glossary = handleActions({
+  [GLOSSARY_DETAILS_REQUEST]: state =>
+    update(state, { details: { fetching: {$set: true} } }),
+
+  [GLOSSARY_DETAILS_SUCCESS]: (state, { payload, meta: {sourceIdList} }) =>
+    update(state, { details: {
+      fetching: {$set: false},
+      // shallow merge so that incoming detail will completely replace
+      // old detail with the same id.
+      byId: {$merge: chain(payload)
+        // response items match source id at the same index
+        .zipWith(sourceIdList, (detail, sourceId) => ({
+          ...detail,
+          sourceId
+        }))
+        .keyBy('sourceId')
+        .value()
+      }
+    }
+  }),
+
+  [GLOSSARY_DETAILS_FAILURE]: state =>
+    update(state, { details: { fetching: {$set: false} } }),
+
+  [GLOSSARY_SEARCH_TEXT_CHANGE]: (state, { payload }) =>
+    update(state, {searchText: {$set: payload}}),
+
+  [GLOSSARY_TERMS_REQUEST]: state => update(state, {searching: {$set: true}}),
+
+  [GLOSSARY_TERMS_FAILURE]: (state, { meta: {timestamp} }) =>
+    timestamp > state.resultsTimestamp
+      ? update(state, {
+        searching: {$set: false},
+        results: {$set: []},
+        resultsTimestamp: {$set: timestamp}
       })
+      : state,
 
-    case GLOSSARY_DETAILS_SUCCESS:
-      return update({
-        details: {
-          fetching: {$set: false},
-          // shallow merge so that incoming detail will completely replace
-          // old detail with the same id.
-          byId: {$merge: chain(action.payload)
-            // response items match source id at the same index
-            .zipWith(action.meta.sourceIdList, (detail, sourceId) => ({
-              ...detail,
-              sourceId
-            }))
-            .keyBy('sourceId')
-            .value()
-          }
-        }
-      })
-
-    case GLOSSARY_DETAILS_FAILURE:
-      return update({
-        details: {
-          fetching: {$set: false}
-        }
-      })
-
-    case GLOSSARY_SEARCH_TEXT_CHANGE:
-      return update({searchText: {$set: action.text}})
-
-    case GLOSSARY_TERMS_REQUEST:
-      return update({searching: {$set: true}})
-
-    case GLOSSARY_TERMS_FAILURE:
-      if (action.meta.timestamp > state.resultsTimestamp) {
-        return update({
-          searching: {$set: false},
-          results: {$set: []},
-          resultsTimestamp: {$set: action.meta.timestamp}
-        })
-      } else {
+  [GLOSSARY_TERMS_SUCCESS]:
+    (state, {payload, meta: {searchText, timestamp}}) => {
+      if (timestamp <= state.resultsTimestamp) {
         return state
       }
-
-    case GLOSSARY_TERMS_SUCCESS:
-      if (action.meta.timestamp > state.resultsTimestamp) {
-        const newResultsMap = new Map(state.results)
-        newResultsMap.set(action.meta.searchText, action.payload)
-        return update({
-          searching: {$set: false},
-          results: {$set: newResultsMap},
-          resultsTimestamp: {$set: action.meta.timestamp}
-        })
-      } else {
-        return state
-      }
-
-    // TODO consider combining this with SHOW_GLOSSARY_DETAILS since that is
-    //      when an index becomes relevant
-    case SET_GLOSSARY_DETAILS_INDEX:
-      return update({
-        details: {
-          resultIndex: {$set: action.payload.index}
-        }
+      const newResultsMap = new Map(state.results)
+      newResultsMap.set(searchText, payload)
+      return update(state, {
+        searching: {$set: false},
+        results: {$set: newResultsMap},
+        resultsTimestamp: {$set: timestamp}
       })
+    },
 
-    case SHOW_GLOSSARY_DETAILS:
-      return update({
-        details: {
-          show: {$set: action.payload.show}
-        }
-      })
+  // TODO consider combining this with SHOW_GLOSSARY_DETAILS since that is
+  //      when an index becomes relevant
+  [SET_GLOSSARY_DETAILS_INDEX]: (state, { payload }) =>
+    update(state, { details: { resultIndex: {$set: payload} } }),
 
-    default:
-      return state
-  }
-
-  /**
-   * Apply the given commands to state.
-   *
-   * Just a shortcut to avoid having to pass state to update over and over.
-   */
-  function update (commands) {
-    return updateObject(state, commands)
-  }
-}
+  [SHOW_GLOSSARY_DETAILS]: (state, { payload }) =>
+    update(state, { details: { show: {$set: payload} } })
+}, defaultState)
 
 export default glossary

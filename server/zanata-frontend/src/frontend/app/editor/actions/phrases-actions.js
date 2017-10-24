@@ -1,8 +1,7 @@
 import { savePhrase } from '../api'
 import { toggleDropdown } from '.'
+import { createAction } from 'redux-actions'
 import {
-  PHRASE_DETAIL_SUCCESS,
-  PHRASE_DETAIL_FAILURE,
   COPY_FROM_SOURCE,
   COPY_FROM_ALIGNED_SOURCE,
   CANCEL_EDIT,
@@ -22,54 +21,31 @@ import {
 } from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
 
-// detail for phrases has been fetched from API
-export function phraseDetailFetched (phrases) {
-  return { type: PHRASE_DETAIL_SUCCESS, phrases: phrases }
-}
-
-export function phraseDetailFetchFailed (error) {
-  return { type: PHRASE_DETAIL_FAILURE, error: error }
-}
-
 /**
  * Copy from source text to the focused translation input.
  * Only change the input text, not the saved translation value.
  */
-export function copyFromSource (phraseId, sourceIndex) {
-  return { type: COPY_FROM_SOURCE,
-           phraseId: phraseId,
-           sourceIndex: sourceIndex
-         }
-}
+export const copyFromSource = createAction(COPY_FROM_SOURCE,
+  (phraseId, sourceIndex) => ({ phraseId, sourceIndex }))
 
 /**
  * Copy the source that is at the same plural index to the focused translation
  * plural. If there are not enough source plural forms, the highest one is used.
  */
-export function copyFromAlignedSource () {
-  return { type: COPY_FROM_ALIGNED_SOURCE }
-}
+export const copyFromAlignedSource = createAction(COPY_FROM_ALIGNED_SOURCE)
 
 /**
  * Stop editing the currently focused phrase and discard all entered text.
  * After this action, no phrase should be in editing state.
  */
-export function cancelEdit () {
-  return {
-    type: CANCEL_EDIT
-  }
-}
+export const cancelEdit = createAction(CANCEL_EDIT)
 
 /**
  * Discard all entered text for the currently selected phrase, reverting to
  * whatever translations are currently saved.
  * After this action, a phrase may still be in editing state.
  */
-export function undoEdit () {
-  return {
-    type: UNDO_EDIT
-  }
-}
+export const undoEdit = createAction(UNDO_EDIT)
 
 /**
  * Set the selected phrase to the given ID.
@@ -78,9 +54,12 @@ export function undoEdit () {
 export function selectPhrase (phraseId) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
-    dispatch({type: SELECT_PHRASE, phraseId})
+    dispatch(createAction(SELECT_PHRASE)(phraseId))
   }
 }
+
+const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
+  (phraseId, index) => ({ phraseId, index }))
 
 /**
  * Select a phrase and set which of its plurals is selected.
@@ -91,7 +70,7 @@ export function selectPhrase (phraseId) {
 export function selectPhrasePluralIndex (phraseId, index) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
-    dispatch({ type: SELECT_PHRASE_SPECIFIC_PLURAL, phraseId, index })
+    dispatch(selectPhraseSpecificPlural(phraseId, index))
   }
 }
 
@@ -115,25 +94,29 @@ function savePreviousPhraseIfChanged (phraseId) {
  * @param start position of cursor or beginning of range
  * @param end position of cursor (if no range is selected) or end of range
  */
-export function phraseTextSelectionRange (start, end) {
-  return {
-    type: PHRASE_TEXT_SELECTION_RANGE,
-    payload: {
-      start,
-      end
-    }
-  }
-}
+export const phraseTextSelectionRange =
+  createAction(PHRASE_TEXT_SELECTION_RANGE, (start, end) => ({ start, end }))
 
 // User has typed/pasted/etc. text for a translation (not saved yet)
-export function translationTextInputChanged (id, index, text) {
-  return {
-    type: TRANSLATION_TEXT_INPUT_CHANGED,
-    id: id,
-    index: index,
-    text: text
-  }
-}
+export const translationTextInputChanged = createAction(
+  TRANSLATION_TEXT_INPUT_CHANGED, (id, index, text) => ({ id, index, text }))
+
+const queueSave = createAction(QUEUE_SAVE,
+  (phraseId, saveInfo) => ({ phraseId, saveInfo }))
+
+const saveInitiated = createAction(SAVE_INITIATED,
+  (phraseId, saveInfo) => ({ phraseId, saveInfo }))
+
+const pendingSaveInitiated = createAction(PENDING_SAVE_INITIATED)
+
+// FIXME should use status and serverStatus to disambiguate
+//       (these would be separate types if there were types.)
+const saveFinished = createAction(SAVE_FINISHED,
+  (phraseId, transUnitStatus, revision) => ({
+    phraseId,
+    status: transUnitStatusToPhraseStatus(transUnitStatus),
+    revision
+  }))
 
 export function savePhraseWithStatus (phrase, status) {
   return (dispatch, getState) => {
@@ -191,40 +174,6 @@ export function savePhraseWithStatus (phrase, status) {
         doSave(pendingSave)
       }
     }
-  }
-}
-
-function queueSave (phraseId, saveInfo) {
-  return {
-    type: QUEUE_SAVE,
-    phraseId,
-    saveInfo
-  }
-}
-
-function saveInitiated (phraseId, saveInfo) {
-  return {
-    type: SAVE_INITIATED,
-    phraseId,
-    saveInfo
-  }
-}
-
-function pendingSaveInitiated (phraseId) {
-  return {
-    type: PENDING_SAVE_INITIATED,
-    phraseId
-  }
-}
-
-// FIXME should use status and serverStatus to disambiguate
-//       (these would be separate types if there were types.)
-function saveFinished (phraseId, transUnitStatus, revision) {
-  return {
-    type: SAVE_FINISHED,
-    phraseId,
-    status: transUnitStatusToPhraseStatus(transUnitStatus),
-    revision
   }
 }
 

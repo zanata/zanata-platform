@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Set;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -42,6 +43,7 @@ import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.util.FacesNavigationUtil;
+import org.zanata.util.UrlUtil;
 
 /**
  * This action takes care of logging a user into the system. It contains logic
@@ -74,6 +76,8 @@ public class LoginAction implements Serializable {
     private UserRedirectBean userRedirect;
     @Inject
     private AuthenticationType authenticationType;
+    @Inject
+    private UrlUtil urlUtil;
 
     public String login() {
         credentials.setUsername(username);
@@ -204,6 +208,18 @@ public class LoginAction implements Serializable {
                     applicationConfiguration.getOpenIdProviderUrl());
         }
         return "login";
+    }
+
+    private boolean onlySaml2Enabled() {
+        Set<AuthenticationType> authTypes =
+                applicationConfiguration.getAuthTypes();
+        return authTypes.size() == 1 && authTypes.contains(AuthenticationType.SAML2);
+    }
+
+    public void redirectIfOnlySSOEnabled() {
+        if (onlySaml2Enabled()) {
+            urlUtil.redirectToInternal(urlUtil.singleSignOnPage());
+        }
     }
 
     public String getUsername() {

@@ -88,7 +88,7 @@ class GlossaryTermModal extends React.Component {
           </Panel>
           <br />
           <Panel className="gloss-details-panel">
-            <Table className="gloss-details-table">
+            <Table className="GlossaryDetails-table">
               <thead>
                 <tr>
                   <th>Description</th>

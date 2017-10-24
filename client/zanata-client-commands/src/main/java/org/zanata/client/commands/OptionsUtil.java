@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.ConfigUtil;
@@ -99,6 +100,13 @@ public class OptionsUtil {
     public static boolean shouldFetchLocalesFromServer(
             Optional<ZanataConfig> projectConfig, ConfigurableOptions opts) {
         if (!projectConfig.isPresent()) {
+            if (opts instanceof ConfigurableProjectOptions) {
+                ConfigurableProjectOptions projectOptions =
+                        (ConfigurableProjectOptions) opts;
+                return StringUtils.isNotEmpty(projectOptions.getProj()) &&
+                        StringUtils
+                                .isNotEmpty(projectOptions.getProjectVersion());
+            }
             return false;
         }
         ZanataConfig zanataConfig = projectConfig.get();

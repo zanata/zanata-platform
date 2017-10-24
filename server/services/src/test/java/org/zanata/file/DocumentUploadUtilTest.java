@@ -62,6 +62,7 @@ import org.zanata.util.UrlUtil;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 @RunWith(CdiUnitRunner.class)
 public class DocumentUploadUtilTest extends DocumentUploadTest {
@@ -93,6 +94,13 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
 
     @Inject
     private DocumentUploadUtil util;
+
+    private final String MSG_DOC_UPLOAD_NOT_ALLOWED =
+            "The project-version \"myproject:myversion\" is not "
+                    + "active. Document upload is not allowed.";
+
+    private final String MSG_VERSION_NOT_FOUND =
+            "The specified project-version \"myproject:myversion\" does not exist on this server.";
 
     @Test
     public void notValidIfNotLoggedIn() {
@@ -168,11 +176,13 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
 
     @Test
     public void notValidIfProjectIsReadOnly() {
+        mockHasReadAccess();
         notValidIfProjectStatusIs(EntityStatus.READONLY);
     }
 
     @Test
     public void notValidIfProjectIsObsolete() {
+        mockHasReadAccess();
         notValidIfProjectStatusIs(EntityStatus.OBSOLETE);
     }
 
@@ -192,16 +202,28 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
     }
 
     @Test
+    public void noReadAccessVersion() {
+        mockNoReadAccess();
+        notValidIfVersionStatusIs(EntityStatus.ACTIVE, NOT_FOUND,
+                MSG_VERSION_NOT_FOUND);
+    }
+
+    @Test
     public void notValidIfVersionIsReadOnly() {
-        notValidIfVersionStatusIs(EntityStatus.READONLY);
+        mockHasReadAccess();
+        notValidIfVersionStatusIs(EntityStatus.READONLY, FORBIDDEN,
+                MSG_DOC_UPLOAD_NOT_ALLOWED);
     }
 
     @Test
     public void notValidIfVersionIsObsolete() {
-        notValidIfVersionStatusIs(EntityStatus.OBSOLETE);
+        mockHasReadAccess();
+        notValidIfVersionStatusIs(EntityStatus.OBSOLETE, FORBIDDEN,
+                MSG_DOC_UPLOAD_NOT_ALLOWED);
     }
 
-    private void notValidIfVersionStatusIs(EntityStatus nonActiveStatus) {
+    private void notValidIfVersionStatusIs(EntityStatus nonActiveStatus,
+            Response.Status expectedStatus, String expectedMessage) {
         conf = defaultUpload().versionStatus(nonActiveStatus).build();
         mockLoggedIn();
         mockProjectAndVersionStatus();
@@ -209,10 +231,8 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if version is read only or obsolete.");
         } catch (DocumentUploadException e) {
-            assertThat(e.getStatusCode()).isEqualTo(FORBIDDEN);
-            assertThat(e.getMessage()).isEqualTo(
-                    "The project-version \"myproject:myversion\" is not "
-                            + "active. Document upload is not allowed.");
+            assertThat(e.getStatusCode()).isEqualTo(expectedStatus);
+            assertThat(e.getMessage()).isEqualTo(expectedMessage);
         }
     }
 

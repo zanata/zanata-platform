@@ -39,6 +39,10 @@
   list-style: none;
 }
 
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
 .Progressbar-approved {
   background-color: var(--Progressbar-highlight);
   z-index: var(--Progressbar-approved-z-index);

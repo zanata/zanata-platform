@@ -97,14 +97,8 @@ export const getKeyShortcutsVisible =
 const $toggle = {$apply: bool => !bool}
 
 export default handleActions({
-  [SUGGESTION_PANEL_HEIGHT_CHANGE]: (state, { percentageHeight }) =>
-    update(state, {
-      panels: {
-        suggestions: {
-          heightPercent: {$set: percentageHeight}
-        }
-      }
-    }),
+  [SUGGESTION_PANEL_HEIGHT_CHANGE]: (state, { payload }) => update(state,
+    { panels: { suggestions: { heightPercent: {$set: payload} } } }),
 
   // selectedTab and showSettings will always be the same after this toggle,
   // either they already had the values below, or we needed to set them.
@@ -136,8 +130,8 @@ export default handleActions({
     }
   }),
 
-  [UI_LOCALES_FETCHED]: (state, { data }) => update(state, {
-    uiLocales: {$set: prepareLocales(data)}
+  [UI_LOCALES_FETCHED]: (state, { payload }) => update(state, {
+    uiLocales: {$set: prepareLocales(payload)}
   }),
 
   [TOGGLE_KEY_SHORTCUTS]: state => update(state, {
@@ -148,16 +142,16 @@ export default handleActions({
     }
   }),
 
-  [CHANGE_UI_LOCALE]: (state, { data }) => update(state, {
+  [CHANGE_UI_LOCALE]: (state, { payload }) => update(state, {
     selectedUiLocale: {
-      $set: data
+      $set: payload
     }
   }),
 
-  [SET_SIDEBAR_VISIBILITY]: (state, { visible }) => update(state, {
+  [SET_SIDEBAR_VISIBILITY]: (state, { payload }) => update(state, {
     panels: {
       sidebar: {
-        visible: {$set: visible}
+        visible: {$set: payload}
       }
     }
   }),

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -26,6 +27,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.SearchIndexManager;
 import org.zanata.service.TranslationFinder;
 import org.zanata.test.CdiUnitRunner;
@@ -49,6 +51,8 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
 import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 
@@ -98,6 +102,9 @@ public class TranslationFinderTest {
         @Produces
         @Mock
         private UrlUtil urlUtil;
+        @Produces
+        @Mock
+        private ZanataIdentity identity;
         @Parameterized.Parameter(0)
         Execution execution;
 
@@ -167,6 +174,8 @@ public class TranslationFinderTest {
                                     DatabaseOperation.CLEAN_INSERT));
             recreateSearchIndexes(searchIndexManager);
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
+            when(identity.hasPermission(any(HProjectIteration.class),
+                    ArgumentMatchers.matches("read"))).thenReturn(true);
         }
         // @Ignore
         // @Test
@@ -277,6 +286,9 @@ public class TranslationFinderTest {
         ProjectIterationDAO projectIterationDAO;
         @Inject
         SearchIndexManager searchIndexManager;
+        @Produces
+        @Mock
+        private ZanataIdentity identity;
 
         @Produces
         @FullText
@@ -314,6 +326,8 @@ public class TranslationFinderTest {
                                     "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
                                     DatabaseOperation.CLEAN_INSERT));
             recreateSearchIndexes(searchIndexManager);
+            when(identity.hasPermission(any(HProjectIteration.class),
+                    ArgumentMatchers.matches("read"))).thenReturn(true);
         }
 
         @Test

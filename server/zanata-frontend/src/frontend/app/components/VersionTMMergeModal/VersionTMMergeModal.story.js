@@ -66,7 +66,7 @@ storiesOf('VersionTMMergeModal', module)
                 <p>Matching phrases are found in the selected projects and
                   imported TM, filtered using the active
                   conditions, then the best matching translation is copied to
-                  the target project-version. <a href="">more..</a></p>
+                  the target project-version. more..</p>
               } eventKey="1">
                 <p><img src="http://i.imgur.com/ezA992G.png"
                         alt="Version TM Merge workflow"/></p>
@@ -140,7 +140,7 @@ storiesOf('VersionTMMergeModal', module)
                   <Radio inline>
                     all projects
                   </Radio>
-                  <Radio inline checked>
+                  <Radio inline readOnly checked>
                     some projects
                   </Radio>
                 </Col>
@@ -168,7 +168,7 @@ storiesOf('VersionTMMergeModal', module)
                         <ListGroup className="checkbox">
                           <ListGroupItem className='list-group-item'
                                          title='target project'>
-                            <Checkbox checked inline><Icon name='project'
+                            <Checkbox readOnly checked inline><Icon name='project'
                                                            className='s0 iconTMX'/>
                               Project A</Checkbox>
                           </ListGroupItem>
@@ -176,14 +176,14 @@ storiesOf('VersionTMMergeModal', module)
                       </h3>}>
                       <ListGroup fill>
                         <ListGroupItem className='v' title='target version'>
-                          <Checkbox checked inline><Icon name='version'
+                          <Checkbox checked readOnly inline><Icon name='version'
                                                          className='s0 iconTMX'/>
                             Version 1 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
 
                         </ListGroupItem>
                         <ListGroupItem className='v' title='target version'>
-                          <Checkbox checked inline><Icon name='version'
+                          <Checkbox checked readOnly inline><Icon name='version'
                                                          className='s0 iconTMX'/>
                             Version 2 <Icon name='locked'
                                             className='s0 icon-locked'/></Checkbox>
@@ -238,7 +238,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12} className="validations">
                   <Col xs={12} md={4}>
                     If the translation is from a different <span>project</span>
-                    <Radio validationState='success' checked>
+                    <Radio validationState='success' checked readOnly>
                       I don't mind at all <Label bsStyle="success">Copy as
                       translated</Label>
                     </Radio>
@@ -254,7 +254,7 @@ storiesOf('VersionTMMergeModal', module)
                   </Col>
                   <Col xs={12} md={4}>
                     If the translation is from a different <span>document</span>
-                    <Radio validationState='success' checked>
+                    <Radio validationState='success' checked readOnly>
                       I don't mind at all <Label bsStyle="success">Copy as
                       translated</Label>
                     </Radio>
@@ -286,7 +286,7 @@ storiesOf('VersionTMMergeModal', module)
                         </Button>
                       </OverlayTrigger>
                     </Radio>
-                    <Radio validationState='error' checked>
+                    <Radio validationState='error' checked readOnly>
                       I don't want it <Label bsStyle="danger">Discard</Label>
                     </Radio>
                   </Col>
@@ -322,7 +322,7 @@ storiesOf('VersionTMMergeModal', module)
                       </Button>
                     </OverlayTrigger>
                   </Radio>
-                  <Radio validationState='warning' checked>
+                  <Radio validationState='warning' checked readOnly>
                     I need to review it <Label bsStyle="warning">Copy as
                     fuzzy</Label>
                   </Radio>
@@ -369,7 +369,7 @@ storiesOf('VersionTMMergeModal', module)
                 <p>Matching phrases are found in the selected projects and
                   imported TM, filtered using the active
                   conditions, then the best matching translation is copied to
-                  the target project-version. <a href="">more..</a></p>
+                  the target project-version. more..</p>
               } eventKey="1">
                 <p><img src="http://i.imgur.com/ezA992G.png"
                         alt="Version TM Merge workflow"/></p>
@@ -443,7 +443,7 @@ storiesOf('VersionTMMergeModal', module)
                   <Radio inline>
                     all projects
                   </Radio>
-                  <Radio inline checked>
+                  <Radio inline checked readOnly>
                     some projects
                   </Radio>
                 </Col>
@@ -509,7 +509,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12} className="validations">
                   <Col xs={12} md={4}>
                     If the translation is from a different <span>project</span>
-                    <Radio validationState='success' checked>
+                    <Radio validationState='success' checked readOnly>
                       I don't mind at all <Label bsStyle="success">Copy as
                       translated</Label>
                     </Radio>
@@ -525,7 +525,7 @@ storiesOf('VersionTMMergeModal', module)
                   </Col>
                   <Col xs={12} md={4}>
                     If the translation is from a different <span>document</span>
-                    <Radio validationState='success' checked>
+                    <Radio validationState='success' checked readOnly>
                       I don't mind at all <Label bsStyle="success">Copy as
                       translated</Label>
                     </Radio>
@@ -557,7 +557,7 @@ storiesOf('VersionTMMergeModal', module)
                         </Button>
                       </OverlayTrigger>
                     </Radio>
-                    <Radio validationState='error' checked>
+                    <Radio validationState='error' checked readOnly>
                       I don't want it <Label bsStyle="danger">Discard</Label>
                     </Radio>
                   </Col>
@@ -593,7 +593,7 @@ storiesOf('VersionTMMergeModal', module)
                       </Button>
                     </OverlayTrigger>
                   </Radio>
-                  <Radio validationState='warning' checked>
+                  <Radio validationState='warning' checked readOnly>
                     I need to review it <Label bsStyle="warning">Copy as
                     fuzzy</Label>
                   </Radio>
@@ -640,7 +640,7 @@ storiesOf('VersionTMMergeModal', module)
                 <p>Matching phrases are found in the selected projects and
                   imported TM, filtered using the active
                   conditions, then the best matching translation is copied to
-                  the target project-version. <a href="">more..</a></p>
+                  the target project-version. more..</p>
               } eventKey="1">
                 <p><img src="http://i.imgur.com/ezA992G.png"
                         alt="Version TM Merge workflow"/></p>
@@ -714,7 +714,7 @@ storiesOf('VersionTMMergeModal', module)
                   <Radio inline>
                     all projects
                   </Radio>
-                  <Radio inline checked>
+                  <Radio inline checked readOnly>
                     some projects
                   </Radio>
                 </Col>
@@ -780,7 +780,7 @@ storiesOf('VersionTMMergeModal', module)
                 <Col xs={12} className="validations">
                   <Col xs={12} md={4}>
                     If the translation is from a different <span>project</span>
-                    <Radio validationState='success' checked>
+                    <Radio validationState='success' checked readOnly>
                       I don't mind at all <Label bsStyle="success">Copy as
                       translated</Label>
                     </Radio>
@@ -796,7 +796,7 @@ storiesOf('VersionTMMergeModal', module)
                   </Col>
                   <Col xs={12} md={4}>
                     If the translation is from a different <span>document</span>
-                    <Radio validationState='success' checked>
+                    <Radio validationState='success' checked readOnly>
                       I don't mind at all <Label bsStyle="success">Copy as
                       translated</Label>
                     </Radio>
@@ -828,7 +828,7 @@ storiesOf('VersionTMMergeModal', module)
                         </Button>
                       </OverlayTrigger>
                     </Radio>
-                    <Radio validationState='error' checked>
+                    <Radio validationState='error' checked readOnly>
                       I don't want it <Label bsStyle="danger">Discard</Label>
                     </Radio>
                   </Col>
@@ -864,7 +864,7 @@ storiesOf('VersionTMMergeModal', module)
                       </Button>
                     </OverlayTrigger>
                   </Radio>
-                  <Radio disabled validationState='warning' readonly>
+                  <Radio disabled validationState='warning' readOnly>
                     I need to review it <Label bsStyle="warning">Copy as
                     fuzzy</Label>
                   </Radio>

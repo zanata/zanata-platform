@@ -25,20 +25,26 @@
   --Button-transition: all .25s cubic-bezier(.075, .820, .165, 1.000);
 }
 
-.Button {
+/* Need to stick to this naming convention (against suitcss) so that it does
+not conflict with the other frontend code
+ */
+
+.EditorButton {
   transition: var(--Button-transition);
   min-height: calc(var(--Button-rhythm) * 1.25);
   text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-.Button:disabled,
-.Button.is-disabled {
+.EditorButton:disabled,
+.EditorButton.is-disabled {
   pointer-events: none;
 }
 
-.Button:hover,
-.Button:active,
-.Button.is-active {
+.EditorButton:hover,
+.EditorButton:active,
+.EditorButton.is-active {
   outline: inherit;
 }
 

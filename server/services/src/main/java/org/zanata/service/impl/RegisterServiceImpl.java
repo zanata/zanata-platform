@@ -45,6 +45,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
+import org.zanata.model.security.HSaml2Credentials;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationType;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -167,8 +168,15 @@ public class RegisterServiceImpl implements RegisterService {
         }.addRole("admin").run();
 
         HAccount account = accountDAO.getByUsername(username);
-        account.getCredentials().add(
-                new HOpenIdCredentials(account, externalId, email));
+        assert account != null;
+        if (authType == AuthenticationType.OPENID) {
+            account.getCredentials().add(
+                    new HOpenIdCredentials(account, externalId, email));
+        } else if (authType == AuthenticationType.SAML2) {
+            account.getCredentials().add(
+                    new HSaml2Credentials(account, externalId, email)
+            );
+        }
         HPerson person = new HPerson();
         person.setAccount(account);
         person.setEmail(email);

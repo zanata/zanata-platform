@@ -71,7 +71,7 @@ class LocaleItem extends React.Component {
     return (
       <li key={id}>
         <a onClick={this.changeUiLocale}
-          className="Dropdown-item" >
+          className="EditorDropdown-item" >
           {name}
         </a>
       </li>

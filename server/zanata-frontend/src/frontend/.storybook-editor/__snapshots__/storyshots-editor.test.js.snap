@@ -2,7 +2,7 @@
 
 exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
 <div
-  className="revision-box"
+  className="RevisionBox"
 >
   <p>
     <span
@@ -26,7 +26,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
       href="/profile/view/damason"
     >
       <img
-        className="u-round activity-avatar"
+        className="u-round ActivityAvatar"
         src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
@@ -85,7 +85,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
 
 exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
 <div
-  className="revision-box"
+  className="RevisionBox"
 >
   <p>
     <span
@@ -109,7 +109,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
       href="/profile/view/damason"
     >
       <img
-        className="u-round activity-avatar"
+        className="u-round ActivityAvatar"
         src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
@@ -161,7 +161,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
 
 exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
 <div
-  className="revision-box"
+  className="RevisionBox"
 >
   <p>
     <span
@@ -185,7 +185,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
       href="/profile/view/damason"
     >
       <img
-        className="u-round activity-avatar"
+        className="u-round ActivityAvatar"
         src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
@@ -244,7 +244,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
 
 exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
 <div
-  className="revision-box"
+  className="RevisionBox"
 >
   <p>
     <span
@@ -268,7 +268,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
       href="/profile/view/damason"
     >
       <img
-        className="u-round activity-avatar"
+        className="u-round ActivityAvatar"
         src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
@@ -288,13 +288,13 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
       </span>
        for the reason: 
       <span
-        className="criteria-text"
+        className="CriteriaText"
       >
         Spelling and Grammar
       </span>
        - 
       <span
-        className="criteria-text"
+        className="CriteriaText"
       >
         <span
           className="s0"
@@ -387,7 +387,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
 
 exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
 <div
-  className="revision-box"
+  className="RevisionBox"
 >
   <p>
     <span
@@ -411,7 +411,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
       href="/profile/view/damason"
     >
       <img
-        className="u-round activity-avatar"
+        className="u-round ActivityAvatar"
         src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
@@ -431,13 +431,13 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
       </span>
        for the reason: 
       <span
-        className="criteria-text"
+        className="CriteriaText"
       >
         Spelling and Grammar
       </span>
        - 
       <span
-        className="criteria-text"
+        className="CriteriaText"
       >
         <span
           className="s0"
@@ -530,7 +530,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
 
 exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
 <div
-  className="revision-box"
+  className="RevisionBox"
 >
   <p>
     <span
@@ -554,7 +554,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
       href="/profile/view/damason"
     >
       <img
-        className="u-round activity-avatar"
+        className="u-round ActivityAvatar"
         src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
@@ -574,13 +574,13 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
       </span>
        for the reason: 
       <span
-        className="criteria-text"
+        className="CriteriaText"
       >
         Spelling and Grammar
       </span>
        - 
       <span
-        className="criteria-text"
+        className="CriteriaText"
       >
         <span
           className="s0"
@@ -673,7 +673,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
 
 exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
 <div
-  className="revision-box"
+  className="RevisionBox"
 >
   <p>
     <span
@@ -697,7 +697,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
       href="/profile/view/damason"
     >
       <img
-        className="u-round activity-avatar"
+        className="u-round ActivityAvatar"
         src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
@@ -1684,7 +1684,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
             >
               <li>
                 <button
-                  className="Button Button--primary"
+                  className="EditorButton Button--primary"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -1694,7 +1694,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               </li>
               <li>
                 <button
-                  className="Button Button--success"
+                  className="EditorButton Button--success"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -1704,7 +1704,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               </li>
               <li>
                 <button
-                  className="Button Button--unsure"
+                  className="EditorButton Button--unsure"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -1714,7 +1714,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               </li>
               <li>
                 <button
-                  className="Button Button--neutral"
+                  className="EditorButton Button--neutral"
                   disabled={false}
                   onClick={[Function]}
                   title="Click should trigger onClick action"
@@ -2033,7 +2033,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--primary
+                                      EditorButton Button--primary
                                       "
                                     </span>
                                   </span>
@@ -2235,7 +2235,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--success
+                                      EditorButton Button--success
                                       "
                                     </span>
                                   </span>
@@ -2437,7 +2437,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--unsure
+                                      EditorButton Button--unsure
                                       "
                                     </span>
                                   </span>
@@ -2639,7 +2639,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       }
                                     >
                                       "
-                                      Button Button--neutral
+                                      EditorButton Button--neutral
                                       "
                                     </span>
                                   </span>
@@ -4627,7 +4627,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
             }
           >
             <button
-              className="Button Button--small u-rounded Button--primary"
+              className="EditorButton Button--small u-rounded Button--primary"
               disabled={false}
               onClick={[Function]}
               title="Styles from suggestion panel button"
@@ -4874,7 +4874,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                                   }
                                 >
                                   "
-                                  Button Button--small u-rounded Button--primary
+                                  EditorButton Button--small u-rounded Button--prima…
                                   "
                                 </span>
                               </span>
@@ -5252,7 +5252,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
 
 exports[`Editor Storyshots CommentBox default 1`] = `
 <div
-  className="trans-comment-box"
+  className="TransUnit-commentBox"
 >
   <div
     className="form-group"
@@ -5290,7 +5290,7 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     />
   </div>
   <button
-    className="Button Button--small u-rounded Button--primary u-pullRight btn btn-default"
+    className="EditorButton Button--small u-rounded Button--primary u-pullRight btn btn-default"
     disabled={true}
     onClick={[Function]}
     type="button"
@@ -5498,13 +5498,13 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
 
 exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
 <div
-  className="inline-search"
+  className="InlineSearch"
 >
   <div
-    className="InputGroup InputGroup--outlined InputGroup--rounded is-focused"
+    className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded is-focused"
   >
     <span
-      className="InputGroup-addon"
+      className="EditorInputGroup-addon"
       onClick={[Function]}
     >
       <span
@@ -5527,7 +5527,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
       </span>
     </span>
     <input
-      className="InputGroup-input u-sizeLineHeight-1_1-4"
+      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5540,13 +5540,13 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
 
 exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
 <div
-  className="inline-search"
+  className="InlineSearch"
 >
   <div
-    className="InputGroup InputGroup--outlined InputGroup--rounded is-focused"
+    className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded is-focused"
   >
     <span
-      className="InputGroup-addon"
+      className="EditorInputGroup-addon"
       onClick={[Function]}
     >
       <span
@@ -5569,7 +5569,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
       </span>
     </span>
     <input
-      className="InputGroup-input u-sizeLineHeight-1_1-4"
+      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5603,7 +5603,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
   <tbody>
     <tr>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5627,7 +5627,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         </button>
       </td>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5654,7 +5654,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         title="No translation to copy."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={true}
           onClick={[Function]}
           type="button"
@@ -5694,7 +5694,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
     </tr>
     <tr>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5718,7 +5718,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         </button>
       </td>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5745,7 +5745,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         title="No translation to copy."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={true}
           onClick={[Function]}
           type="button"
@@ -5785,7 +5785,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
     </tr>
     <tr>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5809,7 +5809,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         </button>
       </td>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5836,7 +5836,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         title="No translation to copy."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={true}
           onClick={[Function]}
           type="button"
@@ -5901,7 +5901,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
   <tbody>
     <tr>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5925,7 +5925,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         </button>
       </td>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5952,7 +5952,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"
@@ -5992,7 +5992,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
     </tr>
     <tr>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6016,7 +6016,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         </button>
       </td>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6043,7 +6043,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"
@@ -6083,7 +6083,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
     </tr>
     <tr>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6107,7 +6107,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         </button>
       </td>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6134,7 +6134,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"
@@ -6183,7 +6183,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
   <tbody>
     <tr>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6207,7 +6207,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
         </button>
       </td>
       <td
-        className="gloss-text long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6234,7 +6234,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
         title="Insert translated term at the cursor position."
       >
         <button
-          className="Button Button--small u-rounded Button--primary btn btn-default"
+          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
           disabled={false}
           onClick={[Function]}
           type="button"

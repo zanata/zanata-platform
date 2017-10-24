@@ -10,7 +10,7 @@
 @import "../components/TriCheckbox/index.less";
 @import "../components/RejectionsForm/index.less";
 @import "./gwt.less";
-@import "./bstrap-styleguide.css";
+@import "./bstrap-styleguide.less";
 
 /* Base containers */
 
@@ -189,7 +189,7 @@ body.templateStyle {
   padding-right: @spacing-base;
 }
 
-.wideView.profile, .wideView.glossary {
+.wideView.profile, .wideView.glossary, .wideView.languages {
   max-width: 100%;
 }
 
@@ -865,12 +865,12 @@ button, input, optgroup, select, textarea {
   line-height: 2.25rem;
 }
 
-button {
+button, {
   overflow: visible;
   color: #fff;
   font-weight: 600;
-  padding-left: @spacing-button;
-  padding-right: @spacing-button;
+  padding: @spacing-re @spacing-rq;
+  line-height: @line-height-button;
   font-size: 1rem;
   display: inline-block;
   margin-bottom: 0;
@@ -882,11 +882,14 @@ button {
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
-  border: 1px solid transparent;
   border-radius: @border-radius-base;
   background-image: none;
   -ms-touch-action: manipulation;
   touch-action: manipulation;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
 }
 
 button, select {
@@ -972,7 +975,7 @@ input[type=search] {
 
 input[type=checkbox], input[type=radio] {
   line-height: normal;
-  margin: 1px \9 0 0;
+  margin: 1px 0 0;
 }
 
 input[type=file] {
@@ -1135,14 +1138,6 @@ h1:not(:first-of-type) {
   color: #777;
 }
 
-.h1, h1 {
-  color: @color-new-zanata-blue;
-  font-weight: 500;
-  font-size: 2.25em;
-  line-height: 1em;
-  letter-spacing: -.05em;
-}
-
 .h2, .h3, h2, h3 {
   margin-top: @spacing-heading;
   margin-bottom: @spacing-heading;
@@ -1164,6 +1159,10 @@ h1:not(:first-of-type) {
 
 .h1, h1 {
   font-size: 2.25rem;
+  color: @color-new-zanata-blue;
+  font-weight: 500;
+  line-height: 1em;
+  letter-spacing: -.05em;
 }
 
 .h2, h2 {
@@ -2320,6 +2319,7 @@ a.btn-primary {
 .btn-link {
   font-weight: 400;
   border-radius: 0;
+  box-shadow: none;
 }
 
 button.btn-link {
@@ -2378,14 +2378,14 @@ button.btn-link.delete-link, button.btn-link.delete-link .loaderText {
 
 .btn-group-sm>.btn, .btn-sm {
   font-size: 0.857rem;
-  line-height: @line-height-small;
+  line-height: @line-height-button;
   padding: @spacing-small-horizontal @spacing-large-horizontal;
   border-radius: @border-radius-small;
 }
 
 .btn-group-xs>.btn, .btn-xs {
   font-size: 0.857rem;
-  line-height: @line-height-small;
+  line-height: @line-height-button;
   padding: @spacing-small-vertical @spacing-small-horizontal;
   border-radius: @border-radius-small;
 }
@@ -2522,7 +2522,7 @@ button.btn.btn-danger.dropdown-toggle>span.caret, button.btn.btn-info.dropdown-t
 }
 
 .label-success {
-  background-color: @color-success;
+  background-color: @color-success !important;
 }
 
 .label-info {
@@ -2799,7 +2799,6 @@ button.btn.btn-danger.dropdown-toggle>span.caret, button.btn.btn-info.dropdown-t
 // Allow for dropdowns to go bottom up (aka, dropup-menu)
 //
 // Just add .dropup after the standard .dropdown class and you're set, bro.
-// TODO: abstract this so that the navbar fixed styles are not placed here?
 .dropup, .navbar-fixed-bottom .dropdown {
   // Reverse the caret
   .caret {
@@ -4719,9 +4718,9 @@ a.lineClamp:after {
   word-spacing: normal;
   word-wrap: normal;
   font-size: 14px;
-  background-color: #fff;
+  background-color: @color-dark;
+  color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, .2);
   border-radius: 6px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
 }
@@ -4729,6 +4728,7 @@ a.lineClamp:after {
 h3.popover-title {
   font-size: 1rem;
   text-transform: uppercase;
+  color: @color-neutral;
 }
 
 .popover-content p {
@@ -4739,8 +4739,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -11px;
   border-bottom-width: 0;
-  border-top-color: #999;
-  border-top-color: rgba(0, 0, 0, .25);
+  border-top-color: @color-dark;
   bottom: -11px;
 }
 
@@ -4762,7 +4761,7 @@ h3.popover-title {
   bottom: 1px;
   margin-left: -10px;
   border-bottom-width: 0;
-  border-top-color: #fff;
+  border-top-color: @color-dark;
 }
 
 .popover>.arrow:after {
@@ -4775,9 +4774,9 @@ h3.popover-title {
   padding: @spacing-half-base;
   color: #fff;
   text-align: center;
-  background-color: #333;
+  background-color: @color-dark;
   border-radius: @border-radius-base;
-  border: solid 2px #333;
+  border: solid 2px @color-dark;
 }
 
 .tooltip {
@@ -4799,7 +4798,7 @@ h3.popover-title {
   word-spacing: normal;
   word-wrap: normal;
   font-size: 0.857rem;
-  border-color: #333;
+  border-color: @color-dark;
 }
 
 .tooltip-arrow {
@@ -4835,7 +4834,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -@spacing-small-horizontal;
   border-width: 5px 5px 0;
-  border-top-color: #333;
+  border-top-color: @color-dark;
 }
 
 .tooltip.right .tooltip-arrow {
@@ -4843,7 +4842,7 @@ h3.popover-title {
   left: 0;
   margin-top: -@spacing-small-horizontal;
   border-width: 5px 5px 5px 0;
-  border-right-color: #333;
+  border-right-color: @color-dark;
 }
 
 .tooltip.left .tooltip-arrow {
@@ -4851,7 +4850,7 @@ h3.popover-title {
   right: 0;
   margin-top: -@spacing-small-horizontal;
   border-width: 5px 0 5px 5px;
-  border-left-color: #333;
+  border-left-color: @color-dark;
 }
 
 .tooltip.bottom .tooltip-arrow {
@@ -4859,7 +4858,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -@spacing-small-horizontal;
   border-width: 0 5px 5px;
-  border-bottom-color: #333;
+  border-bottom-color: @color-dark;
 }
 
 //
@@ -4914,6 +4913,7 @@ button.close {
   z-index: 1;
   padding: @spacing-rq;
   outline: none;
+  box-shadow: none;
 }
 
 button.close:focus, button.close:hover, button.close:active:focus {
@@ -4933,6 +4933,11 @@ button.close:focus, button.close:hover, button.close:active:focus {
   width: 1rem;
   text-align: center;
   color: #f00;
+}
+
+//fix for admin panel icons
+.panel__header i.i--add:not(.i--large) {
+  color: inherit !important;
 }
 
 .btn-group-vertical>.btn-group:before, .btn-group:after, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container--fluid:after, .container--fluid:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .modal-header:after, .modal-header:before, .nav:after, .nav:before, .navbar-collapse:after, .navbar-collapse:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
@@ -5118,6 +5123,10 @@ i.i--left.i--lock, i.i--left.i--trash {
 
 .panel__header a#new-version-link i.i.i--add:not(.i--large) {
   color: @color-light;
+}
+
+.flexGrow1 {
+  flex-grow: 1;
 }
 
 .form-group.u-flexGrow1 {

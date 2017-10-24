@@ -21,10 +21,6 @@
 
 package org.zanata.rest.service.raw;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.provider.DBUnitProvider.DataSetOperation;
-import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
@@ -41,7 +37,12 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.dto.Project;
+
 import com.google.common.collect.ImmutableMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.provider.DBUnitProvider.DataSetOperation;
+import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
 public class AnonymousUserRawRestITCase extends RestTest {
 

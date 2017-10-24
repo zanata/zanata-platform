@@ -21,16 +21,17 @@
 package org.zanata.util;
 
 import com.google.common.base.Charsets;
-import jdk.nashorn.api.scripting.JSObject;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Named;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -56,23 +57,17 @@ public class CommonMarkRenderer implements Serializable {
             "google-caja/" + VER_SANITIZER + "/html-sanitizer-minified.js";
     private static final String RESOURCE_NAME =
             "META-INF/resources/webjars/" + SCRIPT_NAME;
+
     // Share ScriptEngine and CompiledScript across threads, but not Bindings
     // See http://stackoverflow.com/a/30159424/14379
     private static final ScriptEngine engine =
-            new ScriptEngineManager().getEngineByName("Nashorn");
-    private static final CompiledScript functions = compileFunctions();
+            new ScriptEngineManager().getEngineByName("js");
+    private static final CompiledScript compiledFunctions =
+            compileFunctions((Compilable) engine, engine.getBindings(ScriptContext.GLOBAL_SCOPE));
     private static final ThreadLocal<Bindings> threadBindings =
-            ThreadLocal.withInitial(() -> {
-                Bindings bindings = engine.createBindings();
-                // libraries like commonmark.js assume the presence of 'window'
-                bindings.put("window", bindings);
-                try {
-                    functions.eval(bindings);
-                    return bindings;
-                } catch (ScriptException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+//            ThreadLocal.withInitial(engine::createBindings);
+            ThreadLocal.withInitial(SimpleBindings::new);
+
     static {
         log.info("Using commonmark.js version {}", VER);
         log.info("Using Google Caja version {}", VER_SANITIZER);
@@ -121,27 +116,38 @@ public class CommonMarkRenderer implements Serializable {
         return HtmlUtil.SANITIZER.sanitize(unsafeHtml);
     }
 
-    public String renderToHtmlUnsafe(String commonMark) {
-        try {
-            Bindings bindings = threadBindings.get();
-            JSObject mdRender = (JSObject) bindings.get("mdRender");
-            return (String) mdRender.call(bindings, commonMark);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static CompiledScript compileFunctions() {
+    private static CompiledScript compileFunctions(Compilable engine,
+            Bindings globalBindings) {
         try {
             // Create a javascript function 'mdRender' which takes CommonMark
             // as a string and returns a rendered HTML string:
             String commonMarkScript =
                     IOUtils.toString(getScriptResource(), Charsets.UTF_8);
-            String functionsScript = commonMarkScript
-                    + "var reader = new commonmark.Parser();var writer = new commonmark.HtmlRenderer();function mdRender(src) {  return writer.render(reader.parse(src));};";
-            return ((Compilable) engine).compile(functionsScript);
+            String functionsScript = commonMarkScript +
+                    "var reader = new commonmark.Parser();" +
+                    "var writer = new commonmark.HtmlRenderer();" +
+                    "var parsed = reader.parse(commonMarkText);" +
+                    "writer.render(parsed);";
+            // libraries like commonmark.js assume the presence of 'window'
+            //noinspection CollectionAddedToSelf
+            globalBindings.put("window", globalBindings);
+            return engine.compile(functionsScript);
         } catch (ScriptException | IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public String renderToHtmlUnsafe(String commonMark) {
+        // uncomment this if you want to try sharing the scope between threads (just for testing!)
+//        Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        Bindings bindings = threadBindings.get();
+        bindings.put("commonMarkText", commonMark);
+        try {
+            return (String) compiledFunctions.eval(bindings);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            bindings.remove("commonMarkText");
         }
     }
 

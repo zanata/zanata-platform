@@ -45,7 +45,6 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
-import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -56,7 +55,6 @@ import org.zanata.rest.search.dto.ProjectSearchResult;
 import org.zanata.rest.search.dto.ProjectVersionSearchResult;
 import org.zanata.rest.search.dto.SearchResults;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 
@@ -92,9 +90,6 @@ public class SearchService {
 
     @Inject
     private ZanataIdentity identity;
-
-    @Inject @Authenticated
-    private HAccount authenticatedAccount;
 
     private static final int MAX_RESULT = 20;
 

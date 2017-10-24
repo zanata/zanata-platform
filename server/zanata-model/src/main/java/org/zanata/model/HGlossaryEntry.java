@@ -40,7 +40,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.util.GlossaryUtil;
@@ -51,7 +50,6 @@ import org.zanata.util.GlossaryUtil;
 @Entity
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
 @Cacheable
-@Indexed
 @Table(uniqueConstraints = @UniqueConstraint(name = "UK_glossaryEntry", columnNames = {"contentHash", "glossaryId"}))
 public class HGlossaryEntry extends ModelEntityBase {
 
