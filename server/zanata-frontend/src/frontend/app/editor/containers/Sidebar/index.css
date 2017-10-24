@@ -65,8 +65,8 @@ ul.SidebarEditor-details {
   word-wrap: break-word;
 }
 
-#SidebarEditor-tabsPane1-pane-1 table {
-  padding-bottom: 1rem;
+#SidebarEditor-tabsPane1-pane-1 {
+  padding-bottom: 1.5rem;
 }
 
 #SidebarEditor-tabsPane1.tab-pane.active {
