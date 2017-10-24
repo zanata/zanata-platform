@@ -113,7 +113,7 @@ class TranslationInfoPanel extends React.Component {
     const glossaryTitle = (
       <span>
         <Icon name="glossary" className="s1 gloss-tab-svg" />
-        <span className="hide-md">Glossary{glossaryCountDisplay}</span>
+        <span className="hide-md">Glossary</span>{glossaryCountDisplay}
       </span>
     )
 
