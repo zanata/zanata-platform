@@ -5603,7 +5603,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
   <tbody>
     <tr>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5627,7 +5627,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         </button>
       </td>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5694,7 +5694,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
     </tr>
     <tr>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5718,7 +5718,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         </button>
       </td>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5785,7 +5785,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
     </tr>
     <tr>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5809,7 +5809,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         </button>
       </td>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5901,7 +5901,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
   <tbody>
     <tr>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5925,7 +5925,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         </button>
       </td>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -5992,7 +5992,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
     </tr>
     <tr>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6016,7 +6016,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         </button>
       </td>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6083,7 +6083,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
     </tr>
     <tr>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6107,7 +6107,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         </button>
       </td>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6183,7 +6183,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
   <tbody>
     <tr>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
@@ -6207,7 +6207,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
         </button>
       </td>
       <td
-        className="GlossaryText long-string"
+        className="GlossaryText StringLong"
         data-filetype="text"
       >
         <button
