@@ -45,8 +45,6 @@ class FrontendAction @Inject constructor(@DeltaSpike private val servletContext:
         get() = "${servletContext.contextPath}/${manifest.frontendCss}"
     val legacyJs: String
         get() = "${servletContext.contextPath}/${manifest.legacyJs}"
-    val legacyCss: String
-        get() = "${servletContext.contextPath}/${manifest.legacyCss}"
     /**
      * runtime.js is the webpack runtime. It has to be loaded before any other javascript modules.
      */
@@ -80,12 +78,9 @@ data class FrontendManifest(
         @JsonProperty("editor.js") val editorJs: String,
         @JsonProperty("frontend.css") val frontendCss: String,
         @JsonProperty("frontend.js") val frontendJs: String,
-        // TODO pahuang legacy.css is not used?
-        @JsonProperty("frontend.legacy.css") val legacyCss: String,
         @JsonProperty("frontend.legacy.js") val legacyJs: String,
-        // this js module is referenced in zanata-frontend/src/frontend/app/editor/index.js as npm module 'intl-polyfill'
-        // Not sure if the module cache name will impact the use of it.
-        // TODO pahuang test this in browser that don't support Intl (e.g. opera mini, IE 10)
+        // this js module is referenced in zanata-frontend/src/frontend/app/editor/index.js as npm module 'intl-polyfill'.
+        // It appears to work properly despite the hashed name.
         @JsonProperty("intl-polyfill.js") val intlPolyFillJs: String,
         @JsonProperty("runtime.js") val runtime: String
 )
