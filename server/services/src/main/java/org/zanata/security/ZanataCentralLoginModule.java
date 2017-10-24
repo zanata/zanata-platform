@@ -22,6 +22,7 @@ package org.zanata.security;
 
 import java.io.IOException;
 import java.util.Map;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -30,6 +31,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.zanata.config.SystemPropertyConfigStore;
 
 /**
@@ -45,6 +47,7 @@ public class ZanataCentralLoginModule implements LoginModule {
     private String kerberosDomain;
     private String openIdDomain;
     private String jaasDomain;
+    private String ssoDomain;
 
     private Subject subject;
     private CallbackHandler callbackHandler;
@@ -73,6 +76,8 @@ public class ZanataCentralLoginModule implements LoginModule {
         jaasDomain =
                 systemPropCfg.getAuthPolicyName(AuthenticationType.JAAS.name()
                         .toLowerCase());
+        ssoDomain = systemPropCfg
+                .getAuthPolicyName(AuthenticationType.SAML2.name().toLowerCase());
     }
 
     @Override
@@ -84,10 +89,17 @@ public class ZanataCentralLoginModule implements LoginModule {
         try {
             callbackHandler.handle(new Callback[] { authTypeCallback });
         } catch (UnsupportedCallbackException ucex) {
-            // This happens on kerberos authentication
+            // This happens on kerberos or SAML authentication
             // NB: A custom callback handler could be configured on the app
             // server to avoid this.
-            authTypeCallback.setAuthType(AuthenticationType.KERBEROS);
+            boolean saml2Enabled = BeanProvider
+                    .getContextualReference(AuthenticationConfig.class)
+                    .isSaml2Enabled();
+            if (saml2Enabled) {
+                authTypeCallback.setAuthType(AuthenticationType.SAML2);
+            } else {
+                authTypeCallback.setAuthType(AuthenticationType.KERBEROS);
+            }
         } catch (IOException e) {
             LoginException lex = new LoginException(e.getMessage());
             lex.initCause(e);
@@ -108,6 +120,9 @@ public class ZanataCentralLoginModule implements LoginModule {
             break;
         case JAAS:
             delegateName = jaasDomain;
+            break;
+        case SAML2:
+            delegateName = ssoDomain;
             break;
         }
 

@@ -152,6 +152,12 @@ public class ApplicationConfiguration implements Serializable {
         loginModuleNames = sysPropConfigStore.getLoginModuleNames();
     }
 
+
+    @Produces
+    public Set<AuthenticationType> getAuthTypes() {
+        return loginModuleNames.keySet();
+    }
+
     /**
      * Apply logging configuration.
      */
@@ -323,7 +329,7 @@ public class ApplicationConfiguration implements Serializable {
             return AuthenticationType.KERBEROS;
         }
         throw new RuntimeException(
-                "only supports internal, jaas, or kerberos authentication");
+                "only supports internal, jaas, sso or kerberos authentication");
     }
 
     public String getOpenIdProviderUrl() {
