@@ -13,6 +13,24 @@
   --Editor-color-light: #90b8c5;
   --Editor-color-dark: #20718a;
   --Editor-color-bright: #1ba7d9;
+  --Editor-badge-radius: 4px;
+}
+
+.sidebar-editor .badge {
+  font-size: 0.875rem;
+  display: inline-block;
+  min-width: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  color: #fff;
+  margin-left: 0.375rem;
+  border-radius: var(--Editor-badge-radius);
+  background-color: var(--Editor-color-dark);
+}
+
+.gloss-tab-svg {
+  vertical-align: sub;
 }
 
 /* need to keep syntax for logoLoader so this overrides correctly */
