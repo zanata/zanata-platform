@@ -45,7 +45,7 @@ class ActivityTab extends React.Component {
 
     return (
       <Tab eventKey={eventKey} title="">
-        <div className="SidebarEditor-wrapper" id="tab2">
+        <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
           <ActivitySelectList selectItem={selectActivityTypeFilter}
             selected={selectedActivites} />
         </div>
