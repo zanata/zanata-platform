@@ -118,9 +118,6 @@
             <!-- Used for StringUtils lib -->
             <!-- Needed by ui rendering at runtime -->
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
-            <!-- Used for different content analyzers based on langugage for search. -->
-            <usedDependency>org.apache.solr:solr-core</usedDependency>
-            <usedDependency>org.apache.solr:solr-solrj</usedDependency>
             <!-- Used for unit tests via persistence.xml
                  (org.hibernate.testing.cache.CachingRegionFactory) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
@@ -961,14 +958,17 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
+      <scope>${resteasy.scope}</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
+      <scope>${resteasy.scope}</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-xc</artifactId>
+      <scope>${resteasy.scope}</scope>
     </dependency>
 
     <dependency>
@@ -986,6 +986,7 @@
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -1262,14 +1263,10 @@
       </exclusions>
     </dependency>
 
-    <!-- Solr dependencies -->
     <dependency>
-      <groupId>org.apache.solr</groupId>
-      <artifactId>solr-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.solr</groupId>
-      <artifactId>solr-solrj</artifactId>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>woodstox-core-asl</artifactId>
+      <version>4.4.1</version>
     </dependency>
 
     <dependency>
@@ -1701,13 +1698,6 @@
           <groupId>commons-logging</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.picketbox</groupId>
-      <artifactId>picketbox</artifactId>
-      <version>4.9.4.Final</version>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>

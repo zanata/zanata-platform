@@ -27,7 +27,6 @@
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
-    <picketlink.version>2.5.5.SP1</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
     <weld.version>2.3.2.Final</weld.version>
@@ -49,7 +48,6 @@
     <commonmark.spec.version>18.0</commonmark.spec.version>
     -->
 
-    <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
     <slf4j.version>1.7.22</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
@@ -69,11 +67,10 @@
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
-    <hibernate.version>5.0.7.Final</hibernate.version>
+    <hibernate.version>5.0.12.Final</hibernate.version>
 
-    <!-- TODO try provided -->
-    <hibernate.search.scope>compile</hibernate.search.scope>
-    <hibernate.search.version>5.5.1.Final</hibernate.search.version>
+    <hibernate.search.scope>provided</hibernate.search.scope>
+    <hibernate.search.version>5.5.2.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
     <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
@@ -81,16 +78,11 @@
     <!-- controls concordion output location-->
     <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
 
-    <!-- JBoss version for Arquillian dependencies -->
-    <!-- TODO Update to WildFly 10 versions -->
-    <jboss.as.version>7.2.0.Final</jboss.as.version>
-
     <jdbc.groupId>mysql</jdbc.groupId>
     <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
     <jdbc.version>5.1.26</jdbc.version>
 
-    <!-- TODO try provided -->
-    <resteasy.scope>compile</resteasy.scope>
+    <resteasy.scope>provided</resteasy.scope>
     <resteasy.version>3.0.19.Final</resteasy.version>
     <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
 
@@ -104,7 +96,7 @@
     <!-- Version of the management api used by Cargo -->
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
-    <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
+    <wildfly.arquillian.version>2.0.2.Final</wildfly.arquillian.version>
     <jackson2.version>2.7.2</jackson2.version>
 
     <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
@@ -353,13 +345,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-idm-api</artifactId>
-        <version>${picketlink.version}</version>
-        <scope>compile</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
         <version>5.1</version>
@@ -369,6 +354,12 @@
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-commons</artifactId>
         <version>5.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.picketbox</groupId>
+        <artifactId>picketbox</artifactId>
+        <version>4.9.4.Final</version>
       </dependency>
 
       <dependency>
@@ -426,7 +417,7 @@
       <dependency>
         <groupId>org.jboss.security</groupId>
         <artifactId>jboss-negotiation-common</artifactId>
-        <version>3.0.0.Final</version>
+        <version>3.0.2.Final</version>
         <scope>provided</scope>
       </dependency>
 
@@ -1281,7 +1272,8 @@
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-jaxrs</artifactId>
-        <version>1.9.13</version>
+        <version>${jackson.version}</version>
+        <scope>${resteasy.scope}</scope>
       </dependency>
       <dependency>
         <groupId>org.richfaces</groupId>
@@ -1553,104 +1545,6 @@
         <version>${lucene.version}</version>
       </dependency>
 
-      <!-- Solr dependencies -->
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-core</artifactId>
-        <version>${solr.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet.ext.servlet</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>net.java.dev.stax-utils</groupId>
-            <artifactId>stax-utils</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-lucene-analyzers</artifactId>
-          </exclusion>
-          <!-- NB: https://hibernate.atlassian.net/browse/HSEARCH-380 -->
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-lucene-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-          </exclusion>
-          <exclusion>
-            <artifactId>servlet-api</artifactId>
-            <groupId>javax.servlet</groupId>
-          </exclusion>
-          <exclusion>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-solrj</artifactId>
-        <version>${solr.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-analysis-extras</artifactId>
-        <version>${solr.version}</version>
-      </dependency>
       <dependency>
         <groupId>net.customware.gwt.presenter</groupId>
         <artifactId>gwt-presenter</artifactId>

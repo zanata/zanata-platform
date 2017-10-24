@@ -3,17 +3,6 @@
 <!-- https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/Included_Modules1.html -->
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
   <deployment>
-    <!-- These exclusions let us use the war file's RESTEasy instead of the
-         container's version -->
-    <exclude-subsystems>
-      <subsystem name="jaxrs" />
-    </exclude-subsystems>
-    <exclusions>
-      <module name="javax.ws.rs.api" />
-      <module name="javaee.api" />
-      <module name="org.hibernate.search.orm" />
-      <module name="org.jboss.as.jaxrs" />
-    </exclusions>
     <dependencies>
 
       <!-- start of unsupported modules -->
@@ -23,37 +12,21 @@
       <!-- end of unsupported modules -->
 
       <!-- start of private modules -->
+      <!-- Needed by MigrateSeamTextToCommonMark -->
       <module name="org.antlr" />
+      <!-- Needed by ZanataJacksonJsonProvider -->
+      <module name="org.codehaus.jackson.jackson-jaxrs" />
       <!-- end of private modules -->
 
       <!-- start of deprecated modules -->
-      <module name="org.jboss.security.negotiation" />
       <!-- end of deprecated modules -->
 
       <!-- for java melody heap dump. Remove if https://github.com/javamelody/javamelody/issues/585 is resolved -->
       <module name="sun.jdk"/>
 
       <!-- other modules -->
-      <module name="org.infinispan.commons" optional="true" />
-      <module name="javax.annotation.api" />
-      <!-- not needed for wildfly: -->
-      <module name="javax.ejb.api" />
-      <module name="javax.inject.api" />
-      <module name="javax.el.api" />
-      <module name="javax.faces.api" />
-      <!-- not needed for wildfly: -->
-      <module name="javax.interceptor.api" />
-      <module name="javax.jms.api" />
-      <module name="javax.mail.api" />
-      <module name="javax.servlet.api" />
-      <module name="javax.transaction.api"/>
-      <module name="javax.validation.api" />
-      <!-- not needed for wildfly: -->
-      <module name="javax.xml.bind.api" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />
-      <!-- dom4j needed for wildfly (WFLY-5549)  -->
-      <module name="org.dom4j" />
       <module name="org.hibernate" />
       <module name="org.hibernate.commons-annotations" />
       <module name="org.hibernate.validator" />
