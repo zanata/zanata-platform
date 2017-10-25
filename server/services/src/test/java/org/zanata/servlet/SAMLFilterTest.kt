@@ -12,6 +12,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.zanata.security.AuthenticationManager
+import org.zanata.security.SamlAccountService
 import org.zanata.security.SamlAttributes
 import org.zanata.util.UrlUtil
 import javax.servlet.FilterChain
@@ -34,12 +35,13 @@ class SAMLFilterTest {
     private lateinit var authenticationManager: AuthenticationManager
     @Mock
     private lateinit var urlUtil: UrlUtil
-
+    @Mock
+    private lateinit var samlAccountService: SamlAccountService
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        filter = SAMLFilter(authenticationManager, urlUtil, samlAttributes)
+        filter = SAMLFilter(authenticationManager, urlUtil, samlAttributes, samlAccountService)
     }
 
 
@@ -74,5 +76,6 @@ class SAMLFilterTest {
         filter.doFilter(request, response, chain)
 
         verify(response).sendRedirect("/dashboard")
+        verify(samlAccountService).tryMergeToExistingAccount()
     }
 }
