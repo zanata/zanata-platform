@@ -41,6 +41,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 
+import static java.util.concurrent.Executors.newCachedThreadPool;
+
 public class ClientWorkFlow {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ClientWorkFlow.class);
@@ -92,7 +94,8 @@ public class ClientWorkFlow {
         }
         final List<String> commands =
                 Lists.newArrayList(Splitter.on(" ").split(command));
-        SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
+        SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(
+                newCachedThreadPool());
         Callable<List<String>> work = () -> {
             Process process =
                     ClientWorkFlow.invokeClient(workingDirectory, commands);
@@ -103,7 +106,7 @@ public class ClientWorkFlow {
         };
         try {
             return timeLimiter.callWithTimeout(work, timeoutDuration,
-                    TimeUnit.SECONDS, true);
+                    TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
