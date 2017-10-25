@@ -140,7 +140,9 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                                "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/ZNTA-2234-tag" ;
                     } else {
 // Notifier.groovy in zanata-pipeline-library uses this:
-                        return "1234567890123456789012345678901234567890 abcdef\n";
+                        return "fc2b7c527e4401c03bcaf2833739d16e77698ab6 refs/heads/master\n" +
+                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/ZNTA-2234-tag\n" +
+                               "1234567890123456789012345678901234567890 refs/tags/v0.1.0";
                     }
                 }
             }
