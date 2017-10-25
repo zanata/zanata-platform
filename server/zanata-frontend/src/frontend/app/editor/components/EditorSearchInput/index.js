@@ -31,10 +31,6 @@ import {
   toggleAdvanced,
   updatePhraseFilter
 } from '../../actions/phrases-filter-actions'
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
 
 const fields = {
   resId: {
@@ -88,19 +84,14 @@ export class EditorSearchInput extends Component {
       msgContext: PropTypes.string.isRequired
     }).isRequired,
     toggleAdvanced: PropTypes.func.isRequired,
-    updateSearch: PropTypes.func.isRequired,
-    // Not .Required until wired up correctly
-    directionClass: PropTypes.object,
-    isLtr: PropTypes.bool
+    updateSearch: PropTypes.func.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
       focused: false,
-      open: false,
-      // TODO location detection
-      isLtr: false
+      open: false
     }
   }
 
@@ -187,7 +178,6 @@ export class EditorSearchInput extends Component {
 
   render () {
     const { showAdvanced } = this.props
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     const advancedFields = map(fields, (field, key) => (
       <AdvancedField key={key}
@@ -217,8 +207,7 @@ export class EditorSearchInput extends Component {
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
             onClick={this.state.open}
-            className={directionClass + ' EditorInputGroup-input' +
-              ' u-sizeLineHeight-1_1-4'} />
+            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           {this.clearButtonElement()}
           <span className="EditorInputGroup-addon btn-xs btn-link"
             onClick={this.toggleAdvanced}>
@@ -247,13 +236,6 @@ class AdvancedField extends Component {
     updateSearch: PropTypes.func.isRequired
   }
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      isRtl: false
-    }
-  }
-
   updateSearch = (event) => this.props.updateSearch({
     [this.props.id]: event.target.value
   })
@@ -261,11 +243,8 @@ class AdvancedField extends Component {
   render () {
     const { id, field, value } = this.props
     const { label, description } = field
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
-
     return (
-      <div key={id} title={description}
-        className={directionClass + ' u-sPB-1-2'}>
+      <div key={id} title={description} className="u-sPB-1-2">
         <label className="u-textSecondary u-sPB-1-4">{label}</label>
         <input ref={id}
           type="text"
