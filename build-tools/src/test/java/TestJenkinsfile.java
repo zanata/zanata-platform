@@ -85,7 +85,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         Map<String, String> env = new HashMap<>();
         env.put("BUILD_URL", "http://example.com/job/JobName/123");
         env.put("JOB_NAME", "JobName");
-        env.put("BRANCH_NAME", "PR-456");
+        env.put("BRANCH_NAME", "master");
         env.put("BUILD_NUMBER", "123");
         env.put("EXECUTOR_NUMBER", "1");
         env.put("DEFAULT_NODE", "master");
