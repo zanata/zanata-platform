@@ -2,10 +2,13 @@
   margin-left: 0.75em;
   margin-right: 1em;
   display: inline-flex;
-  font-size: 0.875em;
   padding-bottom: 1rem;
   padding-top: 0.25rem;
   flex: 2 0 16rem;
+}
+
+.InputEditorSearch input {
+  font-size: 0.875em;
 }
 
 .InputEditorSearch > div {

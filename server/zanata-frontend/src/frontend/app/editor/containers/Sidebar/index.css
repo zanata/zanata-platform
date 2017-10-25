@@ -399,6 +399,10 @@ span.loader span div {
   min-width: 8rem;
 }
 
+.InlineSearch .EditorInputGroup--outlined input {
+  font-size: 0.875rem;
+}
+
 h2.validation {
   color: var(--Sidebar-color-text);
   font-size: 15px;

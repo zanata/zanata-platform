@@ -16,6 +16,10 @@
   --Editor-badge-radius: 4px;
 }
 
+input, textarea, select, button  {
+  font-size: 1rem;
+}
+
 .sidebar-editor .badge {
   font-size: 0.875rem;
   display: inline-block;
