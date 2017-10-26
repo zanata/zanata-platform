@@ -1,22 +1,23 @@
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.codehaus.groovy.runtime.MethodClosure;
+import org.junit.Before;
+import org.junit.Test;
 import com.cloudbees.groovy.cps.impl.CpsCallableInvocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.lesfurets.jenkins.unit.cps.BasePipelineTestCPS;
 import com.lesfurets.jenkins.unit.global.lib.LibraryConfiguration;
 import groovy.lang.Closure;
-import org.codehaus.groovy.runtime.MethodClosure;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.lesfurets.jenkins.unit.MethodSignature.method;
 import static com.lesfurets.jenkins.unit.global.lib.GitSource.gitSource;
 import static com.lesfurets.jenkins.unit.global.lib.LibraryConfiguration.library;
 import static java.lang.Boolean.TRUE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // try 'extends BasePipelineTest' for debugging in case of weird Groovy exceptions
 public class TestJenkinsfile extends BasePipelineTestCPS {
@@ -66,24 +67,8 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
             throw new RuntimeException("Unmocked invocation");
         });
         getHelper().registerAllowedMethod(method("sh", Map.class),
-                args -> {
-                    @SuppressWarnings("unchecked")
-                    Map<String, ?> a = (Map<String, ?>) args;
-                    if (TRUE.equals(a.get("returnStdout"))) {
-                        String script = a.get("script").toString();
-                        if (script.contains("allocate-jboss-ports")) {
-                            return "JBOSS_HTTP_PORT=51081\nSMTP_PORT=34765\n";
-                        }
-                        // Notifier.groovy in zanata-pipeline-library uses this:
-                        if (script.contains("git ls-remote")) {
-                            return "1234567890 abcdef\n";
-                        }
-                    }
-                    if (TRUE.equals(a.get("returnStatus"))) {
-                        return 0;
-                    }
-                    return 0;
-                });
+                SH.INSTANCE);
+
         // PipelineUnit(withCredentialsInterceptor) can't handle a List<Map>
         // TODO for some reason the steps inside closure.call() are not shown as nested
         getHelper().registerAllowedMethod("withCredentials",
@@ -100,7 +85,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         Map<String, String> env = new HashMap<>();
         env.put("BUILD_URL", "http://example.com/job/JobName/123");
         env.put("JOB_NAME", "JobName");
-        env.put("BRANCH_NAME", "PR-456");
+        env.put("BRANCH_NAME", "master");
         env.put("BUILD_NUMBER", "123");
         env.put("EXECUTOR_NUMBER", "1");
         env.put("DEFAULT_NODE", "master");
@@ -113,7 +98,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         steps.put("emailext", Closure.IDENTITY);
         steps.put("emailextrecipients", Closure.IDENTITY);
         steps.put("library", Closure.IDENTITY);
-        steps.put("sh", Closure.IDENTITY);
+        steps.put("sh", SH.INSTANCE);
         steps.put("step", Closure.IDENTITY);
         // we need this for CPS mode
         MethodClosure.ALLOW_RESOLVE = true;
@@ -129,15 +114,63 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         getBinding().setProperty("manager", ImmutableMap.of());
     }
 
+    static class SH<T, R> extends Closure<R> {
+        static final Closure INSTANCE = new SH();
+        SH() {
+            super(null);
+        }
+
+        @SuppressWarnings("unused")
+        protected Object doCall(T args) {
+            if (args instanceof String) return 0;
+
+            @SuppressWarnings("unchecked")
+            Map<String, ?> a = (Map<String, ?>) args;
+            if (TRUE.equals(a.get("returnStdout"))) {
+                String script = a.get("script").toString();
+                if (script.endsWith("allocate-jboss-ports")) {
+                    return "JBOSS_HTTP_PORT=51081\nSMTP_PORT=34765\n";
+                }
+                if (script.startsWith("git ls-remote")) {
+// ScmGit.init in zanata-pipeline-library uses these:
+                    if (script.endsWith("refs/pull/*/head")) {
+                        return "1234567890123456789012345678901234567890 refs/pull/123/head";
+                    } else if (script.endsWith("refs/heads/*")) {
+                        return "fc2b7c527e4401c03bcaf2833739d16e77698ab6 refs/heads/master\n" +
+                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/ZNTA-2234-tag" ;
+                    } else {
+// Notifier.groovy in zanata-pipeline-library uses this:
+                        return "fc2b7c527e4401c03bcaf2833739d16e77698ab6 refs/heads/master\n" +
+                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/ZNTA-2234-tag\n" +
+                               "1234567890123456789012345678901234567890 refs/tags/v0.1.0";
+                    }
+                }
+            }
+            if (TRUE.equals(a.get("returnStatus"))) {
+                return 0;
+            }
+            return 0;
+        }
+    }
+
     @Test
     public void shouldExecuteWithoutErrors() throws Exception {
-
         try {
             // load and execute the Jenkinsfile
-            loadScript("../Jenkinsfile");
+            runScript("../Jenkinsfile");
             printCallStack();
             assertJobStatusSuccess();
-            // TODO add assertions about call stack (but not too fragile)
+
+            boolean verified = getHelper().getCallStack()
+                    .stream()
+                    .filter(it -> it.getMethodName().equals("sh") && it.argsToString().contains("mvn"))
+                    // snoop on mvn commands in the stream
+//                    .peek(it -> System.out.printf("%s\n\n", it.argsToString()))
+                    .anyMatch(it -> {
+                        String args = it.argsToString();
+                        return args.contains("-Dappserver=") && args.contains("install");
+                    });
+            assertThat(verified).isTrue();
         } catch (CpsCallableInvocation e) {
             // if the script fails, we need the call stack to tell us where the problem is
             // (CpsCallableInvocation tells us very little)
