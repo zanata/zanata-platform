@@ -22,8 +22,6 @@ package org.zanata.action
 
 import org.apache.deltaspike.core.api.common.DeltaSpike
 import org.apache.deltaspike.core.api.lifecycle.Initialized
-import org.codehaus.jackson.annotate.JsonIgnoreProperties
-import org.codehaus.jackson.annotate.JsonProperty
 import org.codehaus.jackson.map.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -71,16 +69,3 @@ class FrontendAction @Inject constructor(@DeltaSpike private val servletContext:
         }
     }
 }
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class FrontendManifest(
-        @JsonProperty("editor.css") val editorCss: String,
-        @JsonProperty("editor.js") val editorJs: String,
-        @JsonProperty("frontend.css") val frontendCss: String,
-        @JsonProperty("frontend.js") val frontendJs: String,
-        @JsonProperty("frontend.legacy.js") val legacyJs: String,
-        // this js module is referenced in zanata-frontend/src/frontend/app/editor/index.js as npm module 'intl-polyfill'.
-        // It appears to work properly despite the hashed name.
-        @JsonProperty("intl-polyfill.js") val intlPolyFillJs: String,
-        @JsonProperty("runtime.js") val runtime: String
-)
