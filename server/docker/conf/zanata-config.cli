@@ -12,6 +12,7 @@ batch
 /system-property="zanata.home":add(value="${user.home}/zanata")
 /system-property="javamelody.storage-directory":add(value="${zanata.home}/stats")
 /system-property="hibernate.search.default.indexBase":add(value="${zanata.home}/indexes")
+/system-property="zanata.file.directory":add(value="${zanata.home}/files")
 /system-property="jboss.as.management.blocking.timeout":add(value="1000")
 /system-property="zanata.security.authpolicy.internal":add(value="zanata.internal")
 /system-property="zanata.security.authpolicy.openid":add(value="zanata.openid")
