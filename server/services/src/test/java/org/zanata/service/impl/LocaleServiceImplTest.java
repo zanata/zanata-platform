@@ -169,6 +169,18 @@ public class LocaleServiceImplTest {
     public void testConvertHLocaleToDTO() {
         HLocale hLocale = new HLocale(LocaleId.DE);
         LocaleDetails details = LocaleService.convertHLocaleToDTO(hLocale);
+        assertHLocaleToDTO(hLocale, details, false);
+    }
+
+    @Test
+    public void testConvertHLocaleToDTORTL() {
+        HLocale hLocale = new HLocale(new LocaleId("ar"));
+        LocaleDetails details = LocaleService.convertHLocaleToDTO(hLocale);
+        assertHLocaleToDTO(hLocale, details, true);
+    }
+
+    private void assertHLocaleToDTO(HLocale hLocale, LocaleDetails details,
+            boolean isRTL) {
         assertThat(details.getLocaleId()).isEqualTo(hLocale.getLocaleId());
         assertThat(details.getAlias()).isNull();
         assertThat(details.getDisplayName())
@@ -178,6 +190,7 @@ public class LocaleServiceImplTest {
         assertThat(details.isEnabled()).isEqualTo(hLocale.isActive());
         assertThat(details.isEnabledByDefault())
                 .isEqualTo(hLocale.isEnabledByDefault());
+        assertThat(details.isRtl()).isEqualTo(isRTL);
     }
 
     @Test
@@ -196,6 +209,7 @@ public class LocaleServiceImplTest {
         assertThat(details.isEnabled()).isEqualTo(hLocale.isActive());
         assertThat(details.isEnabledByDefault())
                 .isEqualTo(hLocale.isEnabledByDefault());
+        assertThat(details.isRtl()).isFalse();
         assertThat(searchResult.getMemberCount())
                 .isEqualTo(hLocale.getMembers().size());
     }

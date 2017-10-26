@@ -21,7 +21,7 @@ public class LanguageTeamSearchResultTest {
     public void testLocaleDetails() {
         LocaleDetails localeDetails =
                 new LocaleDetails(LocaleId.DE, "German", null, null, true, true,
-                        null);
+                        null, false);
         LanguageTeamSearchResult searchResults = new LanguageTeamSearchResult();
         searchResults.setLocaleDetails(localeDetails);
         assertThat(searchResults.getLocaleDetails(), equalTo(localeDetails));

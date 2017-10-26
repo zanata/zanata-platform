@@ -60,13 +60,6 @@ public class LocaleDetails implements Serializable {
     }
 
     public LocaleDetails(LocaleId localeId, String displayName, String alias,
-            String nativeName, boolean enabled, boolean enabledByDefault,
-            String pluralForms) {
-        this(localeId, displayName, alias, nativeName, enabled,
-                enabledByDefault, pluralForms, false);
-    }
-
-    public LocaleDetails(LocaleId localeId, String displayName, String alias,
         String nativeName, boolean enabled, boolean enabledByDefault,
         String pluralForms, boolean rtl) {
         this.localeId = localeId;

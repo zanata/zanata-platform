@@ -22,7 +22,7 @@ public class SourceLocaleDetailsTest {
     public void testConstructor() {
         LocaleDetails localeDetails =
                 new LocaleDetails(LocaleId.DE, "German", "", "", true,
-                        false, "");
+                        false, "", false);
         SourceLocaleDetails details =
                 new SourceLocaleDetails(10, localeDetails);
 
@@ -38,7 +38,7 @@ public class SourceLocaleDetailsTest {
 
         LocaleDetails localeDetails =
                 new LocaleDetails(LocaleId.DE, "German", "", "", true,
-                        false, "");
+                        false, "", false);
         details.setLocaleDetails(localeDetails);
         assertThat(details.getLocaleDetails(), equalTo(localeDetails));
 
@@ -48,7 +48,7 @@ public class SourceLocaleDetailsTest {
     public void testEqualsAndHashCode() {
         LocaleDetails localeDetails =
                 new LocaleDetails(LocaleId.DE, "German", "", "", true,
-                        false, "");
+                        false, "", false);
         SourceLocaleDetails details1 =
                 new SourceLocaleDetails(10, localeDetails);
 
