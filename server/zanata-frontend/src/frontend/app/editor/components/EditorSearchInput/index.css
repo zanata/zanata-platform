@@ -53,8 +53,10 @@
   vertical-align: middle;
 }
 
-.EditorInputGroup-addon {
+.InputEditorSearch .EditorInputGroup-addon button {
   vertical-align: sub !important;
+  color: #03A6D7;
+
 }
 
 li.InlineSearch-list {
@@ -66,6 +68,10 @@ li.InlineSearch-list {
 li.InlineSearch-list span {
   width: 60%;
   color: #20718A;
+}
+
+.InlineSearch input {
+  width: 90%;
 }
 
 .InputEditorSearch .panel.panel-default {
