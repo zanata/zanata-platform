@@ -897,35 +897,29 @@
         <directory>src/test/resources/zanata-user-config</directory>
         <filtering>true</filtering>
       </testResource>
+      <!-- config files under sample-projects, with filtering -->
+      <testResource>
+        <directory>sample-projects</directory>
+        <targetPath>sample-projects</targetPath>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/zanata.xml</include>
+          <include>**/pom.xml</include>
+        </includes>
+      </testResource>
+      <!-- non-config files under sample-projects, without filtering -->
+      <testResource>
+        <directory>sample-projects</directory>
+        <targetPath>sample-projects</targetPath>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/zanata.xml</exclude>
+          <exclude>**/pom.xml</exclude>
+        </excludes>
+      </testResource>
     </testResources>
 
     <plugins>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <outputDirectory>target/test-classes/</outputDirectory>
-          <resources>
-            <!-- files under sample-projects, with filtering for config files -->
-            <resource>
-              <directory>sample-projects</directory>
-              <targetPath>sample-projects</targetPath>
-              <filtering>true</filtering>
-              <includes>
-                <include>**</include>
-              </includes>
-            </resource>
-          </resources>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
