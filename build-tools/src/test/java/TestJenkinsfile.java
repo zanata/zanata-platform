@@ -134,14 +134,20 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                 if (script.startsWith("git ls-remote")) {
 // ScmGit.init in zanata-pipeline-library uses these:
                     if (script.endsWith("refs/pull/*/head")) {
-                        return "1234567890123456789012345678901234567890 refs/pull/123/head";
+                        return "1234567890123456789012345678901234567890 refs/pull/123/head\n" +
+                                "6543516846846146541645265465464654264641 refs/pull/234/head";
                     } else if (script.endsWith("refs/heads/*")) {
                         return "fc2b7c527e4401c03bcaf2833739d16e77698ab6 refs/heads/master\n" +
-                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/ZNTA-2234-tag" ;
+                                "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/feature-branch";
+                    } else if (script.contains("refs/tags/")) {
+                        // TODO extract the requested tag and return it
+                        return "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/tags/v0.3.0";
+                    } else if (script.matches("refs/pull/.*/head")) {
+                        return "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/pull/123/head";
                     } else {
 // Notifier.groovy in zanata-pipeline-library uses this:
                         return "fc2b7c527e4401c03bcaf2833739d16e77698ab6 refs/heads/master\n" +
-                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/ZNTA-2234-tag\n" +
+                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/feature-branch\n" +
                                "1234567890123456789012345678901234567890 refs/tags/v0.1.0";
                     }
                 }
