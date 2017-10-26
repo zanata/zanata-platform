@@ -16,7 +16,9 @@ class SuggestionDetailsModal extends Component {
     onClose: PropTypes.func.isRequired,
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.array.isRequired
-    }).isRequired
+    }).isRequired,
+    isRTLSource: PropTypes.bool.isRequired,
+    isRTLTarget: PropTypes.bool.isRequired
   }
 
   constructor (props) {
@@ -27,7 +29,8 @@ class SuggestionDetailsModal extends Component {
   }
 
   render () {
-    const { matchDetails } = this.props.suggestion
+    const {suggestion, isRTLSource, isRTLTarget} = this.props
+    const matchDetails = suggestion
 
     const detailPanels = matchDetails.map((matchDetail, index) => {
       const props = {
@@ -45,6 +48,9 @@ class SuggestionDetailsModal extends Component {
 
     const activeMatchType = matchType(matchDetails[this.state.activeKey])
 
+    const directionClassSource = isRTLSource ? 'rtl' : 'ltr'
+    const directionClassTarget = isRTLTarget ? 'rtl' : 'ltr'
+
     return (
       <Modal
         show
@@ -56,7 +62,9 @@ class SuggestionDetailsModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <PlainSuggestionContents suggestion={this.props.suggestion}
-            matchType={activeMatchType} displayHeader />
+            matchType={activeMatchType}
+            directionClassSource={directionClassSource}
+            directionClassTarget={directionClassTarget} displayHeader />
           <PanelGroup>
             {detailPanels}
           </PanelGroup>

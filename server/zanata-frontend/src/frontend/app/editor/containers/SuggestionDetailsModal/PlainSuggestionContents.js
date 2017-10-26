@@ -6,10 +6,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SuggestionContents from '../../components/SuggestionContents'
 import cx from 'classnames'
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
 
 class PlainSuggestionContents extends Component {
   static propTypes = {
@@ -21,18 +17,7 @@ class PlainSuggestionContents extends Component {
     }).isRequired,
     displayHeader: PropTypes.bool,
     directionClassSource: PropTypes.object.isRequired,
-    directionClassTarget: PropTypes.object.isRequired,
-    isLtrSource: PropTypes.bool.isRequired,
-    isLtrTarget: PropTypes.bool.isRequired
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      // TODO location detection
-      isLtrSource: false,
-      isLtrTarget: false
-    }
+    directionClassTarget: PropTypes.object.isRequired
   }
 
   matchTypeClass = (matchType) => {
@@ -44,12 +29,11 @@ class PlainSuggestionContents extends Component {
   }
 
   render () {
-    const { sourceContents, targetContents } = this.props.suggestion
+    const {suggestion, directionClassSource, directionClassTarget} = this.props
+    const {sourceContents, targetContents} = suggestion
     const displayHeader = this.props.displayHeader
     const className = cx('TransUnit TransUnit--suggestion u-bgHigh u-sMB-1',
       this.matchTypeClass(this.props.matchType))
-    const directionClassSource = localeDetails.isLtrSource ? 'rtl' : 'ltr'
-    const directionClassTarget = localeDetails.isLtrTarget ? 'ltr' : 'rtl'
 
     return (
       <div className={className}>

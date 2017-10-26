@@ -4,11 +4,6 @@ import { Panel, Row, Table } from 'react-bootstrap'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { Icon, LoaderText, Modal } from '../../../components'
 
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
-
 /**
  * Modal to show detail for a single glossary term
  */
@@ -32,19 +27,8 @@ class GlossaryTermModal extends React.Component {
     ).isRequired,
     // No '.Required' for below since their usage depends on whether source or
     // target text
-    directionClassSource: PropTypes.object,
-    isLtrSource: PropTypes.bool,
-    directionClassTarget: PropTypes.object,
-    isLtrTarget: PropTypes.bool
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      // TODO location detection so default of isLtr = false can be removed
-      isLtrSource: false,
-      isLtrTarget: false
-    }
+    directionClassSource: PropTypes.string,
+    directionClassTarget: PropTypes.string
   }
 
   render () {
@@ -54,7 +38,9 @@ class GlossaryTermModal extends React.Component {
       show,
       sourceLocale,
       targetLocale,
-      term
+      term,
+      directionClassSource,
+      directionClassTarget
     } = this.props
 
     const selectedDetail = 0
@@ -86,9 +72,6 @@ class GlossaryTermModal extends React.Component {
           </tr>
         )
       })
-
-    const directionClassSource = localeDetails.isLtr ? 'rtl' : 'ltr'
-    const directionClassTarget = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <Modal show={show}

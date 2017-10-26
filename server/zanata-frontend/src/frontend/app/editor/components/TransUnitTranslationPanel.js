@@ -7,10 +7,6 @@ import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { LoaderText } from '../../components'
 import { pick } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
 
 /**
  * Panel to display and edit translations of a phrase.
@@ -44,16 +40,7 @@ class TransUnitTranslationPanel extends React.Component {
     toggleGlossary: PropTypes.func.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
-    directionClass: PropTypes.object.isRequired,
-    isLtr: PropTypes.bool.isRequired
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      // TODO location detection so default of isLtr = false can be removed
-      isLtr: false
-    }
+    isRTL: PropTypes.bool.isRequired
   }
 
   componentWillMount () {
@@ -110,11 +97,12 @@ class TransUnitTranslationPanel extends React.Component {
       onSelectionChange,
       phrase,
       selected,
-      selectPhrasePluralIndex
+      selectPhrasePluralIndex,
+      isRTL
     } = this.props
     var header, footer
     const isPlural = phrase.plural
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+    const directionClass = isRTL ? 'rtl' : 'ltr'
 
     if (selected) {
       const headerProps = pick(this.props, [
@@ -179,7 +167,8 @@ class TransUnitTranslationPanel extends React.Component {
               selectPhrasePluralIndex={selectPhrasePluralIndex}
               setTextArea={this.setTextArea}
               textChanged={textChanged}
-              translation={translation} />
+              translation={translation}
+              directionClass={directionClass} />
           )
         })
     }
@@ -211,7 +200,8 @@ class TranslationItem extends React.Component {
      */
     setTextArea: PropTypes.func.isRequired,
     textChanged: PropTypes.func.isRequired,
-    translation: PropTypes.string
+    translation: PropTypes.string,
+    directionClass: PropTypes.string
   }
 
   setTextArea = (ref) => {
@@ -236,7 +226,8 @@ class TranslationItem extends React.Component {
       onSelectionChange,
       selected,
       selectedPluralIndex,
-      translation
+      translation,
+      directionClass
     } = this.props
 
     // TODO make this translatable
@@ -255,7 +246,6 @@ class TranslationItem extends React.Component {
           {headerLabel}
         </span>
       </div>
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <div className="TransUnit-item" key={index}>
@@ -277,9 +267,13 @@ class TranslationItem extends React.Component {
   }
 }
 
-function mapStateToProps (state, ownProps) {
-  // TODO put all the branch-specific stuff here for a start
+function mapStateToProps (state) {
+  const {ui, context} = state
+  const targetLocaleDetails = ui.uiLocales[context.lang]
+
   return {
+    isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
+        : false
   }
 }
 

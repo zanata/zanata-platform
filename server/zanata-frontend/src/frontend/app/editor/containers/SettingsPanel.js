@@ -9,17 +9,13 @@ import SettingsOptions from '../components/SettingsOptions'
 import { getEnterSavesImmediately } from '../reducers'
 import { ENTER_SAVES_IMMEDIATELY } from '../reducers/settings-reducer'
 
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
-
 export const SettingsPanel = ({
   enterSavesImmediately,
   hideSettings,
-  updateSetting
+  updateSetting,
+  isRTL
 }) => {
-  const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+  const directionClass = isRTL ? 'rtl' : 'ltr'
   return (
     <div>
       <h1 className="SidebarEditor-heading">
@@ -52,15 +48,17 @@ SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired,
-  directionClass: PropTypes.object.isRequired,
-  isLtr: PropTypes.bool.isRequired
+  isRTL: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => {
+  const {context, ui} = state
+  const targetLocaleDetails = ui.uiLocales[context.lang]
+
   return {
     enterSavesImmediately: getEnterSavesImmediately(state),
-    // TODO location detection so default of isLtr = false can be removed
-    isLtr: false
+    isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
+        : false
   }
 }
 

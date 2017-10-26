@@ -12,11 +12,6 @@ import GlossaryTab from '../GlossaryTab'
 // Use this when the activity tab is activated
 // import ActivityTab from './ActivityTab'
 
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
-
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
@@ -31,18 +26,9 @@ class TranslationInfoPanel extends React.Component {
       sourceFlags: PropTypes.string,
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
-      lastModifiedTime: PropTypes.instanceOf(Date),
-      directionClass: PropTypes.object.isRequired,
-      isLtr: PropTypes.bool.isRequired
-    })
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      // TODO location detection so default of isLtr = false can be removed
-      isLtr: false
-    }
+      lastModifiedTime: PropTypes.instanceOf(Date)
+    }),
+    isRTL: PropTypes.bool.isRequired
   }
 
   sidebarDetails = () => {
@@ -59,7 +45,7 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime
     } = this.props.selectedPhrase
 
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+    const directionClass = this.props.isRTL ? 'rtl' : 'ltr'
 
     return (
       <ul className={directionClass + ' SidebarEditor-details'}>
@@ -173,7 +159,7 @@ class TranslationInfoPanel extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const { glossary, phrases } = state
+  const { glossary, phrases, context } = state
   const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
 
@@ -186,9 +172,12 @@ function mapStateToProps (state) {
   const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
       !isUndefined(selectedPhrase)
 
+  const isRTL = context.sourceLocale.isRTL
+
   const newProps = {
     glossaryCount,
-    hasSelectedPhrase
+    hasSelectedPhrase,
+    isRTL
   }
 
   if (hasSelectedPhrase) {

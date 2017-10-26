@@ -7,10 +7,6 @@ import PropTypes from 'prop-types'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
 
 class GlossaryTerm extends React.Component {
   static propTypes = {
@@ -21,21 +17,8 @@ class GlossaryTerm extends React.Component {
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
     }).isRequired,
-    // No '.Required' for below since their usage depends on whether source or
-    // target text
-    directionClassSource: PropTypes.object,
-    isLtrSource: PropTypes.bool,
-    directionClassTarget: PropTypes.object,
-    isLtrTarget: PropTypes.bool
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      // TODO location detection
-      isLtrSource: false,
-      isLtrTarget: false
-    }
+    directionClassSource: PropTypes.string,
+    directionClassTarget: PropTypes.string
   }
 
   copy = () => {
@@ -47,7 +30,7 @@ class GlossaryTerm extends React.Component {
   }
 
   render () {
-    const { index, term } = this.props
+    const {index, term, directionClassSource, directionClassTarget} = this.props
     const sourceTip = (
       <Tooltip id={'glossarytermsource-' + index}>
         {term.source}
@@ -58,8 +41,6 @@ class GlossaryTerm extends React.Component {
         {term.target}
       </Tooltip>
     )
-    const directionClassSource = localeDetails.isLtr ? 'rtl' : 'ltr'
-    const directionClassTarget = localeDetails.isLtr ? 'ltr' : 'rtl'
 
     return (
       <tr key={index}>

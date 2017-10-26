@@ -37,7 +37,9 @@ class SuggestionsPanel extends React.Component {
       [SEARCH_TYPE_PHRASE, SEARCH_TYPE_TEXT]).isRequired,
     search: PropTypes.shape({
       suggestions: PropTypes.array.isRequired
-    }).isRequired
+    }).isRequired,
+    isRTLSource: PropTypes.bool.isRequired,
+    isRTLTarget: PropTypes.bool.isRequired
   }
 
   hideDetail = () => {
@@ -62,9 +64,11 @@ class SuggestionsPanel extends React.Component {
     headerProps.search.changeText = this.props.changeSearchText
 
     const bodyProps = pick(this.props, ['copySuggestion', 'showDiff',
-      'showDetail', 'phraseSelected', 'search', 'searchType'])
+      'showDetail', 'phraseSelected', 'search', 'searchType', 'isRTLSource',
+      'isRTLTarget'])
 
-    const { showDetailModalForIndex, search } = this.props
+    const {showDetailModalForIndex, search,
+      isRTLSource, isRTLTarget} = this.props
     var detailModal
     if (isUndefined(showDetailModalForIndex)) {
       detailModal = undefined
@@ -72,7 +76,8 @@ class SuggestionsPanel extends React.Component {
       detailModal = (
         <SuggestionDetailsModal
           onClose={this.hideDetail}
-          suggestion={search.suggestions[showDetailModalForIndex]} />
+          suggestion={search.suggestions[showDetailModalForIndex]}
+          isRTLSource={isRTLSource} isRTLTarget={isRTLTarget} />
       )
     }
 
@@ -89,7 +94,8 @@ class SuggestionsPanel extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const { search, searchType, searchByPhrase, textSearch } = state.suggestions
+  const {context, ui} = state
+  const {search, searchType, searchByPhrase, textSearch} = state.suggestions
   const selectedPhraseId = state.phrases.selectedPhraseId
   const phraseSelected = !!selectedPhraseId
   var specificSearch = search
@@ -130,12 +136,16 @@ function mapStateToProps (state) {
   } else {
     console.error('invalid state.suggestions.searchType', searchType)
   }
+  const targetLocaleDetails = ui.uiLocales[context.lang]
 
   return {
     ...state.suggestions,
     search: specificSearch,
     showPanel: getSuggestionsPanelVisible(state),
-    phraseSelected: state.phrases.selectedPhraseId !== undefined
+    phraseSelected: state.phrases.selectedPhraseId !== undefined,
+    isRTLSource: context.sourceLocale.isRTL,
+    isRTLTarget: targetLocaleDetails ? targetLocaleDetails.isRTL || false
+        : false
   }
 }
 

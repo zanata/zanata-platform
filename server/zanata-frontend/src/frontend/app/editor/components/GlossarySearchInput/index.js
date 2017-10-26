@@ -23,10 +23,6 @@ import cx from 'classnames'
 import { Icon } from '../../../components'
 import React from 'react'
 import PropTypes from 'prop-types'
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
 
 /**
  * Styled text input that displays result count.
@@ -35,17 +31,13 @@ class GlossarySearchInput extends React.Component {
   static propTypes = {
     text: PropTypes.string.isRequired,
     onTextChange: PropTypes.func.isRequired,
-    // Not required until wired up correctly
-    directionClass: PropTypes.object,
-    isLtr: PropTypes.bool
+    directionClass: PropTypes.string
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      focused: false,
-      // TODO location detection
-      isLtr: false
+      focused: false
     }
   }
 
@@ -86,7 +78,8 @@ class GlossarySearchInput extends React.Component {
   }
 
   render () {
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
+    const { directionClass } = this.props
+
     return (
       <div className="InlineSearch">
         <div className={cx('EditorInputGroup EditorInputGroup--outlined ' +

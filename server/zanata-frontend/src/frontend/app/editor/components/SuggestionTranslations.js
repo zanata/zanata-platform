@@ -2,10 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import SuggestionContents from './SuggestionContents'
 import SuggestionTranslationDetails from './SuggestionTranslationDetails'
-import { createAction } from 'redux-actions'
-import { LOCALE_SELECTED } from '../actions/header-action-types'
-
-export const localeDetails = createAction(LOCALE_SELECTED)
 
 /**
  * Show all translations for a suggestion, with translation metadata.
@@ -23,25 +19,15 @@ class SuggestionTranslations extends React.Component {
       similarityPercent: PropTypes.number,
       sourceContents: PropTypes.arrayOf(
         PropTypes.string).isRequired,
-      targetContents: PropTypes.arrayOf(PropTypes.string).isRequired,
-      directionClass: PropTypes.object.isRequired,
-      isLtr: PropTypes.bool.isRequired
-    })
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      // TODO location detection so default of isLtr = false can be removed
-      isLtr: false
-    }
+      targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
+    }),
+    directionClass: PropTypes.string.isRequired
   }
 
   render () {
-    const directionClass = localeDetails.isLtr ? 'ltr' : 'rtl'
     return (
       <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
-        <span className={directionClass}>
+        <span className={this.props.directionClass}>
           <SuggestionContents
             plural={this.props.suggestion.sourceContents.length > 1}
             contents={this.props.suggestion.targetContents} />
