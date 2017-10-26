@@ -1894,7 +1894,7 @@
   <build>
     <plugins>
 
-      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java/Takari.
+      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java.
            Java code can depend on either Groovy or Kotlin (because they are compiled first).
            Groovy code can depend on Kotlin because it is compiled first, and on Java because of "joint compilation"
            http://groovy-lang.org/groovyc.html#section-jointcompilation https://github.com/groovy/GMavenPlus/wiki/Examples#joint-compilation
@@ -2024,45 +2024,21 @@
             <id>default-testCompile</id>
             <phase>none</phase>
           </execution>
-        </executions>
-        <configuration>
-          <!-- Ignore maven.compiler.compilerId=jdt -->
-          <compilerId>javac</compilerId>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <extensions>true</extensions>
-
-        <executions>
-          <!-- Replacing default-compile as it is treated specially by Maven.
-               We need kotlin-maven-plugin to compile first. -->
-          <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
           <execution>
             <id>java-compile</id>
             <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
-          </execution>
-          <!-- Replacing default-testCompile as it is treated specially by Maven.
-               We need kotlin-maven-plugin to compile first. -->
-          <execution>
-            <id>default-testCompile</id>
-            <phase>none</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
           </execution>
           <execution>
             <id>java-test-compile</id>
             <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
           </execution>
         </executions>
-        <configuration>
-          <compilerId>jdt</compilerId>
-        </configuration>
       </plugin>
 
       <plugin>

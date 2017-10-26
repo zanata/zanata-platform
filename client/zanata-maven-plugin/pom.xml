@@ -9,9 +9,6 @@
   <artifactId>zanata-maven-plugin</artifactId>
 
   <packaging>maven-plugin</packaging>
-  <!-- TODO try this again after https://github.com/takari/takari-lifecycle/issues/43 -->
-  <!-- May need to bind maven-plugin-plugin:helpmojo to lifecycle phase -->
-  <!--<packaging>takari-maven-plugin</packaging>-->
 
   <name>Zanata Maven Plugin</name>
 
