@@ -191,10 +191,6 @@
     <required.jvm>1.8</required.jvm>
     <maven.compiler.target>${required.jvm}</maven.compiler.target>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-    <!-- Tell takari to default to JDT (unless overridden on command line)
-         Note that maven-compiler-plugin doesn't support this compilerId, so
-         it must be overridden in zanata-maven-plugin. -->
-    <maven.compiler.compilerId>jdt</maven.compiler.compilerId>
 
     <!--
       Version of Java used for API compatibility checking. Should
@@ -247,27 +243,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <!-- See also build-tools pom -->
-        <version>1.12.4</version>
-        <extensions>true</extensions>
-        <configuration>
-          <proc>proc</proc>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <!--
-            enables dav: protocol for distributionManagement
-            -->
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav-jackrabbit</artifactId>
-            <version>2.10</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -940,7 +915,6 @@
         <dupfind.skip>false</dupfind.skip>
         <enforcer.skip>false</enforcer.skip>
         <findbugs.skip>false</findbugs.skip>
-        <!-- takari doesn't support this yet: https://github.com/takari/takari-lifecycle/issues/39 -->
         <maven.compiler.failOnWarning>true</maven.compiler.failOnWarning>
         <mdep.analyze.skip>false</mdep.analyze.skip>
         <!-- restrict-maven-plugin -->

@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>zanata-liquibase</artifactId>
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
 
   <build>
     <plugins>

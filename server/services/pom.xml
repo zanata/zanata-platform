@@ -9,7 +9,7 @@
     <version>4.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>services</artifactId>
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
   <name>Zanata Services</name>
   <description>Zanata Services</description>
 
@@ -185,18 +185,6 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <extensions>true</extensions>
-
-        <configuration>
-          <sourceJar>true</sourceJar>
-          <testJar>true</testJar>
-        </configuration>
-      </plugin>
-
     </plugins>
 
     <pluginManagement>
