@@ -19,7 +19,7 @@ class SuggestionSources extends React.Component {
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
     showDetail: PropTypes.func.isRequired,
-    directionClass: PropTypes.string.isRequired
+    directionClass: PropTypes.string
   }
 
   render () {

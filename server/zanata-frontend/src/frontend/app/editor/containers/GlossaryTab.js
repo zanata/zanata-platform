@@ -159,7 +159,6 @@ function mapStateToProps (state) {
 
   const results = glossary.results.get(glossary.searchText) || []
   const targetLocaleDetails = ui.uiLocales[context.lang]
-  console.info('aeng', targetLocaleDetails)
   return {
     ...glossary,
     results,

@@ -85,23 +85,17 @@ Make sure you test changes against the current server before checking them in.
 
 ### Run with live reload
 
+### Frontend
 Build and run a server: `make watch`.
 
- - Editor is available at [localhost:8080](http://localhost:8080)
+### Editor
+Build and run a server: `watch-editor`.
+
+- Editor is available at [localhost:8080](http://localhost:8080)
    - the editor will be blank at the base URL, include the project-version to
      show content. The format is
      localhost:8000/#/{project-slug}/{version-slug}/translate
  - Assumes a server is already serving the Zanata REST API.
-
-
-### Run with live reload and local API server
-
-Build and run server and API server: `make watch-fakeserver`.
-
- - Editor is available at [localhost:8080](http://localhost:8080)
-   - URL for a working document from the default API server [Tiny Project 1, hello.txt to French](http://localhost:8080/#/tiny-project/1/translate/hello.txt/fr)
- - REST API server is available at
-   [localhost:7878/zanata/rest](http://localhost:7878/zanata/rest)
 
 
 ## Running tests

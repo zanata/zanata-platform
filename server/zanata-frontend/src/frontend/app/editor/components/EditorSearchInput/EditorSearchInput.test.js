@@ -41,7 +41,7 @@ describe('EditorSearchInputTest', () => {
             maxLength="1000"
             value="it was the worst of"
             onChange={callback}
-            className="rtl EditorInputGroup-input u-sizeLineHeight-1_1-4" />
+            className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           <span className="EditorInputGroup-addon">
             <IconButton icon="cross"
               title="Clear search"
@@ -53,7 +53,7 @@ describe('EditorSearchInputTest', () => {
         </div>
         <Panel collapsible expanded>
           <div title="exact Resource ID for a string"
-            className="rtl u-sPB-1-2">
+            className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">Resource ID</label>
             <input type="text"
               onChange={callback}
@@ -63,7 +63,7 @@ describe('EditorSearchInputTest', () => {
               value="para-0001" />
           </div>
           <div title="username"
-            className="rtl u-sPB-1-2">
+            className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">
               Last modified by
             </label>
@@ -75,7 +75,7 @@ describe('EditorSearchInputTest', () => {
               value="cdickens" />
           </div>
           <div title="date in format yyyy/mm/dd"
-            className="rtl u-sPB-1-2">
+            className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">
               Last modified before
             </label>
@@ -87,7 +87,7 @@ describe('EditorSearchInputTest', () => {
               value="1859-12-31" />
           </div>
           <div title="date in format yyyy/mm/dd"
-            className="rtl u-sPB-1-2">
+            className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">
               Last modified after
             </label>
@@ -99,7 +99,7 @@ describe('EditorSearchInputTest', () => {
               value="1859-01-01" />
           </div>
           <div title="source comment text"
-            className="rtl u-sPB-1-2">
+            className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">Source comment</label>
             <input type="text"
               onChange={callback}
@@ -109,7 +109,7 @@ describe('EditorSearchInputTest', () => {
               value="England and France" />
           </div>
           <div title="translation comment text"
-            className="rtl u-sPB-1-2">
+            className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">
               Translation comment
             </label>
@@ -121,7 +121,7 @@ describe('EditorSearchInputTest', () => {
               value="blurst of times?! You stupid monkey!" />
           </div>
           <div title="exact Message Context for a string"
-            className="rtl u-sPB-1-2">
+            className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">
               msgctxt (gettext)
             </label>
