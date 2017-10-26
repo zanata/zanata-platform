@@ -31,10 +31,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Directory for frontend to run the build from. -->
-    <frontend.build.directory>${project.basedir}/src</frontend.build.directory>
+    <build.directory>${project.basedir}/src</build.directory>
 
     <!-- Command to use after 'npm ' for the frontend build. Default is the faster draft build. -->
-    <frontend.build.command>draft</frontend.build.command>
+    <build.command>draft</build.command>
 
     <test.command>test</test.command>
 
@@ -81,8 +81,8 @@
               <goal>yarn</goal>
             </goals>
             <configuration>
-              <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>${frontend.build.command}</arguments>
+              <workingDirectory>${build.directory}</workingDirectory>
+              <arguments>${build.command}</arguments>
             </configuration>
           </execution>
 
@@ -94,7 +94,7 @@
               <goal>yarn</goal>
             </goals>
             <configuration>
-              <workingDirectory>${frontend.build.directory}</workingDirectory>
+              <workingDirectory>${build.directory}</workingDirectory>
               <arguments>${test.command}</arguments>
             </configuration>
           </execution>
@@ -188,7 +188,7 @@
                   <goal>yarn</goal>
                 </goals>
                 <configuration>
-                  <workingDirectory>${frontend.build.directory}</workingDirectory>
+                  <workingDirectory>${build.directory}</workingDirectory>
                 </configuration>
               </execution>
             </executions>
