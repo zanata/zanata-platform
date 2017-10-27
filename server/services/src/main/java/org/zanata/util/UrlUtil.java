@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
@@ -245,6 +247,14 @@ public class UrlUtil implements Serializable {
         } catch (MalformedURLException e) {
             return false;
         }
+    }
+
+    public void redirectToInternalWithoutContextPath(
+            @NotNull String urlWithoutContextPath) {
+        String url = contextPath +
+                (urlWithoutContextPath.startsWith("/") ? urlWithoutContextPath :
+                        "/" + urlWithoutContextPath);
+        redirectToInternal(url);
     }
 
     /**
