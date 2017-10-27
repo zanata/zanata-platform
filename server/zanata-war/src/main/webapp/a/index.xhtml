@@ -22,7 +22,7 @@
 
     <link type="image/x-icon" rel="shortcut icon"
         href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
-    <link type="text/css" rel="stylesheet" href="#{frontendAction.frontendCss}"/>
+    <link type="text/css" rel="stylesheet" href="#{frontendAssets.frontendCss}"/>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
   </h:head>
 
@@ -43,8 +43,8 @@
       window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
     </script>
     <div id="root" />
-    <script type="text/javascript" src="#{frontendAction.runtime}"></script>
-    <script type="text/javascript" src="#{frontendAction.frontendJs}"></script>
+    <script type="text/javascript" src="#{frontendAssets.runtime}"></script>
+    <script type="text/javascript" src="#{frontendAssets.frontendJs}"></script>
     <ui:include src="/WEB-INF/template/scripts.xhtml"/>
   </h:body>
   </html>

@@ -34,8 +34,8 @@ import javax.inject.Named
 import javax.servlet.ServletContext
 
 @ApplicationScoped
-@Named("frontendAction")
-class FrontendAction @Inject constructor(@DeltaSpike private val servletContext: ServletContext) : Serializable {
+@Named("frontendAssets")
+class FrontendAssets @Inject constructor(@DeltaSpike private val servletContext: ServletContext) : Serializable {
     private val manifest: FrontendManifest = readManifest()
     val frontendJs: String
         get() = "${servletContext.contextPath}/${manifest.frontendJs}"
@@ -60,7 +60,7 @@ class FrontendAction @Inject constructor(@DeltaSpike private val servletContext:
 
     companion object {
         val MANIFEST_PATH: String = "META-INF/resources/manifest.json"
-        private val log: Logger = LoggerFactory.getLogger(FrontendAction::class.java);
+        private val log: Logger = LoggerFactory.getLogger(FrontendAssets::class.java);
         private fun readManifest(): FrontendManifest {
             val manifestResource: InputStream? = Thread.currentThread().contextClassLoader.getResourceAsStream(MANIFEST_PATH)
             return manifestResource?.use {

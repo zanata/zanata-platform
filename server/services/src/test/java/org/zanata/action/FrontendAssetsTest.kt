@@ -12,7 +12,7 @@ import java.io.File
 import java.lang.IllegalStateException
 import javax.servlet.ServletContext
 
-class FrontendActionTest {
+class FrontendAssetsTest {
     val manifestText = """
 {
   "editor.css": "editor.c6d86c21.cache.css",
@@ -26,13 +26,13 @@ class FrontendActionTest {
 }
     """
 
-    private val manifestParent = File(Thread.currentThread().contextClassLoader.getResource(".")?.file, "META-INF/resources")
+    private val manifestParent = File(Thread.currentThread().contextClassLoader.getResource(".")!!.file, "META-INF/resources")
     private val manifestFile: File = File(manifestParent, "manifest.json")
 
     @Mock
     private lateinit var servletContext: ServletContext
 
-    private lateinit var frontendAction: FrontendAction
+    private lateinit var frontendAssets: FrontendAssets
 
     @Before
     fun setUp() {
@@ -55,19 +55,19 @@ class FrontendActionTest {
     fun canGetAllFrontendJsAndCss() {
         createManifestFile(manifestText)
 
-        frontendAction = FrontendAction(servletContext)
+        frontendAssets = FrontendAssets(servletContext)
 
-        assertThat(frontendAction.frontendJs).isEqualTo("/frontend.e8af8b0a.cache.js")
-        assertThat(frontendAction.frontendCss).isEqualTo("/frontend.e8af8b0a.cache.css")
-        assertThat(frontendAction.editorJs).isEqualTo("/editor.c6d86c21.cache.js")
-        assertThat(frontendAction.editorCss).isEqualTo("/editor.c6d86c21.cache.css")
-        assertThat(frontendAction.legacyJs).isEqualTo("/frontend.legacy.a31f9460.cache.js")
-        assertThat(frontendAction.runtime).isEqualTo("/runtime.e8b751b7.cache.js")
+        assertThat(frontendAssets.frontendJs).isEqualTo("/frontend.e8af8b0a.cache.js")
+        assertThat(frontendAssets.frontendCss).isEqualTo("/frontend.e8af8b0a.cache.css")
+        assertThat(frontendAssets.editorJs).isEqualTo("/editor.c6d86c21.cache.js")
+        assertThat(frontendAssets.editorCss).isEqualTo("/editor.c6d86c21.cache.css")
+        assertThat(frontendAssets.legacyJs).isEqualTo("/frontend.legacy.a31f9460.cache.js")
+        assertThat(frontendAssets.runtime).isEqualTo("/runtime.e8b751b7.cache.js")
     }
 
     @Test
     fun willThrowExceptionIfManifestFileIsNotFound() {
-        assertThatThrownBy { FrontendAction(servletContext) }
+        assertThatThrownBy { FrontendAssets(servletContext) }
                 .isInstanceOf(IllegalStateException::class.java)
                 .hasMessage("can not load manifest.json from META-INF/resources/manifest.json. Did you forget to build and include zanata frontend?")
     }

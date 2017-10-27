@@ -29,7 +29,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
     <meta http-equiv="cleartype" content="on"/>
 
-    <link rel="stylesheet" href="#{frontendAction.frontendCss}" type="text/css"/>
+    <link rel="stylesheet" href="#{frontendAssets.frontendCss}" type="text/css"/>
     <link type="image/x-icon" rel="shortcut icon"
         href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
     <link type="image/x-icon" rel="icon"
@@ -113,9 +113,9 @@
     </div>
 
     <script type="text/javascript"
-      src="#{frontendAction.runtime}"></script>
+      src="#{frontendAssets.runtime}"></script>
     <script type="text/javascript"
-      src="#{frontendAction.legacyJs}"></script>
+      src="#{frontendAssets.legacyJs}"></script>
 
     <ui:include src="scripts.xhtml"/>
   </h:body>
