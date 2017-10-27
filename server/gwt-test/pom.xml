@@ -10,7 +10,7 @@
   </parent>
   <artifactId>gwt-test</artifactId>
 
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
 
   <!-- Should be the same as zanata-server/pom.xml -->
   <scm>

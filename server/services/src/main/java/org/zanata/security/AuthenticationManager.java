@@ -359,6 +359,9 @@ public class AuthenticationManager implements Serializable {
             return credentialsDAO.findByUser(
                     zanataOpenId.getAuthResult().getAuthenticatedId()) == null;
         }
+        if (credentials.getAuthType() == SAML2 && saml2Enabled) {
+            return credentialsDAO.findByUser(samlIdentity.getUniqueName()) == null;
+        }
         return isNewUser(credentials.getUsername());
     }
 
