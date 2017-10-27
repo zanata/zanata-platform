@@ -116,6 +116,7 @@ public class HTextFlowTarget extends ModelEntityBase
     private boolean revisionCommentSet = false;
     // Only for internal use (persistence transient)
     private Integer oldVersionNum;
+    private ReviewCriteria reviewCriteria;
 
     @Type(type = "sourceType")
     @Column(columnDefinition = "char(3)")
@@ -416,6 +417,16 @@ public class HTextFlowTarget extends ModelEntityBase
         return reviewComment;
     }
 
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_criteria_id")
+    public ReviewCriteria getReviewCriteria() {
+        return reviewCriteria;
+    }
+
+    public void setReviewCriteria(ReviewCriteria reviewCriteria) {
+        this.reviewCriteria = reviewCriteria;
+    }
+
     @Override
     public String toString() {
         MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this)
@@ -439,6 +450,7 @@ public class HTextFlowTarget extends ModelEntityBase
         setSourceType(null);
         setCopiedEntityId(null);
         setCopiedEntityType(null);
+        setReviewCriteria(null);
     }
 
     protected boolean logPersistence() {
@@ -693,6 +705,10 @@ public class HTextFlowTarget extends ModelEntityBase
         if (this$initialState == null ? other$initialState != null
                 : !this$initialState.equals(other$initialState))
             return false;
+        if (reviewCriteria == null ? other.reviewCriteria != null
+                : !reviewCriteria.equals(other.reviewCriteria)) {
+            return false;
+        }
         return true;
     }
 
@@ -771,6 +787,8 @@ public class HTextFlowTarget extends ModelEntityBase
         final Object $initialState = this.initialState;
         result = result * PRIME
                 + ($initialState == null ? 43 : $initialState.hashCode());
+        result = result * PRIME
+                + (reviewCriteria == null ? 43 : reviewCriteria.hashCode());
         return result;
     }
 
