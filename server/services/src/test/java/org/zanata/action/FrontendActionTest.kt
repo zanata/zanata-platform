@@ -3,10 +3,9 @@ package org.zanata.action
 import com.nhaarman.mockito_kotlin.given
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExternalResource
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import java.io.File
@@ -15,7 +14,7 @@ import javax.servlet.ServletContext
 
 class FrontendActionTest {
     val manifestText = """
-        {
+{
   "editor.css": "editor.c6d86c21.cache.css",
   "editor.js": "editor.c6d86c21.cache.js",
   "frontend.css": "frontend.e8af8b0a.cache.css",
@@ -25,12 +24,11 @@ class FrontendActionTest {
   "intl-polyfill.js": "intl-polyfill.04142315.cache.js",
   "runtime.js": "runtime.e8b751b7.cache.js"
 }
-    """.trimIndent()
+    """
 
-    val tempFolderRoot = File(Thread.currentThread().contextClassLoader.getResource(".")?.file)
-    @Rule
-    @JvmField
-    val testManifestCreator: ManifestCreator = ManifestCreator(tempFolderRoot)
+    private val manifestParent = File(Thread.currentThread().contextClassLoader.getResource(".")?.file, "META-INF/resources")
+    private val manifestFile: File = File(manifestParent, "manifest.json")
+
     @Mock
     private lateinit var servletContext: ServletContext
 
@@ -42,9 +40,20 @@ class FrontendActionTest {
         given(servletContext.contextPath).willReturn("")
     }
 
+    @After
+    fun cleanUp() {
+        manifestFile.delete()
+    }
+
+    private fun createManifestFile(manifestText: String) {
+        manifestParent.mkdirs()
+        assertThat(manifestFile.createNewFile()).isTrue()
+        manifestFile.writeText(manifestText)
+    }
+
     @Test
     fun canGetAllFrontendJsAndCss() {
-        testManifestCreator.createManifestFile(manifestText)
+        createManifestFile(manifestText)
 
         frontendAction = FrontendAction(servletContext)
 
@@ -61,20 +70,5 @@ class FrontendActionTest {
         assertThatThrownBy { FrontendAction(servletContext) }
                 .isInstanceOf(IllegalStateException::class.java)
                 .hasMessage("can not load manifest.json from META-INF/resources/manifest.json. Did you forget to build and include zanata frontend?")
-    }
-}
-
-class ManifestCreator(private val parentFolder: File) : ExternalResource() {
-    override fun after() {
-        super.after()
-        parentFolder.deleteRecursively()
-    }
-
-    fun createManifestFile(manifestText: String) {
-        val manifestParent = File(parentFolder, "META-INF/resources")
-        manifestParent.mkdirs()
-        val manifest = File(manifestParent, "manifest.json")
-        assertThat(manifest.createNewFile()).isTrue()
-        manifest.writeText(manifestText)
     }
 }
