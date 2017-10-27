@@ -118,6 +118,30 @@ public class LoginActionTest implements Serializable {
         verify(accountDAO, times(1)).getByEmail("aloy@test.com");
         verify(credentials, times(1)).setUsername("aloy");
     }
+    
+    @Test
+    public void loginContinueToPreviousTest() {
+        HAccount account = new HAccount();
+        account.setUsername("aloy");
+        String url = "/explore";
+
+        when(accountDAO.getByEmail("aloy@test.com")).thenReturn(account);
+        when(credentials.getAuthType()).thenReturn(AuthenticationType.INTERNAL);
+        doCallRealMethod().when(credentials).setUsername(anyString());
+        when(credentials.getUsername()).thenCallRealMethod();
+        when(authenticationManager.internalLogin()).thenReturn("loggedIn");
+        when(authenticationManager.isAuthenticated()).thenReturn(true);
+        when(userRedirect.isRedirect()).thenReturn(true);
+        when(userRedirect.getUrl()).thenReturn(url);
+
+        loginAction.setUsername("aloy@test.com");
+        loginAction.setPassword("password");
+        loginAction.login();
+
+        verify(urlUtil).redirectToInternalWithoutContextPath(url);
+        verify(accountDAO, times(1)).getByEmail("aloy@test.com");
+        verify(credentials, times(1)).setUsername("aloy");
+    }
 
     @Test
     public void willRedirectIfSaml2IsTheOnlyAuthType() {

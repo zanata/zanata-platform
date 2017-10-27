@@ -20,12 +20,10 @@
  */
 package org.zanata.action;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -44,7 +42,6 @@ import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
-import org.zanata.util.FacesNavigationUtil;
 import org.zanata.util.UrlUtil;
 
 /**
@@ -138,14 +135,9 @@ public class LoginAction implements Serializable {
     }
 
     private void continueToPreviousUrl() {
-        try {
-            if (StringUtils.isNotBlank(userRedirect.getUrl())) {
-                FacesNavigationUtil.redirect(FacesContext.getCurrentInstance(),
-                        userRedirect.getUrl());
-            } else {
-                urlUtil.redirectToInternal(urlUtil.dashboardUrl());
-            }
-        } catch (IOException e) {
+        if (StringUtils.isNotBlank(userRedirect.getUrl())) {
+            urlUtil.redirectToInternalWithoutContextPath(userRedirect.getUrl());
+        } else {
             urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
     }
