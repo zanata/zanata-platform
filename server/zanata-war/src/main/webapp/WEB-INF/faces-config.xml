@@ -89,12 +89,6 @@
   <navigation-rule>
     <from-view-id>/account/login.xhtml</from-view-id>
     <navigation-case>
-      <from-action>#{loginAction.getLoginPageRedirect()}</from-action>
-      <from-outcome>dashboard</from-outcome>
-      <to-view-id>/dashboard/home.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
       <from-outcome>dashboard</from-outcome>
       <to-view-id>/dashboard/home.xhtml</to-view-id>
       <redirect/>
@@ -115,6 +109,7 @@
       <to-view-id>/dashboard/home.xhtml</to-view-id>
       <redirect />
     </navigation-case>
+    <!-- make sure all the cases here is replicated in KLoginServlet and SAMLFilter -->
   </navigation-rule>
 
   <navigation-rule>

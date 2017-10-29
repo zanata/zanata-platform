@@ -6,7 +6,7 @@
   <name>Build Tools</name>
   <description>Build tools for Zanata modules</description>
   <url>http://zanata.org/</url>
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
 
   <distributionManagement>
     <snapshotRepository>
@@ -59,26 +59,11 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <!-- Unfortunately, we can't inherit this version from parent: -->
-        <version>1.12.4</version>
-        <extensions>true</extensions>
-        <configuration>
-          <proc>proc</proc>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>com.lesfurets</groupId>
       <artifactId>jenkins-pipeline-unit</artifactId>
-      <version>0.12</version>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

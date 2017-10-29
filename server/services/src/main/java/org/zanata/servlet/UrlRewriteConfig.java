@@ -125,6 +125,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/account/sign_in").to("/account/login.xhtml"))
                 .addRule(Join.path("/account/register").to("/account/register.xhtml"))
                 .addRule(Join.path("/account/sign_out").to("/account/logout.xhtml"))
+                .addRule(Join.path("/account/ssologin").to("/account/ssologin.xhtml"))
                 // open id return url
                 .addRule(Join.path("/openid").to("/account/openid.xhtml"))
                 .addRule(Join.path("/account/validate_email/{key}").to("/account/email_validation.xhtml"))

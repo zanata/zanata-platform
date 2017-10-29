@@ -10,8 +10,8 @@ require('./generateIconList')
 const isDraft = process.argv.indexOf('--draft') !== -1
 
 console.log(isDraft
-  ? c.bgYellow(' DRAFT BUILD - do not deploy! ')
-  : c.bgCyan(' PRODUCTION BUILD '))
+  ? c.black.bgYellow(' DRAFT BUILD - do not deploy! ')
+  : c.white.bgCyan(' PRODUCTION BUILD '))
 
 /* equivalent of command-line `webpack --env.buildtype=draft` or
  * `webpack --env.buildtype=prod`

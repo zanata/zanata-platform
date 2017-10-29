@@ -9,7 +9,7 @@
     <version>4.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-model-test</artifactId>
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
   <name>Zanata Model Test</name>
   <description>Classes and config to help writing tests which use zanata-model</description>
 

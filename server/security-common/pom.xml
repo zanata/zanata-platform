@@ -8,7 +8,7 @@
   </parent>
   <artifactId>security-common</artifactId>
   <name>security-common</name>
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
 
   <properties>
   </properties>

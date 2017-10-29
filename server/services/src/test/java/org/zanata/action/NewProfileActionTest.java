@@ -20,6 +20,23 @@
  */
 package org.zanata.action;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.zanata.security.annotations.SAMLAttribute.AttributeName.CN;
+import static org.zanata.security.annotations.SAMLAttribute.AttributeName.EMAIL;
+import static org.zanata.security.annotations.SAMLAttribute.AttributeName.UID;
+
+import java.security.Principal;
+import java.util.Locale;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import org.jboss.weld.exceptions.WeldException;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.InSessionScope;
@@ -32,7 +49,9 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.i18n.Messages;
@@ -40,26 +59,17 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.ZanataOpenId;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.SAML;
+import org.zanata.security.annotations.SAMLAttribute;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
-
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @InRequestScope
 @InSessionScope
@@ -111,6 +121,19 @@ public class NewProfileActionTest {
     @Mock
     @Produces
     PersonDAO personDAO;
+
+    @Mock
+    @Produces
+    Event<AlreadyLoggedInEvent> alreadyLoggedInEvent;
+    @Mock
+    @Produces
+    CredentialsDAO credentialsDAO;
+
+    @Produces @SAMLAttribute(UID) String username = "admin";
+    @Produces @SAMLAttribute(CN) String commonName = "Administrator";
+    @Produces @SAMLAttribute(EMAIL) String email = "admin@example.com";
+    @Produces @SAML
+    Principal principal = new SimplePrincipal(username);
 
     @Inject
     NewProfileAction newProfileAction;

@@ -1,0 +1,54 @@
+<PicketLink xmlns="urn:picketlink:identity-federation:config:2.1">
+  <!--
+    # use this in jboss-cli to add a system property and then restart the server
+    /system-property="picketlink.file":add(value="/opt/jboss/wildfly/picketlink.xml")
+    reload
+  -->
+  <!--
+  in order to properly encrypt and decrypt assertions, the IDP needs to generate
+  signatures and the SP needs to verify those signatures as well as identify
+  where they came from. This is accomplished via the <ValidatingAlias> element.
+  IDPs need to have a <ValidatingAlias> for each trusted server/domain that is
+  trusted, every entry in the <Trust> element. SPs need to have a
+  <ValidatingAlias> for each server/domain containing an IDP.
+-->
+  <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" BindingType="POST" SupportsSignatures="true">
+    <IdentityURL>${idp.url::https://idp.example.com/saml}</IdentityURL>
+    <ServiceURL>${service.url::http://myhostname.example.com/account/ssologin}</ServiceURL>
+
+    <KeyProvider ClassName="org.picketlink.identity.federation.core.impl.KeyStoreKeyManager">
+      <!--
+        To generate a key pair and store it in a keystore file:
+        keytool -genkeypair -alias zanataserv -storetype jks -keyalg RSA -keysize 2048 -keypass test123 -keystore ./sso_keystore.jks -storepass store123 -dname "CN=appserver,OU=Sales,O=Systems Inc,L=Raleigh,ST=NC,C=US" -validity 730 -v
+        To export the key to a file and send over to IDP management team:
+        keytool -export -file pahuang_sso.cer -keystore ./sso_keystore.jks -alias zanataserv -storepass store123
+        To display public key and certificate in text form:
+        keytool -list -rfc -keystore ./sso_keystore.jks -alias zanataserv -storepass store123 | openssl x509 -inform pem -pubkey
+      -->
+      <Auth Key="KeyStoreURL" Value="/opt/jboss/zanata/sso_keystore.jks" />
+      <Auth Key="KeyStorePass" Value="store123" />
+      <Auth Key="SigningKeyPass" Value="test123" />
+      <Auth Key="SigningKeyAlias" Value="zanataserv" />
+      <!--
+        This auth server key needs to be imported to the keystore above with the alias as below Value. e.g.
+        keytool -importcert -file ./idp.pem -keystore ./sso_keystore.jks -alias idpAlias -storepass store123
+      -->
+      <ValidatingAlias Key="idp.example.com" Value="idpAlias" />
+
+    </KeyProvider>
+
+  </PicketLinkSP>
+
+  <Handlers xmlns="urn:picketlink:identity-federation:handler:config:2.1">
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2LogOutHandler" />
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2AuthenticationHandler" />
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2AttributeHandler">
+      <Option Key="ATTRIBUTE_CHOOSE_FRIENDLY_NAME" Value="true"/>
+    </Handler>
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.RolesGenerationHandler" />
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2SignatureGenerationHandler" />
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2SignatureValidationHandler" />
+
+  </Handlers>
+
+</PicketLink>
