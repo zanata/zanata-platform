@@ -118,7 +118,6 @@ public class LoginActionTest implements Serializable {
         verify(accountDAO, times(1)).getByEmail("aloy@test.com");
         verify(credentials, times(1)).setUsername("aloy");
     }
-
     @Test
     public void loginContinueToPreviousTest() {
         HAccount account = new HAccount();
