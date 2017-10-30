@@ -43,7 +43,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.ReviewCriteria;
-import org.zanata.rest.review.dto.TransReviewCriteria;
+import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 import org.zanata.security.annotations.CheckRole;
 import com.google.common.annotations.VisibleForTesting;
 

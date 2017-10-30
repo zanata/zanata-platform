@@ -14,9 +14,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataJpaTest;
-import org.zanata.model.IssuePriority;
+import org.zanata.common.IssuePriority;
 import org.zanata.model.ReviewCriteria;
-import org.zanata.rest.review.dto.TransReviewCriteria;
+import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 
 public class ReviewServiceTest extends ZanataJpaTest {
 
