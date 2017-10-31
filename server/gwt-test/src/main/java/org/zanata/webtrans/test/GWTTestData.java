@@ -39,6 +39,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -76,7 +77,8 @@ public class GWTTestData {
                         true);
         return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(
                 projectIterationId, LocaleId.EN_US), "workspaceName",
-                LocaleId.EN_US.getId()), workspaceRestrictions);
+                LocaleId.EN_US.getId()), workspaceRestrictions,
+                Lists.newArrayList());
     }
 
     public static UserWorkspaceContext userWorkspaceContext(
@@ -85,7 +87,8 @@ public class GWTTestData {
                 new WorkspaceRestrictions(projectActive, false, hasWriteAccess, true,
                         true);
         return new UserWorkspaceContext(new WorkspaceContext(workspaceId(),
-                "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions);
+                "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions,
+                Lists.newArrayList());
     }
 
     public static WorkspaceId workspaceId() {

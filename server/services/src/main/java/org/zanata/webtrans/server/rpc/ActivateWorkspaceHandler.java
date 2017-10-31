@@ -20,12 +20,16 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.common.EntityStatus;
@@ -35,6 +39,8 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.ReviewCriteria;
+import org.zanata.rest.review.ReviewService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
@@ -50,6 +56,7 @@ import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
+import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
@@ -57,6 +64,8 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
+
+import com.google.common.collect.Lists;
 
 import static java.util.Collections.emptyList;
 
@@ -81,6 +90,8 @@ public class ActivateWorkspaceHandler extends
     private ProjectIterationDAO projectIterationDAO;
     @Inject
     private LocaleService localeServiceImpl;
+    @Inject
+    private EntityManager entityManager;
     @Inject
     @Any
     private LoadOptionsHandler loadOptionsHandler;
@@ -143,8 +154,13 @@ public class ActivateWorkspaceHandler extends
         Identity identity = new Identity(editorClientId, person);
         workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId()
                 .setProjectType(projectIteration.getProjectType());
+        List<TransReviewCriteria> reviewCriteria = entityManager
+                .createQuery("from ReviewCriteria", ReviewCriteria.class)
+                .getResultList().stream().map(ReviewService::fromModel)
+                .collect(Collectors.toList());
         UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(
-                workspace.getWorkspaceContext(), workspaceRestrictions);
+                workspace.getWorkspaceContext(), workspaceRestrictions,
+                reviewCriteria);
         return new ActivateWorkspaceResult(userWorkspaceContext, identity,
                 loadOptsRes.getConfiguration(),
                 validationRulesResult.getValidationRules());

@@ -32,10 +32,13 @@ import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -52,19 +55,24 @@ public class ForceReviewCommentPresenter extends
     private final CachingDispatchAsync dispatcher;
     private final GetTransUnitActionContextHolder contextHolder;
     private final KeyShortcutPresenter keyShortcutPresenter;
+    private final Provider<UserWorkspaceContext> userWorkspaceContextProvider;
 
     private TransUnitSaveEvent saveEvent;
+    private ReviewCriterionId reviewCriterionId;
+    private boolean reviewCriteriaInitialized = false;
 
     @Inject
     public ForceReviewCommentPresenter(ForceReviewCommentDisplay display,
             EventBus eventBus, CachingDispatchAsync dispatcher,
             GetTransUnitActionContextHolder contextHolder,
-            KeyShortcutPresenter keyShortcutPresenter) {
+            KeyShortcutPresenter keyShortcutPresenter,
+            Provider<UserWorkspaceContext> userWorkspaceContextProvider) {
         super(display, eventBus);
         this.display = display;
         this.dispatcher = dispatcher;
         this.contextHolder = contextHolder;
         this.keyShortcutPresenter = keyShortcutPresenter;
+        this.userWorkspaceContextProvider = userWorkspaceContextProvider;
         display.setListener(this);
 
         eventBus.addHandler(CommentBeforeSaveEvent.TYPE, this);
@@ -84,14 +92,23 @@ public class ForceReviewCommentPresenter extends
     @Override
     public void onCommentBeforeSave(CommentBeforeSaveEvent event) {
         saveEvent = event.getSaveEvent();
+        setReviewCriteria();
         display.center();
+    }
+
+    private void setReviewCriteria() {
+        if (!reviewCriteriaInitialized) {
+            // userWorkspaceContext is set asyncly in Application. We can't just inject it in constructor as this class is created as eagle singleton
+            display.setReviewCriteria(this, userWorkspaceContextProvider.get().getReviewCriteria());
+            reviewCriteriaInitialized = true;
+        }
     }
 
     @Override
     public void addComment(String content) {
         dispatcher.execute(
                 new AddReviewCommentAction(saveEvent.getTransUnitId(), content,
-                        contextHolder.getContext().getDocument().getId()),
+                        contextHolder.getContext().getDocument().getId(), reviewCriterionId),
                 new AbstractAsyncCallback<AddReviewCommentResult>() {
                     @Override
                     public void onSuccess(AddReviewCommentResult result) {
@@ -99,9 +116,15 @@ public class ForceReviewCommentPresenter extends
                         eventBus.fireEvent(saveEvent);
                         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
                         saveEvent = null;
+                        reviewCriterionId = null;
                         display.hide();
                     }
                 });
+    }
+
+    @Override
+    public void selectReviewCriteria(ReviewCriterionId reviewCriterionId) {
+        this.reviewCriterionId = reviewCriterionId;
     }
 
     @Override

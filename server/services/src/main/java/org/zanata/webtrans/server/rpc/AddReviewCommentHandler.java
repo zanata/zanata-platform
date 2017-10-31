@@ -114,7 +114,7 @@ public class AddReviewCommentHandler extends
     private static ReviewComment toDTO(HTextFlowTargetReviewComment hComment) {
         return new ReviewComment(new ReviewCommentId(hComment.getId()),
                 hComment.getComment(), hComment.getCommenterName(),
-                hComment.getCreationDate(), hComment.getTargetVersion());
+                hComment.getCreationDate());
     }
 
     @Override

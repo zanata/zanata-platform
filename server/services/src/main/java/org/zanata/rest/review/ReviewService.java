@@ -70,7 +70,7 @@ public class ReviewService {
         this.uriInfo = uriInfo;
     }
 
-    private static TransReviewCriteria fromModel(ReviewCriteria criteria) {
+    public static TransReviewCriteria fromModel(ReviewCriteria criteria) {
         return new TransReviewCriteria(criteria.getId(), criteria.getPriority(),
                 criteria.getDescription(), criteria.isEditable());
     }

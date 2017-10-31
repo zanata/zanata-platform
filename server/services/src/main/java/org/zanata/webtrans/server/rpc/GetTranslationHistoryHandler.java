@@ -126,8 +126,8 @@ public class GetTranslationHistoryHandler extends
                         return new ReviewComment(
                                 new ReviewCommentId(input.getId()),
                                 input.getComment(), input.getCommenterName(),
-                                input.getCreationDate(),
-                                input.getTargetVersion());
+                                input.getCreationDate()
+                        );
                     }
                 });
     }

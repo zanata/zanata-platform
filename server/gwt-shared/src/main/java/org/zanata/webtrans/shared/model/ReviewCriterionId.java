@@ -18,50 +18,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.rest.dto;
+package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.zanata.common.IssuePriority;
+import com.google.common.base.MoreObjects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class TransReviewCriteria implements IsSerializable, Serializable {
+public class ReviewCriterionId implements IsSerializable, Serializable {
     private static final long serialVersionUID = 1L;
-    private Long id;
-    private IssuePriority priority;
-    private String description;
-    private boolean editable;
 
-    public TransReviewCriteria() {
-    }
+    private long id;
 
-    public TransReviewCriteria(Long id, IssuePriority priority, String description,
-            boolean editable) {
+    public ReviewCriterionId(long id) {
         this.id = id;
-        this.priority = priority;
-        this.description = description;
-        this.editable = editable;
     }
 
-
-    public IssuePriority getPriority() {
-        return priority;
+    public ReviewCriterionId() {
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public Long getId() {
-        return id;
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .toString();
     }
 }

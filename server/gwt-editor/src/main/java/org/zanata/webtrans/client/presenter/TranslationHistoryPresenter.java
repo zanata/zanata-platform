@@ -18,6 +18,7 @@ import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
 import org.zanata.webtrans.shared.model.ComparableByDate;
 import org.zanata.webtrans.shared.model.ReviewComment;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
@@ -153,6 +154,11 @@ public class TranslationHistoryPresenter extends
                         display.clearInput();
                     }
                 });
+    }
+
+    @Override
+    public void selectReviewCriteria(ReviewCriterionId reviewCriterionId) {
+        throw new UnsupportedOperationException("does not support this in history pop up");
     }
 
     @Override

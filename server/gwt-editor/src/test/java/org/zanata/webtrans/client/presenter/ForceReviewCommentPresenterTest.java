@@ -38,9 +38,11 @@ import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewComment;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -72,6 +74,8 @@ public class ForceReviewCommentPresenterTest {
     private ArgumentCaptor<KeyShortcut> shortcutCapture;
     @Captor
     private ArgumentCaptor<AsyncCallback<AddReviewCommentResult>> resultCaptor;
+    @Mock
+    private Provider<UserWorkspaceContext> userWorkspaceContext;
 
     @Before
     public void setUp() throws Exception {
@@ -79,7 +83,7 @@ public class ForceReviewCommentPresenterTest {
 
         presenter =
                 new ForceReviewCommentPresenter(display, eventBus, dispatcher,
-                        contextHolder, keyShortcutPresenter);
+                        contextHolder, keyShortcutPresenter, userWorkspaceContext);
 
         verify(display).setListener(presenter);
         verify(eventBus).addHandler(CommentBeforeSaveEvent.TYPE, presenter);
