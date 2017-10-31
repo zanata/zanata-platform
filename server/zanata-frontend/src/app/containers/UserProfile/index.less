@@ -331,20 +331,25 @@ button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover, button
   margin-left: @spacing-base;
 }
 
-#userProfile-activityTable td button {
-  border: none;
-}
-
 #userProfile-activityTable th {
   text-align: center;
 }
 
 #userProfile-activityTable td .btn {
-  width: 96%;
+  width: 85%;
   border-radius: 0;
   line-height: 1.4rem;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0 !important;
+  border: none;
+  margin: @spacing-rq;
+}
+
+button.rdr-MonthAndYear-button {
+  padding: 0 !important;
+}
+
+.profile .modal-content {
+  max-width: inherit;
 }
 
 // @screen-xs variable depreciated

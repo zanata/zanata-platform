@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { EditableText, Icon, LoaderText, Modal } from '../../components'
-import { Button, ButtonGroup } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 
 /**
  * Popup windows to display a glossary entry
@@ -155,7 +155,7 @@ class EntryModal extends Component {
           }
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='u-pullRight'>
+          <div className='u-pullRight'>
             <Button bsStyle='link'
               onClick={
                 () => {
@@ -176,7 +176,7 @@ class EntryModal extends Component {
                   Update
               </Button>)
             }
-          </ButtonGroup>
+          </div>
         </Modal.Footer>
       </Modal>
     )

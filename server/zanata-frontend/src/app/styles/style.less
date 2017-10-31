@@ -1142,7 +1142,7 @@ h1:not(:first-of-type) {
 }
 
 .h1, h1 {
-  font-size: 2.25rem;
+  font-size: 2.25rem !important;
   color: @color-new-zanata-blue;
   font-weight: 500;
   line-height: 1em;
@@ -3397,8 +3397,6 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
   border-bottom-right-radius: .375em;
   border-bottom-left-radius: .375em;
   background-color: #fff;
-  border: 1px solid #bdd4dc;
-  border-top-color: #deeaee;
   box-shadow: 0 1px 0 rgba(0, 0, 0, .06);
   margin-top: -1px;
   max-height: 200px;
@@ -3412,6 +3410,8 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
 .Select-menu {
   max-height: 198px;
   overflow-y: auto;
+  position: fixed;
+  border: 2px solid #bdd4dc;
 }
 
 .Select-option.is-focused {
@@ -3943,7 +3943,7 @@ a.label:focus, a.label:hover {
 }
 
 .label-primary {
-  background-color: @color-light;
+  background-color: @color-light !important;
 }
 
 .label-primary[href]:focus, .label-primary[href]:hover {
@@ -4607,7 +4607,7 @@ a.lineClamp:after {
 .modal-body {
   position: relative;
   padding: @spacing-xlarge;
-  color: @color-dark;
+  color: @color-dark !important;
 }
 
 .modal-body .intro {
@@ -4874,16 +4874,20 @@ h3.popover-title {
   width: 100%;
 }
 
+button {
+  border-radius: @border-radius-base;
+}
+
 button.close {
   font-weight: 700;
   line-height: 1;
   top: 0;
-  right: 1rem;
+  right: 0;
   position: absolute;
   border: 0;
   color: #f00;
   z-index: 1;
-  padding: @spacing-rq;
+  padding: @spacing-rq !important;
   outline: none;
   box-shadow: none;
 }

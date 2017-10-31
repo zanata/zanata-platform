@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { isEmpty, includes } from 'lodash'
-import { Button, ButtonGroup } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 
 import {
   LoaderText,
@@ -117,7 +117,7 @@ class ImportModal extends Component {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='u-pullRight'>
+          <div className='u-pullRight'>
             <Button bsStyle='link'
               disabled={isUploading}
               onClick={() => handleImportFileDisplay(false)}>
@@ -131,7 +131,7 @@ class ImportModal extends Component {
                 Import
               </LoaderText>
             </Button>
-          </ButtonGroup>
+          </div>
         </Modal.Footer>
       </Modal>)
     /* eslint-enable react/jsx-no-bind */
