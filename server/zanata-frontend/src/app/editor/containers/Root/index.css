@@ -879,6 +879,10 @@ ul.u-listInline li .u-textHighlight {
   z-index: var(--Editor-suggestions-header-z-index);
 }
 
+table {
+  border: none;
+}
+
 button.close {
   border: 0;
   color: #f00;
