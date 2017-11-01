@@ -20,15 +20,18 @@ class SuggestionTranslations extends React.Component {
       sourceContents: PropTypes.arrayOf(
         PropTypes.string).isRequired,
       targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
-    })
+    }),
+    directionClass: PropTypes.string.isRequired
   }
 
   render () {
     return (
       <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
-        <SuggestionContents
-          plural={this.props.suggestion.sourceContents.length > 1}
-          contents={this.props.suggestion.targetContents} />
+        <span className={this.props.directionClass}>
+          <SuggestionContents
+            plural={this.props.suggestion.sourceContents.length > 1}
+            contents={this.props.suggestion.targetContents} />
+        </span>
         <SuggestionTranslationDetails {... this.props} />
       </div>
     )

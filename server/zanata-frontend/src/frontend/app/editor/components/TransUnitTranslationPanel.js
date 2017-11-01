@@ -39,7 +39,8 @@ class TransUnitTranslationPanel extends React.Component {
     showSuggestions: PropTypes.bool.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
-    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired
+    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
+    isRTL: PropTypes.bool.isRequired
   }
 
   componentWillMount () {
@@ -96,10 +97,12 @@ class TransUnitTranslationPanel extends React.Component {
       onSelectionChange,
       phrase,
       selected,
-      selectPhrasePluralIndex
+      selectPhrasePluralIndex,
+      isRTL
     } = this.props
     var header, footer
     const isPlural = phrase.plural
+    const directionClass = isRTL ? 'rtl' : 'ltr'
 
     if (selected) {
       const headerProps = pick(this.props, [
@@ -164,7 +167,8 @@ class TransUnitTranslationPanel extends React.Component {
               selectPhrasePluralIndex={selectPhrasePluralIndex}
               setTextArea={this.setTextArea}
               textChanged={textChanged}
-              translation={translation} />
+              translation={translation}
+              directionClass={directionClass} />
           )
         })
     }
@@ -172,7 +176,7 @@ class TransUnitTranslationPanel extends React.Component {
     return (
       <div className="TransUnit-panel TransUnit-translation">
         {header}
-        {translations}
+        <span className={directionClass}>{translations}</span>
         {footer}
       </div>
     )
@@ -196,7 +200,8 @@ class TranslationItem extends React.Component {
      */
     setTextArea: PropTypes.func.isRequired,
     textChanged: PropTypes.func.isRequired,
-    translation: PropTypes.string
+    translation: PropTypes.string,
+    directionClass: PropTypes.string
   }
 
   setTextArea = (ref) => {
@@ -221,7 +226,8 @@ class TranslationItem extends React.Component {
       onSelectionChange,
       selected,
       selectedPluralIndex,
-      translation
+      translation,
+      directionClass
     } = this.props
 
     // TODO make this translatable
@@ -248,7 +254,7 @@ class TranslationItem extends React.Component {
         {/* TODO translate "Enter a translation..." */}
         <Textarea
           ref={this.setTextArea}
-          className="TransUnit-text"
+          className={directionClass + ' TransUnit-text'}
           disabled={dropdownIsOpen}
           rows={1}
           value={translation}
@@ -261,9 +267,13 @@ class TranslationItem extends React.Component {
   }
 }
 
-function mapStateToProps (state, ownProps) {
-  // TODO put all the branch-specific stuff here for a start
+function mapStateToProps (state) {
+  const {ui, context} = state
+  const targetLocaleDetails = ui.uiLocales[context.lang]
+
   return {
+    isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
+        : false
   }
 }
 

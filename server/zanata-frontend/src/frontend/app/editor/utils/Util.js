@@ -26,10 +26,10 @@ export const prepareLocales = (locales) => {
   return chain(locales || [])
       .map(function (locale) {
         const nplurals = parseNPlurals(locale.pluralForms)
-
         return {
           id: locale.localeId,
           name: locale.displayName,
+          isRTL: locale.rtl,
           nplurals
         }
       })

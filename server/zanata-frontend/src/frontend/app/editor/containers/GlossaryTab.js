@@ -32,7 +32,9 @@ class GlossaryTab extends React.Component {
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
     })).isRequired,
-    onGlossaryTextChange: PropTypes.func.isRequired
+    onGlossaryTextChange: PropTypes.func.isRequired,
+    isRTLSource: PropTypes.bool.isRequired,
+    isRTLTarget: PropTypes.bool.isRequired
   }
 
   renderResultsPanel = () => {
@@ -41,7 +43,9 @@ class GlossaryTab extends React.Component {
       results,
       searching,
       searchText,
-      showDetails
+      showDetails,
+      isRTLSource,
+      isRTLTarget
     } = this.props
 
     if (searching) {
@@ -67,6 +71,9 @@ class GlossaryTab extends React.Component {
       </div>
     }
 
+    const directionClassSource = isRTLSource ? 'rtl' : 'ltr'
+    const directionClassTarget = isRTLTarget ? 'rtl' : 'ltr'
+
     const resultsDisplay = results.map((term, index) => {
       return (
         <GlossaryTerm {...{
@@ -74,7 +81,9 @@ class GlossaryTab extends React.Component {
           index,
           term,
           copyGlossaryTerm,
-          showDetails
+          showDetails,
+          directionClassSource,
+          directionClassTarget
         }} />
       )
     })
@@ -100,13 +109,16 @@ class GlossaryTab extends React.Component {
     const glossaryModal = this.props.details.show
       ? <GlossaryTermModal /> : undefined
 
-    const { eventKey, searchText, onGlossaryTextChange } = this.props
+    const {eventKey, searchText, onGlossaryTextChange, isRTLSource} = this.props
+
+    const directionClass = isRTLSource ? 'rtl' : 'ltr'
     return (
       <Tab eventKey={eventKey} title="">
         <div className="SidebarEditor-wrapper" id="tab1">
           <GlossarySearchInput
             text={searchText}
-            onTextChange={onGlossaryTextChange} />
+            onTextChange={onGlossaryTextChange}
+            directionClass={directionClass} />
         </div>
         {this.renderResultsPanel()}
         {glossaryModal}
@@ -115,7 +127,8 @@ class GlossaryTab extends React.Component {
   }
 }
 
-function mapStateToProps ({ glossary }) {
+function mapStateToProps (state) {
+  const {glossary, context, ui} = state
   // FIXME move this to storybook for this component
   // const dummyData = [
   //   {
@@ -145,9 +158,13 @@ function mapStateToProps ({ glossary }) {
   // ]
 
   const results = glossary.results.get(glossary.searchText) || []
+  const targetLocaleDetails = ui.uiLocales[context.lang]
   return {
     ...glossary,
-    results
+    results,
+    isRTLSource: context.sourceLocale.isRTL,
+    isRTLTarget: targetLocaleDetails ? targetLocaleDetails.isRTL || false
+        : false
   }
 }
 

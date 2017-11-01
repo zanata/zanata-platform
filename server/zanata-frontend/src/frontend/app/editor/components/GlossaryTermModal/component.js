@@ -24,7 +24,11 @@ class GlossaryTermModal extends React.Component {
         pos: PropTypes.string,
         targetComment: PropTypes.string
       })
-    ).isRequired
+    ).isRequired,
+    // No '.Required' for below since their usage depends on whether source or
+    // target text
+    directionClassSource: PropTypes.string,
+    directionClassTarget: PropTypes.string
   }
 
   render () {
@@ -34,7 +38,9 @@ class GlossaryTermModal extends React.Component {
       show,
       sourceLocale,
       targetLocale,
-      term
+      term,
+      directionClassSource,
+      directionClassTarget
     } = this.props
 
     const selectedDetail = 0
@@ -67,7 +73,6 @@ class GlossaryTermModal extends React.Component {
         )
       })
 
-    // TODO className glossary-modal
     return (
       <Modal show={show}
         onHide={close}
@@ -78,17 +83,17 @@ class GlossaryTermModal extends React.Component {
           Glossary details</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Panel className="split-panel">
-            <h3>Source Term [{sourceLocale}]:</h3>
+          <Panel className={directionClassSource + ' split-panel'}>
+            <h3>Source Term : {sourceLocale}</h3>
             <span className="modal-term">{term.source}</span>
           </Panel>
-          <Panel className="split-panel">
-            <h3>Target Term [{targetLocale}]:</h3>
+          <Panel className={directionClassTarget + ' split-panel'}>
+            <h3>Target Term : {targetLocale}</h3>
             <span className="modal-term">{term.target}</span>
           </Panel>
           <br />
           <Panel className="gloss-details-panel">
-            <Table className="GlossaryDetails-table">
+            <Table className={directionClassTarget + ' GlossaryDetails-table'}>
               <thead>
                 <tr>
                   <th>Description</th>

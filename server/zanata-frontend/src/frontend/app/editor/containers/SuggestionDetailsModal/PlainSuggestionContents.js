@@ -15,7 +15,9 @@ class PlainSuggestionContents extends Component {
       sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired,
       targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
     }).isRequired,
-    displayHeader: PropTypes.bool
+    displayHeader: PropTypes.bool,
+    directionClassSource: PropTypes.object.isRequired,
+    directionClassTarget: PropTypes.object.isRequired
   }
 
   matchTypeClass = (matchType) => {
@@ -27,23 +29,27 @@ class PlainSuggestionContents extends Component {
   }
 
   render () {
-    const { sourceContents, targetContents } = this.props.suggestion
+    const {suggestion, directionClassSource, directionClassTarget} = this.props
+    const {sourceContents, targetContents} = suggestion
     const displayHeader = this.props.displayHeader
     const className = cx('TransUnit TransUnit--suggestion u-bgHigh u-sMB-1',
       this.matchTypeClass(this.props.matchType))
+
     return (
       <div className={className}>
         <div className="TransUnit-status" />
         {displayHeader && <span className="TransUnit-sourceHeading">
         Source</span>}
-        <div className="TransUnit-panel TransUnit-source">
+        <div className={directionClassSource + ' TransUnit-panel' +
+        ' TransUnit-source'}>
           <SuggestionContents
             plural={sourceContents.length > 1}
             contents={sourceContents} />
         </div>
         {displayHeader && <span className="TransUnit-targetHeading">
         Translation</span>}
-        <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
+        <div className={directionClassTarget + ' TransUnit-panel' +
+        ' TransUnit-translation u-sPV-1-2'}>
           <SuggestionContents
             plural={sourceContents.length > 1}
             contents={targetContents} />

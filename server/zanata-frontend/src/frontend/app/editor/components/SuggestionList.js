@@ -27,12 +27,15 @@ class SuggestionList extends React.Component {
         targetContents: PropTypes.arrayOf(
           PropTypes.string).isRequired
       })
-    }))
+    })),
+    isRTLSource: PropTypes.bool.isRequired,
+    isRTLTarget: PropTypes.bool.isRequired
   }
 
   render () {
     const sharedProps = pick(this.props,
-      ['copySuggestion', 'search', 'showDiff', 'showDetail'])
+        ['copySuggestion', 'search', 'showDiff', 'showDetail', 'isRTLSource',
+          'isRTLTarget'])
 
     const suggestions = this.props.suggestions.map((suggestion, index) => {
       return <Suggestion key={index}

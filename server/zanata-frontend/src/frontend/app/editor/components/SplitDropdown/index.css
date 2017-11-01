@@ -30,6 +30,19 @@ not conflict with the other frontend code
 .ButtonGroup--round .ButtonGroup-item:last-child .EditorButton {
   border-top-right-radius: 100px;
   border-bottom-right-radius: 100px;
+  padding-right: 1rem;
+}
+
+.ButtonGroup-item:first-child button {
+  padding-left: 1rem;
+}
+
+.ButtonGroup-item:last-child button {
+  padding-left: 1rem;
+}
+
+button.EditorButton.Button--small.u-rounded.Button--primary.u-sizeWidth-6 {
+  padding-left: 1.3rem;
 }
 
 ul.EditorDropdown-content li button.EditorButton {

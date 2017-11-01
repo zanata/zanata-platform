@@ -52,15 +52,16 @@ public class LocaleDetails implements Serializable {
     private boolean enabled;
     private boolean enabledByDefault;
     private String pluralForms;
+    private boolean rtl;
 
     // TODO check if no args constructor is needed
     public LocaleDetails() {
-        this(null, null, null, null, false, false, null);
+        this(null, null, null, null, false, false, null, false);
     }
 
     public LocaleDetails(LocaleId localeId, String displayName, String alias,
         String nativeName, boolean enabled, boolean enabledByDefault,
-        String pluralForms) {
+        String pluralForms, boolean rtl) {
         this.localeId = localeId;
         this.displayName = displayName;
         this.alias = alias;
@@ -68,6 +69,7 @@ public class LocaleDetails implements Serializable {
         this.enabled = enabled;
         this.enabledByDefault = enabledByDefault;
         this.pluralForms = pluralForms;
+        this.rtl = rtl;
     }
 
     /**
@@ -163,6 +165,18 @@ public class LocaleDetails implements Serializable {
         this.pluralForms = pluralForms;
     }
 
+    /**
+     * Indicates if this locale is Right-to-Left
+     */
+    @XmlAttribute(name = "rtl")
+    public boolean isRtl() {
+        return rtl;
+    }
+
+    public void setRTL(boolean rtl) {
+        this.rtl = rtl;
+    }
+
     @Override
     public String toString() {
         return DTOUtil.toXML(this);
@@ -171,36 +185,37 @@ public class LocaleDetails implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LocaleDetails)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         LocaleDetails that = (LocaleDetails) o;
 
         if (enabled != that.enabled) return false;
         if (enabledByDefault != that.enabledByDefault) return false;
+        if (rtl != that.rtl) return false;
         if (localeId != null ? !localeId.equals(that.localeId) :
-            that.localeId != null) return false;
+                that.localeId != null) return false;
         if (displayName != null ? !displayName.equals(that.displayName) :
-            that.displayName != null) return false;
+                that.displayName != null) return false;
         if (alias != null ? !alias.equals(that.alias) : that.alias != null)
             return false;
         if (nativeName != null ? !nativeName.equals(that.nativeName) :
-            that.nativeName != null) return false;
+                that.nativeName != null) return false;
         return pluralForms != null ? pluralForms.equals(that.pluralForms) :
-            that.pluralForms == null;
-
+                that.pluralForms == null;
     }
 
     @Override
     public int hashCode() {
         int result = localeId != null ? localeId.hashCode() : 0;
-        result =
-            31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result +
+                (displayName != null ? displayName.hashCode() : 0);
         result = 31 * result + (alias != null ? alias.hashCode() : 0);
         result = 31 * result + (nativeName != null ? nativeName.hashCode() : 0);
         result = 31 * result + (enabled ? 1 : 0);
         result = 31 * result + (enabledByDefault ? 1 : 0);
-        result =
-            31 * result + (pluralForms != null ? pluralForms.hashCode() : 0);
+        result = 31 * result +
+                (pluralForms != null ? pluralForms.hashCode() : 0);
+        result = 31 * result + (rtl ? 1 : 0);
         return result;
     }
 }

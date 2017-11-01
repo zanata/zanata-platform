@@ -31,7 +31,9 @@ class Suggestion extends React.Component {
     }),
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
-    showDetail: PropTypes.func.isRequired
+    showDetail: PropTypes.func.isRequired,
+    isRTLSource: PropTypes.bool.isRequired,
+    isRTLTarget: PropTypes.bool.isRequired
   }
 
   /**
@@ -70,9 +72,13 @@ class Suggestion extends React.Component {
       ...this.props.suggestion,
       matchType
     }
+    const sourceDirectionClass = this.props.isRTLSource ? 'rtl' : 'ltr'
+    const targetDirectionClass = this.props.isRTLTarget ? 'rtl' : 'ltr'
+
     const props = {
       ...this.props,
       suggestion,
+      directionClass: sourceDirectionClass,
       showDetail: this.showDetail
     }
     return (
@@ -81,6 +87,7 @@ class Suggestion extends React.Component {
         <div className="TransUnit-status" />
         <SuggestionSources {...props} />
         <SuggestionTranslations
+          directionClass={targetDirectionClass}
           copySuggestion={this.copySuggestion}
           suggestion={suggestion} />
       </div>

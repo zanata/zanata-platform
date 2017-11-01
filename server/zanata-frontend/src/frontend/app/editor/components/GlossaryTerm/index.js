@@ -16,7 +16,9 @@ class GlossaryTerm extends React.Component {
     term: PropTypes.shape({
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    directionClassSource: PropTypes.string,
+    directionClassTarget: PropTypes.string
   }
 
   copy = () => {
@@ -28,7 +30,7 @@ class GlossaryTerm extends React.Component {
   }
 
   render () {
-    const { index, term } = this.props
+    const {index, term, directionClassSource, directionClassTarget} = this.props
     const sourceTip = (
       <Tooltip id={'glossarytermsource-' + index}>
         {term.source}
@@ -49,7 +51,7 @@ class GlossaryTerm extends React.Component {
                 <span className="hide-mdplus u-textMeta">
                   Source
                 </span>
-                {term.source}
+                <span className={directionClassSource}>{term.source}</span>
               </span>
             </Button>
           </OverlayTrigger>
@@ -61,7 +63,7 @@ class GlossaryTerm extends React.Component {
                 <span className="hide-mdplus u-textMeta">
                   Target
                 </span>
-                {term.target}
+                <span className={directionClassTarget}>{term.target}</span>
               </span>
             </Button>
           </OverlayTrigger>

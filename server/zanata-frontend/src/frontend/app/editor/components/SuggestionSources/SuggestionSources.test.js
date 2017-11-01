@@ -12,6 +12,7 @@ describe('SuggestionSourcesTest', () => {
       <SuggestionSources
         showDiff={false}
         showDetail={() => {}}
+        directionClass='testClass'
         suggestion={{
           matchDetails: [
             {
@@ -27,7 +28,7 @@ describe('SuggestionSourcesTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div className="TransUnit-panel TransUnit-source">
+      <div className="testClass TransUnit-panel TransUnit-source">
         <SuggestionContents
           plural={true}
           contents={[

@@ -18,14 +18,16 @@ class SuggestionSources extends React.Component {
     }),
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
-    showDetail: PropTypes.func.isRequired
+    showDetail: PropTypes.func.isRequired,
+    directionClass: PropTypes.string
   }
 
   render () {
     const sourceContents = this.props.suggestion.sourceContents
     const diffWith = this.props.showDiff ? this.props.search : undefined
     return (
-      <div className="TransUnit-panel TransUnit-source">
+      <div className={this.props.directionClass +
+        ' TransUnit-panel TransUnit-source'}>
         <SuggestionContents
           plural={sourceContents.length > 1}
           contents={sourceContents}

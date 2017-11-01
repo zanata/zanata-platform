@@ -34,7 +34,9 @@ class SuggestionsBody extends React.Component {
     }).isRequired,
     showDiff: PropTypes.bool.isRequired,
     showDetail: PropTypes.func.isRequired,
-    phraseSelected: PropTypes.bool.isRequired
+    phraseSelected: PropTypes.bool.isRequired,
+    isRTLSource: PropTypes.bool.isRequired,
+    isRTLTarget: PropTypes.bool.isRequired
   }
 
   renderContent = () => {
@@ -84,7 +86,9 @@ class SuggestionsBody extends React.Component {
         showDiff={this.props.showDiff}
         showDetail={this.props.showDetail}
         suggestions={this.props.search.suggestions}
-        copySuggestion={this.props.copySuggestion} />
+        copySuggestion={this.props.copySuggestion}
+        isRTLSource={this.props.isRTLSource}
+        isRTLTarget={this.props.isRTLTarget} />
     )
   }
 
