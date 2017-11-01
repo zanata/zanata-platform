@@ -37,7 +37,7 @@ import java.io.Serializable;
 
 @SessionScoped
 @Synchronized
-public class SpNegoIdentity implements Serializable {
+public class SpNegoIdentity implements Serializable, ExternallyAuthenticatedIdentity {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SpNegoIdentity.class);
     private static final long serialVersionUID = 5341594999046279309L;
@@ -49,6 +49,7 @@ public class SpNegoIdentity implements Serializable {
     @Inject
     private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
 
+    @Override
     public void authenticate() {
         ZanataIdentity identity =
                 ServiceLocator.instance().getInstance(ZanataIdentity.class);
@@ -78,6 +79,7 @@ public class SpNegoIdentity implements Serializable {
         return alreadyLoggedInEventEvent;
     }
 
+    @Override
     public void login() {
         if (identity.isLoggedIn()) {
             getAlreadyLoggedInEvent().fire(new AlreadyLoggedInEvent());

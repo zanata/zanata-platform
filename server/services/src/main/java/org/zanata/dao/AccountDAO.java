@@ -113,22 +113,6 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
 
     }
 
-    public HAccount create(String username, String password, boolean enabled) {
-        HAccount account = new HAccount();
-        account.setUsername(username);
-        // TODO add a @PasswordSalt field to HAccount
-        // otherwise, Seam uses the @UserPrincipal field as salt
-        String saltPhrase = username;
-        @SuppressWarnings("deprecation")
-        String passwordHash =
-                PasswordUtil.generateSaltedHash(password,
-                        saltPhrase);
-        account.setPasswordHash(passwordHash);
-        account.setEnabled(enabled);
-        makePersistent(account);
-        return account;
-    }
-
     // @SuppressWarnings("unchecked")
     // public List<HAccount> searchQuery(String searchQuery) throws
     // ParseException

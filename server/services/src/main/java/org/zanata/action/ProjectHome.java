@@ -717,6 +717,9 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     public boolean validateSlug(String slug, String componentId) {
+        if (StringUtils.equals(getInstance().getSlug(), slug)) {
+            return true;
+        }
         if (!isSlugAvailable(slug)) {
             facesMessages.addToControl(componentId,
                     "This Project ID is not available");

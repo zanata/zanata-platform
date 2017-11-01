@@ -27,7 +27,7 @@
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
-    <picketlink.version>2.5.5.SP1</picketlink.version>
+    <picketlink.version>2.5.5.SP2</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
     <weld.version>2.3.2.Final</weld.version>
@@ -1894,7 +1894,7 @@
   <build>
     <plugins>
 
-      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java/Takari.
+      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java.
            Java code can depend on either Groovy or Kotlin (because they are compiled first).
            Groovy code can depend on Kotlin because it is compiled first, and on Java because of "joint compilation"
            http://groovy-lang.org/groovyc.html#section-jointcompilation https://github.com/groovy/GMavenPlus/wiki/Examples#joint-compilation
@@ -1941,8 +1941,9 @@
             <!-- JUnit tests (CDI-Unit or Mockito) -->
             <option>all-open:annotation=org.junit.runner.RunWith</option>
 
-            <!-- Create synthetic no-arg constructors for JPA entities: -->
+            <!-- Create synthetic no-arg constructors for JPA entities and CDI beans: -->
             <option>no-arg:annotation=javax.persistence.Entity</option>
+            <option>no-arg:annotation=javax.enterprise.context.NormalScope</option>
           </pluginOptions>
         </configuration>
         <dependencies>
@@ -2023,45 +2024,21 @@
             <id>default-testCompile</id>
             <phase>none</phase>
           </execution>
-        </executions>
-        <configuration>
-          <!-- Ignore maven.compiler.compilerId=jdt -->
-          <compilerId>javac</compilerId>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <extensions>true</extensions>
-
-        <executions>
-          <!-- Replacing default-compile as it is treated specially by Maven.
-               We need kotlin-maven-plugin to compile first. -->
-          <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
           <execution>
             <id>java-compile</id>
             <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
-          </execution>
-          <!-- Replacing default-testCompile as it is treated specially by Maven.
-               We need kotlin-maven-plugin to compile first. -->
-          <execution>
-            <id>default-testCompile</id>
-            <phase>none</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
           </execution>
           <execution>
             <id>java-test-compile</id>
             <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
           </execution>
         </executions>
-        <configuration>
-          <compilerId>jdt</compilerId>
-        </configuration>
       </plugin>
 
       <plugin>

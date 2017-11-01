@@ -20,12 +20,20 @@
  */
 package org.zanata.security;
 
+import static org.zanata.security.AuthenticationType.OPENID;
+import static org.zanata.security.AuthenticationType.SAML2;
+
 import java.io.Serializable;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.apache.deltaspike.core.util.ContextUtils;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
@@ -34,11 +42,11 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.SAML;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
-import javax.enterprise.event.Observes;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -79,6 +87,11 @@ public class AuthenticationManager implements Serializable {
     private Messages msgs;
     @Inject
     private SpNegoIdentity spNegoIdentity;
+    @Inject
+    @SAML
+    private boolean saml2Enabled;
+    @Inject
+    private SamlIdentity samlIdentity;
 
     /**
      * Logs in a user using a specified authentication type.
@@ -136,22 +149,6 @@ public class AuthenticationManager implements Serializable {
     }
 
     /**
-     * Logs in with the kerberos authentication type using ticket based
-     * authentication.
-     */
-    public void kerberosLogin() {
-        if (applicationConfiguration.isKerberosAuth()) {
-            spNegoIdentity.authenticate();
-            if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
-                    && isAccountEnabledAndActivated()) {
-                spNegoIdentity.login();
-                this.onLoginCompleted(
-                        new LoginCompleted(AuthenticationType.KERBEROS));
-            }
-        }
-    }
-
-    /**
      * Logs in with kerberos using from based (username/password) authentication
      */
     public String formBasedKerberosLogin() {
@@ -167,6 +164,34 @@ public class AuthenticationManager implements Serializable {
     }
 
     /**
+     * Logs in with the kerberos authentication type using ticket based
+     * authentication.
+     */
+    public void kerberosLogin() {
+        if (applicationConfiguration.isKerberosAuth()) {
+            spNegoIdentity.authenticate();
+            if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
+                    && isAccountEnabledAndActivated()) {
+                spNegoIdentity.login();
+                this.onLoginCompleted(
+                        new LoginCompleted(AuthenticationType.KERBEROS));
+            }
+        }
+    }
+
+    public void ssoLogin() {
+        if (saml2Enabled) {
+            samlIdentity.authenticate();
+
+            if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
+                    && isAccountEnabledAndActivated()) {
+                samlIdentity.login();
+                this.onLoginCompleted(new LoginCompleted(SAML2));
+            }
+        }
+    }
+
+    /**
      * Logs in an Open Id user. Uses the values set in {@link ZanataCredentials}
      * for authentication. This method should be invoked to authenticate AND log
      * a user into Zanata.
@@ -174,7 +199,7 @@ public class AuthenticationManager implements Serializable {
      * @return A String with the result of the operation.
      */
     public String openIdLogin() {
-        String loginResult = identity.login(AuthenticationType.OPENID);
+        String loginResult = identity.login(OPENID);
         return loginResult;
     }
 
@@ -214,7 +239,7 @@ public class AuthenticationManager implements Serializable {
             OpenIdAuthCallback callback) {
         ZanataCredentials volatileCreds = new ZanataCredentials();
         volatileCreds.setUsername(openId);
-        volatileCreds.setAuthType(AuthenticationType.OPENID);
+        volatileCreds.setAuthType(OPENID);
         volatileCreds.setOpenIdProviderType(openIdProviderType);
         zanataOpenId.authenticate(volatileCreds, callback);
     }
@@ -235,8 +260,10 @@ public class AuthenticationManager implements Serializable {
      *         dashboard - Redirect the user to dashboard page.
      */
     public String getAuthenticationRedirect() {
-        if (identity.getCredentials()
-                .getAuthType() == AuthenticationType.KERBEROS) {
+        AuthenticationType authType = identity.getCredentials()
+                .getAuthType();
+        if (authType == AuthenticationType.KERBEROS
+                || authType == SAML2) {
             if (isAuthenticatedAccountWaitingForActivation()) {
                 return "inactive";
             } else if (identity.isPreAuthenticated() && isNewUser()) {
@@ -276,10 +303,13 @@ public class AuthenticationManager implements Serializable {
         HAccount authenticatedAccount = null;
         HCredentials authenticatedCredentials = null;
         String username = credentials.getUsername();
-        if (authType == AuthenticationType.OPENID) {
+        if (authType == OPENID || authType == SAML2) {
+            String credUser = authType == OPENID
+                    ? zanataOpenId.getAuthResult().getAuthenticatedId()
+                    : samlIdentity.getUniqueName();
             authenticatedCredentials = credentialsDAO.findByUser(
-                    zanataOpenId.getAuthResult().getAuthenticatedId());
-            // on first Open Id login, there might not be any stored credentials
+                    credUser);
+            // on first Open Id or SAML2 login, there might not be any stored credentials
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
             }
@@ -319,15 +349,18 @@ public class AuthenticationManager implements Serializable {
                 && isAccountWaitingForActivation(credentials.getUsername());
     }
 
-    public boolean isNewUser(String username) {
+    private boolean isNewUser(String username) {
         return identityStore.isNewUser(username);
     }
 
     public boolean isNewUser() {
-        if (credentials.getAuthType() == AuthenticationType.OPENID
+        if (credentials.getAuthType() == OPENID
                 && applicationConfiguration.isOpenIdAuth()) {
             return credentialsDAO.findByUser(
                     zanataOpenId.getAuthResult().getAuthenticatedId()) == null;
+        }
+        if (credentials.getAuthType() == SAML2 && saml2Enabled) {
+            return credentialsDAO.findByUser(samlIdentity.getUniqueName()) == null;
         }
         return isNewUser(credentials.getUsername());
     }
@@ -342,7 +375,7 @@ public class AuthenticationManager implements Serializable {
     }
 
     public boolean isAuthenticated() {
-        if (credentials.getAuthType() == AuthenticationType.OPENID
+        if (credentials.getAuthType() == OPENID
                 && applicationConfiguration.isOpenIdAuth()) {
             return zanataOpenId.getAuthResult().isAuthenticated();
         }
@@ -361,8 +394,11 @@ public class AuthenticationManager implements Serializable {
                 message = "User " + username
                         + " has been disabled. Please contact server admin.";
             }
-            facesMessages.clear();
-            facesMessages.addGlobal(message);
+            // TODO temp hack. When coming back from SAML2, windowScope is not active
+            if (ContextUtils.isContextActive(WindowScoped.class)) {
+                facesMessages.clear();
+                facesMessages.addGlobal(message);
+            }
             // identity.setPreAuthenticated(false);
             // identity.unAuthenticate();
             return false;
@@ -382,4 +418,6 @@ public class AuthenticationManager implements Serializable {
         }
         setAuthenticateUser(username);
     }
+
+
 }

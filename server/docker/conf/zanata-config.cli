@@ -12,11 +12,15 @@ batch
 /system-property="zanata.home":add(value="${user.home}/zanata")
 /system-property="javamelody.storage-directory":add(value="${zanata.home}/stats")
 /system-property="hibernate.search.default.indexBase":add(value="${zanata.home}/indexes")
+/system-property="zanata.file.directory":add(value="${zanata.home}/files")
 /system-property="jboss.as.management.blocking.timeout":add(value="1000")
 /system-property="zanata.security.authpolicy.internal":add(value="zanata.internal")
 /system-property="zanata.security.authpolicy.openid":add(value="zanata.openid")
+/system-property="zanata.security.authpolicy.saml2":add(value="zanata.saml2")
 /system-property="zanata.email.defaultfromaddress":add(value="no-reply@zanata.org")
 /system-property="zanata.support.oauth":add(value="true")
+/system-property="picketlink.file":add(value="${zanata.home}/picketlink.xml")
+
 ## Allows the editor development server to use the docker server as a backend.
 ## The editor development server is run with `make watch` in zanata-frontend/src/editor
 /system-property="zanata.origin.whitelist":add(value="http://localhost:8000")
@@ -100,6 +104,10 @@ jms-queue add --queue-address=MailsQueue --durable=true --entries=["java:/jms/qu
 /subsystem=security/security-domain=zanata.openid:add()
 /subsystem=security/security-domain=zanata.openid/authentication=classic:add()
 /subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:add(code="org.zanata.security.OpenIdLoginModule",flag="required")
+## add SAML security domain
+/subsystem=security/security-domain=zanata.saml2:add(cache-type=default)
+/subsystem=security/security-domain=zanata.saml2/authentication=classic:add
+/subsystem=security/security-domain=zanata.saml2/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:add(code=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule,flag=required)
 
 # ==== mail session ====
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:add(host=${env.MAIL_HOST:localhost}, port=${MAIL_PORT:25})
