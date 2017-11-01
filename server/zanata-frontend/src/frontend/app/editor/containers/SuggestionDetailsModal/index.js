@@ -30,7 +30,7 @@ class SuggestionDetailsModal extends Component {
 
   render () {
     const {suggestion, isRTLSource, isRTLTarget} = this.props
-    const matchDetails = suggestion
+    const {matchDetails} = suggestion
 
     const detailPanels = matchDetails.map((matchDetail, index) => {
       const props = {
