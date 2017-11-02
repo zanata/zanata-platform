@@ -888,8 +888,8 @@ public class ResourceUtils implements Serializable {
      *
      * @param locale
      */
-    private String getLanguage(final HLocale locale) {
-        return locale.getLocaleId().toString();
+    String getLanguage(HLocale locale) {
+        return StringUtils.replace(locale.getLocaleId().toString(), "-", "_");
     }
 
     /**
