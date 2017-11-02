@@ -42,11 +42,20 @@
 
 ## 4.2.4
 ##### Changes
+ * [ZNTA-2158](https://zanata.atlassian.net/browse/ZNTA-2158) - Fix text wrapping in GWT TM panel
+ * [ZNTA-2153](https://zanata.atlassian.net/browse/ZNTA-2153) - Tidy UX for TM Merge modal
  * [ZNTA-2035](https://zanata.atlassian.net/browse/ZNTA-2035) - Fix Jenkin's CI reporting to Github
 
 ##### Bug Fixes
+ * [ZNTA-2159](https://zanata.atlassian.net/browse/ZNTA-2159) - When adding a project to a group, the suggestion list is too short and cropped
  * [ZNTA-2114](https://zanata.atlassian.net/browse/ZNTA-2114) - Online help broken
  * [ZNTA-128](https://zanata.atlassian.net/browse/ZNTA-128) - Chunk split failed when pushing big files (more than 1MiB)
+
+-----------------------
+
+## 4.2.1
+##### Bug Fixes
+ * [ZNTA-2012](https://zanata.atlassian.net/browse/ZNTA-2012) - zanata-cli is missing
 
 -----------------------
 
@@ -154,6 +163,8 @@ re-indexing is required.
  * [ZNTA-1660](https://zanata.atlassian.net/browse/ZNTA-1660) - Update docker script to avoid 'chcon' error
 
 ##### Bug Fixes
+ * [ZNTA-1948](https://zanata.atlassian.net/browse/ZNTA-1948) - After project deletion, project tab is not accessible without logout & login
+ * [ZNTA-1907](https://zanata.atlassian.net/browse/ZNTA-1907) - Exception when trying to delete the en_US language
  * [ZNTA-1748](https://zanata.atlassian.net/browse/ZNTA-1748) - Export TMX per language does not work
  * [ZNTA-1738](https://zanata.atlassian.net/browse/ZNTA-1738) - Link boxes in GWT editor huge
 
