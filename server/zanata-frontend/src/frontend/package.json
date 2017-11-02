@@ -112,7 +112,6 @@
     "normalizr": "2.1.0",
     "postcss": "6.0.13",
     "postcss-cssnext": "3.0.2",
-    "postcss-discard-duplicates": "^2.1.0",
     "prop-types": "15.5.10",
     "react": "15.6.1",
     "react-autosuggest": "9.0.1",
