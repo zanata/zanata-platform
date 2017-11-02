@@ -1329,7 +1329,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -1344,7 +1344,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -1359,7 +1359,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -1384,7 +1384,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -1399,7 +1399,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -2799,7 +2799,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -2814,7 +2814,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -2829,7 +2829,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -2854,7 +2854,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -2869,7 +2869,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -3587,7 +3587,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -3602,7 +3602,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -3617,7 +3617,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -3642,7 +3642,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -3657,7 +3657,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -4276,7 +4276,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -4291,7 +4291,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -4306,7 +4306,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -4331,7 +4331,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -4346,7 +4346,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -4992,7 +4992,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -5007,7 +5007,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -5022,7 +5022,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -5047,7 +5047,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -5062,7 +5062,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no

@@ -28,7 +28,7 @@
     "@storybook/addon-info": "3.2.0",
     "@storybook/addon-knobs": "3.2.0",
     "@storybook/addon-storyshots": "3.2.3",
-    "@storybook/addons": "3.2.0",
+    "@storybook/addons": "3.2.13",
     "@storybook/channels": "3.2.0",
     "@storybook/react": "3.2.3",
     "autoprefixer-loader": "3.2.0",
