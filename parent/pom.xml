@@ -942,7 +942,7 @@
         <dupfind.skip>false</dupfind.skip>
         <enforcer.skip>false</enforcer.skip>
         <!-- These violations will be picked up by FindBugsPublisher -->
-        <findbugs.failOnError>true</findbugs.failOnError>
+        <findbugs.failOnError>false</findbugs.failOnError>
         <findbugs.skip>false</findbugs.skip>
         <!-- These violations will be picked up by WarningsPublisher -->
         <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
