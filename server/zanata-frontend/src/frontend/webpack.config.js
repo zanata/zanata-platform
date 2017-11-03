@@ -231,7 +231,7 @@ module.exports = function (env) {
 
       fullBuild ? new webpack.HashedModuleIdsPlugin() : undefined,
 
-      new webpack.optimize.CommonsChunkPlugin({
+      storybook ? undefined : new webpack.optimize.CommonsChunkPlugin({
           name: 'runtime',
          }),
 
