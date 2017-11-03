@@ -157,17 +157,14 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
                                String qualifiedName) {
         for (Object[] match : matches) {
             HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
-            HGlossaryTerm targetTerm = null;
-            if (sourceTerm != null) {
-                targetTerm = glossaryDAO.getTermByEntryAndLocale(
-                        sourceTerm.getGlossaryEntry().getId(), localeId,
-                        qualifiedName);
-            }
-            if (targetTerm == null) {
+            if (sourceTerm == null) {
                 continue;
             }
+            HGlossaryTerm targetTerm = glossaryDAO.getTermByEntryAndLocale(
+                    sourceTerm.getGlossaryEntry().getId(), localeId,
+                    qualifiedName);
             String srcTermContent = sourceTerm.getContent();
-            String targetTermContent = targetTerm.getContent();
+            String targetTermContent = targetTerm == null ? "" : targetTerm.getContent();
             GlossaryResultItem item = getOrCreateGlossaryResultItem(matchesMap,
                     qualifiedName, srcTermContent, targetTermContent,
                     (Float) match[0], searchText);
@@ -233,12 +230,16 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
             String qualifiedName = entry.getGlossary().getQualifiedName();
             String url = glossaryUrl(qualifiedName, srcContent,
                     hLocale.getLocaleId());
+            boolean isTargetNull = hGlossaryTerm == null;
             items.add(new GlossaryDetails(entry.getId(), srcContent,
-                    hGlossaryTerm.getContent(), entry.getDescription(),
-                    entry.getPos(), hGlossaryTerm.getComment(),
+                    isTargetNull ? null : hGlossaryTerm.getContent(),
+                    entry.getDescription(),
+                    entry.getPos(),
+                    isTargetNull ? null : hGlossaryTerm.getComment(),
                     entry.getSourceRef(), entry.getSrcLocale().getLocaleId(),
-                    hLocale.getLocaleId(), url, hGlossaryTerm.getVersionNum(),
-                    hGlossaryTerm.getLastChanged()));
+                    hLocale.getLocaleId(), url,
+                    isTargetNull ? null : hGlossaryTerm.getVersionNum(),
+                    isTargetNull ? null : hGlossaryTerm.getLastChanged()));
         }
         return items;
     }

@@ -5590,7 +5590,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         Source
       </th>
       <th>
-        Target
+        Translation
       </th>
       <th />
       <th
@@ -5644,16 +5644,18 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             <span
               className={undefined}
             >
-              
+              -none-
             </span>
           </span>
         </button>
@@ -5743,16 +5745,18 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             <span
               className={undefined}
             >
-              
+              -none-
             </span>
           </span>
         </button>
@@ -5842,16 +5846,18 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             <span
               className={undefined}
             >
-              
+              -none-
             </span>
           </span>
         </button>
@@ -5912,7 +5918,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         Source
       </th>
       <th>
-        Target
+        Translation
       </th>
       <th />
       <th
@@ -5966,11 +5972,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             <span
               className={undefined}
@@ -6065,11 +6073,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             <span
               className={undefined}
@@ -6164,11 +6174,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             <span
               className={undefined}
@@ -6272,11 +6284,13 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
             <span
               className={undefined}
