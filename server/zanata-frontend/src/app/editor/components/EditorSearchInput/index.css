@@ -1,0 +1,99 @@
+.InputEditorSearch {
+  margin-left: 0.75em;
+  margin-right: 1em;
+  display: inline-flex;
+  padding-bottom: 1rem;
+  padding-top: 0.25rem;
+  flex: 2 0 16rem;
+}
+
+.InputEditorSearch input {
+  font-size: 0.875em;
+}
+
+.InputEditorSearch > div {
+  /* to contain nested .panel width */
+  position: relative;
+  width: 100%;
+}
+
+.InputGroup--wide {
+  padding-left: 1rem;
+}
+
+/* advanced search panel */
+
+/* bootstrap classes used throughout */
+
+.InputEditorSearch .panel {
+  margin-bottom: 0.5em !important;
+  position: absolute;
+  width: 100%;
+}
+
+.InputEditorSearch .panel-body {
+  /* bootstrap panel cannot use utility class u-bgHigher directly */
+  background-color: var(--u-bg-color-lighter);
+}
+
+.InputEditorSearch .panel-body input {
+  box-shadow: var(--default-box-shadow-inset)
+}
+
+.InputEditorSearch .icon-help button {
+  vertical-align: sub;
+  margin-left: 0.375em;
+}
+
+.InputEditorSearch .icon-help button span {
+  vertical-align: bottom;
+}
+
+#EditorHeader .InputEditorSearch .EditorInputGroup-addon span.n1 {
+  vertical-align: middle;
+}
+
+.InputEditorSearch .EditorInputGroup-addon button {
+  vertical-align: sub !important;
+  color: #03A6D7;
+
+}
+
+li.InlineSearch-list {
+  display: inline-flex;
+  width: 100%;
+  margin-right: 1em;
+}
+
+li.InlineSearch-list span {
+  width: 60%;
+  color: #20718A;
+}
+
+.InlineSearch input {
+  width: 90%;
+}
+
+.InputEditorSearch .panel.panel-default {
+  z-index: 1000 !important;
+}
+
+.flex ul.u-listHorizontal {
+  z-index: 999 !important;
+}
+
+.panel {
+  border: none !important;
+}
+
+button.AdvSearch-clear {
+  color: #03A6D7;
+  padding: 0;
+  padding-top: 0.75em;
+}
+
+@media (max-width: 622px) {
+  .u-sizeHeight-1_1-2 {
+    height: fit-content !important;
+  }
+}

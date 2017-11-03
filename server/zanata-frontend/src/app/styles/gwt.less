@@ -1,0 +1,82 @@
+/* GWT overrides */
+
+.new-zanata {
+  .bg--pop-highest {
+    border: none;
+  }
+  h1 {
+    height: 1.1em;
+  }
+  .h1, h1 {
+    font-weight: 500 !important;
+  }
+  .g {
+    align-self: center;
+    padding-bottom: 1rem;
+  }
+  .panel {
+    background-color: #fdfdfd;
+  }
+  .panel__header {
+    border-width: 1px !important;
+  }
+  button.close {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 0.75rem;
+  }
+  .bg--pop-highest thead, &.bg--pop-highest tbody {
+    border: 1px solid rgba(32, 113, 138, .15);
+  }
+  .l-wrapper {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    display: inherit;
+  }
+  .g--centered {
+    text-align: center;
+    width: 100%;
+  }
+  #versionAutocomplete .autocomplete__results {
+    position: relative;
+    margin-top: -1rem;
+  }
+  .button--group input[type=radio]:checked+.button--Off, .button--group input[type=radio]:checked+.button--Off:hover {
+    background-color: #546677 !important;
+    color: #f7f7f7 !important;
+  }
+  .button--group input[type=radio]:checked+.button--danger, .button--group input[type=radio]:checked+.button--danger:hover {
+    color: #f7f7f7 !important;
+  }
+  label {
+    color: #546677 !important;
+  }
+  .panel__results__type i.i.txt--neutral.i--users {
+    vertical-align: super;
+  }
+  .panel__results .txt--meta {
+    color: #BDD4DC;
+  }
+  /* Fix for Search and Replace in GWT */
+  table .projectWideSearchResultsDocumentBody {
+    display: table !important;
+  }
+  // Bugfix for a container, do not remove
+  .GNM0BIKDBN {
+    min-width: unset;
+  }
+  // GWT cancel buttons at bottom of pages
+  form .button.button--link {
+    padding: 0.1875em 0.75em
+  }
+  #cacheStatisticsTable {
+    overflow: auto;
+    overflow-x: scroll;
+    width: 48rem;
+    font-size: 0.875rem;
+  }
+}

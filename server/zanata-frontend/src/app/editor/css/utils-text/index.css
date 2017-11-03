@@ -1,0 +1,122 @@
+@import 'suitcss-utils-text';
+
+:root {
+  --u-text-color-invert: #fff;
+  --u-text-color-primary: #4e9fdd;
+  --u-text-color-secondary: #416988;
+  --u-text-color-highlight: #4e9fdd;
+  --u-text-color-success: #70a98b;
+  --u-text-color-unsure: #e0c350;
+  --u-text-color-neutral: color(#416988 tint(60%));
+  --u-text-color-warning: #e3824e;
+  --u-text-color-danger: #e0575b;
+  --u-text-color-empty: color(var(--u-text-color-secondary) tint(50%));
+  --u-text-muted-opacity: .5;
+  --u-text-rhythm: 1.5rem;
+}
+
+.u-textUpper {
+  text-transform: uppercase;
+}
+
+.u-textLower {
+  text-transform: lowercase;
+}
+
+.u-textCapitalize {
+  text-transform: capitalize;
+}
+
+.u-textInvert {
+  color: var(--u-text-color-invert);
+}
+
+.u-textMuted {
+  opacity: var(--u-text-muted-opacity);
+}
+
+.u-textEmpty {
+  color: var(--u-text-color-empty);
+  font-weight: 600;
+}
+
+.u-textMicro {
+  font-size: calc(12/16 * 1rem);
+}
+
+.u-textMini {
+  font-size: calc(14/16 * 1rem);
+}
+
+.u-textMeta {
+  font-size: calc(14/16 * 1rem);
+  color: color(var(--u-text-color-secondary) tint(50%));
+}
+
+.u-textLead {
+  font-size: calc(24/16 * 1rem);
+  font-weight: 300;
+}
+
+.u-textPrimary {
+  color: var(--u-text-color-primary);
+}
+
+.u-textSecondary {
+  color: var(--u-text-color-secondary);
+}
+
+.u-textHighlight {
+  color: var(--u-text-color-highlight);
+}
+
+.u-textSuccess {
+  color: var(--u-text-color-success);
+}
+
+.u-textUnsure {
+  color: var(--u-text-color-unsure);
+}
+
+.u-textNeutral {
+  color: var(--u-text-color-neutral);
+}
+
+.u-textWarning {
+  color: var(--u-text-color-warning);
+}
+
+.u-textDanger {
+  color: var(--u-text-color-danger);
+}
+
+.u-textPilcrow:before {
+  content: '\00b6';
+  color: var(--u-text-color-neutral);
+  padding: 0 calc(var(--u-text-rhythm) * 0.125);
+}
+
+.u-textTab {
+  position: relative;
+  display: inline-block;
+  width: 1.2em;
+  text-align: center;
+}
+
+.u-textTab:before {
+  content: '\21E5';
+  color: var(--u-text-color-neutral);
+}
+
+.u-textSpace {
+  position: relative;
+}
+.u-textSpace:before {
+  position: absolute;
+  content: '.';
+  color: var(--u-text-color-neutral);
+}
+
+.u-textNoSelect {
+  user-select: none;
+}

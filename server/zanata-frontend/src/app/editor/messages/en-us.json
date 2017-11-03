@@ -1,0 +1,57 @@
+[
+    {
+      "id": "ActivityFeedItem.comment",
+      "description": "Title for a comment in the activity feed.",
+      "defaultMessage": "{name} has commented on a translation"
+    },
+    {
+      "id": "ActivityFeedItem.approved.approvedTranslation",
+      "description": "Highlighted section inserted into ActivityFeedItem.approved",
+      "defaultMessage": "approved a translation"
+    },
+    {
+      "id": "ActivityFeedItem.approved",
+      "description": "Title for an item in the activity feed showing a reviewer\n               approved the translation. The inserted section is from\n               ActivityFeedItem.approved.approvedTranslation",
+      "defaultMessage": "{name} has {approvedTranslation}"
+    },
+    {
+      "id": "ActivityFeedItem.rejected.rejectedTranslation",
+      "description": "Highlighted section inserted into ActivityFeedItem.rejected",
+      "defaultMessage": "rejected a translation"
+    },
+    {
+      "id": "ActivityFeedItem.rejected",
+      "description": "Title for an item in the activity feed showing a reviewer\n               rejected the translation. The inserted section is from\n               ActivityFeedItem.rejected.rejectedTranslation",
+      "defaultMessage": "{name} has {rejectedTranslation}"
+    },
+    {
+      "id": "ActivityFeedItem.translated.translatedRevision",
+      "description": "Highlighted section inserted into ActivityFeedItem.translated",
+      "defaultMessage": "created a translation revision"
+    },
+    {
+      "id": "ActivityFeedItem.translated",
+      "description": "Title for an item in the activity feed showing a translator added\n               a translation. The inserted section is from\n               ActivityFeedItem.translated.translatedRevision",
+      "defaultMessage": "{name} has {translatedRevision}"
+    },
+    {
+      "id": "ActivityFeedItem.fuzzy.fuzzyRevision",
+      "description": "Highlighted section inserted into ActivityFeedItem.fuzzy",
+      "defaultMessage": "created a fuzzy revision"
+    },
+    {
+      "id": "ActivityFeedItem.fuzzy",
+      "description": "Title for an item in the activity feed showing a translator saved\n               a fuzzy translation (a translation that still needs to be\n               edited). The inserted section is from\n               ActivityFeedItem.fuzzy.fuzzyRevision",
+      "defaultMessage": "{name} has {fuzzyRevision}"
+    },
+    {
+      "id": "ActivityFeedItem.deleted.deletedTranslation",
+      "description": "Highlighted section inserted into ActivityFeedItem.deleted",
+      "defaultMessage": "deleted a translation"
+    },
+    {
+      "id": "ActivityFeedItem.deleted",
+      "description": "Title for an item in the activity feed showing a translator has\n               deleted the translation. The inserted section is from\n               ActivityFeedItem.deleted.deletedTranslation",
+      "defaultMessage": "{name} has {deletedTranslation}"
+    }
+  ]

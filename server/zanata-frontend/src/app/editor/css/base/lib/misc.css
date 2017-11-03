@@ -1,0 +1,31 @@
+:root {
+  --base-misc-hr-border: 1px solid;
+  --base-misc-hr-border-color: #999;
+}
+
+hr {
+  width: 100%;
+  border: 0;
+  border-bottom: var(--base-misc-hr-border);
+  border-color: var(--base-misc-hr-border-color);
+  margin: rhythm(1) 0;
+  background: transparent;
+}
+
+iframe {
+  border: 0;
+}
+
+/**
+ * Suppress the focus outline on links that cannot be accessed via keyboard.
+ * This prevents an unwanted focus outline from appearing around elements that
+ * might still respond to pointer events.
+ */
+
+[tabindex="-1"]:focus {
+  outline: none !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

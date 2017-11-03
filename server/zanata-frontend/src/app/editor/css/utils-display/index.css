@@ -1,0 +1,67 @@
+@import 'suitcss-utils-display';
+
+:root {
+  --u-display-rhythm: 1.5rem;
+}
+
+/**
+ * Round box
+ *
+ * Use of % here will distort box if it is not square
+ */
+
+.u-round {
+  border-radius: 1000px !important;
+  overflow: hidden !important;
+}
+
+.u-roundish {
+  border-radius: calc(var(--u-display-rhythm) * .375) !important;
+  overflow: hidden !important;
+}
+
+.u-rounded {
+  border-radius: calc(var(--u-display-rhythm) * .75) !important;
+  overflow: hidden !important;
+}
+
+.u-vAlignMiddle {
+  vertical-align: middle
+}
+
+@media (--sm-viewport) {
+  .u-sm-hidden {
+    display: none !important;
+  }
+}
+
+@media (--md-viewport) {
+  .u-md-hidden {
+    display: none !important;
+  }
+}
+
+@media (--ltemd-viewport) {
+  .u-ltemd-hidden {
+    display: none !important;
+  }
+}
+
+
+@media (--gtemd-viewport) {
+  .u-gtemd-hidden {
+    display: none !important;
+  }
+}
+
+@media (--lg-viewport) {
+  .u-lg-hidden {
+    display: none !important;
+  }
+}
+
+@media (--gtelg-viewport) {
+  .u-gtelg-hidden {
+    display: none !important;
+  }
+}

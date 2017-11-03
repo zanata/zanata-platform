@@ -1,0 +1,128 @@
+/** @define Links; use strict */
+
+:root {
+  --Link-color: #4e9fdd;
+  --Link-color-hover: color(var(--Link-color) shade(10%));
+  --Link-color-active: color(var(--Link-color) shade(20%));
+  --Link-color-invert: #fff;
+  --Link-color-highlight: #4e9fdd;
+  --Link-color-success: #70a98b;
+  --Link-color-unsure: #e0c350;
+  --Link-color-neutral: color(#416988 tint(50%));
+  --Link-color-warning: #e3824e;
+  --Link-color-danger: #e0575b;
+}
+
+/**
+ * Default
+ *
+ * Make anything look like a link
+ */
+
+.Link {
+  color: var(--Link-color);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.Link:hover {
+  color: var(--Link-color-hover);
+}
+
+.Link:active {
+  color: var(--Link-color-active);
+}
+
+
+/* Invert */
+
+.Link--invert {
+  opacity: 0.8;
+}
+
+.Link--invert,
+.Link--invert:hover {
+  color: var(--Link-color-invert) !important;
+}
+
+.Link--invert:hover {
+  opacity: 1;
+}
+
+.Link--invert:active,
+.Link--invert.is-active {
+  opacity: 0.6;
+}
+
+/* Success */
+
+.Link--success {
+  color: var(--Link-color-success) !important;
+}
+
+.Link--success:hover {
+  color: color(var(--Link-color-success) shade(30%)) !important;
+}
+
+.Link--success:active,
+.Link--success.is-active {
+  color: color(var(--Link-color-success) shade(60%)) !important;
+}
+
+/* Unsure */
+
+.Link--unsure {
+  color: var(--Link-color-unsure) !important;
+}
+
+.Link--unsure:hover {
+  color: color(var(--Link-color-unsure) shade(30%)) !important;
+}
+.Link--unsure:active,
+.Link--unsure.is-active {
+  color: color(var(--Link-color-unsure) shade(60%)) !important;
+}
+
+/* Neutral */
+
+.Link--neutral {
+  color: var(--Link-color-neutral) !important;
+}
+
+.Link--neutral:hover {
+  color: color(var(--Link-color-neutral) shade(30%)) !important;
+}
+
+.Link--neutral:active,
+.Link--neutral.is-active {
+  color: color(var(--Link-color-neutral) shade(60%)) !important;
+}
+
+/* Warning */
+
+.Link--warning {
+  color: var(--Link-color-warning) !important;
+}
+
+.Link--warning:hover {
+  color: color(var(--Link-color-warning) shade(30%)) !important;
+}
+
+.Link--warning:active,
+.Link--warning.is-active {
+  color: color(var(--Link-color-warning) shade(60%)) !important;
+}
+
+/* Danger */
+
+.Link--danger {
+  color: var(--Link-color-danger) !important;
+}
+
+.Link--danger:hover {
+  color: color(var(--Link-color-danger) shade(30%)) !important;
+}
+.Link--danger:active,
+.Link--danger.is-active {
+  color: color(var(--Link-color-danger) shade(60%)) !important;
+}

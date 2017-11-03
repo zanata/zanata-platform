@@ -1,0 +1,53 @@
+/** @define Heading; use strict */
+
+:root {
+  --Heading-font-family  : 'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif;
+  --Heading-font-weight  : 600;
+  --Heading-size-h1      : 36px;
+  --Heading-size-h2      : 28px;
+  --Heading-size-h3      : 24px;
+  --Heading-size-h4      : 20px;
+  --Heading-size-h5      : 18px;
+  --Heading-size-h6      : 16px;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: var(--Heading-font-family);
+  font-weight: var(--Heading-font-weight);
+}
+
+.h1 {
+  font-size: var(--Heading-size-h1);
+}
+
+.h2 {
+  font-size: var(--Heading-size-h2);
+}
+
+.h3 {
+  font-size: var(--Heading-size-h3);
+}
+
+.h4 {
+  font-size: var(--Heading-size-h4);
+}
+
+.h5 {
+  font-size: var(--Heading-size-h5);
+}
+
+.h6 {
+  font-size: var(--Heading-size-h6);
+}
+
+.Heading--panel {
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0;
+  text-transform: uppercase;
+}
