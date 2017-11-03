@@ -2,7 +2,8 @@
 
 This module contains: User profile page, Glossary page, and Zanata side menu bar.
 
-## To run/setup in nodeJS
+- [Zanata alpha editor](./src/editor/README.md)
+- [Explore page, User profile page, Glossary page, and side menu bar](./src/frontend/README.md)
 
 Navigate to `src`, run `make install`
 
