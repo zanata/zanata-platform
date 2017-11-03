@@ -1,7 +1,0 @@
-/* This file acts as the top level so that app.css can use all relative paths.
- *
- * This is needed because css-loader treats imports in the top css file as being
- * relative to the directory where webpack is run, and we want just one place to
- * update the path if the app directory moves.
- */
-@import './app.css';
