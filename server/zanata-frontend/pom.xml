@@ -58,6 +58,11 @@
         <version>1.3</version>
         <configuration>
           <installDirectory>${yarn.install.directory}</installDirectory>
+          <!-- Our Jenkins setup doesn't know how to read Jest's report files
+               yet. This ensures that JS test failures will break the build.
+               TODO get Jest to output junit.xml and remove this:
+          -->
+          <maven.test.failure.ignore>false</maven.test.failure.ignore>
         </configuration>
         <executions>
           <!-- Installs correct version of node and yarn locally. -->
