@@ -129,7 +129,7 @@ class Entry extends Component {
           <tr className={cssClass}
             selected={selected}
             onClick={() => handleSelectTerm(entry.id)}>
-            <td className='td-4 tight'>
+            <td className='td-3 tight'>
               {termsLoading
                 ? loadingDiv
                 : (<EditableText
@@ -143,7 +143,7 @@ class Entry extends Component {
             <td className='td-3'>
               {secondColumnContent}
             </td>
-            <td className='hidesmall td-2'>
+            <td className='hidesmall td-3'>
             {termsLoading
               ? loadingDiv
               : (<EditableText

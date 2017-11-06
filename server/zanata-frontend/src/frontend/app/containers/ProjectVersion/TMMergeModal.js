@@ -444,7 +444,7 @@ class TMMergeModal extends Component {
     : (
       <span>
         <Row>
-          <Button bsStyle='link' className='btn-left link-danger'
+          <Button bsStyle='link' className='link-danger'
             onClick={toggleTMMergeModal}>
             Close
           </Button>

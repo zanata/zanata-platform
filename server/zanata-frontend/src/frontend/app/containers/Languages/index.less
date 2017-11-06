@@ -11,6 +11,10 @@
   flex-wrap: wrap;
 }
 
+#newLang .react-autosuggest__container input {
+  vertical-align: sub;
+}
+
 span.languageCode {
   font-size: var(--LanguagesLangCode-fontSize);
   color: #aaa;
@@ -29,6 +33,7 @@ span.languageCode {
   padding-bottom: @spacing-large-horizontal;
   padding-right: 0;
   width: auto;
+  margin-left: 1.5rem;
 }
 
 .toolbar .pageCount {
@@ -44,6 +49,7 @@ span.languageCode {
 .showItems {
   display: inline-flex;
   flex-grow: 0;
+  height: 2rem;
 }
 
 .showItems .form-control {
@@ -51,12 +57,14 @@ span.languageCode {
 }
 
 .sortItems {
-  margin-left: @spacing-large-horizontal;
+  margin-left: @spacing-base-and-a-half;
+  height: 2rem;
 }
 
 .showItems span {
-  margin-top: @spacing-small-horizontal;
-  margin-left: @spacing-large-horizontal;
+  margin-top: @spacing-large-horizontal;
+  margin-right: @spacing-small-horizontal;
+  margin-left: @spacing-base-and-a-half;
 }
 
 .showItems {
@@ -79,6 +87,14 @@ span.languageCode {
 
 .searchBox svg {
   vertical-align: text-bottom;
+}
+
+.searchBox .input-group-addon {
+  padding-left: 1.5rem;
+}
+
+.searchBox .form-control {
+  padding-right: 0;
 }
 
 .react-list {

@@ -16,9 +16,13 @@
   }
   .panel {
     background-color: #fdfdfd;
+    border: 1px solid rgba(32, 113, 138, 0.15) !important;
   }
   .panel__header {
     border-width: 1px !important;
+  }
+  .panel__results--bottom {
+    border-top: none;
   }
   button.close {
     -webkit-box-shadow: none;
@@ -78,5 +82,12 @@
     overflow-x: scroll;
     width: 48rem;
     font-size: 0.875rem;
+  }
+  .list--panel .list__item__info,
+  .list--stats .list__item__info {
+    padding-bottom: 1rem;
+  }
+  .list--stats .list__item__content {
+    padding: 0.75rem;
   }
 }
