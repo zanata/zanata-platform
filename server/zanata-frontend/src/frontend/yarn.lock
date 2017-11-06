@@ -89,11 +89,7 @@
     prop-types "^15.5.10"
     read-pkg-up "^2.0.0"
 
-"@storybook/addons@3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-3.2.0.tgz#e1446cc5613af179701673276267cee71859bf41"
-
-"@storybook/addons@^3.2.0", "@storybook/addons@^3.2.13":
+"@storybook/addons@3.2.13", "@storybook/addons@^3.2.0", "@storybook/addons@^3.2.13":
   version "3.2.13"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-3.2.13.tgz#a133103770a7f2330bc931571df1b2ae660f8f71"
 
