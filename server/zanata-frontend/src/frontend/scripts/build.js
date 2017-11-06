@@ -23,6 +23,9 @@ webpack(config, (err, stats) => {
     if (err.details) {
       console.error(err.details)
     }
+    // ensure abnormal termination of the build
+    // https://github.com/webpack/webpack/issues/708
+    process.exitCode = 1
     return
   }
 
@@ -48,4 +51,9 @@ webpack(config, (err, stats) => {
     errorDetails: true
   }
   console.log(stats.toString(statsOptions))
+  if (stats.hasErrors() || stats.hasWarnings()) {
+    // ensure abnormal termination of the build
+    // https://github.com/webpack/webpack/issues/708
+    process.exitCode = 1
+  }
 })
