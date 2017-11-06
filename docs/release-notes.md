@@ -5,6 +5,14 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
 
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+## 4.3.1
+##### Bug Fixes
+ * [ZNTA-2238](https://zanata.atlassian.net/browse/ZNTA-2238) - Positional printf syntax issue
+ * [ZNTA-2234](https://zanata.atlassian.net/browse/ZNTA-2234) - Codecov Report URLs link incorrect page
+ * [ZNTA-2100](https://zanata.atlassian.net/browse/ZNTA-2100) - Gettext "Language" header should separate language and country with underscore
+ * [ZNTA-2055](https://zanata.atlassian.net/browse/ZNTA-2055) - vendors - stuck on login page
+
+-----------------------
 
 ## 4.3.0
 ##### Changes
