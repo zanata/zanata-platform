@@ -1,3 +1,12 @@
+## 4.3.1
+##### Bug Fixes
+ * [ZNTA-2238](https://zanata.atlassian.net/browse/ZNTA-2238) - Positional printf syntax issue
+ * [ZNTA-2234](https://zanata.atlassian.net/browse/ZNTA-2234) - Codecov Report URLs link incorrect page
+ * [ZNTA-2100](https://zanata.atlassian.net/browse/ZNTA-2100) - Gettext "Language" header should separate language and country with underscore
+ * [ZNTA-2055](https://zanata.atlassian.net/browse/ZNTA-2055) - vendors - stuck on login page
+
+-----------------------
+
 ## 4.3.0
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2184) - A better icon for role Requests in language
