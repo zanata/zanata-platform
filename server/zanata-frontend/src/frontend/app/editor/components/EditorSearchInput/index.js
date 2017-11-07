@@ -250,7 +250,7 @@ class AdvancedField extends Component {
           type="text"
           placeholder={description}
           className="u-bgHighest u-sizeFull u-inputFlat
-            u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+            u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
           value={value}
           onChange={this.updateSearch} />
       </div>

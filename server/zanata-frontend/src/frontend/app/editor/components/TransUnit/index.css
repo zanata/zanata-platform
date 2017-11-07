@@ -297,6 +297,10 @@ h3.TransUnit-heading {
   text-align: center;
 }
 
+.TransUnit-panelHeader--source {
+  width: 95%;
+}
+
 .TransUnit-panelHeader--source h3.TransUnit-heading {
   padding-left: 1.5rem !important;
 }

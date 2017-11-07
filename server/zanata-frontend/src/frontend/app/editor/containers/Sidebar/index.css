@@ -51,7 +51,6 @@
   background-color: var(--Sidebar-color-muted);
   color: var(--Sidebar-color-text);
   font-weight: var(--Sidebar-bold-text);
-  height: 48px;
   padding: var(--Sidebar-spacing-large);
 }
 
@@ -153,7 +152,7 @@ table {
 }
 
 .table.GlossaryDetails-table>thead>tr>th {
-  border-bottom: 2px solid var(--Sidebar-border);
+  border-bottom: 1px inset var(--Sidebar-border);
   vertical-align: bottom;
 }
 
@@ -162,9 +161,12 @@ table {
 }
 
 .table.GlossaryDetails-table>tbody>tr>td, .table.GlossaryDetails-table>tbody>tr>th, .table.GlossaryDetails-table>tfoot>tr>td, .table.GlossaryDetails-table>tfoot>tr>th, .table.GlossaryDetails-table>thead>tr>td, .table.GlossaryDetails-table>thead>tr>th {
-  border-top: 1px solid var(--Sidebar-border);
   line-height: 1.42857143;
   padding: .5rem;
+}
+
+td.info-icon svg {
+  fill: var(--Sidebar-color-highlight);
 }
 
 .table td {
@@ -222,8 +224,9 @@ table.GlossaryDetails-table thead th {
   padding-top: 0;
 }
 
-.GlossaryText {
+.GlossaryText * {
   color: var(--Sidebar-panel-dark);
+  font-size: 0.875rem;
 }
 
 .Glossary-noResults, .Search-enterText, .GlossarySearch {

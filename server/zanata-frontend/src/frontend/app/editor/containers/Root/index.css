@@ -416,7 +416,6 @@ li.DocName span.ellipsis {
 
 .panel-info > .panel-heading {
   background-color: var(--brand-info);
-  border-bottom: solid 1px var(--brand-info);
   color: #fff;
 }
 
