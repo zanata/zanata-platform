@@ -36,6 +36,8 @@ import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -106,6 +108,10 @@ public class ForceReviewCommentPresenter extends
 
     @Override
     public void addComment(String content) {
+        if (reviewCriterionId == null && Strings.isNullOrEmpty(content)) {
+            Log.warn("nothing to save");
+            return;
+        }
         dispatcher.execute(
                 new AddReviewCommentAction(saveEvent.getTransUnitId(), content,
                         contextHolder.getContext().getDocument().getId(), reviewCriterionId),

@@ -41,6 +41,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.ReviewCriteria;
 import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
@@ -55,8 +56,9 @@ import com.google.common.annotations.VisibleForTesting;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ReviewService {
+
     @Inject
-    private EntityManager entityManager;
+    private ReviewCriteriaDAO reviewCriteriaDAO;
 
     @Context
     UriInfo uriInfo;
@@ -65,8 +67,8 @@ public class ReviewService {
     }
 
     @VisibleForTesting
-    protected ReviewService(EntityManager entityManager, UriInfo uriInfo) {
-        this.entityManager = entityManager;
+    protected ReviewService(ReviewCriteriaDAO reviewCriteriaDAO, UriInfo uriInfo) {
+        this.reviewCriteriaDAO = reviewCriteriaDAO;
         this.uriInfo = uriInfo;
     }
 
@@ -83,7 +85,7 @@ public class ReviewService {
         ReviewCriteria reviewCriteria =
                 new ReviewCriteria(criteria.getPriority(),
                         criteria.isEditable(), criteria.getDescription());
-        entityManager.persist(reviewCriteria);
+        reviewCriteriaDAO.makePersistent(reviewCriteria);
         try {
             return Response.created(new URI(uriInfo.getRequestUri() + "/" + reviewCriteria.getId()))
                     .entity(fromModel(reviewCriteria))
@@ -99,7 +101,7 @@ public class ReviewService {
     @Transactional
     public Response editCriteria(@PathParam("id") Long id, TransReviewCriteria criteria) {
         ReviewCriteria reviewCriteria =
-                entityManager.find(ReviewCriteria.class, id);
+                reviewCriteriaDAO.findById(id);
         if (reviewCriteria == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -115,22 +117,21 @@ public class ReviewService {
     @Transactional
     public Response deleteCriteria(@PathParam("id") Long id) {
         ReviewCriteria reviewCriteria =
-                entityManager.find(ReviewCriteria.class, id);
+                reviewCriteriaDAO.findById(id);
         if (reviewCriteria == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         TransReviewCriteria dto =
                 fromModel(reviewCriteria);
-        entityManager.remove(reviewCriteria);
+        reviewCriteriaDAO.remove(reviewCriteria);
         return Response.ok(dto).build();
     }
 
     @GET
     @Transactional(readOnly = true)
     public Response getAllCriteria() {
-        List<ReviewCriteria> resultList = entityManager
-                .createQuery("from ReviewCriteria", ReviewCriteria.class)
-                .getResultList();
+        List<ReviewCriteria> resultList = reviewCriteriaDAO.findAll();
+
         List<TransReviewCriteria> entity =
                 resultList.stream().map(ReviewService::fromModel).collect(
                         Collectors.toList());

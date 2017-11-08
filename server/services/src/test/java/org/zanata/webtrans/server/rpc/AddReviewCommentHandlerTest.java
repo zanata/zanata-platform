@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -89,6 +90,8 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
     private HTextFlow hTextFlow;
     @Produces @Mock
     private LocaleService localeService;
+    @Produces @Mock
+    private ReviewCriteriaDAO reviewCriteriaDAO;
     @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
     @Produces @Mock

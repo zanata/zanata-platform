@@ -103,7 +103,6 @@ public class HTextFlowTargetHistory extends HTextContainer
     private TranslationSourceType sourceType;
     private Boolean automatedEntry;
     private String revisionComment;
-    private ReviewCriteria reviewCriteria;
 
     public HTextFlowTargetHistory() {
     }
@@ -123,7 +122,6 @@ public class HTextFlowTargetHistory extends HTextContainer
         this.sourceType = target.getSourceType();
         this.copiedEntityId = target.getCopiedEntityId();
         this.copiedEntityType = target.getCopiedEntityType();
-        this.reviewCriteria = target.getReviewCriteria();
     }
 
     @Id
@@ -174,7 +172,7 @@ public class HTextFlowTargetHistory extends HTextContainer
     }
 
     public void setContents(List<String> contents) {
-        this.contents = new ArrayList<String>(contents);
+        this.contents = new ArrayList<>(contents);
     }
 
     public Date getLastChanged() {
@@ -249,16 +247,6 @@ public class HTextFlowTargetHistory extends HTextContainer
         return copiedEntityType;
     }
 
-    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_criteria_id")
-    public ReviewCriteria getReviewCriteria() {
-        return reviewCriteria;
-    }
-
-    public void setReviewCriteria(ReviewCriteria reviewCriteria) {
-        this.reviewCriteria = reviewCriteria;
-    }
-
     public static class EntityListener {
 
         @PreUpdate
@@ -307,8 +295,7 @@ public class HTextFlowTargetHistory extends HTextContainer
                 || !Objects.equal(current.getCopiedEntityId(),
                         this.copiedEntityId)
                 || !Objects.equal(current.getCopiedEntityType(),
-                        this.copiedEntityType)
-                || !Objects.equal(current.getReviewCriteria(), this.getReviewCriteria());
+                        this.copiedEntityType);
     }
 
     public void setCopiedEntityType(final EntityType copiedEntityType) {

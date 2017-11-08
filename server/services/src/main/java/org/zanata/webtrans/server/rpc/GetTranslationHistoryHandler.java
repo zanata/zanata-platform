@@ -2,11 +2,11 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 import java.util.Map;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -25,10 +25,16 @@ import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+
+import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * @author Patrick Huang
@@ -125,7 +131,7 @@ public class GetTranslationHistoryHandler extends
                             apply(HTextFlowTargetReviewComment input) {
                         return new ReviewComment(
                                 new ReviewCommentId(input.getId()),
-                                input.getComment(), input.getCommenterName(),
+                                input.getCommentText(), input.getCommenterName(),
                                 input.getCreationDate()
                         );
                     }

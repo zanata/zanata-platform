@@ -18,36 +18,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.model;
+package org.zanata.dao
 
-import java.io.Serializable;
+import org.hibernate.Session
+import org.zanata.model.ReviewCriteria
+import javax.enterprise.context.RequestScoped
 
-import com.google.common.base.MoreObjects;
-import com.google.gwt.user.client.rpc.IsSerializable;
+@RequestScoped
+class ReviewCriteriaDAO : AbstractDAOImpl<ReviewCriteria, Long> {
+    constructor() : super(ReviewCriteria::class.java)
 
-/**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
-public class ReviewCriterionId implements IsSerializable, Serializable {
-    private static final long serialVersionUID = 1L;
+    constructor(session: Session) : super(ReviewCriteria::class.java, session)
 
-    private long id;
-
-    public ReviewCriterionId(long id) {
-        this.id = id;
+    fun remove(reviewCriteria: ReviewCriteria) {
+        session.delete(reviewCriteria)
     }
 
-    public ReviewCriterionId() {
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .toString();
-    }
-
-    public long getId() {
-        return id;
-    }
 }

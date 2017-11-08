@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.test;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
+import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -63,13 +65,20 @@ public class GWTTestData {
         return makeTransUnit(id, contentState, "target");
     }
 
+    public static UserWorkspaceContext userWorkspaceContext(List<TransReviewCriteria> reviewCriteria) {
+        ProjectIterationId iterationId =
+                workspaceId().getProjectIterationId();
+        return userWorkspaceContext(true, true, iterationId.getProjectSlug(), iterationId.getIterationSlug(), iterationId.getProjectType(), reviewCriteria);
+    }
+
     public static UserWorkspaceContext userWorkspaceContext() {
         return userWorkspaceContext(true, true);
     }
 
     public static UserWorkspaceContext userWorkspaceContext(
             boolean projectActive, boolean hasWriteAccess, String projectSlug,
-            String iterationSlug, ProjectType projectType) {
+            String iterationSlug, ProjectType projectType,
+            List<TransReviewCriteria> reviewCriteria) {
         ProjectIterationId projectIterationId =
                 new ProjectIterationId(projectSlug, iterationSlug, projectType);
         WorkspaceRestrictions workspaceRestrictions =
@@ -78,7 +87,7 @@ public class GWTTestData {
         return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(
                 projectIterationId, LocaleId.EN_US), "workspaceName",
                 LocaleId.EN_US.getId()), workspaceRestrictions,
-                Lists.newArrayList());
+                reviewCriteria);
     }
 
     public static UserWorkspaceContext userWorkspaceContext(

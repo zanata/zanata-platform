@@ -35,6 +35,7 @@ import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -89,9 +90,9 @@ public class ActivateWorkspaceHandler extends
     @Inject
     private ProjectIterationDAO projectIterationDAO;
     @Inject
-    private LocaleService localeServiceImpl;
+    private ReviewCriteriaDAO reviewCriteriaDAO;
     @Inject
-    private EntityManager entityManager;
+    private LocaleService localeServiceImpl;
     @Inject
     @Any
     private LoadOptionsHandler loadOptionsHandler;
@@ -154,9 +155,8 @@ public class ActivateWorkspaceHandler extends
         Identity identity = new Identity(editorClientId, person);
         workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId()
                 .setProjectType(projectIteration.getProjectType());
-        List<TransReviewCriteria> reviewCriteria = entityManager
-                .createQuery("from ReviewCriteria", ReviewCriteria.class)
-                .getResultList().stream().map(ReviewService::fromModel)
+        List<TransReviewCriteria> reviewCriteria = reviewCriteriaDAO.findAll()
+                .stream().map(ReviewService::fromModel)
                 .collect(Collectors.toList());
         UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(
                 workspace.getWorkspaceContext(), workspaceRestrictions,

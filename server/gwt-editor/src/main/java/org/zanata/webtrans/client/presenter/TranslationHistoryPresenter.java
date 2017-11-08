@@ -27,6 +27,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -144,6 +145,9 @@ public class TranslationHistoryPresenter extends
 
     @Override
     public void addComment(String commentContent) {
+        if (Strings.isNullOrEmpty(commentContent) || commentContent.trim().length() == 0) {
+            return;
+        }
         dispatcher.execute(new AddReviewCommentAction(transUnitId,
                 commentContent, contextHolder.getContext().getDocument()
                         .getId()),

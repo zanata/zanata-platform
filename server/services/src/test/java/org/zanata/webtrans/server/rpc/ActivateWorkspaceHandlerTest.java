@@ -28,6 +28,7 @@ import org.zanata.ZanataTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -111,6 +112,8 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
     private LoadOptionsHandler loadOptionsHandler;
     @Produces @Mock
     private GetValidationRulesHandler getValidationRulesHandler;
+    @Produces @Mock
+    private ReviewCriteriaDAO reviewCriteriaDAO;
 
     private ValidationFactory validationFactory;
 

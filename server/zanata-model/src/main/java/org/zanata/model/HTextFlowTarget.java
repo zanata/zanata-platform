@@ -116,7 +116,6 @@ public class HTextFlowTarget extends ModelEntityBase
     private boolean revisionCommentSet = false;
     // Only for internal use (persistence transient)
     private Integer oldVersionNum;
-    private ReviewCriteria reviewCriteria;
 
     @Type(type = "sourceType")
     @Column(columnDefinition = "char(3)")
@@ -395,7 +394,7 @@ public class HTextFlowTarget extends ModelEntityBase
     @MapKey(name = "versionNum")
     public Map<Integer, HTextFlowTargetHistory> getHistory() {
         if (this.history == null) {
-            this.history = new HashMap<Integer, HTextFlowTargetHistory>();
+            this.history = new HashMap<>();
         }
         return history;
     }
@@ -412,19 +411,17 @@ public class HTextFlowTarget extends ModelEntityBase
     public HTextFlowTargetReviewComment addReviewComment(String comment,
             HPerson commenter) {
         HTextFlowTargetReviewComment reviewComment =
-                new HTextFlowTargetReviewComment(this, comment, commenter);
+                new HTextFlowTargetReviewComment(this, comment, commenter, null);
         getReviewComments().add(reviewComment);
         return reviewComment;
     }
 
-    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_criteria_id")
-    public ReviewCriteria getReviewCriteria() {
-        return reviewCriteria;
-    }
-
-    public void setReviewCriteria(ReviewCriteria reviewCriteria) {
-        this.reviewCriteria = reviewCriteria;
+    public HTextFlowTargetReviewComment addReview(HPerson reviewer, ReviewCriteria reviewCriteria, String extraComment) {
+        HTextFlowTargetReviewComment review =
+                new HTextFlowTargetReviewComment(this, extraComment, reviewer,
+                        reviewCriteria);
+        getReviewComments().add(review);
+        return review;
     }
 
     @Override
@@ -450,7 +447,6 @@ public class HTextFlowTarget extends ModelEntityBase
         setSourceType(null);
         setCopiedEntityId(null);
         setCopiedEntityType(null);
-        setReviewCriteria(null);
     }
 
     protected boolean logPersistence() {
@@ -705,10 +701,6 @@ public class HTextFlowTarget extends ModelEntityBase
         if (this$initialState == null ? other$initialState != null
                 : !this$initialState.equals(other$initialState))
             return false;
-        if (reviewCriteria == null ? other.reviewCriteria != null
-                : !reviewCriteria.equals(other.reviewCriteria)) {
-            return false;
-        }
         return true;
     }
 
@@ -787,8 +779,6 @@ public class HTextFlowTarget extends ModelEntityBase
         final Object $initialState = this.initialState;
         result = result * PRIME
                 + ($initialState == null ? 43 : $initialState.hashCode());
-        result = result * PRIME
-                + (reviewCriteria == null ? 43 : reviewCriteria.hashCode());
         return result;
     }
 
