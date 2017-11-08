@@ -111,16 +111,19 @@ Removes some of the styling on the page-level splitters
   top: .5em;
 }
 
-.TableEditorCell-Target .g--tight {
-  position: relative !important;
-  margin: 0 !important;
-  padding: 0 !important;
+.TableEditorCell-Target table .w--11-12.g__item {
+  font-size: 16px;
+  padding-left: 0 !important;
+  width: 88% !important;
+  margin-top: -0.5rem;
+  padding-bottom: 1em;
+}
+
+.TableEditorCell-Target table .w--11-12.g__item textarea {
+  line-height: 1.71429em;
 }
 
 .TableEditorCell-Target .w--1-12 {
-  width: 1.5em !important;
-  position: absolute;
-  padding: 0 !important;
   left: -1.1em;
   top: -0.85em;
 }
@@ -155,7 +158,6 @@ Removes some of the styling on the page-level splitters
 .TableEditorCell-Target tbody,
 .TableEditorCell-Target tr,
 .TableEditorCell-Target td {
-  display: block !important;
   overflow: visible !important;
 }
 
@@ -183,7 +185,7 @@ Removes some of the styling on the page-level splitters
 
 .selected .TableEditorCell-Target > table > tbody {
   content: "";
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .transUnitCol {
