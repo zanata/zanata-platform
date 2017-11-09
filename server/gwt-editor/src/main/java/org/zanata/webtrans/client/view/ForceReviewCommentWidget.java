@@ -31,8 +31,6 @@ import org.zanata.webtrans.client.ui.ReviewCommentInputWidget;
 import org.zanata.webtrans.client.ui.ShortcutContextAwareDialogBox;
 import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.inject.Inject;
@@ -95,6 +93,8 @@ public class ForceReviewCommentWidget extends ShortcutContextAwareDialogBox
             Listener listener,
             List<TransReviewCriteria> reviewCriteria) {
         reviewCriteria.forEach(r -> listBox.addItem(r.getPriority() + " - " + r.getDescription()));
+        // if admin has not define review criteria, we don't show the selection box
+        listBox.setVisible(reviewCriteria.size() > 0);
         listBox.addChangeHandler(event -> {
             int selectedIndex = listBox.getSelectedIndex();
             // first item is the empty description line

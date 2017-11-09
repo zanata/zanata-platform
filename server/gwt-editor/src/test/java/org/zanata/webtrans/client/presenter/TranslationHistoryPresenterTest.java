@@ -26,6 +26,7 @@ import org.zanata.webtrans.shared.model.ComparableByDate;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
@@ -39,10 +40,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.customware.gwt.presenter.client.EventBus;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -274,5 +277,18 @@ public class TranslationHistoryPresenterTest {
         verify(display).getComment();
         verify(dispatcher).execute(Mockito.isA(AddReviewCommentAction.class),
                 Mockito.isA(AsyncCallback.class));
+    }
+
+    @Test
+    public void noActionIfAddCommentHasNoContent() throws Exception {
+        presenter.addComment(null);
+
+        verifyZeroInteractions(dispatcher);
+    }
+
+    @Test
+    public void doNotSupportChangingReviewCriteria() {
+        assertThatThrownBy(() -> presenter.selectReviewCriteria(new ReviewCriterionId(1)))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 }

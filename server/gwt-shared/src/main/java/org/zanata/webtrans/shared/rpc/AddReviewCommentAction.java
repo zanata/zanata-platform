@@ -50,7 +50,7 @@ public class AddReviewCommentAction extends
     }
 
     /**
-     * Used by rejection.
+     * Used by rejection with review criteria.
      */
     public AddReviewCommentAction(TransUnitId transUnitId, String content,
             DocumentId documentId,
@@ -81,7 +81,4 @@ public class AddReviewCommentAction extends
         return reviewId != null;
     }
 
-    public boolean hasTextComment() {
-        return !Strings.isNullOrEmpty(content);
-    }
 }
