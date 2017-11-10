@@ -975,7 +975,7 @@ a.downloadLink {
 
 .gwt-DialogBox-CloseButton {
   position: absolute;
-  top: 8px;
+  bottom: 8px;
   right: 5px;
   float: right;
   margin: 0;
