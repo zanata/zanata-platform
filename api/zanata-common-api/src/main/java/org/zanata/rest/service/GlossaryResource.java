@@ -226,7 +226,7 @@ public interface GlossaryResource {
     /**
      * Download all glossary entries as a file
      *
-     * @param fileType 'po' or 'csv' (case insensitive) are currently supported
+     * @param fileType 'po', 'json' or 'csv' (case insensitive) are currently supported
      * @param locales optional comma separated list of languages required.
      * @param qualifiedName
      *            Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
@@ -271,7 +271,7 @@ public interface GlossaryResource {
             @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
 
     /**
-     * Upload glossary file (currently supported formats: po, csv)
+     * Upload glossary file (currently supported formats: po, csv, json)
      *
      *
      * @param form Multi-part form with the following named parts: <br>

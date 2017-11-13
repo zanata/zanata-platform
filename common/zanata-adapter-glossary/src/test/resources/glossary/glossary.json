@@ -1,0 +1,16 @@
+{"terms":[
+  {
+    "id": "hello-verb",
+    "term": "hello",
+    "description": "testing of hello json",
+    "pos": "verb",
+    "translations": { "es": "Hola", "zh": "您好" }
+  },
+  {
+    "term": "morning",
+    "definition": "testing of morning json",
+    "partofspeech": "noun",
+    "translations": { "es": "mañana", "zh": "上午" }
+  }
+  ]
+}

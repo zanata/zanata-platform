@@ -154,6 +154,39 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
+    public void parseGlossaryFileJsonTest() throws UnsupportedEncodingException {
+        String jsonSample = "{\"terms\":[" +
+                "{ \"term\":\"test\"," +
+                "\"description\":\"something that verifies\"," +
+                "\"pos\":\"verb\"" +
+                "}]}";
+
+        InputStream stubInputStream = IOUtils.toInputStream(jsonSample);
+
+        String fileName = "fileName.json";
+        LocaleId srcLocaleId = LocaleId.EN_US;
+        LocaleId transLocaleId = LocaleId.DE;
+
+        Map<LocaleId, List<GlossaryEntry>> result =
+                glossaryFileService.parseGlossaryFile(stubInputStream,
+                        fileName, srcLocaleId,
+                        transLocaleId, GlossaryResource.GLOBAL_QUALIFIED_NAME);
+
+        assertThat(result).hasSize(1);
+
+        List<GlossaryEntry> entries = result.get(srcLocaleId);
+
+        assertThat(entries).hasSize(1);
+
+        GlossaryEntry entry = entries.get(0);
+        assertThat(entry.getSrcLang()).isEqualTo(srcLocaleId);
+        assertThat(entry.getGlossaryTerms()).hasSize(2)
+                .extracting("locale")
+                .contains(srcLocaleId, transLocaleId);
+    }
+
+    @Test
+    @InRequestScope
     public void saveOrUpdateGlossaryTest() {
         String srcRef = "srcRef";
         String pos = "pos";

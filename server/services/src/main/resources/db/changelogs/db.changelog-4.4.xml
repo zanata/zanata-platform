@@ -40,6 +40,13 @@
     <dropNotNullConstraint tableName="HTextFlowTargetReviewComment"
       columnName="comment" columnDataType="longtext" />
   </changeSet>
-
+  <changeSet id="6" author="djansen@redhat.com">
+    <comment>Add externalId column to HGlossaryEntry</comment>
+    <addColumn tableName="HGlossaryEntry">
+      <column name="externalId" type="varchar(600)">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+  </changeSet>
 
 </databaseChangeLog>

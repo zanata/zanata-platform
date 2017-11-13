@@ -22,11 +22,7 @@ package org.zanata.rest.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -48,6 +44,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.glossary.GlossaryCSVWriter;
+import org.zanata.adapter.glossary.GlossaryJsonWriter;
 import org.zanata.adapter.glossary.GlossaryPoWriter;
 import org.zanata.common.GlossarySortField;
 import org.zanata.common.LocaleId;
@@ -126,10 +123,8 @@ public class GlossaryService implements GlossaryResource {
                 .forEach(locale -> {
                     LocaleDetails localeDetails =
                             LocaleService.convertHLocaleToDTO(locale);
-                    int count = transMap.containsKey(locale.getLocaleId())
-                            ? transMap.get(locale.getLocaleId()) : 0;
-                    transLocale
-                            .add(new GlossaryLocaleInfo(localeDetails, count));
+                    transLocale.add(new GlossaryLocaleInfo(localeDetails,
+                            transMap.getOrDefault(locale.getLocaleId(), 0)));
                 });
         GlossaryInfo glossaryInfo =
                 new GlossaryInfo(srcGlossaryLocale, transLocale);
@@ -253,10 +248,10 @@ public class GlossaryService implements GlossaryResource {
         if (response != null) {
             return response;
         }
-        if (!fileType.equalsIgnoreCase("csv")
-                && !fileType.equalsIgnoreCase("po")) {
+
+        if (Arrays.stream(new String[]{"csv", "po", "json"}).noneMatch(x -> x.equalsIgnoreCase(fileType))) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Not supported file type-" + fileType).build();
+                    .entity("Not supported file type: " + fileType).build();
         }
         LocaleId srcLocaleId = getSourceLocale().getLocaleId();
         // use commaSeparatedLanguage is exist,
@@ -280,10 +275,18 @@ public class GlossaryService implements GlossaryResource {
         List<GlossaryEntry> entries = Lists.newArrayList();
         transferEntriesResource(glossaryDAO.getEntries(qualifiedName), entries);
         try {
-            GlossaryStreamingOutput output = fileType.equalsIgnoreCase("csv")
-                    ? new CSVStreamingOutput(entries, srcLocaleId, transLocales)
-                    : new PotStreamingOutput(entries, srcLocaleId,
-                            transLocales);
+            GlossaryStreamingOutput output;
+            switch (fileType.toLowerCase()) {
+                case "csv": output = new CSVStreamingOutput(entries, srcLocaleId, transLocales);
+                    break;
+                case "po": output = new PotStreamingOutput(entries, srcLocaleId, transLocales);
+                    break;
+                case "json": output = new JsonStreamingOutput(entries, srcLocaleId, transLocales);
+                    break;
+                default: return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Invalid glossary file type: " + fileType)
+                        .build();
+            }
             String filename = getFileName(qualifiedName, fileType);
             return Response.ok()
                     .header("Content-Disposition",
@@ -304,8 +307,9 @@ public class GlossaryService implements GlossaryResource {
     private String getFileName(String qualifiedName, String type) {
         String filePrefix = isProjectGlossary(qualifiedName)
                 ? getProjectSlug(qualifiedName) + "_" : "";
-        return type.equalsIgnoreCase("csv") ? filePrefix + "glossary.csv"
-                : filePrefix + "glossary.zip";
+        return type.equalsIgnoreCase("po")
+                ? filePrefix + "glossary.zip"
+                : filePrefix + "glossary.".concat(type);
     }
 
     @Override
@@ -549,6 +553,7 @@ public class GlossaryService implements GlossaryResource {
         glossaryEntry.setQualifiedName(new QualifiedName(
                 hGlossaryEntry.getGlossary().getQualifiedName()));
         glossaryEntry.setTermsCount(hGlossaryEntry.getGlossaryTerms().size());
+        glossaryEntry.setExternalId(hGlossaryEntry.getExternalId());
         return glossaryEntry;
     }
 
@@ -623,6 +628,25 @@ public class GlossaryService implements GlossaryResource {
                 }
             } finally {
                 zipOutput.close();
+            }
+        }
+    }
+
+    private class JsonStreamingOutput extends GlossaryStreamingOutput {
+
+        public JsonStreamingOutput(List<GlossaryEntry> entries,
+                                  LocaleId srcLocaleId, List<LocaleId> transLocales) {
+            super(entries, srcLocaleId, transLocales);
+        }
+
+        @Override
+        public void write(OutputStream output)
+                throws IOException, WebApplicationException {
+            try {
+                GlossaryJsonWriter writer = new GlossaryJsonWriter();
+                writer.write(output, entries, srcLocaleId, transLocales);
+            } finally {
+                output.close();
             }
         }
     }
