@@ -21,6 +21,10 @@
 
 package org.zanata.webtrans.client.view;
 
+import java.util.List;
+
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
+import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 import com.google.inject.ImplementedBy;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -37,8 +41,14 @@ public interface ForceReviewCommentDisplay extends WidgetDisplay {
 
     String getComment();
 
+    void setReviewCriteria(
+            Listener listener,
+            List<TransReviewCriteria> reviewCriteria);
+
     interface Listener {
 
         void addComment(String content);
+
+        void selectReviewCriteria(ReviewCriterionId reviewCriterionId);
     }
 }
