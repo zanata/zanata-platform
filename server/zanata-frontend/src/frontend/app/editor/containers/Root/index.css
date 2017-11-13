@@ -300,7 +300,6 @@ li.DocName span.ellipsis {
   position: absolute;
   right: 0;
   top: 0;
-  z-index: var(--Editor-suggestions-header-z-index);
   user-select: none;
 }
 
