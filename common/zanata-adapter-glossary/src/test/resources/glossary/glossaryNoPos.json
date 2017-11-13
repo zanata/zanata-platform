@@ -1,0 +1,12 @@
+{"terms":[
+  {
+    "term": "hello",
+    "description": "testing of hello json",
+    "translations": { "es": "Hola", "zh": "您好" }
+  },
+  {
+    "term": "morning",
+    "definition": "testing of morning json",
+    "translations": { "es": "mañana", "zh": "上午" }
+  }]
+}

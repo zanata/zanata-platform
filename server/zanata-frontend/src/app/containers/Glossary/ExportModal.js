@@ -48,6 +48,8 @@ class ExportModal extends Component {
       message = <span>This will download glossary entries in <strong>all languages</strong> into <strong>csv</strong> format.</span>
     } else if (type.value === FILE_TYPES[1]) {
       message = <span>This will download a zip file of glossary entries in <strong>all languages</strong> in <strong>po</strong> format.</span>
+    } else if (type.value === FILE_TYPES[2]) {
+      message = <span>This will download glossary entries in <strong>all languages</strong> in <strong>json</strong> format.</span>
     }
     /* eslint-enable max-len */
     const exportGlossaryUrl =

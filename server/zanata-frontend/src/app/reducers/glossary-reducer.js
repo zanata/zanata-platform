@@ -722,7 +722,8 @@ const glossary = handleActions({
       status: -1,
       types: [
         {value: FILE_TYPES[0], label: FILE_TYPES[0]},
-        {value: FILE_TYPES[1], label: FILE_TYPES[1]}
+        {value: FILE_TYPES[1], label: FILE_TYPES[1]},
+        {value: FILE_TYPES[2], label: FILE_TYPES[2]}
       ]
     },
     newEntry: {
