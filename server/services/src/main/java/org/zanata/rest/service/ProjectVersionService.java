@@ -60,6 +60,7 @@ import org.zanata.rest.editor.service.UserService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.HttpUtil;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.search.FilterConstraints;
@@ -450,9 +451,10 @@ public class ProjectVersionService implements ProjectVersionResource {
         AsyncTaskHandle<Void> handle = transMemoryMergeManager
                 .start(version.getId(), mergeRequest);
 
+        String url = uri.getBaseUri() + "process/key/" + handle.getKeyId();
         ProcessStatus processStatus = AsyncProcessService
                 .handleToProcessStatus(handle,
-                        uri.getBaseUri() + "process/key/" + handle.getKeyId());
+                        HttpUtil.stripProtocol(url));
         return Response.accepted(processStatus).build();
     }
 
