@@ -59,7 +59,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="exact Resource ID for a string"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="para-0001" />
           </div>
           <div title="username"
@@ -71,7 +71,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="username"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="cdickens" />
           </div>
           <div title="date in format yyyy/mm/dd"
@@ -83,7 +83,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="date in format yyyy/mm/dd"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="1859-12-31" />
           </div>
           <div title="date in format yyyy/mm/dd"
@@ -95,7 +95,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="date in format yyyy/mm/dd"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="1859-01-01" />
           </div>
           <div title="source comment text"
@@ -105,7 +105,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="source comment text"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="England and France" />
           </div>
           <div title="translation comment text"
@@ -117,7 +117,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="translation comment text"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="blurst of times?! You stupid monkey!" />
           </div>
           <div title="exact Message Context for a string"
@@ -129,7 +129,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="exact Message Context for a string"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="chapter01.txt" />
           </div>
           <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
