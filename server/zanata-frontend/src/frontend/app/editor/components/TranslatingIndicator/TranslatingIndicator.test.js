@@ -17,7 +17,7 @@ describe('TranslatingIndicatorTest', () => {
       <TranslatingIndicator gettextCatalog={gettextCatalog}/>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <button className="Link--neutral u-sPV-1-4 u-floatLeft
+      <button className="Link--neutral u-sPV-1-6 u-floatLeft
                        u-sizeHeight-1_1-2 u-sMR-1-4">
         <Row>
           <Icon name="translate" className="s2"/> <span
