@@ -46,7 +46,6 @@ table.glossaryEntry .hidesmall.td-2 .textInput {
 }
 
 .glossaryHeader-base {
-  border-bottom: solid 2px rgb(237, 242, 248);
   background-color: #fff;
   padding-top: @spacing-rq;
 }
@@ -73,10 +72,6 @@ table.glossaryEntry .hidesmall.td-2 .textInput {
 .glossaryHeader-actions {
   flex-grow: 1;
   -webkit-flex-grow: 1;
-}
-
-.glossaryHeader-actions .textInput, .glossaryBtn.topBtn {
-  margin-top: 0.6rem;
 }
 
 .glossaryHeader-actions .textInput {
@@ -314,6 +309,18 @@ td.languageSelect .selectClear {
   display: inline-block;
   margin-left: @spacing-rh;
   vertical-align: text-bottom;
+}
+
+#react-select-2--value {
+  line-height: 2.5rem;
+}
+
+.languageSelect .Select-menu-outer {
+  border: none !important;
+}
+
+.languageSelect .Select-input {
+  display: block !important;
 }
 
 // @screen-xs variable depreciated

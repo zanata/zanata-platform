@@ -2195,7 +2195,7 @@ a.btn-primary {
 
 .btn-default {
   color: @color-dark;
-  border-color: @color-neutral;
+  border: solid 1px @color-neutral !important;
   background-color: #fff;
 }
 
@@ -4876,6 +4876,7 @@ h3.popover-title {
 
 button {
   border-radius: @border-radius-base;
+  box-shadow: none;
 }
 
 button.close {
@@ -4884,7 +4885,7 @@ button.close {
   top: 0;
   right: 0;
   position: absolute;
-  border: 0;
+  border: none !important;
   color: #f00;
   z-index: 1;
   padding: @spacing-rq !important;
