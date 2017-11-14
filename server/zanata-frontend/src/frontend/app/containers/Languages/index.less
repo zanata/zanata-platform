@@ -20,6 +20,7 @@
 
 #newLang .react-autosuggest__container input {
   vertical-align: sub;
+  width: auto;
 }
 
 span.languageCode {
@@ -159,6 +160,11 @@ span.languageCode {
 .no-suggestions {
   margin-top: @spacing-large-horizontal;
   padding-left: @spacing-base;
+}
+
+#newLang .has-feedback .form-control, #newLang .form-control {
+  width: 96%;
+  padding-right: 0;
 }
 
 @media (min-width: @screen-md-min) {
