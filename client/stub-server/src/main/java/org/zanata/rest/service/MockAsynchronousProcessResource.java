@@ -37,7 +37,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 public class MockAsynchronousProcessResource implements
         AsynchronousProcessResource {
-    private static final long serialVersionUID = 8841332691985560066L;
 
     @Override
     // TODO: remove this test when parent method is removed
