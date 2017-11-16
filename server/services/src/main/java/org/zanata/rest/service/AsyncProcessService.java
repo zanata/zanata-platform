@@ -47,12 +47,12 @@ import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.editor.service.SuggestionsService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckRole;
+import org.zanata.util.HttpUtil;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -123,7 +123,7 @@ public class AsyncProcessService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         ProcessStatus status = handleToProcessStatus(handle,
-                uriInfo.getRequestUri().toString());
+                HttpUtil.stripProtocol(uriInfo.getRequestUri().toString()));
         return Response.ok(status).build();
     }
 

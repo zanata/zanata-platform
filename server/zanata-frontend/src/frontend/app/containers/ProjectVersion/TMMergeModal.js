@@ -94,7 +94,7 @@ const MergeOptions = (
             the target project-version.&nbsp;[more..]
           </span>
           } eventKey="1">
-          <p><img src="http://i.imgur.com/ezA992G.png"
+          <p><img src="https://i.imgur.com/ezA992G.png"
             alt="Version TM Merge workflow" /></p>
         </Panel>
       </Accordion>
