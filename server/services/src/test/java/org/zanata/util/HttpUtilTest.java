@@ -58,6 +58,12 @@ public class HttpUtilTest {
         verify(mockRequest).getHeader(proxyHeader);
     }
 
+    @Test
+    public void canScriptProtocol() {
+        assertThat(HttpUtil.stripProtocol("http://example.com")).isEqualTo("//example.com");
+        assertThat(HttpUtil.stripProtocol("https://example.com")).isEqualTo("//example.com");
+    }
+
     private void setHeader(String header) {
         System.setProperty("ZANATA_PROXY_HEADER", header);
         HttpUtil.refreshProxyHeader();
