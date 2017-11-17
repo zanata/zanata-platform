@@ -12,8 +12,10 @@ import { ENTER_SAVES_IMMEDIATELY } from '../reducers/settings-reducer'
 export const SettingsPanel = ({
   enterSavesImmediately,
   hideSettings,
-  updateSetting
+  updateSetting,
+  isRTL
 }) => {
+  const directionClass = isRTL ? 'rtl' : 'ltr'
   return (
     <div>
       <h1 className="SidebarEditor-heading">
@@ -24,7 +26,7 @@ export const SettingsPanel = ({
           </Button>
         </span>
       </h1>
-      <div className="SidebarEditor-wrapper">
+      <div className={directionClass + ' SidebarEditor-wrapper'}>
         <div>
           <h2 className='SettingsHeading'>Editor options</h2>
           <SettingsOptions
@@ -45,12 +47,18 @@ export const SettingsPanel = ({
 SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
-  updateSetting: PropTypes.func.isRequired
+  updateSetting: PropTypes.func.isRequired,
+  isRTL: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => {
+  const {context, ui} = state
+  const targetLocaleDetails = ui.uiLocales[context.lang]
+
   return {
-    enterSavesImmediately: getEnterSavesImmediately(state)
+    enterSavesImmediately: getEnterSavesImmediately(state),
+    isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
+        : false
   }
 }
 

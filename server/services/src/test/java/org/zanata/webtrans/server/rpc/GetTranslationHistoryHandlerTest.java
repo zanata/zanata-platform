@@ -309,6 +309,6 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
         setId(commenter, 3L);
 
         return new HTextFlowTargetReviewComment(textFlow.getTargets().get(
-                hLocale.getId()), comment, commenter);
+                hLocale.getId()), comment, commenter, null);
     }
 }

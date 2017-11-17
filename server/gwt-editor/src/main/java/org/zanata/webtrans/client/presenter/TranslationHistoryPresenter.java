@@ -18,6 +18,7 @@ import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
 import org.zanata.webtrans.shared.model.ComparableByDate;
 import org.zanata.webtrans.shared.model.ReviewComment;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
@@ -26,6 +27,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -143,6 +145,9 @@ public class TranslationHistoryPresenter extends
 
     @Override
     public void addComment(String commentContent) {
+        if (Strings.isNullOrEmpty(commentContent) || commentContent.trim().length() == 0) {
+            return;
+        }
         dispatcher.execute(new AddReviewCommentAction(transUnitId,
                 commentContent, contextHolder.getContext().getDocument()
                         .getId()),
@@ -153,6 +158,11 @@ public class TranslationHistoryPresenter extends
                         display.clearInput();
                     }
                 });
+    }
+
+    @Override
+    public void selectReviewCriteria(ReviewCriterionId reviewCriterionId) {
+        throw new UnsupportedOperationException("does not support this in history pop up");
     }
 
     @Override

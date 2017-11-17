@@ -27,7 +27,8 @@ class TranslationInfoPanel extends React.Component {
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
       lastModifiedTime: PropTypes.instanceOf(Date)
-    })
+    }),
+    isRTL: PropTypes.bool.isRequired
   }
 
   sidebarDetails = () => {
@@ -44,8 +45,10 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime
     } = this.props.selectedPhrase
 
+    const directionClass = this.props.isRTL ? 'rtl' : 'ltr'
+
     return (
-      <ul className="SidebarEditor-details">
+      <ul className={directionClass + ' SidebarEditor-details'}>
         {this.detailItem('Resource ID', resId)}
         {this.detailItem('Message Context', msgctxt)}
         {this.detailItem('Reference', sourceReferences)}
@@ -156,7 +159,7 @@ class TranslationInfoPanel extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const { glossary, phrases } = state
+  const { glossary, phrases, context } = state
   const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
 
@@ -169,9 +172,12 @@ function mapStateToProps (state) {
   const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
       !isUndefined(selectedPhrase)
 
+  const isRTL = context.sourceLocale.isRTL
+
   const newProps = {
     glossaryCount,
-    hasSelectedPhrase
+    hasSelectedPhrase,
+    isRTL
   }
 
   if (hasSelectedPhrase) {

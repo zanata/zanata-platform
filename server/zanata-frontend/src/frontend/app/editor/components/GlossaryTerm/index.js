@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
+import cx from 'classnames'
 
 class GlossaryTerm extends React.Component {
   static propTypes = {
@@ -16,7 +17,9 @@ class GlossaryTerm extends React.Component {
     term: PropTypes.shape({
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    directionClassSource: PropTypes.string,
+    directionClassTarget: PropTypes.string
   }
 
   copy = () => {
@@ -28,7 +31,7 @@ class GlossaryTerm extends React.Component {
   }
 
   render () {
-    const { index, term } = this.props
+    const {index, term, directionClassSource, directionClassTarget} = this.props
     const sourceTip = (
       <Tooltip id={'glossarytermsource-' + index}>
         {term.source}
@@ -49,7 +52,7 @@ class GlossaryTerm extends React.Component {
                 <span className="hide-mdplus u-textMeta">
                   Source
                 </span>
-                {term.source}
+                <span className={directionClassSource}>{term.source}</span>
               </span>
             </Button>
           </OverlayTrigger>
@@ -57,11 +60,14 @@ class GlossaryTerm extends React.Component {
         <td data-filetype="text" className="GlossaryText StringLong">
           <OverlayTrigger placement="top" overlay={targetTip}>
             <Button bsStyle="link">
-              <span>
+              <span className={
+                cx({'u-textMuted': isEmpty(term.target)})}>
                 <span className="hide-mdplus u-textMeta">
-                  Target
+                  Translation
                 </span>
-                {term.target}
+                <span className={directionClassTarget}>
+                  {isEmpty(term.target) ? '-none-' : term.target}
+                </span>
               </span>
             </Button>
           </OverlayTrigger>

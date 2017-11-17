@@ -11,7 +11,7 @@ The new redux app is in `zanata-server/zanata-frontend/src/editor/app`
 
 # App code locations
 
-All code is within `zanata-server/zanata-frontend/src/editor/app`
+All code is within `zanata-server/zanata-frontend/src/app/editor`
 
 Entry point is `index.js` (where Redux store is instantiated and Root container
 render is started).

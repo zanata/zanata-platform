@@ -1329,7 +1329,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -1344,7 +1344,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -1359,7 +1359,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -1384,7 +1384,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -1399,7 +1399,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -2799,7 +2799,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -2814,7 +2814,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -2829,7 +2829,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -2854,7 +2854,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -2869,7 +2869,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -3587,7 +3587,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -3602,7 +3602,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -3617,7 +3617,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -3642,7 +3642,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -3657,7 +3657,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -4276,7 +4276,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -4291,7 +4291,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -4306,7 +4306,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -4331,7 +4331,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -4346,7 +4346,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -4992,7 +4992,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             children
                           </td>
                           <td>
-                            node
+                            other
                           </td>
                           <td>
                             no
@@ -5007,7 +5007,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             className
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -5022,7 +5022,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             disabled
                           </td>
                           <td>
-                            bool
+                            other
                           </td>
                           <td>
                             no
@@ -5047,7 +5047,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             onClick
                           </td>
                           <td>
-                            func
+                            other
                           </td>
                           <td>
                             no
@@ -5062,7 +5062,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                             title
                           </td>
                           <td>
-                            string
+                            other
                           </td>
                           <td>
                             no
@@ -5527,7 +5527,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
       </span>
     </span>
     <input
-      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
+      className="undefined EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5569,7 +5569,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
       </span>
     </span>
     <input
-      className="EditorInputGroup-input u-sizeLineHeight-1_1-4"
+      className="undefined EditorInputGroup-input u-sizeLineHeight-1_1-4"
       maxLength="100"
       onChange={[Function]}
       placeholder="Search glossary…"
@@ -5590,7 +5590,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         Source
       </th>
       <th>
-        Target
+        Translation
       </th>
       <th />
       <th
@@ -5622,7 +5622,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Source
             </span>
-            Ambulance
+            <span
+              className={undefined}
+            >
+              Ambulance
+            </span>
           </span>
         </button>
       </td>
@@ -5640,13 +5644,19 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            
+            <span
+              className={undefined}
+            >
+              -none-
+            </span>
           </span>
         </button>
       </td>
@@ -5713,7 +5723,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Source
             </span>
-            Hospital
+            <span
+              className={undefined}
+            >
+              Hospital
+            </span>
           </span>
         </button>
       </td>
@@ -5731,13 +5745,19 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            
+            <span
+              className={undefined}
+            >
+              -none-
+            </span>
           </span>
         </button>
       </td>
@@ -5804,7 +5824,11 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
             >
               Source
             </span>
-            Doctor
+            <span
+              className={undefined}
+            >
+              Doctor
+            </span>
           </span>
         </button>
       </td>
@@ -5822,13 +5846,19 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className="u-textMuted"
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            
+            <span
+              className={undefined}
+            >
+              -none-
+            </span>
           </span>
         </button>
       </td>
@@ -5888,7 +5918,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         Source
       </th>
       <th>
-        Target
+        Translation
       </th>
       <th />
       <th
@@ -5920,7 +5950,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Source
             </span>
-            Ambulance
+            <span
+              className={undefined}
+            >
+              Ambulance
+            </span>
           </span>
         </button>
       </td>
@@ -5938,13 +5972,19 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            Krankenwagen
+            <span
+              className={undefined}
+            >
+              Krankenwagen
+            </span>
           </span>
         </button>
       </td>
@@ -6011,7 +6051,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Source
             </span>
-            Hospital
+            <span
+              className={undefined}
+            >
+              Hospital
+            </span>
           </span>
         </button>
       </td>
@@ -6029,13 +6073,19 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            Krankenhaus
+            <span
+              className={undefined}
+            >
+              Krankenhaus
+            </span>
           </span>
         </button>
       </td>
@@ -6102,7 +6152,11 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
             >
               Source
             </span>
-            Doctor
+            <span
+              className={undefined}
+            >
+              Doctor
+            </span>
           </span>
         </button>
       </td>
@@ -6120,13 +6174,19 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            Arzt
+            <span
+              className={undefined}
+            >
+              Arzt
+            </span>
           </span>
         </button>
       </td>
@@ -6202,7 +6262,11 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
             >
               Source
             </span>
-            Ambulance
+            <span
+              className={undefined}
+            >
+              Ambulance
+            </span>
           </span>
         </button>
       </td>
@@ -6220,13 +6284,19 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
           onMouseOver={[Function]}
           type="button"
         >
-          <span>
+          <span
+            className=""
+          >
             <span
               className="hide-mdplus u-textMeta"
             >
-              Target
+              Translation
             </span>
-            Krankenwagen
+            <span
+              className={undefined}
+            >
+              Krankenwagen
+            </span>
           </span>
         </button>
       </td>

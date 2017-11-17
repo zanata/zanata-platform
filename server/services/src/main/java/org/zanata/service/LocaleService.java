@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.GenericEntity;
 
 import com.google.common.collect.Lists;
+import com.ibm.icu.util.ULocale;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -129,11 +130,17 @@ public interface LocaleService extends Serializable {
     HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug,
             LocaleId localeId);
 
+    static boolean isRTL(LocaleId localeId) {
+        ULocale uLocale = new ULocale(localeId.getId());
+        return uLocale.isRightToLeft();
+    }
+
     static LocaleDetails convertHLocaleToDTO(HLocale hLocale, String alias) {
         return new LocaleDetails(hLocale.getLocaleId(),
                 hLocale.retrieveDisplayName(), alias,
                 hLocale.retrieveNativeName(), hLocale.isActive(),
-                hLocale.isEnabledByDefault(), hLocale.getPluralForms());
+                hLocale.isEnabledByDefault(), hLocale.getPluralForms(),
+                isRTL(hLocale.getLocaleId()));
     }
 
     static LocaleDetails convertHLocaleToDTO(HLocale hLocale) {
@@ -154,14 +161,15 @@ public interface LocaleService extends Serializable {
     }
 
     static LanguageTeamSearchResult convertHLocaleToSearchResultDTO(
-            HLocale locale) {
+            HLocale hLocale) {
         LanguageTeamSearchResult result = new LanguageTeamSearchResult();
-        result.setId(locale.getLocaleId().getId());
-        result.setLocaleDetails(new LocaleDetails(locale.getLocaleId(),
-                locale.retrieveDisplayName(), null, locale.retrieveNativeName(),
-                locale.isActive(), locale.isEnabledByDefault(),
-                locale.getPluralForms()));
-        Set<HLocaleMember> members = locale.getMembers();
+        result.setId(hLocale.getLocaleId().getId());
+        result.setLocaleDetails(new LocaleDetails(hLocale.getLocaleId(),
+                hLocale.retrieveDisplayName(), null,
+                hLocale.retrieveNativeName(),
+                hLocale.isActive(), hLocale.isEnabledByDefault(),
+                hLocale.getPluralForms(), isRTL(hLocale.getLocaleId())));
+        Set<HLocaleMember> members = hLocale.getMembers();
         int count = members == null ? 0 : members.size();
         result.setMemberCount(count);
         result.setRequestCount(0L);

@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -47,6 +48,8 @@ import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
+
+import java.util.Date;
 
 /**
  *
@@ -108,6 +111,7 @@ public class GlossaryDetailsPresenterTest {
         when(glossaryDetails.getTargetLocale()).thenReturn(new LocaleId("zh"));
         when(glossaryDetails.getTarget()).thenReturn("source text");
         when(glossaryDetails.getUrl()).thenReturn("http://example.com/");
+        when(glossaryDetails.getLastModifiedDate()).thenReturn(new Date());
         when(display.getTargetText()).thenReturn(targetText);
         when(messages.entriesLabel(1)).thenReturn("1");
         when(messages.glossarySourceTermLabel(anyString())).thenReturn("sourceTermLabel");
@@ -126,5 +130,36 @@ public class GlossaryDetailsPresenterTest {
         verify(display).addEntry("1");
         verify(display).center();
         verify(display).setLastModifiedDate(any());
+    }
+
+    @Test
+    public void doNotShowNullModifiedDate() {
+        GlossaryResultItem item = new GlossaryResultItem("qualifiedName", "", "", 0, 0);
+        glossaryDetailsPresenter.show(item);
+
+        verify(mockDispatcher).execute(getGlossaryDetailsCaptor.capture(),
+                getGlossarycallbackCaptor.capture());
+        assertThat(getGlossaryDetailsCaptor.getValue().getSourceIdList())
+                .isEqualTo(item.getSourceIdList());
+        AsyncCallback<GetGlossaryDetailsResult> callback =
+                getGlossarycallbackCaptor.getValue();
+
+        GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
+        when(glossaryDetails.getLastModifiedDate()).thenReturn(null);
+
+        when(glossaryDetails.getSource()).thenReturn("source text");
+        when(glossaryDetails.getTarget()).thenReturn("target text");
+        when(glossaryDetails.getSrcLocale()).thenReturn(new LocaleId("en-US"));
+        when(glossaryDetails.getTargetLocale()).thenReturn(new LocaleId("zh"));
+        when(glossaryDetails.getTarget()).thenReturn("source text");
+        when(glossaryDetails.getUrl()).thenReturn("http://example.com/");
+        when(display.getTargetText()).thenReturn(targetText);
+        when(messages.entriesLabel(1)).thenReturn("1");
+        when(messages.glossarySourceTermLabel(anyString())).thenReturn("sourceTermLabel");
+        when(messages.glossaryTargetTermLabel(anyString())).thenReturn("targetTermLabel");
+        callback.onSuccess(new GetGlossaryDetailsResult(Lists
+                .newArrayList(glossaryDetails)));
+
+        verify(display, never()).setLastModifiedDate(any());
     }
 }

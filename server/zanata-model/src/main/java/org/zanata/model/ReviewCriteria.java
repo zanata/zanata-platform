@@ -30,6 +30,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.zanata.common.IssuePriority;
+
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -43,7 +45,7 @@ public class ReviewCriteria extends ModelEntityBase {
     public static final String QUERY_BY_DESCRIPTION = "ReviewCriteriaByDescription";
     private static final long serialVersionUID = -8213113671271711837L;
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "varchar")
+    @Column(columnDefinition = "varchar(32)")
     private IssuePriority priority;
     private boolean editable;
     private String description;

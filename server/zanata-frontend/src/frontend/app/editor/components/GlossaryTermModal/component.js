@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Panel, Row, Table } from 'react-bootstrap'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { Icon, LoaderText, Modal } from '../../../components'
+import { isEmpty } from 'lodash'
+import cx from 'classnames'
 
 /**
  * Modal to show detail for a single glossary term
@@ -24,7 +26,11 @@ class GlossaryTermModal extends React.Component {
         pos: PropTypes.string,
         targetComment: PropTypes.string
       })
-    ).isRequired
+    ).isRequired,
+    // No '.Required' for below since their usage depends on whether source or
+    // target text
+    directionClassSource: PropTypes.string,
+    directionClassTarget: PropTypes.string
   }
 
   render () {
@@ -34,15 +40,26 @@ class GlossaryTermModal extends React.Component {
       show,
       sourceLocale,
       targetLocale,
-      term
+      term,
+      directionClassSource,
+      directionClassTarget
     } = this.props
 
     const selectedDetail = 0
     const detail = details[selectedDetail]
 
-    const lastModifiedTime = detail
-      ? new Date(detail.lastModifiedDate) : new Date()
+    const lastModifiedTime = detail && detail.lastModifiedDate
+      ? new Date(detail.lastModifiedDate) : undefined
 
+    const lastModifiedRow = lastModifiedTime ? (<Row>
+      <Icon name="history" className="s0 history-icon" />
+      <span className="u-sML-1-4">
+      Last modified on&nbsp;
+        <FormattedDate value={lastModifiedTime} format="medium" />&nbsp;
+        <Icon name="clock" className="s0 history-icon" />&nbsp;
+        <FormattedTime value={lastModifiedTime} />
+      </span>
+    </Row>) : undefined
     const detailsDisplay = details.map(
       (detail, index) => {
         if (!detail) {
@@ -67,7 +84,6 @@ class GlossaryTermModal extends React.Component {
         )
       })
 
-    // TODO className glossary-modal
     return (
       <Modal show={show}
         onHide={close}
@@ -78,17 +94,20 @@ class GlossaryTermModal extends React.Component {
           Glossary details</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Panel className="split-panel">
-            <h3>Source Term [{sourceLocale}]:</h3>
+          <Panel className={directionClassSource + ' split-panel'}>
+            <h3>Source Term : {sourceLocale}</h3>
             <span className="modal-term">{term.source}</span>
           </Panel>
-          <Panel className="split-panel">
-            <h3>Target Term [{targetLocale}]:</h3>
-            <span className="modal-term">{term.target}</span>
+          <Panel className={directionClassTarget + ' split-panel'}>
+            <h3>Translation : {targetLocale}</h3>
+            <span className={
+              cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
+                {isEmpty(term.target) ? '-none-' : term.target}
+            </span>
           </Panel>
           <br />
           <Panel className="gloss-details-panel">
-            <Table className="GlossaryDetails-table">
+            <Table className={directionClassTarget + ' GlossaryDetails-table'}>
               <thead>
                 <tr>
                   <th>Description</th>
@@ -103,15 +122,7 @@ class GlossaryTermModal extends React.Component {
           </Panel>
 
           <span className="u-pullRight u-textMeta">
-            <Row>
-              <Icon name="history" className="s0 history-icon" />
-              <span className="u-sML-1-4">
-                Last modified on&nbsp;
-                <FormattedDate value={lastModifiedTime} format="medium" />&nbsp;
-                <Icon name="clock" className="s0 history-icon" />&nbsp;
-                <FormattedTime value={lastModifiedTime} />
-              </span>
-            </Row>
+          {lastModifiedRow}
           </span>
         </Modal.Body>
       </Modal>

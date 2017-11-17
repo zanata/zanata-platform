@@ -23,16 +23,18 @@ package org.zanata.model;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.NotEmpty;
+import com.google.common.base.Strings;
 
 /**
  * @author Patrick Huang
@@ -53,21 +55,29 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
     @JoinColumn(name = "target_id")
     @IndexedEmbedded
     private HTextFlowTarget textFlowTarget;
-    @NotEmpty
-    @javax.persistence.Lob
+    @Lob
     private String comment;
     @NotNull
     private Integer targetVersion;
     @Transient
     private String commenterName;
 
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @JoinColumn(name = "review_criteria_id")
+    private ReviewCriteria reviewCriteria;
+
+    public ReviewCriteria getReviewCriteria() {
+        return reviewCriteria;
+    }
+
     public HTextFlowTargetReviewComment(HTextFlowTarget target, String comment,
-            HPerson commenter) {
+            HPerson commenter, ReviewCriteria reviewCriteria) {
         this.textFlowTarget = target;
         this.comment = comment;
         this.commenter = commenter;
         commenterName = commenter.getName();
         targetVersion = target.getVersionNum();
+        this.reviewCriteria = reviewCriteria;
     }
 
     @Transient
@@ -91,6 +101,21 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
 
     public String getComment() {
         return this.comment;
+    }
+
+    public String getCommentText() {
+        if (getReviewCriteria() != null) {
+            // if we have review criteria linked, use the criteria description plus potential comment text
+            return getReviewCriteria().getDescription() + joinUserComment();
+        }
+        return getComment();
+    }
+
+    private String joinUserComment() {
+        if (Strings.isNullOrEmpty(comment) || comment.trim().length() == 0) {
+            return "";
+        }
+        return ": " + comment;
     }
 
     protected void setTargetVersion(final Integer targetVersion) {

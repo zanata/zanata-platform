@@ -71,7 +71,6 @@ General options:
     -c, --clean     (mvn clean)
     -C, --clean-partial
                     removes various generated files from server without running a full mvn clean
-                    (takari lifecycle handles this in jar modules)
     -P, --skip-package
                     runs mvn test instead of mvn package
     -i, --install   (mvn install)

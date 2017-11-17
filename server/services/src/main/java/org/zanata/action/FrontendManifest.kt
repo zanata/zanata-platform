@@ -18,46 +18,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.review.dto;
+package org.zanata.action
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.zanata.model.IssuePriority;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties
+import org.codehaus.jackson.annotate.JsonProperty
 
-/**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TransReviewCriteria {
-    private Long id;
-    private IssuePriority priority;
-    private String description;
-    private boolean editable;
-
-    public TransReviewCriteria() {
-    }
-
-    public TransReviewCriteria(Long id, IssuePriority priority, String description,
-            boolean editable) {
-        this.id = id;
-        this.priority = priority;
-        this.description = description;
-        this.editable = editable;
-    }
-
-
-    public IssuePriority getPriority() {
-        return priority;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public Long getId() {
-        return id;
-    }
-}
+data class FrontendManifest(
+        @JsonProperty("editor.css") val editorCss: String,
+        @JsonProperty("editor.js") val editorJs: String,
+        @JsonProperty("frontend.css") val frontendCss: String,
+        @JsonProperty("frontend.js") val frontendJs: String,
+        @JsonProperty("frontend.legacy.js") val legacyJs: String,
+        // this js module is referenced in zanata-frontend/src/frontend/app/editor/index.js as npm module 'intl-polyfill'.
+        // It appears to work properly despite the hashed name.
+        @JsonProperty("intl-polyfill.js") val intlPolyFillJs: String,
+        @JsonProperty("runtime.js") val runtime: String
+)

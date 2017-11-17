@@ -45,14 +45,13 @@ class NavHeader extends React.Component {
         selectedLocale: string.isRequired
       }).isRequired
     }).isRequired,
-
+    isRTL: PropTypes.bool.isRequired,
     dropdown: shape({
       openDropdownKey: any,
       docsKey: any.isRequired,
       localeKey: any.isRequired,
       uiLocaleKey: any.isRequired
     }).isRequired,
-
     ui: shape({
       // locale id for selected locale
       selectedUiLocale: string,
@@ -65,6 +64,7 @@ class NavHeader extends React.Component {
     const props = this.props
     const ctx = props.data.context
     const dropdowns = props.dropdown
+    const directionClass = props.isRTL ? 'rtl' : 'ltr'
 
     const docsDropdownProps = {
       context: ctx,
@@ -91,7 +91,7 @@ class NavHeader extends React.Component {
       <nav role="navigation"
         className="Editor-mainNav u-posRelative u-textCenter">
         <div className="u-posAbsoluteLeft">
-          <Row>
+          <Row className={directionClass}>
             <ProjectVersionLink {...ctx.projectVersion} />
             <div className="u-inlineBlock u-sMH-1-4 u-textInvert
                           u-textMuted u-sm-hidden">
@@ -134,11 +134,12 @@ class NavHeader extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const { dropdown, headerData, ui } = state
+  const { dropdown, headerData, ui, context } = state
   return {
     data: headerData,
     dropdown,
-    ui
+    ui,
+    isRTL: context.sourceLocale.isRTL
   }
 }
 
