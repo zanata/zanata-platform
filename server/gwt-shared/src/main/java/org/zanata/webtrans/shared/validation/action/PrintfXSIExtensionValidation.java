@@ -22,7 +22,7 @@ import com.google.gwt.regexp.shared.RegExp;
 public class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
     // regex to find out whether the variable has position
     private static final RegExp POSITIONAL_REG_EXP = RegExp
-            .compile("%(\\d+\\$)\\w+");
+            .compile("%(\\d+\\$).+");
 
     public PrintfXSIExtensionValidation(ValidationId id,
             ValidationMessages messages) {
@@ -66,17 +66,23 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
     private static ArrayList<String>
             appendPosition(ArrayList<String> sourceVars) {
         ArrayList<String> result = Lists.newArrayList();
+        String regex = buildPosRegex(sourceVars.size());
         for (int i = 0; i < sourceVars.size(); i++) {
             String sourceVar = sourceVars.get(i);
-            int position = i + 1;
-            String replacement = "%" + position + "$";
-            if (!sourceVar.contains(replacement)) {
-                result.add(sourceVar.replace("%", replacement));
-            } else {
+            if (sourceVar.matches(regex)) {
                 result.add(sourceVar);
+            } else {
+                int position = i + 1;
+                String replacement = "%" + position + "$";
+                result.add(sourceVar.replace("%", replacement));
             }
         }
         return result;
+    }
+
+    private static String buildPosRegex(int size) {
+        String numeric = "[1-" + size + 1 + "]";
+        return ".*%" + numeric + "+\\$.*";
     }
 
     private List<String> checkPosition(ArrayList<String> variables, int size) {
