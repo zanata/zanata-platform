@@ -1,3 +1,8 @@
+:root {
+  --Input-color-dark: #546677;
+  --Input-color-mid: #20718A;
+}
+
 .InputEditorSearch {
   margin-left: 0.75em;
   margin-right: 1em;
@@ -54,7 +59,7 @@
 }
 
 .InputEditorSearch .EditorInputGroup-addon button {
-  color: #546677;
+  color: var(--Input-color-dark);
 }
 
 li.InlineSearch-list {
@@ -65,7 +70,7 @@ li.InlineSearch-list {
 
 li.InlineSearch-list span {
   width: 60%;
-  color: #20718A;
+  color: var(--Input-color-mid);
 }
 
 .InlineSearch input {
