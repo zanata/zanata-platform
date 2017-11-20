@@ -625,7 +625,7 @@ h4.modal-title {
 }
 
 .panel-body .modal-term {
-  color: #333;
+  color: var(--Editor-color-dark);
   font-size: 1.1em;
   line-height: 2em;
 }

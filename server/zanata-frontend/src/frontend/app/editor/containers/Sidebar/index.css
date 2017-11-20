@@ -166,12 +166,13 @@ table {
 }
 
 td.info-icon svg {
-  fill: var(--Sidebar-color-highlight);
+  fill: var(--Sidebar-color-highlight) !important;
 }
 
 .table td {
   position: relative;
   vertical-align: top;
+  color: var(--Sidebar-panel-dark) !important;
 }
 
 table td {
