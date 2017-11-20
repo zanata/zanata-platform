@@ -14,6 +14,7 @@
   --Editor-color-dark: #20718a;
   --Editor-color-bright: #1ba7d9;
   --Editor-badge-radius: 4px;
+  --Editor-border-radius-small: 3px;
 }
 
 input, textarea, select, button  {
@@ -405,8 +406,8 @@ li.DocName span.ellipsis {
 .panel-heading {
   background-color: #fff;
   border-bottom: 1px solid transparent;
-  border-top-left-radius: var(--border-radius-small);
-  border-top-right-radius: var(--border-radius-small);
+  border-top-left-radius: var(--Editor-border-radius-small);
+  border-top-right-radius: var(--Editor-border-radius-small);
   color: var(--brand-secondary);
   font-size: 1.1em !important;
   font-weight: 600;
@@ -608,6 +609,12 @@ h4.modal-title {
   font-weight: 300;
   line-height: 1em;
   text-align: center;
+}
+
+.label {
+  color: #fff;
+  border-radius: var(--Editor-border-radius-small);
+  padding: 0.21429em 0.42857em;
 }
 
 .panel-body h3 {
