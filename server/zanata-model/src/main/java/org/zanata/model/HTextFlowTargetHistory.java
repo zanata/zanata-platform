@@ -172,7 +172,7 @@ public class HTextFlowTargetHistory extends HTextContainer
     }
 
     public void setContents(List<String> contents) {
-        this.contents = new ArrayList<String>(contents);
+        this.contents = new ArrayList<>(contents);
     }
 
     public Date getLastChanged() {

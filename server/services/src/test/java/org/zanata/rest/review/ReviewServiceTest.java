@@ -14,9 +14,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataJpaTest;
-import org.zanata.model.IssuePriority;
+import org.zanata.common.IssuePriority;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.model.ReviewCriteria;
-import org.zanata.rest.review.dto.TransReviewCriteria;
+import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 
 public class ReviewServiceTest extends ZanataJpaTest {
 
@@ -28,7 +29,7 @@ public class ReviewServiceTest extends ZanataJpaTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        reviewService = new ReviewService(getEm(), uriInfo);
+        reviewService = new ReviewService(new ReviewCriteriaDAO(getSession()), uriInfo);
     }
 
     @Test

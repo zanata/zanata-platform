@@ -23,4 +23,23 @@
         tableName="HProject"/>
   </changeSet>
 
+  <changeSet id="4" author="pahuang@redhat.com">
+    <comment>Add review criteria column to HTextFlowTargetReviewComment</comment>
+    <addColumn tableName="HTextFlowTargetReviewComment">
+      <column name="review_criteria_id" type="bigint">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addForeignKeyConstraint baseTableName="HTextFlowTargetReviewComment"
+      baseColumnNames="review_criteria_id"
+      constraintName="fk_tftrc_review_criteria"
+      referencedTableName="ReviewCriteria"
+      referencedColumnNames="id" />
+  </changeSet>
+  <changeSet id="5" author="pahuang@redhat.com">
+    <dropNotNullConstraint tableName="HTextFlowTargetReviewComment"
+      columnName="comment" columnDataType="longtext" />
+  </changeSet>
+
+
 </databaseChangeLog>

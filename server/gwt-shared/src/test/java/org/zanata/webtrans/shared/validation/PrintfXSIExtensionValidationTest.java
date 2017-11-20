@@ -61,6 +61,16 @@ public class PrintfXSIExtensionValidationTest {
     }
 
     @Test
+    public void validExplicitPositionalVariables2() {
+        String source = "%2$.3f%1$s/day";
+        String target = "%2$.3f%1$s/jour";
+        List<String> errorList =
+                printfXSIExtensionValidation.validate(source, target);
+
+        assertThat(errorList).isEmpty();
+    }
+
+    @Test
     public void mixPositionalVariablesWithNotPositional() {
         String source = "%s: Read error at byte %s, while reading %lu byte";
         String target = "%1$s：Read error while reading %lu bytes，at %2$s";

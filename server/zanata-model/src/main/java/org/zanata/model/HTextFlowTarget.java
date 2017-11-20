@@ -394,7 +394,7 @@ public class HTextFlowTarget extends ModelEntityBase
     @MapKey(name = "versionNum")
     public Map<Integer, HTextFlowTargetHistory> getHistory() {
         if (this.history == null) {
-            this.history = new HashMap<Integer, HTextFlowTargetHistory>();
+            this.history = new HashMap<>();
         }
         return history;
     }
@@ -411,9 +411,17 @@ public class HTextFlowTarget extends ModelEntityBase
     public HTextFlowTargetReviewComment addReviewComment(String comment,
             HPerson commenter) {
         HTextFlowTargetReviewComment reviewComment =
-                new HTextFlowTargetReviewComment(this, comment, commenter);
+                new HTextFlowTargetReviewComment(this, comment, commenter, null);
         getReviewComments().add(reviewComment);
         return reviewComment;
+    }
+
+    public HTextFlowTargetReviewComment addReview(HPerson reviewer, ReviewCriteria reviewCriteria, String extraComment) {
+        HTextFlowTargetReviewComment review =
+                new HTextFlowTargetReviewComment(this, extraComment, reviewer,
+                        reviewCriteria);
+        getReviewComments().add(review);
+        return review;
     }
 
     @Override

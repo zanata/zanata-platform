@@ -158,4 +158,52 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         assertThat(result.get(1).getSource()).isEqualTo("Fedora Artwork");
         assertThat(result.get(1).getTarget()).isEqualTo("Fedora 美工");
     }
+
+    @Test
+    @InRequestScope
+    public void skipNullTerm() throws Exception {
+        when(localeService.getByLocaleId(TARGET_LOCALE_ID))
+                .thenReturn(targetHLocale);
+        HProject project = Mockito.mock(HProject.class);
+        when(projectDAO.getBySlug("progSlug")).thenReturn(project);
+        when(identity.hasPermission(project, "read")).thenReturn(true);
+
+        GetGlossary action = new GetGlossary("fedora",
+                new ProjectIterationId("progSlug",
+                        "versionSlug", ProjectType.File),
+                TARGET_LOCALE_ID,
+                LocaleId.EN_US, HasSearchType.SearchType.FUZZY);
+        String projectQualifiedName = ProjectService.getGlossaryQualifiedName(
+                action.getProjectIterationId().getProjectSlug());
+
+        // Results
+        List<Object[]> globalResults = Lists.newArrayList();
+        HGlossaryTerm srcGlossaryTerm1 = getEm().find(HGlossaryTerm.class, 42L);
+        globalResults.add(new Object[] { 1.0F, srcGlossaryTerm1 });
+        // Add invalid
+        globalResults.add(new Object[] { 1.2F, null });
+        List<Object[]> projectResults = Lists.newArrayList();
+        HGlossaryTerm srcGlossaryTerm2 = getEm().find(HGlossaryTerm.class, 46L);
+        projectResults.add(new Object[] { 1.1F, srcGlossaryTerm2 });
+
+        doReturn(projectResults).when(glossaryDAO).getSearchResult("fedora",
+                HasSearchType.SearchType.FUZZY, LocaleId.EN_US, 20,
+                projectQualifiedName);
+        doReturn(globalResults).when(glossaryDAO).getSearchResult("fedora",
+                HasSearchType.SearchType.FUZZY, LocaleId.EN_US, 20,
+                GlossaryUtil.GLOBAL_QUALIFIED_NAME);
+
+        long start = System.nanoTime();
+        ArrayList<GlossaryResultItem> result = glossarySearchService.searchGlossary(
+                LocaleId.EN_US, TARGET_LOCALE_ID, "fedora",
+                HasSearchType.SearchType.FUZZY, 20, "progSlug");
+        double duration = (System.nanoTime() - start) / 1.0E9;
+        log.info("************** {} second", duration);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getSource()).isEqualTo("Planet Fedora");
+        assertThat(result.get(0).getTarget()).isEqualTo("Fedora 博客聚集");
+        assertThat(result.get(1).getSource()).isEqualTo("Fedora Artwork");
+        assertThat(result.get(1).getTarget()).isEqualTo("Fedora 美工");
+    }
 }

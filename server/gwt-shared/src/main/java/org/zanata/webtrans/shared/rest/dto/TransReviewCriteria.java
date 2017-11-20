@@ -18,16 +18,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.review.dto;
+package org.zanata.webtrans.shared.rest.dto;
+
+import java.io.Serializable;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.zanata.model.IssuePriority;
+import org.zanata.common.IssuePriority;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TransReviewCriteria {
+public class TransReviewCriteria implements IsSerializable, Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private IssuePriority priority;
     private String description;

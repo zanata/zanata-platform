@@ -22,7 +22,9 @@
 package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import com.google.common.base.Strings;
 
 /**
  * @author Patrick Huang <a
@@ -35,6 +37,7 @@ public class AddReviewCommentAction extends
     private String content;
     private DocumentId documentId;
     private TransUnitId transUnitId;
+    private ReviewCriterionId reviewId;
 
     public AddReviewCommentAction() {
     }
@@ -44,6 +47,18 @@ public class AddReviewCommentAction extends
         this.transUnitId = transUnitId;
         this.content = content;
         documentId = id;
+    }
+
+    /**
+     * Used by rejection with review criteria.
+     */
+    public AddReviewCommentAction(TransUnitId transUnitId, String content,
+            DocumentId documentId,
+            ReviewCriterionId reviewId) {
+        this.content = content;
+        this.documentId = documentId;
+        this.transUnitId = transUnitId;
+        this.reviewId = reviewId;
     }
 
     public String getContent() {
@@ -57,4 +72,13 @@ public class AddReviewCommentAction extends
     public DocumentId getDocumentId() {
         return documentId;
     }
+
+    public ReviewCriterionId getReviewId() {
+        return reviewId;
+    }
+
+    public boolean hasReviewCriterion() {
+        return reviewId != null;
+    }
+
 }

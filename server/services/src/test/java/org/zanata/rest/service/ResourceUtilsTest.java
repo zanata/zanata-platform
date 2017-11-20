@@ -72,6 +72,14 @@ public class ResourceUtilsTest extends ZanataTest {
     }
 
     @Test
+    public void getLanguage() {
+        HLocale en = new HLocale(LocaleId.EN);
+        assertThat(resourceUtils.getLanguage(en)).isEqualTo("en");
+        HLocale enUS = new HLocale(LocaleId.EN_US);
+        assertThat(resourceUtils.getLanguage(enUS)).isEqualTo("en_US");
+    }
+
+    @Test
     public void mergeNoTextFlows() {
         List<TextFlow> from = new ArrayList<>();
         HDocument to = new HDocument();

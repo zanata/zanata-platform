@@ -30,13 +30,16 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.zanata.common.ContentState;
+import org.zanata.common.IssuePriority;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.model.ReviewCriteria;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
@@ -45,6 +48,7 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
@@ -58,6 +62,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
@@ -89,6 +94,8 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
     private HTextFlow hTextFlow;
     @Produces @Mock
     private LocaleService localeService;
+    @Produces @Mock
+    private ReviewCriteriaDAO reviewCriteriaDAO;
     @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
     @Produces @Mock
@@ -159,6 +166,88 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
 
         assertThat(result.getComment().getId())
                 .isEqualTo(new ReviewCommentId(1L));
+    }
+
+    @Test
+    @InRequestScope
+    public void testExecuteWithReviewCriteria() throws Exception {
+        // Given: we want to add review criteria to trans unit id 2 and locale id DE
+        TransUnitId transUnitId = new TransUnitId(2L);
+        HLocale hLocale = new HLocale(LocaleId.DE);
+        AddReviewCommentAction action =
+                new AddReviewCommentAction(transUnitId, null,
+                        documentId, new ReviewCriterionId(1));
+        action.setWorkspaceId(GWTTestData.workspaceId(LocaleId.DE));
+        when(authenticatedAccount.getPerson()).thenReturn(hPerson);
+        when(securityServiceImpl.checkWorkspaceStatus(action.getWorkspaceId()))
+                .thenReturn(hProject);
+        when(
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId())).thenReturn(workspace);
+        when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId()))
+                .thenReturn(hLocale);
+        when(
+                textFlowTargetDAO.getTextFlowTarget(transUnitId.getValue(),
+                        hLocale.getLocaleId())).thenReturn(hTextFlowTarget);
+        ReviewCriteria criteria = new ReviewCriteria(
+                IssuePriority.Critical, false, "Grammar");
+        when(reviewCriteriaDAO.findById(1L)).thenReturn(criteria);
+        when(hTextFlowTarget.getState()).thenReturn(ContentState.Rejected);
+        when(hTextFlowTarget.getTextFlow()).thenReturn(hTextFlow);
+        when(hTextFlowTarget.addReview(hPerson, criteria, null))
+                .thenReturn(hReviewComment);
+        when(hReviewComment.getId()).thenReturn(1L);
+
+        // When:
+        AddReviewCommentResult result = handler.execute(action, null);
+
+        // Then:
+        InOrder inOrder =
+                Mockito.inOrder(textFlowTargetDAO,
+                        textFlowTargetReviewCommentsDAO,
+                        hTextFlowTarget, workspace,
+                        securityServiceImpl, identity);
+        inOrder.verify(securityServiceImpl).checkWorkspaceStatus(
+                action.getWorkspaceId());
+        inOrder.verify(textFlowTargetDAO).getTextFlowTarget(
+                transUnitId.getValue(), hLocale.getLocaleId());
+        inOrder.verify(identity).checkPermission("review-comment", hLocale,
+                hProject);
+        inOrder.verify(textFlowTargetReviewCommentsDAO).flush();
+        inOrder.verify(workspace).publish(isA(AddReviewComment.class));
+
+        assertThat(result.getComment().getId())
+                .isEqualTo(new ReviewCommentId(1L));
+    }
+
+    @Test
+    @InRequestScope
+    public void testExecuteWithReviewCriteriaNotFound() throws Exception {
+        // Given: we want to add non-exist review criteria to trans unit id 2 and locale id DE
+        TransUnitId transUnitId = new TransUnitId(2L);
+        HLocale hLocale = new HLocale(LocaleId.DE);
+        AddReviewCommentAction action =
+                new AddReviewCommentAction(transUnitId, null,
+                        documentId, new ReviewCriterionId(1));
+        action.setWorkspaceId(GWTTestData.workspaceId(LocaleId.DE));
+        when(authenticatedAccount.getPerson()).thenReturn(hPerson);
+        when(securityServiceImpl.checkWorkspaceStatus(action.getWorkspaceId()))
+                .thenReturn(hProject);
+        when(
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId())).thenReturn(workspace);
+        when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId()))
+                .thenReturn(hLocale);
+        when(
+                textFlowTargetDAO.getTextFlowTarget(transUnitId.getValue(),
+                        hLocale.getLocaleId())).thenReturn(hTextFlowTarget);
+
+        when(reviewCriteriaDAO.findById(1L)).thenReturn(null);
+        when(hTextFlowTarget.getState()).thenReturn(ContentState.Rejected);
+
+        // When:
+        assertThatThrownBy(() -> handler.execute(action, null))
+                .isInstanceOf(ActionException.class);
     }
 
     @Test(expected = ActionException.class)

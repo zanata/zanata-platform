@@ -25,14 +25,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
+import org.zanata.common.IssuePriority;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.ReviewCriteria;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
@@ -67,6 +70,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Patrick Huang <a
@@ -111,6 +116,8 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
     private LoadOptionsHandler loadOptionsHandler;
     @Produces @Mock
     private GetValidationRulesHandler getValidationRulesHandler;
+    @Produces @Mock
+    private ReviewCriteriaDAO reviewCriteriaDAO;
 
     private ValidationFactory validationFactory;
 
@@ -184,6 +191,8 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
                         isA(GetValidationRulesAction.class),
                         nullable(ExecutionContext.class))).thenReturn(
                 validationResult);
+        when(reviewCriteriaDAO.findAll()).thenReturn(Lists.newArrayList(new ReviewCriteria(
+                IssuePriority.Critical, false, "Grammar error")));
 
         ActivateWorkspaceResult result = handler.execute(action, null);
 
@@ -215,6 +224,8 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
 
         assertThat(result.getStoredUserConfiguration())
                 .isSameAs(optionsResult.getConfiguration());
+        assertThat(result.getUserWorkspaceContext().getReviewCriteria())
+                .hasSize(1);
     }
 
     @Test

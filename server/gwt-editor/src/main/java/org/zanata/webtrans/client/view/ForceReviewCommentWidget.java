@@ -21,13 +21,18 @@
 
 package org.zanata.webtrans.client.view;
 
+import java.util.List;
+
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.ui.ReviewCommentInputWidget;
 import org.zanata.webtrans.client.ui.ShortcutContextAwareDialogBox;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
+import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -39,6 +44,8 @@ import com.google.inject.Singleton;
 public class ForceReviewCommentWidget extends ShortcutContextAwareDialogBox
         implements ForceReviewCommentDisplay {
     private final ReviewCommentInputWidget inputWidget;
+    private final FlowPanel panel;
+    private final ListBox listBox;
 
     @Inject
     public ForceReviewCommentWidget(WebTransMessages messages,
@@ -51,9 +58,14 @@ public class ForceReviewCommentWidget extends ShortcutContextAwareDialogBox
 
         inputWidget = new ReviewCommentInputWidget();
         inputWidget.setButtonText(messages.confirmRejection());
-        FlowPanel panel = new FlowPanel();
+        panel = new FlowPanel();
         panel.setStyleName("new-zanata");
         panel.setWidth("800px");
+        listBox = new ListBox();
+        listBox.setMultipleSelect(false);
+        // add an empty item
+        listBox.addItem("--- Select a predefined criteria ---");
+        panel.add(listBox);
         panel.add(inputWidget);
         DialogBoxCloseButton button = new DialogBoxCloseButton(this);
         button.setText(messages.cancel());
@@ -74,5 +86,24 @@ public class ForceReviewCommentWidget extends ShortcutContextAwareDialogBox
     @Override
     public String getComment() {
         return inputWidget.getText();
+    }
+
+    @Override
+    public void setReviewCriteria(
+            Listener listener,
+            List<TransReviewCriteria> reviewCriteria) {
+        reviewCriteria.forEach(r -> listBox.addItem(r.getPriority() + " - " + r.getDescription()));
+        // if admin has not define review criteria, we don't show the selection box
+        listBox.setVisible(reviewCriteria.size() > 0);
+        listBox.addChangeHandler(event -> {
+            int selectedIndex = listBox.getSelectedIndex();
+            // first item is the empty description line
+            if (selectedIndex != 0) {
+                TransReviewCriteria selected =
+                        reviewCriteria.get(selectedIndex - 1);
+                listener.selectReviewCriteria(new ReviewCriterionId(selected.getId()));
+            }
+        });
+
     }
 }

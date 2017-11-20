@@ -81,6 +81,8 @@ import org.zanata.webtrans.client.view.DocumentListOptionsView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.EditorOptionsView;
+import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
+import org.zanata.webtrans.client.view.ForceReviewCommentWidget;
 import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryDisplay;
