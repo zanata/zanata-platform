@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.zanata.util.Zanata;
 
@@ -47,5 +48,12 @@ public class CacheManagerProducer {
     @Zanata
     public EmbeddedCacheManager getCacheManager() {
         return manager;
+    }
+
+    @Produces
+    @ApplicationScoped
+    @Zanata
+    public Cache<Object, Object> getCommonCache(@Zanata EmbeddedCacheManager cacheManager) {
+        return cacheManager.getCache("common-cache");
     }
 }
