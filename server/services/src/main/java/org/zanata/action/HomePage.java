@@ -25,12 +25,15 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.infinispan.Cache;
+import org.infinispan.AdvancedCache;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.util.CommonMarkRenderer;
 import org.zanata.util.Zanata;
+
+import static org.infinispan.context.Flag.IGNORE_RETURN_VALUES;
 
 /**
  * This component caches the latest HTML version of the home page's content.
@@ -47,7 +50,7 @@ public class HomePage {
     @Inject
     private CommonMarkRenderer renderer;
     @Inject @Zanata
-    private Cache<Object, Object> cache;
+    private AdvancedCache<Object, Object> cache;
 
     /**
      * Returns the rendered, sanitised HTML for the home page content set by
@@ -63,7 +66,7 @@ public class HomePage {
             } else {
                 html = renderer.renderToHtmlSafe(text);
             }
-            cache.put(CACHE_KEY, html);
+            cache.withFlags(IGNORE_RETURN_VALUES).put(CACHE_KEY, html);
         }
         return html;
     }
@@ -74,6 +77,6 @@ public class HomePage {
      */
     public void clearHtml(@Observes(
             during = TransactionPhase.AFTER_SUCCESS) HomeContentChangedEvent event) {
-        cache.remove(CACHE_KEY);
+        cache.withFlags(IGNORE_RETURN_VALUES).remove(CACHE_KEY);
     }
 }
