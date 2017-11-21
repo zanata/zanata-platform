@@ -47,7 +47,10 @@ table.glossaryEntry .hidesmall.td-2 .textInput {
 
 .glossaryHeader-base {
   background-color: #fff;
-  padding-top: @spacing-rq;
+}
+
+h1.glossaryHeader-title .iconLocked {
+  vertical-align: baseline;
 }
 
 .glossaryTable {
@@ -65,7 +68,6 @@ table.glossaryEntry .hidesmall.td-2 .textInput {
 
 .glossaryHeader-title {
   font-size: var(--GlossaryTitle-fontSize);
-  margin-top: @spacing-heading;
   margin-right: @spacing-rh;
 }
 
@@ -191,6 +193,11 @@ span.hidden-lesm.glossaryRow {
 .glossaryPaging .u-textMuted {
   color: #A2B3BE;
   margin-left: @spacing-re;
+}
+
+.glossaryButtons {
+display: inline-flex;
+float: right;
 }
 
 .glossarySearch {
@@ -330,7 +337,7 @@ td.languageSelect .selectClear {
     margin-top: @spacing-rh;
   }
   .glossaryHeader {
-    padding-top: 8rem;
+    padding-top: 11rem;
   }
   .glossaryList {
     margin-top: @spacing-xlarge;
@@ -351,7 +358,7 @@ td.languageSelect .selectClear {
 
 @media (min-width: 29.376rem) {
   .glossaryHeader {
-    padding-top: 9rem;
+    padding-top: 12rem;
   }
   .glossaryList {
     margin-top: @spacing-xlarge;

@@ -4,22 +4,16 @@
   --LanguagesLangCode-fontSize: 0.9rem;
 }
 
-.languages h1 {
-  padding-top: 0.75rem;
-  padding-bottom: 1rem;
-}
-
 .toolbar {
   padding-top: @spacing-hr;
   flex-direction: row;
   display: inline-flex;
   flex-wrap: wrap;
-  width: 100%;
+  widt: 90%;
   line-height: 2rem;
 }
 
 #newLang .react-autosuggest__container input {
-  vertical-align: sub;
   width: auto;
 }
 
@@ -71,7 +65,6 @@ span.languageCode {
 
 .showItems span {
   margin-right: @spacing-small-horizontal;
-  margin-left: @spacing-base-and-a-half;
 }
 
 .showItems {
@@ -163,13 +156,27 @@ span.languageCode {
   padding-left: @spacing-base;
 }
 
+.left-form {
+  padding-left: 0;
+ }
+
 #newLang .has-feedback .form-control, #newLang .form-control {
   width: 96%;
   padding-right: 0;
 }
 
-@media (min-width: @screen-md-min) {
-  .showItems {
-    clear: none !important;
-  }
+table#languages-table {
+  margin: 0;
+  width: 100%;
 }
+
+select#sort-options {
+  width: inherit;
+}
+
+@media (min-width: @screen-md-min) {
+ .toolbar {
+   width: 100%;
+ }
+}
+
