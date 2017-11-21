@@ -9,7 +9,7 @@
   flex-direction: row;
   display: inline-flex;
   flex-wrap: wrap;
-  widt: 90%;
+  width: 90%;
   line-height: 2rem;
 }
 
@@ -28,6 +28,7 @@ span.languageCode {
 
 .toolbar .sortItems {
   padding-right: 0;
+  margin-bottom: 1rem;
 }
 
 .toolbar .showItems {
@@ -37,8 +38,9 @@ span.languageCode {
 }
 
 .toolbar .pageCount {
-  padding-bottom: @spacing-base;
+  margin-bottom: @spacing-base;
   padding-left: 0;
+
 }
 
 .searchBox {
@@ -54,11 +56,16 @@ span.languageCode {
 
 .showItems .form-control {
   margin-left: @spacing-label-large;
+  padding: 0;
 }
 
 .sortItems {
   margin-left: @spacing-base;
   height: 2rem;
+}
+
+.sortItems .form-control {
+  padding: 0;
 }
 
 .showItems span {
@@ -81,6 +88,7 @@ span.languageCode {
 .toolbar .pageCount {
   padding-bottom: @spacing-large-horizontal;
   padding-left: 0;
+  padding-bottom: @spacing-small-horizontal;
 }
 
 .searchBox svg {
