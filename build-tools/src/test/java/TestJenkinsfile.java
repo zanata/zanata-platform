@@ -138,10 +138,11 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                                 "6543516846846146541645265465464654264641 refs/pull/234/head";
                     } else if (script.endsWith("refs/heads/*")) {
                         return "fc2b7c527e4401c03bcaf2833739d16e77698ab6 refs/heads/master\n" +
-                                "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/feature-branch";
+                               "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/heads/feature-branch";
                     } else if (script.contains("refs/tags/")) {
                         // TODO extract the requested tag and return it
-                        return "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/tags/v0.3.0";
+                        return "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/tags/v0.3.0\n" +
+                               "5c612d80bfd7bf56cd97e8856fa2bed5f0d6e68f refs/tags/v0.3.1";
                     } else if (script.matches("refs/pull/.*/head")) {
                         return "b0d3e2ff4696f2702f4b4fbac3b59b6cf9a76790 refs/pull/123/head";
                     } else {
