@@ -21,7 +21,7 @@
     <!--jboss port offset -->
     <cargo.port.offset>0</cargo.port.offset>
     <!-- This may be changed by the JBOSS_HTTP_PORT profile -->
-    <!-- This needs to agree with the http socket-binding in standalone.xml -->
+    <!-- This needs to agree with the http socket-binding in standalone*.xml -->
     <cargo.servlet.port>8180</cargo.servlet.port>
     <cargo.jboss.management-http.port>10090</cargo.jboss.management-http.port>
     <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
@@ -1116,7 +1116,7 @@
             </files>
 
             <properties>
-              <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
+              <cargo.jboss.configuration>standalone-full-ha</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
               <!-- These properties will be interpolated by Cargo into the configfiles above -->
