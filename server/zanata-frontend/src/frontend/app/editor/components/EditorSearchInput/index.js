@@ -21,8 +21,7 @@
 
 import cx from 'classnames'
 import { connect } from 'react-redux'
-import { Icon } from '../../../components'
-import IconButton from '../IconButton'
+import Icon from '../../../components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'
@@ -168,10 +167,12 @@ export class EditorSearchInput extends Component {
   clearButtonElement = () => {
     return (
       <span className="EditorInputGroup-addon">
-        <IconButton icon="cross"
-          title="Clear search"
-          iconSize="n1"
-          onClick={this.clearSearch} />
+        <Button className='btn-link'
+          onClick={this.clearSearch}>
+          <Icon name="cross"
+            title="Clear search"
+            className="n1" />
+        </Button>
       </span>
     )
   }
@@ -195,11 +196,6 @@ export class EditorSearchInput extends Component {
           cx('EditorInputGroup EditorInputGroup--outlined' +
               ' EditorInputGroup--rounded',
             { 'is-focused': this.state.focused })}>
-          <span className="EditorInputGroup-addon"
-            onClick={this.focusInput}>
-            <Icon name="search" title="Search"
-              className="n1" />
-          </span>
           <input ref={this.setInput}
             type="search"
             placeholder="Search source and target text"
@@ -209,7 +205,7 @@ export class EditorSearchInput extends Component {
             onClick={this.state.open}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           {this.clearButtonElement()}
-          <span className="EditorInputGroup-addon btn-xs btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link n1"
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
