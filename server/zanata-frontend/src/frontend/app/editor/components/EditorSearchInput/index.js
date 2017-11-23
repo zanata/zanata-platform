@@ -21,7 +21,7 @@
 
 import cx from 'classnames'
 import { connect } from 'react-redux'
-import Icon from '../../../components'
+import { Icon } from '../../../components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'
@@ -168,10 +168,9 @@ export class EditorSearchInput extends Component {
     return (
       <span className="EditorInputGroup-addon">
         <Button className='btn-link'
+          title="Clear search"
           onClick={this.clearSearch}>
-          <Icon name="cross"
-            title="Clear search"
-            className="n1" />
+          <Icon name="cross" className="n1" />
         </Button>
       </span>
     )

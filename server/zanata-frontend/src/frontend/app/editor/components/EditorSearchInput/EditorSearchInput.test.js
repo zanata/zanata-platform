@@ -6,7 +6,6 @@ import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
 import { EditorSearchInput } from '.'
 import { Icon } from '../../../components'
-import IconButton from '../IconButton'
 import { Panel, Button } from 'react-bootstrap'
 
 const callback = () => {}
@@ -33,9 +32,6 @@ describe('EditorSearchInputTest', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div>
         <div className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded">
-          <span className="EditorInputGroup-addon">
-            <Icon name="search" title="Search" className="n1" />
-          </span>
           <input type="search"
             placeholder="Search source and target text"
             maxLength="1000"
@@ -43,12 +39,13 @@ describe('EditorSearchInputTest', () => {
             onChange={callback}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           <span className="EditorInputGroup-addon">
-            <IconButton icon="cross"
+            <Button className='btn-link'
               title="Clear search"
-              iconSize="n1"
-              onClick={callback} />
+              onClick={callback}>
+              <Icon name="cross" className="n1" />
+            </Button>
           </span>
-          <span className="EditorInputGroup-addon btn-xs btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link n1"
             >Hide advanced</span>
         </div>
         <Panel collapsible expanded>
