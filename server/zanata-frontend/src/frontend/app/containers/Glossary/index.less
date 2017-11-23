@@ -17,6 +17,14 @@ table.glossaryEntry .hidesmall.td-2 .textInput {
   width: 80%;
 }
 
+.glossarySelect .Select-value {
+  padding-top: 0.5rem;
+}
+
+table.glossaryEntry .td-3.tight .textInput.textState {
+  max-width: 12rem;
+}
+
 .glossaryHeader {
   flex-direction: row-reverse;
   -webkit-flex-direction: row-reverse;
@@ -148,7 +156,7 @@ span.hidden-lesm.glossaryRow {
 }
 
 .glossarySelect {
-  position: absolute;
+  position: relative;
   z-index: 999;
 }
 
@@ -312,6 +320,10 @@ td.languageSelect .selectClear {
   display: inline-block;
   margin-left: @spacing-rh;
   vertical-align: text-bottom;
+}
+
+.projectLink .row .hidden-lesm {
+  vertical-align: bottom;
 }
 
 #react-select-2--value {
