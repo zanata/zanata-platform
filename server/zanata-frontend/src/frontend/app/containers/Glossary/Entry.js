@@ -140,7 +140,7 @@ class Entry extends Component {
                 </EditableText>)
               }
             </td>
-            <td className='td-3'>
+            <td className='td-3 tight'>
               {secondColumnContent}
             </td>
             <td className='hidesmall td-3'>
