@@ -5,6 +5,14 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
 
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+## 4.3.2
+##### Bug Fixes
+ * [ZNTA-2272](https://zanata.atlassian.net/browse/ZNTA-2272) - Remove Unused serialVersionUID
+ * [ZNTA-2266](https://zanata.atlassian.net/browse/ZNTA-2266) - Failing JS unit tests should fail the build
+ * [ZNTA-2256](https://zanata.atlassian.net/browse/ZNTA-2256) - Eslint error in frontend must fail the build
+
+-----------------------
+
 ## 4.3.1
 ##### Bug Fixes
  * [ZNTA-2238](https://zanata.atlassian.net/browse/ZNTA-2238) - Positional printf syntax issue

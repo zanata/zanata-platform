@@ -10,11 +10,11 @@ public static final String PROJ_URL = 'https://github.com/zanata/zanata-platform
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
 @Field
-public static final String PIPELINE_LIBRARY_BRANCH = 'v0.3.0'
+public static final String PIPELINE_LIBRARY_BRANCH = 'v0.3.1'
 
 // GROOVY-3278:
 //   Using referenced String constant as value of Annotation causes compile error
-@Library('zanata-pipeline-library@v0.3.0')
+@Library('zanata-pipeline-library@v0.3.1')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
 import org.zanata.jenkins.ScmGit
@@ -57,7 +57,7 @@ node {
   mainScmGit = new ScmGit(env, steps, PROJ_URL)
   mainScmGit.init(env.BRANCH_NAME)
   notify = new Notifier(env, steps, currentBuild,
-      pipelineLibraryScmGit, mainScmGit, 'Jenkinsfile',
+    pipelineLibraryScmGit, mainScmGit, (env.GITHUB_COMMIT_CONTEXT) ?: 'Jenkinsfile',
   )
   defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
   // eg github-zanata-org/zanata-platform/update-Jenkinsfile
