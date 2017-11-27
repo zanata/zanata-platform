@@ -5,7 +5,6 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
 import { EditorSearchInput } from '.'
-import { Icon } from '../../../components'
 import { Panel, Button } from 'react-bootstrap'
 
 const callback = () => {}
@@ -38,13 +37,6 @@ describe('EditorSearchInputTest', () => {
             value="it was the worst of"
             onChange={callback}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
-          <span className="EditorInputGroup-addon">
-            <Button className='btn-link'
-              title="Clear search"
-              onClick={callback}>
-              <Icon name="cross" className="n1" />
-            </Button>
-          </span>
           <span className="EditorInputGroup-addon btn-xs btn-link n1"
             >Hide advanced</span>
         </div>
@@ -165,7 +157,7 @@ describe('EditorSearchInputTest', () => {
 
     const [ textInput, resourceIdInput, lastModifiedByInput ] =
         TestUtils.scryRenderedDOMComponentsWithTag(inputWithText, 'input')
-    const [ closeButton, clearAdvancedButton ] =
+    const [ clearAdvancedButton ] =
         TestUtils.scryRenderedDOMComponentsWithTag(inputWithText, 'button')
     const [ advancedSearchToggle ] =
         TestUtils.scryRenderedDOMComponentsWithClass(inputWithText,
@@ -192,11 +184,6 @@ describe('EditorSearchInputTest', () => {
     TestUtils.Simulate.change(lastModifiedByInput)
     expect(updateSearchPayload).toEqual({ lastModifiedByUser: 'damason' },
         'Changing advanced search fields should update the appropriate field')
-
-    TestUtils.Simulate.click(closeButton)
-    expect(updateSearchPayload).toEqual(
-      { searchString: '' },
-      'Close button click should clear text')
 
     TestUtils.Simulate.click(clearAdvancedButton)
     expect(updateSearchPayload).toEqual({
