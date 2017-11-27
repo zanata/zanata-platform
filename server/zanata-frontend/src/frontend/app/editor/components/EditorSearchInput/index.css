@@ -12,6 +12,10 @@
   flex: 2 0 16rem;
 }
 
+.InputEditorSearch .EditorInputGroup-addon.btn-xs {
+  padding-left: 1rem;
+}
+
 .InputEditorSearch input {
   font-size: 0.875em;
 }
@@ -100,8 +104,3 @@ button.AdvSearch-clear {
   padding-top: 0.75em;
 }
 
-@media (max-width: 622px) {
-  .u-sizeHeight-1_1-2 {
-    height: fit-content !important;
-  }
-}

@@ -21,7 +21,6 @@
 
 import cx from 'classnames'
 import { connect } from 'react-redux'
-import { Icon } from '../../../components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'
@@ -164,18 +163,6 @@ export class EditorSearchInput extends Component {
     this.props.updateSearch({ searchString: event.target.value })
   }
 
-  clearButtonElement = () => {
-    return (
-      <span className="EditorInputGroup-addon">
-        <Button className='btn-link'
-          title="Clear search"
-          onClick={this.clearSearch}>
-          <Icon name="cross" className="n1" />
-        </Button>
-      </span>
-    )
-  }
-
   render () {
     const { showAdvanced } = this.props
 
@@ -203,7 +190,6 @@ export class EditorSearchInput extends Component {
             onChange={this.updateSearchText}
             onClick={this.state.open}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
-          {this.clearButtonElement()}
           <span className="EditorInputGroup-addon btn-xs btn-link n1"
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>

@@ -57,7 +57,7 @@ table.glossaryEntry .td-3 {
   right: 0;
   padding-left: @spacing-rq;
   padding-right: @spacing-rq;
-  position: fixed;
+  position: static;
   left: 0;
   z-index: 100;
 }
@@ -383,15 +383,8 @@ td.languageSelect .selectClear {
 }
 
 @media (min-width: 29.376rem) {
-  .glossaryHeader {
-    padding-top: 12rem;
-  }
   .glossaryList {
     margin-top: @spacing-xlarge;
-  }
-  .glossaryHeader-base {
-    margin-left: @spacing-base-and-a-half;
-    margin-right: @spacing-base;
   }
   .glossaryHeader-title {
     margin-right: @spacing-base;
