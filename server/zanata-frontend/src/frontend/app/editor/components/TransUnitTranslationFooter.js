@@ -204,7 +204,7 @@ class TransUnitTranslationFooter extends React.Component {
                       buttonClassByStatus[selectedButtonStatus])}
         title="Save as…">
         <div className="Dropdown-toggleIcon">
-          <Icon name="chevron-down" className="n1" title="Save as…" />
+          <Icon name="chevron-down" className="n2" title="Save as…" />
         </div>
       </Button>
       : undefined
