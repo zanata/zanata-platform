@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { LoaderText, Modal, Select } from '../../components'
-import { Button, ButtonGroup } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 
 import {
   glossaryUpdateExportType,
@@ -78,7 +78,7 @@ class ExportModal extends Component {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='u-pullRight'>
+          <div className='u-pullRight'>
             <Button bsStyle='link'
               disabled={isExporting}
               onClick={() => handleExportFileDisplay(false)}>
@@ -92,7 +92,7 @@ class ExportModal extends Component {
                 Export
               </LoaderText>
             </Button>
-          </ButtonGroup>
+          </div>
         </Modal.Footer>
       </Modal>)
     /* eslint-enable react/jsx-no-bind */

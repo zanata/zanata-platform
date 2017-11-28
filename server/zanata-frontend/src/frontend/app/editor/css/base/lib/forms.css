@@ -68,7 +68,6 @@ input[type="url"],
 textarea {
   -webkit-appearance: none;
   outline: none;
-  box-sizing: border-box;
 }
 
 .u-inputFlat {

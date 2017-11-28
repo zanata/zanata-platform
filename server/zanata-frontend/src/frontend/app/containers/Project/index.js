@@ -42,7 +42,7 @@ class Project extends Component {
   render () {
     const { params } = this.props
     return (
-      <div className='page wideView' id='sidebarVersion'>
+      <div className='wideView' id='sidebarVersion'>
         <div className='u-centerBlock'>
           <TMXExportModal project={params.project} />
         </div>

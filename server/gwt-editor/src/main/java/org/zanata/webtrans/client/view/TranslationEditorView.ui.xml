@@ -31,7 +31,7 @@
     .right-refresh {
       position: absolute;
       right: 0;
-      top: 0.6em;
+      top: 0.1em;
     }
 
     .right-nav {

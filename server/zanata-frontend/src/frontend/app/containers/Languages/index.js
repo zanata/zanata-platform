@@ -103,7 +103,7 @@ class Languages extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='page wideView languages'>
+      <div className='wideView languages'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -131,7 +131,7 @@ class Languages extends Component {
                 <NewLanguageModal />
               </div>
             }
-            <div className='col-xs-12'>
+            <div>
               {loading
                 ? <div className='containerContentView'>
                   <span className='listInline'>
@@ -193,7 +193,7 @@ class Languages extends Component {
                   </div>
                 }
                 {!loading && !noResults &&
-                  <div className='left-form u-tablePadding col-xs-12'>
+                  <div className='left-form'>
                     <table className='table' id='languages-table'>
                       <thead>
                         <tr className='hidden'>

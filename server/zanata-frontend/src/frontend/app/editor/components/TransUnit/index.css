@@ -130,9 +130,7 @@
   position: absolute;
   right: 0;
   left: 0;
-  width: 100%;
   padding-right: calc(var(--TransUnit-rhythm) * .75);
-  padding-left: calc(var(--TransUnit-rhythm) * .75);
   cursor: default;
 }
 
@@ -182,7 +180,7 @@ h3.TransUnit-heading {
   font-size: var(--TransUnit-text-font-size);
   line-height: var(--TransUnit-text-line-height);
   overflow: hidden;
-  width: 100%;
+  width: 90%;
   min-height: var(--TransUnit-rhythm);
   margin: 0;
   padding: calc(var(--TransUnit-rhythm) * .75);
@@ -194,7 +192,6 @@ h3.TransUnit-heading {
   border: none;
   background-color: transparent;
   box-shadow: none;
-
   -webkit-appearance: none;
 }
 
@@ -299,6 +296,14 @@ h3.TransUnit-heading {
   text-align: center;
 }
 
+.TransUnit-panelHeader--source {
+  width: 95%;
+}
+
+.TransUnit-panelHeader--source h3.TransUnit-heading {
+  padding-left: 1.5rem !important;
+}
+
 .TransUnit-metaDataItem {
   line-height: calc(var(--TransUnit-rhythm) * .75);
 }
@@ -384,7 +389,6 @@ h3.TransUnit-heading {
   .TransUnit-panelHeader--translation,
   .TransUnit-panelFooter--translation {
     padding-left: calc(var(--TransUnit-rhythm) * 1.25);
-    left: auto;
   }
 
   .TransUnit-status,

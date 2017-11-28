@@ -131,7 +131,7 @@ class UserProfile extends Component {
       </div>)
     }
     return (
-      <div className='page'>
+      <div>
         {notification &&
           (<Notification
             severity={notification.severity}

@@ -26,7 +26,7 @@
       <i class="i--comment i--large txt--neutral" />
       <span class="is-invisible">Comment</span>
     </div>
-    <div class="g__item">
+    <div class="g__item revision__box">
       <g:TextArea name="comment" styleName="basic-input"
         ui:field="commentTextArea" />
     </div>

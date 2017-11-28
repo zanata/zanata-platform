@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
 import { EditableText, LoaderText, Modal } from '../../components'
-import { ButtonGroup, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import {
   glossaryToggleNewEntryModal,
   glossaryCreateNewEntry
@@ -124,7 +124,7 @@ class NewEntryModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonGroup className='u-pullRight'>
+          <div className='u-pullRight'>
             <Button bsStyle='link'
               disabled={isSaving}
               onClick={() => this.handleCancel()}>
@@ -142,7 +142,7 @@ class NewEntryModal extends Component {
                 Save
               </LoaderText>
             </Button>
-          </ButtonGroup>
+          </div>
         </Modal.Footer>
       </Modal>)
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */

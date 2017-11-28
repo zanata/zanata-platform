@@ -1,11 +1,23 @@
+:root {
+  --Input-color-dark: #546677;
+  --Input-color-mid: #20718A;
+}
+
 .InputEditorSearch {
   margin-left: 0.75em;
   margin-right: 1em;
   display: inline-flex;
-  font-size: 0.875em;
   padding-bottom: 1rem;
-  padding-top: 0.25rem;
+  padding-top: 0.15rem;
   flex: 2 0 16rem;
+}
+
+.InputEditorSearch .EditorInputGroup-addon.btn-xs {
+  padding-left: 1rem;
+}
+
+.InputEditorSearch input {
+  font-size: 0.875em;
 }
 
 .InputEditorSearch > div {
@@ -42,16 +54,21 @@
   margin-left: 0.375em;
 }
 
+.InputEditorSearch .EditorInputGroup {
+  width: 100%;
+}
+
 .InputEditorSearch .icon-help button span {
   vertical-align: bottom;
 }
 
 #EditorHeader .InputEditorSearch .EditorInputGroup-addon span.n1 {
   vertical-align: middle;
+  width: 6rem;
 }
 
-.EditorInputGroup-addon {
-  vertical-align: sub !important;
+.InputEditorSearch .EditorInputGroup-addon button {
+  color: var(--Input-color-dark);
 }
 
 li.InlineSearch-list {
@@ -62,7 +79,11 @@ li.InlineSearch-list {
 
 li.InlineSearch-list span {
   width: 60%;
-  color: #20718A;
+  color: var(--Input-color-mid);
+}
+
+.InlineSearch input {
+  width: 90%;
 }
 
 .InputEditorSearch .panel.panel-default {
@@ -83,8 +104,3 @@ button.AdvSearch-clear {
   padding-top: 0.75em;
 }
 
-@media (max-width: 622px) {
-  .u-sizeHeight-1_1-2 {
-    height: fit-content !important;
-  }
-}

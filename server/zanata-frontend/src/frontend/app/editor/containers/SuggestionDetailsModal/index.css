@@ -183,7 +183,7 @@
     color: var(--brand-primary);
 }
 
-.label {
+.modal-conten .label {
     font-size: 70%;
     font-weight: 600;
     display: inline;
