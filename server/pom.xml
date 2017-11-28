@@ -1964,20 +1964,6 @@
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
         <executions>
-          <execution>
-            <id>default</id>
-            <goals>
-              <!-- src/main/groovy disabled, because such code would be invisible to Kotlin classes -->
-              <!--<goal>addSources</goal>-->
-              <goal>addTestSources</goal>
-              <!--<goal>generateStubs</goal>-->
-              <!--<goal>compile</goal>-->
-              <goal>testGenerateStubs</goal>
-              <goal>testCompile</goal>
-              <!--<goal>removeStubs</goal>-->
-              <goal>removeTestStubs</goal>
-            </goals>
-          </execution>
           <!-- NB: This execution needs to be before antrun, because it
                creates the wildfly directory for the unzip tasks. -->
           <execution>
@@ -1989,7 +1975,7 @@
               <scripts>
                 <!-- Extracts app server and sets the Maven property
                 appserver.home (where the appserver is installed) -->
-                <script>file:///${project.basedir}/../etc/scripts/extractAppserver.groovy</script>
+                <script>${project.basedir}/../etc/scripts/extractAppserver.groovy</script>
               </scripts>
             </configuration>
           </execution>
@@ -2001,7 +1987,7 @@
             <configuration>
               <scripts>
                 <!-- run jboss cli script -->
-                <script>file:///${project.basedir}/../etc/scripts/runJbossCli.groovy</script>
+                <script>${project.basedir}/../etc/scripts/runJbossCli.groovy</script>
               </scripts>
             </configuration>
           </execution>
@@ -2304,7 +2290,7 @@
         <plugin>
           <groupId>org.codehaus.gmavenplus</groupId>
           <artifactId>gmavenplus-plugin</artifactId>
-          <version>1.5</version>
+          <version>1.6</version>
         </plugin>
       </plugins>
     </pluginManagement>
