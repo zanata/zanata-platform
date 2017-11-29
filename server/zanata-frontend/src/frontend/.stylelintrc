@@ -32,9 +32,7 @@
     "color-hex-length": "short",
     "font-family-name-quotes": "always-where-recommended",
     "function-max-empty-lines": 0,
-    "number-no-trailing-zeros": true,
     "string-quotes": "double",
-    "length-zero-no-unit": true,
     "unit-case": "lower",
     "value-list-comma-newline-before": "never-multi-line",
     "value-list-comma-newline-after": "never-multi-line",
@@ -56,7 +54,6 @@
     "at-rule-name-case": "lower",
     "at-rule-name-newline-after": "always-multi-line",
     "at-rule-name-space-after": "always",
-    "comment-whitespace-inside": "always",
     "max-empty-lines": 1,
     "no-eol-whitespace": true
   }
