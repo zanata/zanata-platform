@@ -356,7 +356,7 @@ public class EditorPage extends BasePage {
      */
     public EditorPage openValidationBox() {
         log.info("Click to open Validation panel");
-        getTargetValidationBox().click();
+        clickElement(existingElement(getTargetValidationBox(), By.tagName("a")));
         waitForAMoment().until(webDriver -> {
             String errorText = getValidationMessageCurrentTarget();
             return errorText.contains("Unexpected")
