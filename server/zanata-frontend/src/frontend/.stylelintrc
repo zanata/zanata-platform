@@ -57,7 +57,6 @@
     "at-rule-name-newline-after": "always-multi-line",
     "at-rule-name-space-after": "always",
     "comment-whitespace-inside": "always",
-    "indentation": 2,
     "max-empty-lines": 1,
     "no-eol-whitespace": true
   }
