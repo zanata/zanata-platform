@@ -14,9 +14,9 @@
   --Sidebar-no-content: #b3b3b3;
   --Sidebar-tabpane: #f5f6f7;
   --Sidebar-bold-text: 600;
-  --Sidebar-spacing-small: .375rem;
-  --Sidebar-spacing-large: .75rem;
-  --Sidebar-small-text: .875rem;
+  --Sidebar-spacing-small: 0.375rem;
+  --Sidebar-spacing-large: 0.75rem;
+  --Sidebar-small-text: 0.875rem;
   --Editor-color-translated: #5cca7b;
   --Editor-color-fuzzy: #E9DF1B;
   --Editor-color-approved: #03A6D7;
@@ -162,7 +162,7 @@ table {
 
 .table.GlossaryDetails-table>tbody>tr>td, .table.GlossaryDetails-table>tbody>tr>th, .table.GlossaryDetails-table>tfoot>tr>td, .table.GlossaryDetails-table>tfoot>tr>th, .table.GlossaryDetails-table>thead>tr>td, .table.GlossaryDetails-table>thead>tr>th {
   line-height: 1.42857143;
-  padding: .5rem;
+  padding: 0.5rem;
 }
 
 td.info-icon svg {
@@ -239,7 +239,7 @@ table.GlossaryDetails-table thead th {
 }
 
 .icon-comment svg {
-  margin-right: .1375em;
+  margin-right: 0.1375em;
 }
 
 .Glossary-noResults svg, .Search-enterText svg {
@@ -276,8 +276,8 @@ table td button.gButton--link {
 .tooltip {
   border-color: var(--Sidebar-panel-dark);
   display: block;
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: .857rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.857rem;
   font-style: normal;
   font-weight: 400;
   letter-spacing: normal;
@@ -314,7 +314,7 @@ table td button.gButton--link {
   border-radius: 3px;
   color: #fff;
   max-width: 15rem;
-  padding: .5em;
+  padding: 0.5em;
   text-align: center;
 }
 
@@ -345,7 +345,7 @@ span.loader span div {
 
 .panel-body {
   color: var(--Sidebar-panel-dark);
-  padding: .85em;
+  padding: 0.85em;
 }
 
 .panel-title {
@@ -358,7 +358,7 @@ span.loader span div {
 .panel.panel-side {
   background-color: #fff !important;
   border: solid 1px var(--Sidebar-border) !important;
-  padding: .5em;
+  padding: 0.5em;
 }
 
 .panel-heading {
@@ -373,8 +373,8 @@ span.loader span div {
 
 .panel-body h3 {
   color: var(--Sidebar-color-highlight);
-  margin-bottom: .714rem;
-  margin-top: .5em;
+  margin-bottom: 0.714rem;
+  margin-top: 0.5em;
 }
 
 .InlineSearch {

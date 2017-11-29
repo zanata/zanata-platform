@@ -85,7 +85,7 @@
 
 /* Pair with .Editor-content */
 .TransUnit-container.is-unit-selected .TransUnit {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 
@@ -265,7 +265,7 @@ h3.TransUnit-heading {
   height: 100%;
   content: '';
   background-color: #fff;
-  opacity: .6;
+  opacity: 0.6;
 }
 
 .TransUnit.is-focused .TransUnit-status:before {
@@ -277,7 +277,7 @@ h3.TransUnit-heading {
   top: calc(var(--TransUnit-rhythm) * -.75);
   padding-top: calc(var(--TransUnit-rhythm) * .75);
   padding-bottom: calc(var(--TransUnit-rhythm) * .75);
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .TransUnit.is-focused .TransUnit-status {
@@ -311,7 +311,7 @@ h3.TransUnit-heading {
 .TransUnit-metaDataButton {
   font-size: var(--TransUnit-metaDataButton-size);
   line-height: calc(var(--TransUnit-rhythm) * .4);
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .TransUnit-metaDataButton:hover {
