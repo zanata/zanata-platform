@@ -44,6 +44,9 @@ class Sidebar extends Component {
                     <Icon name='users' className='s1 iconSidebar' />
                   People</NavItem>
                   <NavItem eventKey={2} href=''>
+                    <Icon name='glossary' className='s1 iconSidebar' />
+                  Glossary</NavItem>
+                  <NavItem eventKey={2} href=''>
                     <Icon name='info' className='s1 iconSidebar' />
                   About</NavItem>
                   <NavItem eventKey={3} href=''>
