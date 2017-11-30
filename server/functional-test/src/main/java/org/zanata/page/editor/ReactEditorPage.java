@@ -52,8 +52,8 @@ public class ReactEditorPage extends CorePage {
 
     public ReactEditorPage switchToEditorWindow() {
         log.info("Switching to new window (from {})", getDriver().getWindowHandle());
-        waitForAMoment().until(it ->
-                getAllWindowHandles().size() > 1);
+        waitForAMoment().withMessage("second window to be present")
+                .until(it -> getAllWindowHandles().size() > 1);
         Iterator<String> allWindows = getAllWindowHandles().iterator();
         boolean foundEditor = false;
         while (allWindows.hasNext()) {
@@ -89,7 +89,8 @@ public class ReactEditorPage extends CorePage {
     }
 
     public void expectNumberOfTargets(int expected) {
-      waitForAMoment().until(it ->
-          getTransunitTargets().size() == expected);
+        log.info("Expect number of translation target is {}", expected);
+        waitForAMoment().withMessage("Expected number of targets is shown")
+                .until(it -> getTransunitTargets().size() == expected);
     }
 }

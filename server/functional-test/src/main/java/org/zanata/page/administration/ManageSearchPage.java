@@ -99,10 +99,8 @@ public class ManageSearchPage extends BasePage {
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
         clickElement(performButton);
-        waitForAMoment().until(it -> {
-            // The Abort button will display
-            return readyElement(cancelButton).isDisplayed();
-        });
+        waitForAMoment().withMessage("displayed abort button")
+                .until(it -> readyElement(cancelButton).isDisplayed());
         return new ManageSearchPage(getDriver());
     }
 

@@ -9,9 +9,9 @@
   --Button-color: transparent;
   --Button-disabled-opacity: 0.6;
   --Button-font: inherit;
-  --Button-padding: .375rem .75rem;
-  --Button-padding-snug: .375rem;
-  --Button-padding-small: .1875rem .75rem;
+  --Button-padding: 0.375rem 0.75rem;
+  --Button-padding-snug: 0.375rem;
+  --Button-padding-small: 0.1875rem 0.75rem;
   --Button-color-text-invert: #fff;
   --Button-color-default: color(#416988 tint(85%));
   --Button-color-primary: #4e9fdd;
