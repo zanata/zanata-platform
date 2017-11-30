@@ -62,8 +62,12 @@ class Sidebar extends Component {
                   <MenuItem eventKey='5'>Export project to TMX</MenuItem>
                 </DropdownButton>
                 <Well className="processing">
-                  <p><strong>Task title</strong></p>
-                  <p>Processing document 1 of 10 (12.50%)</p>
+                  <p className='task-title'>Task title</p>
+                  <p><span>Processing document&nbsp;
+                    <span className='count'>1 of 10</span>&nbsp;
+                    <span className='count-pc'>12.50%</span></span></p>
+                  <ProgressBar className='progress-striped'
+                               now={12.5} key={4} />
                   <Button className='btn-danger btn-sm'>Stop</Button>
                 </Well>
                 <div id='sidebarVersion'>

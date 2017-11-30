@@ -50,7 +50,6 @@
   flex-grow: 1;
   padding-bottom: @spacing-rh;
   position: relative;
-  width: 100%;
   padding-left: 1em;
   padding-right: 1em;
 }
@@ -100,8 +99,6 @@ li.active .iconSidebar svg {
 
 .processing.well {
   padding: var(--AccordionSectionTitle-paddingBottom);
-  width: 85%;
-  font-size: var(--Sidebar-fontSize);
   background-color: #fff;
   margin-top: 1rem;
 }
@@ -110,15 +107,30 @@ li.active .iconSidebar svg {
   margin-bottom: 0;
 }
 
+.processing.well p span {
+ font-size: 0.875rem;
+}
+
 .processing.well .btn-danger {
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
-.sidebarVersion-percent span.percent {
-  font-size: var(--Sidebar-fontSize);
+.task-title {
+  font-weight: 500;
+  font-size: 1rem;
 }
 
-.sidebarVersion-percent p {
+.sidebar-content p span.count,
+.sidebar-content p span.count-pc {
+  font-weight: 600;
+}
+
+.sidebar-content p span.count-pc {
+  color: @color-muted;
+  float: right;
+}
+
+.sidebarVersion-percent p  {
   margin-bottom: 0;
 }
 
@@ -149,7 +161,7 @@ li.active .iconSidebar svg {
   margin-bottom: @spacing-rq;
 }
 
-.sidebar .dropdown-menu, .sidebarVersion-settings {
+.sidebar .dropdown-menu {
   font-size: 0.857rem;
 }
 
