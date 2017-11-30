@@ -33,32 +33,52 @@ public class InactiveAccountPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(InactiveAccountPage.class);
 
+    private final By resendEmailButton = By.id("resendEmail");
+    private final By emailField = By.id("inactiveAccountForm:email:input:emailInput");
+    private final By updateEmailButton = By.id("inactiveAccountForm:email:input:updateEmail");
+
     public InactiveAccountPage(WebDriver driver) {
         super(driver);
     }
 
+    /**
+     * Press the Resend Activation Email button
+     * @return new HomePage
+     */
     public HomePage clickResendActivationEmail() {
         log.info("Click resend activation email");
-        clickElement(By.id("resendEmail"));
+        clickElement(resendEmailButton);
         return new HomePage(getDriver());
     }
 
+    /**
+     * Enter a string in the email field
+     * @param email string to enter
+     * @return new InactiveAccountPage
+     */
     public InactiveAccountPage enterNewEmail(String email) {
         log.info("Enter new email {}", email);
-        enterText(readyElement(
-                By.id("inactiveAccountForm:email:input:emailInput")), email);
+        enterText(readyElement(emailField), email);
         return new InactiveAccountPage(getDriver());
     }
 
+    /**
+     * Press the Update Email button
+     * @return new HomePage
+     */
     public HomePage clickUpdateEmail() {
         log.info("Click Update button");
-        clickElement(By.id("inactiveAccountForm:email:input:updateEmail"));
+        clickElement(updateEmailButton);
         return new HomePage(getDriver());
     }
 
+    /**
+     * Press the Update Email button, expecting failure
+     * @return new InactiveAccountPage
+     */
     public InactiveAccountPage updateEmailFailure() {
         log.info("Click Update button, expecting failure");
-        clickElement(By.id("inactiveAccountForm:email:input:updateEmail"));
+        clickElement(updateEmailButton);
         return new InactiveAccountPage(getDriver());
     }
 }
