@@ -67,7 +67,7 @@ class Sidebar extends Component {
                     <span className='count'>1 of 10</span>&nbsp;
                     <span className='count-pc'>12.50%</span></span></p>
                   <ProgressBar className='progress-striped'
-                               now={12.5} key={4} />
+                    now={12.5} key={4} />
                   <Button className='btn-danger btn-sm'>Stop</Button>
                 </Well>
                 <div id='sidebarVersion'>
