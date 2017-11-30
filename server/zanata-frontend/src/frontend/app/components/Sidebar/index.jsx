@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import { DropdownButton, MenuItem, ProgressBar,
-  Nav, NavItem } from 'react-bootstrap'
+import { Button, DropdownButton, MenuItem, ProgressBar,
+  Nav, NavItem, Well } from 'react-bootstrap'
 import { Icon } from '../../components'
 /**
  * Root component for Sidebar
@@ -59,8 +59,13 @@ class Sidebar extends Component {
                   <MenuItem eventKey='2'>Merge translations</MenuItem>
                   <MenuItem eventKey='3'>Copy to new version</MenuItem>
                   <MenuItem eventKey='4'>Download config file</MenuItem>
-                  <MenuItem eventKey='5'>Export version to TMX</MenuItem>
+                  <MenuItem eventKey='5'>Export project to TMX</MenuItem>
                 </DropdownButton>
+                <Well className="processing">
+                  <p><strong>Task title</strong></p>
+                  <p>Processing document 1 of 10 (12.50%)</p>
+                  <Button className='btn-danger btn-sm'>Stop</Button>
+                </Well>
                 <div id='sidebarVersion'>
                   <div className='sidebarVersion-inline'>
                     <span className='sidebarVersion-title'>
