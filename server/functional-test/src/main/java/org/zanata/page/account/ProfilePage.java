@@ -59,7 +59,8 @@ public class ProfilePage extends BasePage {
     public boolean expectContributionsMatrixVisible() {
         log.info("Wait for contributions matrix to be visible");
         try {
-            waitForAMoment().until(driver -> driver
+            waitForAMoment().withMessage("displayed contributions matrix")
+                    .until(driver -> driver
                     .findElements(contributionsBy).size() > 0);
         } catch (TimeoutException te) {
             log.info("Contributions matrix was not discovered");

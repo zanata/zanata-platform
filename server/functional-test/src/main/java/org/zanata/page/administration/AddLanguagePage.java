@@ -53,7 +53,8 @@ public class AddLanguagePage extends BasePage {
 
     public AddLanguagePage selectSearchLanguage(final String language) {
         log.info("Select language {}", language);
-        waitForAMoment().until(it -> {
+        waitForAMoment().withMessage("language to be clicked")
+                .until(it -> {
             List<WebElement> suggestions =
                     existingElement(suggestList).findElements(suggestRow);
             boolean clickedLanguage = false;

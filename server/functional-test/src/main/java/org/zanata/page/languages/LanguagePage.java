@@ -125,7 +125,8 @@ public class LanguagePage extends BasePage {
         log.info("Click Join");
         clickElement(joinLanguageTeamButton);
         // we need to wait for this join to finish before returning the page
-        waitForAMoment().until(driver ->
+        waitForAMoment().withMessage("join language button is not displayed")
+                .until(driver ->
                 driver.findElements(joinLanguageTeamButton).isEmpty());
         return new LanguagePage(getDriver());
     }
@@ -171,7 +172,8 @@ public class LanguagePage extends BasePage {
         permissionToAdd.add(TeamPermission.Translator);
         for (final TeamPermission permission : permissionToAdd) {
             log.info("Set checked as {}", permission.name());
-            waitForAMoment().until(it -> {
+            waitForAMoment().withMessage("click user role ".concat(permission.name()))
+                    .until(it -> {
                 WebElement inputDiv = getSearchedForUser(username)
                         .findElement(By.className("list--horizontal"))
                         .findElements(By.tagName("li"))
@@ -198,7 +200,7 @@ public class LanguagePage extends BasePage {
     }
 
     private WebElement getSearchedForUser(final String username) {
-        return waitForAMoment()
+        return waitForAMoment().withMessage("get user row")
                 .until(it -> {
                     WebElement list = readyElement(personTable)
                             .findElement(By.className("list--slat"));

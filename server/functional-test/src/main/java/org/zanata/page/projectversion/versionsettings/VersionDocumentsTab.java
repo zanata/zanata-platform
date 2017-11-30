@@ -70,7 +70,8 @@ public class VersionDocumentsTab extends VersionBasePage {
     public VersionDocumentsTab cancelUpload() {
         log.info("Click Cancel");
         clickElement(cancelUploadButton);
-        waitForAMoment().until(driver ->
+        waitForAMoment().withMessage("upload dialog is hidden")
+                .until(driver ->
                 !driver.findElement(By.id("file-upload-component"))
                         .isDisplayed()
         );
@@ -118,19 +119,8 @@ public class VersionDocumentsTab extends VersionBasePage {
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contain {}", document);
         for (String documentLabel : waitForAMoment()
-                .until(it -> {
-                    /*List<WebElement> elements =
-                            existingElement(By.id("settings-document_form"))
-                                    .findElement(By.tagName("ul"))
-                                    .findElements(By.xpath(
-                                            ".//li/label[@class=\'form__checkbox__label\']"));
-                    List<String> namesList = new ArrayList<String>();
-                    for (WebElement element : elements) {
-                        namesList.add(element.getText());
-                    }
-                    return namesList;*/
-                    return getSourceDocumentsList();
-                })) {
+                .withMessage("get source document list")
+                .until(it -> getSourceDocumentsList())) {
             if (documentLabel.contains(document)) {
                 return true;
             }

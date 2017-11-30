@@ -55,7 +55,8 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     public ProjectPermissionsTab
             selectSearchMaintainer(final String maintainer) {
         log.info("Select user {}", maintainer);
-        waitForAMoment().until(driver -> {
+        waitForAMoment().withMessage("click on maintainer user")
+                .until(driver -> {
             List<WebElement> searchResults =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "settings-permissions-form",
@@ -91,7 +92,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     private WebElement getMaintainerElementFromList(final String maintainer) {
-        return waitForAMoment()
+        return waitForAMoment().withMessage("get maintainer ".concat(maintainer))
                 .until(webDriver -> {
                     for (WebElement maintainersLi : getSettingsMaintainersElement()) {
                         String displayedUsername = getUsername(maintainersLi);

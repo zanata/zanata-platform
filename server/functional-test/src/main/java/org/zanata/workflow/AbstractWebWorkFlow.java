@@ -41,8 +41,9 @@ public class AbstractWebWorkFlow {
     public HomePage goToHome() {
         return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
             driver.get(hostUrl);
-            new BasePage(driver).waitForAMoment().until(
-                    it -> new HomePage(driver).isPageValid());
+            new BasePage(driver).waitForAMoment()
+                    .withMessage("home page is valid")
+                    .until(it -> new HomePage(driver).isPageValid());
             return new HomePage(driver);
         });
     }
