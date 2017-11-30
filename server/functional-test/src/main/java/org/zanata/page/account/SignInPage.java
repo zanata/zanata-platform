@@ -24,7 +24,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.CorePage;
 import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.page.googleaccount.GoogleAccountPage;
 
 public class SignInPage extends CorePage {
     private static final org.slf4j.Logger log =
@@ -36,7 +35,6 @@ public class SignInPage extends CorePage {
     private By passwordField = By.id("loginForm:password");
     private By signInButton = By.id("loginForm:loginButton");
     private By forgotPasswordLink = By.linkText("Forgot your password?");
-    private By googleButton = By.linkText("Google");
     private By signUpLink = By.linkText("Sign Up");
     private By titleLabel = By.className("heading--sub");
 
@@ -72,12 +70,6 @@ public class SignInPage extends CorePage {
         log.info("Click Sign In");
         clickElement(signInButton);
         return new InactiveAccountPage(getDriver());
-    }
-
-    public GoogleAccountPage selectGoogleOpenID() {
-        log.info("Click \'Google\'");
-        clickElement(googleButton);
-        return new GoogleAccountPage(getDriver());
     }
 
     public ResetPasswordPage goToResetPassword() {
