@@ -61,7 +61,7 @@ not conflict with the other frontend code
 .Toggle:hover > .Toggle-fakeCheckbox,
 .Toggle-checkbox:focus ~ .Toggle-fakeCheckbox {
   background-color: var(--Toggle-color-bg-active);
-  opacity: .2;
+  opacity: 0.2;
 }
 
 .Toggle-checkbox:checked ~ .Toggle-label,
@@ -77,5 +77,5 @@ not conflict with the other frontend code
 .Toggle:hover > .Toggle-checkbox:checked ~ .Toggle-fakeCheckbox,
 .Toggle-checkbox:checked:focus ~ .Toggle-fakeCheckbox,
 .Toggle.is-active:hover > .Toggle-fakeCheckbox {
-  opacity: .8;
+  opacity: 0.8;
 }

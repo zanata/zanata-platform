@@ -188,7 +188,7 @@ input, textarea, select, button  {
 
 .Editor-header,
 .Editor-loader {
-  transition: .2s all var(--Editor-transition-ease);
+  transition: 0.2s all var(--Editor-transition-ease);
 }
 
 .Editor-header.is-minimised {
