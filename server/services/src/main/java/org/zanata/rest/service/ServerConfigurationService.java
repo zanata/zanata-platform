@@ -178,7 +178,7 @@ public class ServerConfigurationService {
     }
 
     /**
-     * Converts HApplicationConfiguration to dto Configuration. It also contains
+     * Converts HApplicationConfiguration to Model Configuration. It also contains
      * a link to the configuration itself.
      */
     private static class ToConfigurationFunction

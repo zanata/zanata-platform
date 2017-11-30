@@ -101,7 +101,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
 
         assertThat(translationMemoryEditPage.getErrors())
                 .contains(TranslationMemoryPage.ID_UNAVAILABLE)
-                .as("The Id Is Not Available error is displayed");
+                .as("The ExplicitId Is Not Available error is displayed");
 
         translationMemoryEditPage = translationMemoryEditPage
                 .clickSaveAndExpectFailure();
@@ -111,7 +111,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
 
         assertThat(translationMemoryEditPage.getErrors())
                 .contains(TranslationMemoryPage.ID_UNAVAILABLE)
-                .as("The Id Is Not Available error is displayed");
+                .as("The ExplicitId Is Not Available error is displayed");
     }
 
     @Trace(summary = "The administrator can import data from a tmx data " +

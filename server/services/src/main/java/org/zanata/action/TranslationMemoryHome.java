@@ -61,7 +61,7 @@ public class TranslationMemoryHome extends EntityHome<TransMemory> {
 
     public boolean validateSlug(String slug, String componentId) {
         if (!slugEntityServiceImpl.isSlugAvailable(slug, TransMemory.class)) {
-            facesMessages.addToControl(componentId, "This Id is not available");
+            facesMessages.addToControl(componentId, "This ExplicitId is not available");
             return false;
         }
         return true;

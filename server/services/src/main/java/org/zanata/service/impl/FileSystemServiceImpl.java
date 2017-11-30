@@ -85,7 +85,7 @@ public class FileSystemServiceImpl implements FileSystemService {
         } finally {
             outputStream.close();
         }
-        // Generate the download Id based on the File name
+        // Generate the download ExplicitId based on the File name
 
         return descriptorFileName;
     }

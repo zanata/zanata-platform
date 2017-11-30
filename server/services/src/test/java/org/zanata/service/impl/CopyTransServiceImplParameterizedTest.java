@@ -297,7 +297,7 @@ public class CopyTransServiceImplParameterizedTest {
                 .setParameter("projectIteration", projectIteration)
                 .setParameter("docId", doc.getDocId())
                 .setParameter("resId", textFlow.getResId()).getSingleResult();
-        // Id: 3L for Locale de
+        // ExplicitId: 3L for Locale de
         HTextFlowTarget target = targetTextFlow.getTargets().get(3L);
         if (target != null) {
             assertThat(target.getSourceType())

@@ -1,0 +1,201 @@
+= Asciidoctor Demo
+////
+Big ol' comment
+
+sittin' right 'tween this here title 'n header metadata
+////
+Dan Allen <thedoc@asciidoctor.org>; Alex Eng <loones1595@gmail.com>
+:description: A demo of Asciidoctor. This document +
+              exercises numerous features of AsciiDoc +
+              to test Asciidoctor compliance.
+:backend: html5
+:library: Asciidoctor
+:stylesheet: asciidoc.css
+:idprefix:
+//:doctype: book
+//:sectids!:
+// the previous three attributes customize the generated output
+
+[role='lead']
+This is a demonstration of {library}. And this is the preamble of this document.
+
+[[purpose]]
+.Purpose
+****
+This document exercises many of the features of AsciiDoc to test the Asciidoctor implementation.
+****
+
+TIP: If you want the output to look familiar, copy (or link) the AsciiDoc stylesheet, asciidoc.css, to the output directory.
+
+NOTE: Items marked with TODO are either not yet supported or work in progress.
+
+[[first]]
+== First steps
+
+.Inline markup
+* single quotes around a phrase place 'emphasis'
+* astericks around a phrase make the text *bold*
+* double astericks around one or more **l**etters in a word make those letters bold
+* double underscore around a __sub__string in a word emphasize that substring.
+
+// separate two adjacent lists using a line comment (only the leading // is required)
+
+- escape characters are supported
+* for instance, you can escape a quote inside emphasized text like 'Here\'s Johnny!'
+- you can safely use reserved XML characters like <, > and &, which are escaped when rendering
+- force a space{sp}between inline elements using the \{sp\} attribute
+- hold text together with an intrinsic non-breaking{nbsp}space attribute, \{nbsp\}
+- handle words with unicode characters like in the name Gregory Romé.
+
+You can write text http://example.com[with inline links], optionally{sp}using an explicit link:http://example.com[link prefix]. In either case, the link can have a http://example.com?foo=bar&lang=en[query string].
+
+If you want to break a line +
+just end it in a {plus} sign +
+and continue typing on the next line.
+
+.Adjacent lists
+* this list
+* should join
+
+* to have
+* four items
+
+.Numbered lists (TODO)
+. These items
+. will be auto-numbered
+.. and can be nested
+. A numbered list can nest
+* unordered
+* list
+* items
+
+.Statement
+I swear I left it in 'Guy\'s' car. Let\'s go look for it.
+
+[[defs]]
+term::
+  definition
+[[another_term]]another term::
+
+  another definition, which can be literal (indented) or regular paragraph
+
+This should be a standalone paragraph, not grabbed by the definition list.
+
+[[nested]]
+* first level
+written on two lines
+* first level
++
+....
+with this literal text
+....
++
+** second level
+*** third level
+- fourth level (TODO)
+* back to +
+first level
+
+// this is just a comment
+
+Let's make a horizontal rule...
+
+'''
+
+then take a break.
+
+////
+We'll be right with you...
+
+after this brief interruption.
+////
+
+== We're back!
+
+Want to see a image:images/tiger.png[Tiger]? (TODO)
+
+Do you feel more safe with the tiger in a box?
+
+.Tiger in a box
+image::images/tiger.png[]
+
+include::include.asciidoc[]
+
+.Asciidoctor usage example, should contain 3 lines (TODO)
+[source, ruby]
+----
+doc = Asciidoctor::Document.new("*This* is it!", :header_footer => false)
+
+puts doc.render
+----
+
+Here's what it outputs (using the built-in templates):
+
+....
+<div class='paragraph'>
+  <p><strong>This</strong> is it!</p>
+</div>
+....
+
+=== Quotes
+
+____
+AsciiDoc is so powerful!
+____
+
+This verse comes to mind.
+
+[verse]
+La la la
+
+Here's another quote:
+
+[quote, Sir Arthur Conan Doyle, The Adventures of Sherlock Holmes]
+____
+When you have eliminated all which is impossible, then whatever remains, however improbable, must be the truth.
+____
+
+== Getting Literal
+
+ Want to get literal? Just prefix a line with a space (just one will do).
+
+....
+I'll join that party, too.
+....
+
+. first rule (yeah!)
+. second rule, looking `so mono`
+
+== Tables
+
+[options="header"]
+.Applications
+|===
+|Name |Category |Description
+|Firefox |Browser |Mozilla Firefox is an open-source web browser.
+It's designed for standards compliance,
+performance, portability.
+|Arquillian |Testing |An innovative and highly extensible testing platform.
+Empowers developers to easily create real, automated tests.
+|===
+
+// This attribute line will get reattached to the next block
+// despite being followed by a trailing blank line
+[id='wrapup']
+
+== Wrap-up
+
+NOTE: AsciiDoc is quite cool, you should try it!
+
+// A fix for these last two admonitions is in progress.
+
+.AsciiDoc info
+[TIP]
+=====
+Go to this URL to learn more about it:
+
+* http://asciidoc.org
+=====
+
+[NOTE]
+One more thing. Happy documenting!

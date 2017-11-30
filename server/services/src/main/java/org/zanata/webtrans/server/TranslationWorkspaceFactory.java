@@ -66,7 +66,7 @@ public class TranslationWorkspaceFactory implements Serializable {
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
         if (projectIteration == null) {
-            throw new NoSuchWorkspaceException("Invalid workspace Id");
+            throw new NoSuchWorkspaceException("Invalid workspace ExplicitId");
         }
         HProject project = projectIteration.getProject();
         if (project.getStatus() == EntityStatus.OBSOLETE) {

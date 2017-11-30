@@ -48,7 +48,7 @@ public class MigrateDataToHCredentials implements CustomTaskChange {
 
     @Override
     public void execute(Database database) throws CustomChangeException {
-        // (Only Open Id for now)
+        // (Only Open ExplicitId for now)
         if (dbAuthType.equals("OPENID")) {
             JdbcConnection conn = (JdbcConnection) database.getConnection();
             String query = "select acc.id, acc.username, p.email, acc.creationDate, acc.lastChanged "

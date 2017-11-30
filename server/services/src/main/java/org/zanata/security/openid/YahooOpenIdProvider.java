@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import javax.enterprise.inject.Alternative;
 
 /**
- * Yahoo Open Id provider.
+ * Yahoo Open ExplicitId provider.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

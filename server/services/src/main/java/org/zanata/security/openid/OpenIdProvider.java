@@ -27,7 +27,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
- * Open Id provider interface.
+ * Open ExplicitId provider interface.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -66,7 +66,7 @@ public interface OpenIdProvider extends Serializable {
     String getAliasForExtension(MessageExtension ext);
 
     /**
-     * Returns the email address as returned by the open Id provider upon
+     * Returns the email address as returned by the open ExplicitId provider upon
      * authentication.
      *
      * @param authSuccess
@@ -76,7 +76,7 @@ public interface OpenIdProvider extends Serializable {
     String getEmail(AuthSuccess authSuccess);
 
     /**
-     * Returns the user name as returned by the open Id provider upon
+     * Returns the user name as returned by the open ExplicitId provider upon
      * authentication.
      *
      * @param authSuccess
@@ -86,7 +86,7 @@ public interface OpenIdProvider extends Serializable {
     String getUsername(AuthSuccess authSuccess);
 
     /**
-     * Returns the Full Name as returned by the open Id provider upon
+     * Returns the Full Name as returned by the open ExplicitId provider upon
      * authentication.
      *
      * @param authSuccess

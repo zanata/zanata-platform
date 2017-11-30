@@ -1792,7 +1792,7 @@
       <version>1.4</version>
     </dependency>
     <dependency>
-      <!-- New group Id -->
+      <!-- New group ExplicitId -->
       <groupId>com.io7m.xom</groupId>
       <artifactId>xom</artifactId>
       <exclusions>

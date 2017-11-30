@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.xml.sax.InputSource;
+import org.zanata.adapter.AsciidocAdapter;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.GettextAdapter;
@@ -66,6 +67,8 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static org.zanata.common.DocumentType.ASCIIDOC;
 import static org.zanata.common.DocumentType.GETTEXT;
 import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;
@@ -116,6 +119,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         DOCTYPEMAP.put(XLIFF, XliffAdapter.class);
         DOCTYPEMAP.put(GETTEXT, GettextAdapter.class);
         DOCTYPEMAP.put(TS, TSAdapter.class);
+        DOCTYPEMAP.put(ASCIIDOC, AsciidocAdapter.class);
     }
     private static Set<String> SUPPORTED_EXTENSIONS =
             buildSupportedExtensionSet();

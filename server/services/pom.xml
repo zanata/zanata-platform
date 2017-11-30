@@ -308,6 +308,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.asciidoctor</groupId>
+      <artifactId>asciidoctorj</artifactId>
+      <version>1.6.0-alpha.6</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
     </dependency>
@@ -1435,7 +1441,7 @@
       <version>1.4</version>
     </dependency>
     <dependency>
-      <!-- New group Id -->
+      <!-- New group ExplicitId -->
       <groupId>com.io7m.xom</groupId>
       <artifactId>xom</artifactId>
       <exclusions>

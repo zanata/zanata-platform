@@ -21,7 +21,7 @@
 package org.zanata.security.openid;
 
 /**
- * Open Id provider types specifically handled in the system.
+ * Open ExplicitId provider types specifically handled in the system.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

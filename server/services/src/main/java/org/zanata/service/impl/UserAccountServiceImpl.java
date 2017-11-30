@@ -147,7 +147,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                 .setParameter("currentUsername", currentUsername);
         updateQuery.setComment("UserAccountServiceImpl.editUsername");
         updateQuery.executeUpdate();
-        // Because a Natural Id was modified:
+        // Because a Natural ExplicitId was modified:
         session.getSessionFactory().getCache()
                 .evictQueryRegion(AccountDAO.REGION);
     }

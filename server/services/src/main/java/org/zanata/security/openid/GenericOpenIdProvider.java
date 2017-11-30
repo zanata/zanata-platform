@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Open Id Provider for most Open Id services.
+ * Open ExplicitId Provider for most Open ExplicitId services.
  *
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -45,12 +45,12 @@ public class GenericOpenIdProvider implements OpenIdProvider {
 
     @Override
     public String getOpenId(String username) {
-        return username; // The user name should be the open Id
+        return username; // The user name should be the open ExplicitId
     }
 
     @Override
     public boolean accepts(String openId) {
-        return true; // Any url is a valid open Id
+        return true; // Any url is a valid open ExplicitId
     }
 
     @Override

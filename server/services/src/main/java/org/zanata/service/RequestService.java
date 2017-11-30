@@ -59,7 +59,7 @@ public interface RequestService extends Serializable {
 
     /**
      * Update join language request
-     * @param requestId - Language request Id
+     * @param requestId - Language request ExplicitId
      * @param actor
      * @param state
      * @param comment

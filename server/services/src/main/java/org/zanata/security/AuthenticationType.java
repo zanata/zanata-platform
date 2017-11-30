@@ -30,7 +30,7 @@ public enum AuthenticationType {
     INTERNAL,
     /* Kerberos authentication. Ticket or form based. */
     KERBEROS,
-    /* Open Id authentication */
+    /* Open ExplicitId authentication */
     OPENID,
     /* Any other custom username & password-based jaas authentication mechanism */
     JAAS,

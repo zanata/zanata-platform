@@ -146,7 +146,7 @@ public class LoginAction implements Serializable {
      * Only for open id.
      *
      * @param authProvider
-     *            Open Id authentication provider.
+     *            Open ExplicitId authentication provider.
      */
     public String openIdLogin(String authProvider) {
         OpenIdProviderType providerType =

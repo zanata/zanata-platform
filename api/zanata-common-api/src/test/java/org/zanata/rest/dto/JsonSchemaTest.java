@@ -116,7 +116,7 @@ public class JsonSchemaTest {
         JsonSchema jsonSchemaWithJaxb = mixedMapper.generateJsonSchema(
                 dtoClass,
                 mixedConfig);
-        // this is to test, if any dto javabean property has a name that is
+        // this is to test, if any Model javabean property has a name that is
         // different from the name in @XmlElement, we have a corresponding
         // @JsonProperty to make sure the JSON name is controlled. At this
         // stage, it's okay not to have a @JsonProperty as long as the javabean

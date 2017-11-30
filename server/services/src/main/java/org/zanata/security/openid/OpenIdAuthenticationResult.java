@@ -23,7 +23,7 @@ package org.zanata.security.openid;
 import java.io.Serializable;
 
 /**
- * Contains results of an open Id authentication. It may also include user info
+ * Contains results of an open ExplicitId authentication. It may also include user info
  * returned by the open id provider like email, user name, etc.
  *
  * @author Carlos Munoz

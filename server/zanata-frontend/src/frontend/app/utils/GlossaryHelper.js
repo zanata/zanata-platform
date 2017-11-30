@@ -5,7 +5,7 @@ import defined from 'defined'
 
 var GlossaryHelper = {
   /**
-   * Generate org.zanata.rest.dto.GlossaryTerm object
+   * Generate org.zanata.rest.Model.GlossaryTerm object
    * returns undefined if data is undefined or locale is empty
    *
    * @param data
@@ -23,7 +23,7 @@ var GlossaryHelper = {
   },
 
   /**
-   * Generate org.zanata.rest.dto.GlossaryEntry object
+   * Generate org.zanata.rest.Model.GlossaryEntry object
    * @param data
    */
   convertToDTO: function (data, qualifiedName) {

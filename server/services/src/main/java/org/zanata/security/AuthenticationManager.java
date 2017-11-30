@@ -192,7 +192,7 @@ public class AuthenticationManager implements Serializable {
     }
 
     /**
-     * Logs in an Open Id user. Uses the values set in {@link ZanataCredentials}
+     * Logs in an Open ExplicitId user. Uses the values set in {@link ZanataCredentials}
      * for authentication. This method should be invoked to authenticate AND log
      * a user into Zanata.
      *
@@ -204,13 +204,13 @@ public class AuthenticationManager implements Serializable {
     }
 
     /**
-     * Authenticates an Open Id user. This method <b>will not</b> log in the
+     * Authenticates an Open ExplicitId user. This method <b>will not</b> log in the
      * authenticated user. Because control needs to be handled over to the Open
-     * Id provider, a callback may be provided to perform actions after the
+     * ExplicitId provider, a callback may be provided to perform actions after the
      * authentication attempt is finished.
      *
      * @param openIdProviderType
-     *            Open Id provider to use for authentication
+     *            Open ExplicitId provider to use for authentication
      * @param callback
      *            Contains the logic to execute after the authentication
      *            attempt.
@@ -221,15 +221,15 @@ public class AuthenticationManager implements Serializable {
     }
 
     /**
-     * Authenticates an Open Id user. This method <b>will not</b> log in the
+     * Authenticates an Open ExplicitId user. This method <b>will not</b> log in the
      * authenticated user. Because control needs to be handled over to the Open
-     * Id provider, a callback may be provided to perform actions after the
+     * ExplicitId provider, a callback may be provided to perform actions after the
      * authentication attempt is finished.
      *
      * @param openId
-     *            The Open Id identifier to be used.
+     *            The Open ExplicitId identifier to be used.
      * @param openIdProviderType
-     *            Open Id provider to use for authentication
+     *            Open ExplicitId provider to use for authentication
      * @param callback
      *            Contains the logic to execute after the authentication
      *            attempt.
@@ -309,7 +309,7 @@ public class AuthenticationManager implements Serializable {
                     : samlIdentity.getUniqueName();
             authenticatedCredentials = credentialsDAO.findByUser(
                     credUser);
-            // on first Open Id or SAML2 login, there might not be any stored credentials
+            // on first Open ExplicitId or SAML2 login, there might not be any stored credentials
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
             }

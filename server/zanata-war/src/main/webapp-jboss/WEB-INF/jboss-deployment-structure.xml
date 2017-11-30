@@ -64,6 +64,7 @@
       <module name="org.hibernate.commons-annotations" />
       <module name="org.hibernate.validator" />
       <module name="org.slf4j" />
+      <module name="org.asciidoctor" export="true" meta-inf="export"/>
     </dependencies>
   </deployment>
 </jboss-deployment-structure>

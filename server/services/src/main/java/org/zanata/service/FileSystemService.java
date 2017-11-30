@@ -39,7 +39,7 @@ public interface FileSystemService extends Serializable {
      *            The file name that should be used when downloading the file.
      * @param generatingUser
      *            The user name that originally generated this download file.
-     * @return The download Id that uniquely identifies the download.
+     * @return The download ExplicitId that uniquely identifies the download.
      */
     String createDownloadDescriptorFile(File physicalFile,
             String downloadFileName, String generatingUser) throws IOException;

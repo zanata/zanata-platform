@@ -1056,7 +1056,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         PoHeader poHeader = new PoHeader();
         poHeader.setComment("poheader comment");
         List<HeaderEntry> poEntries = poHeader.getEntries();
-        poEntries.add(new HeaderEntry("Project-Id-Version", "en"));
+        poEntries.add(new HeaderEntry("Project-ExplicitId-Version", "en"));
         poEntries.add(new HeaderEntry("Content-Type",
                 "application/x-publican; charset=UTF-8\n"));
         doc.getExtensions(true).add(poHeader);
@@ -1079,7 +1079,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         PoTargetHeader targetHeader = new PoTargetHeader();
         targetHeader.setComment("target comment");
         List<HeaderEntry> entries = targetHeader.getEntries();
-        entries.add(new HeaderEntry("Project-Id-Version", "ja"));
+        entries.add(new HeaderEntry("Project-ExplicitId-Version", "ja"));
         tr.getExtensions(true).add(targetHeader);
 
         getTransResource()

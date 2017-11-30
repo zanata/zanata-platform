@@ -32,7 +32,7 @@ import java.util.List;
 public class TranslationMemoryPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationMemoryPage.class);
-    public static final String ID_UNAVAILABLE = "This Id is not available";
+    public static final String ID_UNAVAILABLE = "This ExplicitId is not available";
     public static final String UPLOAD_ERROR =
             "There was an error uploading the file";
     public static final String NO_MEMORIES =

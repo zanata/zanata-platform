@@ -193,7 +193,7 @@ public class CopyTransWorkFactory implements Serializable {
      *            Indicates if there is a project match between the match and
      *            copy-target text flows.
      * @param docIdMatches
-     *            Indicates if there is a doc Id match between the match and
+     *            Indicates if there is a doc ExplicitId match between the match and
      *            copy-target text flows.
      * @param options
      *            The copy trans options that are effective.

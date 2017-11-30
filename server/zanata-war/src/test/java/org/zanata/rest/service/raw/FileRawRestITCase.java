@@ -169,7 +169,7 @@ public class FileRawRestITCase extends RestTest {
                 // Find the message id in the array given to check
                 int foundAt = 0;
                 while (foundAt < translations.length) {
-                    // Message Id found
+                    // Message ExplicitId found
                     if (message.getMsgid().equals(translations[foundAt])) {
                         found.add(message.getMsgid());
                         // Translation does not match

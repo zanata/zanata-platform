@@ -69,7 +69,7 @@ describe('GlossaryHelperTest', function () {
   })
 
   // FIXME module has diverged (method has been renamed or removed)
-  // it('can generate term dto', function () {
+  // it('can generate term Model', function () {
   //   var data = {content: 'content', locale: 'de', comment: 'comment'}
   //   var term = GlossaryHelper.generateGlossaryTermDTO(data)
   //   expect(term.content).toEqual(data.content)
@@ -81,7 +81,7 @@ describe('GlossaryHelperTest', function () {
   // })
 
   // FIXME module has diverged (method has been renamed or removed)
-  // it('can generate glossary dto', function () {
+  // it('can generate glossary Model', function () {
   //   var srcTerm = {
   //     content: 'src_content',
   //     locale: 'en-US',

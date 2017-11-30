@@ -32,17 +32,17 @@ public final class RequestUpdatedEvent {
             "org.zanata.events.RequestUpdatedEvent";
 
     /**
-     * Id for {@link org.zanata.model.Request}
+     * ExplicitId for {@link org.zanata.model.Request}
      */
     private final long id;
 
     /**
-     * Id for request subclass. e.g {@link org.zanata.model.LanguageRequest}
+     * ExplicitId for request subclass. e.g {@link org.zanata.model.LanguageRequest}
      */
     private final long requestId;
 
     /**
-     * Id for actor for this request. HAccount id
+     * ExplicitId for actor for this request. HAccount id
      */
     private final long actorId;
 
@@ -61,21 +61,21 @@ public final class RequestUpdatedEvent {
     }
 
     /**
-     * Id for {@link org.zanata.model.Request}
+     * ExplicitId for {@link org.zanata.model.Request}
      */
     public long getId() {
         return this.id;
     }
 
     /**
-     * Id for request subclass. e.g {@link org.zanata.model.LanguageRequest}
+     * ExplicitId for request subclass. e.g {@link org.zanata.model.LanguageRequest}
      */
     public long getRequestId() {
         return this.requestId;
     }
 
     /**
-     * Id for actor for this request. HAccount id
+     * ExplicitId for actor for this request. HAccount id
      */
     public long getActorId() {
         return this.actorId;

@@ -1,0 +1,34 @@
+= Asciidoctor Demo
+////
+Big ol' comment
+
+sittin' right 'tween this here title 'n header metadata
+////
+Dan Allen <thedoc@asciidoctor.org>; Alex Eng <loones1595@gmail.com>
+:description: A demo of Asciidoctor. This document +
+              exercises numerous features of AsciiDoc +
+              to test Asciidoctor compliance.
+:backend: html5
+:library: Asciidoctor
+:stylesheet: asciidoc.css
+:idprefix:
+//:doctype: book
+//:sectids!:
+// the previous three attributes customize the generated output
+
+[role='lead']
+This is a demonstration of {library}.
+And this is the preamble of this document.
+
+[[id]]
+.Block_Title
+****
+This document exercises many of the features of AsciiDoc to test the Asciidoctor implementation.
+****
+
+TIP: If you want the output to look familiar, copy (or link) the AsciiDoc stylesheet, asciidoc.css, to the output directory.
+
+NOTE: An admonition paragraph draws the reader's attention to
+auxiliary information.
+Its purpose is determined by the label
+at the beginning of the paragraph.

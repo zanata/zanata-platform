@@ -205,7 +205,7 @@ public class UserSettingsAction implements Serializable {
         if (type.equals("yahoo"))
             return "Yahoo";
         if (type.equals("openid"))
-            return "Open Id";
+            return "Open ExplicitId";
         else
             return "Unknown";
     }

@@ -24,7 +24,7 @@ import javax.enterprise.inject.Alternative;
 import java.util.regex.Pattern;
 
 /**
- * Google Open Id provider.
+ * Google Open ExplicitId provider.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

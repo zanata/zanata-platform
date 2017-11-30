@@ -240,7 +240,7 @@ public class FacesMessages implements Serializable {
     }
 
     /**
-     * Returns a list of messages for the specific component Id that is given,
+     * Returns a list of messages for the specific component ExplicitId that is given,
      * and which reside in the current Faces context.
      */
     public List<FacesMessage> getMessagesList(String componentId) {

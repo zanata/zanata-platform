@@ -474,7 +474,7 @@ public class ResourceUtils implements Serializable {
             HPoTargetHeader to, MergeType mergeType) {
         boolean changed = pushPoTargetComment(from, to, mergeType);
         // TODO we should probably block PoHeader/POT-specific entries
-        // ie POT-Creation-Date, Project-Id-Version, Report-Msgid-Bugs-To
+        // ie POT-Creation-Date, Project-ExplicitId-Version, Report-Msgid-Bugs-To
         String entries = PoUtility.listToHeader(from.getEntries());
         if (!equals(entries, to.getEntries())) {
             to.setEntries(entries);
@@ -915,7 +915,7 @@ public class ResourceUtils implements Serializable {
     }
 
     /**
-     * Returns the appropriate plural form for a given Locale Id. Returns a
+     * Returns the appropriate plural form for a given Locale ExplicitId. Returns a
      * default value if there is no plural form information for the provided
      * locale id.
      *
@@ -926,7 +926,7 @@ public class ResourceUtils implements Serializable {
     }
 
     /**
-     * Returns the appropriate plural from for a given locale Id.
+     * Returns the appropriate plural from for a given locale ExplicitId.
      *
      * From HLocale.plurals if available, else from pluralforms.properties
      *
