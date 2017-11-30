@@ -54,7 +54,7 @@ public class DashboardActivityTab extends DashboardBasePage {
         log.info("Click More Activity button");
         final int activityListOrigSize = getMyActivityList().size();
         clickElement(moreActivityButton);
-        return waitForAMoment()
+        return waitForAMoment().withMessage("activity list size increased")
                 .until(webDriver -> getMyActivityList()
                         .size() > activityListOrigSize);
     }

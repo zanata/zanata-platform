@@ -73,7 +73,8 @@ public class ProjectPeoplePage extends ProjectBasePage {
 
     public ProjectPeoplePage selectUserFromAddList(String username) {
         log.info("Click project version {}", username);
-        waitForAMoment().until(driver -> {
+        waitForAMoment().withMessage("click on username in list")
+                .until(driver -> {
             List<WebElement> items =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "peopleTab-permissions", "modalManagePermissionsAutocomplete");
@@ -90,17 +91,15 @@ public class ProjectPeoplePage extends ProjectBasePage {
 
     public ProjectPeoplePage clickTranslatorCheckboxFor(final String language) {
         log.info("Click checkbox for translator: {}", language);
-        waitForAMoment().until(driver -> {
+        waitForAMoment().withMessage("click language checkbox")
+                .until(driver -> {
             boolean found = false;
             List<WebElement> items = existingElement(By.id("peopleTab-permissions"))
                     .findElement(By.className("list--slat")).findElements(By.tagName("li"));
-            log.info("Size: {}", items.size());
             for (WebElement item : items) {
-                log.info("Name: {}", item.findElement(By.tagName("label")).getText().trim());
                 if (item.findElement(By.tagName("label")).getText().trim().equals(language)) {
                     found = true;
-                    WebElement element = existingElement(item, By.className("form__checkbox"));
-                    element.click();
+                    clickElement(existingElement(item, By.className("form__checkbox")));
                     break;
                 }
             }

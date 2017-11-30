@@ -62,7 +62,8 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     public VersionLanguagesPage clickLocale(final String locale) {
         log.info("Click locale {}", locale);
-        waitForAMoment().until(it -> {
+        waitForAMoment().withMessage("click locale in list")
+                .until(it -> {
             new BasePage(getDriver()).waitForPageSilence();
             for (WebElement localeRow : getLanguageTabLocaleList()) {
                 // Top <a>
@@ -84,6 +85,7 @@ public class VersionLanguagesPage extends VersionBasePage {
     public EditorPage clickDocument(final String docName) {
         log.info("Click document {}", docName);
         WebElement document = waitForAMoment()
+                .withMessage("find document ".concat(docName))
                 .until(webDriver -> {
                     for (WebElement document1 : getLanguageTabDocumentList()) {
                         if (existingElement(document1, documentListItemTitle)
@@ -117,6 +119,7 @@ public class VersionLanguagesPage extends VersionBasePage {
             String documentName,
             String linkText) {
         WebElement document = waitForAMoment()
+                .withMessage("click download on ".concat(documentName))
                 .until(it -> {
                     for (WebElement doc : getLanguageTabDocumentList()) {
                         if (existingElement(doc, documentListItemTitle)
@@ -126,10 +129,9 @@ public class VersionLanguagesPage extends VersionBasePage {
                     }
                     return null;
                 });
-        document.findElement(By.className("dropdown__toggle")).click();
+        clickElement(existingElement(document, By.className("dropdown__toggle")));
         slightPause();
-        clickLinkAfterAnimation(document
-                .findElement(By.linkText(linkText)));
+        clickLinkAfterAnimation(existingElement(document, By.linkText(linkText)));
         slightPause();
         return new VersionLanguagesPage(getDriver());
     }

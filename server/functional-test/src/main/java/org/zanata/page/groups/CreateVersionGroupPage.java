@@ -84,8 +84,8 @@ public class CreateVersionGroupPage extends BasePage {
         readyElement(groupIdField).clear();
         readyElement(groupNameField).clear();
         readyElement(groupDescriptionField).clear();
-        waitForAMoment().until(
-                it -> getGroupIdValue().equals("")
+        waitForAMoment().withMessage("Wait for fields to be clear")
+                .until(it -> getGroupIdValue().equals("")
                         && readyElement(groupNameField).getAttribute("value")
                                 .equals(""));
         return new CreateVersionGroupPage(getDriver());

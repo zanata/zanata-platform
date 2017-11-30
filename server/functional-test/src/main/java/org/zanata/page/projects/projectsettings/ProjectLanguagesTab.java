@@ -68,16 +68,14 @@ public class ProjectLanguagesTab extends ProjectBasePage {
     }
 
     public ProjectLanguagesTab expectEnabledLocaleListCount(final int count) {
-        waitForAMoment()
-                .until(it -> getEnabledLocaleList()
-                        .size() == count);
+        waitForAMoment().withMessage("enabled locales is ".concat(String.valueOf(count)))
+                .until(it -> getEnabledLocaleList() .size() == count);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab expectAvailableLocaleListCount(final int count) {
-        waitForAMoment()
-                .until(it -> getAvailableLocaleList()
-                        .size() == count);
+        waitForAMoment().withMessage("available locales is ".concat(String.valueOf(count)))
+                .until(it -> getAvailableLocaleList().size() == count);
         return new ProjectLanguagesTab(getDriver());
     }
 
