@@ -23,7 +23,12 @@
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
     <kotlin.version>1.2.0</kotlin.version>
+    <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+<!-- We can use these if we don't want the lang/API version set by the compiler version:
+    <kotlin.compiler.languageVersion>1.2</kotlin.compiler.languageVersion>
+    <kotlin.compiler.apiVersion>1.2</kotlin.compiler.apiVersion>
+-->
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
