@@ -198,7 +198,7 @@ public class RegisterPage extends CorePage {
      */
     public String getPassword() {
         log.info("Query password");
-        return getAttribute(passwordField,"value");
+        return getAttribute(passwordField, "value");
     }
 
     /**
@@ -207,7 +207,7 @@ public class RegisterPage extends CorePage {
      */
     public String getPasswordFieldType() {
         log.info("Query password field type");
-        return getAttribute(passwordField,"type");
+        return getAttribute(passwordField, "type");
     }
 
     /**
