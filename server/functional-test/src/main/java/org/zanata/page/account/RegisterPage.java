@@ -227,6 +227,6 @@ public class RegisterPage extends CorePage {
     public String getTermsUrl() {
         log.info("Query terms of use URL");
         return readyElement(termsOfUseUrl).findElement(By.tagName("a"))
-                        .getAttribute("href");
+                .getAttribute("href");
     }
 }

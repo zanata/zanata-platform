@@ -25,9 +25,14 @@ import org.openqa.selenium.WebDriver;
 import org.zanata.page.CorePage;
 import org.zanata.page.dashboard.DashboardBasePage;
 
+/**
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
 public class SignInPage extends CorePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(SignInPage.class);
+
     public static final String LOGIN_FAILED_ERROR = "Login failed";
     public static final String ACTIVATION_SUCCESS =
             "Your account was successfully activated. You can now sign in.";
@@ -42,48 +47,82 @@ public class SignInPage extends CorePage {
         super(driver);
     }
 
+    /**
+     * Enter a string into the username field
+     * @param username string to enter
+     * @return new SignInPage
+     */
     public SignInPage enterUsername(String username) {
         log.info("Enter username {}", username);
         enterText(readyElement(usernameField), username);
         return new SignInPage(getDriver());
     }
 
+    /**
+     * Enter a string into the password field
+     * @param password string to enter
+     * @return new SignInPage
+     */
     public SignInPage enterPassword(String password) {
         log.info("Enter password {}", password);
         enterText(readyElement(passwordField), password);
         return new SignInPage(getDriver());
     }
 
+    /**
+     * Press the sign in button
+     * @return new DashboardBasePage
+     */
     public DashboardBasePage clickSignIn() {
         log.info("Click Sign In");
         clickElement(signInButton);
         return new DashboardBasePage(getDriver());
     }
 
+    /**
+     * Press the sign in button, expecting failure
+     * @return new SignInPage
+     */
     public SignInPage clickSignInExpectError() {
         log.info("Click Sign In");
         clickElement(signInButton);
         return new SignInPage(getDriver());
     }
 
+    /**
+     * Press the sign in button, expecting an 'account inactive' response
+     * @return new InactiveAccountPage
+     */
     public InactiveAccountPage clickSignInExpectInactive() {
         log.info("Click Sign In");
         clickElement(signInButton);
         return new InactiveAccountPage(getDriver());
     }
 
+    /**
+     * Press the Forgot Password link
+     * @return new ResetPasswordPage
+     */
     public ResetPasswordPage goToResetPassword() {
         log.info("Click Forgot Password");
         clickElement(forgotPasswordLink);
         return new ResetPasswordPage(getDriver());
     }
 
+    /**
+     * Press the Sign Up button
+     * @return new RegisterPage
+     */
     public RegisterPage goToRegister() {
         log.info("Click Sign Up");
         clickElement(signUpLink);
         return new RegisterPage(getDriver());
     }
 
+    /**
+     * Retrieve the login page title
+     * @return page title string
+     */
     public String getPageTitle() {
         log.info("Query page title");
         return readyElement(titleLabel).getText();
