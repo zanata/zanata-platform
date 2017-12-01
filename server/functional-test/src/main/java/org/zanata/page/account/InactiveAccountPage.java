@@ -33,6 +33,8 @@ public class InactiveAccountPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(InactiveAccountPage.class);
 
+    public static final String ACCOUNT_UNACTIVATED = "Zanata: Account is not activated";
+
     private final By resendEmailButton = By.id("resendEmail");
     private final By emailField = By.id("inactiveAccountForm:email:input:emailInput");
     private final By updateEmailButton = By.id("inactiveAccountForm:email:input:updateEmail");
