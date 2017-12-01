@@ -405,6 +405,16 @@ abstract class AbstractPage(val driver: WebDriver) {
     }
 
     /**
+     * Retrieve an attribute value from an element
+     *
+     * @param findBy locator of target element
+     * @param attribute name of attribute to query
+     */
+    fun getAttribute(findBy: By, attribute: String): String {
+        return existingElement(findBy).getAttribute(attribute);
+    }
+
+    /**
      * 'Touch' a text field to see if it's writable. For cases where fields are
      * available but briefly won't accept text for some reason
 
