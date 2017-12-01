@@ -35,10 +35,7 @@ not conflict with the other frontend code
 
 .ButtonGroup-item:first-child button {
   padding-left: 1rem;
-}
-
-.ButtonGroup-item:last-child button {
-  padding-left: 1rem;
+  padding-right: 2rem;
 }
 
 button.EditorButton.Button--small.u-rounded.Button--primary.u-sizeWidth-6 {
@@ -51,4 +48,8 @@ ul.EditorDropdown-content li button.EditorButton {
 
 .ButtonGroup--borderCollapse.ButtonGroup--hz > .ButtonGroup-item {
   margin-right: 0;
+}
+
+.ButtonGroup-item:first-child button.Button--neutral.is-disabled {
+  padding-right: 1rem !important;
 }

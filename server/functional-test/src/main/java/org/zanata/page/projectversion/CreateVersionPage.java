@@ -113,7 +113,8 @@ public class CreateVersionPage extends BasePage {
 
     public CreateVersionPage selectProjectType(final String projectType) {
         log.info("Click project type {}", projectType);
-        WebElement projectTypeCheck = waitForAMoment()
+        clickElement((WebElement) waitForAMoment()
+                .withMessage("project type found")
                 .until(webDriver -> {
                     for (WebElement item : readyElement(projectTypeSelection)
                             .findElements(By.tagName("li"))) {
@@ -123,8 +124,7 @@ public class CreateVersionPage extends BasePage {
                         }
                     }
                     return null;
-                });
-        projectTypeCheck.click();
+                }));
         return new CreateVersionPage(getDriver());
     }
 

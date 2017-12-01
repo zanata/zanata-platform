@@ -16,6 +16,7 @@ not conflict with the other frontend code
   z-index: 100;
   width: 100%;
   top: 0;
+  left: 0;
   box-shadow: 0 calc(var(--Header-rhythm) * .25) var(--Header-rhythm) rgba(0,0,0,0.1);
 }
 

@@ -40,7 +40,7 @@ class Admin extends Component {
   render () {
     if (!isAdmin) {
       return (
-        <div className='page wideView' id='admin'>
+        <div className='wideView' id='admin'>
           <div className='u-centerBlock'>
             <p>You are not authorised to access to this page</p>
           </div>

@@ -136,7 +136,7 @@ class Explore extends Component {
     }
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <div className='page scrollView' id='explore'>
+      <div className='scrollView' id='explore'>
         <Helmet title='Search' />
         <div className='headerClasses'>
           <h1 className='hidden'>Search</h1>

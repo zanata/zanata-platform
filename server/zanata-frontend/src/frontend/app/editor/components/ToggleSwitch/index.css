@@ -56,7 +56,6 @@ not conflict with the other frontend code
   width: calc(var(--Switch-rhythm) * .75);
   height: calc(var(--Switch-rhythm) * .75);
   background-color: color(var(--Switch-color) tint(40));
-  border: 1px solid transparent;
   transform: translateY(-50%) scale(.8, .8);
 }
 

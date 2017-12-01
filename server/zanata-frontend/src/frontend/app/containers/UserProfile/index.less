@@ -45,8 +45,8 @@ h2.matrixHeading {
   -webkit-flex-shrink: 0;
 }
 
-#userProfile-matrix .modal-content {
-  max-width: 750px;
+#profile .modal-content {
+  max-width: 750px !important;
 }
 
 .dateRange-textField input.textInput {
@@ -132,11 +132,6 @@ ul.largeFontList li.u-flexCenter svg {
   margin-right: @spacing-rq;
 }
 
-#userProfile-matrix {
-  padding-left: 2.897rem;
-  padding-right: 2.897rem;
-}
-
 #userProfile-matrix tbody tr td:not(:first-child), #userProfile-matrix tr th:not(:first-child) {
   text-align: center;
 }
@@ -167,6 +162,10 @@ ul.largeFontList li.u-flexCenter svg {
   color: @color-dark;
   font-size: 1.2rem;
   margin-bottom: 0;
+}
+
+#userProfile-matrix h3 {
+  margin-top: 1rem;
 }
 
 h2.userProfile-recentContributions {
@@ -331,20 +330,25 @@ button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover, button
   margin-left: @spacing-base;
 }
 
-#userProfile-activityTable td button {
-  border: none;
-}
-
 #userProfile-activityTable th {
   text-align: center;
 }
 
 #userProfile-activityTable td .btn {
-  width: 96%;
+  width: 85%;
   border-radius: 0;
   line-height: 1.4rem;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0 !important;
+  border: none;
+  margin: @spacing-rq;
+}
+
+button.rdr-MonthAndYear-button {
+  padding: 0 !important;
+}
+
+.profile .modal-content {
+  max-width: inherit;
 }
 
 // @screen-xs variable depreciated

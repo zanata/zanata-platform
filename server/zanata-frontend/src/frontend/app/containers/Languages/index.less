@@ -9,6 +9,12 @@
   flex-direction: row;
   display: inline-flex;
   flex-wrap: wrap;
+  width: 90%;
+  line-height: 2rem;
+}
+
+#newLang .react-autosuggest__container input {
+  width: auto;
 }
 
 span.languageCode {
@@ -21,19 +27,20 @@ span.languageCode {
 }
 
 .toolbar .sortItems {
-  padding-bottom: @spacing-large-horizontal;
   padding-right: 0;
+  margin-bottom: 1rem;
 }
 
 .toolbar .showItems {
-  padding-bottom: @spacing-large-horizontal;
   padding-right: 0;
   width: auto;
+  margin-left: @spacing-base;
 }
 
 .toolbar .pageCount {
-  padding-bottom: @spacing-base;
+  margin-bottom: @spacing-base;
   padding-left: 0;
+
 }
 
 .searchBox {
@@ -44,19 +51,25 @@ span.languageCode {
 .showItems {
   display: inline-flex;
   flex-grow: 0;
+  height: 2rem;
 }
 
 .showItems .form-control {
   margin-left: @spacing-label-large;
+  padding: 0;
 }
 
 .sortItems {
-  margin-left: @spacing-large-horizontal;
+  margin-left: @spacing-base;
+  height: 2rem;
+}
+
+.sortItems .form-control {
+  padding: 0;
 }
 
 .showItems span {
-  margin-top: @spacing-small-horizontal;
-  margin-left: @spacing-large-horizontal;
+  margin-right: @spacing-small-horizontal;
 }
 
 .showItems {
@@ -75,10 +88,21 @@ span.languageCode {
 .toolbar .pageCount {
   padding-bottom: @spacing-large-horizontal;
   padding-left: 0;
+  padding-bottom: @spacing-small-horizontal;
 }
 
 .searchBox svg {
   vertical-align: text-bottom;
+}
+
+.searchBox .input-group-addon {
+  padding-left: 1.5rem;
+}
+
+.searchBox .form-control {
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .react-list {
@@ -138,8 +162,27 @@ span.languageCode {
   padding-left: @spacing-base;
 }
 
-@media (min-width: @screen-md-min) {
-  .showItems {
-    clear: none !important;
-  }
+.left-form {
+  padding-left: 0;
+ }
+
+#newLang .has-feedback .form-control, #newLang .form-control {
+  width: 96%;
+  padding-right: 0;
 }
+
+table#languages-table {
+  margin: 0;
+  width: 100%;
+}
+
+select#sort-options {
+  width: inherit;
+}
+
+@media (min-width: @screen-md-min) {
+ .toolbar {
+   width: 100%;
+ }
+}
+

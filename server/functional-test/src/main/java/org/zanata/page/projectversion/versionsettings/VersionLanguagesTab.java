@@ -93,16 +93,14 @@ public class VersionLanguagesTab extends VersionBasePage {
     }
 
     public VersionLanguagesTab expectEnabledLocaleListCount(final int count) {
-        waitForAMoment()
-                .until(it -> getEnabledLocaleList()
-                        .size() == count);
+        waitForAMoment().withMessage(String.valueOf(count).concat(" items in locale list"))
+                .until(it -> getEnabledLocaleList().size() == count);
         return new VersionLanguagesTab(getDriver());
     }
 
     public VersionLanguagesTab expectAvailableLocaleListCount(final int count) {
-        waitForAMoment()
-                .until(it -> getAvailableLocaleList()
-                        .size() == count);
+        waitForAMoment().withMessage(String.valueOf(count).concat(" items in locale list"))
+                .until(it -> getAvailableLocaleList().size() == count);
         return new VersionLanguagesTab(getDriver());
     }
 
@@ -123,8 +121,8 @@ public class VersionLanguagesTab extends VersionBasePage {
     private void waitForLanguageEntryExpected(final String language,
             final boolean exists) {
         waitForAMoment()
-                .until(it -> getEnabledLocaleList()
-                        .contains(language) == exists);
+                .withMessage(language.concat(" exists is ".concat(String.valueOf(exists))))
+                .until(it -> getEnabledLocaleList().contains(language) == exists);
     }
 
     public VersionLanguagesTab filterDisabledLanguages(String localeQuery) {

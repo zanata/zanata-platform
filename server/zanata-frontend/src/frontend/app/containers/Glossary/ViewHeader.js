@@ -164,7 +164,7 @@ class ViewHeader extends Component {
               onClick={this.handleClearSearch}>
               <Icon name='cross' className='s1 iconCross-glossary' />
             </Button>
-
+            <div className='glossaryButtons'>
                   {permission.canAddNewEntry && (
                     <div className='glossaryBtn topBtn'>
                       <Button bsStyle='link' type='button'
@@ -209,6 +209,7 @@ class ViewHeader extends Component {
                           handleDeleteAllEntriesDisplay}
                         handleDeleteAllEntries={handleDeleteAllEntries} />
                     </div>)}
+            </div>
           </div>
         )}>
         <div className='glossaryTable'>

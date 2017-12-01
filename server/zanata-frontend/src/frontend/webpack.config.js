@@ -8,6 +8,7 @@ var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
 var stylelint = require('stylelint')
+var postcssDiscardDuplicates = require('postcss-discard-duplicates')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var postcssImport = require('postcss-import')
 var postcssCustomProperties = require('postcss-custom-properties')
@@ -28,6 +29,7 @@ var postCssLoader = {
   loader: 'postcss-loader',
   options: {
     plugins: [
+      postcssDiscardDuplicates(),
       postcssImport(),
       postcssCustomProperties,
       postcssCalc,
@@ -190,6 +192,7 @@ module.exports = function (env) {
                 options: {
                   plugins: [
                     require('stylelint'),
+                    require('postcss-discard-duplicates')
                   ]
                 }
               },

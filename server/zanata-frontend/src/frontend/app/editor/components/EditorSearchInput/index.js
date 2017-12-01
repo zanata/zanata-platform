@@ -21,8 +21,6 @@
 
 import cx from 'classnames'
 import { connect } from 'react-redux'
-import { Icon } from '../../../components'
-import IconButton from '../IconButton'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'
@@ -165,17 +163,6 @@ export class EditorSearchInput extends Component {
     this.props.updateSearch({ searchString: event.target.value })
   }
 
-  clearButtonElement = () => {
-    return (
-      <span className="EditorInputGroup-addon">
-        <IconButton icon="cross"
-          title="Clear search"
-          iconSize="n1"
-          onClick={this.clearSearch} />
-      </span>
-    )
-  }
-
   render () {
     const { showAdvanced } = this.props
 
@@ -195,11 +182,6 @@ export class EditorSearchInput extends Component {
           cx('EditorInputGroup EditorInputGroup--outlined' +
               ' EditorInputGroup--rounded',
             { 'is-focused': this.state.focused })}>
-          <span className="EditorInputGroup-addon"
-            onClick={this.focusInput}>
-            <Icon name="search" title="Search"
-              className="n1" />
-          </span>
           <input ref={this.setInput}
             type="search"
             placeholder="Search source and target text"
@@ -208,8 +190,7 @@ export class EditorSearchInput extends Component {
             onChange={this.updateSearchText}
             onClick={this.state.open}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
-          {this.clearButtonElement()}
-          <span className="EditorInputGroup-addon btn-xs btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link n1"
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
@@ -250,7 +231,7 @@ class AdvancedField extends Component {
           type="text"
           placeholder={description}
           className="u-bgHighest u-sizeFull u-inputFlat
-            u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+            u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
           value={value}
           onChange={this.updateSearch} />
       </div>

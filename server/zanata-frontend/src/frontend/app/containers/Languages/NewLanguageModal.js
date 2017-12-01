@@ -154,6 +154,7 @@ class NewLanguageModal extends Component {
 
     return (
       <Modal
+        id='newLang'
         show={show}
         onHide={() => this.handleCancel()}>
         <Modal.Header>
@@ -236,7 +237,7 @@ class NewLanguageModal extends Component {
           <span className='bootstrap u-pullRight'>
             <Row>
               <Button bsStyle='link'
-                id='btn-new-language-cancel' className='btn-left'
+                id='btn-new-language-cancel'
                 disabled={saving}
                 onClick={this.handleCancel}>
                 Close

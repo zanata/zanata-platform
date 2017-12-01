@@ -39,7 +39,7 @@
   background-color: var(--SidebarWrapper-backgroundColor);
   overflow: auto;
   overflow-x: hidden;
-  overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
 }
 
 .sidebar-container {
@@ -50,7 +50,6 @@
   flex-grow: 1;
   padding-bottom: @spacing-rh;
   position: relative;
-  width: 100%;
   padding-left: 1em;
   padding-right: 1em;
 }
@@ -98,19 +97,47 @@ li.active .iconSidebar svg {
   color: @color-success;
 }
 
-// From here
-.sidebarVersion-percent span.percent {
-  font-size: var(--Sidebar-fontSize);
+.processing.well {
+  padding: var(--AccordionSectionTitle-paddingBottom);
+  background-color: #fff;
+  margin-top: 1rem;
 }
 
-.sidebarVersion-percent p {
+.processing.well p {
+  margin-bottom: 0;
+}
+
+.processing.well p span {
+ font-size: 0.875rem;
+}
+
+.processing.well .btn-danger {
+  margin-top: 0;
+}
+
+.task-title {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.sidebar-content p span.count,
+.sidebar-content p span.count-pc {
+  font-weight: 600;
+}
+
+.sidebar-content p span.count-pc {
+  color: @color-muted;
+  float: right;
+}
+
+.sidebarVersion-percent p  {
   margin-bottom: 0;
 }
 
 .sidebarVersion-title {
   vertical-align: super;
   padding-left: 3px;
-  font-size: var(--Sidebar-fontSize);
+  font-size: 1.2rem;
 }
 
 .sidebarVersion-inline {
@@ -134,7 +161,7 @@ li.active .iconSidebar svg {
   margin-bottom: @spacing-rq;
 }
 
-.sidebar .dropdown-menu, .sidebarVersion-settings {
+.sidebar .dropdown-menu {
   font-size: 0.857rem;
 }
 
@@ -177,11 +204,6 @@ textarea {
     position: absolute;
     transform: rotate(0deg);
     transform-origin: 50% 50% 0px;
-  }
-  .accordion, .accordion * {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
   }
   .accordion {
     overflow: hidden;

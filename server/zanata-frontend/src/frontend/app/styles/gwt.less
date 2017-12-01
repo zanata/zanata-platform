@@ -14,6 +14,19 @@
     align-self: center;
     padding-bottom: 1rem;
   }
+  .panel {
+    background-color: #fdfdfd;
+    border: 1px solid rgba(32, 113, 138, 0.15) !important;
+  }
+  .panel__header {
+    border-width: 1px !important;
+  }
+  .panel__results--bottom {
+    border-top: none !important;
+  }
+  #project-info h1 {
+    height: auto;
+  }
   button.close {
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -23,7 +36,7 @@
     padding: 0.75rem;
   }
   .bg--pop-highest thead, &.bg--pop-highest tbody {
-    border: 1px solid rgba(32, 113, 138, .15);
+    border: 1px solid rgba(32, 113, 138, 0.15);
   }
   .l-wrapper {
     align-items: center;
@@ -72,5 +85,46 @@
     overflow-x: scroll;
     width: 48rem;
     font-size: 0.875rem;
+  }
+  .panel__results--bottom .panel__results__type {
+    top: 0.2rem;
+  }
+  select {
+    width: inherit !important;
+  }
+  .gwt-DialogBox-CloseButton {
+    position: relative;
+    bottom: -4px;
+    right: 5px;
+    float: right;
+    clear: both;
+    width: 5%;
+    margin-left: 95%;
+  }
+  .revision__box {
+    display: flex !important;
+    padding: 10px !important;
+  }
+
+  #gwt-debug-transHistoryTabPanel .gwt-TabLayoutPanelContent {
+    overflow-x: hidden !important;
+  }
+  #gwt-debug-transHistoryTabPanel .gwt-TabLayoutPanelContent .g--tight {
+    margin: 0 !important;
+  }
+  .gwt-DialogBox {
+    padding-right: 15px;
+  }
+  .resultTable, .transUnitTable {
+    margin: 0;
+  }
+  .resultTable button {
+    padding: 0.1875em 0.375em !important;
+  }
+  .gwt-TabLayoutPanelContent table {
+    margin: auto;
+  }
+  .button--small {
+    padding: 0.21429em 0.42857em !important;
   }
 }

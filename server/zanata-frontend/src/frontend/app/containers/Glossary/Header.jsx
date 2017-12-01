@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Link } from '../../components'
 import { Row } from 'react-bootstrap'
 
 /**
@@ -18,18 +17,15 @@ const Header = ({
     <div className='glossaryHeader-wrapper'>
       <div className='glossaryHeader-base'>
         <div className='innerView'>
-          <Link link='/' className='logoLink'>
-            <Icon name='zanata' className='s3' />
-          </Link>
           <h1 className='glossaryHeader-title'>
             <Row>
               {icon}{title || 'Title'}
               {extraHeadingElements}
             </Row>
           </h1>
-          <div className='glossaryHeader-actions'>
-            {extraElements}
-          </div>
+        </div>
+        <div className='glossaryHeader-actions'>
+          {extraElements}
         </div>
         {children && (
           <div className='innerView'>

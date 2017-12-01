@@ -13,6 +13,7 @@ import rootReducer from './reducers'
 import Root from './containers/Root'
 
 import './styles/style.less'
+import './editor/index.css'
 
 WebFont.load({
   google: {

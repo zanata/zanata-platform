@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import { DropdownButton, MenuItem, ProgressBar,
-  Nav, NavItem } from 'react-bootstrap'
+import { Button, DropdownButton, MenuItem, ProgressBar,
+  Nav, NavItem, Well } from 'react-bootstrap'
 import { Icon } from '../../components'
 /**
  * Root component for Sidebar
@@ -44,6 +44,9 @@ class Sidebar extends Component {
                     <Icon name='users' className='s1 iconSidebar' />
                   People</NavItem>
                   <NavItem eventKey={2} href=''>
+                    <Icon name='glossary' className='s1 iconSidebar' />
+                  Glossary</NavItem>
+                  <NavItem eventKey={2} href=''>
                     <Icon name='info' className='s1 iconSidebar' />
                   About</NavItem>
                   <NavItem eventKey={3} href=''>
@@ -56,8 +59,17 @@ class Sidebar extends Component {
                   <MenuItem eventKey='2'>Merge translations</MenuItem>
                   <MenuItem eventKey='3'>Copy to new version</MenuItem>
                   <MenuItem eventKey='4'>Download config file</MenuItem>
-                  <MenuItem eventKey='5'>Export version to TMX</MenuItem>
+                  <MenuItem eventKey='5'>Export project to TMX</MenuItem>
                 </DropdownButton>
+                <Well className="processing">
+                  <p className='task-title'>Task title</p>
+                  <p><span>Processing document&nbsp;
+                    <span className='count'>1 of 10</span>&nbsp;
+                    <span className='count-pc'>12.50%</span></span></p>
+                  <ProgressBar className='progress-striped'
+                    now={12.5} key={4} />
+                  <Button className='btn-danger btn-sm'>Stop</Button>
+                </Well>
                 <div id='sidebarVersion'>
                   <div className='sidebarVersion-inline'>
                     <span className='sidebarVersion-title'>

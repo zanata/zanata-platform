@@ -60,10 +60,11 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public VersionLanguagesPage gotoVersion(final String versionId) {
         log.info("Click Version {}", versionId);
-        waitForAMoment().until(driver -> {
-            getDriver().findElement(By.id("versions_tab")).click();
+        waitForAMoment().withMessage("click on version in list")
+                .until(driver -> {
+            clickElement(By.id("versions_tab"));
             List<WebElement> versionLinks =
-                    getDriver().findElement(By.id("versions_form"))
+                    existingElement(By.id("versions_form"))
                             .findElement(By.className("list--stats"))
                             .findElements(By.tagName("li"));
             boolean clicked = false;

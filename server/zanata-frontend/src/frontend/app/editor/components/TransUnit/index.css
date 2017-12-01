@@ -85,7 +85,7 @@
 
 /* Pair with .Editor-content */
 .TransUnit-container.is-unit-selected .TransUnit {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 
@@ -130,9 +130,7 @@
   position: absolute;
   right: 0;
   left: 0;
-  width: 100%;
   padding-right: calc(var(--TransUnit-rhythm) * .75);
-  padding-left: calc(var(--TransUnit-rhythm) * .75);
   cursor: default;
 }
 
@@ -182,7 +180,7 @@ h3.TransUnit-heading {
   font-size: var(--TransUnit-text-font-size);
   line-height: var(--TransUnit-text-line-height);
   overflow: hidden;
-  width: 100%;
+  width: 90%;
   min-height: var(--TransUnit-rhythm);
   margin: 0;
   padding: calc(var(--TransUnit-rhythm) * .75);
@@ -194,7 +192,6 @@ h3.TransUnit-heading {
   border: none;
   background-color: transparent;
   box-shadow: none;
-
   -webkit-appearance: none;
 }
 
@@ -268,7 +265,7 @@ h3.TransUnit-heading {
   height: 100%;
   content: '';
   background-color: #fff;
-  opacity: .6;
+  opacity: 0.6;
 }
 
 .TransUnit.is-focused .TransUnit-status:before {
@@ -280,7 +277,7 @@ h3.TransUnit-heading {
   top: calc(var(--TransUnit-rhythm) * -.75);
   padding-top: calc(var(--TransUnit-rhythm) * .75);
   padding-bottom: calc(var(--TransUnit-rhythm) * .75);
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .TransUnit.is-focused .TransUnit-status {
@@ -299,6 +296,14 @@ h3.TransUnit-heading {
   text-align: center;
 }
 
+.TransUnit-panelHeader--source {
+  width: 95%;
+}
+
+.TransUnit-panelHeader--source h3.TransUnit-heading {
+  padding-left: 1.5rem !important;
+}
+
 .TransUnit-metaDataItem {
   line-height: calc(var(--TransUnit-rhythm) * .75);
 }
@@ -306,7 +311,7 @@ h3.TransUnit-heading {
 .TransUnit-metaDataButton {
   font-size: var(--TransUnit-metaDataButton-size);
   line-height: calc(var(--TransUnit-rhythm) * .4);
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .TransUnit-metaDataButton:hover {
@@ -384,7 +389,6 @@ h3.TransUnit-heading {
   .TransUnit-panelHeader--translation,
   .TransUnit-panelFooter--translation {
     padding-left: calc(var(--TransUnit-rhythm) * 1.25);
-    left: auto;
   }
 
   .TransUnit-status,

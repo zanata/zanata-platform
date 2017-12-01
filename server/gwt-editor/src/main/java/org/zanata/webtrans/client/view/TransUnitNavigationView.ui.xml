@@ -10,7 +10,7 @@
     }
 
     .navButton:hover {
-      color: #4e9fdd;
+      color: #4e9fdd !important;
     }
 
     .fuzzyUntranslated {

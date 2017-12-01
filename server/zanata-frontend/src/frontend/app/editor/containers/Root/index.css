@@ -14,6 +14,11 @@
   --Editor-color-dark: #20718a;
   --Editor-color-bright: #1ba7d9;
   --Editor-badge-radius: 4px;
+  --Editor-border-radius-small: 3px;
+}
+
+input, textarea, select, button  {
+  font-size: 1rem;
 }
 
 .sidebar-editor .badge {
@@ -183,7 +188,7 @@
 
 .Editor-header,
 .Editor-loader {
-  transition: .2s all var(--Editor-transition-ease);
+  transition: 0.2s all var(--Editor-transition-ease);
 }
 
 .Editor-header.is-minimised {
@@ -296,7 +301,6 @@ li.DocName span.ellipsis {
   position: absolute;
   right: 0;
   top: 0;
-  z-index: var(--Editor-suggestions-header-z-index);
   user-select: none;
 }
 
@@ -402,8 +406,8 @@ li.DocName span.ellipsis {
 .panel-heading {
   background-color: #fff;
   border-bottom: 1px solid transparent;
-  border-top-left-radius: var(--border-radius-small);
-  border-top-right-radius: var(--border-radius-small);
+  border-top-left-radius: var(--Editor-border-radius-small);
+  border-top-right-radius: var(--Editor-border-radius-small);
   color: var(--brand-secondary);
   font-size: 1.1em !important;
   font-weight: 600;
@@ -412,7 +416,6 @@ li.DocName span.ellipsis {
 
 .panel-info > .panel-heading {
   background-color: var(--brand-info);
-  border-bottom: solid 1px var(--brand-info);
   color: #fff;
 }
 
@@ -608,9 +611,19 @@ h4.modal-title {
   text-align: center;
 }
 
+.label {
+  color: #fff;
+  border-radius: var(--Editor-border-radius-small);
+  padding: 0.21429em 0.42857em;
+}
+
 .panel-body h3 {
   font-size: 1.2em;
   font-weight: 500;
+}
+
+.TransUnit-panelFooter .ButtonGroup-item .EditorDropdown-toggle {
+  margin-left: -0.5rem;
 }
 
 .listInline li {
@@ -623,7 +636,7 @@ h4.modal-title {
 }
 
 .panel-body .modal-term {
-  color: #333;
+  color: var(--Editor-color-dark);
   font-size: 1.1em;
   line-height: 2em;
 }
@@ -873,6 +886,10 @@ ul.u-listInline li .u-textHighlight {
 
 .Header {
   z-index: var(--Editor-suggestions-header-z-index);
+}
+
+table {
+  border: none;
 }
 
 button.close {

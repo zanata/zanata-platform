@@ -5,8 +5,6 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
 import { EditorSearchInput } from '.'
-import { Icon } from '../../../components'
-import IconButton from '../IconButton'
 import { Panel, Button } from 'react-bootstrap'
 
 const callback = () => {}
@@ -33,22 +31,13 @@ describe('EditorSearchInputTest', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div>
         <div className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded">
-          <span className="EditorInputGroup-addon">
-            <Icon name="search" title="Search" className="n1" />
-          </span>
           <input type="search"
             placeholder="Search source and target text"
             maxLength="1000"
             value="it was the worst of"
             onChange={callback}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
-          <span className="EditorInputGroup-addon">
-            <IconButton icon="cross"
-              title="Clear search"
-              iconSize="n1"
-              onClick={callback} />
-          </span>
-          <span className="EditorInputGroup-addon btn-xs btn-link"
+          <span className="EditorInputGroup-addon btn-xs btn-link n1"
             >Hide advanced</span>
         </div>
         <Panel collapsible expanded>
@@ -59,7 +48,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="exact Resource ID for a string"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="para-0001" />
           </div>
           <div title="username"
@@ -71,7 +60,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="username"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="cdickens" />
           </div>
           <div title="date in format yyyy/mm/dd"
@@ -83,7 +72,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="date in format yyyy/mm/dd"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="1859-12-31" />
           </div>
           <div title="date in format yyyy/mm/dd"
@@ -95,7 +84,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="date in format yyyy/mm/dd"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="1859-01-01" />
           </div>
           <div title="source comment text"
@@ -105,7 +94,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="source comment text"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="England and France" />
           </div>
           <div title="translation comment text"
@@ -117,7 +106,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="translation comment text"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="blurst of times?! You stupid monkey!" />
           </div>
           <div title="exact Message Context for a string"
@@ -129,7 +118,7 @@ describe('EditorSearchInputTest', () => {
               onChange={callback}
               placeholder="exact Message Context for a string"
               className="u-bgHighest u-sizeFull u-inputFlat
-                u-sP-1-2 u-sMH-1-4 u-sMV-1-8"
+                u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="chapter01.txt" />
           </div>
           <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
@@ -168,7 +157,7 @@ describe('EditorSearchInputTest', () => {
 
     const [ textInput, resourceIdInput, lastModifiedByInput ] =
         TestUtils.scryRenderedDOMComponentsWithTag(inputWithText, 'input')
-    const [ closeButton, clearAdvancedButton ] =
+    const [ clearAdvancedButton ] =
         TestUtils.scryRenderedDOMComponentsWithTag(inputWithText, 'button')
     const [ advancedSearchToggle ] =
         TestUtils.scryRenderedDOMComponentsWithClass(inputWithText,
@@ -195,11 +184,6 @@ describe('EditorSearchInputTest', () => {
     TestUtils.Simulate.change(lastModifiedByInput)
     expect(updateSearchPayload).toEqual({ lastModifiedByUser: 'damason' },
         'Changing advanced search fields should update the appropriate field')
-
-    TestUtils.Simulate.click(closeButton)
-    expect(updateSearchPayload).toEqual(
-      { searchString: '' },
-      'Close button click should clear text')
 
     TestUtils.Simulate.click(clearAdvancedButton)
     expect(updateSearchPayload).toEqual({

@@ -3,7 +3,7 @@ module.exports = {
   exec: true,
   plugins: {
     'postcss-cssnext': {},
-    'cssnano': {},
     'stylelint': {},
+    'cssnano': {},
   }
 }
