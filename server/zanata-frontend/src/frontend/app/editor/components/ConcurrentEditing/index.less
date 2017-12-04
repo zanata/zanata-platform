@@ -1,0 +1,46 @@
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: center; // Headings for larger alerts
+  h4 {
+    margin-top: 0; // Specified for the h4 to prevent conflicts of changing @headings-color
+    color: inherit;
+  }
+  // Provide class for links that match alerts
+  .alert-link {
+    font-weight: 600;
+  }
+  // Improve alignment and spacing of inner content
+  > p, > ul {
+    margin-bottom: 0;
+  }
+  > p + p {
+    margin-top: 5px;
+  }
+}
+
+.alert-danger, .alert-info, .alert-success, .alert-warning {
+  color: #fff;
+  padding-left: 0.321rem;
+}
+
+.alert-danger {
+  background-color: #ff3b3d;
+}
+
+.alert-link a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.alert-danger .s2 svg {
+  vertical-align: middle;
+  padding-right: 0.5rem;
+
+}
+
+.alert-danger strong {
+  font-weight: 600;
+}
