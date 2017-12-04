@@ -1,11 +1,15 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import { Alert, Button, Image } from 'react-bootstrap'
-import { Icon, Modal } from '../../../components'
-import {action} from "@storybook/react/dist/client/index";
+import { storiesOf, action } from '@storybook/react'
+import { Alert, Button, Image, Panel, Badge } from 'react-bootstrap'
+import { Icon, Modal, EditableText } from '../../../components'
+import DateAndTimeDisplay from '../DateAndTimeDisplay'
+
 /*
  * See .storybook/README.md for info on the component storybook.
  */
+
+const lastModifiedTime = new Date(2016, 12, 4, 2, 19)
+
 storiesOf('Concurrent editing', module)
     .add('notification', () => (
         <Alert bsStyle='danger'>
@@ -46,6 +50,23 @@ storiesOf('Concurrent editing', module)
          Current conflicts</span></small></Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <p><a href="">Username</a> has saved a new version while you are editing. Please resolve conflicts.</p>
+        <Panel>
+          <p>Username created a Translated revision <Badge bsStyle='default'>latest</Badge></p>
+          <EditableText
+              className='editable textarea
+              EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded is-focused'
+              maxLength={255}
+              editable={true}
+              editing={true}
+              placeholder='Add a description…'
+              emptyReadOnlyText='No description'>
+            Test text
+          </EditableText>
+          <DateAndTimeDisplay dateTime={lastModifiedTime}
+                              className="u-block small u-sMT-1-2 u-sPB-1-4
+          u-textMuted u-textSecondary"/>
+        </Panel>
       </Modal.Body>
     </Modal>
     ))

@@ -14,22 +14,7 @@
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
-  text-align: center; // Headings for larger alerts
-  h4 {
-    margin-top: 0; // Specified for the h4 to prevent conflicts of changing @headings-color
-    color: inherit;
-  }
-  // Provide class for links that match alerts
-  .alert-link {
-    font-weight: 600;
-  }
-  // Improve alignment and spacing of inner content
-  > p, > ul {
-    margin-bottom: 0;
-  }
-  > p + p {
-    margin-top: 5px;
-  }
+  text-align: center;
 }
 
 .alert-danger, .alert-info, .alert-success, .alert-warning {
@@ -54,4 +39,26 @@
 
 .alert-danger strong {
   font-weight: 600;
+}
+
+/* Editable text fields */
+
+.editable {
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  vertical-align: middle;
+}
+
+.editable:hover {
+  border: solid 2px;
+  border-color: rgb(189, 212, 220);
+  opacity: 1;
+}
+
+.editable .placeholder {
+  color: red;
+}
+
+.editable.row {
+  padding: 0.75rem;
 }
