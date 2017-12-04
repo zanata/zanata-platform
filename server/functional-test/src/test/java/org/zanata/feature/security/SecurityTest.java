@@ -139,7 +139,7 @@ public class SecurityTest extends ZanataTestCase {
                 .goToHome()
                 .clickSignInLink()
                 .goToResetPassword()
-                .clearFields()
+                .clearUsernameField()
                 .resetFailure();
 
         assertThat(resetPasswordPage.getErrors())

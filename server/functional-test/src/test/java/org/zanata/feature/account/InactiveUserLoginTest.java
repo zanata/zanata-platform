@@ -59,9 +59,11 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 usernamepassword + "@example.com");
         InactiveAccountPage inactiveAccountPage = new LoginWorkFlow()
                 .signInInactive(usernamepassword, usernamepassword);
+
         assertThat(inactiveAccountPage.getTitle())
-                .isEqualTo("Zanata: Account is not activated")
+                .isEqualTo(InactiveAccountPage.ACCOUNT_UNACTIVATED)
                 .as("The account is inactive");
+
         WiserMessage message = hasEmailRule.getMessages().get(0);
         assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
                 .as("The email contains the activation link");
@@ -90,20 +92,23 @@ public class InactiveUserLoginTest extends ZanataTestCase {
         HomePage homePage = new LoginWorkFlow()
                 .signInInactive(usernamepassword, usernamepassword)
                 .clickResendActivationEmail();
+
         assertThat(homePage.expectNotification(HomePage.SIGNUP_SUCCESS_MESSAGE))
                 .as("The message sent notification is displayed");
         assertThat(hasEmailRule.getMessages().size()).isEqualTo(2)
                 .as("A second email was sent");
+
         WiserMessage message = hasEmailRule.getMessages().get(1);
         assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
                 .as("The second email contains the activation link");
-        homePage = new BasicWorkFlow()
+
+        new BasicWorkFlow()
                 .goToUrl(EmailQuery.getLink(message, ACTIVATE), HomePage.class);
         /*
          * This fails in functional test, for reasons unknown
          * assertThat(homePage.getNotificationMessage())
-         * .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
-         * .as("The account was activated");
+         *     .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
+         *     .as("The account was activated");
          */
         assertThat(new LoginWorkFlow()
                 .signIn(usernamepassword, usernamepassword)
@@ -121,15 +126,20 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 usernamepassword + "@example.com");
         InactiveAccountPage inactiveAccountPage = new LoginWorkFlow()
                 .signInInactive(usernamepassword, usernamepassword);
+
         assertThat(inactiveAccountPage.getTitle())
-                .isEqualTo("Zanata: Account is not activated")
+                .isEqualTo(InactiveAccountPage.ACCOUNT_UNACTIVATED)
                 .as("The account is inactive");
+
         HomePage homePage = inactiveAccountPage
-                .enterNewEmail("newtester@example.com").clickUpdateEmail();
+                .enterNewEmail("newtester@example.com")
+                .clickUpdateEmail();
+
         assertThat(homePage.expectNotification(HomePage.EMAILCHANGED_MESSAGE))
                 .as("The email changed notification is displayed");
         assertThat(hasEmailRule.getMessages().size()).isEqualTo(2)
                 .as("A second email was sent");
+
         WiserMessage message = hasEmailRule.getMessages().get(1);
         assertThat(message.getEnvelopeReceiver())
                 .isEqualTo("newtester@example.com")
@@ -141,12 +151,12 @@ public class InactiveUserLoginTest extends ZanataTestCase {
         /*
          * This fails in functional test, for reasons unknown
          * assertThat(homePage.getNotificationMessage())
-         * .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
-         * .as("The account was activated");
+         *     .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
+         *     .as("The account was activated");
          */
         assertThat(new LoginWorkFlow()
-                .signIn(usernamepassword, usernamepassword)
-                .loggedInAs()).isEqualTo(usernamepassword).as(
+                .signIn(usernamepassword, usernamepassword).loggedInAs())
+                .isEqualTo(usernamepassword).as(
                         "The user has validated their account and logged in");
     }
 }

@@ -66,14 +66,14 @@ public class DashboardAccountTab extends DashboardBasePage {
         return new DashboardAccountTab(getDriver());
     }
 
-    public DashboardAccountTab typeOldPassword(String oldPassword) {
+    public DashboardAccountTab enterOldPassword(String oldPassword) {
         log.info("Enter old password {}", oldPassword);
         readyElement(oldPasswordField).clear();
         enterText(readyElement(oldPasswordField), oldPassword);
         return new DashboardAccountTab(getDriver());
     }
 
-    public DashboardAccountTab typeNewPassword(String newPassword) {
+    public DashboardAccountTab enterNewPassword(String newPassword) {
         log.info("Enter new password {}", newPassword);
         readyElement(newPasswordField).clear();
         enterText(readyElement(newPasswordField), newPassword);
