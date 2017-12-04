@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Alert, Button, Image } from 'react-bootstrap'
-import Icon from '../../../components/Icon'
+import { Icon, Modal } from '../../../components'
 import {action} from "@storybook/react/dist/client/index";
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -21,15 +21,31 @@ storiesOf('Concurrent editing', module)
         <span>
           <h1>TransUnit items</h1>
           <Image src="https://i.imgur.com/yQWlJaH.png" responsive />
-          <br />
           <h2>Concurrent user notice</h2>
-          <br />
+          <Button title="Click should trigger onClick action"
+                  onClick={action('onClick')}
+                  className="EditorButton Button--link Button--small
+                  Button--concurrent">
+            <Icon name="user" className="n1" /> username
+          </Button>
           <h2>Resolve merge conflict button</h2>
-          <br />
            <Button title="Click should trigger onClick action"
                    onClick={action('onClick')}
                    className="EditorButton Button--secondary u-rounded">
           Resolve conflict
         </Button>
-        </span>
+      </span>
+    ))
+    .add('modal', () => (
+    <Modal show={true}
+           onHide={close}
+           closeButton
+           id="ConflictsModal">
+      <Modal.Header>
+        <Modal.Title><small><span className="u-pullLeft">
+         Current conflicts</span></small></Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      </Modal.Body>
+    </Modal>
     ))
