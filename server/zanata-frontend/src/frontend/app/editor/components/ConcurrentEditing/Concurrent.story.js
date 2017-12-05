@@ -1,14 +1,16 @@
 import React from 'react'
 import { storiesOf, action } from '@storybook/react'
-import { Alert, Button, Image, Panel, Badge } from 'react-bootstrap'
-import { Icon, Modal, EditableText } from '../../../components'
+import { Alert, Button, Image, Panel, Label } from 'react-bootstrap'
+import { Icon, Modal } from '../../../components'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
+import Textarea from 'react-textarea-autosize'
 
 /*
  * See .storybook/README.md for info on the component storybook.
  */
 
 const lastModifiedTime = new Date(2016, 12, 4, 2, 19)
+const value = 'A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart.'
 
 storiesOf('Concurrent editing', module)
     .add('notification', () => (
@@ -50,22 +52,52 @@ storiesOf('Concurrent editing', module)
          Current conflicts</span></small></Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p><a href="">Username</a> has saved a new version while you are editing. Please resolve conflicts.</p>
+        <p className="u-sizeHeight-1_1-2"><a href="">Username</a> has saved a new version while you are editing. Please resolve conflicts.</p>
         <Panel>
-          <p>Username created a Translated revision <Badge bsStyle='default'>latest</Badge></p>
-          <EditableText
-              className='editable textarea
-              EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded is-focused'
-              maxLength={255}
-              editable={true}
-              editing={true}
-              placeholder='Add a description…'
-              emptyReadOnlyText='No description'>
-            Test text
-          </EditableText>
+          <p className="u-sizeHeight-1_1-2"><strong>Username</strong> created a <span className='u-textSuccess'>Translated</span> revision <Label bsStyle='default'>latest</Label></p>
+          <span className="revisionBox">
+            <Textarea
+              className='form-control'
+              value={value}
+              placeholder={value}
+              onFocus={action('onFocus')}
+              onChange={action('onFocus')}
+              onSelect={action('onSelect')} />
+          </span>
+          <span className='u-floatLeft'>
           <DateAndTimeDisplay dateTime={lastModifiedTime}
                               className="u-block small u-sMT-1-2 u-sPB-1-4
           u-textMuted u-textSecondary"/>
+          </span>
+          <span className='u-floatRight'>
+            <Button title="Click should trigger onClick action"
+                    onClick={action('onClick')}
+                    className="EditorButton Button--secondary u-rounded">Use latest
+            </Button>
+          </span>
+        </Panel>
+        <Panel>
+          <p className="u-sizeHeight-1_1-2">You created an Unsaved revision.</p>
+          <span className="revisionBox">
+            <Textarea
+                className='form-control'
+                value={value}
+                placeholder={value}
+                onFocus={action('onFocus')}
+                onChange={action('onFocus')}
+                onSelect={action('onSelect')} />
+          </span>
+          <span className='u-floatLeft'>
+          <DateAndTimeDisplay dateTime={lastModifiedTime}
+                              className="u-block small u-sMT-1-2 u-sPB-1-4
+          u-textMuted u-textSecondary"/>
+          </span>
+          <span className='u-floatRight'>
+            <Button title="Click should trigger onClick action"
+                    onClick={action('onClick')}
+                    className="EditorButton Button--primary u-rounded">Use original
+            </Button>
+          </span>
         </Panel>
       </Modal.Body>
     </Modal>

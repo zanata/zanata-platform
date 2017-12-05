@@ -41,24 +41,28 @@
   font-weight: 600;
 }
 
-/* Editable text fields */
-
-.editable {
-  border-radius: 4px;
-  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-  vertical-align: middle;
+.revisionBox textarea {
+  border: solid 1px #639cad;
+  border-radius: .25rem;
+  width: 100%;
 }
 
-.editable:hover {
-  border: solid 2px;
-  border-color: rgb(189, 212, 220);
-  opacity: 1;
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1;
+  display: inline;
+  padding: 0.1rem 0.2rem 0.1rem;
+  text-align: center;
+  vertical-align: baseline;
+  white-space: nowrap;
+  color: #fff;
+  border-radius: 0.25rem;
+  margin-left: 0.38rem;
+  margin-right: 0.38rem;
 }
 
-.editable .placeholder {
-  color: red;
-}
-
-.editable.row {
-  padding: 0.75rem;
+.label-default {
+  background-color: #546677;
 }
