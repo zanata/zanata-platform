@@ -9,7 +9,6 @@
   --ConcEditing-Border-radius: 0.25rem;
 }
 
-
 .Button--concurrent {
   color: var(--ConcEditing-Button-primary-color);
   text-shadow: none;
