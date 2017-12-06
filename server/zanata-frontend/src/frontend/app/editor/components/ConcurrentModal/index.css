@@ -1,11 +1,8 @@
 :root {
   --ConcEditing-Button-primary-color: #03A6D7;
-  --ConcEditing-Button-secondary-color: #546677;
   --ConcEditing-color-muted: #BDD4DC;
   --ConcEditing-color-neutral: #a2b3be;
-  --ConcEditing-Label-margin: 0.38rem;
   --ConcEditing-Panel-spacing: 2rem;
-  --ConcEditing-Alert-color: rgba(255,59,61,0.95);
   --ConcEditing-Border-radius: 0.25rem;
 }
 
@@ -40,58 +37,7 @@
 
 /* React bootstrap styling */
 
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  text-align: center;
-}
-
-.alert-danger, .alert-info, .alert-success, .alert-warning {
-  color: #fff;
-  padding-left: 0.321rem;
-}
-
-.alert-danger {
-  background-color: var(--ConcEditing-Alert-color);
-}
-
-.alert-link a {
-  color: #fff;
-  text-decoration: underline;
-}
-
-.alert-danger .s2 svg {
-  vertical-align: middle;
-  padding-right: 0.5rem;
-
-}
-
-.alert-danger strong {
-  font-weight: 600;
-}
-
 #ConflictsModal .panel {
   margin-bottom: var(--ConcEditing-Panel-spacing);
   padding-bottom: var(--ConcEditing-Panel-spacing);
-}
-
-.label {
-  font-size: 0.8rem;
-  font-weight: 500;
-  line-height: 1;
-  display: inline;
-  padding: 0.1rem 0.2rem 0.1rem;
-  text-align: center;
-  vertical-align: baseline;
-  white-space: nowrap;
-  color: #fff;
-  border-radius: var(--ConcEditing-Border-radius);
-  margin-left: var(--ConcEditing-Label-margin);
-  margin-right: var(--ConcEditing-Label-margin);
-}
-
-.label-default {
-  background-color: var(--ConcEditing-Button-secondary-color);
 }
