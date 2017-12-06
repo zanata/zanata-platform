@@ -60,20 +60,20 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
 
     var supportedProjects: Set<HProject>? = null
         @ManyToMany
-        @JoinTable(name = "HProject_Locale", joinColumns = arrayOf(JoinColumn(name = "localeId")), inverseJoinColumns = arrayOf(JoinColumn(name = "projectId")))
+        @JoinTable(name = "HProject_Locale", joinColumns = [JoinColumn(name = "localeId")], inverseJoinColumns = [JoinColumn(name = "projectId")])
         get() {
             if (field == null) field = HashSet()
             return field
         }
     var supportedIterations: Set<HProjectIteration>? = null
         @ManyToMany
-        @JoinTable(name = "HProjectIteration_Locale", joinColumns = arrayOf(JoinColumn(name = "localeId")), inverseJoinColumns = arrayOf(JoinColumn(name = "projectIterationId")))
+        @JoinTable(name = "HProjectIteration_Locale", joinColumns = [JoinColumn(name = "localeId")], inverseJoinColumns = [JoinColumn(name = "projectIterationId")])
         get() {
             if (field == null) field = HashSet()
             return field
         }
     var members: Set<HLocaleMember>? = null
-        @OneToMany(cascade = arrayOf(CascadeType.ALL), mappedBy = "id.supportedLanguage")
+        @OneToMany(cascade = [CascadeType.ALL], mappedBy = "id.supportedLanguage")
         @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
         get() {
             if (field == null) field = HashSet()
