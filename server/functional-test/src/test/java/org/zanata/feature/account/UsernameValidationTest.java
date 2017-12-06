@@ -36,13 +36,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class UsernameValidationTest extends ZanataTestCase {
 
-    @Trace(
-            summary = "The user must enter acceptable username characters to register")
+    @Trace(summary = "The user must enter acceptable username characters " +
+            "to register")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameCharacterValidation() throws Exception {
         RegisterPage registerPage = new BasicWorkFlow().goToHome()
                 .goToRegistration().enterUserName("user|name");
         registerPage.defocus(registerPage.usernameField);
+
         assertThat(registerPage.getErrors())
                 .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
                 .as("Username validation errors are shown");

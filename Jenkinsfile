@@ -230,6 +230,7 @@ timestamps {
             --update-snapshots \
             -DstaticAnalysisCI \
             $gwtOpts \
+            -Dkotlin.compiler.incremental=false \
             -DskipFuncTests \
             -DskipArqTests \
             -Dmaven.test.failure.ignore \
@@ -420,6 +421,7 @@ void integrationTests(String appserver) {
           ftOpts += """\
               -Dgwt.compiler.skip \
               -Dmaven.main.skip \
+              -Dkotlin.compiler.incremental=false \
               -Dskip.npminstall \
               -DskipUnitTests \
               -Danimal.sniffer.skip \

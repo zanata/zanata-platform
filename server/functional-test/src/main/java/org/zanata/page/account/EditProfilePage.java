@@ -41,6 +41,11 @@ public class EditProfilePage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Enter a string into the name field
+     * @param name text to enter
+     * @return new EditProfilePage
+     */
     public EditProfilePage enterName(String name) {
         log.info("Enter name {}", name);
         readyElement(nameField).clear();
@@ -49,6 +54,11 @@ public class EditProfilePage extends BasePage {
         return new EditProfilePage(getDriver());
     }
 
+    /**
+     * Enter a string into the username field
+     * @param userName text to enter
+     * @return new EditProfilePage
+     */
     public EditProfilePage enterUserName(String userName) {
         log.info("Enter username {}", userName);
         readyElement(usernameField).clear();
@@ -56,6 +66,11 @@ public class EditProfilePage extends BasePage {
         return new EditProfilePage(getDriver());
     }
 
+    /**
+     * Enter a string into the email field
+     * @param email text to enter
+     * @return new EditProfilePage
+     */
     public EditProfilePage enterEmail(String email) {
         log.info("Enter email {}", email);
         readyElement(emailField).clear();
@@ -64,12 +79,20 @@ public class EditProfilePage extends BasePage {
         return new EditProfilePage(getDriver());
     }
 
+    /**
+     * Press the Save button
+     * @return new HomePage
+     */
     public HomePage clickSave() {
         log.info("Click Save");
         clickElement(saveButton);
         return new HomePage(getDriver());
     }
 
+    /**
+     * Press the Save button, expecting errors
+     * @return new EditProfilePage
+     */
     public EditProfilePage clickSaveAndExpectErrors() {
         log.info("Click Save");
         clickElement(saveButton);

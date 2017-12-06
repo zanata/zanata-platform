@@ -99,7 +99,7 @@
                   value="#{register.humanField}"/>
 
                 <ui:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
-                  <p class="txt--meta l--push-top-half">
+                  <p class="txt--meta l--push-top-half" id="termsOfUseUrl">
                     <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
                       applicationConfiguration.termsOfUseUrl)}" escape="false"/>
                   </p>
