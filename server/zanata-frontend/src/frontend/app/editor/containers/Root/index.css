@@ -15,6 +15,9 @@
   --Editor-color-bright: #1ba7d9;
   --Editor-badge-radius: 4px;
   --Editor-border-radius-small: 3px;
+  --Editor-label-margin: 0.38rem;
+  --Editor-alert-color: rgba(255,59,61,0.95);
+  --Editor-border-radius: 0.25rem;
 }
 
 input, textarea, select, button  {
@@ -933,6 +936,62 @@ button.close:focus, button.close:hover, button.close:active:focus {
 label span.n1 {
   vertical-align: middle !important;
 }
+
+/* Alerts */
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.alert-danger, .alert-info, .alert-success, .alert-warning {
+  color: #fff;
+  padding-left: 0.321rem;
+}
+
+.alert-danger {
+  background-color: var(--Editor-alert-color);
+}
+
+.alert-link a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.alert-danger .s2 svg {
+  vertical-align: middle;
+  padding-right: 0.5rem;
+
+}
+
+.alert-danger strong {
+  font-weight: 600;
+}
+
+/* Labels */
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1;
+  display: inline;
+  padding: 0.1rem 0.2rem 0.1rem;
+  text-align: center;
+  vertical-align: baseline;
+  white-space: nowrap;
+  color: #fff;
+  border-radius: var(--Editor-border-radius);
+  margin-left: var(--Editor-label-margin);
+  margin-right: var(--Editor-label-margin);
+}
+
+.label-default {
+  background-color: var(--Editor-color-dark);
+}
+
 
 /**
  * Media Queries

@@ -5300,6 +5300,100 @@ exports[`Editor Storyshots CommentBox default 1`] = `
 </div>
 `;
 
+exports[`Editor Storyshots Concurrent editing modal 1`] = `undefined`;
+
+exports[`Editor Storyshots Concurrent editing notification 1`] = `
+<div
+  className="alert alert-danger"
+  role="alert"
+>
+  <span
+    className="s2"
+  >
+    <svg
+      className={undefined}
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+        }
+      }
+      style={
+        Object {
+          "fill": "currentColor",
+        }
+      }
+    />
+  </span>
+  <strong>
+    Concurrent editing detected.
+  </strong>
+   
+  <span
+    className="alert-link"
+  >
+    <a
+      href=""
+    >
+      Resolve merge conflicts
+    </a>
+     before continuing.
+  </span>
+</div>
+`;
+
+exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
+<span>
+  <h1>
+    TransUnit items
+  </h1>
+  <img
+    className="img-responsive"
+    src="https://i.imgur.com/yQWlJaH.png"
+  />
+  <h2>
+    Concurrent user notice
+  </h2>
+  <button
+    className="EditorButton Button--link Button--small Button--concurrent btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    title="Click should trigger onClick action"
+    type="button"
+  >
+    <span
+      className="n1"
+    >
+      <svg
+        className={undefined}
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-user\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+     username
+  </button>
+  <h2>
+    Resolve merge conflict button
+  </h2>
+  <button
+    className="EditorButton Button--secondary u-rounded btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    title="Click should trigger onClick action"
+    type="button"
+  >
+    Resolve conflict
+  </button>
+</span>
+`;
+
 exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
 <span
   className={undefined}
