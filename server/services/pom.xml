@@ -74,7 +74,7 @@
             </goals>
             <configuration>
               <scripts>
-                <script>file:///${project.basedir}/src/etc/dependencyVersions.groovy</script>
+                <script>${project.basedir}/src/etc/dependencyVersions.groovy</script>
               </scripts>
             </configuration>
           </execution>
