@@ -50,6 +50,32 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     className="well-approved well"
   >
     নাম
+    <span
+      className="u-pullRight"
+    >
+      <button
+        className="Link Link--neutral"
+        title="Copy"
+      >
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </span>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -126,6 +152,32 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     className="well"
   >
     What in the world does this mean?
+    <span
+      className="u-pullRight"
+    >
+      <button
+        className="Link Link--neutral"
+        title="Copy"
+      >
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </span>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -209,6 +261,32 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     className="well-fuzzy well"
   >
     নাম
+    <span
+      className="u-pullRight"
+    >
+      <button
+        className="Link Link--neutral"
+        title="Copy"
+      >
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </span>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -352,6 +430,32 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     className="well-rejected well"
   >
     নাম
+    <span
+      className="u-pullRight"
+    >
+      <button
+        className="Link Link--neutral"
+        title="Copy"
+      >
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </span>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -495,6 +599,32 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     className="well-rejected well"
   >
     নাম
+    <span
+      className="u-pullRight"
+    >
+      <button
+        className="Link Link--neutral"
+        title="Copy"
+      >
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </span>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -638,6 +768,32 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     className="well-rejected well"
   >
     নাম
+    <span
+      className="u-pullRight"
+    >
+      <button
+        className="Link Link--neutral"
+        title="Copy"
+      >
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </span>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -721,6 +877,32 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     className="well-translated well"
   >
     নাম
+    <span
+      className="u-pullRight"
+    >
+      <button
+        className="Link Link--neutral"
+        title="Copy"
+      >
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </span>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
