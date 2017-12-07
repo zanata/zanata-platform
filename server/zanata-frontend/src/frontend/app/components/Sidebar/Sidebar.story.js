@@ -1,6 +1,12 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { Sidebar } from '../'
+import Sidebar from '.'
+import AboutPage from '../../containers/ProjectVersion/AboutPage'
+
+const aboutText = 'This is one rocking project version. This is the best' +
+    ' project version ever.'
+const url = 'https://www.google.com'
+const linkname = 'Our awesome webpage'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
@@ -16,3 +22,10 @@ storiesOf('Sidebar', module)
           </div>
       </div>
     ))
+    .add('AboutPage', () => (
+        <div>
+          <Sidebar />
+          <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
+        </div>
+    ))
+

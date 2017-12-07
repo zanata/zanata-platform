@@ -14916,7 +14916,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
 </form>
 `;
 
-exports[`Frontend Storyshots Sidebar default 1`] = `
+exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
 <div>
   <div
     className="sidebar accordion"
@@ -14973,7 +14973,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
               role={null}
             >
               <li
-                className="active"
+                className=""
                 role="presentation"
                 style={undefined}
               >
@@ -15033,7 +15033,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 </a>
               </li>
               <li
-                className=""
+                className="active"
                 role="presentation"
                 style={undefined}
               >
@@ -15411,7 +15411,582 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 role={null}
               >
                 <li
-                  className="active"
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    Languages
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    Documents
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    Groups 
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="flexTab wideView"
+  >
+    <h2>
+      About
+    </h2>
+    <p>
+      This is one rocking project version. This is the best project version ever.
+    </p>
+    <a
+      href="https://www.google.com"
+    >
+      <span
+        className="n1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-link\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+      Our awesome webpage
+    </a>
+  </div>
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar default 1`] = `
+<div>
+  <div
+    className="sidebar accordion"
+  >
+    <div
+      className="sidebar-wrapper"
+    >
+      <div
+        className="sidebar-container"
+      >
+        <div
+          className="sidebar-content"
+        >
+          <a
+            className="accordion-section-title"
+            onClick={[Function]}
+          >
+            <span
+              className="iconProject"
+            >
+              <svg
+                className={undefined}
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            <span
+              className="projtitle"
+            >
+              Zanata Server
+            </span>
+            <svg
+              className="hide-desktop down"
+            >
+              <use
+                xlinkHref="#Icon-chevron-down"
+              />
+            </svg>
+          </a>
+          <div
+            className="accordion-section-content"
+            id="accordion-1"
+          >
+            <ul
+              className="nav nav-pills nav-stacked"
+              role={null}
+            >
+              <li
+                className=""
+                role="presentation"
+                style={undefined}
+              >
+                <a
+                  href="#"
+                  onClick={[Function]}
+                  role="button"
+                >
+                  <span
+                    className="s1 iconSidebar"
+                  >
+                    <svg
+                      className={undefined}
+                      dangerouslySetInnerHTML={
+                        Object {
+                          "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                        }
+                      }
+                      style={
+                        Object {
+                          "fill": "currentColor",
+                        }
+                      }
+                    />
+                  </span>
+                  People
+                </a>
+              </li>
+              <li
+                className=""
+                role="presentation"
+                style={undefined}
+              >
+                <a
+                  href="#"
+                  onClick={[Function]}
+                  role="button"
+                >
+                  <span
+                    className="s1 iconSidebar"
+                  >
+                    <svg
+                      className={undefined}
+                      dangerouslySetInnerHTML={
+                        Object {
+                          "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                        }
+                      }
+                      style={
+                        Object {
+                          "fill": "currentColor",
+                        }
+                      }
+                    />
+                  </span>
+                  Glossary
+                </a>
+              </li>
+              <li
+                className="active"
+                role="presentation"
+                style={undefined}
+              >
+                <a
+                  href="#"
+                  onClick={[Function]}
+                  role="button"
+                >
+                  <span
+                    className="s1 iconSidebar"
+                  >
+                    <svg
+                      className={undefined}
+                      dangerouslySetInnerHTML={
+                        Object {
+                          "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                        }
+                      }
+                      style={
+                        Object {
+                          "fill": "currentColor",
+                        }
+                      }
+                    />
+                  </span>
+                  About
+                </a>
+              </li>
+              <li
+                className=""
+                role="presentation"
+                style={undefined}
+              >
+                <a
+                  href="#"
+                  onClick={[Function]}
+                  role="button"
+                >
+                  <span
+                    className="s1 iconSidebar"
+                  >
+                    <svg
+                      className={undefined}
+                      dangerouslySetInnerHTML={
+                        Object {
+                          "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                        }
+                      }
+                      style={
+                        Object {
+                          "fill": "currentColor",
+                        }
+                      }
+                    />
+                  </span>
+                  Settings 
+                </a>
+              </li>
+            </ul>
+            <div
+              className="dropdown btn-group"
+            >
+              <button
+                aria-expanded={false}
+                aria-haspopup={true}
+                className="btn-sm btn-default dropdown-toggle btn btn-default"
+                disabled={false}
+                id="optionsDropdown"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="button"
+                type="button"
+              >
+                Options
+                 
+                <span
+                  className="caret"
+                />
+              </button>
+              <ul
+                aria-labelledby="optionsDropdown"
+                className="dropdown-menu"
+                role="menu"
+              >
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    onKeyDown={[Function]}
+                    role="menuitem"
+                    tabIndex="-1"
+                  >
+                    Copy translations
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    onKeyDown={[Function]}
+                    role="menuitem"
+                    tabIndex="-1"
+                  >
+                    Merge translations
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    onKeyDown={[Function]}
+                    role="menuitem"
+                    tabIndex="-1"
+                  >
+                    Copy to new version
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    onKeyDown={[Function]}
+                    role="menuitem"
+                    tabIndex="-1"
+                  >
+                    Download config file
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    onKeyDown={[Function]}
+                    role="menuitem"
+                    tabIndex="-1"
+                  >
+                    Export project to TMX
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div
+              className="processing well"
+            >
+              <p
+                className="task-title"
+              >
+                Task title
+              </p>
+              <p>
+                <span>
+                  Processing document 
+                  <span
+                    className="count"
+                  >
+                    1 of 10
+                  </span>
+                   
+                  <span
+                    className="count-pc"
+                  >
+                    12.50%
+                  </span>
+                </span>
+              </p>
+              <div
+                className="progress-striped progress"
+              >
+                <div
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={12.5}
+                  className="progress-bar"
+                  role="progressbar"
+                  style={
+                    Object {
+                      "width": "12.5%",
+                    }
+                  }
+                />
+              </div>
+              <button
+                className="btn-danger btn-sm btn btn-default"
+                disabled={false}
+                type="button"
+              >
+                Stop
+              </button>
+            </div>
+            <div
+              id="sidebarVersion"
+            >
+              <div
+                className="sidebarVersion-inline"
+              >
+                <span
+                  className="sidebarVersion-title"
+                >
+                  <span
+                    className="s2"
+                  >
+                    <svg
+                      className={undefined}
+                      dangerouslySetInnerHTML={
+                        Object {
+                          "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                        }
+                      }
+                      style={
+                        Object {
+                          "fill": "currentColor",
+                        }
+                      }
+                    />
+                  </span>
+                  <span
+                    className="versionHeading"
+                  >
+                    VERSION
+                  </span>
+                </span>
+                <div
+                  className="dropdown btn-group"
+                >
+                  <button
+                    aria-expanded={false}
+                    aria-haspopup={true}
+                    className="btn-sm btn-default dropdown-toggle btn btn-default"
+                    disabled={false}
+                    id="version-dropdown"
+                    onClick={[Function]}
+                    onKeyDown={[Function]}
+                    role="button"
+                    type="button"
+                  >
+                    master
+                     
+                    <span
+                      className="caret"
+                    />
+                  </button>
+                  <ul
+                    aria-labelledby="version-dropdown"
+                    className="dropdown-menu"
+                    role="menu"
+                  >
+                    <li
+                      className=""
+                      role="presentation"
+                      style={undefined}
+                    >
+                      <a
+                        href="#"
+                        onClick={[Function]}
+                        onKeyDown={[Function]}
+                        role="menuitem"
+                        tabIndex="-1"
+                      >
+                        release
+                      </a>
+                    </li>
+                    <li
+                      className=""
+                      role="presentation"
+                      style={undefined}
+                    >
+                      <a
+                        href="#"
+                        onClick={[Function]}
+                        onKeyDown={[Function]}
+                        role="menuitem"
+                        tabIndex="-1"
+                      >
+                        test-1
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p
+                className="sidebarVersion-settings"
+              >
+                <a
+                  href=""
+                >
+                  Version settings
+                </a>
+              </p>
+              <div
+                className="sidebarVersion-percent"
+              >
+                <p>
+                  <span
+                    className="percent"
+                  >
+                    10%
+                  </span>
+                   translated
+                </p>
+              </div>
+              <div
+                className="progress"
+              >
+                <div
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={10}
+                  className="progress-bar-success progress-bar"
+                  role="progressbar"
+                  style={
+                    Object {
+                      "width": "10%",
+                    }
+                  }
+                />
+                <div
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={7}
+                  className="progress-bar-warning progress-bar"
+                  role="progressbar"
+                  style={
+                    Object {
+                      "width": "7%",
+                    }
+                  }
+                />
+                <div
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={3}
+                  className="progress-bar-danger progress-bar"
+                  role="progressbar"
+                  style={
+                    Object {
+                      "width": "3%",
+                    }
+                  }
+                />
+                <div
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={10}
+                  className="progress-bar-info progress-bar"
+                  role="progressbar"
+                  style={
+                    Object {
+                      "width": "10%",
+                    }
+                  }
+                />
+              </div>
+              <ul
+                className="v-links nav nav-pills nav-stacked"
+                role={null}
+              >
+                <li
+                  className=""
                   role="presentation"
                   style={undefined}
                 >

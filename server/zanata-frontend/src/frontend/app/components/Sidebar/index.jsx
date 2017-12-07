@@ -39,17 +39,17 @@ class Sidebar extends Component {
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
               </a>
               <div id='accordion-1' className={displayAccordion}>
-                <Nav bsStyle='pills' stacked activeKey={1}>
+                <Nav bsStyle='pills' stacked activeKey={3}>
                   <NavItem eventKey={1} href=''>
                     <Icon name='users' className='s1 iconSidebar' />
                   People</NavItem>
                   <NavItem eventKey={2} href=''>
                     <Icon name='glossary' className='s1 iconSidebar' />
                   Glossary</NavItem>
-                  <NavItem eventKey={2} href=''>
+                  <NavItem eventKey={3} href=''>
                     <Icon name='info' className='s1 iconSidebar' />
                   About</NavItem>
-                  <NavItem eventKey={3} href=''>
+                  <NavItem eventKey={4} href=''>
                     <Icon name='settings' className='s1 iconSidebar' />
                   Settings </NavItem>
                 </Nav>
@@ -100,7 +100,7 @@ class Sidebar extends Component {
                       now={10} key={4} />
                   </ProgressBar>
                   <Nav className='v-links'
-                    bsStyle='pills' stacked activeKey={1}>
+                    bsStyle='pills' stacked>
                     <NavItem eventKey={1} href=''>
                     Languages</NavItem>
                     <NavItem eventKey={2} href=''>
