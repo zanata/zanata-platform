@@ -35,18 +35,65 @@ import java.util.List;
 public class ManageUserPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ManageUserPage.class);
+
     private By userTable = By.id("usermanagerForm");
+    private By lockIcon = By.className("i--lock");
+    private By listEntry = By.className("list__item--actionable");
+    private By actionsDropdown = By.id("rolemanage-more-actions");
+    private By createUser = By.linkText("Create new user");
 
     public ManageUserPage(WebDriver driver) {
         super(driver);
     }
 
+    /**
+     * Press the edit button on a user account
+     * @param username of account to edit
+     * @return new ManageUserAccountPage
+     */
     public ManageUserAccountPage editUserAccount(String username) {
         log.info("Click edit on {}", username);
         clickElement(findRowByUserName(username));
         return new ManageUserAccountPage(getDriver());
     }
 
+    /**
+     * Get a list of user names
+     * @return String list of user names
+     */
+    public List<String> getUserList() {
+        log.info("Query user list");
+        // Page may refresh user list
+        waitForPageSilence();
+        List<String> names = new ArrayList<>();
+        for (WebElement element : getRows()) {
+            names.add(getListItemUsername(element));
+        }
+        return names;
+    }
+
+    /**
+     * Open the menu and select Create New User
+     * @return new CreateUserAccountPage
+     */
+    public CreateUserAccountPage selectCreateNewUser() {
+        log.info("Click Create new user");
+        clickElement(actionsDropdown);
+        clickLinkAfterAnimation(createUser);
+        return new CreateUserAccountPage(getDriver());
+    }
+
+    /**
+     * Query if user is enabled
+     * @param username to query
+     * @return boolean user is enabled
+     */
+    public boolean isUserEnabled(String username) {
+        log.info("Query is user {} enabled", username);
+        return findRowByUserName(username).findElements(lockIcon).isEmpty();
+    }
+
+    // Find the row WebElement containing the username
     private WebElement findRowByUserName(final String username) {
         for (WebElement listItem : getRows()) {
             if (getListItemUsername(listItem).equals(username)) {
@@ -63,49 +110,27 @@ public class ManageUserPage extends BasePage {
                 return listItem;
             }
         }
-        return null;
+        throw new RuntimeException("Search for username " + username +
+                " failed");
     }
 
-    public boolean isUserEnabled(String username) {
-        log.info("Query is user {} enabled", username);
-            List<WebElement> locks = findRowByUserName(username)
-                    .findElements(By.className("i--lock"));
-        return locks.isEmpty();
+    // Retrieve all of the user rows from the table
+    private List<WebElement> getRows() {
+        return readyElement(userTable).findElements(listEntry);
     }
 
-    public List<WebElement> getRows() {
-        return readyElement(userTable)
-                .findElements(By.className("list__item--actionable"));
-    }
-
-    public String getListItemUsername(WebElement listItem) {
+    // Retrieve the username from a user row
+    private String getListItemUsername(WebElement listItem) {
         String listItemText = listItem.findElement(By.tagName("h3")).getText();
         return listItemText
-                .substring(0,
-                        listItemText.lastIndexOf(getListItemRoles(listItem)))
+                .substring(0, listItemText.lastIndexOf(getListItemRoles(listItem)))
                 .trim();
     }
 
-    public String getListItemRoles(WebElement listItem) {
+    // Retrieve the list of roles, as a string, from a user row
+    private String getListItemRoles(WebElement listItem) {
         return listItem.findElement(By.tagName("h3"))
                 .findElement(By.className("txt--meta")).getText();
     }
 
-    public List<String> getUserList() {
-        log.info("Query user list");
-        // Page may refresh user list
-        waitForPageSilence();
-        List<String> names = new ArrayList<>();
-        for (WebElement element : getRows()) {
-            names.add(getListItemUsername(element));
-        }
-        return names;
-    }
-
-    public CreateUserAccountPage selectCreateNewUser() {
-        log.info("Click Create new user");
-        clickElement(By.id("rolemanage-more-actions"));
-        clickLinkAfterAnimation(By.linkText("Create new user"));
-        return new CreateUserAccountPage(getDriver());
-    }
 }

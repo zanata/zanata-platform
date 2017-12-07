@@ -32,25 +32,40 @@ import org.zanata.page.utility.HomePage;
 public class EditHomeContentPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(EditHomeContentPage.class);
+
     private By updateButton = By.id("homeContentForm:update");
     private By cancelButton = By.id("homeContentForm:cancel");
+    private By homeContent = By.id("homeContentForm:homeContent");
 
     public EditHomeContentPage(final WebDriver driver) {
         super(driver);
     }
 
+    /**
+     * Enter text into the content editing panel
+     * @param text string to enter
+     * @return new EditHomeContentPage
+     */
     public EditHomeContentPage enterText(String text) {
         log.info("Enter homepage code\n{}", text);
-        readyElement(By.id("homeContentForm:homeContent")).sendKeys(text);
+        enterText(homeContent, text);
         return new EditHomeContentPage(getDriver());
     }
 
+    /**
+     * Press the Update button
+     * @return new HomePage
+     */
     public HomePage update() {
         log.info("Click Update");
         clickElement(updateButton);
         return new HomePage(getDriver());
     }
 
+    /**
+     * Press the Cancel button
+     * @return new HomePage
+     */
     public HomePage cancelUpdate() {
         log.info("Click Cancel");
         clickElement(cancelButton);

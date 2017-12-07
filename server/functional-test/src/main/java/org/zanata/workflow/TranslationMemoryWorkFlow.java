@@ -38,6 +38,6 @@ public class TranslationMemoryWorkFlow extends AbstractWebWorkFlow {
             String description) {
         return goToHome().goToAdministration().goToTranslationMemoryPage()
                 .clickCreateNew().enterMemoryID(name)
-                .enterMemoryDescription(description).saveTM();
+                .enterTMDescription(description).saveTM();
     }
 }
