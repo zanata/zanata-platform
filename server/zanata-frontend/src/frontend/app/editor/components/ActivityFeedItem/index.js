@@ -244,7 +244,13 @@ class ActivityFeedItem extends Component {
           {this.getMessage()}
         </p>
         <Well className={isComment ? '' : statusToWellClass[status]}>
-          {content}</Well>
+          {content}
+          <span className="u-pullRight">
+          <button className="Link Link--neutral" title="Copy">
+              <Icon name='copy' className="s1" />
+          </button>
+          </span>
+        </Well>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
           className="u-block small u-sMT-1-2 u-sPB-1-4
           u-textMuted u-textSecondary"/>
