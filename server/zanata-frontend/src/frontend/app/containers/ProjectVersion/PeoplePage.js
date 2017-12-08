@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from "prop-types";
-import { Button, InputGroup, FormGroup, FormControl, Pagination
+import { Button, InputGroup, FormGroup, FormControl, Pagination, Table
 } from 'react-bootstrap'
 import { Icon } from '../../components'
 
@@ -58,7 +58,38 @@ class PeoplePage extends Component {
                items={10}/>
             </div>
           </div>
-
+          <Table striped hover>
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Admin</td>
+              <td>Maintainer</td>
+              <td><Button bsStyle='default'>
+                <Icon name='settings' className='s0' />Manage permissions
+              </Button></td>
+            </tr>
+            <tr>
+              <td>Tux</td>
+              <td>Reviewer</td>
+              <td><Button bsStyle='default'>
+                <Icon name='settings' className='s0' />Manage permissions
+              </Button></td>
+            </tr>
+            <tr>
+              <td>Alix</td>
+              <td>Translator</td>
+              <td><Button bsStyle='default'>
+                <Icon name='settings' className='s0' />Manage permissions
+              </Button></td>
+            </tr>
+            </tbody>
+          </Table>
         </div>
     )
   }

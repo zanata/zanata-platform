@@ -39,7 +39,7 @@ class Sidebar extends Component {
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
               </a>
               <div id='accordion-1' className={displayAccordion}>
-                <Nav bsStyle='pills' stacked activeKey={3}>
+                <Nav bsStyle='pills' stacked activeKey={1}>
                   <NavItem eventKey={1} href=''>
                     <Icon name='users' className='s1 iconSidebar' />
                   People</NavItem>
