@@ -14973,7 +14973,7 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
               role={null}
             >
               <li
-                className=""
+                className="active"
                 role="presentation"
                 style={undefined}
               >
@@ -15033,7 +15033,7 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                 </a>
               </li>
               <li
-                className="active"
+                className=""
                 role="presentation"
                 style={undefined}
               >
@@ -15548,7 +15548,7 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
               role={null}
             >
               <li
-                className=""
+                className="active"
                 role="presentation"
                 style={undefined}
               >
@@ -15608,7 +15608,7 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                 </a>
               </li>
               <li
-                className="active"
+                className=""
                 role="presentation"
                 style={undefined}
               >
@@ -16314,6 +16314,127 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
         </ul>
       </div>
     </div>
+    <table
+      className="table table-striped table-hover"
+    >
+      <thead>
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Role
+          </th>
+          <th>
+             
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Admin
+          </td>
+          <td>
+            Maintainer
+          </td>
+          <td>
+            <button
+              className="btn btn-default"
+              disabled={false}
+              type="button"
+            >
+              <span
+                className="s0"
+              >
+                <svg
+                  className={undefined}
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              Manage permissions
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tux
+          </td>
+          <td>
+            Reviewer
+          </td>
+          <td>
+            <button
+              className="btn btn-default"
+              disabled={false}
+              type="button"
+            >
+              <span
+                className="s0"
+              >
+                <svg
+                  className={undefined}
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              Manage permissions
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Alix
+          </td>
+          <td>
+            Translator
+          </td>
+          <td>
+            <button
+              className="btn btn-default"
+              disabled={false}
+              type="button"
+            >
+              <span
+                className="s0"
+              >
+                <svg
+                  className={undefined}
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              Manage permissions
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 `;
@@ -16375,7 +16496,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
               role={null}
             >
               <li
-                className=""
+                className="active"
                 role="presentation"
                 style={undefined}
               >
@@ -16435,7 +16556,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 </a>
               </li>
               <li
-                className="active"
+                className=""
                 role="presentation"
                 style={undefined}
               >
