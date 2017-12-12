@@ -2,6 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Sidebar from '.'
 import AboutPage from '../../containers/ProjectVersion/AboutPage'
+import PeoplePage from '../../containers/ProjectVersion/PeoplePage'
 
 const aboutText = 'This is one rocking project version. This is the best' +
     ' project version ever.'
@@ -26,6 +27,12 @@ storiesOf('Sidebar', module)
         <div>
           <Sidebar />
           <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
+        </div>
+    ))
+    .add('PeoplePage', () => (
+        <div>
+          <Sidebar />
+          <PeoplePage />
         </div>
     ))
 
