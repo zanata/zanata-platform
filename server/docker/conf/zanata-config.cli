@@ -103,6 +103,8 @@ jms-queue add --queue-address=MailsQueue --durable=true --entries=["java:/jms/qu
 ## add zanata.openid security domain
 /subsystem=security/security-domain=zanata.openid:add()
 /subsystem=security/security-domain=zanata.openid/authentication=classic:add()
+# uncomment following line and comment the line below will turn the instance into single OpenID provider mode. Sign in will go straight to the openID provider
+# /subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:add(code="org.zanata.security.OpenIdLoginModule",flag="required",module-options={providerURL="https://id.fedoraproject.org/openid/"})
 /subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:add(code="org.zanata.security.OpenIdLoginModule",flag="required")
 ## add SAML security domain
 /subsystem=security/security-domain=zanata.saml2:add(cache-type=default)
