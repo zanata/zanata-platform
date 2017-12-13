@@ -223,6 +223,13 @@ public class TranslationMemoryPage extends BasePage {
         return getListEntryCount(findRowByTMName(tmName));
     }
 
+    // TODO Remove this when stable
+    public void expectNumberOfEntries(int number, String tmName) {
+        waitForAMoment().withMessage("Workaround: wait for number of entries")
+                .until(it -> Integer.valueOf(getNumberOfEntries(tmName))
+                        .equals(number));
+    }
+
     /**
      * Query a TM for the delete button being enabled
      * @param tmName name of TM to query

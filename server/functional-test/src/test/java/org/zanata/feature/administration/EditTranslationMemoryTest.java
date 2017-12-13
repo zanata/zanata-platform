@@ -211,6 +211,10 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         tmMemoryPage = tmMemoryPage.clickOptions(clearTMId)
                 .clickClearTMAndAccept(clearTMId);
 
+        // TODO there seems to be some issue here, fix
+        tmMemoryPage.reload();
+        tmMemoryPage.expectNumberOfEntries(0, clearTMId);
+
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
                 .isEqualTo("0")
                 .as("The translation memory entries is empty");
@@ -264,7 +268,10 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .as("The item cannot yet be deleted");
 
         tmMemoryPage = tmMemoryPage.clickClearTMAndAccept(forceClear);
-        tmMemoryPage.getNumberOfEntries(forceClear);
+
+        // TODO there seems to be some issue here, fix
+        tmMemoryPage.reload();
+        tmMemoryPage.expectNumberOfEntries(0, forceClear);
 
         assertThat(tmMemoryPage.clickOptions(forceClear).canDelete(forceClear))
                 .isTrue()

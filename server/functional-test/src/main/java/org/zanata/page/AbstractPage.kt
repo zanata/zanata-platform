@@ -431,7 +431,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @param attribute name of attribute to query
      */
     fun getAttribute(findBy: By, attribute: String): String {
-        return getAttribute(existingElement(findBy), attribute);
+        return getAttribute(existingElement(findBy), attribute)
     }
 
     /**
@@ -441,7 +441,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @param attribute name of attribute to query
      */
     fun getAttribute(webElement: WebElement, attribute: String): String {
-        return webElement.getAttribute(attribute);
+        return webElement.getAttribute(attribute) ?: ""
     }
 
 
