@@ -96,7 +96,7 @@ Server options:
         -f 9 enable all functional tests
     --verify                equivalent to -a -f 1
     --verify-all            equivalent to -a -f 9
-    -E, --eap               (-Dappserver=jbosseap6, requires EAP7_URL env var)
+    -E, --eap               (-Dappserver=jbosseap6, requires EAP71_URL env var)
     -W, --wildfly           (-Dappserver=wildfly8)
     -w, --wait              quick-build, install Zanata then wait for IDE to run functional tests
 EOF
