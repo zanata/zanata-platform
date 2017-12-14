@@ -102,8 +102,7 @@ public class JBossSSOLoginModule implements LoginModule {
                 log.info("JBoss.org user {} successfully authenticated", username);
                 return true;
             } else {
-                log.info("JBoss.org user " + username
-                        + " failed authentication");
+                log.info("JBoss.org user {} failed authentication", username);
                 throw new FailedLoginException();
             }
         } catch (UnsupportedCallbackException e) {

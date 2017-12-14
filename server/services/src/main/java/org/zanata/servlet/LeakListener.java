@@ -33,9 +33,8 @@ import se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventor;
 @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
 public class LeakListener extends ClassLoaderLeakPreventor {
 
-    @SuppressFBWarnings({"SLF4J_ILLEGAL_PASSED_CLASS"})
     private static final Logger log = LoggerFactory
-            .getLogger(ClassLoaderLeakPreventor.class);
+            .getLogger(LeakListener.class);
 
     protected void debug(String s) {
         log.debug("{}", s);

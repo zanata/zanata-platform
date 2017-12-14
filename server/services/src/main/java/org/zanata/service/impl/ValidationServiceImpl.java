@@ -171,7 +171,7 @@ public class ValidationServiceImpl implements ValidationService {
         HDocument hDoc = documentDAO.findById(hDocId, false);
         boolean hasError =
                 documentHasWarningOrError(hDoc, validationIds, localeId);
-        log.debug("Finished runDocValidations in " + stopwatch);
+        log.debug("Finished runDocValidations in {}", stopwatch);
         return hasError;
     }
 

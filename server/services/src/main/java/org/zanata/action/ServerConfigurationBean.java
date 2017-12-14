@@ -208,7 +208,7 @@ public class ServerConfigurationBean implements Serializable {
             try {
                 property.set(Boolean.parseBoolean(valueHolder.getValue()));
             } catch (InvocationTargetException | IllegalAccessException e) {
-                log.error("error setting property value: {} -> {}",
+                log.error("error setting boolean property: {} -> {}",
                         property.getKey(), valueHolder.getValue(), e);
             }
         }
@@ -273,8 +273,8 @@ public class ServerConfigurationBean implements Serializable {
                     applicationConfigurationDAO);
         } catch (IllegalAccessException | NoSuchMethodException
                 | InvocationTargetException e) {
-            log.error("error persisting property value:" + property.getKey()
-                    + " -> " + configItem, e);
+            log.error("error persisting property: {} -> {}",
+                    property.getKey(), configItem, e);
         }
     }
 
