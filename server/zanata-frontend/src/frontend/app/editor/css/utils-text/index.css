@@ -1,4 +1,4 @@
-@import 'suitcss-utils-text';
+@import "suitcss-utils-text";
 
 :root {
   --u-text-color-invert: #fff;
@@ -91,7 +91,7 @@
 }
 
 .u-textPilcrow:before {
-  content: '\00b6';
+  content: "\00b6";
   color: var(--u-text-color-neutral);
   padding: 0 calc(var(--u-text-rhythm) * 0.125);
 }
@@ -104,7 +104,7 @@
 }
 
 .u-textTab:before {
-  content: '\21E5';
+  content: "\21E5";
   color: var(--u-text-color-neutral);
 }
 
@@ -113,7 +113,7 @@
 }
 .u-textSpace:before {
   position: absolute;
-  content: '.';
+  content: ".";
   color: var(--u-text-color-neutral);
 }
 

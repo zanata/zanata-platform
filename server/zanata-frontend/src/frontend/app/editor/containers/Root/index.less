@@ -1,9 +1,8 @@
 /** @define Editor; use strict */
 
 :root {
-  --Editor-rhythm: 1.5rem;
   --Editor-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
-  --Editor-color-status-bg: color(#416988 tint(82%));
+  --Editor-color-status-bg: rgba(65, 105, 136, .12);
   --Editor-color-translation-bg: #ECEFF0;
   --Editor-loader-z-index: 900;
   --Editor-panel-z-index: 200;
@@ -195,7 +194,7 @@ input, textarea, select, button  {
 }
 
 .Editor-header.is-minimised {
-  transform: translateY(calc(var(--Editor-rhythm) * -2));
+  transform: translateY(calc(1.5rem * -2));
 }
 
 .Editor-header.is-minimised .Editor-mainNav {
@@ -206,7 +205,7 @@ input, textarea, select, button  {
   left: 50%;
   position: absolute;
   top: 0;
-  transform: translate(-50%, calc(var(--Editor-rhythm) * .25));
+  transform: translate(-50%, calc(1.5rem * .25));
   z-index: var(--Editor-loader-z-index);
 }
 
@@ -247,7 +246,7 @@ li.DocName span.ellipsis {
 }
 
 .Editor-mainNav {
-  height: calc(var(--Editor-rhythm) * 2);
+  height: calc(1.5rem * 2);
 }
 
 .Editor-content {
@@ -257,13 +256,13 @@ li.DocName span.ellipsis {
   overflow-x: hidden;
   position: absolute;
   right: 0;
-  top: calc(var(--Editor-rhythm) * 3.75);
+  top: calc(1.5rem * 3.75);
   width: 100%;
   -webkit-overlow-scrolling: touch;
 }
 
 .Editor-content.is-maximised {
-  top: calc(var(--Editor-rhythm) * 1.75);
+  top: calc(1.5rem * 1.75);
 }
 
 /*So firefox keeps the background at 100% height when there are only a few translations*/
@@ -275,22 +274,22 @@ li.DocName span.ellipsis {
   background: linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg));
   background-position: left center;
   background-repeat: no-repeat;
-  background-size: var(--rhythm) 100%;
+  background-size: 1.5rem 100%;
   min-height: 100%;
-  padding: calc(var(--Editor-rhythm) * 2) 0;
+  padding: calc(1.5rem * 2) 0;
 }
 
 .Editor-currentDoc {
-  max-width: calc(var(--Editor-rhythm) * 3.5);
+  max-width: calc(1.5rem * 3.5);
 }
 
 .Editor-currentLang {
-  max-width: calc(var(--Editor-rhythm) * 3.5);
+  max-width: calc(1.5rem * 3.5);
 }
 
 .Editor-suggestions {
   bottom: 0;
-  box-shadow: 0 -calc(var(--Editor-rhythm) *.125) var(--Header-rhythm) rgba(0, 0, 0, .1);
+  box-shadow: 0 -calc(1.5rem *.125) 1.5rem rgba(0, 0, 0, .1);
   left: 0;
   overflow: hidden;
   right: 0;
@@ -315,11 +314,11 @@ li.DocName span.ellipsis {
   overflow-y: auto;
   position: absolute;
   right: 0;
-  top: calc(var(--Editor-rhythm) * 1.5);
+  top: calc(1.5rem * 1.5);
 }
 
 .Editor-suggestions.is-search-active .Editor-suggestionsBody {
-  top: calc(var(--Editor-rhythm) * 3);
+  top: calc(1.5rem * 3);
 }
 
 .Editor-suggestionsSearch {
@@ -506,7 +505,6 @@ li.DocName span.ellipsis {
 .modal-content {
   background-clip: padding-box;
   background-color: #fff;
-  border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
   border-radius: 12px;
   box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
@@ -999,7 +997,7 @@ label span.n1 {
 
 @media (--sm-viewport) {
   .Editor-currentProject {
-    max-width: calc(var(--Editor-rhythm) * 3.5);
+    max-width: calc(1.5rem * 3.5);
   }
 }
 
@@ -1009,7 +1007,7 @@ label span.n1 {
     linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
     background-position: center, right;
     background-repeat: no-repeat;
-    background-size: var(--rhythm) 100%, 50% 100%;
+    background-size: 1.5rem 100%, 50% 100%;
   }
 }
 

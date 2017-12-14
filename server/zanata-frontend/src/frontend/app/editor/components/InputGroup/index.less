@@ -1,15 +1,10 @@
 :root {
---InputGroup-rhythm: 1.5rem;
 --InputGroup-input-color: #20718A;
---InputGroup-addon-color: color(#20718A tint(30%));
---InputGroup-border-color: color(#20718A tint(60%));
---InputGroup-border--focus-color: color(#20718A tint(30%));
---InputGroup-transition: 0.2s cubic-bezier(.26, .47, .36, .94);
+--InputGroup-addon-color: rgba(32, 113, 138, 0.7);
+--InputGroup-border-color: rgba(32, 113, 138, 0.3);
+--InputGroup-border--focus-color: rgba(32, 113, 138, 0.7);
+  --InputGroup-transition: 0.2s cubic-bezier(.26, .47, .36, .94);
 }
-
-/* Need to stick to this naming convention (against suitcss) so that it does
-not conflict with the other frontend code
- */
 
 .EditorInputGroup {
   position: relative;
@@ -27,7 +22,7 @@ not conflict with the other frontend code
 .EditorInputGroup-input,
 .EditorInputGroup-addon {
   background-color: transparent;
-  padding: 0 calc(var(--InputGroup-rhythm) * .25);
+  padding: 0 calc(1.5rem * .25);
 }
 
 .EditorInputGroup-input {
@@ -45,7 +40,7 @@ not conflict with the other frontend code
 }
 
 .EditorInputGroup-addon:before {
-  content: ' ';
+  content: " ";
 }
 
 .EditorInputGroup.is-focused .EditorInputGroup-input,
@@ -85,14 +80,14 @@ not conflict with the other frontend code
 
 .EditorInputGroup--rounded .EditorInputGroup-input:first-child,
 .EditorInputGroup--rounded .EditorInputGroup-addon:first-child {
-  border-bottom-left-radius: calc(var(--InputGroup-rhythm) * 1);
-  border-top-left-radius: calc(var(--InputGroup-rhythm) * 1);
-  padding-left: calc(var(--InputGroup-rhythm) * .375);
+  border-bottom-left-radius: calc(1.5rem * 1);
+  border-top-left-radius: calc(1.5rem * 1);
+  padding-left: calc(1.5rem * .375);
 }
 
 .EditorInputGroup--rounded .EditorInputGroup-input:last-child,
 .EditorInputGroup--rounded .EditorInputGroup-addon:last-child {
-  border-bottom-right-radius: calc(var(--InputGroup-rhythm) * 1);
-  border-top-right-radius: calc(var(--InputGroup-rhythm) * 1);
-  padding-right: calc(var(--InputGroup-rhythm) * .375);
+  border-bottom-right-radius: calc(1.5rem * 1);
+  border-top-right-radius: calc(1.5rem * 1);
+  padding-right: calc(1.5rem * .375);
 }

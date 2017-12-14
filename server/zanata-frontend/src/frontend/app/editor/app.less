@@ -1,0 +1,64 @@
+
+/**
+ * Utils (.css - unrelated to reactJS/bootstrap css)
+ */
+@import "./css/utils-layout/index.css";
+@import "./css/utils-background/index.css";
+@import "./css/utils-display/index.css";
+@import "./css/utils-list/index.css";
+@import "./css/utils-position/index.css";
+@import "./css/utils-size/index.css";
+@import "./css/utils-space/index.css";
+@import "./css/utils-text/index.css";
+@import "./css/resizer/index.css";
+@import "./css/base/index.css";
+@import "./css/heading/index.css";
+@import "./css/links/index.css";
+
+/**
+ * Components (.less)
+ */
+
+
+@import "./components/SplitDropdown/index.less";
+@import "./components/Button/index.less";
+@import "./components/GlossaryTermModal/index.less";
+@import "./components/Dropdown/index.less";
+@import "./components/EditorSearchInput/index.less";
+@import "./components/TextDiff/index.less";
+@import "./components/ProgressBar/index.less";
+@import "./components/FilterToggle/index.less";
+@import "./components/ToggleSwitch/index.less";
+@import "./components/TransUnit/index.less";
+@import "./components/RejectTranslationModal/index.less";
+@import "./components/InputGroup/index.less";
+@import "./components/ConcurrentModal/index.less";
+
+
+/**
+ * Views (.less)
+ */
+
+@import "./containers/Root/index.less";
+@import "./containers/SuggestionDetailsModal/index.less";
+@import "./containers/Sidebar/index.less";
+@import "./containers/EditorHeader/index.less";
+@import "./containers/KeyShortcutCheatSheet/index.less";
+
+/**
+ * Theme
+ *
+ * Provides variables and custom media definitions.
+ */
+@import "./css/theme/index.css";
+
+/* Fix for hotkeys, remove this when reimplemented */
+
+.fade {
+  transition: opacity .25s easein;
+  opacity: 0;
+}
+
+.fade.in {
+  opacity: 1;
+}

@@ -1,4 +1,4 @@
-@import 'suitcss-utils-size';
+@import "suitcss-utils-size";
 
 :root {
   --u-size-rhythm: 1.5rem;

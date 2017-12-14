@@ -72,7 +72,7 @@
 :root {
 
   --font-size-base        : 16px;
-  --font-family-base      : 'Source Sans Pro', "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  --font-family-base      : "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
   --font-family-heading   : var(--font-family-base);
   --font-family-monospace : Monaco, Courier, monospace;
 

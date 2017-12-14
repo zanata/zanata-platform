@@ -1,13 +1,8 @@
 /** @define Progressbar; use strict */
+@import "../../../styles/variables.less";
 
 :root {
-  --Progressbar-rhythm           : 1.5rem;
-  --Progressbar-highlight        : #4e9fdd;
-  --Progressbar-success          : #70a98b;
-  --Progressbar-unsure           : #e0c350;
-  --Progressbar-neutral          : color(#416988 tint(50%));
-  --Progressbar-warning          : #ffa800;
-  --Progressbar-danger           : #e0575b;
+  --Progressbar-neutral          : rgba(65, 105, 136, 0.5);
   --Progressbar-item-z-index     : 100;
   --Progressbar-approved-z-index : 200;
 }
@@ -15,17 +10,17 @@
 .Progressbar {
   position: relative;
   width: 100%;
-  height: calc(var(--Progressbar-rhythm) * .5);
+  height: calc(1.5rem * .5);
   margin: 0;
   background-color: var(--Progressbar-neutral);
 }
 
 .Progressbar--sm {
-  height: calc(var(--Progressbar-rhythm) * .25);
+  height: calc(1.5rem * .25);
 }
 
 .Progressbar--lg {
-  height: var(--Progressbar-rhythm);
+  height: 1.5rem;
 }
 
 .Progressbar-item {
@@ -44,20 +39,20 @@ not conflict with the other frontend code
  */
 
 .Progressbar-approved {
-  background-color: var(--Progressbar-highlight);
+  background-color: @color-light;
   z-index: var(--Progressbar-approved-z-index);
 }
 
 .Progressbar-translated {
-  background-color: var(--Progressbar-success);
+  background-color: @color-success;
 }
 
 .Progressbar-needsWork {
-  background-color: var(--Progressbar-unsure);
+  background-color: @color-unsure;
 }
 
 .Progressbar-rejected {
-  background-color: var(--Progressbar-warning)
+  background-color: @color-warning;
 }
 
 .Progressbar-untranslated {
