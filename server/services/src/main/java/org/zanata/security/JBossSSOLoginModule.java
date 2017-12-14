@@ -99,8 +99,7 @@ public class JBossSSOLoginModule implements LoginModule {
                 // registration form when a user first registers
                 // parsedResponse.get("fullname");
                 // parsedResponse.get("email");
-                log.info("JBoss.org user " + username
-                        + " successfully authenticated");
+                log.info("JBoss.org user {} successfully authenticated", username);
                 return true;
             } else {
                 log.info("JBoss.org user " + username

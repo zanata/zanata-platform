@@ -161,13 +161,9 @@ public class RequestServiceImpl implements RequestService {
                 emailServiceImpl.sendToLanguageRequester(strategy,
                         requester.getPerson());
             } catch (Exception e) {
-                StringBuilder sb = new StringBuilder()
-                        .append("Failed to send email: toName \'")
-                        .append(requester.getUsername())
-                        .append("\', subject \'")
-                        .append(strategy.getSubject(msgs))
-                        .append("\' , message \'").append(message).append("\'");
-                log.error(sb.toString(), e);
+                log.error("Failed to send email: toName \"{}\", subject \"{}\" , message \"{}\"",
+                        requester.getUsername(), strategy.getSubject(msgs), message,
+                        e);
             }
         }
     }

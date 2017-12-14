@@ -73,7 +73,7 @@ public class AccountService implements AccountResource {
         }
         Account result = new Account();
         getAccountDetails(hAccount, result);
-        log.debug("HTTP GET result :\n" + result);
+        log.debug("HTTP GET result :\n{}", result);
         return Response.ok(result).build();
     }
 

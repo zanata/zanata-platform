@@ -216,7 +216,7 @@ public class TestEventForScreenshotListener
             Optional<Alert> alert = getAlert(driver);
             if (alert.isPresent()) {
                 log.error(
-                        "[Screenshot]: dismissing unexpected alert with text: ",
+                        "[Screenshot]: dismissing unexpected alert with text: {}",
                         alert.get().getText());
                 alert.get().dismiss();
             }

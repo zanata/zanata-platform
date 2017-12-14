@@ -29,7 +29,6 @@ import javax.inject.Named
 @ApplicationScoped
 class AuthenticationConfig @Inject constructor(private val authTypes: Set<AuthenticationType>) {
 
-
     @Produces
     @Named("saml2Enabled")
     @SAML

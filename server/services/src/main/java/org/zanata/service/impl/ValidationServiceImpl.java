@@ -184,7 +184,7 @@ public class ValidationServiceImpl implements ValidationService {
                 hDoc.getProjectIteration(), State.Warning, State.Error);
         boolean hasError =
                 documentHasWarningOrError(hDoc, validationIds, localeId);
-        log.debug("Finished runDocValidationsWithServerRules in " + stopwatch);
+        log.debug("Finished runDocValidationsWithServerRules in {}", stopwatch);
         return hasError;
     }
 
@@ -215,7 +215,7 @@ public class ValidationServiceImpl implements ValidationService {
                 result.add(textFlow);
             }
         }
-        log.debug("Finished filter textFlows in " + stopwatch);
+        log.debug("Finished filter textFlows in {}", stopwatch);
         if (result.size() <= maxSize) {
             return result;
         }

@@ -65,7 +65,7 @@ public abstract class PagedListDataModel<E> extends DataModel<E>
         } else {
             startRow = rowIndex;
         }
-        log.debug("start to fetch page from :" + startRow);
+        log.debug("start to fetch page from : {}", startRow);
         page = fetchPage(startRow, pageSize);
         return page;
     }

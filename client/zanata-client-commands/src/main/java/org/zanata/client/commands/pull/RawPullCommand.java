@@ -47,6 +47,7 @@ import org.zanata.rest.service.FileResource;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  *
@@ -73,6 +74,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         this.fileResourceClient = fileResourceClient;
     }
 
+    @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
     @Override
     public void run() throws IOException {
         PullCommand.logOptions(log, getOpts());
@@ -143,9 +145,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         }
 
         if (pullSrc) {
-            log.warn("Pull Type set to '"
-                    + pullType
-                    + "': existing source-language files may be overwritten/deleted");
+            log.warn("Pull Type set to '{}': existing source-language files may be overwritten/deleted", pullType);
             confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
         } else {
             confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
@@ -220,8 +220,9 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                 }
             } catch (IOException | RuntimeException e) {
                 log.error(
-                        "Operation failed: " + e.getMessage() + "\n\n"
+                        "Operation failed: {}\n\n"
                                 + "    To retry from the last document, please add the option: {}\n",
+                        e.getMessage(),
                         getOpts().buildFromDocArgument(qualifiedDocName));
                 throw new RuntimeException(e.getMessage(), e);
             }

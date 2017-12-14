@@ -65,6 +65,7 @@ import javax.enterprise.event.Event;
 
 import org.zanata.util.VersionUtility;
 import org.zanata.util.WithRequestScope;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * This class handles various tasks at startup. It disables warnings for a
@@ -150,10 +151,10 @@ public class ZanataInit {
                 this.applicationConfiguration.isCopyTransEnabled());
         String javamelodyDir =
                 System.getProperty("javamelody.storage-directory");
-        log.info("JavaMelody stats directory: " + javamelodyDir);
+        log.info("JavaMelody stats directory: {}", javamelodyDir);
         String indexBase =
                 applicationConfiguration.getHibernateSearchIndexBase();
-        log.info("Lucene index directory: " + indexBase);
+        log.info("Lucene index directory: {}", indexBase);
         if (indexBase != null) {
             checkLuceneLocks(new File(indexBase));
         }
@@ -242,7 +243,7 @@ public class ZanataInit {
             // we don't trust Lucene's NativeFSLockFactory for NFS locks
             String docURL =
                     "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
-            log.info("The Hibernate Search index dir \'{}\' might be NFS. ",
+            log.info("The Hibernate Search index dir \"{}\" might be NFS. ",
                     "Native locks may not be reliable. See {}",
                     indexDir, docURL);
             Collection<File> lockFiles =
@@ -260,6 +261,7 @@ public class ZanataInit {
      * Returns true if any of the files appear to be stored in NFS (or we can't
      * tell).
      */
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     private boolean mightUseNFS(File... files) {
         try {
             FileSystem fileSystem = FileSystems.getDefault();
@@ -424,8 +426,8 @@ public class ZanataInit {
         log.info("         &(((((((%   %((((((((((       ");
         log.info("             #(((((((((((#     ((#     ");
         log.info("");
-        log.info("  Zanata version: " + ver.getVersionNo());
-        log.info("  SCM: " + ver.getScmDescribe());
+        log.info("  Zanata version: {}", ver.getVersionNo());
+        log.info("  SCM: {}", ver.getScmDescribe());
         log.info("  Red Hat Inc 2008-{}",
                 Calendar.getInstance().get(Calendar.YEAR));
         log.info("============================================");

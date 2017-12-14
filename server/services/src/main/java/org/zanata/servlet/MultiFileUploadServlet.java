@@ -234,7 +234,7 @@ public class MultiFileUploadServlet extends HttpServlet {
             log.error("error adding files list to JSON", e);
         }
         String responseString = responseObject.toString();
-        log.info("response string: " + responseString);
+        log.info("response string: {}", responseString);
         response.setContentType("application/json");
         PrintWriter writer = response.getWriter();
         writer.write(responseString);

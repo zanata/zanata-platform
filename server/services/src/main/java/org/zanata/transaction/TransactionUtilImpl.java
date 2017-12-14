@@ -132,8 +132,8 @@ public class TransactionUtilImpl implements TransactionUtil {
                     userTransaction.rollback();
                 } else {
                     log.debug(
-                            "committing transaction after ApplicationException(rollback=false):"
-                                    + e.getMessage());
+                            "committing transaction after ApplicationException(rollback=false): {}",
+                                    e.getMessage());
                     userTransaction.commit();
                 }
             }

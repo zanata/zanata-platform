@@ -60,7 +60,7 @@ public class ZanataHTMLLayout extends HTMLLayout {
         }
         builder.append(super.format(event));
         String html = builder.toString();
-        log.debug(html);
+        log.debug("Formatted message: {}", html);
         return html;
     }
 

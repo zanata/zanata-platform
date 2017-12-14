@@ -162,10 +162,9 @@ public class TranslationsTMXExportStrategy <T extends ITextFlow>
             LocaleId locId = target.getLocaleId();
             String trgContent = target.getContents().get(0);
             if (trgContent.contains("\000")) {
-                String msg =
-                        "illegal null character; discarding TargetContents with locale="
-                                + locId + ", contents=" + trgContent;
-                log.warn(msg);
+                log.warn(
+                        "illegal null character; discarding TargetContents with locale={}, contents={}",
+                        locId, trgContent);
                 return Optional.absent();
             }
             Element tuv = new Element("tuv");

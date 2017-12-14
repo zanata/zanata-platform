@@ -107,7 +107,7 @@ public class LanguageContactCoordinatorAction implements Serializable {
                     .append(strategy.getSubject(msgs)).append("\' , message \'")
                     .append(message).append("\'");
             log.error(
-                    "Failed to send email: fromName \'{}\', fromLoginName \'{}\', replyEmail \'{}\', subject \'{}\', message \'{}\'. {}",
+                    "Failed to send email: fromName \"{}\", fromLoginName \"{}\", replyEmail \"{}\", subject \"{}\", message \"{}\".",
                     fromName, fromLoginName, replyEmail, subject, message, e);
             facesMessages.addGlobal(sb.toString());
         }

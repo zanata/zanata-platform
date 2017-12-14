@@ -93,7 +93,11 @@ public class FileSystemPersistService implements FilePersistService {
         File docsDirectory =
                 new File(basePathString, RAW_DOCUMENTS_SUBDIRECTORY);
         boolean created = docsDirectory.mkdirs();
-        log.debug(created ? "Directory created" : "Unable to create directory");
+        if (created) {
+            log.debug("Directory created");
+        } else {
+            log.debug("Unable to create directory");
+        }
         return docsDirectory;
     }
 

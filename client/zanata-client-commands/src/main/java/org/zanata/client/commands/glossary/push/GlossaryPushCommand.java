@@ -162,7 +162,7 @@ public class GlossaryPushCommand extends
         for (Map.Entry<LocaleId, List<GlossaryEntry>> entries : glossaries
                 .entrySet()) {
             totalEntries = totalEntries + entries.getValue().size();
-            log.info("Total entries:" + totalEntries);
+            log.info("Total entries: {}", totalEntries);
         }
 
         int totalDone = 0;
@@ -173,8 +173,7 @@ public class GlossaryPushCommand extends
             for (List<GlossaryEntry> batch : batches) {
                 client.post(batch, entry.getKey(), qualifiedName);
                 totalDone = totalDone + batch.size();
-                log.info("Pushed " + totalDone + " of " + totalEntries
-                        + " entries");
+                log.info("Pushed {} of {} entries", totalDone, totalEntries);
             }
         }
     }

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.zanata.common.EntityStatus;
 import org.zanata.rest.client.ProjectIterationClient;
 import org.zanata.rest.dto.ProjectIteration;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -20,6 +21,7 @@ public class PutVersionCommand extends ConfigurableCommand<PutVersionOptions> {
     }
 
     @Override
+    @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
     public void run() throws Exception {
         ProjectIteration version = new ProjectIteration();
         version.setId(getOpts().getVersionSlug());

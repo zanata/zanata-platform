@@ -35,6 +35,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Base handler for all exceptions. N.B. this will handle exceptions from both
  * JSF and REST. For REST exceptions, this happens before REST ExceptionMapper
@@ -80,12 +82,12 @@ public abstract class AbstractExceptionHandler {
         event.handled();
     }
 
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     protected static <T extends Throwable> void logException(LogLevel logLevel,
             T exception) {
         @Nullable
         String currentViewId = FacesNavigationUtil.getCurrentViewId();
-        String msg;
-        msg = currentViewId != null ?
+        String msg = currentViewId != null ?
                 "exception happened in view: " + currentViewId :
                 "exception caught";
         switch (logLevel) {

@@ -23,39 +23,42 @@ package org.zanata.servlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventor;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
 public class LeakListener extends ClassLoaderLeakPreventor {
 
+    @SuppressFBWarnings({"SLF4J_ILLEGAL_PASSED_CLASS"})
     private static final Logger log = LoggerFactory
             .getLogger(ClassLoaderLeakPreventor.class);
 
     protected void debug(String s) {
-        log.debug(s);
+        log.debug("{}", s);
     }
 
     protected void info(String s) {
-        log.info(s);
+        log.info("{}", s);
     }
 
     protected void warn(String s) {
-        log.warn(s);
+        log.warn("{}", s);
     }
 
     protected void warn(Throwable t) {
-        log.warn("", t);
+        log.warn("warning", t);
     }
 
     protected void error(String s) {
-        log.error(s);
+        log.error("{}", s);
     }
 
     protected void error(Throwable t) {
-        log.error("", t);
+        log.error("error", t);
     }
 
 }

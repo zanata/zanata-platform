@@ -192,8 +192,8 @@ public class ApplicationConfiguration implements Serializable {
             smtpAppenderInstance.activateOptions();
             // Safe to add more than once
             rootLogger.addAppender(smtpAppenderInstance);
-            log.info("Email log appender is enabled [level: "
-                    + smtpAppenderInstance.getThreshold().toString() + "]");
+            log.info("Email log appender is enabled [level: {}]",
+                    smtpAppenderInstance.getThreshold());
         } else {
             rootLogger.removeAppender(EMAIL_APPENDER_NAME);
             log.info("Email log appender is disabled.");

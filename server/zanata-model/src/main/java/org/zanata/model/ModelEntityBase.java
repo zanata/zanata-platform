@@ -153,7 +153,7 @@ public class ModelEntityBase implements Serializable {
             obj.getClass().getDeclaredMethod("equals", Object.class);
             return true;
         } catch (NoSuchMethodException e) {
-            log.error("class does not override equals: " + obj.getClass(), e);
+            log.error("class does not override equals: {}", obj.getClass(), e);
             return false;
         }
     }

@@ -120,7 +120,7 @@ public class GlossaryPullCommand extends
         String fileName =
                 ClientUtil.getFileNameFromHeader(response.getStringHeaders());
         if (fileName == null) {
-            log.error("Null filename response from server: " +
+            log.error("Null filename response from server: {}",
                     response.getStatusInfo());
             return;
         }

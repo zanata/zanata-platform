@@ -163,7 +163,11 @@ public class SourceDocumentUpload implements Serializable {
             }
             if (tempFile.isPresent()) {
                 boolean deleted = tempFile.get().delete();
-                log.debug(deleted ? "Temporary file deleted" : "Unable to delete temporary file");
+                if (deleted) {
+                    log.debug("Temporary file deleted");
+                } else {
+                    log.debug("Unable to delete temporary file");
+                }
             }
             return sourceUploadSuccessResponse(util.isNewDocument(id),
                     totalChunks);

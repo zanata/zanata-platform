@@ -3,16 +3,19 @@ package org.zanata.service.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Named("versionManager")
 @ApplicationScoped
 public class VersionManager {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(VersionManager.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(VersionManager.class);
 
     public boolean checkVersion(String client, String server) {
-        log.debug("start version check client version:" + client
-                + " server version:" + server);
-        // TODO: compatible server and client
+        log.debug("client version: {}, server version: {}",
+                client, server);
+        // TODO: check compatible server and client
         return true;
     }
 

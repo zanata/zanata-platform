@@ -194,8 +194,8 @@ public class ServerConfigurationBean implements Serializable {
             try {
                 property.set(valueHolder.getValue());
             } catch (InvocationTargetException | IllegalAccessException e) {
-                log.error("error setting property value:" + property.getKey()
-                        + " -> " + valueHolder.getValue(), e);
+                log.error("error setting property: {} -> {}",
+                        property.getKey(), valueHolder.getValue(), e);
             }
         }
     }
@@ -208,8 +208,8 @@ public class ServerConfigurationBean implements Serializable {
             try {
                 property.set(Boolean.parseBoolean(valueHolder.getValue()));
             } catch (InvocationTargetException | IllegalAccessException e) {
-                log.error("error setting property value:" + property.getKey()
-                        + " -> " + valueHolder.getValue(), e);
+                log.error("error setting property value: {} -> {}",
+                        property.getKey(), valueHolder.getValue(), e);
             }
         }
     }

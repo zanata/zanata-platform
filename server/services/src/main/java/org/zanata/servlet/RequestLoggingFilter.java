@@ -34,6 +34,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -54,6 +56,7 @@ public class RequestLoggingFilter implements Filter {
         // do nothing
     }
 
+    @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
         if (request instanceof HttpServletRequest

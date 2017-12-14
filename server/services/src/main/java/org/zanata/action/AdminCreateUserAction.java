@@ -94,7 +94,7 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
                 registerService.register(username,
                         randomAlphanumeric(8), username,
                         email);
-        log.info("get register key:" + activationKey);
+        log.info("get register key: {}", activationKey);
 
         identityManager.grantRoles(username, roles);
         HAccountResetPasswordKey resetPasswordKey =

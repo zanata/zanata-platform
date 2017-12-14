@@ -167,7 +167,7 @@ public class ResourceUtils implements Serializable {
                         "encountered TextFlow with duplicate ID " + tf.getId())
                         .build();
                 log.warn(
-                        "encountered TextFlow with duplicate ID " + tf.getId());
+                        "encountered TextFlow with duplicate ID {}", tf.getId());
                 throw new WebApplicationException(response);
             }
             HTextFlow textFlow;
@@ -276,7 +276,7 @@ public class ResourceUtils implements Serializable {
         }
         // locale
         if (!equals(from.getLang(), to.getLocale().getLocaleId())) {
-            log.debug("locale:" + from.getLang());
+            log.debug("locale: {}", from.getLang());
             to.setLocale(locale);
             changed = true;
         }
