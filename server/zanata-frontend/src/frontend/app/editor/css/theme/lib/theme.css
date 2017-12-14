@@ -24,7 +24,6 @@
  */
 
 :root {
-
   /* Primary greys */
   --color-white         : #fff;
   --color-black         : #000;
@@ -37,11 +36,9 @@
   --color-dark-grey     : color(var(--color-black) tint(20%));
   --color-darker-grey   : color(var(--color-black) tint(10%));
   --color-darkest-grey  : color(var(--color-black) tint(5%));
-
   /* Main colors */
   --color-primary       : #03A6D7;
   --color-secondary     : #20718A;
-
   /* Background colors */
   --color-bg            : #ECEFF0;
   --color-bg-lightest   : var(--color-white);
@@ -50,7 +47,6 @@
   --color-bg-dark       : color(var(--color-bg) shade(3%));
   --color-bg-darker     : color(var(--color-bg) shade(6%));
   --color-bg-darkest    : color(var(--color-bg) shade(9%));
-
   /* State colors */
   --color-highlight     : var(--color-primary);
   --color-success       : #5CCA7B;
@@ -58,10 +54,8 @@
   --color-warning       : #FFA800;
   --color-danger        : #FF3B3D;
   --color-neutral       : color(var(--color-secondary) tint(70%));
-
   /* Font colors */
   --color-base-font     : #444c54;
-
 }
 
 
@@ -70,12 +64,10 @@
  */
 
 :root {
-
   --font-size-base        : 16px;
   --font-family-base      : "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
   --font-family-heading   : var(--font-family-base);
   --font-family-monospace : Monaco, Courier, monospace;
-
 }
 
 
@@ -93,7 +85,6 @@
   --default-text-shadow      : 0 1px 2px var(--default-shadow-color);
   --default-transition       : 0.2s cubic-bezier(.26, .47, .36, .94);
   --default-line-height      : 1.5;
-
 }
 
 
@@ -102,9 +93,7 @@
  */
 
 :root {
-
   --rhythm: calc(var(--default-line-height) * 1rem);
-
 }
 
 /**
@@ -112,10 +101,8 @@
  */
 
 :root {
-
   --transition-ease-out-back: cubic-bezier(.175, .885, .320, 1.275);
   --transition-ease-out-circ: cubic-bezier(.075, .820, .165, 1.000);
-
 }
 
 /**
