@@ -1,10 +1,10 @@
 # run jboss-cli.sh --file=<location of this file> to apply messaging changes
 # jboss cli specification for an operation request
 # [/node-type=node-name (/node-type=node-name)*] : operation-name [( [parameter-name=parameter-value (,parameter-name=parameter-value)*] )]
-# The default variable substitution are turned off by default in bin/jboss-cli.xml so ${var} will be passed to standalone-full.xml as is.
+# The default variable substitution are turned off by default in bin/jboss-cli.xml so ${var} will be passed to standalone-full*.xml as is.
 
 # run cli in offline (embeded server) mode, pipe std out to local script terminal
-embed-server --std-out=echo --server-config=standalone-full.xml
+embed-server --std-out=echo --server-config=standalone-full-ha.xml
 
 batch
 

@@ -1,7 +1,7 @@
 # in addition to functional test cli script, this will add a h2 datasource
 
-# run cli in offline (embeded server) mode, pipe std out to local script terminal
-embed-server --std-out=echo --server-config=standalone-full.xml
+# run cli in offline (embedded server) mode, pipe stdout to local script terminal
+embed-server --std-out=echo --server-config=standalone-full-ha.xml
 
 batch
 # ==== add datasource ====

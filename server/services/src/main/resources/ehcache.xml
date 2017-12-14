@@ -2,7 +2,7 @@
   xsi:noNamespaceSchemaLocation="ehcache.xsd"
   updateCheck="false">
 
-  <!-- TODO migrate custom ehcache config to infinispan in standalone.xml -->
+  <!-- TODO migrate custom ehcache config to infinispan in standalone*.xml -->
 
   <!--
   <diskStore path="ehcache.disk.store.dir"/>

@@ -118,7 +118,7 @@ public class ApplicationConfiguration implements Serializable {
      * server when new user register.
      *
      * Usage: server administrator can enable this in system property
-     * zanata.enforce.matchingusernames. In standalone.xml:
+     * zanata.enforce.matchingusernames. In standalone*.xml:
      *
      * <pre>
      * {@code <property name="zanata.enforce.matchingusernames" value="true" />}
@@ -536,7 +536,7 @@ public class ApplicationConfiguration implements Serializable {
      * server when new user register.
      *
      * Usage: server administrator can enable this in system property
-     * zanata.enforce.matchingusernames. In standalone.xml:
+     * zanata.enforce.matchingusernames. In standalone*.xml:
      *
      * <pre>
      * {@code <property name="zanata.enforce.matchingusernames" value="true" />}
