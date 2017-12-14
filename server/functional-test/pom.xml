@@ -14,7 +14,7 @@
 
   <properties>
     <allow.deploy.skip>true</allow.deploy.skip>
-    <selenium.version>3.4.0</selenium.version>
+    <selenium.version>3.8.1</selenium.version>
 
     <!--Cargo Settings -->
     <cargo.host>localhost</cargo.host>
@@ -237,12 +237,12 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
-      <version>1.53</version>
+      <version>1.58</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.53</version>
+      <version>1.58</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>

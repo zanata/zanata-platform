@@ -239,7 +239,7 @@
     <findbugs.excludeFilterFile>zanata-build-tools/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
-    <slf4j.version>1.7.18</slf4j.version>
+    <slf4j.version>1.7.22</slf4j.version>
   </properties>
 
   <build>
