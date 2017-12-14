@@ -1540,7 +1540,7 @@
                 <configuration>
                   <target unless="skipArqTests">
                     <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)" unless="appserver" />
-                    <fail message="'cargo.installation' property is null (set env var EAP7_URL or else use -DskipArqTests)" unless="cargo.installation" />
+                    <fail message="'cargo.installation' property is null (set env var EAP71_URL or else use -DskipArqTests)" unless="cargo.installation" />
                   </target>
                 </configuration>
               </execution>
