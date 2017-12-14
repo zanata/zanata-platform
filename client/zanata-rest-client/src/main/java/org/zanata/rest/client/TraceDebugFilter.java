@@ -51,10 +51,18 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class TraceDebugFilter implements ClientRequestFilter,
         ClientResponseFilter {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(TraceDebugFilter.class);
+    private final Logger log;
 
     private boolean logHttp;
+
+    TraceDebugFilter(boolean logHttp, Logger log) {
+        this.logHttp = logHttp;
+        this.log = log;
+    }
+
+    public TraceDebugFilter(boolean logHttp) {
+        this(logHttp, LoggerFactory.getLogger(TraceDebugFilter.class));
+    }
 
     private String getPayloadAsString(ClientResponseContext response) {
         ByteArrayInputStream entityInputStream = null;
@@ -74,10 +82,6 @@ public class TraceDebugFilter implements ClientRequestFilter,
             }
         }
 
-    }
-
-    public TraceDebugFilter(boolean logHttp) {
-        this.logHttp = logHttp;
     }
 
     @SuppressFBWarnings(value = "SLF4J_FORMAT_SHOULD_BE_CONST")

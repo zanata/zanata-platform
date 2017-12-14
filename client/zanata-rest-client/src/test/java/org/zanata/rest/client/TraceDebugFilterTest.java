@@ -20,23 +20,37 @@
  */
 package org.zanata.rest.client;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.slf4j.Logger;
+
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class TraceDebugFilterTest {
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+    @Mock
+    private Logger log;
+
     @Test
     public void testInfoLog() {
-        TraceDebugFilter filter = new TraceDebugFilter(true);
-        // should be logged as INFO (if INFO is enabled)
+        TraceDebugFilter filter = new TraceDebugFilter(true, log);
+        // should be logged as INFO
         filter.log("info message including {}");
+        verify(log).info("info message including {}");
     }
 
     @Test
     public void testTraceLog() {
-        TraceDebugFilter filter = new TraceDebugFilter(false);
-        // should be logged as TRACE (if TRACE is enabled)
+        TraceDebugFilter filter = new TraceDebugFilter(false, log);
+        // should be logged as TRACE
         filter.log("trace message including {}");
+        verify(log).trace("trace message including {}");
     }
 }
