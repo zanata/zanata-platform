@@ -214,6 +214,7 @@
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
     <!-- Note: Fedora 23 has 2.4.4. -->
     <groovy.version>2.4.4</groovy.version>
+    <!-- Fedora 27 is still on 18.0: https://apps.fedoraproject.org/packages/guava -->
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
     <jaxb.api.version>2.2.12</jaxb.api.version>
@@ -238,7 +239,7 @@
     <findbugs.excludeFilterFile>zanata-build-tools/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
-    <slf4j.version>1.7.18</slf4j.version>
+    <slf4j.version>1.7.22</slf4j.version>
   </properties>
 
   <build>
