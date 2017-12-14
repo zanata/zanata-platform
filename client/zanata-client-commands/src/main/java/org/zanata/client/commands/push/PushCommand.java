@@ -769,7 +769,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             log.info("Skipping Copy Trans for {} (due to dry run)", docName);
             return;
         }
-        log.info("Running Copy Trans for " + docName);
+        log.info("Running Copy Trans for {}", docName);
         try {
             this.copyTransClient.startCopyTrans(getOpts().getProj(),
                     getOpts().getProjectVersion(), docName);
