@@ -74,10 +74,92 @@ data-source add --name=zanataDatasource \
 ## Disable WARN: "Queue with name '...' has already been registered"
 /subsystem=logging/logger=org.richfaces.log.Components:add
 /subsystem=logging/logger=org.richfaces.log.Components:write-attribute(name=level,value=ERROR)
-## Enable more CDI weld error log
-/subsystem=logging/logger=org.jboss.weld:add
-/subsystem=logging/logger=org.jboss.weld:write-attribute(name=level,value=DEBUG)
-/subsystem=logging/logger=org.jboss.weld:write-attribute(name=filter-spec, value="any(match(\".*Catching.*\"), levelRange[INFO, FATAL])")
+
+## Enable more CDI weld error logging for exceptions
+
+# This won't work (yet) because filters aren't inherited
+#/subsystem=logging/logger=org.jboss.weld:add
+#/subsystem=logging/logger=org.jboss.weld:write-attribute(name=level,value=DEBUG)
+#/subsystem=logging/logger=org.jboss.weld:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+# These are all the Logger classes in weld-core 3.0.1.Final which include
+# catchingDebug() or catchingTrace() (mostly by extending org.jboss.weld.logging.WeldLogger):
+
+/subsystem=logging/logger=org.jboss.weld.environment.logging.WeldEnvironmentLogger:add
+/subsystem=logging/logger=org.jboss.weld.environment.logging.WeldEnvironmentLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.environment.logging.WeldEnvironmentLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.BeanLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.BeanLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.BeanLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.BeanManagerLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.BeanManagerLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.BeanManagerLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.BootstrapLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.BootstrapLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.BootstrapLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.ConfigurationLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.ConfigurationLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.ConfigurationLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.ContextLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.ContextLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.ContextLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.ConversationLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.ConversationLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.ConversationLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.ElLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.ElLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.ElLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.EventLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.EventLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.EventLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.InterceptorLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.InterceptorLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.InterceptorLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.MetadataLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.MetadataLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.MetadataLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.ReflectionLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.ReflectionLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.ReflectionLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.ResolutionLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.ResolutionLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.ResolutionLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.SerializationLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.SerializationLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.SerializationLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.UtilLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.UtilLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.UtilLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.ValidatorLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.ValidatorLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.ValidatorLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.VersionLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.VersionLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.VersionLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.logging.XmlLogger:add
+/subsystem=logging/logger=org.jboss.weld.logging.XmlLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.logging.XmlLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
+
+/subsystem=logging/logger=org.jboss.weld.probe.ProbeLogger:add
+/subsystem=logging/logger=org.jboss.weld.probe.ProbeLogger:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=org.jboss.weld.probe.ProbeLogger:write-attribute(name=filter-spec, value="any(match(\"Catching\"), levelRange[INFO, FATAL])")
 
 # ==== infinispan ====
 /subsystem=infinispan/cache-container=zanata:add(module="org.jboss.as.clustering.web.infinispan",default-cache="default",jndi-name="java:jboss/infinispan/container/zanata",statistics-enabled="true")
