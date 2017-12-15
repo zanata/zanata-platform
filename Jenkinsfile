@@ -472,11 +472,12 @@ void integrationTests(String appserver) {
 
           echo "Capturing JUnit results"
           if (setJUnitPrefix(appserver, failsafeTestReports)) {
-            junit(testResults: "**/${failsafeTestReports}",
+            junit(testResults: "**/${failsafeTestReports}"
                     // NB: if this is enabled, make sure (a) max history in Jenkins
                     // Configuration is small (eg 3) or
                     // (b) https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed.
-                    testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+                    // Update: even with max=3 it can take many hours. Disabling for now.
+                    // ,testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
             )
             // Reduce workspace size
             sh "git clean -dfqx"
