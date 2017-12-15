@@ -5,6 +5,12 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
 
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+## 4.3.3
+##### Bug Fixes
+ * [ZNTA-2303](https://zanata.atlassian.net/browse/ZNTA-2303) - Single open id provider sign in shows 404 after sign in
+
+-----------------------
+
 ## 4.3.2
 ##### Bug Fixes
  * [ZNTA-2272](https://zanata.atlassian.net/browse/ZNTA-2272) - Remove Unused serialVersionUID
