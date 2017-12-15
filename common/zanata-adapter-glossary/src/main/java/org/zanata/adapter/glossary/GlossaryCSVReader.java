@@ -22,7 +22,10 @@ package org.zanata.adapter.glossary;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -81,8 +84,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
             }
             Map<LocaleId, List<GlossaryEntry>> results = Maps.newHashMap();
 
-            for (int i = 1; i < records.size(); i++) {
-                CSVRecord row = records.get(i);
+            for (CSVRecord row : records.subList(1, records.size())) {
                 GlossaryEntry entry = new GlossaryEntry();
                 entry.setSrcLang(srcLocale);
                 if (descriptionMap.containsKey(POS)) {
@@ -127,6 +129,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     /**
      * Basic validation of CSV file format - At least 2 rows in the CSV file -
      * Empty content validation - All rows must have the same column count.
+     * @param records list of records representing a csv file
      */
     private void validateCSVEntries(@Nonnull List<CSVRecord> records) {
         if (records.isEmpty()) {
@@ -146,9 +149,11 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     }
 
     /**
-     * Parser reads from all from first row and up to first recognised non-locale column
-     * mapping.
+     * Parser reads from all from first row and up to first recognised
+     * non-locale column mapping.
      * Format of CSV: {source locale},{locale},{locale}...,pos,description
+     * @param records list of records representing a csv file
+     * @param descriptionMap header locations of non-locale columns
      */
     private Map<Integer, LocaleId> setupLocalesMap(List<CSVRecord> records,
             Map<String, Integer> descriptionMap) {
@@ -167,7 +172,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
      * Locate trailing data columns in CSV:
      * {source locale},{locale},{locale}...,pos,description,...
      *
-     * @param records
+     * @param records list of records representing a csv file
      */
     private Map<String, Integer> setupDescMap(List<CSVRecord> records) {
         Map<String, Integer> descMap = new HashMap<>();
