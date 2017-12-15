@@ -1,3 +1,9 @@
+## 4.3.3
+##### Bug Fixes
+ * [ZNTA-2303](https://zanata.atlassian.net/browse/ZNTA-2303) - Single open id provider sign in shows 404 after sign in
+
+-----------------------
+
 ## 4.3.2
 ##### Bug Fixes
  * [ZNTA-2272](https://zanata.atlassian.net/browse/ZNTA-2272) - Remove Unused serialVersionUID
