@@ -328,11 +328,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         } catch (ParseException e) {
             if (e.getCause() instanceof BooleanQuery.TooManyClauses) {
                 log.warn(
-                        "BooleanQuery.TooManyClauses, query too long to parse \'"
-                                + StringUtils.left(
+                        "TooManyClauses, query too long to parse \"{}...\"",
+                                StringUtils.left(
                                         transMemoryQuery.getQueries().get(0),
                                         80)
-                                + "...\'");
+                );
             } else {
                 if (transMemoryQuery
                         .getSearchType() == HasSearchType.SearchType.RAW) {
@@ -340,7 +340,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     log.info("Can\'t parse raw query {}", transMemoryQuery);
                 } else {
                     // escaping failed!
-                    log.error("Can\'t parse query " + transMemoryQuery, e);
+                    log.error("Can\'t parse query {}", transMemoryQuery, e);
                 }
             }
         } catch (RuntimeException e) {
@@ -693,6 +693,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 "$1\"$2\"$3");
     }
 
+    @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
     private void logQueryResults(List<Object[]> resultList) {
         if (log.isTraceEnabled()) {
             // resultList.get() could be a little slow if resultList is a

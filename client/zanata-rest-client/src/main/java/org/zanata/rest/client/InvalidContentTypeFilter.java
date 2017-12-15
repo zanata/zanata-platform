@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.annotations.VisibleForTesting;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -67,6 +68,7 @@ public class InvalidContentTypeFilter implements ClientResponseFilter {
     }
 
     @Override
+    @SuppressFBWarnings("SLF4J_FORMAT_SHOULD_BE_CONST")
     public void filter(ClientRequestContext requestContext,
             ClientResponseContext responseContext) throws IOException {
         if (responseContext.getStatusInfo().getFamily().equals(

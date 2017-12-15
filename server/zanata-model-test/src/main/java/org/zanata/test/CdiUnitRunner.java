@@ -42,9 +42,9 @@ public class CdiUnitRunner extends CdiRunner {
         super(clazz);
         boolean isFinal = isFinal(clazz.getModifiers());
         if (isFinal) {
-            log.warn(clazz + " is final. This may cause problems " +
+            log.warn("{} is final. This may cause problems " +
                     "with Mockito or CDI. " +
-                    "Check kotlin-allopen configuration.");
+                    "Check kotlin-allopen configuration.", clazz);
         }
     }
 

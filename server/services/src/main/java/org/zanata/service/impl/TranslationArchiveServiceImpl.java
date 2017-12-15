@@ -136,8 +136,11 @@ public class TranslationArchiveServiceImpl
             if (handleOpt.isPresent() && handleOpt.get().isCancelled()) {
                 zipOutput.close();
                 boolean deleted = downloadFile.delete();
-                log.debug("File " + downloadFile +
-                        (deleted ? " deleted" : "cannot be deleted"));
+                if (deleted) {
+                    log.debug("File {} deleted", downloadFile);
+                } else {
+                    log.debug("File {} cannot be deleted", downloadFile);
+                }
                 fileSystemServiceImpl.deleteDownloadDescriptorFile(downloadId);
                 return null;
             }

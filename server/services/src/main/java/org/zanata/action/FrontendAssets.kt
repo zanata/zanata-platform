@@ -60,7 +60,7 @@ class FrontendAssets @Inject constructor(@DeltaSpike private val servletContext:
 
     companion object {
         val MANIFEST_PATH: String = "META-INF/resources/manifest.json"
-        private val log: Logger = LoggerFactory.getLogger(FrontendAssets::class.java);
+        private val log: Logger = LoggerFactory.getLogger(FrontendAssets::class.java)
         private fun readManifest(): FrontendManifest {
             val manifestResource: InputStream? = Thread.currentThread().contextClassLoader.getResourceAsStream(MANIFEST_PATH)
             return manifestResource?.use {

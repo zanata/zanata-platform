@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,46 +18,39 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.rest.client;
 
-package org.zanata.servlet;
-
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventor;
+
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
  */
-@SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
-public class LeakListener extends ClassLoaderLeakPreventor {
+public class TraceDebugFilterTest {
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+    @Mock
+    private Logger log;
 
-    private static final Logger log = LoggerFactory
-            .getLogger(LeakListener.class);
-
-    protected void debug(String s) {
-        log.debug("{}", s);
+    @Test
+    public void testInfoLog() {
+        TraceDebugFilter filter = new TraceDebugFilter(true, log);
+        // should be logged as INFO
+        filter.log("info message including {}");
+        verify(log).info("info message including {}");
     }
 
-    protected void info(String s) {
-        log.info("{}", s);
+    @Test
+    public void testTraceLog() {
+        TraceDebugFilter filter = new TraceDebugFilter(false, log);
+        // should be logged as TRACE
+        filter.log("trace message including {}");
+        verify(log).trace("trace message including {}");
     }
-
-    protected void warn(String s) {
-        log.warn("{}", s);
-    }
-
-    protected void warn(Throwable t) {
-        log.warn("warning", t);
-    }
-
-    protected void error(String s) {
-        log.error("{}", s);
-    }
-
-    protected void error(Throwable t) {
-        log.error("error", t);
-    }
-
 }

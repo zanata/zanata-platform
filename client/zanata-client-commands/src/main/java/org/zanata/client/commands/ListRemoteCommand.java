@@ -42,9 +42,9 @@ public class ListRemoteCommand extends
 
     @Override
     public void run() throws Exception {
-        log.info("Server: " + getOpts().getUrl());
-        log.info("Project: " + getOpts().getProj());
-        log.info("Version: " + getOpts().getProjectVersion());
+        log.info("Server: {}", getOpts().getUrl());
+        log.info("Project: {}", getOpts().getProj());
+        log.info("Version: {}", getOpts().getProjectVersion());
         SourceDocResourceClient client = getClientFactory()
                 .getSourceDocResourceClient(
                         getOpts().getProj(), getOpts().getProjectVersion());

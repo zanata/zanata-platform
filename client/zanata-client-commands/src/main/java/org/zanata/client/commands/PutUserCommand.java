@@ -9,6 +9,8 @@ import com.google.common.base.Splitter;
 
 import java.util.Arrays;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static com.google.common.collect.Sets.newHashSet;
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
@@ -38,6 +40,7 @@ public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
         console = consoleInteractor;
     }
 
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST", "SLF4J_SIGN_ONLY_FORMAT"})
     public void run() throws Exception {
 
         String userName = getOpts().getUserName();

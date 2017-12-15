@@ -33,7 +33,7 @@ import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
 @Provider
 public class IllegalArgumentExceptionMapper implements
         ExceptionMapper<IllegalArgumentException> {
-    private static Logger log = LoggerFactory.getLogger(
+    private static final Logger log = LoggerFactory.getLogger(
             IllegalArgumentExceptionMapper.class);
 
     @Override

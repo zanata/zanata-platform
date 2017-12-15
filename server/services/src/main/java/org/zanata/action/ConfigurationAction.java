@@ -76,7 +76,7 @@ public class ConfigurationAction implements Serializable {
             os.close();
             FacesContext.getCurrentInstance().responseComplete();
         } catch (Exception e) {
-            log.error("Failure : " + e.toString() + "\n");
+            log.error("ConfigurationAction failed", e);
         }
     }
 }

@@ -44,6 +44,7 @@ import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -75,6 +76,7 @@ public class TranslationService implements TranslationResource {
     private final String sourceType = "JS";
 
     @Override
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Response get(String localeId, String ids) {
         TransUnits transUnits = new TransUnits();
         if (StringUtils.isEmpty(ids)) {

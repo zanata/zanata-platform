@@ -93,7 +93,7 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     }
 
     private void createDocsDirectoryFromConfig() throws SetupException {
-        log.info("Raw documents will be migrated to: " + basePath);
+        log.info("Raw documents will be migrated to: {}", basePath);
         docsDirectory = new File(basePath, RAW_DOCUMENTS_SUBDIRECTORY);
         try {
             docsDirectory.mkdirs();

@@ -80,6 +80,7 @@ import org.zanata.service.TranslationFileService;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @RequestScoped
 @Named("fileService")
@@ -177,6 +178,7 @@ public class FileService implements FileResource {
     }
 
     @Override
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Response downloadSourceFile(String projectSlug, String iterationSlug,
             String fileType, String docId) {
         if (!hasProjectVersionAccess(projectSlug, iterationSlug)) {
@@ -225,6 +227,7 @@ public class FileService implements FileResource {
     }
 
     @Override
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Response downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileType,
             String docId) {

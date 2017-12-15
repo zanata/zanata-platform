@@ -835,15 +835,15 @@ public class VersionHomeAction extends AbstractSortAction
                     translationFileServiceImpl.persistToTempFile(fileContents);
             md5hash = md.digest();
         } catch (ZanataServiceException e) {
-            VersionHomeAction.log.error(
-                    "Failed writing temp file for document {}", e,
-                    sourceFileUpload.getDocId());
+            log.error(
+                    "Failed writing temp file for document {}",
+                    sourceFileUpload.getDocId(), e);
             setMessage(FacesMessage.SEVERITY_ERROR,
                     "Error saving uploaded document " + fileName
                             + " to server.");
             return;
         } catch (NoSuchAlgorithmException e) {
-            VersionHomeAction.log.error("MD5 hash algorithm not available", e);
+            log.error("MD5 hash algorithm not available", e);
             setMessage(FacesMessage.SEVERITY_ERROR,
                     "Error generating hash for uploaded document " + fileName
                             + ".");

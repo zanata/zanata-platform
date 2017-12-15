@@ -75,6 +75,7 @@ import org.zanata.service.impl.GlossaryFileServiceImpl;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @RequestScoped
 @Named("glossaryService")
@@ -340,6 +341,7 @@ public class GlossaryService implements GlossaryResource {
     }
 
     @Override
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Response upload(@MultipartForm GlossaryFileUploadForm form) {
         String qualifiedName = form.getQualifiedName();
         Response response =
@@ -405,7 +407,7 @@ public class GlossaryService implements GlossaryResource {
             return response;
         }
         int rowCount = glossaryDAO.deleteAllEntries(qualifiedName);
-        log.info("Delete all glossary entry: " + rowCount);
+        log.info("Delete all glossary entry: {}", rowCount);
         return Response.ok(rowCount).build();
     }
 

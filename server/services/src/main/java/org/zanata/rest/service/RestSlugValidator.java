@@ -119,8 +119,8 @@ public class RestSlugValidator implements Serializable {
             return localeServiceImpl.validateLocaleByProject(locale,
                     projectSlug);
         } catch (ZanataServiceException e) {
-            log.warn("Exception validating target locale {} in proj {}", e,
-                    locale, projectSlug);
+            log.warn("Exception validating target locale {} in proj {}",
+                    locale, projectSlug, e);
             throw e;
         }
     }
@@ -144,7 +144,7 @@ public class RestSlugValidator implements Serializable {
                     projectSlug, iterationSlug);
         } catch (ZanataServiceException e) {
             log.warn("Exception validating target locale {} in proj {} iter {}",
-                    e, locale, projectSlug, iterationSlug);
+                    locale, projectSlug, iterationSlug, e);
             throw e;
         }
     }

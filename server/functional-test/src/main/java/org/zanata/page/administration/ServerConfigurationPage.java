@@ -138,7 +138,7 @@ public class ServerConfigurationPage extends BasePage {
     }
 
     public ServerConfigurationPage inputPiwikUrl(String url) {
-        log.info("Enter Piwik URL", url);
+        log.info("Enter Piwik URL: {}", url);
         enterTextConfigField(piwikUrl, url);
         return new ServerConfigurationPage(getDriver());
     }
@@ -149,7 +149,7 @@ public class ServerConfigurationPage extends BasePage {
     }
 
     public ServerConfigurationPage inputPiwikID(String id) {
-        log.info("Enter Piwik ID", id);
+        log.info("Enter Piwik ID: {}", id);
         enterTextConfigField(piwikId, id);
         return new ServerConfigurationPage(getDriver());
     }

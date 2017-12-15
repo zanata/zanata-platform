@@ -25,6 +25,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.XMLConstants;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import org.zanata.common.LocaleId;
@@ -92,6 +94,7 @@ public class TranslationsTMXExportStrategy <T extends ITextFlow>
         return header;
     }
 
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Optional<Element> buildTU(ITextFlow tf) throws IOException {
         try {
             Element tu = new Element("tu");
@@ -162,10 +165,9 @@ public class TranslationsTMXExportStrategy <T extends ITextFlow>
             LocaleId locId = target.getLocaleId();
             String trgContent = target.getContents().get(0);
             if (trgContent.contains("\000")) {
-                String msg =
-                        "illegal null character; discarding TargetContents with locale="
-                                + locId + ", contents=" + trgContent;
-                log.warn(msg);
+                log.warn(
+                        "illegal null character; discarding TargetContents with locale={}, contents={}",
+                        locId, trgContent);
                 return Optional.absent();
             }
             Element tuv = new Element("tuv");

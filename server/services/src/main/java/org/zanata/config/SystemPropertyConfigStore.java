@@ -153,7 +153,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
                         getAuthPolicyName(policyName));
             } catch (IllegalArgumentException e) {
                 log.error(
-                        "Attempted to configure an unrecognized authentication policy: " +
+                        "Attempted to configure an unrecognized authentication policy: {}",
                                 policyName);
                 throw new RuntimeException(policyName + " is not a recognized authentication policy");
             }
