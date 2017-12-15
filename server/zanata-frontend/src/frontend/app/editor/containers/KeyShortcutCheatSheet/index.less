@@ -1,16 +1,15 @@
 :root {
-  --Modal-rhythm: 1.5rem;
-  --Modal-color-bg: color(#f0f2f4 alpha(.95));
+  --Modal-color-bg: rgba(240, 242, 244, 0.95);
   --Modal-transition: all .15s linear;
-  --Modal-border: 1px solid color(#416988 alpha(12%));
+  --Modal-border: 1px solid rgba(65, 105, 136, 0.12);
   --Modal-dialog-transition: all .25s cubic-bezier(.175, .885, .320, 1.1);
   --Modal-dialog-border-bottom-width: 2px;
-  --Modal-dialog-color-bg: color(#f0f2f4 tint(60%));
+  --Modal-dialog-color-bg: rgba(240, 242, 244, 0.40);
   --Modal-header-color-bg: #fff;
   --Modal-title-font-size: calc(22/16 * 1rem);
   --Modal-close-transition: all .25s ease-out;
-  --Modal-close-color-bg-hover: color(#416988 alpha(5%));
-  --Modal-close-color-bg-active: color(#416988 alpha(10%));
+  --Modal-close-color-bg-hover: rgba(240, 242, 244, 0.05);
+  --Modal-close-color-bg-active: rgba(240, 242, 244, 0.10);
   --Modal-z-index: 1000;
   --Modal-header-z-index: 100;
 }
@@ -33,13 +32,12 @@ not conflict with the other frontend code
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  padding:  calc(var(--Modal-rhythm) * 3) var(--Modal-rhythm) var(--Modal-rhythm);
+  padding:  calc(1.5rem * 3) 1.5rem 1.5rem;
   transition: var(--Modal-transition);
   opacity: 0;
   background-color: var(--Modal-color-bg);
-
   backface-visibility: hidden;
-  perspective: calc(var(--Modal-rhythm) * 50);
+  perspective: calc(1.5rem * 50);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -55,7 +53,7 @@ not conflict with the other frontend code
   left: 50%;
   max-height: 100%;
   min-width: 300px;
-  max-width: calc(var(--Modal-rhythm) * 30);
+  max-width: calc(1.5rem * 30);
   transition: var(--Modal-dialog-transition);
   transform: translateX(-50%) translateY(100%);
   transform-origin: 0;
@@ -68,7 +66,7 @@ not conflict with the other frontend code
 
 .Modal-header {
   position: fixed;
-  top: calc(var(--Modal-rhythm) * -2);
+  top: calc(1.5rem * -2);
   left: 0;
   right: 0;
   border: var(--Modal-border);
@@ -79,9 +77,9 @@ not conflict with the other frontend code
 .Modal-title {
   font-size: var(--Modal-title-font-size);
   font-weight: 300;
-  line-height: var(--Modal-rhythm);
+  line-height: 1.5rem;
   margin: 0;
-  padding: calc(var(--Modal-rhythm) * .5) calc(var(--Modal-rhythm) * 1.5) calc(var(--Modal-rhythm) * .5) var(--Modal-rhythm);
+  padding: calc(1.5rem * .5) calc(1.5rem * 1.5) calc(1.5rem * .5) 1.5rem;
 }
 
 .Modal-close {
@@ -89,8 +87,8 @@ not conflict with the other frontend code
   top: 0;
   display:block;
   right: 0;
-  width: calc(var(--Modal-rhythm) * 2);
-  height: calc(var(--Modal-rhythm) * 2);
+  width: calc(1.5rem * 2);
+  height: calc(1.5rem * 2);
   transition: var(--Modal-close-transition);
   text-align: center;
   border-left: var(--Modal-border);

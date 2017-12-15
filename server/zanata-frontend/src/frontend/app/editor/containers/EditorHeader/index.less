@@ -2,7 +2,6 @@
 
 :root {
   --Header-background : #4e9fdd;
-  --Header-rhythm     : 1.5rem;
   --Header-z-index    : 900;
 }
 
@@ -17,20 +16,20 @@ not conflict with the other frontend code
   width: 100%;
   top: 0;
   left: 0;
-  box-shadow: 0 calc(var(--Header-rhythm) * .25) var(--Header-rhythm) rgba(0,0,0,0.1);
+  box-shadow: 0 calc(1.5rem * .25) 1.5rem rgba(0,0,0,0.1);
 }
 
 .Header-item {
-  height: calc(var(--Header-rhythm) * 2);
+  height: calc(1.5rem * 2);
   display: inline-block;
-  padding-top: calc(var(--Header-rhythm) * .5);
-  padding-bottom: calc(var(--Header-rhythm) * .5);
+  padding-top: calc(1.5rem * .5);
+  padding-bottom: calc(1.5rem * .5);
 }
 
 .Header-avatar {
-  margin-top: calc(var(--Header-rhythm) * .375);
-  margin-bottom: calc(var(--Header-rhythm) * .375);
-  width: calc(var(--Header-rhythm) * 1.25);
-  height: calc(var(--Header-rhythm) * 1.25);
+  margin-top: calc(1.5rem * .375);
+  margin-bottom: calc(1.5rem * .375);
+  width: calc(1.5rem * 1.25);
+  height: calc(1.5rem * 1.25);
   display: inline-block;
 }

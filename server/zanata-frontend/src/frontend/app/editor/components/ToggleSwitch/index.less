@@ -13,7 +13,6 @@
 
 :root {
   --Switch-color: #20718A;
-  --Switch-rhythm: 1.5rem;
 }
 
 /* Need to stick to this naming convention (against suitcss) so that it does
@@ -21,7 +20,7 @@ not conflict with the other frontend code
  */
 
 .Switch {
-  padding-left: calc(var(--Switch-rhythm) * 1.5);
+  padding-left: calc(1.5rem * 1.5);
   position: relative;
 }
 
@@ -37,30 +36,30 @@ not conflict with the other frontend code
 
 .Switch-label:before,
 .Switch-label:after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  border-radius: calc(var(--Switch-rhythm) * .75);
+  border-radius: calc(1.5rem * .75);
   transition: all .2s ease-out;
 }
 
 .Switch-label:before {
-  width: calc(var(--Switch-rhythm) * 1.25);
-  height: calc(var(--Switch-rhythm) * .75);
-  background-color: color(var(--Switch-color) tint(80));
+  width: calc(1.5rem * 1.25);
+  height: calc(1.5rem * .75);
+  background-color: rgb(32, 113, 138, 0.2)
 }
 
 .Switch-label:after {
-  width: calc(var(--Switch-rhythm) * .75);
-  height: calc(var(--Switch-rhythm) * .75);
-  background-color: color(var(--Switch-color) tint(40));
+  width: calc(1.5rem * .75);
+  height: calc(1.5rem * .75);
+  background-color: rgb(32, 113, 138, 0.4);
   transform: translateY(-50%) scale(.8, .8);
 }
 
 .Switch-labelText {
-  color: color(var(--Switch-color) tint(40));
+  background-color: rgb(32, 113, 138, 0.4);
   font-size: calc(14/16)rem;
 }
 

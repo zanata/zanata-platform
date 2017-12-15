@@ -1,5 +1,5 @@
 :root {
-  --base-text-code-font-family: 'Monaco', Courier, 'Courier New', monospace;
+  --base-text-code-font-family: "Monaco", Courier, "Courier New", monospace;
   --base-text-code-font-size: calc(14/16 * 1rem);
   --base-text-code-font-color: #555;
   --base-text-code-font-weight: 400;
@@ -40,5 +40,5 @@ kbd {
   white-space: nowrap;
   display: inline-block;
   text-transform: uppercase;
-  font-family: 'Source Sans Pro', "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
 }

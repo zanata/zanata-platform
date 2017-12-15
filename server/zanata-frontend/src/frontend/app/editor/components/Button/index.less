@@ -1,0 +1,216 @@
+@import "../../../styles/variables.less";
+
+:root {
+  --Button-border-color: currentcolor;
+  --Button-border-width: 0;
+  --Button-color: transparent;
+  --Button-disabled-opacity: 0.6;
+  --Button-font: inherit;
+  --Button-padding: 0.375rem 0.75rem;
+  --Button-padding-small: 0.1875rem 0.75rem;
+  --Button-color-text-invert: #fff;
+  --Button-color-default: #e3e9ed;
+  --Button-color-neutral: #a0b4c4;
+  --Button-transition: all .25s cubic-bezier(.075, .820, .165, 1.000);
+}
+
+.EditorButton {
+  transition: var(--Button-transition);
+  min-height: calc(1.5rem * 1.25);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.EditorButton:disabled,
+.EditorButton.is-disabled {
+  pointer-events: none;
+}
+
+.EditorButton:hover,
+.EditorButton:active,
+.EditorButton.is-active {
+  outline: inherit;
+}
+
+/* Default */
+
+.Button--default {
+  background-color: var(--Button-color-default);
+}
+
+.Button--default:hover {
+  background-color: rgba(160, 180, 196,0.9);
+}
+
+.Button--default:active,
+.Button--default.is-active {
+  background-color: rgba(160, 180, 196,0.85);
+}
+
+/**
+ * Color Modifiers
+ */
+
+/* Primary */
+
+.Button--primary {
+  color: var(--Button-color-text-invert);
+  background-color: @color-light;
+}
+
+.Button--primary:hover {
+  background-color: rgba(3, 166, 215, 0.9);
+}
+
+.Button--primary:active,
+.Button--primary.is-active {
+  background-color: rgba(3, 166, 215, 0.85);
+}
+
+/* Secondary */
+
+.Button--secondary {
+  color: var(--Button-color-text-invert);
+  background-color: @color-dark;
+}
+
+.Button--secondary:hover {
+  background-color: rgba(84, 102, 119, 0.9);
+}
+
+.Button--secondary:active,
+.Button--secondary.is-active {
+  background-color: rgba(84, 102, 119, 0.85);
+}
+
+/* Hightlight */
+
+.Button--highlight {
+  color: var(--Button-color-text-invert);
+  background-color: @color-light;
+}
+
+.Button--highlight:hover {
+  background-color: rgba(3, 166, 215, 0.9);
+}
+
+.Button--highlight:active,
+.Button--highlight.is-active {
+  background-color: rgba(3, 166, 215, 0.85);
+}
+
+/* Success */
+
+.Button--success {
+  color: var(--Button-color-text-invert);
+  background-color: @color-success;
+}
+
+.Button--success:hover {
+  background-color: rgba(98, 200, 118, 0.9);
+}
+
+.Button--success:active,
+.Button--success.is-active {
+  background-color: rgba(98, 200, 118, 0.85);
+}
+
+/* Unsure */
+
+.Button--unsure {
+  color: var(--Button-color-text-invert);
+  background-color: @color-unsure;
+}
+
+.Button--unsure:hover {
+  background-color: rgba(233, 221, 0, 0.9);
+}
+
+.Button--unsure:active,
+.Button--unsure.is-active {
+  background-color: rgba(233, 221, 0, 0.85);
+}
+
+/* Neutral */
+
+.Button--neutral {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-neutral);
+}
+
+.Button--neutral:hover {
+  background-color: rgba(160, 180, 196, 0.9);
+}
+
+.Button--neutral:active,
+.Button--neutral.is-active {
+  background-color: rgba(160, 180, 196, 0.85);
+}
+
+/* Warning */
+
+.Button--warning {
+  color: var(--Button-color-text-invert);
+  background-color: @color-warning;
+}
+
+.Button--warning:hover {
+  background-color: rgba(255, 168, 0, 0.9);
+}
+
+.Button--warning:active,
+.Button--warning.is-active {
+  background-color: rgba(255, 168, 0, 0.85);
+}
+
+/* Danger */
+
+.Button--danger {
+  color: var(--Button-color-text-invert);
+  background-color: @color-danger;
+}
+
+.Button--danger:hover {
+  background-color: rgba(255, 59, 61, 0.9);
+}
+
+.Button--danger:active,
+.Button--danger.is-active {
+  background-color: rgba(255, 59, 61, 0.985);
+}
+
+/* Invisible */
+
+.Button--invisible {
+  background-color: transparent;
+  color: rgba(84, 102, 119, 0.5);
+}
+
+.Button--invisible:hover {
+  background-color: rgba(84, 102, 119, 0.12);
+  color: rgba(84, 102, 119, 0.92);
+}
+
+.Button--invisible:active,
+.Button--invisible.is-active {
+  color: @color-dark;
+  background-color:  rgba(84, 102, 119, 0.12);
+}
+
+/**
+ * Button Type Modifiers
+ */
+
+/* Snug */
+
+.Button--snug {
+  padding-left: @spacing-rh;
+  padding-right: @spacing-rh;
+}
+
+.Button--small {
+  min-height: 1.5rem;
+  padding: var(--Button-padding-small);
+  font-size: calc(14/16)rem;
+}

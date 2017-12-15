@@ -1,7 +1,6 @@
 /** @define Toggle; use strict */
 
 :root {
-  --Toggle-rhythm: 1.5rem;
   --Toggle-color: currentColor;
   --Toggle-color-active: #fff;
   --Toggle-color-active-invert: #000;
@@ -21,8 +20,8 @@ not conflict with the other frontend code
 .Toggle {
   position: relative;
   display: inline-block;
-  min-width: calc(var(--Toggle-rhythm) * 1.375);
-  margin: 0 calc(var(--Toggle-rhythm) * .0625);
+  min-width: calc(1.5rem * 1.375);
+  margin: 0 calc(1.5rem * .0625);
   user-select: none;
   vertical-align: top;
 }
@@ -41,7 +40,7 @@ not conflict with the other frontend code
   font-weight: 600;
   display: block;
   position: relative;
-  padding: 0 calc(var(--Toggle-rhythm) * .375);
+  padding: 0 calc(1.5rem * .375);
   transition: var(--Toggle-transition);
   text-align: center;
   color: var(--Toggle-color);
@@ -54,7 +53,7 @@ not conflict with the other frontend code
   left: 0;
   width: 100%;
   height: 100%;
-  content: '';
+  content: "";
   background-color: transparent;
 }
 

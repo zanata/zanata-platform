@@ -27,28 +27,5 @@
   css3 transform
 */
 .Pane {
-  display: block!important;
+  display: block !important;
 }
-
-/* Old resizer component from Angular
-
-.Resizer {
-  position: absolute;
-  z-index: 1000;
-}
-
-.Resizer--vertical {
-  cursor: ew-resize;
-  width: 12px;
-  top: 0;
-  bottom: 0;
-}
-
-.Resizer--horizontal {
-  height: 12px;
-  left: 0;
-  right: 0;
-  cursor: ns-resize;
-}
-
-*/

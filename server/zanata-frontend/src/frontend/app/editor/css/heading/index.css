@@ -1,7 +1,7 @@
 /** @define Heading; use strict */
 
 :root {
-  --Heading-font-family  : 'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif;
+  --Heading-font-family  : "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
   --Heading-font-weight  : 600;
   --Heading-size-h1      : 36px;
   --Heading-size-h2      : 28px;

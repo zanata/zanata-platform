@@ -1,4 +1,4 @@
-@import 'suitcss-utils-display';
+@import "suitcss-utils-display";
 
 :root {
   --u-display-rhythm: 1.5rem;

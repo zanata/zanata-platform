@@ -1,7 +1,7 @@
 # Styles
 
 Some components define their own styles, usually in `index.css` within the
-component's folder.
+component"s folder.
 
 More general styles used throughout the app are defined in this `css` directory.
 

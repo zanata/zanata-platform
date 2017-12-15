@@ -1,16 +1,15 @@
 /** @define Dropdown; use strict */
 
 :root {
-  --Dropdown-rhythm              : 1.5rem;
   --Dropdown-transition          : all .2s cubic-bezier(.175, .885, .320, 1.275);
   --Dropdown-z-index             : 100;
   --Dropdown-is-active-z-index   : 900;
   --Dropdown-content-color-bg    : #fff;
   --Dropdown-content-border      : 1px solid rgba(0,0,0,.15);
   --Dropdown-content-z-index     : 800;
-  --Dropdown-title-size          : calc(14/16 * 1rem);
-  --Dropdown-title-color         : color(#416988 tint(20%));
-  --Dropdown-title-color-bg      : color(#416988 tint(90%));
+  --Dropdown-title-size          : calc((14/16) * 1rem);
+  --Dropdown-title-color         : rgba(65,105,136,.8);
+  --Dropdown-title-color-bg      : rgba(65,105,136,.1);
   --Dropdown-item-color          : #4e9fdd;
   --Dropdown-item-hover-color    : var(--Dropdown-content-color-bg);
   --Dropdown-item-hover-color-bg : var(--Dropdown-item-color);
@@ -52,7 +51,7 @@ not conflict with the other frontend code
   overflow: auto;
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: calc(var(--Dropdown-rhythm) * 17);
+  max-height: calc(1.5rem * 17);
   min-width: 100%;
   margin: 0;
   padding: 0;
@@ -62,7 +61,7 @@ not conflict with the other frontend code
   opacity: 0;
   background-color: var(--Dropdown-content-color-bg);
   background-clip: padding-box;
-  box-shadow: 0 0 var(--Dropdown-rhythm) rgba(0,0,0,0.1);
+  box-shadow: 0 0 1.5rem rgba(0,0,0,0.1);
 }
 
 .EditorDropdown-content--Bordered {
@@ -78,7 +77,7 @@ not conflict with the other frontend code
 
 .EditorDropdown-title {
   font-size: calc(14/16 * 1rem);
-  padding: calc(var(--Dropdown-rhythm) * .125) calc(var(--Dropdown-rhythm) * .25);
+  padding: calc(1.5rem * .125) calc(1.5rem * .25);
   background-color: var(--Dropdown-title-color-bg);
   border-bottom: var(--Dropdown-content-border);
   color: var(--Dropdown-title-color);
@@ -86,8 +85,8 @@ not conflict with the other frontend code
 
 .EditorDropdown-item {
   display: block;
-  line-height: calc(var(--Dropdown-rhythm) * .875);
-  padding: calc(var(--Dropdown-rhythm) * .25) calc(var(--Dropdown-rhythm) * .25);
+  line-height: calc(1.5rem * .875);
+  padding: calc(1.5rem * .25) calc(1.5rem * .25);
   transition: var(--Dropdown-item-transition);
   color: var(--Dropdown-item-color);
 }

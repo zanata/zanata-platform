@@ -1,4 +1,4 @@
-@import 'suitcss-utils-position';
+@import "suitcss-utils-position";
 
 .abs {
   position: absolute;

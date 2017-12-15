@@ -1,0 +1,37 @@
+@import "../../../styles/variables.less";
+
+.Button--concurrent {
+  color: @color-light;
+  text-shadow: none;
+}
+
+.Button--concurrent .n1 {
+  vertical-align: middle;
+}
+
+#ConflictsModal .u-floatRight .EditorButton {
+  margin-top: @spacing-rh;
+}
+
+.revisionBox textarea {
+  border: solid 1px @color-neutral;
+  border-radius: @spacing-search-box;
+  width: 97%;
+  padding: @spacing-rq;
+  font-size: 1.05rem;
+}
+
+.revisionBox textarea:hover {
+  border: solid 1px @color-muted;
+}
+
+.revisionBox textarea:focus {
+  border: solid 2px @color-light;
+}
+
+/* React bootstrap styling */
+
+#ConflictsModal .panel {
+  margin-bottom: @spacing-xlarge;
+  padding-bottom: @spacing-xlarge;
+}
