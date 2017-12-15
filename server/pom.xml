@@ -1788,7 +1788,7 @@
   <repositories>
     <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
     <repository>
-      <id>sonatype-nexus-snapshots</id>
+      <id>sonatype-snapshots</id>
       <name>Sonatype Nexus Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <releases>
