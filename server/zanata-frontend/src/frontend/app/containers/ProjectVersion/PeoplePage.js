@@ -10,6 +10,7 @@ class PeoplePage extends Component {
   render() {
 
     return (
+      /* eslint-disable max-len */
         <div className='flexTab wideView'>
           <h2>People</h2>
           <div>
@@ -49,8 +50,7 @@ class PeoplePage extends Component {
                 <option>100</option>
               </FormControl>
             </div>
-            <div className='pageCount col-xs-7 col-sm-8
-              col-md-12'>
+            <div className='pageCount col-xs-7 col-sm-8 col-md-12'>
               <Pagination
                prev
                next
@@ -91,6 +91,7 @@ class PeoplePage extends Component {
             </tbody>
           </Table>
         </div>
+        /* eslint-enable max-len */
     )
   }
 }

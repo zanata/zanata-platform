@@ -101,7 +101,7 @@ class Languages extends Component {
 
     const noResults = isEmpty(results)
 
-    /* eslint-disable react/jsx-no-bind */
+    /* eslint-disable max-len, react/jsx-no-bind */
     return (
       <div className='wideView languages'>
         {notification &&
@@ -173,8 +173,7 @@ class Languages extends Component {
                       })}
                     </FormControl>
                   </div>
-                  <div className='pageCount col-xs-7 col-sm-8
-                    col-md-12'>
+                  <div className='pageCount col-xs-7 col-sm-8 col-md-12'>
                     <Pagination
                       prev
                       next
@@ -217,7 +216,7 @@ class Languages extends Component {
           </div>
         </div>
       </div>)
-      /* eslint-enable react/jsx-no-bind */
+      /* eslint-enable max-len, react/jsx-no-bind */
   }
 }
 
