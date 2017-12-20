@@ -17,8 +17,8 @@ describe('TranslatingIndicatorTest', () => {
       <TranslatingIndicator gettextCatalog={gettextCatalog}/>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <button className="Link--neutral u-sPV-1-6 u-floatLeft
-                       u-sizeHeight-1_1-2 u-sMR-1-4">
+      /* eslint-disable max-len */
+      <button className="Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4">
         <Row>
           <Icon name="translate" className="s2"/> <span
           className="u-ltemd-hidden TransIndicator u-sMR-1-4">
@@ -26,6 +26,7 @@ describe('TranslatingIndicatorTest', () => {
           </span>
         </Row>
       </button>
+      /* eslint-enable max-len */
     )
     expect(actual).toEqual(expected)
   })

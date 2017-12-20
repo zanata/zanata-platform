@@ -14,6 +14,7 @@ class ConcurrentModal extends React.Component {
       ' soul, like these agonising evenings of summer which I loathe with my' +
       ' whole heart.'
     return (
+      /* eslint-disable max-len */
       <Modal show={true}
         onHide={close}
         closeButton
@@ -41,8 +42,7 @@ class ConcurrentModal extends React.Component {
               </span>
               <span className='u-floatLeft'>
                 <DateAndTimeDisplay dateTime={lastModifiedTime}
-                  className="u-block small u-sMT-1-2 u-sPB-1-4
-                  u-textMuted u-textSecondary"/>
+                  className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"/>
               </span>
               <span className='u-floatRight'>
                 <Button title="Click should trigger onClick action"
@@ -63,8 +63,7 @@ class ConcurrentModal extends React.Component {
               <span className="u-sizeHeight-1_1-2">
                 <span className='u-floatLeft'>
                   <DateAndTimeDisplay dateTime={lastModifiedTime}
-                    className="u-block small u-sMT-1-2 u-sPB-1-4
-                    u-textMuted u-textSecondary"/>
+                    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"/>
                 </span>
                 <span className='u-floatRight'>
                   <Button title="Click should trigger onClick action"
@@ -76,6 +75,7 @@ class ConcurrentModal extends React.Component {
             </Panel>
           </Modal.Body>
         </Modal>
+        /* eslint-enable max-len */
       )}
     }
 

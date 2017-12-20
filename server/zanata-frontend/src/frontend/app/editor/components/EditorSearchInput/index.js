@@ -225,16 +225,17 @@ class AdvancedField extends Component {
     const { id, field, value } = this.props
     const { label, description } = field
     return (
+      /* eslint-disable max-len */
       <div key={id} title={description} className="u-sPB-1-2">
         <label className="u-textSecondary u-sPB-1-4">{label}</label>
         <input ref={id}
           type="text"
           placeholder={description}
-          className="u-bgHighest u-sizeFull u-inputFlat
-            u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
+          className="u-bgHighest u-sizeFull u-inputFlat u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
           value={value}
           onChange={this.updateSearch} />
       </div>
+      /* eslint-enable max-len */
     )
   }
 }

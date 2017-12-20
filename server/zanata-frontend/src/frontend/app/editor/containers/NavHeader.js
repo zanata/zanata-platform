@@ -88,13 +88,13 @@ class NavHeader extends React.Component {
     }*/
 
     return (
+      /* eslint-disable max-len */
       <nav role="navigation"
         className="Editor-mainNav u-posRelative u-textCenter">
         <div className="u-posAbsoluteLeft">
           <Row className={directionClass}>
             <ProjectVersionLink {...ctx.projectVersion} />
-            <div className="u-inlineBlock u-sMH-1-4 u-textInvert
-                          u-textMuted u-sm-hidden">
+            <div className="u-inlineBlock u-sMH-1-4 u-textInvert u-textMuted u-sm-hidden">
               <Icon name="chevron-right" className="s1" />
             </div>
             <span className="Editor-docsDropdown">
@@ -129,6 +129,7 @@ class NavHeader extends React.Component {
           </li>
         </ul>
       </nav>
+      /* eslint-enable max-len */
     )
   }
 }
