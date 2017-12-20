@@ -9,8 +9,6 @@
       "messagesDir": "./build/messages/",
       "enforceDescriptions": true
     }],
-    // stage-0 plugins: (TODO remove them first)
-    "transform-function-bind",
     // stage-1 plugins: (TODO remove them second if practical)
     "transform-export-extensions",
     // stage-2 plugins: (TODO remove them third if practical)

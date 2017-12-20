@@ -32,7 +32,7 @@ class Sidebar extends Component {
           <div className='sidebar-container'>
             <div className='sidebar-content'>
               <a className='accordion-section-title'
-                onClick={::this.toggleDisplay}>
+                onClick={this.toggleDisplay.bind(this)}>
                 <Icon name='project' className='iconProject' />
                 <span className='projtitle'>Zanata Server</span>
                 <svg className={toggleArrow}>

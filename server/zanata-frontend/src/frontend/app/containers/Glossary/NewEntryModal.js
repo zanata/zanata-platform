@@ -94,7 +94,7 @@ class NewEntryModal extends Component {
               editing
               placeholder='The new term'
               maxLength={255}
-              onChange={::this.handleContentChanged}>
+              onChange={this.handleContentChanged.bind(this)}>
               {this.state.entry.srcTerm.content}
             </EditableText>
           </div>
@@ -106,7 +106,7 @@ class NewEntryModal extends Component {
               editing
               placeholder='Noun, Verb, etc'
               maxLength={255}
-              onChange={::this.handlePosChanged}>
+              onChange={this.handlePosChanged.bind(this)}>
               {this.state.entry.pos}
             </EditableText>
           </div>
@@ -118,7 +118,7 @@ class NewEntryModal extends Component {
               editing
               placeholder='The definition of this term'
               maxLength={255}
-              onChange={::this.handleDescChanged}>
+              onChange={this.handleDescChanged.bind(this)}>
               {this.state.entry.description}
             </EditableText>
           </div>
