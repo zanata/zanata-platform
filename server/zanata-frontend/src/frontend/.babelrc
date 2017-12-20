@@ -9,9 +9,7 @@
       "messagesDir": "./build/messages/",
       "enforceDescriptions": true
     }],
-    // stage-1 plugins: (TODO remove them second if practical)
-    "transform-export-extensions",
-    // stage-2 plugins: (TODO remove them third if practical)
+    // stage-2 plugins: (TODO remove them if practical)
     "transform-class-properties"
   ]
 }
