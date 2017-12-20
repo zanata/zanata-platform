@@ -1,3 +1,4 @@
+// @ts-check
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
@@ -6,6 +7,7 @@ import ProjectVersion from '../containers/ProjectVersion'
 import Project from '../containers/Project'
 import Admin from '../containers/Admin'
 
+/** @type { React.StatelessComponent<{children}> } */
 const App = ({children}) => {
   return (<div className='containerSidebar'>{children}</div>)
 }
@@ -13,6 +15,7 @@ App.propTypes = {
   children: PropTypes.element
 }
 
+/** @type { React.StatelessComponent<{store, history}> } */
 const JsfRoot = ({store, history}) => {
   return (
     <Provider store={store}>

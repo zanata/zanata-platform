@@ -21,6 +21,7 @@ import {
 } from '../actions/common-actions'
 import { keyBy } from 'lodash'
 
+/* eslint-enable max-len */
 /**
  *
  * @param listOfMatrices original server response
@@ -32,6 +33,7 @@ import { keyBy } from 'lodash'
      totalActivity: number
    }[]}
  */
+/* eslint-disable max-len */
 const transformToTotalWordCountsForEachDay = (listOfMatrices, dateRange) => {
   let result = []
   let index = 0

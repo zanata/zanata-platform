@@ -9,8 +9,7 @@ const DO_NOT_RENDER = null
 /**
  * Version Lock Icon with tooltip
  *
- * @param status
- * @returns {XML}
+ * @type { React.StatelessComponent<{status}> }
  */
 const LockIcon = ({status}) => {
   const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>

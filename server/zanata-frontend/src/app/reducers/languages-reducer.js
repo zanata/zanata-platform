@@ -1,3 +1,4 @@
+// @ts-check
 import { handleActions } from 'redux-actions'
 import { keyBy } from 'lodash'
 import {

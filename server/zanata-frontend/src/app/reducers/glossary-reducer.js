@@ -1,3 +1,4 @@
+// @ts-check
 import { handleActions } from 'redux-actions'
 import { isEmpty, cloneDeep, forEach, size } from 'lodash'
 import {

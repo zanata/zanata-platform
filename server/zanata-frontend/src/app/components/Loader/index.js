@@ -1,7 +1,9 @@
+// @ts-check
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import Loading from 'react-loading'
 
+/** @type { React.StatelessComponent<{className}> } */
 const Loader = ({ className = 'loader' }) => {
   return (
     <span className={className}>

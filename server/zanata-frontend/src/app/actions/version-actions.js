@@ -1,3 +1,4 @@
+// @ts-check
 import { CALL_API, getJSON } from 'redux-api-middleware'
 import { createAction } from 'redux-actions'
 import {
@@ -93,19 +94,23 @@ const toProjectVersionString = (projectVersion) => {
   return `${projectVersion.projectSlug}/${projectVersion.version.id}`
 }
 
+/* eslint-disable max-len */
 /**
  * @param {string} projectSlug target project slug
  * @param {string} versionSlug target version slug
  * @param {{
      matchPercentage: number,
+     differentProject: boolean,
      differentDocId: boolean,
      differentContext: boolean,
      fromImportedTM: boolean,
-     selectedLanguage: Object.<{localeId: string, displayName: string}>,
+     fromAllProjects: boolean,
+     selectedLanguage: {localeId: string, displayName: string},
      selectedVersions: Array.<{projectSlug: string, version: {id: string}}>
    }} mergeOptions
  * @returns redux api action object
  */
+/* eslint-enable max-len */
 export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const endpoint =
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/tm-merge`

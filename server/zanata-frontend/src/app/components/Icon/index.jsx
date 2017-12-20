@@ -2,9 +2,6 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { isUndefined } from 'lodash'
 
-/**
- * @return {string}
- */
 const Icon = ({
   name,
   parentClassName,

@@ -336,6 +336,10 @@
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.6.2.tgz#12cfaba693ba20f114ed5765467ff25fdf67ddb0"
 
+"@types/history@^3":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@types/history/-/history-3.2.2.tgz#b6affa240cb10b5f841c6443d8a24d7f3fc8bb0c"
+
 "@types/http-proxy-middleware@*":
   version "0.17.2"
   resolved "https://registry.yarnpkg.com/@types/http-proxy-middleware/-/http-proxy-middleware-0.17.2.tgz#78dde05402faa5f09cfe83807a64541022628429"
@@ -496,11 +500,11 @@
     "@types/react" "*"
     redux "^3.7.2"
 
-"@types/react-router@^4.0.20":
-  version "4.0.20"
-  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-4.0.20.tgz#3404f54e44bba2239ea4320ea701d86d92f05486"
+"@types/react-router@3":
+  version "3.0.14"
+  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-3.0.14.tgz#e21b365db664f72381c27ff8dbbc3e7dc7a11659"
   dependencies:
-    "@types/history" "*"
+    "@types/history" "^3"
     "@types/react" "*"
 
 "@types/react-select@^1.1.0":
