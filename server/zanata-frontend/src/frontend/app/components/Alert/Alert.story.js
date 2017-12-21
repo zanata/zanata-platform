@@ -1,12 +1,12 @@
 import React from 'react'
 import {storiesOf} from '@storybook/react'
-import {Alert, Table} from 'react-bootstrap'
+import {Alert, Table, Well} from 'react-bootstrap'
 
 storiesOf('Alert', module)
     .add('success', () => (
         <span>
           <h2>Alert</h2>
-          <p><strong>Guideline:</strong> Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a Notification.</p>
+          <Well>Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a <strong>Notification</strong>.</Well>
         <Alert bsStyle='success'>
           <strong>Holy guacamole!</strong> Best check yo self
         </Alert>
@@ -29,7 +29,7 @@ storiesOf('Alert', module)
           </tr>
            <tr>
             <td>bsStyle</td>
-            <td>one of: "success", "warning", "danger", "info"</td>
+             <td>one of: <code>"success"</code>, <code>"warning"</code>, <code>"danger"</code>, <code>"info"</code></td>
             <td>'info'</td>
             <td>Component visual or contextual style variants.</td>
           </tr>
@@ -43,11 +43,11 @@ storiesOf('Alert', module)
             <td>onDismiss</td>
             <td>function</td>
             <td></td>
-            <td>For Closeable alerts pass the onDismiss function</td>
+                     <td>For Closeable alerts pass the <code>onDismiss</code> function</td>
           </tr>
           </tbody>
           </Table>
-            <h3>Related componentsx</h3>
+            <h3>Related components</h3>
           <ul>
             <li>Notification</li>
           </ul>
