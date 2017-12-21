@@ -1283,11 +1283,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="admin"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -1306,11 +1304,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="all"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -1329,11 +1325,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="assign"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -1352,11 +1346,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="attach"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -1375,11 +1367,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="block"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -1398,11 +1388,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down-double"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -1421,11 +1409,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -1444,11 +1430,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-left"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -1467,11 +1451,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-right"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -1490,11 +1472,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up-double"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -1513,11 +1493,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -1536,11 +1514,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="circle"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -1559,11 +1535,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="clock"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -1582,11 +1556,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="code"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -1605,11 +1577,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="comment"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -1628,11 +1598,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="copy"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -1651,11 +1619,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross-circle"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -1674,11 +1640,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -1697,11 +1661,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dashboard"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -1720,11 +1682,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="document"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -1743,11 +1703,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dot"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -1766,11 +1724,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="download"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -1789,11 +1745,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="edit"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -1812,11 +1766,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="ellipsis"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -1835,11 +1787,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="export"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -1858,11 +1808,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="external-link"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -1881,11 +1829,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="filter"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -1904,11 +1850,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="folder"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -1927,11 +1871,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="glossary"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -1950,11 +1892,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="help"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -1973,11 +1913,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="history"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -1996,11 +1934,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="import"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -2019,11 +1955,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="inbox"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -2042,11 +1976,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="info"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -2065,11 +1997,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="keyboard"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -2088,11 +2018,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="language"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -2111,11 +2039,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="link"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -2134,11 +2060,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="location"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -2157,11 +2081,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="locked"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -2180,11 +2102,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="logout"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -2203,11 +2123,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="mail"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -2226,11 +2144,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="maintain"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -2249,11 +2165,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="menu"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -2272,11 +2186,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="minus"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -2295,11 +2207,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="next"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -2318,11 +2228,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="notification"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -2341,11 +2249,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="piestats"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -2364,11 +2270,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="plus"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -2387,11 +2291,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="previous"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -2410,11 +2312,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="project"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -2433,11 +2333,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="refresh"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -2456,11 +2354,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="review"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -2479,11 +2375,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="search"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -2502,11 +2396,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="servmon"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -2525,11 +2417,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="settings"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -2548,11 +2438,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star-outline"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -2571,11 +2459,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -2594,11 +2480,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="statistics"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -2617,11 +2501,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="suggestions"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -2640,11 +2522,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick-circle"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -2663,11 +2543,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -2686,11 +2564,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tm"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -2709,11 +2585,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="translate"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -2732,11 +2606,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="trash"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -2755,11 +2627,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="undo"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -2778,11 +2648,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="unlocked"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -2801,11 +2669,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="upload"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -2824,11 +2690,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="user"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -2847,11 +2711,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="users"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -2870,11 +2732,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="version"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -2893,11 +2753,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="warning"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -2916,11 +2774,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="zanata"
   >
      
-    <span
-      className="n2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -2942,11 +2798,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="admin"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -2965,11 +2819,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="all"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -2988,11 +2840,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="assign"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -3011,11 +2861,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="attach"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -3034,11 +2882,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="block"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -3057,11 +2903,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down-double"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -3080,11 +2924,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -3103,11 +2945,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-left"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -3126,11 +2966,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-right"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -3149,11 +2987,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up-double"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -3172,11 +3008,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -3195,11 +3029,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="circle"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -3218,11 +3050,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="clock"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -3241,11 +3071,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="code"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -3264,11 +3092,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="comment"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -3287,11 +3113,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="copy"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -3310,11 +3134,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross-circle"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -3333,11 +3155,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -3356,11 +3176,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dashboard"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -3379,11 +3197,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="document"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -3402,11 +3218,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dot"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -3425,11 +3239,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="download"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -3448,11 +3260,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="edit"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -3471,11 +3281,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="ellipsis"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -3494,11 +3302,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="export"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -3517,11 +3323,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="external-link"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -3540,11 +3344,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="filter"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -3563,11 +3365,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="folder"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -3586,11 +3386,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="glossary"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -3609,11 +3407,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="help"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -3632,11 +3428,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="history"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -3655,11 +3449,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="import"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -3678,11 +3470,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="inbox"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -3701,11 +3491,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="info"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -3724,11 +3512,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="keyboard"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -3747,11 +3533,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="language"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -3770,11 +3554,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="link"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -3793,11 +3575,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="location"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -3816,11 +3596,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="locked"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -3839,11 +3617,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="logout"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -3862,11 +3638,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="mail"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -3885,11 +3659,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="maintain"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -3908,11 +3680,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="menu"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -3931,11 +3701,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="minus"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -3954,11 +3722,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="next"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -3977,11 +3743,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="notification"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -4000,11 +3764,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="piestats"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -4023,11 +3785,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="plus"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -4046,11 +3806,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="previous"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -4069,11 +3827,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="project"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -4092,11 +3848,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="refresh"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -4115,11 +3869,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="review"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -4138,11 +3890,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="search"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -4161,11 +3911,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="servmon"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -4184,11 +3932,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="settings"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -4207,11 +3953,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star-outline"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -4230,11 +3974,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -4253,11 +3995,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="statistics"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -4276,11 +4016,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="suggestions"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -4299,11 +4037,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick-circle"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -4322,11 +4058,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -4345,11 +4079,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tm"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -4368,11 +4100,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="translate"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -4391,11 +4121,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="trash"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -4414,11 +4142,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="undo"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -4437,11 +4163,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="unlocked"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -4460,11 +4184,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="upload"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -4483,11 +4205,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="user"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -4506,11 +4226,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="users"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -4529,11 +4247,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="version"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -4552,11 +4268,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="warning"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -4575,11 +4289,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="zanata"
   >
      
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -4601,11 +4313,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="admin"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -4624,11 +4334,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="all"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -4647,11 +4355,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="assign"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -4670,11 +4376,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="attach"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -4693,11 +4397,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="block"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -4716,11 +4418,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down-double"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -4739,11 +4439,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -4762,11 +4460,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-left"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -4785,11 +4481,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-right"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -4808,11 +4502,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up-double"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -4831,11 +4523,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -4854,11 +4544,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="circle"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -4877,11 +4565,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="clock"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -4900,11 +4586,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="code"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -4923,11 +4607,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="comment"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -4946,11 +4628,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="copy"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -4969,11 +4649,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross-circle"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -4992,11 +4670,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -5015,11 +4691,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dashboard"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -5038,11 +4712,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="document"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -5061,11 +4733,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dot"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -5084,11 +4754,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="download"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -5107,11 +4775,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="edit"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -5130,11 +4796,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="ellipsis"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -5153,11 +4817,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="export"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -5176,11 +4838,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="external-link"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -5199,11 +4859,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="filter"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -5222,11 +4880,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="folder"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -5245,11 +4901,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="glossary"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -5268,11 +4922,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="help"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -5291,11 +4943,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="history"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -5314,11 +4964,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="import"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -5337,11 +4985,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="inbox"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -5360,11 +5006,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="info"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -5383,11 +5027,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="keyboard"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -5406,11 +5048,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="language"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -5429,11 +5069,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="link"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -5452,11 +5090,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="location"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -5475,11 +5111,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="locked"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -5498,11 +5132,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="logout"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -5521,11 +5153,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="mail"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -5544,11 +5174,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="maintain"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -5567,11 +5195,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="menu"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -5590,11 +5216,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="minus"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -5613,11 +5237,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="next"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -5636,11 +5258,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="notification"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -5659,11 +5279,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="piestats"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -5682,11 +5300,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="plus"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -5705,11 +5321,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="previous"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -5728,11 +5342,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="project"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -5751,11 +5363,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="refresh"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -5774,11 +5384,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="review"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -5797,11 +5405,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="search"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -5820,11 +5426,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="servmon"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -5843,11 +5447,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="settings"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -5866,11 +5468,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star-outline"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -5889,11 +5489,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -5912,11 +5510,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="statistics"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -5935,11 +5531,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="suggestions"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -5958,11 +5552,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick-circle"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -5981,11 +5573,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -6004,11 +5594,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tm"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -6027,11 +5615,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="translate"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -6050,11 +5636,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="trash"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -6073,11 +5657,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="undo"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -6096,11 +5678,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="unlocked"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -6119,11 +5699,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="upload"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -6142,11 +5720,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="user"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -6165,11 +5741,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="users"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -6188,11 +5762,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="version"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -6211,11 +5783,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="warning"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -6234,11 +5804,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="zanata"
   >
      
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -6260,11 +5828,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="admin"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -6283,11 +5849,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="all"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -6306,11 +5870,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="assign"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -6329,11 +5891,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="attach"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -6352,11 +5912,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="block"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -6375,11 +5933,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down-double"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -6398,11 +5954,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -6421,11 +5975,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-left"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -6444,11 +5996,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-right"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -6467,11 +6017,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up-double"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -6490,11 +6038,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -6513,11 +6059,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="circle"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -6536,11 +6080,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="clock"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -6559,11 +6101,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="code"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -6582,11 +6122,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="comment"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -6605,11 +6143,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="copy"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -6628,11 +6164,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross-circle"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -6651,11 +6185,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -6674,11 +6206,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dashboard"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -6697,11 +6227,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="document"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -6720,11 +6248,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dot"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -6743,11 +6269,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="download"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -6766,11 +6290,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="edit"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -6789,11 +6311,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="ellipsis"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -6812,11 +6332,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="export"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -6835,11 +6353,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="external-link"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -6858,11 +6374,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="filter"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -6881,11 +6395,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="folder"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -6904,11 +6416,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="glossary"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -6927,11 +6437,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="help"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -6950,11 +6458,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="history"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -6973,11 +6479,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="import"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -6996,11 +6500,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="inbox"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -7019,11 +6521,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="info"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -7042,11 +6542,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="keyboard"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -7065,11 +6563,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="language"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -7088,11 +6584,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="link"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -7111,11 +6605,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="location"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -7134,11 +6626,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="locked"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -7157,11 +6647,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="logout"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -7180,11 +6668,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="mail"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -7203,11 +6689,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="maintain"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -7226,11 +6710,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="menu"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -7249,11 +6731,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="minus"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -7272,11 +6752,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="next"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -7295,11 +6773,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="notification"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -7318,11 +6794,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="piestats"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -7341,11 +6815,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="plus"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -7364,11 +6836,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="previous"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -7387,11 +6857,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="project"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -7410,11 +6878,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="refresh"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -7433,11 +6899,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="review"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -7456,11 +6920,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="search"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -7479,11 +6941,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="servmon"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -7502,11 +6962,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="settings"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -7525,11 +6983,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star-outline"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -7548,11 +7004,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -7571,11 +7025,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="statistics"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -7594,11 +7046,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="suggestions"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -7617,11 +7067,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick-circle"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -7640,11 +7088,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -7663,11 +7109,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tm"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -7686,11 +7130,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="translate"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -7709,11 +7151,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="trash"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -7732,11 +7172,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="undo"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -7755,11 +7193,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="unlocked"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -7778,11 +7214,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="upload"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -7801,11 +7235,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="user"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -7824,11 +7256,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="users"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -7847,11 +7277,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="version"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -7870,11 +7298,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="warning"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -7893,11 +7319,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="zanata"
   >
      
-    <span
-      className="s1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -7919,11 +7343,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="admin"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -7942,11 +7364,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="all"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -7965,11 +7385,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="assign"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -7988,11 +7406,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="attach"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -8011,11 +7427,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="block"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -8034,11 +7448,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down-double"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -8057,11 +7469,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -8080,11 +7490,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-left"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -8103,11 +7511,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-right"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -8126,11 +7532,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up-double"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -8149,11 +7553,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -8172,11 +7574,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="circle"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -8195,11 +7595,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="clock"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -8218,11 +7616,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="code"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -8241,11 +7637,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="comment"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -8264,11 +7658,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="copy"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -8287,11 +7679,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross-circle"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -8310,11 +7700,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -8333,11 +7721,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dashboard"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -8356,11 +7742,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="document"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -8379,11 +7763,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dot"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -8402,11 +7784,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="download"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -8425,11 +7805,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="edit"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -8448,11 +7826,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="ellipsis"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -8471,11 +7847,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="export"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -8494,11 +7868,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="external-link"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -8517,11 +7889,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="filter"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -8540,11 +7910,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="folder"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -8563,11 +7931,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="glossary"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -8586,11 +7952,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="help"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -8609,11 +7973,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="history"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -8632,11 +7994,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="import"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -8655,11 +8015,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="inbox"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -8678,11 +8036,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="info"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -8701,11 +8057,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="keyboard"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -8724,11 +8078,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="language"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -8747,11 +8099,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="link"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -8770,11 +8120,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="location"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -8793,11 +8141,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="locked"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -8816,11 +8162,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="logout"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -8839,11 +8183,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="mail"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -8862,11 +8204,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="maintain"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -8885,11 +8225,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="menu"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -8908,11 +8246,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="minus"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -8931,11 +8267,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="next"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -8954,11 +8288,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="notification"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -8977,11 +8309,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="piestats"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -9000,11 +8330,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="plus"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -9023,11 +8351,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="previous"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -9046,11 +8372,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="project"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -9069,11 +8393,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="refresh"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -9092,11 +8414,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="review"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -9115,11 +8435,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="search"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -9138,11 +8456,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="servmon"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -9161,11 +8477,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="settings"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -9184,11 +8498,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star-outline"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -9207,11 +8519,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -9230,11 +8540,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="statistics"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -9253,11 +8561,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="suggestions"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -9276,11 +8582,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick-circle"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -9299,11 +8603,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -9322,11 +8624,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tm"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -9345,11 +8645,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="translate"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -9368,11 +8666,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="trash"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -9391,11 +8687,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="undo"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -9414,11 +8708,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="unlocked"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -9437,11 +8729,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="upload"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -9460,11 +8750,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="user"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -9483,11 +8771,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="users"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -9506,11 +8792,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="version"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -9529,11 +8813,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="warning"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -9552,11 +8834,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="zanata"
   >
      
-    <span
-      className="s2"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s2"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -9578,11 +8858,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="admin"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -9601,11 +8879,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="all"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -9624,11 +8900,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="assign"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -9647,11 +8921,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="attach"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -9670,11 +8942,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="block"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -9693,11 +8963,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down-double"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -9716,11 +8984,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -9739,11 +9005,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-left"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -9762,11 +9026,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-right"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -9785,11 +9047,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up-double"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -9808,11 +9068,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -9831,11 +9089,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="circle"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -9854,11 +9110,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="clock"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -9877,11 +9131,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="code"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -9900,11 +9152,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="comment"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -9923,11 +9173,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="copy"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -9946,11 +9194,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross-circle"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -9969,11 +9215,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -9992,11 +9236,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dashboard"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -10015,11 +9257,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="document"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -10038,11 +9278,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dot"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -10061,11 +9299,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="download"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -10084,11 +9320,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="edit"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -10107,11 +9341,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="ellipsis"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -10130,11 +9362,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="export"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -10153,11 +9383,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="external-link"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -10176,11 +9404,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="filter"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -10199,11 +9425,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="folder"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -10222,11 +9446,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="glossary"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -10245,11 +9467,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="help"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -10268,11 +9488,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="history"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -10291,11 +9509,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="import"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -10314,11 +9530,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="inbox"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -10337,11 +9551,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="info"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -10360,11 +9572,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="keyboard"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -10383,11 +9593,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="language"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -10406,11 +9614,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="link"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -10429,11 +9635,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="location"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -10452,11 +9656,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="locked"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -10475,11 +9677,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="logout"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -10498,11 +9698,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="mail"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -10521,11 +9719,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="maintain"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -10544,11 +9740,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="menu"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -10567,11 +9761,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="minus"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -10590,11 +9782,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="next"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -10613,11 +9803,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="notification"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -10636,11 +9824,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="piestats"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -10659,11 +9845,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="plus"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -10682,11 +9866,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="previous"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -10705,11 +9887,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="project"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -10728,11 +9908,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="refresh"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -10751,11 +9929,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="review"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -10774,11 +9950,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="search"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -10797,11 +9971,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="servmon"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -10820,11 +9992,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="settings"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -10843,11 +10013,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star-outline"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -10866,11 +10034,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -10889,11 +10055,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="statistics"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -10912,11 +10076,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="suggestions"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -10935,11 +10097,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick-circle"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -10958,11 +10118,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -10981,11 +10139,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tm"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -11004,11 +10160,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="translate"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -11027,11 +10181,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="trash"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -11050,11 +10202,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="undo"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -11073,11 +10223,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="unlocked"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -11096,11 +10244,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="upload"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -11119,11 +10265,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="user"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -11142,11 +10286,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="users"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -11165,11 +10307,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="version"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -11188,11 +10328,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="warning"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -11211,11 +10349,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="zanata"
   >
      
-    <span
-      className="s3"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s3"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -11237,11 +10373,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="admin"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -11260,11 +10394,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="all"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -11283,11 +10415,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="assign"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -11306,11 +10436,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="attach"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -11329,11 +10457,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="block"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -11352,11 +10478,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down-double"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -11375,11 +10499,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-down"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -11398,11 +10520,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-left"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -11421,11 +10541,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-right"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -11444,11 +10562,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up-double"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -11467,11 +10583,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="chevron-up"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -11490,11 +10604,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="circle"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -11513,11 +10625,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="clock"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -11536,11 +10646,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="code"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -11559,11 +10667,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="comment"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -11582,11 +10688,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="copy"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -11605,11 +10709,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross-circle"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -11628,11 +10730,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="cross"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -11651,11 +10751,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dashboard"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -11674,11 +10772,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="document"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -11697,11 +10793,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="dot"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -11720,11 +10814,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="download"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -11743,11 +10835,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="edit"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -11766,11 +10856,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="ellipsis"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -11789,11 +10877,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="export"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -11812,11 +10898,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="external-link"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -11835,11 +10919,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="filter"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -11858,11 +10940,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="folder"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -11881,11 +10961,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="glossary"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -11904,11 +10982,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="help"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -11927,11 +11003,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="history"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -11950,11 +11024,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="import"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -11973,11 +11045,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="inbox"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -11996,11 +11066,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="info"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -12019,11 +11087,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="keyboard"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -12042,11 +11108,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="language"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -12065,11 +11129,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="link"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -12088,11 +11150,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="location"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -12111,11 +11171,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="locked"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -12134,11 +11192,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="logout"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -12157,11 +11213,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="mail"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -12180,11 +11234,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="maintain"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -12203,11 +11255,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="menu"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -12226,11 +11276,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="minus"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -12249,11 +11297,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="next"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -12272,11 +11318,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="notification"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -12295,11 +11339,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="piestats"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -12318,11 +11360,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="plus"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -12341,11 +11381,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="previous"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -12364,11 +11402,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="project"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -12387,11 +11423,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="refresh"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -12410,11 +11444,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="review"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -12433,11 +11465,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="search"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -12456,11 +11486,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="servmon"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -12479,11 +11507,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="settings"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -12502,11 +11528,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star-outline"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -12525,11 +11549,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="star"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -12548,11 +11570,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="statistics"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -12571,11 +11591,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="suggestions"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -12594,11 +11612,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick-circle"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -12617,11 +11633,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tick"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -12640,11 +11654,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="tm"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -12663,11 +11675,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="translate"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -12686,11 +11696,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="trash"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -12709,11 +11717,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="undo"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -12732,11 +11738,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="unlocked"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -12755,11 +11759,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="upload"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -12778,11 +11780,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="user"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -12801,11 +11801,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="users"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -12824,11 +11822,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="version"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -12847,11 +11843,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="warning"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -12870,11 +11864,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     title="zanata"
   >
      
-    <span
-      className="s4"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s4"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -14601,11 +13593,9 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       disabled={false}
       type="button"
     >
-      <span
-        className="s1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -14625,11 +13615,9 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       disabled={false}
       type="button"
     >
-      <span
-        className="s1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -14934,11 +13922,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
             className="accordion-section-title"
             onClick={[Function]}
           >
-            <span
-              className="iconProject"
-            >
+            <span>
               <svg
-                className={undefined}
+                className="iconProject"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -14982,11 +13968,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -15012,11 +13996,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -15042,11 +14024,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -15072,11 +14052,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -15252,11 +14230,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                 <span
                   className="sidebarVersion-title"
                 >
-                  <span
-                    className="s2"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s2"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -15468,11 +14444,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
     <a
       href="https://www.google.com"
     >
-      <span
-        className="n1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -15509,11 +14483,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
             className="accordion-section-title"
             onClick={[Function]}
           >
-            <span
-              className="iconProject"
-            >
+            <span>
               <svg
-                className={undefined}
+                className="iconProject"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -15557,11 +14529,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -15587,11 +14557,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -15617,11 +14585,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -15647,11 +14613,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -15827,11 +14791,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                 <span
                   className="sidebarVersion-title"
                 >
-                  <span
-                    className="s2"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s2"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -16045,11 +15007,10 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
         type="button"
       >
         <span
-          className="n1 plusicon"
           title="plus"
         >
           <svg
-            className={undefined}
+            className="n1 plusicon"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -16084,11 +15045,10 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
             className="input-group-addon"
           >
             <span
-              className="s1"
               title="search"
             >
               <svg
-                className={undefined}
+                className="s1"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -16344,11 +15304,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
               disabled={false}
               type="button"
             >
-              <span
-                className="s0"
-              >
+              <span>
                 <svg
-                  className={undefined}
+                  className="s0"
                   dangerouslySetInnerHTML={
                     Object {
                       "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -16378,11 +15336,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
               disabled={false}
               type="button"
             >
-              <span
-                className="s0"
-              >
+              <span>
                 <svg
-                  className={undefined}
+                  className="s0"
                   dangerouslySetInnerHTML={
                     Object {
                       "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -16412,11 +15368,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
               disabled={false}
               type="button"
             >
-              <span
-                className="s0"
-              >
+              <span>
                 <svg
-                  className={undefined}
+                  className="s0"
                   dangerouslySetInnerHTML={
                     Object {
                       "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -16457,11 +15411,9 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             className="accordion-section-title"
             onClick={[Function]}
           >
-            <span
-              className="iconProject"
-            >
+            <span>
               <svg
-                className={undefined}
+                className="iconProject"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -16505,11 +15457,9 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -16535,11 +15485,9 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -16565,11 +15513,9 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -16595,11 +15541,9 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span
-                    className="s1 iconSidebar"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s1 iconSidebar"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -16775,11 +15719,9 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 <span
                   className="sidebarVersion-title"
                 >
-                  <span
-                    className="s2"
-                  >
+                  <span>
                     <svg
-                      className={undefined}
+                      className="s2"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-version\\" />",

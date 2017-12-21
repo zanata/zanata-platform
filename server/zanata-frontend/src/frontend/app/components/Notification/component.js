@@ -59,8 +59,8 @@ class Notification extends Component {
             <Row
               bsStyle={severityClass}
               className='rowNotify'>
-              <Icon name={icon} className='s2 listInline' />
-              <span>Notification</span>
+              <Icon name={icon} className='s3 listInline' />
+              <span> Notification</span>
             </Row>
           </Modal.Title>
         </Modal.Header>
