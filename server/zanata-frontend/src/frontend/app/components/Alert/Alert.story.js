@@ -3,13 +3,14 @@ import {storiesOf} from '@storybook/react'
 import {Alert, Table, Well} from 'react-bootstrap'
 
 storiesOf('Alert', module)
-    .add('success', () => (
+    .add('info', () => (
         <span>
           <h2>Alert</h2>
           <Well>Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a <strong>Notification</strong>.</Well>
-        <Alert bsStyle='success'>
+        <Alert bsStyle='info'>
           <strong>Holy guacamole!</strong> Best check yo self
         </Alert>
+          <code>bsStyle="info"</code>
         <h3>Props</h3>
           <Table striped bordered condensed hover>
           <thead>
@@ -54,17 +55,29 @@ storiesOf('Alert', module)
         </span>
     ))
     .add('warning', () => (
+        <span>
+          <h2>Warning</h2>
         <Alert bsStyle='warning'>
           <strong>Holy guacamole!</strong> Best check yo self
         </Alert>
+        <code>bsStyle="warning"</code>
+        </span>
     ))
     .add('danger', () => (
+        <span>
+          <h2>Danger</h2>
         <Alert bsStyle='danger'>
           <strong>Holy guacamole!</strong> Best check yo self
         </Alert>
+          <code>bsStyle="danger"</code>
+        </span>
     ))
-    .add('info', () => (
-        <Alert bsStyle='info'>
+    .add('success', () => (
+        <span>
+        <h2>Success</h2>
+        <Alert bsStyle='success'>
           <strong>Holy guacamole!</strong> Best check yo self
         </Alert>
+        <code>bsStyle="success"</code>
+        </span>
     ))
