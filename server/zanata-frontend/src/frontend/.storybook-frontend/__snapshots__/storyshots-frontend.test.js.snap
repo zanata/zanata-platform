@@ -25,15 +25,111 @@ exports[`Frontend Storyshots Alert info 1`] = `
 `;
 
 exports[`Frontend Storyshots Alert success 1`] = `
-<div
-  className="alert alert-success"
-  role="alert"
->
-  <strong>
-    Holy guacamole!
-  </strong>
-   Best check yo self
-</div>
+<span>
+  <h2>
+    Alert
+  </h2>
+  <p>
+    <strong>
+      Guideline:
+    </strong>
+     Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a Notification.
+  </p>
+  <div
+    className="alert alert-success"
+    role="alert"
+  >
+    <strong>
+      Holy guacamole!
+    </strong>
+     Best check yo self
+  </div>
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'alert'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsStyle
+        </td>
+        <td>
+          one of: "success", "warning", "danger", "info"
+        </td>
+        <td>
+          'info'
+        </td>
+        <td>
+          Component visual or contextual style variants.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          closeLabel
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'Close alert'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          onDismiss
+        </td>
+        <td>
+          function
+        </td>
+        <td />
+        <td>
+          For Closeable alerts pass the onDismiss function
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>
+    Related componentsx
+  </h3>
+  <ul>
+    <li>
+      Notification
+    </li>
+  </ul>
+</span>
 `;
 
 exports[`Frontend Storyshots Alert warning 1`] = `
@@ -49,14 +145,78 @@ exports[`Frontend Storyshots Alert warning 1`] = `
 `;
 
 exports[`Frontend Storyshots Badge default 1`] = `
-<p>
-  Badge 
-  <span
-    className="badge"
+<span>
+  <h2>
+    Badges
+  </h2>
+  <p>
+    <strong>
+      Guideline:
+    </strong>
+     Highlight new or unread items, numbers of members or any other numerical value.
+  </p>
+  <p>
+    Badge 
+    <span
+      className="badge"
+    >
+      23
+    </span>
+  </p>
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
   >
-    23
-  </span>
-</p>
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'badge'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          pullRight
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          Component visual or contextual style variants.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</span>
 `;
 
 exports[`Frontend Storyshots Badge in button 1`] = `
@@ -75,347 +235,493 @@ exports[`Frontend Storyshots Badge in button 1`] = `
 `;
 
 exports[`Frontend Storyshots Badge in nav item 1`] = `
-<ul
-  className="sg-nav-pills nav nav-pills nav-stacked"
-  role={null}
->
-  <li
-    className="active"
-    role="presentation"
-    style={undefined}
+<span>
+  <h2>
+    Sidebar navigation
+  </h2>
+  <p>
+    This is the navigation style to use with the project version sidebar.
+  </p>
+  <ul
+    className="sg-nav-pills nav nav-pills nav-stacked"
+    role={null}
   >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+    <li
+      className="active"
+      role="presentation"
+      style={undefined}
     >
-      <span
-        className="u-pullRight badge"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
       >
-        42
-      </span>
-      Home
-    </a>
-  </li>
-  <li
-    className=""
-    role="presentation"
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+        <span
+          className="u-pullRight badge"
+        >
+          42
+        </span>
+        Home
+      </a>
+    </li>
+    <li
+      className=""
+      role="presentation"
+      style={undefined}
     >
-      Profile
-    </a>
-  </li>
-  <li
-    className=""
-    role="presentation"
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
-    >
-      <span
-        className="u-pullRight badge"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
       >
-        3
-      </span>
-      Messages
-    </a>
-  </li>
-</ul>
+        Profile
+      </a>
+    </li>
+    <li
+      className=""
+      role="presentation"
+      style={undefined}
+    >
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        <span
+          className="u-pullRight badge"
+        >
+          3
+        </span>
+        Messages
+      </a>
+    </li>
+  </ul>
+  <h3>
+    Related components
+  </h3>
+  <ul>
+    <li>
+      Sidebar
+    </li>
+  </ul>
+</span>
 `;
 
 exports[`Frontend Storyshots Breadcrumbs default 1`] = `
-<ol
-  aria-label="breadcrumbs"
-  className="breadcrumb"
-  role="navigation"
->
-  <li
-    className=""
+<span>
+  <h2>
+    Breadcrumbs
+  </h2>
+  <p>
+    Breadcrumbs are used to indicate the current page's location. Add active attribute to active Breadcrumb.Item. Do not set both active and href attributes. active overrides href and span element is rendered instead of a. #
+  </p>
+  <p>
+    <strong>
+      Guideline:
+    </strong>
+     All pages 2 levels deep or more should use breadcrumbs in frontend. ie. topdir/breadcrumbshere/breadcrumbshere/
+  </p>
+  <ol
+    aria-label="breadcrumbs"
+    className="breadcrumb"
+    role="navigation"
   >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
-      target={undefined}
-      title={undefined}
+    <li
+      className=""
     >
-      Home
-    </a>
-  </li>
-  <li
-    className=""
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
-      target={undefined}
-      title={undefined}
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+        target={undefined}
+        title={undefined}
+      >
+        Home
+      </a>
+    </li>
+    <li
+      className=""
     >
-      Library
-    </a>
-  </li>
-  <li
-    className="active"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+        target={undefined}
+        title={undefined}
+      >
+        Library
+      </a>
+    </li>
+    <li
+      className="active"
+    >
+      <span>
+        Data
+      </span>
+    </li>
+  </ol>
+  <h3>
+    Props
+  </h3>
+  <p>
+    Breadcrumb component itself doesn't have any specific public properties
+  </p>
+</span>
+`;
+
+exports[`Frontend Storyshots Button block 1`] = `
+<span>
+  <h2>
+    Button block
+  </h2>
+  <button
+    className="btn btn-default btn-block"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
   >
-    <span>
-      Data
-    </span>
-  </li>
-</ol>
+    Button block
+  </button>
+  <p>
+    <strong>
+      block:
+    </strong>
+     true
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Button danger 1`] = `
-<button
-  className="btn btn-danger"
-  disabled={false}
-  onClick={[Function]}
-  type="button"
->
-  Danger button
-</button>
+<span>
+  <h2>
+    Danger button
+  </h2>
+  <button
+    className="btn btn-danger"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    Danger button
+  </button>
+  <p>
+    <strong>
+      bsStyle:
+    </strong>
+     "danger"
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Button default 1`] = `
-<button
-  className="btn btn-default"
-  disabled={false}
-  onClick={[Function]}
-  type="button"
->
-  Unstyled button
-</button>
+<span>
+  <h2>
+    Buttons
+  </h2>
+  <button
+    className="btn btn-default"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    Unstyled button
+  </button>
+  <h3>
+    Button spacing
+  </h3>
+  <p>
+    Because React doesn't output newlines between elements, buttons on the same line are displayed flush against each other. To preserve the spacing between multiple inline buttons, wrap your button group in ButtonToolbar.
+  </p>
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          active
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          block
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'btn'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsSize
+        </td>
+        <td>
+          one of: "lg", "large", "sm", "small", "xs", "xsmall"
+        </td>
+        <td />
+        <td>
+          Component size variations
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsStyle
+        </td>
+        <td>
+          one of: "success", "warning", "danger", "info", "default", "primary", "link"
+        </td>
+        <td>
+          'default'
+        </td>
+        <td>
+          Component visual or contextual style variants.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          componentClass
+        </td>
+        <td>
+          elementType
+        </td>
+        <td />
+        <td>
+          You can use a custom element type for this component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          disabled
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          href
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          type
+        </td>
+        <td>
+          one of: 'button', 'reset', 'submit'
+        </td>
+        <td>
+          'button'
+        </td>
+        <td>
+          Defines HTML button type attribute
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</span>
 `;
 
 exports[`Frontend Storyshots Button group 1`] = `
-<div
-  className="btn-group"
->
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
+<span>
+  <h2>
+    ButtonGroup
+  </h2>
+  <p>
+    <strong>
+      Guideline:
+    </strong>
+     group a series of buttons together on a single line with the button group.
+  </p>
+  <div
+    className="btn-group"
   >
-    Left
-  </button>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Left
+    </button>
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Middle
+    </button>
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Right
+    </button>
+  </div>
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
   >
-    Middle
-  </button>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Right
-  </button>
-</div>
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          block
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'btn-group'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          justified
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          vertical
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+    </tbody>
+  </table>
+</span>
 `;
 
 exports[`Frontend Storyshots Button info 1`] = `
-<button
-  className="btn btn-info"
-  disabled={false}
-  onClick={[Function]}
-  type="button"
->
-  Info button
-</button>
+<span>
+  <h2>
+    Info button
+  </h2>
+  <button
+    className="btn btn-info"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    Info button
+  </button>
+  <p>
+    <strong>
+      bsStyle:
+    </strong>
+     "info"
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Button nested 1`] = `
-<div
-  className="btn-group"
->
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    1
-  </button>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    2
-  </button>
-  <div
-    className="dropdown btn-group"
-  >
-    <button
-      aria-expanded={false}
-      aria-haspopup={true}
-      className="dropdown-toggle btn btn-default"
-      disabled={false}
-      id="bg-nested-dropdown"
-      onClick={[Function]}
-      onKeyDown={[Function]}
-      role="button"
-      type="button"
-    >
-      Dropdown
-       
-      <span
-        className="caret"
-      />
-    </button>
-    <ul
-      aria-labelledby="bg-nested-dropdown"
-      className="dropdown-menu"
-      role="menu"
-    >
-      <li
-        className=""
-        role="presentation"
-        style={undefined}
-      >
-        <a
-          href="#"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="menuitem"
-          tabIndex="-1"
-        >
-          Dropdown link
-        </a>
-      </li>
-      <li
-        className=""
-        role="presentation"
-        style={undefined}
-      >
-        <a
-          href="#"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="menuitem"
-          tabIndex="-1"
-        >
-          Dropdown link
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
-`;
-
-exports[`Frontend Storyshots Button primary 1`] = `
-<button
-  className="btn btn-primary"
-  disabled={false}
-  onClick={[Function]}
-  type="button"
->
-  Primary button
-</button>
-`;
-
-exports[`Frontend Storyshots Button sizes 1`] = `
-<div
-  className="btn-toolbar"
-  role="toolbar"
->
-  <button
-    className="btn btn-lg btn-primary"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Large button
-  </button>
-  <button
-    className="btn btn-lg btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Large button
-  </button>
-  <button
-    className="btn btn-primary"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Default button
-  </button>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Default button
-  </button>
-  <button
-    className="btn btn-sm btn-primary"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Small button
-  </button>
-  <button
-    className="btn btn-sm btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Small button
-  </button>
-  <button
-    className="btn btn-xs btn-primary"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Extra small button
-  </button>
-  <button
-    className="btn btn-xs btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Extra small button
-  </button>
-</div>
-`;
-
-exports[`Frontend Storyshots Button success 1`] = `
-<button
-  className="btn btn-success"
-  disabled={false}
-  onClick={[Function]}
-  type="button"
->
-  Success button
-</button>
-`;
-
-exports[`Frontend Storyshots Button toolbar 1`] = `
-<div
-  className="btn-toolbar"
-  role="toolbar"
->
+<span>
+  <h2>
+    Nested ButtonGroup
+  </h2>
+  <p>
+    <strong>
+      Guideline:
+    </strong>
+     for adding dropdowns to button groups
+  </p>
   <div
     className="btn-group"
   >
@@ -435,33 +741,124 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
     >
       2
     </button>
+    <div
+      className="dropdown btn-group"
+    >
+      <button
+        aria-expanded={false}
+        aria-haspopup={true}
+        className="dropdown-toggle btn btn-default"
+        disabled={false}
+        id="bg-nested-dropdown"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        role="button"
+        type="button"
+      >
+        Dropdown
+         
+        <span
+          className="caret"
+        />
+      </button>
+      <ul
+        aria-labelledby="bg-nested-dropdown"
+        className="dropdown-menu"
+        role="menu"
+      >
+        <li
+          className=""
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            Dropdown link
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            Dropdown link
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</span>
+`;
+
+exports[`Frontend Storyshots Button primary 1`] = `
+<span>
+  <h2>
+    Primary button
+  </h2>
+  <button
+    className="btn btn-primary"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    Primary button
+  </button>
+  <p>
+    <strong>
+      bsStyle:
+    </strong>
+     "primary"
+  </p>
+</span>
+`;
+
+exports[`Frontend Storyshots Button sizes 1`] = `
+<span>
+  <h2>
+    Button sizes
+  </h2>
+  <div
+    className="btn-group"
+  >
     <button
-      className="btn btn-default"
+      className="btn btn-lg btn-primary"
       disabled={false}
       onClick={[Function]}
       type="button"
     >
-      3
+      Large button
     </button>
     <button
-      className="btn btn-default"
+      className="btn btn-lg btn-default"
       disabled={false}
       onClick={[Function]}
       type="button"
     >
-      4
+      Large button
     </button>
   </div>
   <div
     className="btn-group"
   >
     <button
-      className="btn btn-default"
+      className="btn btn-primary"
       disabled={false}
       onClick={[Function]}
       type="button"
     >
-      5
+      Default button
     </button>
     <button
       className="btn btn-default"
@@ -469,116 +866,460 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
       onClick={[Function]}
       type="button"
     >
-      6
-    </button>
-    <button
-      className="btn btn-default"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      7
+      Default button
     </button>
   </div>
   <div
     className="btn-group"
   >
     <button
-      className="btn btn-default"
+      className="btn btn-sm btn-primary"
       disabled={false}
       onClick={[Function]}
       type="button"
     >
-      8
+      Small button
+    </button>
+    <button
+      className="btn btn-sm btn-default"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Small button
     </button>
   </div>
-</div>
+  <div
+    className="btn-group"
+  >
+    <button
+      className="btn btn-xs btn-primary"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Extra small button
+    </button>
+    <button
+      className="btn btn-xs btn-default"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Extra small button
+    </button>
+  </div>
+  <p>
+    <strong>
+      bsSize:
+    </strong>
+     "lg", "large", "sm", "small", "xs", "xsmall"
+  </p>
+</span>
+`;
+
+exports[`Frontend Storyshots Button success 1`] = `
+<span>
+  <h2>
+    Success button
+  </h2>
+  <button
+    className="btn btn-success"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    Success button
+  </button>
+  <p>
+    <strong>
+      bsStyle:
+    </strong>
+     "success"
+  </p>
+</span>
+`;
+
+exports[`Frontend Storyshots Button toolbar 1`] = `
+<span>
+  <h2>
+    Button toolbar
+  </h2>
+  <p>
+    <strong>
+      Guideline:
+    </strong>
+     Combine sets of ButtonGroups into a ButtonToolbar for more complex components.
+  </p>
+  <div
+    className="btn-toolbar"
+    role="toolbar"
+  >
+    <div
+      className="btn-group"
+    >
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        1
+      </button>
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        2
+      </button>
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        3
+      </button>
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        4
+      </button>
+    </div>
+    <div
+      className="btn-group"
+    >
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        5
+      </button>
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        6
+      </button>
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        7
+      </button>
+    </div>
+    <div
+      className="btn-group"
+    >
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        8
+      </button>
+    </div>
+  </div>
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'btn-toolbar'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</span>
 `;
 
 exports[`Frontend Storyshots Button warning 1`] = `
-<button
-  className="btn btn-warning"
-  disabled={false}
-  onClick={[Function]}
-  type="button"
->
-  Warning button
-</button>
+<span>
+  <h2>
+    Warning button
+  </h2>
+  <button
+    className="btn btn-warning"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    Warning button
+  </button>
+  <p>
+    <strong>
+      bsStyle:
+    </strong>
+     "warning"
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Dropdown default 1`] = `
-<div
-  className="dropdown btn-group btn-group-default"
->
-  <button
-    aria-expanded={false}
-    aria-haspopup={true}
-    className="dropdown-toggle btn btn-default"
-    disabled={false}
-    id="dropdown-basic"
-    onClick={[Function]}
-    onKeyDown={[Function]}
-    role="button"
-    type="button"
+<span>
+  <h2>
+    Dropdown
+  </h2>
+  <p>
+    Dropdown button to be used when there are multiple actions (a maximum of 7 to 15) available. Use dropdowns where radio buttons would not make sense due to too many options.
+  </p>
+  <div
+    className="dropdown btn-group btn-group-default"
   >
-    Dropdown button
-     
-    <span
-      className="caret"
-    />
-  </button>
-  <ul
-    aria-labelledby="dropdown-basic"
-    className="dropdown-menu"
-    role="menu"
+    <button
+      aria-expanded={false}
+      aria-haspopup={true}
+      className="dropdown-toggle btn btn-default"
+      disabled={false}
+      id="dropdown-basic"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      type="button"
+    >
+      Dropdown button
+       
+      <span
+        className="caret"
+      />
+    </button>
+    <ul
+      aria-labelledby="dropdown-basic"
+      className="dropdown-menu"
+      role="menu"
+    >
+      <li
+        className=""
+        role="presentation"
+        style={undefined}
+      >
+        <a
+          href="#"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="menuitem"
+          tabIndex="-1"
+        >
+          Action
+        </a>
+      </li>
+      <li
+        className=""
+        role="presentation"
+        style={undefined}
+      >
+        <a
+          href="#"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="menuitem"
+          tabIndex="-1"
+        >
+          Another action
+        </a>
+      </li>
+      <li
+        className="active"
+        role="presentation"
+        style={undefined}
+      >
+        <a
+          href="#"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="menuitem"
+          tabIndex="-1"
+        >
+          Active Item
+        </a>
+      </li>
+    </ul>
+  </div>
+  <h3>
+    Props
+  </h3>
+  <p>
+    The Dropdown expects at least one component with bsRole="toggle" and exactly one with bsRole="menu"
+  </p>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
   >
-    <li
-      className=""
-      role="presentation"
-      style={undefined}
-    >
-      <a
-        href="#"
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        role="menuitem"
-        tabIndex="-1"
-      >
-        Action
-      </a>
-    </li>
-    <li
-      className=""
-      role="presentation"
-      style={undefined}
-    >
-      <a
-        href="#"
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        role="menuitem"
-        tabIndex="-1"
-      >
-        Another action
-      </a>
-    </li>
-    <li
-      className="active"
-      role="presentation"
-      style={undefined}
-    >
-      <a
-        href="#"
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        role="menuitem"
-        tabIndex="-1"
-      >
-        Active Item
-      </a>
-    </li>
-  </ul>
-</div>
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          active
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          block
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'btn'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsSize
+        </td>
+        <td>
+          one of: "lg", "large", "sm", "small", "xs", "xsmall"
+        </td>
+        <td />
+        <td>
+          Component size variations
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsStyle
+        </td>
+        <td>
+          one of: "success", "warning", "danger", "info", "default", "primary", "link"
+        </td>
+        <td>
+          'default'
+        </td>
+        <td>
+          Component visual or contextual style variants.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          componentClass
+        </td>
+        <td>
+          elementType
+        </td>
+        <td />
+        <td>
+          You can use a custom element type for this component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          disabled
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          'false'
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          href
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          type
+        </td>
+        <td>
+          one of: 'button', 'reset', 'submit'
+        </td>
+        <td>
+          'button'
+        </td>
+        <td>
+          Defines HTML button type attribute
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h2>
+    MenuItem
+  </h2>
+</span>
 `;
 
 exports[`Frontend Storyshots EditableText editing 1`] = `
@@ -842,9 +1583,9 @@ exports[`Frontend Storyshots Form validation states 1`] = `
 
 exports[`Frontend Storyshots Foundation colours 1`] = `
 <span>
-  <h3>
+  <h2>
     Main colors
-  </h3>
+  </h2>
   <small>
     Hover for hexcode
   </small>
@@ -953,9 +1694,9 @@ exports[`Frontend Storyshots Foundation colours 1`] = `
       </span>
     </span>
   </div>
-  <h3>
+  <h2>
     Status colours
-  </h3>
+  </h2>
   <div
     className="sg-color sg-brand-success"
   >
@@ -1025,112 +1766,97 @@ exports[`Frontend Storyshots Foundation colours 1`] = `
 `;
 
 exports[`Frontend Storyshots Foundation grid 1`] = `
-<div
-  className="container"
->
+<span>
+  <h2>
+    Grids and flexbox
+  </h2>
   <div
-    className="showGrid row"
+    className="container"
   >
     <div
-      className="showGrid col-md-8 col-xs-12"
+      className="row"
     >
-      <code>
-        &lt;
-        Col xs={12} md={8}
-         /&gt;
-      </code>
-    </div>
-    <div
-      className="showGrid col-md-4 col-xs-6"
-    >
-      <code>
-        &lt;
-        Col xs={6} md={4}
-         /&gt;
-      </code>
-    </div>
-  </div>
-  <div
-    className="showGrid row"
-  >
-    <div
-      className="showGrid col-md-4 col-xs-6"
-    >
-      <code>
-        &lt;
-        Col xs={6} md={4}
-         /&gt;
-      </code>
-    </div>
-    <div
-      className="showGrid col-md-4 col-xs-6"
-    >
-      <code>
-        &lt;
-        Col xs={6} md={4}
-         /&gt;
-      </code>
-    </div>
-    <div
-      className="showGrid col-md-4 hidden-xs"
-    >
-      <code>
-        &lt;
-        Col xsHidden md={4}
-         /&gt;
-      </code>
+      <div
+        className="showGrid col-md-8 col-xs-12"
+      >
+        <code>
+          &lt;
+          Col xs={12} md={8}
+           /&gt;
+        </code>
+      </div>
+      <div
+        className="showGrid col-md-4 col-xs-6"
+      >
+        <code>
+          &lt;
+          Col xs={6} md={4}
+           /&gt;
+        </code>
+      </div>
     </div>
   </div>
-  <div
-    className="showGrid row"
-  >
-    <div
-      className="showGrid col-xs-6 col-xs-offset-6"
+  <br />
+  <p>
+    Grid being replaced with 
+    <strong>
+      flexbox
+    </strong>
+     throughout frontend where it provides a more suitable alternative to the restrictive 12 column grid layout
+  </p>
+  <ul>
+    <li>
+      <a
+        href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/"
+      >
+        https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+      </a>
+    </li>
+    <li>
+      <a
+        href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox"
+      >
+        https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
+      </a>
+    </li>
+  </ul>
+  <p>
+    The 
+    <strong>
+      CSS Grid
+    </strong>
+     might be a good future replacement for the bootstrap columns/flexbox combinations, but currently browser support is below 80%. (
+    <a
+      href="https://caniuse.com/#feat=css-grid"
     >
-      <code>
-        &lt;
-        Col xs={6} xsOffset={6}
-         /&gt;
-      </code>
-    </div>
-  </div>
-  <div
-    className="showGrid row"
-  >
-    <div
-      className="showGrid col-md-6 col-md-push-6"
-    >
-      <code>
-        &lt;
-        Col md={6} mdPush={6}
-         /&gt;
-      </code>
-    </div>
-    <div
-      className="showGrid col-md-6 col-md-pull-6"
-    >
-      <code>
-        &lt;
-        Col md={6} mdPull={6}
-         /&gt;
-      </code>
-    </div>
-  </div>
-</div>
+      CanIUse
+    </a>
+    )
+  </p>
+  <ul>
+    <li>
+      <a
+        href="https://css-tricks.com/snippets/css/complete-guide-grid/"
+      >
+        https://css-tricks.com/snippets/css/complete-guide-grid/
+      </a>
+    </li>
+  </ul>
+</span>
 `;
 
 exports[`Frontend Storyshots Foundation typography 1`] = `
 <span>
-  <h3>
+  <h2>
     Font stack
-  </h3>
+  </h2>
   <p>
     'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   </p>
   <hr />
-  <h3>
+  <h2>
     Headings
-  </h3>
+  </h2>
   <h1
     className="page-header"
   >
@@ -1176,9 +1902,9 @@ exports[`Frontend Storyshots Foundation typography 1`] = `
     </small>
   </h6>
   <hr />
-  <h3>
+  <h2>
     Text styles
-  </h3>
+  </h2>
   <p
     className="lead"
   >
@@ -13800,1122 +14526,6 @@ exports[`Frontend Storyshots ProgressBar translation states 1`] = `
 </span>
 `;
 
-exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
-<div
-  className="container"
->
-  <h1>
-    Reject translations settings
-  </h1>
-  <form
-    className="rejectionsForm form-inline"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textDanger"
-          >
-            Critical
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="rejectionsForm form-inline"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
-        readOnly={false}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textWarning"
-          >
-            Major
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="rejectionsForm form-inline"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textWarning"
-          >
-            Major
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="rejectionsForm form-inline"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Style Guide & Glossary Violations"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textInfo"
-          >
-            Minor
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="rejectionsForm form-inline"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textInfo"
-          >
-            Minor
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="rejectionsForm form-inline"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Other (reason may be in comment section/history if necessary)"
-        readOnly={false}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textDanger"
-          >
-            Critical
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <div
-    className="rejection-btns"
-  >
-    <button
-      className="btn-left btn btn-primary"
-      disabled={false}
-      type="button"
-    >
-      <span
-        className="s1"
-      >
-        <svg
-          className={undefined}
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-plus\\" />",
-            }
-          }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
-        />
-      </span>
-       Add review criteria
-    </button>
-    <button
-      className="btn btn-info"
-      disabled={false}
-      type="button"
-    >
-      <span
-        className="s1"
-      >
-        <svg
-          className={undefined}
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-tick\\" />",
-            }
-          }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
-        />
-      </span>
-       Save changes
-    </button>
-  </div>
-</div>
-`;
-
-exports[`Frontend Storyshots RejectionsForm editable 1`] = `
-<form
-  className="rejectionsForm form-inline"
->
-  <div
-    className="u-flexGrow1 form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formInlineCriteria"
-    >
-      Criteria
-    </label>
-    <br />
-    <textarea
-      aria-label={undefined}
-      autoComplete={undefined}
-      autoFocus={undefined}
-      className="textInput"
-      id={undefined}
-      onBlur={undefined}
-      onChange={[Function]}
-      onFocus={[Function]}
-      onKeyDown={undefined}
-      onSelect={undefined}
-      placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-      readOnly={false}
-      style={
-        Object {
-          "height": 0,
-        }
-      }
-      value=""
-    />
-  </div>
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formInlinePriority"
-    >
-      Priority
-    </label>
-    <br />
-    <div
-      className="dropdown btn-group btn-group-sm btn-group-default"
-    >
-      <button
-        aria-expanded={false}
-        aria-haspopup={true}
-        className="dropdown-toggle btn btn-sm btn-default"
-        disabled={false}
-        id="review-criteriareview-criteria-dropdown-basic"
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        role="button"
-        type="button"
-      >
-        <span
-          className="u-textInfo"
-        >
-          Minor
-        </span>
-         
-        <span
-          className="caret"
-        />
-      </button>
-      <ul
-        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-        className="dropdown-menu"
-        role="menu"
-      >
-        <li
-          className="active"
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textInfo"
-            >
-              Minor
-            </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textWarning"
-            >
-              Major
-            </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textDanger"
-            >
-              Critical
-            </span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</form>
-`;
-
-exports[`Frontend Storyshots RejectionsForm read only 1`] = `
-<form
-  className="rejectionsForm form-inline"
->
-  <div
-    className="u-flexGrow1 form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formInlineCriteria"
-    >
-      Criteria
-    </label>
-    <br />
-    <textarea
-      aria-label={undefined}
-      autoComplete={undefined}
-      autoFocus={undefined}
-      className="textInput"
-      id={undefined}
-      onBlur={undefined}
-      onChange={[Function]}
-      onFocus={[Function]}
-      onKeyDown={undefined}
-      onSelect={undefined}
-      placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-      readOnly={true}
-      style={
-        Object {
-          "height": 0,
-        }
-      }
-      value=""
-    />
-  </div>
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formInlinePriority"
-    >
-      Priority
-    </label>
-    <br />
-    <div
-      className="dropdown disabled btn-group btn-group-sm btn-group-default"
-    >
-      <button
-        aria-expanded={false}
-        aria-haspopup={true}
-        className="dropdown-toggle btn btn-sm btn-default"
-        disabled={true}
-        id="review-criteriareview-criteria-dropdown-basic"
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        role="button"
-        type="button"
-      >
-        <span
-          className="u-textInfo"
-        >
-          Minor
-        </span>
-         
-        <span
-          className="caret"
-        />
-      </button>
-      <ul
-        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-        className="dropdown-menu"
-        role="menu"
-      >
-        <li
-          className="active"
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textInfo"
-            >
-              Minor
-            </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textWarning"
-            >
-              Major
-            </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textDanger"
-            >
-              Critical
-            </span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</form>
-`;
-
 exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
 <div>
   <div
@@ -17627,24 +17237,6 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     </div>
   </div>
 </div>
-`;
-
-exports[`Frontend Storyshots VersionTMMergeModal disabled TM 1`] = `
-<div
-  className="static-modal"
-/>
-`;
-
-exports[`Frontend Storyshots VersionTMMergeModal no version selected 1`] = `
-<div
-  className="static-modal"
-/>
-`;
-
-exports[`Frontend Storyshots VersionTMMergeModal version selected 1`] = `
-<div
-  className="static-modal"
-/>
 `;
 
 exports[`Frontend Storyshots Well default 1`] = `
