@@ -182,7 +182,7 @@ class Glossary extends Component {
     } else if (!termsLoading && termCount) {
       list = (<ReactList
         useTranslate3d
-        itemRenderer={::this.renderItem}
+        itemRenderer={this.renderItem.bind(this)}
         length={size(terms)}
         type='uniform'
         className='reactList'

@@ -180,8 +180,8 @@ class Entry extends Component {
                       handleTermFieldUpdate(field, e)}
                     handleUpdateTerm={(entry) =>
                       handleUpdateTerm(entry, false)} />
-                  <div className='u-row--transparent row--selected
-                    editable-op1'>
+                  <div
+                    className='u-row--transparent row--selected editable-op1'>
                     <div className='hidden-lesm'>
                       <Row className='entry-row'>
                         {updateButton}

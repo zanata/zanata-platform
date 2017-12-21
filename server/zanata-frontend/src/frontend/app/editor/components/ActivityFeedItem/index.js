@@ -234,6 +234,7 @@ class ActivityFeedItem extends Component {
     const isComment = type === 'comment'
 
     return (
+      /* eslint-disable max-len */
       <div className="RevisionBox">
         <p>
           <Icon name={isComment ? 'comment' : 'refresh'} className="s0"/>
@@ -252,9 +253,9 @@ class ActivityFeedItem extends Component {
           </span>
         </Well>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
-          className="u-block small u-sMT-1-2 u-sPB-1-4
-          u-textMuted u-textSecondary"/>
+          className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"/>
       </div>
+      /* eslint-enable max-len */
     )
   }
 }

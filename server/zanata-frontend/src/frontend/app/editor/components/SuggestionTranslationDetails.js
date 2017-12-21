@@ -48,6 +48,7 @@ class SuggestionTranslationDetails extends React.Component {
     const lastChanged = new Date(this.lastChanged(suggestion))
 
     return (
+      /* eslint-disable max-len */
       <div className="TransUnit-details">
         <div className="u-floatLeft u-sizeLineHeight-1">
           <SuggestionUpdateMessage
@@ -64,8 +65,7 @@ class SuggestionTranslationDetails extends React.Component {
             </li>
             <li>
               <Button
-                className="EditorButton Button--small u-rounded Button--primary
-                           u-sizeWidth-4"
+                className="EditorButton Button--small u-rounded Button--primary u-sizeWidth-4"
                 disabled={copying}
                 onClick={copySuggestion}
                 title={label}>
@@ -75,6 +75,7 @@ class SuggestionTranslationDetails extends React.Component {
           </ul>
         </div>
       </div>
+      /* eslint-enable max-len */
     )
   }
 }

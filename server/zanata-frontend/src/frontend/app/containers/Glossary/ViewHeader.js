@@ -144,7 +144,7 @@ class ViewHeader extends Component {
       </div>
       )
 
-    /* eslint-disable react/jsx-no-bind, no-return-assign */
+    /* eslint-disable max-len, react/jsx-no-bind, no-return-assign */
     return (
       <Header className='header-glossary' title={title} icon={icon}
         extraHeadingElements={projectLink}
@@ -251,8 +251,7 @@ class ViewHeader extends Component {
                   {selectedTransLocale &&
                   (<span className='hidden-xs'>
                     <Row>
-                      <Icon name='translate' className='s1
-                        iconTranslate-neutral' />
+                      <Icon name='translate' className='s1 iconTranslate-neutral' />
                       <span className='u-textNeutral'>
                       {currentLocaleCount}
                       </span>
@@ -283,6 +282,7 @@ class ViewHeader extends Component {
           </table>
         </div>
       </Header>
+    /* eslint-enable max-len, react/jsx-no-bind, no-return-assign */
     )
   }
 }

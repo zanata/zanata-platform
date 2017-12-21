@@ -37,7 +37,7 @@ const stateChangeDispatchMiddleware =
       // Note :: is shorthand for foo.fun.bind(foo)
       //   it lets you pass an instance function around as a callback
       //   without messing up the 'this' binding
-      callback(::store.dispatch, stateBefore, stateAfter)
+      callback(store.dispatch.bind(store), stateBefore, stateAfter)
     })
     return result
   }
