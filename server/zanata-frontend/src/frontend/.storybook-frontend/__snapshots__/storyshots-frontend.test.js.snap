@@ -1,42 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Frontend Storyshots Alert danger 1`] = `
-<div
-  className="alert alert-danger"
-  role="alert"
->
-  <strong>
-    Holy guacamole!
-  </strong>
-   Best check yo self
-</div>
-`;
-
-exports[`Frontend Storyshots Alert info 1`] = `
-<div
-  className="alert alert-info"
-  role="alert"
->
-  <strong>
-    Holy guacamole!
-  </strong>
-   Best check yo self
-</div>
-`;
-
-exports[`Frontend Storyshots Alert success 1`] = `
 <span>
   <h2>
-    Alert
+    Danger
   </h2>
-  <p>
-    <strong>
-      Guideline:
-    </strong>
-     Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a Notification.
-  </p>
   <div
-    className="alert alert-success"
+    className="alert alert-danger"
     role="alert"
   >
     <strong>
@@ -44,6 +14,38 @@ exports[`Frontend Storyshots Alert success 1`] = `
     </strong>
      Best check yo self
   </div>
+  <code>
+    bsStyle="danger"
+  </code>
+</span>
+`;
+
+exports[`Frontend Storyshots Alert info 1`] = `
+<span>
+  <h2>
+    Alert
+  </h2>
+  <div
+    className="well"
+  >
+    Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a 
+    <strong>
+      Notification
+    </strong>
+    .
+  </div>
+  <div
+    className="alert alert-info"
+    role="alert"
+  >
+    <strong>
+      Holy guacamole!
+    </strong>
+     Best check yo self
+  </div>
+  <code>
+    bsStyle="info"
+  </code>
   <h3>
     Props
   </h3>
@@ -86,7 +88,22 @@ exports[`Frontend Storyshots Alert success 1`] = `
           bsStyle
         </td>
         <td>
-          one of: "success", "warning", "danger", "info"
+          one of: 
+          <code>
+            "success"
+          </code>
+          , 
+          <code>
+            "warning"
+          </code>
+          , 
+          <code>
+            "danger"
+          </code>
+          , 
+          <code>
+            "info"
+          </code>
         </td>
         <td>
           'info'
@@ -116,13 +133,17 @@ exports[`Frontend Storyshots Alert success 1`] = `
         </td>
         <td />
         <td>
-          For Closeable alerts pass the onDismiss function
+          For Closeable alerts pass the 
+          <code>
+            onDismiss
+          </code>
+           function
         </td>
       </tr>
     </tbody>
   </table>
   <h3>
-    Related componentsx
+    Related components
   </h3>
   <ul>
     <li>
@@ -132,16 +153,44 @@ exports[`Frontend Storyshots Alert success 1`] = `
 </span>
 `;
 
+exports[`Frontend Storyshots Alert success 1`] = `
+<span>
+  <h2>
+    Success
+  </h2>
+  <div
+    className="alert alert-success"
+    role="alert"
+  >
+    <strong>
+      Holy guacamole!
+    </strong>
+     Best check yo self
+  </div>
+  <code>
+    bsStyle="success"
+  </code>
+</span>
+`;
+
 exports[`Frontend Storyshots Alert warning 1`] = `
-<div
-  className="alert alert-warning"
-  role="alert"
->
-  <strong>
-    Holy guacamole!
-  </strong>
-   Best check yo self
-</div>
+<span>
+  <h2>
+    Warning
+  </h2>
+  <div
+    className="alert alert-warning"
+    role="alert"
+  >
+    <strong>
+      Holy guacamole!
+    </strong>
+     Best check yo self
+  </div>
+  <code>
+    bsStyle="warning"
+  </code>
+</span>
 `;
 
 exports[`Frontend Storyshots Badge default 1`] = `
@@ -1097,13 +1146,15 @@ exports[`Frontend Storyshots Button warning 1`] = `
 `;
 
 exports[`Frontend Storyshots Dropdown default 1`] = `
-<span>
+<div>
   <h2>
     Dropdown
   </h2>
-  <p>
-    Dropdown button to be used when there are multiple actions (a maximum of 7 to 15) available. Use dropdowns where radio buttons would not make sense due to too many options.
-  </p>
+  <div
+    className="well"
+  >
+    Use dropdowns where radio buttons would not make sense due to too many options (a maximum of 7 to 15).
+  </div>
   <div
     className="dropdown btn-group btn-group-default"
   >
@@ -1176,11 +1227,282 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
       </li>
     </ul>
   </div>
+  <hr />
   <h3>
     Props
   </h3>
   <p>
-    The Dropdown expects at least one component with bsRole="toggle" and exactly one with bsRole="menu"
+    The Dropdown expects at least one component with 
+    <code>
+      bsRole="toggle"
+    </code>
+     and exactly one with 
+    <code>
+      bsRole="menu"
+    </code>
+  </p>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          bsSize
+        </td>
+        <td>
+          one of: "lg", "large", "sm", "small", "xs", "xsmall"
+        </td>
+        <td />
+        <td>
+          Component size variations
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'btn'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          componentClass
+        </td>
+        <td>
+          elementType
+        </td>
+        <td>
+          ButtonGroup
+        </td>
+        <td>
+          You can use a custom element type for this component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          defaultOpen
+        </td>
+        <td>
+          boolean
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          disabled
+        </td>
+        <td>
+          boolean
+        </td>
+        <td />
+        <td>
+          Whether or not component was disabled.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          dropup
+        </td>
+        <td>
+          boolean
+        </td>
+        <td />
+        <td>
+          The menu will open above the dropdown button, instead of below it.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          id 
+          <span
+            className="label label-default"
+          >
+            required
+          </span>
+        </td>
+        <td>
+          string|number
+        </td>
+        <td>
+          An html id attribute, necessary for assistive technologies, such as screen readers.
+        </td>
+        <td>
+          Defines HTML button type attribute
+        </td>
+      </tr>
+      <tr>
+        <td>
+          noCaret
+        </td>
+        <td>
+          boolean
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          onSelect
+        </td>
+        <td>
+          function
+        </td>
+        <td />
+        <td>
+          A callback fired when a menu item is selected.
+          <code>
+            (eventKey: any, event: Object) =&gt; any
+          </code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          onToggle
+        </td>
+        <td>
+          function
+        </td>
+        <td />
+        <td>
+          A callback fired when the Dropdown wishes to change visibility. Called with the requested open value, the DOM event, and the source that fired it: 
+          <code>
+            'click','keydown','rootClose', or 'select''
+          </code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          open
+        </td>
+        <td>
+          boolean
+        </td>
+        <td />
+        <td>
+           controlled by: onToggle, initial prop: defaultOpen Whether or not the Dropdown is visible.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          pullRight
+        </td>
+        <td>
+          boolean
+        </td>
+        <td />
+        <td>
+          Align the menu to the right side of the Dropdown toggle
+        </td>
+      </tr>
+      <tr>
+        <td>
+          role
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          If 'menuitem', causes the dropdown to behave like a menu item rather than a menu button.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          rootCloseEvent
+        </td>
+        <td>
+          one of: 'click', 'mousedown'
+        </td>
+        <td />
+        <td>
+          Which event when fired outside the component will cause it to be closed
+        </td>
+      </tr>
+      <tr>
+        <td>
+          title 
+          <span
+            className="label label-default"
+          >
+            required
+          </span>
+        </td>
+        <td>
+          node
+        </td>
+        <td />
+        <td />
+      </tr>
+    </tbody>
+  </table>
+  <h2>
+    MenuItem
+  </h2>
+  <p>
+    This component represents a menu item in a dropdown.
+  </p>
+  <p>
+    It supports the basic anchor properties href, target, title.
+  </p>
+  <p>
+    It also supports different properties of the normal Bootstrap MenuItem.
+  </p>
+  <ul>
+    <li>
+      header: To add a header label to sections
+    </li>
+    <li>
+      divider: Adds an horizontal divider between sections
+    </li>
+    <li>
+      disabled: shows the item as disabled, and prevents onSelect from firing
+    </li>
+    <li>
+      eventKey: passed to the callback
+    </li>
+    <li>
+      onSelect: a callback that is called when the user clicks the item.
+    </li>
+  </ul>
+  <p>
+    The callback is called with the following arguments: event and eventKey
+  </p>
+  <h3>
+    Props
+  </h3>
+  <p>
+    The Dropdown expects at least one component with 
+    <code>
+      bsRole="toggle"
+    </code>
+     and exactly one with 
+    <code>
+      bsRole="menu"
+    </code>
   </p>
   <table
     className="table table-striped table-bordered table-condensed table-hover"
@@ -1209,22 +1531,10 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         <td>
           boolean
         </td>
-        <td>
-          'false'
-        </td>
         <td />
-      </tr>
-      <tr>
         <td>
-          block
+          Highlight the menu item as active.
         </td>
-        <td>
-          boolean
-        </td>
-        <td>
-          'false'
-        </td>
-        <td />
       </tr>
       <tr>
         <td>
@@ -1234,48 +1544,10 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
           string
         </td>
         <td>
-          'btn'
+          'dropdown'
         </td>
         <td>
           Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          bsSize
-        </td>
-        <td>
-          one of: "lg", "large", "sm", "small", "xs", "xsmall"
-        </td>
-        <td />
-        <td>
-          Component size variations
-        </td>
-      </tr>
-      <tr>
-        <td>
-          bsStyle
-        </td>
-        <td>
-          one of: "success", "warning", "danger", "info", "default", "primary", "link"
-        </td>
-        <td>
-          'default'
-        </td>
-        <td>
-          Component visual or contextual style variants.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          componentClass
-        </td>
-        <td>
-          elementType
-        </td>
-        <td />
-        <td>
-          You can use a custom element type for this component.
         </td>
       </tr>
       <tr>
@@ -1286,9 +1558,51 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
           boolean
         </td>
         <td>
-          'false'
+          false
+        </td>
+        <td>
+          Disable the menu item, making it unselectable.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          divider
+        </td>
+        <td>
+          all
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          Styles the menu item as a horizontal rule, providing visual separation between groups of menu items.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          eventKey
+        </td>
+        <td>
+          any
         </td>
         <td />
+        <td>
+          Value passed to the onSelect handler, useful for identifying the selected menu item.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          header
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          Styles the menu item as a header label, useful for describing a group of menu items.
+        </td>
       </tr>
       <tr>
         <td>
@@ -1298,28 +1612,37 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
           string
         </td>
         <td />
-        <td />
+        <td>
+          HTML href attribute corresponding to a.href.
+        </td>
       </tr>
       <tr>
         <td>
-          type
+          onClick
         </td>
         <td>
-          one of: 'button', 'reset', 'submit'
+          function
+        </td>
+        <td />
+        <td>
+          Callback fired when the menu item is clicked.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          onSelect
         </td>
         <td>
-          'button'
+          function
         </td>
+        <td />
         <td>
-          Defines HTML button type attribute
+          Callback fired when the menu item is selected. (eventKey: any, event: Object) =&gt; any
         </td>
       </tr>
     </tbody>
   </table>
-  <h2>
-    MenuItem
-  </h2>
-</span>
+</div>
 `;
 
 exports[`Frontend Storyshots EditableText editing 1`] = `
@@ -1771,6 +2094,31 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
     Grids and flexbox
   </h2>
   <div
+    className="well"
+  >
+     Grid being replaced with 
+    <strong>
+      flexbox
+    </strong>
+     throughout frontend where it provides a more suitable alternative to the restrictive 12 column grid layout
+    <ul>
+      <li>
+        <a
+          href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/"
+        >
+          https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox"
+        >
+          https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div
     className="container"
   >
     <div
@@ -1797,29 +2145,6 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
     </div>
   </div>
   <br />
-  <p>
-    Grid being replaced with 
-    <strong>
-      flexbox
-    </strong>
-     throughout frontend where it provides a more suitable alternative to the restrictive 12 column grid layout
-  </p>
-  <ul>
-    <li>
-      <a
-        href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/"
-      >
-        https://css-tricks.com/snippets/css/a-guide-to-flexbox/
-      </a>
-    </li>
-    <li>
-      <a
-        href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox"
-      >
-        https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
-      </a>
-    </li>
-  </ul>
   <p>
     The 
     <strong>
