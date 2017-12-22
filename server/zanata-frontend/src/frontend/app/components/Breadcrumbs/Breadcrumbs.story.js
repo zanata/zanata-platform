@@ -5,7 +5,7 @@ import { Breadcrumb, Well } from 'react-bootstrap'
 storiesOf('Breadcrumbs', module)
     .add('default', () => (
         <span>
-          <h2>Breadcrumbs</h2>
+     <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Breadcrumbs</h2>
           <Well>Breadcrumbs are used to indicate the current page's location. All pages 2 levels deep or more should use breadcrumbs in frontend. ie. <code>topdir/breadcrumbshere/breadcrumbshere/</code></Well>
           <p>Add <code>active</code> attribute to active Breadcrumb.Item.
             Do not set both active and href attributes. <code>active</code> overrides <code>href</code> and <code>span</code> element is rendered instead of a <code>#</code>.</p>

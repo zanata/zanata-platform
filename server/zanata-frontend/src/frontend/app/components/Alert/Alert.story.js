@@ -5,7 +5,7 @@ import {Alert, Table, Well} from 'react-bootstrap'
 storiesOf('Alert', module)
     .add('info', () => (
         <span>
-          <h2>Alert</h2>
+          <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Alert</h2>
           <Well>Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a <code>Notification</code>.</Well>
         <p><Alert bsStyle='info'>
           <strong>Holy guacamole!</strong> Best check yo self

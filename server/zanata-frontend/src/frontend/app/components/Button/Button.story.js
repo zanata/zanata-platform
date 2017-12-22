@@ -6,8 +6,8 @@ import { Button, ButtonToolbar, ButtonGroup,
 storiesOf('Button', module)
     .add('default', () => (
         <span>
-          <h2>Buttons</h2>
-        <p><Button onClick={action('onClick')}>
+         <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Buttons</h2>
+          <p><Button onClick={action('onClick')}>
           Unstyled button
         </Button></p>
           <p><code>bsStyle="default"</code></p>

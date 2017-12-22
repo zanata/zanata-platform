@@ -5,7 +5,7 @@ import {Badge, Nav, NavItem, Button, Table, Well} from 'react-bootstrap'
 storiesOf('Badge', module)
     .add('default', () => (
         <span>
-        <h2>Badges</h2>
+        <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Badge</h2>
           <Well>Highlight new or unread items, numbers of members or any other numerical value.</Well>
         <p>Badge <Badge>23</Badge></p>
           <hr />
