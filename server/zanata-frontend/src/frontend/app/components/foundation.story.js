@@ -79,8 +79,8 @@ storiesOf('Foundation', module)
     .add('typography', () => (
         <span>
           <h2>Font stack</h2>
-          <p>'Source Sans Pro', 'Helvetica Neue',
-          Helvetica, Arial, sans-serif;</p>
+          <Well><code>'Source Sans Pro', 'Helvetica Neue',
+            Helvetica, Arial, sans-serif;</code></Well>
           <hr />
         <h2>Headings</h2>
           <h1 className='page-header'>Page Header <small>

@@ -6,11 +6,12 @@ storiesOf('Alert', module)
     .add('info', () => (
         <span>
           <h2>Alert</h2>
-          <Well>Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a <strong>Notification</strong>.</Well>
-        <Alert bsStyle='info'>
+          <Well>Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a <code>Notification</code>.</Well>
+        <p><Alert bsStyle='info'>
           <strong>Holy guacamole!</strong> Best check yo self
-        </Alert>
-          <code>bsStyle="info"</code>
+        </Alert></p>
+          <p><code>bsStyle="info"</code></p>
+          <hr />
         <h3>Props</h3>
           <Table striped bordered condensed hover>
           <thead>
@@ -48,36 +49,35 @@ storiesOf('Alert', module)
           </tr>
           </tbody>
           </Table>
+          <hr />
             <h3>Related components</h3>
-          <ul>
-            <li>Notification</li>
-          </ul>
+          <code>Notification</code>
         </span>
     ))
     .add('warning', () => (
         <span>
           <h2>Warning</h2>
-        <Alert bsStyle='warning'>
+        <p><Alert bsStyle='warning'>
           <strong>Holy guacamole!</strong> Best check yo self
-        </Alert>
-        <code>bsStyle="warning"</code>
+        </Alert></p>
+          <p><code>bsStyle="warning"</code></p>
         </span>
     ))
     .add('danger', () => (
         <span>
           <h2>Danger</h2>
-        <Alert bsStyle='danger'>
+        <p><Alert bsStyle='danger'>
           <strong>Holy guacamole!</strong> Best check yo self
-        </Alert>
-          <code>bsStyle="danger"</code>
+        </Alert></p>
+          <p><code>bsStyle="danger"</code></p>
         </span>
     ))
     .add('success', () => (
         <span>
         <h2>Success</h2>
-        <Alert bsStyle='success'>
+        <p><Alert bsStyle='success'>
           <strong>Holy guacamole!</strong> Best check yo self
-        </Alert>
-        <code>bsStyle="success"</code>
+        </Alert></p>
+          <p><code>bsStyle="success"</code></p>
         </span>
     ))
