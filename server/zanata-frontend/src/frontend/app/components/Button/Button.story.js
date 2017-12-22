@@ -176,6 +176,7 @@ storiesOf('Button', module)
           <Button onClick={action('onClick')}>Middle</Button>
           <Button onClick={action('onClick')}>Right</Button>
         </ButtonGroup>
+          <hr />
              <h3>Props</h3>
 
           <Table striped bordered condensed hover>

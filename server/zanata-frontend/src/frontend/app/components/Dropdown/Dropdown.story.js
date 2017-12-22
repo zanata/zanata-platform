@@ -20,7 +20,7 @@ storiesOf('Dropdown', module)
           </DropdownButton>
           <hr />
           <h3>Props</h3>
-          <p>The Dropdown expects at least one component
+          <p>The <code>Dropdown</code> expects at least one component
             with <code>bsRole="toggle"</code> and exactly one
             with <code>bsRole="menu"</code></p>
 
@@ -36,7 +36,7 @@ storiesOf('Dropdown', module)
             <tbody>
             <tr>
               <td>bsSize</td>
-              <td>one of: "lg", "large", "sm", "small", "xs", "xsmall"</td>
+              <td>one of: <code>"lg"</code>, <code>"large"</code>, <code>"sm"</code>, <code>"small"</code>, <code>"xs"</code>, <code>"xsmall"</code></td>
               <td></td>
               <td>Component size variations</td>
             </tr>
@@ -96,7 +96,7 @@ storiesOf('Dropdown', module)
               <td></td>
               <td>A callback fired when a menu item is selected.
 
-                <code>(eventKey: any, event: Object) => any</code></td>
+                <pre><code>(eventKey: any, event: Object) => any</code></pre></td>
             </tr>
             <tr>
               <td>onToggle</td>
@@ -104,14 +104,14 @@ storiesOf('Dropdown', module)
               <td></td>
               <td>A callback fired when the Dropdown wishes to change
                 visibility. Called with the requested open value, the DOM event,
-                and the source that fired it: <code>'click','keydown','rootClose',
-                  or 'select''</code></td>
+                and the source that fired it: <pre><code>'click','keydown','rootClose',
+                  or 'select''</code></pre></td>
             </tr>
             <tr>
               <td>open</td>
               <td>boolean</td>
               <td></td>
-              <td> controlled by: onToggle, initial prop: defaultOpen
+              <td> controlled by: <code>onToggle</code>, <br />initial prop: <code>defaultOpen</code><br />
                 Whether or not the Dropdown is visible.
               </td>
             </tr>
@@ -125,13 +125,13 @@ storiesOf('Dropdown', module)
               <td>role</td>
               <td>string</td>
               <td></td>
-              <td>If 'menuitem', causes the dropdown to behave like a menu item
+              <td>If <code>'menuitem'</code>, causes the dropdown to behave like a menu item
                 rather than a menu button.
               </td>
             </tr>
             <tr>
               <td>rootCloseEvent</td>
-              <td>one of: 'click', 'mousedown'</td>
+              <td>one of: <code>'click'</code>, <code>'mousedown'</code></td>
               <td></td>
               <td>Which event when fired outside the component will cause it to
                 be closed
@@ -146,30 +146,28 @@ storiesOf('Dropdown', module)
             </tr>
             </tbody>
           </Table>
+          <hr />
           <h2>MenuItem</h2>
-          <p>This component represents a menu item in a dropdown.</p>
+          <p>This component represents a menu item in a <code>Dropdown</code>.</p>
 
           <p>It supports the basic anchor properties href, target, title.</p>
           <p>It also supports different properties of the normal Bootstrap
             MenuItem.</p>
           <ul>
-            <li>header: To add a header label to sections</li>
-            <li>divider: Adds an horizontal divider between sections</li>
-            <li>disabled: shows the item as disabled, and prevents onSelect from
+            <li><code>header</code>: To add a header label to sections</li>
+            <li><code>divider</code>: Adds an horizontal divider between sections</li>
+            <li><code>disabled</code>: shows the item as disabled, and prevents onSelect from
               firing
             </li>
-            <li>eventKey: passed to the callback</li>
-            <li>onSelect: a callback that is called when the user clicks the
+            <li><code>eventKey</code>: passed to the callback</li>
+            <li><code>onSelect</code>: a callback that is called when the user clicks the
               item.
             </li>
           </ul>
-          <p>The callback is called with the following arguments: event and
-            eventKey</p>
+          <p>The callback is called with the following arguments: <code>event</code> and
+            <code>eventKey</code></p>
+          <hr />
           <h3>Props</h3>
-          <p>The Dropdown expects at least one component
-            with <code>bsRole="toggle"</code> and exactly one
-            with <code>bsRole="menu"</code></p>
-
           <Table striped bordered condensed hover>
             <thead>
             <tr>
@@ -214,7 +212,7 @@ storiesOf('Dropdown', module)
               <td>eventKey</td>
               <td>any</td>
               <td></td>
-              <td>Value passed to the onSelect handler, useful for identifying
+              <td>Value passed to the <code>onSelect</code> handler, useful for identifying
                 the selected menu item.
               </td>
             </tr>
@@ -230,7 +228,7 @@ storiesOf('Dropdown', module)
               <td>href</td>
               <td>string</td>
               <td></td>
-              <td>HTML href attribute corresponding to a.href.</td>
+              <td>HTML href attribute corresponding to <code>a.href</code>.</td>
             </tr>
             <tr>
               <td>onClick</td>
@@ -242,8 +240,8 @@ storiesOf('Dropdown', module)
               <td>onSelect</td>
               <td>function</td>
               <td></td>
-              <td>Callback fired when the menu item is selected. (eventKey: any,
-                event: Object) => any
+              <td>Callback fired when the menu item is selected.
+                <pre><code>(eventKey: any, event: Object) => any</code></pre>
               </td>
             </tr>
             </tbody>
