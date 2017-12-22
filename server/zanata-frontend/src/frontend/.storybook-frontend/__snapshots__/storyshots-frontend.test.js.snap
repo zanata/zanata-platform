@@ -5,47 +5,60 @@ exports[`Frontend Storyshots Alert danger 1`] = `
   <h2>
     Danger
   </h2>
-  <div
-    className="alert alert-danger"
-    role="alert"
-  >
-    <strong>
-      Holy guacamole!
-    </strong>
-     Best check yo self
-  </div>
-  <code>
-    bsStyle="danger"
-  </code>
+  <p>
+    <div
+      className="alert alert-danger"
+      role="alert"
+    >
+      <strong>
+        Holy guacamole!
+      </strong>
+       Best check yo self
+    </div>
+  </p>
+  <p>
+    <code>
+      bsStyle="danger"
+    </code>
+  </p>
 </span>
 `;
 
 exports[`Frontend Storyshots Alert info 1`] = `
 <span>
   <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
     Alert
   </h2>
   <div
     className="well"
   >
     Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a 
-    <strong>
+    <code>
       Notification
-    </strong>
+    </code>
     .
   </div>
-  <div
-    className="alert alert-info"
-    role="alert"
-  >
-    <strong>
-      Holy guacamole!
-    </strong>
-     Best check yo self
-  </div>
-  <code>
-    bsStyle="info"
-  </code>
+  <p>
+    <div
+      className="alert alert-info"
+      role="alert"
+    >
+      <strong>
+        Holy guacamole!
+      </strong>
+       Best check yo self
+    </div>
+  </p>
+  <p>
+    <code>
+      bsStyle="info"
+    </code>
+  </p>
+  <hr />
   <h3>
     Props
   </h3>
@@ -142,14 +155,13 @@ exports[`Frontend Storyshots Alert info 1`] = `
       </tr>
     </tbody>
   </table>
+  <hr />
   <h3>
     Related components
   </h3>
-  <ul>
-    <li>
-      Notification
-    </li>
-  </ul>
+  <code>
+    Notification
+  </code>
 </span>
 `;
 
@@ -158,18 +170,22 @@ exports[`Frontend Storyshots Alert success 1`] = `
   <h2>
     Success
   </h2>
-  <div
-    className="alert alert-success"
-    role="alert"
-  >
-    <strong>
-      Holy guacamole!
-    </strong>
-     Best check yo self
-  </div>
-  <code>
-    bsStyle="success"
-  </code>
+  <p>
+    <div
+      className="alert alert-success"
+      role="alert"
+    >
+      <strong>
+        Holy guacamole!
+      </strong>
+       Best check yo self
+    </div>
+  </p>
+  <p>
+    <code>
+      bsStyle="success"
+    </code>
+  </p>
 </span>
 `;
 
@@ -178,32 +194,39 @@ exports[`Frontend Storyshots Alert warning 1`] = `
   <h2>
     Warning
   </h2>
-  <div
-    className="alert alert-warning"
-    role="alert"
-  >
-    <strong>
-      Holy guacamole!
-    </strong>
-     Best check yo self
-  </div>
-  <code>
-    bsStyle="warning"
-  </code>
+  <p>
+    <div
+      className="alert alert-warning"
+      role="alert"
+    >
+      <strong>
+        Holy guacamole!
+      </strong>
+       Best check yo self
+    </div>
+  </p>
+  <p>
+    <code>
+      bsStyle="warning"
+    </code>
+  </p>
 </span>
 `;
 
 exports[`Frontend Storyshots Badge default 1`] = `
 <span>
   <h2>
-    Badges
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Badge
   </h2>
-  <p>
-    <strong>
-      Guideline:
-    </strong>
-     Highlight new or unread items, numbers of members or any other numerical value.
-  </p>
+  <div
+    className="well"
+  >
+    Highlight new or unread items, numbers of members or any other numerical value.
+  </div>
   <p>
     Badge 
     <span
@@ -212,6 +235,7 @@ exports[`Frontend Storyshots Badge default 1`] = `
       23
     </span>
   </p>
+  <hr />
   <h3>
     Props
   </h3>
@@ -288,87 +312,120 @@ exports[`Frontend Storyshots Badge in nav item 1`] = `
   <h2>
     Sidebar navigation
   </h2>
-  <p>
-    This is the navigation style to use with the project version sidebar.
-  </p>
-  <ul
-    className="sg-nav-pills nav nav-pills nav-stacked"
-    role={null}
+  <div
+    className="well"
   >
-    <li
-      className="active"
-      role="presentation"
-      style={undefined}
+    Use this navigation layout with the project version 
+    <code>
+      Sidebar
+    </code>
+    .
+  </div>
+  <p>
+    <ul
+      className="sg-nav-pills nav nav-pills nav-stacked"
+      role={null}
     >
-      <a
-        href="#"
-        onClick={[Function]}
-        role="button"
+      <li
+        className="active"
+        role="presentation"
+        style={undefined}
       >
-        <span
-          className="u-pullRight badge"
+        <a
+          href="#"
+          onClick={[Function]}
+          role="button"
         >
-          42
-        </span>
-        Home
-      </a>
-    </li>
-    <li
-      className=""
-      role="presentation"
-      style={undefined}
-    >
-      <a
-        href="#"
-        onClick={[Function]}
-        role="button"
+          <span
+            className="u-pullRight badge"
+          >
+            42
+          </span>
+          Home
+        </a>
+      </li>
+      <li
+        className=""
+        role="presentation"
+        style={undefined}
       >
-        Profile
-      </a>
-    </li>
-    <li
-      className=""
-      role="presentation"
-      style={undefined}
-    >
-      <a
-        href="#"
-        onClick={[Function]}
-        role="button"
-      >
-        <span
-          className="u-pullRight badge"
+        <a
+          href="#"
+          onClick={[Function]}
+          role="button"
         >
-          3
-        </span>
-        Messages
-      </a>
-    </li>
-  </ul>
+          Profile
+        </a>
+      </li>
+      <li
+        className=""
+        role="presentation"
+        style={undefined}
+      >
+        <a
+          href="#"
+          onClick={[Function]}
+          role="button"
+        >
+          <span
+            className="u-pullRight badge"
+          >
+            3
+          </span>
+          Messages
+        </a>
+      </li>
+    </ul>
+  </p>
+  <hr />
   <h3>
     Related components
   </h3>
-  <ul>
-    <li>
-      Sidebar
-    </li>
-  </ul>
+  <code>
+    Sidebar
+  </code>
 </span>
 `;
 
 exports[`Frontend Storyshots Breadcrumbs default 1`] = `
 <span>
   <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
     Breadcrumbs
   </h2>
+  <div
+    className="well"
+  >
+    Breadcrumbs are used to indicate the current page's location. All pages 2 levels deep or more should use breadcrumbs in frontend. ie. 
+    <code>
+      topdir/breadcrumbshere/breadcrumbshere/
+    </code>
+  </div>
   <p>
-    Breadcrumbs are used to indicate the current page's location. Add active attribute to active Breadcrumb.Item. Do not set both active and href attributes. active overrides href and span element is rendered instead of a. #
-  </p>
-  <p>
-    <strong>
-      Guideline:
-    </strong>
-     All pages 2 levels deep or more should use breadcrumbs in frontend. ie. topdir/breadcrumbshere/breadcrumbshere/
+    Add 
+    <code>
+      active
+    </code>
+     attribute to active Breadcrumb.Item. Do not set both active and href attributes. 
+    <code>
+      active
+    </code>
+     overrides 
+    <code>
+      href
+    </code>
+     and 
+    <code>
+      span
+    </code>
+     element is rendered instead of a 
+    <code>
+      #
+    </code>
+    .
   </p>
   <ol
     aria-label="breadcrumbs"
@@ -392,9 +449,8 @@ exports[`Frontend Storyshots Breadcrumbs default 1`] = `
       className=""
     >
       <a
-        href="#"
+        href="s#"
         onClick={[Function]}
-        role="button"
         target={undefined}
         title={undefined}
       >
@@ -409,6 +465,7 @@ exports[`Frontend Storyshots Breadcrumbs default 1`] = `
       </span>
     </li>
   </ol>
+  <hr />
   <h3>
     Props
   </h3>
@@ -423,19 +480,20 @@ exports[`Frontend Storyshots Button block 1`] = `
   <h2>
     Button block
   </h2>
-  <button
-    className="btn btn-default btn-block"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Button block
-  </button>
   <p>
-    <strong>
-      block:
-    </strong>
-     true
+    <button
+      className="btn btn-default btn-block"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Button block
+    </button>
+  </p>
+  <p>
+    <code>
+      block=true
+    </code>
   </p>
 </span>
 `;
@@ -445,19 +503,20 @@ exports[`Frontend Storyshots Button danger 1`] = `
   <h2>
     Danger button
   </h2>
-  <button
-    className="btn btn-danger"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Danger button
-  </button>
   <p>
-    <strong>
-      bsStyle:
-    </strong>
-     "danger"
+    <button
+      className="btn btn-danger"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Danger button
+    </button>
+  </p>
+  <p>
+    <code>
+      bsStyle="danger"
+    </code>
   </p>
 </span>
 `;
@@ -465,22 +524,35 @@ exports[`Frontend Storyshots Button danger 1`] = `
 exports[`Frontend Storyshots Button default 1`] = `
 <span>
   <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
     Buttons
   </h2>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Unstyled button
-  </button>
+  <p>
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Unstyled button
+    </button>
+  </p>
+  <p>
+    <code>
+      bsStyle="default"
+    </code>
+  </p>
+  <hr />
   <h3>
     Button spacing
   </h3>
   <p>
     Because React doesn't output newlines between elements, buttons on the same line are displayed flush against each other. To preserve the spacing between multiple inline buttons, wrap your button group in ButtonToolbar.
   </p>
+  <hr />
   <h3>
     Props
   </h3>
@@ -547,7 +619,30 @@ exports[`Frontend Storyshots Button default 1`] = `
           bsSize
         </td>
         <td>
-          one of: "lg", "large", "sm", "small", "xs", "xsmall"
+          one of: 
+          <code>
+            "lg"
+          </code>
+          , 
+          <code>
+            "large"
+          </code>
+          , 
+          <code>
+            "sm"
+          </code>
+          , 
+          <code>
+            "small"
+          </code>
+          , 
+          <code>
+            "xs"
+          </code>
+          , 
+          <code>
+            "xsmall"
+          </code>
         </td>
         <td />
         <td>
@@ -559,7 +654,34 @@ exports[`Frontend Storyshots Button default 1`] = `
           bsStyle
         </td>
         <td>
-          one of: "success", "warning", "danger", "info", "default", "primary", "link"
+          one of: 
+          <code>
+            "success"
+          </code>
+          , 
+          <code>
+            "warning"
+          </code>
+          , 
+          <code>
+            "danger"
+          </code>
+          , 
+          <code>
+            "info"
+          </code>
+          , 
+          <code>
+            "default"
+          </code>
+          , 
+          <code>
+            "primary"
+          </code>
+          , 
+          <code>
+            "link"
+          </code>
         </td>
         <td>
           'default'
@@ -607,7 +729,18 @@ exports[`Frontend Storyshots Button default 1`] = `
           type
         </td>
         <td>
-          one of: 'button', 'reset', 'submit'
+          one of: 
+          <code>
+            'button'
+          </code>
+          , 
+          <code>
+            'reset'
+          </code>
+          , 
+          <code>
+            'submit'
+          </code>
         </td>
         <td>
           'button'
@@ -626,12 +759,19 @@ exports[`Frontend Storyshots Button group 1`] = `
   <h2>
     ButtonGroup
   </h2>
-  <p>
-    <strong>
-      Guideline:
-    </strong>
-     group a series of buttons together on a single line with the button group.
-  </p>
+  <div
+    className="well"
+  >
+    Group a series of 
+    <code>
+      Button
+    </code>
+    s together on a single line with the 
+    <code>
+      ButtonGroup
+    </code>
+    .
+  </div>
   <div
     className="btn-group"
   >
@@ -660,6 +800,7 @@ exports[`Frontend Storyshots Button group 1`] = `
       Right
     </button>
   </div>
+  <hr />
   <h3>
     Props
   </h3>
@@ -743,19 +884,20 @@ exports[`Frontend Storyshots Button info 1`] = `
   <h2>
     Info button
   </h2>
-  <button
-    className="btn btn-info"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Info button
-  </button>
   <p>
-    <strong>
-      bsStyle:
-    </strong>
-     "info"
+    <button
+      className="btn btn-info"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Info button
+    </button>
+  </p>
+  <p>
+    <code>
+      bsStyle="info"
+    </code>
   </p>
 </span>
 `;
@@ -765,12 +907,19 @@ exports[`Frontend Storyshots Button nested 1`] = `
   <h2>
     Nested ButtonGroup
   </h2>
-  <p>
-    <strong>
-      Guideline:
-    </strong>
-     for adding dropdowns to button groups
-  </p>
+  <div
+    className="well"
+  >
+    use for adding 
+    <code>
+      Dropdown
+    </code>
+    s to 
+    <code>
+      ButtonGroup
+    </code>
+    s
+  </div>
   <div
     className="btn-group"
   >
@@ -856,19 +1005,20 @@ exports[`Frontend Storyshots Button primary 1`] = `
   <h2>
     Primary button
   </h2>
-  <button
-    className="btn btn-primary"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Primary button
-  </button>
   <p>
-    <strong>
-      bsStyle:
-    </strong>
-     "primary"
+    <button
+      className="btn btn-primary"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Primary button
+    </button>
+  </p>
+  <p>
+    <code>
+      bsStyle="primary"
+    </code>
   </p>
 </span>
 `;
@@ -878,91 +1028,92 @@ exports[`Frontend Storyshots Button sizes 1`] = `
   <h2>
     Button sizes
   </h2>
-  <div
-    className="btn-group"
-  >
-    <button
-      className="btn btn-lg btn-primary"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Large button
-    </button>
-    <button
-      className="btn btn-lg btn-default"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Large button
-    </button>
-  </div>
-  <div
-    className="btn-group"
-  >
-    <button
-      className="btn btn-primary"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Default button
-    </button>
-    <button
-      className="btn btn-default"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Default button
-    </button>
-  </div>
-  <div
-    className="btn-group"
-  >
-    <button
-      className="btn btn-sm btn-primary"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Small button
-    </button>
-    <button
-      className="btn btn-sm btn-default"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Small button
-    </button>
-  </div>
-  <div
-    className="btn-group"
-  >
-    <button
-      className="btn btn-xs btn-primary"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Extra small button
-    </button>
-    <button
-      className="btn btn-xs btn-default"
-      disabled={false}
-      onClick={[Function]}
-      type="button"
-    >
-      Extra small button
-    </button>
-  </div>
   <p>
-    <strong>
-      bsSize:
-    </strong>
-     "lg", "large", "sm", "small", "xs", "xsmall"
+    <div
+      className="btn-group"
+    >
+      <button
+        className="btn btn-lg btn-primary"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Large button
+      </button>
+      <button
+        className="btn btn-lg btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Large button
+      </button>
+    </div>
+    <div
+      className="btn-group"
+    >
+      <button
+        className="btn btn-primary"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Default button
+      </button>
+      <button
+        className="btn btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Default button
+      </button>
+    </div>
+    <div
+      className="btn-group"
+    >
+      <button
+        className="btn btn-sm btn-primary"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Small button
+      </button>
+      <button
+        className="btn btn-sm btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Small button
+      </button>
+    </div>
+    <div
+      className="btn-group"
+    >
+      <button
+        className="btn btn-xs btn-primary"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Extra small button
+      </button>
+      <button
+        className="btn btn-xs btn-default"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Extra small button
+      </button>
+    </div>
+  </p>
+  <p>
+    <code>
+      bsSize="lg", "large", "sm", "small", "xs", "xsmall"
+    </code>
   </p>
 </span>
 `;
@@ -972,19 +1123,20 @@ exports[`Frontend Storyshots Button success 1`] = `
   <h2>
     Success button
   </h2>
-  <button
-    className="btn btn-success"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Success button
-  </button>
   <p>
-    <strong>
-      bsStyle:
-    </strong>
-     "success"
+    <button
+      className="btn btn-success"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Success button
+    </button>
+  </p>
+  <p>
+    <code>
+      bsStyle="success"
+    </code>
   </p>
 </span>
 `;
@@ -994,12 +1146,19 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
   <h2>
     Button toolbar
   </h2>
-  <p>
-    <strong>
-      Guideline:
-    </strong>
-     Combine sets of ButtonGroups into a ButtonToolbar for more complex components.
-  </p>
+  <div
+    className="well"
+  >
+     Combine sets of 
+    <code>
+      ButtonGroup
+    </code>
+    s into a 
+    <code>
+      ButtonToolbar
+    </code>
+     for more complex components.
+  </div>
   <div
     className="btn-toolbar"
     role="toolbar"
@@ -1081,6 +1240,7 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
       </button>
     </div>
   </div>
+  <hr />
   <h3>
     Props
   </h3>
@@ -1128,19 +1288,20 @@ exports[`Frontend Storyshots Button warning 1`] = `
   <h2>
     Warning button
   </h2>
-  <button
-    className="btn btn-warning"
-    disabled={false}
-    onClick={[Function]}
-    type="button"
-  >
-    Warning button
-  </button>
   <p>
-    <strong>
-      bsStyle:
-    </strong>
-     "warning"
+    <button
+      className="btn btn-warning"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Warning button
+    </button>
+  </p>
+  <p>
+    <code>
+      bsStyle="warning"
+    </code>
   </p>
 </span>
 `;
@@ -1148,6 +1309,10 @@ exports[`Frontend Storyshots Button warning 1`] = `
 exports[`Frontend Storyshots Dropdown default 1`] = `
 <div>
   <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
     Dropdown
   </h2>
   <div
@@ -1232,7 +1397,11 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
     Props
   </h3>
   <p>
-    The Dropdown expects at least one component with 
+    The 
+    <code>
+      Dropdown
+    </code>
+     expects at least one component with 
     <code>
       bsRole="toggle"
     </code>
@@ -1266,7 +1435,30 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
           bsSize
         </td>
         <td>
-          one of: "lg", "large", "sm", "small", "xs", "xsmall"
+          one of: 
+          <code>
+            "lg"
+          </code>
+          , 
+          <code>
+            "large"
+          </code>
+          , 
+          <code>
+            "sm"
+          </code>
+          , 
+          <code>
+            "small"
+          </code>
+          , 
+          <code>
+            "xs"
+          </code>
+          , 
+          <code>
+            "xsmall"
+          </code>
         </td>
         <td />
         <td>
@@ -1374,9 +1566,11 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         <td />
         <td>
           A callback fired when a menu item is selected.
-          <code>
-            (eventKey: any, event: Object) =&gt; any
-          </code>
+          <pre>
+            <code>
+              (eventKey: any, event: Object) =&gt; any
+            </code>
+          </pre>
         </td>
       </tr>
       <tr>
@@ -1389,9 +1583,11 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         <td />
         <td>
           A callback fired when the Dropdown wishes to change visibility. Called with the requested open value, the DOM event, and the source that fired it: 
-          <code>
-            'click','keydown','rootClose', or 'select''
-          </code>
+          <pre>
+            <code>
+              'click','keydown','rootClose', or 'select''
+            </code>
+          </pre>
         </td>
       </tr>
       <tr>
@@ -1403,7 +1599,18 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         </td>
         <td />
         <td>
-           controlled by: onToggle, initial prop: defaultOpen Whether or not the Dropdown is visible.
+           controlled by: 
+          <code>
+            onToggle
+          </code>
+          , 
+          <br />
+          initial prop: 
+          <code>
+            defaultOpen
+          </code>
+          <br />
+          Whether or not the Dropdown is visible.
         </td>
       </tr>
       <tr>
@@ -1427,7 +1634,11 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         </td>
         <td />
         <td>
-          If 'menuitem', causes the dropdown to behave like a menu item rather than a menu button.
+          If 
+          <code>
+            'menuitem'
+          </code>
+          , causes the dropdown to behave like a menu item rather than a menu button.
         </td>
       </tr>
       <tr>
@@ -1435,7 +1646,14 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
           rootCloseEvent
         </td>
         <td>
-          one of: 'click', 'mousedown'
+          one of: 
+          <code>
+            'click'
+          </code>
+          , 
+          <code>
+            'mousedown'
+          </code>
         </td>
         <td />
         <td>
@@ -1459,11 +1677,16 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
       </tr>
     </tbody>
   </table>
+  <hr />
   <h2>
     MenuItem
   </h2>
   <p>
-    This component represents a menu item in a dropdown.
+    This component represents a menu item in a 
+    <code>
+      Dropdown
+    </code>
+    .
   </p>
   <p>
     It supports the basic anchor properties href, target, title.
@@ -1473,37 +1696,50 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
   </p>
   <ul>
     <li>
-      header: To add a header label to sections
+      <code>
+        header
+      </code>
+      : To add a header label to sections
     </li>
     <li>
-      divider: Adds an horizontal divider between sections
+      <code>
+        divider
+      </code>
+      : Adds an horizontal divider between sections
     </li>
     <li>
-      disabled: shows the item as disabled, and prevents onSelect from firing
+      <code>
+        disabled
+      </code>
+      : shows the item as disabled, and prevents onSelect from firing
     </li>
     <li>
-      eventKey: passed to the callback
+      <code>
+        eventKey
+      </code>
+      : passed to the callback
     </li>
     <li>
-      onSelect: a callback that is called when the user clicks the item.
+      <code>
+        onSelect
+      </code>
+      : a callback that is called when the user clicks the item.
     </li>
   </ul>
   <p>
-    The callback is called with the following arguments: event and eventKey
+    The callback is called with the following arguments: 
+    <code>
+      event
+    </code>
+     and
+    <code>
+      eventKey
+    </code>
   </p>
+  <hr />
   <h3>
     Props
   </h3>
-  <p>
-    The Dropdown expects at least one component with 
-    <code>
-      bsRole="toggle"
-    </code>
-     and exactly one with 
-    <code>
-      bsRole="menu"
-    </code>
-  </p>
   <table
     className="table table-striped table-bordered table-condensed table-hover"
   >
@@ -1587,7 +1823,11 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         </td>
         <td />
         <td>
-          Value passed to the onSelect handler, useful for identifying the selected menu item.
+          Value passed to the 
+          <code>
+            onSelect
+          </code>
+           handler, useful for identifying the selected menu item.
         </td>
       </tr>
       <tr>
@@ -1613,7 +1853,11 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         </td>
         <td />
         <td>
-          HTML href attribute corresponding to a.href.
+          HTML href attribute corresponding to 
+          <code>
+            a.href
+          </code>
+          .
         </td>
       </tr>
       <tr>
@@ -1637,7 +1881,12 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
         </td>
         <td />
         <td>
-          Callback fired when the menu item is selected. (eventKey: any, event: Object) =&gt; any
+          Callback fired when the menu item is selected.
+          <pre>
+            <code>
+              (eventKey: any, event: Object) =&gt; any
+            </code>
+          </pre>
         </td>
       </tr>
     </tbody>
@@ -1646,22 +1895,31 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
 `;
 
 exports[`Frontend Storyshots EditableText editing 1`] = `
-<input
-  aria-label={undefined}
-  autoComplete={undefined}
-  autoFocus={false}
-  className="textInput"
-  id={undefined}
-  onBlur={[Function]}
-  onChange={undefined}
-  onFocus={[Function]}
-  onKeyDown={undefined}
-  onSelect={undefined}
-  placeholder="Add a description…"
-  readOnly={false}
-  type={undefined}
-  value="Test text"
-/>
+<span>
+  <h2>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     EditableText
+  </h2>
+  <input
+    aria-label={undefined}
+    autoComplete={undefined}
+    autoFocus={false}
+    className="textInput"
+    id={undefined}
+    onBlur={[Function]}
+    onChange={undefined}
+    onFocus={[Function]}
+    onKeyDown={undefined}
+    onSelect={undefined}
+    placeholder="Add a description…"
+    readOnly={false}
+    type={undefined}
+    value="Test text"
+  />
+</span>
 `;
 
 exports[`Frontend Storyshots EditableText not editing 1`] = `
@@ -2175,9 +2433,13 @@ exports[`Frontend Storyshots Foundation typography 1`] = `
   <h2>
     Font stack
   </h2>
-  <p>
-    'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  </p>
+  <div
+    className="well"
+  >
+    <code>
+      'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    </code>
+  </div>
   <hr />
   <h2>
     Headings
