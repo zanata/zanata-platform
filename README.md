@@ -92,6 +92,33 @@ running functional tests from an IDE.
 
 For a quick Zanata development environment with Docker, please visit the [docker README](docker/README.md).
 
+### Commits
+
+These are the format rules for our git commit messages. This leads to **more readable messages** that are easy to follow when looking through the project history. 
+
+#### Commit Message Format
+Each commit message consists of a header, a body and a footer. The header has a special format that includes a type, a scope and a subject:
+
+```
+<type>: <subject>
+<BLANK LINE>
+<Jira reference>
+<body>
+```
+
+#### Type
+Must be one of the following:
+
+- **revert**: Revert previous commit. Subject should be `This reverts commit <hash>`
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation only changes
+- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- **refactor**: A code change that neither fixes a bug nor adds a feature
+- **perf**: A code change that improves performance
+- **test**: Adding missing tests
+- **chore**: Changes to the build process or auxiliary tools and libraries such as documentation generation
+
 ### Source code note
 Please note that any references to pull request numbers in commit
 messages (eg merge nodes) prior to 20 October 2016 are referring to the
