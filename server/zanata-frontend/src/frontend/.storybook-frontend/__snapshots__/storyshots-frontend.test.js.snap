@@ -2773,2238 +2773,2094 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <h3>
       Icon list
     </h3>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="admin"
-        >
-           
-          admin
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-admin\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="all"
-        >
-           
-          all
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-all\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="assign"
-        >
-           
-          assign
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-assign\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="attach"
-        >
-           
-          attach
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-attach\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="block"
-        >
-           
-          block
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-block\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="chevron-down-double"
-        >
-           
-          chevron-down-double
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="chevron-down"
-        >
-           
-          chevron-down
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="chevron-left"
-        >
-           
-          chevron-left
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="chevron-right"
-        >
-           
-          chevron-right
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="chevron-up-double"
-        >
-           
-          chevron-up-double
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="chevron-up"
-        >
-           
-          chevron-up
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="circle"
-        >
-           
-          circle
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-circle\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="clock"
-        >
-           
-          clock
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-clock\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="code"
-        >
-           
-          code
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-code\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="comment"
-        >
-           
-          comment
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="copy"
-        >
-           
-          copy
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-copy\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="cross-circle"
-        >
-           
-          cross-circle
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="cross"
-        >
-           
-          cross
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-cross\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="dashboard"
-        >
-           
-          dashboard
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="document"
-        >
-           
-          document
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-document\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="dot"
-        >
-           
-          dot
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-dot\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="download"
-        >
-           
-          download
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-download\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="edit"
-        >
-           
-          edit
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-edit\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="ellipsis"
-        >
-           
-          ellipsis
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="export"
-        >
-           
-          export
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-export\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="external-link"
-        >
-           
-          external-link
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="filter"
-        >
-           
-          filter
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-filter\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="folder"
-        >
-           
-          folder
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-folder\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="glossary"
-        >
-           
-          glossary
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="help"
-        >
-           
-          help
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-help\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="history"
-        >
-           
-          history
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-history\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="import"
-        >
-           
-          import
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-import\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="inbox"
-        >
-           
-          inbox
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="info"
-        >
-           
-          info
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="keyboard"
-        >
-           
-          keyboard
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="language"
-        >
-           
-          language
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-language\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="link"
-        >
-           
-          link
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-link\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="location"
-        >
-           
-          location
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-location\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="locked"
-        >
-           
-          locked
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-locked\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="logout"
-        >
-           
-          logout
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-logout\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="mail"
-        >
-           
-          mail
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-mail\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="maintain"
-        >
-           
-          maintain
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="menu"
-        >
-           
-          menu
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-menu\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="minus"
-        >
-           
-          minus
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-minus\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="next"
-        >
-           
-          next
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-next\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="notification"
-        >
-           
-          notification
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-notification\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="piestats"
-        >
-           
-          piestats
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="plus"
-        >
-           
-          plus
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-plus\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="previous"
-        >
-           
-          previous
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-previous\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="project"
-        >
-           
-          project
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="refresh"
-        >
-           
-          refresh
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="review"
-        >
-           
-          review
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-review\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="search"
-        >
-           
-          search
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-search\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="servmon"
-        >
-           
-          servmon
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="settings"
-        >
-           
-          settings
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-settings\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="star-outline"
-        >
-           
-          star-outline
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="star"
-        >
-           
-          star
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-star\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="statistics"
-        >
-           
-          statistics
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="suggestions"
-        >
-           
-          suggestions
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="tick-circle"
-        >
-           
-          tick-circle
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="tick"
-        >
-           
-          tick
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-tick\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="tm"
-        >
-           
-          tm
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-tm\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="translate"
-        >
-           
-          translate
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-translate\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="trash"
-        >
-           
-          trash
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="undo"
-        >
-           
-          undo
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-undo\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="unlocked"
-        >
-           
-          unlocked
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="upload"
-        >
-           
-          upload
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-upload\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="user"
-        >
-           
-          user
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-user\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="users"
-        >
-           
-          users
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-users\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="version"
-        >
-           
-          version
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-version\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="warning"
-        >
-           
-          warning
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
-    <span>
-      <div
-        className="col-sm-4"
-      >
-        <span
-          title="zanata"
-        >
-           
-          zanata
-           
-          <span
-            className="s1"
-          >
-            <svg
-              className={undefined}
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-           
-        </span>
-      </div>
-    </span>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="admin"
+      >
+         
+        admin
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-admin\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="all"
+      >
+         
+        all
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-all\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="assign"
+      >
+         
+        assign
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-assign\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="attach"
+      >
+         
+        attach
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-attach\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="block"
+      >
+         
+        block
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-block\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="chevron-down-double"
+      >
+         
+        chevron-down-double
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="chevron-down"
+      >
+         
+        chevron-down
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="chevron-left"
+      >
+         
+        chevron-left
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="chevron-right"
+      >
+         
+        chevron-right
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="chevron-up-double"
+      >
+         
+        chevron-up-double
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="chevron-up"
+      >
+         
+        chevron-up
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="circle"
+      >
+         
+        circle
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-circle\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="clock"
+      >
+         
+        clock
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="code"
+      >
+         
+        code
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-code\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="comment"
+      >
+         
+        comment
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="copy"
+      >
+         
+        copy
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="cross-circle"
+      >
+         
+        cross-circle
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="cross"
+      >
+         
+        cross
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-cross\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="dashboard"
+      >
+         
+        dashboard
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="document"
+      >
+         
+        document
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-document\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="dot"
+      >
+         
+        dot
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-dot\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="download"
+      >
+         
+        download
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-download\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="edit"
+      >
+         
+        edit
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-edit\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="ellipsis"
+      >
+         
+        ellipsis
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="export"
+      >
+         
+        export
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-export\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="external-link"
+      >
+         
+        external-link
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="filter"
+      >
+         
+        filter
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-filter\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="folder"
+      >
+         
+        folder
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-folder\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="glossary"
+      >
+         
+        glossary
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="help"
+      >
+         
+        help
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-help\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="history"
+      >
+         
+        history
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-history\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="import"
+      >
+         
+        import
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-import\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="inbox"
+      >
+         
+        inbox
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="info"
+      >
+         
+        info
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-info\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="keyboard"
+      >
+         
+        keyboard
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="language"
+      >
+         
+        language
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-language\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="link"
+      >
+         
+        link
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-link\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="location"
+      >
+         
+        location
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-location\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="locked"
+      >
+         
+        locked
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-locked\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="logout"
+      >
+         
+        logout
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-logout\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="mail"
+      >
+         
+        mail
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-mail\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="maintain"
+      >
+         
+        maintain
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="menu"
+      >
+         
+        menu
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-menu\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="minus"
+      >
+         
+        minus
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-minus\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="next"
+      >
+         
+        next
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-next\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="notification"
+      >
+         
+        notification
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-notification\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="piestats"
+      >
+         
+        piestats
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="plus"
+      >
+         
+        plus
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-plus\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="previous"
+      >
+         
+        previous
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-previous\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="project"
+      >
+         
+        project
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="refresh"
+      >
+         
+        refresh
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="review"
+      >
+         
+        review
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-review\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="search"
+      >
+         
+        search
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-search\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="servmon"
+      >
+         
+        servmon
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="settings"
+      >
+         
+        settings
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="star-outline"
+      >
+         
+        star-outline
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="star"
+      >
+         
+        star
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-star\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="statistics"
+      >
+         
+        statistics
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="suggestions"
+      >
+         
+        suggestions
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="tick-circle"
+      >
+         
+        tick-circle
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="tick"
+      >
+         
+        tick
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="tm"
+      >
+         
+        tm
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tm\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="translate"
+      >
+         
+        translate
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-translate\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="trash"
+      >
+         
+        trash
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="undo"
+      >
+         
+        undo
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-undo\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="unlocked"
+      >
+         
+        unlocked
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="upload"
+      >
+         
+        upload
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-upload\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="user"
+      >
+         
+        user
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-user\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="users"
+      >
+         
+        users
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-users\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="version"
+      >
+         
+        version
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-version\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="warning"
+      >
+         
+        warning
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
+    <div
+      className="col-sm-4"
+    >
+      <span
+        title="zanata"
+      >
+         
+        zanata
+         
+        <span
+          className="s1"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+         
+      </span>
+    </div>
   </span>
   <code>
     className="s1" name=name
@@ -16674,6 +16530,18 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
 
 exports[`Frontend Storyshots Label in headings 1`] = `
 <span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Labels in headings
+  </h2>
+  <div
+    className="well"
+  >
+    Use labels to highlight information.
+  </div>
   <h1>
     Label 
     <span
@@ -16722,36 +16590,149 @@ exports[`Frontend Storyshots Label in headings 1`] = `
       New
     </span>
   </p>
+  <hr />
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'label'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsStyle
+        </td>
+        <td>
+          one of: 
+          <code>
+            "success"
+          </code>
+          , 
+          <code>
+            "warning"
+          </code>
+          , 
+          <code>
+            "danger"
+          </code>
+          , 
+          <code>
+            "info"
+          </code>
+          , 
+          <code>
+            "default"
+          </code>
+          , 
+          <code>
+            "primary"
+          </code>
+          , 
+          <code>
+            "link"
+          </code>
+        </td>
+        <td>
+          'default'
+        </td>
+        <td>
+          Component visual or contextual style variants.
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </span>
 `;
 
 exports[`Frontend Storyshots Label validation states 1`] = `
 <span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Label validation states
+  </h2>
   <span
     className="label label-default"
   >
     Default
   </span>
+  <p>
+    <code>
+      bsStyle="default"
+    </code>
+  </p>
   <span
     className="label label-primary"
   >
     Primary
   </span>
+  <p>
+    <code>
+      bsStyle="primary"
+    </code>
+  </p>
   <span
     className="label label-success"
   >
     Success
   </span>
+  <p>
+    <code>
+      bsStyle="success"
+    </code>
+  </p>
   <span
     className="label label-warning"
   >
     Warning
   </span>
+  <p>
+    <code>
+      bsStyle="warning"
+    </code>
+  </p>
   <span
     className="label label-danger"
   >
     Danger
   </span>
+  <p>
+    <code>
+      bsStyle="danger"
+    </code>
+  </p>
 </span>
 `;
 
@@ -17578,6 +17559,1122 @@ exports[`Frontend Storyshots ProgressBar translation states 1`] = `
     />
   </div>
 </span>
+`;
+
+exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
+<div
+  className="container"
+>
+  <h1>
+    Reject translations settings
+  </h1>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textDanger"
+          >
+            Critical
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
+        readOnly={false}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={false}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textWarning"
+          >
+            Major
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textWarning"
+          >
+            Major
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Style Guide & Glossary Violations"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textInfo"
+          >
+            Minor
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textInfo"
+          >
+            Minor
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Other (reason may be in comment section/history if necessary)"
+        readOnly={false}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={false}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textDanger"
+          >
+            Critical
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <div
+    className="rejection-btns"
+  >
+    <button
+      className="btn-left btn btn-primary"
+      disabled={false}
+      type="button"
+    >
+      <span
+        className="s1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-plus\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       Add review criteria
+    </button>
+    <button
+      className="btn btn-info"
+      disabled={false}
+      type="button"
+    >
+      <span
+        className="s1"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+       Save changes
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Frontend Storyshots RejectionsForm editable 1`] = `
+<form
+  className="rejectionsForm form-inline"
+>
+  <div
+    className="u-flexGrow1 form-group"
+  >
+    <label
+      className="control-label"
+      htmlFor="formInlineCriteria"
+    >
+      Criteria
+    </label>
+    <br />
+    <textarea
+      aria-label={undefined}
+      autoComplete={undefined}
+      autoFocus={undefined}
+      className="textInput"
+      id={undefined}
+      onBlur={undefined}
+      onChange={[Function]}
+      onFocus={[Function]}
+      onKeyDown={undefined}
+      onSelect={undefined}
+      placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
+      readOnly={false}
+      style={
+        Object {
+          "height": 0,
+        }
+      }
+      value=""
+    />
+  </div>
+  <div
+    className="form-group"
+  >
+    <label
+      className="control-label"
+      htmlFor="formInlinePriority"
+    >
+      Priority
+    </label>
+    <br />
+    <div
+      className="dropdown btn-group btn-group-sm btn-group-default"
+    >
+      <button
+        aria-expanded={false}
+        aria-haspopup={true}
+        className="dropdown-toggle btn btn-sm btn-default"
+        disabled={false}
+        id="review-criteriareview-criteria-dropdown-basic"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        role="button"
+        type="button"
+      >
+        <span
+          className="u-textInfo"
+        >
+          Minor
+        </span>
+         
+        <span
+          className="caret"
+        />
+      </button>
+      <ul
+        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+        className="dropdown-menu"
+        role="menu"
+      >
+        <li
+          className="active"
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            <span
+              className="u-textInfo"
+            >
+              Minor
+            </span>
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            <span
+              className="u-textWarning"
+            >
+              Major
+            </span>
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            <span
+              className="u-textDanger"
+            >
+              Critical
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</form>
+`;
+
+exports[`Frontend Storyshots RejectionsForm read only 1`] = `
+<form
+  className="rejectionsForm form-inline"
+>
+  <div
+    className="u-flexGrow1 form-group"
+  >
+    <label
+      className="control-label"
+      htmlFor="formInlineCriteria"
+    >
+      Criteria
+    </label>
+    <br />
+    <textarea
+      aria-label={undefined}
+      autoComplete={undefined}
+      autoFocus={undefined}
+      className="textInput"
+      id={undefined}
+      onBlur={undefined}
+      onChange={[Function]}
+      onFocus={[Function]}
+      onKeyDown={undefined}
+      onSelect={undefined}
+      placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
+      readOnly={true}
+      style={
+        Object {
+          "height": 0,
+        }
+      }
+      value=""
+    />
+  </div>
+  <div
+    className="form-group"
+  >
+    <label
+      className="control-label"
+      htmlFor="formInlinePriority"
+    >
+      Priority
+    </label>
+    <br />
+    <div
+      className="dropdown disabled btn-group btn-group-sm btn-group-default"
+    >
+      <button
+        aria-expanded={false}
+        aria-haspopup={true}
+        className="dropdown-toggle btn btn-sm btn-default"
+        disabled={true}
+        id="review-criteriareview-criteria-dropdown-basic"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        role="button"
+        type="button"
+      >
+        <span
+          className="u-textInfo"
+        >
+          Minor
+        </span>
+         
+        <span
+          className="caret"
+        />
+      </button>
+      <ul
+        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+        className="dropdown-menu"
+        role="menu"
+      >
+        <li
+          className="active"
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            <span
+              className="u-textInfo"
+            >
+              Minor
+            </span>
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            <span
+              className="u-textWarning"
+            >
+              Major
+            </span>
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            href="#"
+            onClick={[Function]}
+            role="menuitem"
+            tabIndex="-1"
+          >
+            <span
+              className="u-textDanger"
+            >
+              Critical
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</form>
 `;
 
 exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
@@ -20291,6 +21388,24 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     </div>
   </div>
 </div>
+`;
+
+exports[`Frontend Storyshots VersionTMMergeModal disabled TM 1`] = `
+<div
+  className="static-modal"
+/>
+`;
+
+exports[`Frontend Storyshots VersionTMMergeModal no version selected 1`] = `
+<div
+  className="static-modal"
+/>
+`;
+
+exports[`Frontend Storyshots VersionTMMergeModal version selected 1`] = `
+<div
+  className="static-modal"
+/>
 `;
 
 exports[`Frontend Storyshots Well default 1`] = `
