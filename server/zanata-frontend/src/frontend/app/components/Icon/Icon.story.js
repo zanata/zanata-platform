@@ -2,7 +2,7 @@ import React from 'react'
 import {storiesOf} from '@storybook/react'
 import {Icon} from '../'
 import iconList from '../Icon/list'
-import {Table, Col, Well} from 'react-bootstrap'
+import {Table, Well} from 'react-bootstrap'
 
 function renderIcon(name, size) {
   return (
@@ -17,8 +17,8 @@ function allIconsSize(size) {
 
 function renderNamesIcons(name, size) {
   return (
-        <Col sm={4}><span key={name} title={name}> {name} <Icon name={name}
-        className={size}/> </span></Col>
+      <p key={name} title={name}><Icon name={name}
+        className={size}/> {name}</p>
   )
 }
 
@@ -34,7 +34,7 @@ storiesOf('Icon', module)
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> Icons</h2>
                   <Well>Icons for use throughout frontend. Use <code>className</code> prop to set size.</Well>
-<hr/>
+      <hr/>
           <h3>Props</h3>
       <Table striped bordered condensed hover>
         <thead>
@@ -64,7 +64,7 @@ storiesOf('Icon', module)
           <hr/>
           <span className="col-xs-12">
             <h3>Icon list</h3>
-            {allIcons('s1')}</span>
+            {allIcons('s2')}</span>
           <code>className="s1" name=name</code>
     </span>
     ))
