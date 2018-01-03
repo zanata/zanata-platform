@@ -16431,87 +16431,360 @@ exports[`Frontend Storyshots Link link within frontend app 1`] = `
 </span>
 `;
 
-exports[`Frontend Storyshots List default 1`] = `
-<ul
-  className="list-group"
->
-  <li
-    className="list-group-item"
+exports[`Frontend Storyshots List group default 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    List group
+  </h2>
+  <div
+    className="well"
   >
-    Item 1
-  </li>
-  <li
-    className="list-group-item"
+    List groups are a flexible and powerful component for displaying not only simple lists of elements, but complex ones with custom content.
+  </div>
+  <ul
+    className="list-group"
   >
-    Item 2
-  </li>
-  <li
-    className="list-group-item"
+    <li
+      className="list-group-item"
+    >
+      Item 1
+    </li>
+    <li
+      className="list-group-item"
+    >
+      Item 2
+    </li>
+    <li
+      className="list-group-item"
+    >
+      ...
+    </li>
+  </ul>
+  <hr />
+  <h3>
+    Props
+  </h3>
+  <h4>
+    ListGroup
+  </h4>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
   >
-    ...
-  </li>
-</ul>
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'list-group'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          componentClass
+        </td>
+        <td>
+          elementType
+        </td>
+        <td />
+        <td>
+          You can use a custom element type for this component. If not specified, it will be treated as 
+          <code>
+            'li'
+          </code>
+           if every child is a non-actionable 
+          <code>
+            ListGroupItem&gt;
+          </code>
+          , and 
+          <code>
+            'div'
+          </code>
+           otherwise.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h4>
+    ListGroupItem
+  </h4>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          active
+        </td>
+        <td>
+          any
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'list-group-item'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsStyle
+        </td>
+        <td>
+          one of: 
+          <code>
+            "success"
+          </code>
+          , 
+          <code>
+            "warning"
+          </code>
+          , 
+          <code>
+            "danger"
+          </code>
+          , 
+          <code>
+            "info"
+          </code>
+          , 
+          <code>
+            "default"
+          </code>
+          , 
+          <code>
+            "primary"
+          </code>
+          , 
+          <code>
+            "link"
+          </code>
+        </td>
+        <td>
+          'default'
+        </td>
+        <td>
+          Component visual or contextual style variants.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          disabled
+        </td>
+        <td>
+          any
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          header
+        </td>
+        <td>
+          node
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          href
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          listItem
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          false
+        </td>
+        <td />
+      </tr>
+      <tr>
+        <td>
+          onClick
+        </td>
+        <td>
+          function
+        </td>
+        <td />
+        <td />
+      </tr>
+      <tr>
+        <td>
+          type
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td />
+      </tr>
+    </tbody>
+  </table>
+</span>
 `;
 
-exports[`Frontend Storyshots List with headings 1`] = `
-<div
-  className="list-group"
->
-  <span
-    className="list-group-item"
+exports[`Frontend Storyshots List group with headings 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    With headings
+  </h2>
+  <div
+    className="well"
   >
-    <h4
-      className="list-group-item-heading"
-    >
-      Heading 1
-    </h4>
-    <p
-      className="list-group-item-text"
-    >
-      Some body text
-    </p>
-  </span>
-  <a
-    className="list-group-item"
-    href="#"
+    Set the header prop to create a structured item, with a heading and a body area.
+  </div>
+  <div
+    className="list-group"
   >
-    <h4
-      className="list-group-item-heading"
+    <span
+      className="list-group-item"
     >
-      Heading 2
-    </h4>
-    <p
-      className="list-group-item-text"
+      <h4
+        className="list-group-item-heading"
+      >
+        Heading 1
+      </h4>
+      <p
+        className="list-group-item-text"
+      >
+        Some body text
+      </p>
+    </span>
+    <a
+      className="list-group-item"
+      href="#"
     >
-      Linked item
-    </p>
-  </a>
-</div>
+      <h4
+        className="list-group-item-heading"
+      >
+        Heading 2
+      </h4>
+      <p
+        className="list-group-item-text"
+      >
+        Linked item
+      </p>
+    </a>
+  </div>
+</span>
 `;
 
-exports[`Frontend Storyshots List with links 1`] = `
-<div
-  className="list-group"
->
-  <a
-    className="list-group-item active"
-    href="#"
+exports[`Frontend Storyshots List group with links 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    With links
+  </h2>
+  <div
+    className="well"
   >
-    Active
-  </a>
-  <a
-    className="list-group-item"
-    href="#"
+    Set the 
+    <code>
+      href
+    </code>
+     or 
+    <code>
+      onClick
+    </code>
+     prop on 
+    <code>
+      ListGroupItem
+    </code>
+    , to create a linked or clickable element.
+  </div>
+  <div
+    className="list-group"
   >
-    Link
-  </a>
-  <a
-    className="list-group-item disabled"
-    href="#"
-  >
-    Disabled
-  </a>
-</div>
+    <a
+      className="list-group-item active"
+      href="#"
+    >
+      Active
+    </a>
+    <a
+      className="list-group-item"
+      href="#"
+    >
+      Link
+    </a>
+    <a
+      className="list-group-item disabled"
+      href="#"
+    >
+      Disabled
+    </a>
+  </div>
+</span>
 `;
 
 exports[`Frontend Storyshots LoaderText default 1`] = `
