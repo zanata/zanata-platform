@@ -2699,10 +2699,2331 @@ exports[`Frontend Storyshots Foundation typography 1`] = `
 `;
 
 exports[`Frontend Storyshots Icon default 1`] = `
-<div>
+<span>
   <h2>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     Icons
+  </h2>
+  <div
+    className="well"
+  >
+    Icons for use throughout frontend. Use 
+    <code>
+      className
+    </code>
+     prop to set size.
+  </div>
+  <hr />
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          name
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          Icon name
+        </td>
+      </tr>
+      <tr>
+        <td>
+          className
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          Icon size
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <hr />
+  <span
+    className="col-xs-12"
+  >
+    <h3>
+      Icon list
+    </h3>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="admin"
+        >
+           
+          admin
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-admin\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="all"
+        >
+           
+          all
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-all\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="assign"
+        >
+           
+          assign
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-assign\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="attach"
+        >
+           
+          attach
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-attach\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="block"
+        >
+           
+          block
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-block\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="chevron-down-double"
+        >
+           
+          chevron-down-double
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="chevron-down"
+        >
+           
+          chevron-down
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="chevron-left"
+        >
+           
+          chevron-left
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="chevron-right"
+        >
+           
+          chevron-right
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="chevron-up-double"
+        >
+           
+          chevron-up-double
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="chevron-up"
+        >
+           
+          chevron-up
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="circle"
+        >
+           
+          circle
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-circle\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="clock"
+        >
+           
+          clock
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-clock\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="code"
+        >
+           
+          code
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-code\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="comment"
+        >
+           
+          comment
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="copy"
+        >
+           
+          copy
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="cross-circle"
+        >
+           
+          cross-circle
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="cross"
+        >
+           
+          cross
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-cross\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="dashboard"
+        >
+           
+          dashboard
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="document"
+        >
+           
+          document
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-document\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="dot"
+        >
+           
+          dot
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-dot\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="download"
+        >
+           
+          download
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-download\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="edit"
+        >
+           
+          edit
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-edit\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="ellipsis"
+        >
+           
+          ellipsis
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="export"
+        >
+           
+          export
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-export\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="external-link"
+        >
+           
+          external-link
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="filter"
+        >
+           
+          filter
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-filter\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="folder"
+        >
+           
+          folder
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-folder\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="glossary"
+        >
+           
+          glossary
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="help"
+        >
+           
+          help
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-help\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="history"
+        >
+           
+          history
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-history\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="import"
+        >
+           
+          import
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-import\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="inbox"
+        >
+           
+          inbox
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="info"
+        >
+           
+          info
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="keyboard"
+        >
+           
+          keyboard
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="language"
+        >
+           
+          language
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-language\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="link"
+        >
+           
+          link
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-link\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="location"
+        >
+           
+          location
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-location\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="locked"
+        >
+           
+          locked
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-locked\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="logout"
+        >
+           
+          logout
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-logout\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="mail"
+        >
+           
+          mail
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-mail\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="maintain"
+        >
+           
+          maintain
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="menu"
+        >
+           
+          menu
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-menu\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="minus"
+        >
+           
+          minus
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-minus\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="next"
+        >
+           
+          next
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-next\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="notification"
+        >
+           
+          notification
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-notification\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="piestats"
+        >
+           
+          piestats
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="plus"
+        >
+           
+          plus
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-plus\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="previous"
+        >
+           
+          previous
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-previous\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="project"
+        >
+           
+          project
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="refresh"
+        >
+           
+          refresh
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="review"
+        >
+           
+          review
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-review\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="search"
+        >
+           
+          search
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-search\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="servmon"
+        >
+           
+          servmon
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="settings"
+        >
+           
+          settings
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="star-outline"
+        >
+           
+          star-outline
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="star"
+        >
+           
+          star
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-star\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="statistics"
+        >
+           
+          statistics
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="suggestions"
+        >
+           
+          suggestions
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="tick-circle"
+        >
+           
+          tick-circle
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="tick"
+        >
+           
+          tick
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="tm"
+        >
+           
+          tm
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-tm\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="translate"
+        >
+           
+          translate
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-translate\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="trash"
+        >
+           
+          trash
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="undo"
+        >
+           
+          undo
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-undo\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="unlocked"
+        >
+           
+          unlocked
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="upload"
+        >
+           
+          upload
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-upload\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="user"
+        >
+           
+          user
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-user\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="users"
+        >
+           
+          users
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="version"
+        >
+           
+          version
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="warning"
+        >
+           
+          warning
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+    <span>
+      <div
+        className="col-sm-4"
+      >
+        <span
+          title="zanata"
+        >
+           
+          zanata
+           
+          <span
+            className="s1"
+          >
+            <svg
+              className={undefined}
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
+                }
+              }
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
+              }
+            />
+          </span>
+           
+        </span>
+      </div>
+    </span>
+  </span>
+  <code>
+    className="s1" name=name
+  </code>
+</span>
+`;
+
+exports[`Frontend Storyshots Icon sizes 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     Icon sizes
+  </h2>
+  <h3>
     Size n2
-  </h2>
+  </h3>
   <span
     title="admin"
   >
@@ -4359,9 +6680,14 @@ exports[`Frontend Storyshots Icon default 1`] = `
     </span>
      
   </span>
-  <h2>
+  <p>
+    <code>
+      className="n2" name=name
+    </code>
+  </p>
+  <h3>
     Size n1
-  </h2>
+  </h3>
   <span
     title="admin"
   >
@@ -6018,9 +8344,14 @@ exports[`Frontend Storyshots Icon default 1`] = `
     </span>
      
   </span>
-  <h2>
-    Size 0
-  </h2>
+  <p>
+    <code>
+      className="n1" name=name
+    </code>
+  </p>
+  <h3>
+    Size s0
+  </h3>
   <span
     title="admin"
   >
@@ -7677,9 +10008,14 @@ exports[`Frontend Storyshots Icon default 1`] = `
     </span>
      
   </span>
-  <h2>
-    Size 1
-  </h2>
+  <p>
+    <code>
+      className="s0" name=name
+    </code>
+  </p>
+  <h3>
+    Size s1
+  </h3>
   <span
     title="admin"
   >
@@ -9336,9 +11672,14 @@ exports[`Frontend Storyshots Icon default 1`] = `
     </span>
      
   </span>
-  <h2>
-    Size 2
-  </h2>
+  <p>
+    <code>
+      className="s1" name=name
+    </code>
+  </p>
+  <h3>
+    Size s2
+  </h3>
   <span
     title="admin"
   >
@@ -10995,9 +13336,14 @@ exports[`Frontend Storyshots Icon default 1`] = `
     </span>
      
   </span>
-  <h2>
-    Size 3
-  </h2>
+  <p>
+    <code>
+      className="s2" name=name
+    </code>
+  </p>
+  <h3>
+    Size s3
+  </h3>
   <span
     title="admin"
   >
@@ -12654,9 +15000,14 @@ exports[`Frontend Storyshots Icon default 1`] = `
     </span>
      
   </span>
-  <h2>
-    Size 4
-  </h2>
+  <p>
+    <code>
+      className="s3" name=name
+    </code>
+  </p>
+  <h3>
+    Size s4
+  </h3>
   <span
     title="admin"
   >
@@ -14313,7 +16664,12 @@ exports[`Frontend Storyshots Icon default 1`] = `
     </span>
      
   </span>
-</div>
+  <p>
+    <code>
+      className="s4" name=name
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Label in headings 1`] = `
