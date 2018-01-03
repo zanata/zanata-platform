@@ -16305,20 +16305,130 @@ exports[`Frontend Storyshots Label validation states 1`] = `
 `;
 
 exports[`Frontend Storyshots Link link page not in frontend app 1`] = `
-<a
-  href="http://zanata.org/language/view/ja"
->
-  Japanese
-</a>
+<span>
+  <h2>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     Link *not* in frontend
+  </h2>
+  <div
+    className="well"
+  >
+    Use this link colour anywhere outside of frontend. ie. Editor, zanata.org
+  </div>
+  <a
+    href="http://zanata.org/language/view/ja"
+  >
+    Japanese
+  </a>
+</span>
 `;
 
 exports[`Frontend Storyshots Link link within frontend app 1`] = `
-<a
-  onClick={[Function]}
-  style={Object {}}
->
-  Languages
-</a>
+<span>
+  <h2>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     Link in frontend
+  </h2>
+  <div
+    className="well"
+  >
+     Common link component which generates 
+    <code>
+      a href
+    </code>
+     or in-page navigation link based on useHref.
+  </div>
+  <a
+    onClick={[Function]}
+    style={Object {}}
+  >
+    Languages
+  </a>
+  <hr />
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          id
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          ID attribute
+        </td>
+      </tr>
+      <tr>
+        <td>
+          link
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          HTML url or location#hash
+        </td>
+      </tr>
+      <tr>
+        <td>
+          useHref
+        </td>
+        <td>
+          bool
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          Toggle whether to use 
+          <code>
+            a href
+          </code>
+           or in-page navigation
+        </td>
+      </tr>
+      <tr>
+        <td>
+          children
+        </td>
+        <td>
+          node
+        </td>
+        <td />
+        <td />
+      </tr>
+    </tbody>
+  </table>
+</span>
 `;
 
 exports[`Frontend Storyshots List default 1`] = `
