@@ -29,14 +29,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
@@ -352,6 +354,29 @@ public class UrlUtil implements Serializable {
 
     public String inactiveAccountPage() {
         return contextPath + "/account/inactive" + dswidQuery;
+    }
+
+    /**
+     * This helper method should be used to construct REST url. You can inject
+     * UriInfo and call the getPath() method to get a resource relative path.
+     *
+     * @param relativePath
+     *            a REST resource relative path (after
+     *            protocol://server:port/rest/)
+     * @return absolute path to the REST resource
+     */
+    public String restPath(String relativePath) {
+        String server =
+                serverPath.endsWith("/") ? serverPath : serverPath + "/";
+        return server + "rest" + relativePath;
+    }
+
+    /**
+     *
+     * @see UrlUtil#restPath(java.lang.String)
+     */
+    public URI restPathURI(String relativePath) {
+        return UriBuilder.fromUri(restPath(relativePath)).build();
     }
 
 }

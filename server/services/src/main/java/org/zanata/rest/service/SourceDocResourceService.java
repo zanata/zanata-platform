@@ -64,6 +64,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.UrlUtil;
 
 /**
  * @author Carlos Munoz
@@ -109,6 +110,9 @@ public class SourceDocResourceService implements SourceDocResource {
     private ETagUtils eTagUtils;
     @Inject
     private ZanataIdentity identity;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     @Override
     public Response head() {
@@ -257,7 +261,7 @@ public class SourceDocResourceService implements SourceDocResource {
                         docId);
         if (document == null || document.isObsolete()) {
             response = Response.created(
-                    UriBuilder.fromUri(uri.getAbsolutePath())
+                    UriBuilder.fromUri(urlUtil.restPath(uri.getPath()))
                             .queryParam("docId", docId).build());
         } else {
             response = Response.ok();

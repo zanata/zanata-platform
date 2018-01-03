@@ -20,13 +20,10 @@
  */
 package org.zanata.rest.review;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,12 +35,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ReviewCriteriaDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.ReviewCriteria;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 import org.zanata.security.annotations.CheckRole;
 import com.google.common.annotations.VisibleForTesting;
@@ -63,13 +61,17 @@ public class ReviewService {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    private UrlUtil urlUtil;
+
     public ReviewService() {
     }
 
     @VisibleForTesting
-    protected ReviewService(ReviewCriteriaDAO reviewCriteriaDAO, UriInfo uriInfo) {
+    protected ReviewService(ReviewCriteriaDAO reviewCriteriaDAO, UriInfo uriInfo, UrlUtil urlUtil) {
         this.reviewCriteriaDAO = reviewCriteriaDAO;
         this.uriInfo = uriInfo;
+        this.urlUtil = urlUtil;
     }
 
     public static TransReviewCriteria fromModel(ReviewCriteria criteria) {
@@ -86,13 +88,10 @@ public class ReviewService {
                 new ReviewCriteria(criteria.getPriority(),
                         criteria.isEditable(), criteria.getDescription());
         reviewCriteriaDAO.makePersistent(reviewCriteria);
-        try {
-            return Response.created(new URI(uriInfo.getRequestUri() + "/" + reviewCriteria.getId()))
-                    .entity(fromModel(reviewCriteria))
-                    .build();
-        } catch (URISyntaxException e) {
-            throw new ZanataServiceException(e);
-        }
+        return Response.created(UriBuilder.fromUri(urlUtil.restPath(
+                uriInfo.getPath())).path(reviewCriteria.getId().toString()).build())
+                .entity(fromModel(reviewCriteria))
+                .build();
     }
 
     @PUT

@@ -44,6 +44,7 @@ import org.zanata.rest.dto.QualifiedName;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.util.GlossaryUtil;
+import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 
 import com.google.common.base.Objects;
@@ -84,6 +85,9 @@ public class ProjectService implements ProjectResource {
 
     @Inject
     ETagUtils eTagUtils;
+
+    @Inject
+    UrlUtil urlUtil;
 
     @Nonnull
     public String getProjectSlug() {
@@ -135,7 +139,7 @@ public class ProjectService implements ProjectResource {
             // pre-emptive entity permission check
             identity.checkPermission(hProject, "insert");
 
-            response = Response.created(uri.getAbsolutePath());
+            response = Response.created(urlUtil.restPathURI(uri.getPath()));
         } else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
             // Project is obsolete
             return Response.status(Status.FORBIDDEN)

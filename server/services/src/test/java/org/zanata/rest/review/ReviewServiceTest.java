@@ -17,6 +17,7 @@ import org.zanata.ZanataJpaTest;
 import org.zanata.common.IssuePriority;
 import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.model.ReviewCriteria;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 
 public class ReviewServiceTest extends ZanataJpaTest {
@@ -25,11 +26,12 @@ public class ReviewServiceTest extends ZanataJpaTest {
     private ReviewService reviewService;
     @Mock
     private UriInfo uriInfo;
+    @Mock private UrlUtil urlUtil;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        reviewService = new ReviewService(new ReviewCriteriaDAO(getSession()), uriInfo);
+        reviewService = new ReviewService(new ReviewCriteriaDAO(getSession()), uriInfo, urlUtil);
     }
 
     @Test
@@ -49,14 +51,17 @@ public class ReviewServiceTest extends ZanataJpaTest {
 
     @Test
     public void canAddNewEntry() throws Exception {
-        when(uriInfo.getRequestUri())
-                .thenReturn(new URI("http://example.com/rest"));
+        when(uriInfo.getPath())
+                .thenReturn("criteria");
+        when(urlUtil.restPath("criteria")).thenReturn("http://example.com/rest/criteria");
         TransReviewCriteria dto = new TransReviewCriteria(null,
                 IssuePriority.Critical, DESCRIPTION, false);
         Response response = reviewService.addCriteria(dto);
         TransReviewCriteria entity = (TransReviewCriteria) response.getEntity();
         assertThat(entity.getDescription()).isEqualTo(DESCRIPTION);
         assertThat(entity.getId()).isNotNull();
+        assertThat(response.getLocation().toString())
+                .isEqualTo("http://example.com/rest/criteria/" + entity.getId());
     }
 
     @Test
