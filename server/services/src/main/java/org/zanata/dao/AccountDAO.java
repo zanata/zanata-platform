@@ -13,7 +13,6 @@
  */
 package org.zanata.dao;
 
-import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
@@ -84,33 +83,14 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     }
 
     public void createApiKey(HAccount account) {
-        String username = account.getUsername();
-        String apikey = createSaltedApiKey(username);
+        String apikey = createSaltedApiKey();
         account.setApiKey(apikey);
     }
 
-    private static String createSaltedApiKey(String username) {
-        try {
-            byte[] salt = new byte[16];
-            SecureRandom.getInstance("SHA1PRNG").nextBytes(salt);
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] name = username.getBytes("UTF-8");
-
-            // add salt
-            byte[] salted = new byte[name.length + salt.length];
-            System.arraycopy(name, 0, salted, 0, name.length);
-            System.arraycopy(salt, 0, salted, name.length, salt.length);
-
-            // generate md5 digest
-            md5.reset();
-            byte[] digest = md5.digest(salted);
-
-            return new String(PasswordUtil.encodeHex(digest));
-
-        } catch (Exception exc) {
-            throw new RuntimeException(exc);
-        }
-
+    private static String createSaltedApiKey() {
+        byte[] bytes = new byte[16];
+        new SecureRandom().nextBytes(bytes);
+        return new String(PasswordUtil.encodeHex(bytes));
     }
 
     // @SuppressWarnings("unchecked")
