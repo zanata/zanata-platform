@@ -1903,6 +1903,11 @@ exports[`Frontend Storyshots EditableText editing 1`] = `
     />
      EditableText
   </h2>
+  <div
+    className="well"
+  >
+    Used on Glossary page and modals for editable glossary terms.
+  </div>
   <input
     aria-label={undefined}
     autoComplete={undefined}
@@ -1919,17 +1924,128 @@ exports[`Frontend Storyshots EditableText editing 1`] = `
     type={undefined}
     value="Test text"
   />
+  <hr />
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          children
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          String value for this text field
+        </td>
+      </tr>
+      <tr>
+        <td>
+          editable
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          Toggle whether the text field is in editable or not.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          editing
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          Toggle whether the text field is in editing mode or not.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          placeholder
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          Field placeholder text
+        </td>
+      </tr>
+      <tr>
+        <td>
+          emptyReadOnlyText
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          String to display if it is editable and children is empty and there is not placeholder
+        </td>
+      </tr>
+      <tr>
+        <td>
+          title
+        </td>
+        <td>
+          string
+        </td>
+        <td />
+        <td>
+          Field tooltip
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </span>
 `;
 
 exports[`Frontend Storyshots EditableText not editing 1`] = `
-<div
-  className="textInput textState text row"
-  onClick={[Function]}
-  title={undefined}
->
-  Test text
-</div>
+<span>
+  <h2>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     EditableText - disabled
+  </h2>
+  <div
+    className="textInput textState text row"
+    onClick={[Function]}
+    title={undefined}
+  >
+    Test text
+  </div>
+</span>
 `;
 
 exports[`Frontend Storyshots Form checkbox and radios 1`] = `
@@ -1980,47 +2096,67 @@ exports[`Frontend Storyshots Form checkbox and radios 1`] = `
 `;
 
 exports[`Frontend Storyshots Form default 1`] = `
-<form
-  className=""
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Forms
+  </h2>
   <div
-    className="form-group"
+    className="well"
   >
-    <input
-      className="form-control"
-      id={undefined}
-      placeholder="Text"
-      type="text"
-    />
-    <input
-      className="form-control"
-      disabled={true}
-      id={undefined}
-      placeholder="disabled"
-      type="text"
-    />
+    See the 
+    <a
+      href="https://react-bootstrap.github.io/components.html#forms"
+    >
+      react-boostrap documentation on Forms
+    </a>
+     for details on usage and props.
   </div>
-  <div
-    className="form-group form-group-lg"
+  <form
+    className=""
   >
-    <input
-      className="form-control"
-      id={undefined}
-      placeholder="large"
-      type="text"
-    />
-  </div>
-  <div
-    className="form-group form-group-sm"
-  >
-    <input
-      className="form-control"
-      id={undefined}
-      placeholder="small"
-      type="text"
-    />
-  </div>
-</form>
+    <div
+      className="form-group"
+    >
+      <input
+        className="form-control"
+        id={undefined}
+        placeholder="Text"
+        type="text"
+      />
+      <input
+        className="form-control"
+        disabled={true}
+        id={undefined}
+        placeholder="disabled"
+        type="text"
+      />
+    </div>
+    <div
+      className="form-group form-group-lg"
+    >
+      <input
+        className="form-control"
+        id={undefined}
+        placeholder="large"
+        type="text"
+      />
+    </div>
+    <div
+      className="form-group form-group-sm"
+    >
+      <input
+        className="form-control"
+        id={undefined}
+        placeholder="small"
+        type="text"
+      />
+    </div>
+  </form>
+</span>
 `;
 
 exports[`Frontend Storyshots Form inline label 1`] = `

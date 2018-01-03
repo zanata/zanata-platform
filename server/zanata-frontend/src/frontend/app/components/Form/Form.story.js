@@ -1,10 +1,13 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Col, ControlLabel, FormGroup, FormControl, Form, InputGroup,
-  Checkbox, Radio } from 'react-bootstrap'
+  Checkbox, Radio, Well } from 'react-bootstrap'
 
 storiesOf('Form', module)
     .add('default', () => (
+        <span>
+         <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Forms</h2>
+          <Well>See the <a href="https://react-bootstrap.github.io/components.html#forms">react-boostrap documentation on Forms</a> for details on usage and props.</Well>
         <Form>
           <FormGroup>
             <FormControl type='text' placeholder='Text' />
@@ -17,9 +20,16 @@ storiesOf('Form', module)
             <FormControl type='text' placeholder='small' />
           </FormGroup>
         </Form>
+          <hr />
+          <h3>Input sizes</h3>
+          <p>Use bsSize on <code>FormGroup</code> or <code>InputGroup</code> to change the size of inputs. It also works with add-ons and most other options.</p>
+        </span>
     ))
 
     .add('validation states', () => (
+        <span>
+          <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Form validation states</h2>
+          <Well>Set validationState to one of 'success', 'warning' or 'error' to show validation state. Set <code>validationState</code> to null (or undefined) to hide validation state. Add <code>FormControl.Feedback</code> for a feedback icon when validation state is set.</Well>
         <Form>
           <FormGroup controlId='formValidationSuccess1'
                      validationState='success'>
@@ -45,37 +55,7 @@ storiesOf('Form', module)
             <FormControl.Feedback />
           </FormGroup>
         </Form>
-    ))
-
-    .add('inline label', () => (
-        <Form componentClass='fieldset' horizontal>
-          <FormGroup controlId='formValidationError3' validationState='error'>
-            <Col componentClass={ControlLabel} xs={3}>
-              Input with error
-            </Col>
-            <Col xs={9}>
-              <FormControl type='text' />
-              <FormControl.Feedback />
-            </Col>
-          </FormGroup>
-          <FormGroup controlId='formValidationSuccess4'
-                     validationState='success'>
-            <Col componentClass={ControlLabel} xs={3}>
-              Input group with success
-            </Col>
-            <Col xs={9}>
-              <InputGroup>
-                <InputGroup.Addon>@</InputGroup.Addon>
-                <FormControl type='text' />
-              </InputGroup>
-              <FormControl.Feedback />
-            </Col>
-          </FormGroup>
-        </Form>
-    ))
-
-    .add('checkbox and radios', () => (
-      <span>
+          <h3>Checkboxes and radios</h3>
         <Checkbox validationState='success'>
          Checkbox with success
         </Checkbox>
