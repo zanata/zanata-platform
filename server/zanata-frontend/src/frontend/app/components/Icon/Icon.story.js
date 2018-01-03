@@ -17,9 +17,8 @@ function allIconsSize(size) {
 
 function renderNamesIcons(name, size) {
   return (
-      <span>
         <Col sm={4}><span key={name} title={name}> {name} <Icon name={name}
-                                                                className={size}/> </span></Col></span>
+        className={size}/> </span></Col>
   )
 }
 
