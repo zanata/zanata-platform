@@ -61,6 +61,11 @@ public abstract class AbstractCommonPushStrategy<O extends PushOptions> {
             includes = builder.build();
         }
 
+        ImmutableList.Builder<String> emptyFileExcludesBuilder = ImmutableList.builder();
+        for (String fileExtension : fileExtensions) {
+            emptyFileExcludesBuilder.add("**/" + fileExtension);
+        }
+
         DirectoryScanner dirScanner = new DirectoryScanner();
 
         if (useDefaultExcludes) {
@@ -71,7 +76,11 @@ public abstract class AbstractCommonPushStrategy<O extends PushOptions> {
 
         dirScanner.setCaseSensitive(isCaseSensitive);
 
-        dirScanner.setExcludes(excludes.toArray(new String[excludes.size()]));
+        emptyFileExcludesBuilder.addAll(excludes);
+        ImmutableList<String> allExcludes = emptyFileExcludesBuilder.build();
+
+
+        dirScanner.setExcludes(allExcludes.toArray(new String[allExcludes.size()]));
         dirScanner.setIncludes(includes.toArray(new String[includes.size()]));
         dirScanner.scan();
         String[] includedFiles = dirScanner.getIncludedFiles();
