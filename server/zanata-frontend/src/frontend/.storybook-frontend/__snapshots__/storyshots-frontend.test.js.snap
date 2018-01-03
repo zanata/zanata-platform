@@ -2048,53 +2048,6 @@ exports[`Frontend Storyshots EditableText not editing 1`] = `
 </span>
 `;
 
-exports[`Frontend Storyshots Form checkbox and radios 1`] = `
-<span>
-  <div
-    className="checkbox has-success"
-    style={undefined}
-  >
-    <label
-      title=""
-    >
-      <input
-        disabled={false}
-        type="checkbox"
-      />
-      Checkbox with success
-    </label>
-  </div>
-  <div
-    className="radio has-warning"
-    style={undefined}
-  >
-    <label
-      title=""
-    >
-      <input
-        disabled={false}
-        type="radio"
-      />
-      Radio with warning
-    </label>
-  </div>
-  <div
-    className="checkbox has-error"
-    style={undefined}
-  >
-    <label
-      title=""
-    >
-      <input
-        disabled={false}
-        type="checkbox"
-      />
-      Checkbox with error
-    </label>
-  </div>
-</span>
-`;
-
 exports[`Frontend Storyshots Form default 1`] = `
 <span>
   <h2>
@@ -2156,47 +2109,103 @@ exports[`Frontend Storyshots Form default 1`] = `
       />
     </div>
   </form>
+  <hr />
+  <h3>
+    Input sizes
+  </h3>
+  <p>
+    Use bsSize on 
+    <code>
+      FormGroup
+    </code>
+     or 
+    <code>
+      InputGroup
+    </code>
+     to change the size of inputs. It also works with add-ons and most other options.
+  </p>
 </span>
 `;
 
-exports[`Frontend Storyshots Form inline label 1`] = `
-<fieldset
-  className="form-horizontal"
->
+exports[`Frontend Storyshots Form validation states 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Form validation states
+  </h2>
   <div
-    className="form-group has-feedback has-error"
+    className="well"
   >
-    <label
-      className="col-xs-3 control-label"
-      htmlFor="formValidationError3"
-    >
-      Input with error
-    </label>
+    Set validationState to one of 'success', 'warning' or 'error' to show validation state. Set 
+    <code>
+      validationState
+    </code>
+     to null (or undefined) to hide validation state. Add 
+    <code>
+      FormControl.Feedback
+    </code>
+     for a feedback icon when validation state is set.
+  </div>
+  <form
+    className=""
+  >
     <div
-      className="col-xs-9"
+      className="form-group has-success"
     >
+      <label
+        className="control-label"
+        htmlFor="formValidationSuccess1"
+      >
+        Input with success
+      </label>
       <input
         className="form-control"
-        id="formValidationError3"
+        id="formValidationSuccess1"
         type="text"
       />
-      <span
-        className="form-control-feedback glyphicon glyphicon-remove"
+    </div>
+    <div
+      className="form-group has-warning"
+    >
+      <label
+        className="control-label"
+        htmlFor="formValidationWarning1"
+      >
+        Input with warning
+      </label>
+      <input
+        className="form-control"
+        id="formValidationWarning1"
+        type="text"
       />
     </div>
-  </div>
-  <div
-    className="form-group has-feedback has-success"
-  >
-    <label
-      className="col-xs-3 control-label"
-      htmlFor="formValidationSuccess4"
-    >
-      Input group with success
-    </label>
     <div
-      className="col-xs-9"
+      className="form-group has-error"
     >
+      <label
+        className="control-label"
+        htmlFor="formValidationError1"
+      >
+        Input with error
+      </label>
+      <input
+        className="form-control"
+        id="formValidationError1"
+        type="text"
+      />
+    </div>
+    <div
+      className="form-group has-feedback has-warning"
+    >
+      <label
+        className="control-label"
+        htmlFor="formValidationWarning3"
+      >
+        Input group with warning
+      </label>
       <span
         className="input-group"
       >
@@ -2207,95 +2216,61 @@ exports[`Frontend Storyshots Form inline label 1`] = `
         </span>
         <input
           className="form-control"
-          id="formValidationSuccess4"
+          id="formValidationWarning3"
           type="text"
         />
       </span>
       <span
-        className="form-control-feedback glyphicon glyphicon-ok"
+        className="form-control-feedback glyphicon glyphicon-warning-sign"
       />
     </div>
-  </div>
-</fieldset>
-`;
-
-exports[`Frontend Storyshots Form validation states 1`] = `
-<form
-  className=""
->
+  </form>
+  <h3>
+    Checkboxes and radios
+  </h3>
   <div
-    className="form-group has-success"
+    className="checkbox has-success"
+    style={undefined}
   >
     <label
-      className="control-label"
-      htmlFor="formValidationSuccess1"
+      title=""
     >
-      Input with success
-    </label>
-    <input
-      className="form-control"
-      id="formValidationSuccess1"
-      type="text"
-    />
-  </div>
-  <div
-    className="form-group has-warning"
-  >
-    <label
-      className="control-label"
-      htmlFor="formValidationWarning1"
-    >
-      Input with warning
-    </label>
-    <input
-      className="form-control"
-      id="formValidationWarning1"
-      type="text"
-    />
-  </div>
-  <div
-    className="form-group has-error"
-  >
-    <label
-      className="control-label"
-      htmlFor="formValidationError1"
-    >
-      Input with error
-    </label>
-    <input
-      className="form-control"
-      id="formValidationError1"
-      type="text"
-    />
-  </div>
-  <div
-    className="form-group has-feedback has-warning"
-  >
-    <label
-      className="control-label"
-      htmlFor="formValidationWarning3"
-    >
-      Input group with warning
-    </label>
-    <span
-      className="input-group"
-    >
-      <span
-        className="input-group-addon"
-      >
-        @
-      </span>
       <input
-        className="form-control"
-        id="formValidationWarning3"
-        type="text"
+        disabled={false}
+        type="checkbox"
       />
-    </span>
-    <span
-      className="form-control-feedback glyphicon glyphicon-warning-sign"
-    />
+      Checkbox with success
+    </label>
   </div>
-</form>
+  <div
+    className="radio has-warning"
+    style={undefined}
+  >
+    <label
+      title=""
+    >
+      <input
+        disabled={false}
+        type="radio"
+      />
+      Radio with warning
+    </label>
+  </div>
+  <div
+    className="checkbox has-error"
+    style={undefined}
+  >
+    <label
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Checkbox with error
+    </label>
+  </div>
+</span>
 `;
 
 exports[`Frontend Storyshots Foundation colours 1`] = `
