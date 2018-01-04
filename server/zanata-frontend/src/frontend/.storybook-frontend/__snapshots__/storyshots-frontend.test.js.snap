@@ -21730,163 +21730,256 @@ exports[`Frontend Storyshots Tabs horizontal 1`] = `
     Custom tab layouts
   </h3>
   <p>
-    For more complex layouts the flexible TabContainer, TabContent, andTabPane components along with any style of Nav allow you to quickly piece together your own Tabs component with additional markup needed. Just create a set of NavItems each with an eventKey corresponding to the eventKey of a TabPane. Wrap the whole thing in a TabContainer and you have fully functioning custom tabs component. Check out the below example making use of the grid system and pills.
+    For more complex layouts the flexible 
+    <code>
+      TabContainer
+    </code>
+    , 
+    <code>
+      TabContent
+    </code>
+    , and 
+    <code>
+      TabPane
+    </code>
+     components along with any style of 
+    <code>
+      Nav
+    </code>
+     allow you to quickly piece together your own Tabs component with additional markup needed. Just create a set of 
+    <code>
+      NavItems
+    </code>
+     each with an 
+    <code>
+      eventKey
+    </code>
+     corresponding to the eventKey of a 
+    <code>
+      TabPane
+    </code>
+    . Wrap the whole thing in a 
+    <code>
+      TabContainer
+    </code>
+     and you have fully functioning custom tabs component. Check out the below example making use of the grid system and pills.
   </p>
 </span>
 `;
 
 exports[`Frontend Storyshots Tabs vertical 1`] = `
-<div
-  className="contentViewContainer row"
-  id="left-tabs-example"
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Tabs - vertical
+  </h2>
   <div
-    className="col-sm-4"
+    className="contentViewContainer row"
+    id="left-tabs-example"
   >
-    <ul
-      className="nav nav-pills nav-stacked"
-      role="tablist"
+    <div
+      className="col-sm-4"
     >
-      <li
-        className="active"
-        role="presentation"
-        style={undefined}
+      <ul
+        className="nav nav-pills nav-stacked"
+        role="tablist"
       >
-        <a
-          aria-controls="left-tabs-example-pane-first"
-          aria-selected={true}
-          href="#"
-          id="left-tabs-example-tab-first"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="tab"
-          tabIndex={undefined}
+        <li
+          className="active"
+          role="presentation"
+          style={undefined}
         >
-          Tab 1
-        </a>
-      </li>
-      <li
-        className=""
-        role="presentation"
-        style={undefined}
+          <a
+            aria-controls="left-tabs-example-pane-first"
+            aria-selected={true}
+            href="#"
+            id="left-tabs-example-tab-first"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="tab"
+            tabIndex={undefined}
+          >
+            Tab 1
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+          style={undefined}
+        >
+          <a
+            aria-controls="left-tabs-example-pane-second"
+            aria-selected={false}
+            href="#"
+            id="left-tabs-example-tab-second"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="tab"
+            tabIndex={-1}
+          >
+            Tab 2
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div
+      className="col-sm-8"
+    >
+      <div
+        className="tab-content"
       >
-        <a
-          aria-controls="left-tabs-example-pane-second"
-          aria-selected={false}
-          href="#"
-          id="left-tabs-example-tab-second"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="tab"
-          tabIndex={-1}
+        <div
+          aria-hidden={false}
+          aria-labelledby="left-tabs-example-tab-first"
+          className="tab-pane active fade in"
+          id="left-tabs-example-pane-first"
+          role="tabpanel"
         >
-          Tab 2
+          Tab 1 content
+        </div>
+        <div
+          aria-hidden={true}
+          aria-labelledby="left-tabs-example-tab-second"
+          className="tab-pane fade"
+          id="left-tabs-example-pane-second"
+          role="tabpanel"
+        >
+          Tab 2 content
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <p>
+    <code>
+      Nav bsStyle="pills" stacked
+    </code>
+  </p>
+</span>
+`;
+
+exports[`Frontend Storyshots TextInput default 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     TextInput
+  </h2>
+  <div
+    className="well"
+  >
+    Basic text input field
+  </div>
+  <input
+    aria-label="TextInput"
+    autoComplete={undefined}
+    autoFocus={undefined}
+    className="textInput"
+    id="demo"
+    onBlur={undefined}
+    onChange={undefined}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onSelect={undefined}
+    placeholder="TextInput…"
+    readOnly={false}
+    type={undefined}
+    value={undefined}
+  />
+</span>
+`;
+
+exports[`Frontend Storyshots Tooltip default 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Tooltip
+  </h2>
+  <div
+    className="well"
+  >
+    Tooltip component for a more stylish alternative to that anchor tag 
+    <code>
+      title
+    </code>
+     attribute. Attach and position tooltips with 
+    <code>
+      OverlayTrigger
+    </code>
+    .
+    <hr />
+    <ul>
+      <li>
+        <a
+          href="https://react-bootstrap.github.io/components.html#tooltips-props"
+        >
+          Props for react-bootstrap Tooltips
         </a>
       </li>
     </ul>
   </div>
   <div
-    className="col-sm-8"
+    className="btn-toolbar"
+    role="toolbar"
   >
-    <div
-      className="tab-content"
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={null}
+      onFocus={[Function]}
+      onMouseOut={[Function]}
+      onMouseOver={[Function]}
+      type="button"
     >
-      <div
-        aria-hidden={false}
-        aria-labelledby="left-tabs-example-tab-first"
-        className="tab-pane active fade in"
-        id="left-tabs-example-pane-first"
-        role="tabpanel"
-      >
-        Tab 1 content
-      </div>
-      <div
-        aria-hidden={true}
-        aria-labelledby="left-tabs-example-tab-second"
-        className="tab-pane fade"
-        id="left-tabs-example-pane-second"
-        role="tabpanel"
-      >
-        Tab 2 content
-      </div>
-    </div>
+      Holy guacamole!
+    </button>
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={null}
+      onFocus={[Function]}
+      onMouseOut={[Function]}
+      onMouseOver={[Function]}
+      type="button"
+    >
+      Holy guacamole!
+    </button>
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={null}
+      onFocus={[Function]}
+      onMouseOut={[Function]}
+      onMouseOver={[Function]}
+      type="button"
+    >
+      Holy guacamole!
+    </button>
+    <button
+      className="btn btn-default"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={null}
+      onFocus={[Function]}
+      onMouseOut={[Function]}
+      onMouseOver={[Function]}
+      type="button"
+    >
+      Holy guacamole!
+    </button>
   </div>
-</div>
-`;
-
-exports[`Frontend Storyshots TextInput default 1`] = `
-<input
-  aria-label="TextInput"
-  autoComplete={undefined}
-  autoFocus={undefined}
-  className="textInput"
-  id="demo"
-  onBlur={undefined}
-  onChange={undefined}
-  onFocus={[Function]}
-  onKeyDown={[Function]}
-  onSelect={undefined}
-  placeholder="TextInput…"
-  readOnly={false}
-  type={undefined}
-  value={undefined}
-/>
-`;
-
-exports[`Frontend Storyshots Tooltip default 1`] = `
-<div
-  className="btn-toolbar"
-  role="toolbar"
->
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onBlur={[Function]}
-    onClick={null}
-    onFocus={[Function]}
-    onMouseOut={[Function]}
-    onMouseOver={[Function]}
-    type="button"
-  >
-    Holy guacamole!
-  </button>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onBlur={[Function]}
-    onClick={null}
-    onFocus={[Function]}
-    onMouseOut={[Function]}
-    onMouseOver={[Function]}
-    type="button"
-  >
-    Holy guacamole!
-  </button>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onBlur={[Function]}
-    onClick={null}
-    onFocus={[Function]}
-    onMouseOut={[Function]}
-    onMouseOver={[Function]}
-    type="button"
-  >
-    Holy guacamole!
-  </button>
-  <button
-    className="btn btn-default"
-    disabled={false}
-    onBlur={[Function]}
-    onClick={null}
-    onFocus={[Function]}
-    onMouseOut={[Function]}
-    onMouseOver={[Function]}
-    type="button"
-  >
-    Holy guacamole!
-  </button>
-</div>
+</span>
 `;
 
 exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
@@ -21965,8 +22058,20 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
 exports[`Frontend Storyshots TriCheckbox default 1`] = `
 <div>
   <h2>
-    Setting Intermediate
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+      width="42px"
+    />
+     TriCheckbox
   </h2>
+  <div
+    className="well"
+  >
+    Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.
+  </div>
+  <h3>
+    Setting Intermediate
+  </h3>
   <div>
     <input
       checked={false}
@@ -22215,30 +22320,147 @@ exports[`Frontend Storyshots VersionTMMergeModal version selected 1`] = `
 `;
 
 exports[`Frontend Storyshots Well default 1`] = `
-<div
-  className="well"
->
-  Look I'm in a well! 
-  <a
-    href="#"
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Well
+  </h2>
+  <div
+    className="well"
   >
-    I am a link in a well!
-  </a>
-</div>
+    Use the well as a simple effect on an element to give it an inset effect.
+  </div>
+  <div
+    className="well"
+  >
+    Look I'm in a well! 
+    <a
+      href="#"
+    >
+      I am a link in a well!
+    </a>
+  </div>
+  <hr />
+  <h3>
+    Props
+  </h3>
+  <table
+    className="table table-striped table-bordered table-condensed table-hover"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          bsClass
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          'btn'
+        </td>
+        <td>
+          Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          bsSize
+        </td>
+        <td>
+          one of: 
+          <code>
+            "lg"
+          </code>
+          , 
+          <code>
+            "large"
+          </code>
+          , 
+          <code>
+            "sm"
+          </code>
+          , 
+          <code>
+            "small"
+          </code>
+          , 
+          <code>
+            "xs"
+          </code>
+          , 
+          <code>
+            "xsmall"
+          </code>
+        </td>
+        <td />
+        <td>
+          Component size variations
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</span>
 `;
 
 exports[`Frontend Storyshots Well large 1`] = `
-<div
-  className="well well-lg"
->
-  Look I'm in a large well!
-</div>
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Well - large
+  </h2>
+  <div
+    className="well well-lg"
+  >
+    Look I'm in a large well!
+  </div>
+  <p>
+    <code>
+      bsSize="large"
+    </code>
+  </p>
+</span>
 `;
 
-exports[`Frontend Storyshots Well with padding 1`] = `
-<div
-  className="well well-sm"
->
-  Look I'm in a small well!
-</div>
+exports[`Frontend Storyshots Well small 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Well - small
+  </h2>
+  <div
+    className="well well-sm"
+  >
+    Look I'm in a small well!
+  </div>
+  <p>
+    <code>
+      bsSize="small"
+    </code>
+  </p>
+</span>
 `;

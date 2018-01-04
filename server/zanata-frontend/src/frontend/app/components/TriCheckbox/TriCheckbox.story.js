@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { storiesOf, action } from '@storybook/react'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
-import { Table, Col } from 'react-bootstrap'
+import { Table, Col, Well } from 'react-bootstrap'
 
 class TriCheckbox extends Component {
   static propTypes = {
@@ -84,7 +84,11 @@ class WithButton extends Component {
 storiesOf('TriCheckbox', module)
   .add('default', () => (
     <div>
-      <h2>Setting Intermediate</h2>
+      <h2><img
+          src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+          width="42px"/> TriCheckbox</h2>
+      <Well>Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.</Well>
+      <h3>Setting Intermediate</h3>
       <WithButton
         checked={false}
         indeterminate={false}

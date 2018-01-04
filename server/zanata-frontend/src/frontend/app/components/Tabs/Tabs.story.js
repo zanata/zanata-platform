@@ -21,11 +21,14 @@ storiesOf('Tabs', module)
         </Tabs>
           <hr />
           <h3>Custom tab layouts</h3>
-          <p>For more complex layouts the flexible TabContainer, TabContent, andTabPane components along with any style of Nav allow you to quickly piece together your own Tabs component with additional markup needed.
-Just create a set of NavItems each with an eventKey corresponding to the eventKey of a TabPane. Wrap the whole thing in a TabContainer and you have fully functioning custom tabs component. Check out the below example making use of the grid system and pills.</p>
+          <p>For more complex layouts the flexible <code>TabContainer</code>, <code>TabContent</code>, and <code>TabPane</code> components along with any style of <code>Nav</code> allow you to quickly piece together your own Tabs component with additional markup needed.
+            Just create a set of <code>NavItems</code> each with an <code>eventKey</code> corresponding to the eventKey of a <code>TabPane</code>. Wrap the whole thing in a <code>TabContainer</code> and you have fully functioning custom tabs component. Check out the below example making use of the grid system and pills.</p>
         </span>
     ))
     .add('vertical', () => (
+        <span>
+                            <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Tabs - vertical</h2>
+
         <Tab.Container id='left-tabs-example' defaultActiveKey='first'
             onSelect={action('onSelect')} className='contentViewContainer'>
           <Row className='clearfix'>
@@ -51,4 +54,7 @@ Just create a set of NavItems each with an eventKey corresponding to the eventKe
             </Col>
           </Row>
         </Tab.Container>
+          <hr />
+        <p><code>Nav bsStyle="pills" stacked</code></p>
+    </span>
     ))
