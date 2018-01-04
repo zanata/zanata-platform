@@ -35,11 +35,9 @@ describe('PhraseStatusFilterTest', () => {
         <label className="Toggle-label"
           htmlFor="government-issued"
           title="titalic">
-          <Row>
-            <Icon name="dot" className="n1" />
-            12
-            <span className="u-hiddenVisually">titalic</span>
-          </Row>
+          <Icon name="dot" className="n1" />
+          12
+          <span className="u-hiddenVisually">titalic</span>
         </label>
       </div>
     )
@@ -68,10 +66,8 @@ describe('PhraseStatusFilterTest', () => {
         <label className="Toggle-label"
           htmlFor="government-issued"
           title="titalic">
-          <Row>
-            17
-            <span className="u-hiddenVisually">titalic</span>
-          </Row>
+          17
+          <span className="u-hiddenVisually">titalic</span>
         </label>
       </div>
     )
