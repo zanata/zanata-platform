@@ -2514,28 +2514,49 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
     </div>
   </div>
   <br />
-  <p>
-    The 
-    <strong>
-      CSS Grid
-    </strong>
-     might be a good future replacement for the bootstrap columns/flexbox combinations, but currently browser support is below 80%. (
-    <a
-      href="https://caniuse.com/#feat=css-grid"
+  <div
+    className="panel panel-warning"
+    id={undefined}
+  >
+    <div
+      className="panel-heading"
     >
-      CanIUse
-    </a>
-    )
-  </p>
-  <ul>
-    <li>
-      <a
-        href="https://css-tricks.com/snippets/css/complete-guide-grid/"
-      >
-        https://css-tricks.com/snippets/css/complete-guide-grid/
-      </a>
-    </li>
-  </ul>
+      Future improvements
+    </div>
+    <div
+      className="panel-body"
+    >
+      <p>
+        The 
+        <strong>
+          CSS Grid
+        </strong>
+         will be a good future replacement for the bootstrap columns/flexbox combinations, but currently browser support is below 80%. (
+        <a
+          href="https://caniuse.com/#feat=css-grid"
+        >
+          CanIUse
+        </a>
+        )
+      </p>
+      <ul>
+        <li>
+          <a
+            href="https://css-tricks.com/snippets/css/complete-guide-grid/"
+          >
+            https://css-tricks.com/snippets/css/complete-guide-grid/
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://open.nytimes.com/bootstrap-to-css-grid-87b3f5f830e4"
+          >
+            https://open.nytimes.com/bootstrap-to-css-grid-87b3f5f830e4
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </span>
 `;
 
@@ -17042,6 +17063,13 @@ exports[`Frontend Storyshots Pagination default 1`] = `
 
 exports[`Frontend Storyshots Pagination large 1`] = `
 <span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Pagination - large
+  </h2>
   <ul
     className="pagination pagination-lg"
   >
@@ -17177,6 +17205,13 @@ exports[`Frontend Storyshots Pagination large 1`] = `
 
 exports[`Frontend Storyshots Pagination small 1`] = `
 <span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Pagination - small
+  </h2>
   <ul
     className="pagination pagination-sm"
   >
@@ -17310,125 +17345,388 @@ exports[`Frontend Storyshots Pagination small 1`] = `
 </span>
 `;
 
+exports[`Frontend Storyshots Panel accordion 1`] = `
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Accordion
+  </h2>
+  <div
+    className="well"
+  >
+    <code>
+      Accordion
+    </code>
+     aliases 
+    <code>
+      PanelGroup accordion
+    </code>
+    <ul>
+      <li>
+        <a
+          href="https://react-bootstrap.github.io/components.html#panels-props-group"
+        >
+          Props for react-bootstrap PanelGroup and Accordion
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div
+    className="panel-group"
+    role="tablist"
+  >
+    <div
+      className="panel panel-default"
+      id={null}
+    >
+      <div
+        className="panel-heading"
+      >
+        <h4
+          className="panel-title"
+          role="presentation"
+        >
+          <a
+            aria-controls={undefined}
+            aria-expanded={false}
+            aria-selected={false}
+            className="collapsed"
+            href={undefined}
+            onClick={[Function]}
+            role="tab"
+          >
+            Collapsible Group Item #1
+          </a>
+        </h4>
+      </div>
+      <div
+        aria-expanded={null}
+        aria-hidden={true}
+        className="panel-collapse collapse"
+        id={undefined}
+        role="tabpanel"
+      >
+        <div
+          className="panel-body"
+        >
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        </div>
+      </div>
+    </div>
+    <div
+      className="panel panel-default"
+      id={null}
+    >
+      <div
+        className="panel-heading"
+      >
+        <h4
+          className="panel-title"
+          role="presentation"
+        >
+          <a
+            aria-controls={undefined}
+            aria-expanded={false}
+            aria-selected={false}
+            className="collapsed"
+            href={undefined}
+            onClick={[Function]}
+            role="tab"
+          >
+            Collapsible Group Item #2
+          </a>
+        </h4>
+      </div>
+      <div
+        aria-expanded={null}
+        aria-hidden={true}
+        className="panel-collapse collapse"
+        id={undefined}
+        role="tabpanel"
+      >
+        <div
+          className="panel-body"
+        >
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        </div>
+      </div>
+    </div>
+    <div
+      className="panel panel-default"
+      id={null}
+    >
+      <div
+        className="panel-heading"
+      >
+        <h4
+          className="panel-title"
+          role="presentation"
+        >
+          <a
+            aria-controls={undefined}
+            aria-expanded={false}
+            aria-selected={false}
+            className="collapsed"
+            href={undefined}
+            onClick={[Function]}
+            role="tab"
+          >
+            Collapsible Group Item #3
+          </a>
+        </h4>
+      </div>
+      <div
+        aria-expanded={null}
+        aria-hidden={true}
+        className="panel-collapse collapse"
+        id={undefined}
+        role="tabpanel"
+      >
+        <div
+          className="panel-body"
+        >
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        </div>
+      </div>
+    </div>
+  </div>
+</span>
+`;
+
 exports[`Frontend Storyshots Panel danger 1`] = `
-<div
-  className="panel panel-danger"
-  id={undefined}
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Panel - danger
+  </h2>
   <div
-    className="panel-heading"
+    className="panel panel-danger"
+    id={undefined}
   >
-    Panel header
+    <div
+      className="panel-heading"
+    >
+      Panel header
+    </div>
+    <div
+      className="panel-body"
+    >
+      Panel content
+    </div>
   </div>
-  <div
-    className="panel-body"
-  >
-    Panel content
-  </div>
-</div>
+  <p>
+    <code>
+      bsStyle='danger'
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Panel default 1`] = `
-<div
-  className="panel panel-default"
-  id={undefined}
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Panel
+  </h2>
   <div
-    className="panel-body"
+    className="well"
   >
-    Basic panel example
+    By default, all the 
+    <code>
+      Panel
+    </code>
+     does is apply some basic border and padding to contain some content. You can pass on any additional properties you need, e.g. a custom onClick handler, as it is shown in the example code. They all will apply to the wrapper div element.
+    <ul>
+      <li>
+        <a
+          href="https://react-bootstrap.github.io/components.html#panels-props"
+        >
+          Props for react-bootstrap Panel
+        </a>
+      </li>
+    </ul>
   </div>
-</div>
+  <div
+    className="panel panel-default"
+    id={undefined}
+  >
+    <div
+      className="panel-body"
+    >
+      Basic panel example
+    </div>
+  </div>
+</span>
 `;
 
 exports[`Frontend Storyshots Panel info 1`] = `
-<div
-  className="panel panel-info"
-  id={undefined}
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Panel - info
+  </h2>
   <div
-    className="panel-heading"
+    className="panel panel-info"
+    id={undefined}
   >
-    Panel header
+    <div
+      className="panel-heading"
+    >
+      Panel header
+    </div>
+    <div
+      className="panel-body"
+    >
+      Panel content
+    </div>
   </div>
-  <div
-    className="panel-body"
-  >
-    Panel content
-  </div>
-</div>
+  <p>
+    <code>
+      bsStyle='info'
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Panel primary 1`] = `
-<div
-  className="panel panel-primary"
-  id={undefined}
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Panel - primary
+  </h2>
   <div
-    className="panel-heading"
+    className="panel panel-primary"
+    id={undefined}
   >
-    Panel header
+    <div
+      className="panel-heading"
+    >
+      Panel header
+    </div>
+    <div
+      className="panel-body"
+    >
+      Panel content
+    </div>
   </div>
-  <div
-    className="panel-body"
-  >
-    Panel content
-  </div>
-</div>
+  <hr />
+  <p>
+    <code>
+      bsStyle='primary'
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Panel success 1`] = `
-<div
-  className="panel panel-success"
-  id={undefined}
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Panel - success
+  </h2>
   <div
-    className="panel-heading"
+    className="panel panel-success"
+    id={undefined}
   >
-    Panel header
+    <div
+      className="panel-heading"
+    >
+      Panel header
+    </div>
+    <div
+      className="panel-body"
+    >
+      Panel content
+    </div>
   </div>
-  <div
-    className="panel-body"
-  >
-    Panel content
-  </div>
-</div>
+  <p>
+    <code>
+      bsStyle='success'
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Panel warning 1`] = `
-<div
-  className="panel panel-warning"
-  id={undefined}
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Panel - warning
+  </h2>
   <div
-    className="panel-heading"
+    className="panel panel-warning"
+    id={undefined}
   >
-    Panel header
+    <div
+      className="panel-heading"
+    >
+      Panel header
+    </div>
+    <div
+      className="panel-body"
+    >
+      Panel content
+    </div>
   </div>
-  <div
-    className="panel-body"
-  >
-    Panel content
-  </div>
-</div>
+  <p>
+    <code>
+      bsStyle='warning'
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Panel with heading 1`] = `
-<div
-  className="panel panel-default"
-  id={undefined}
->
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Panel
+  </h2>
   <div
-    className="panel-heading"
+    className="well"
   >
-    Panel header
+    Easily add a heading container to your panel with the header prop.
   </div>
   <div
-    className="panel-body"
+    className="panel panel-default"
+    id={undefined}
   >
-    Panel content
+    <div
+      className="panel-heading"
+    >
+      Panel header
+    </div>
+    <div
+      className="panel-body"
+    >
+      Panel content
+    </div>
   </div>
-</div>
+</span>
 `;
 
 exports[`Frontend Storyshots ProgressBar default 1`] = `
