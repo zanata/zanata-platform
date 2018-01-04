@@ -12,6 +12,7 @@
 @import "./gwt.less";
 @import "./bstrap-styleguide.less";
 
+
 /* Base containers */
 
 html {
@@ -2984,6 +2985,14 @@ tbody.collapse {
   margin-bottom: 0;
 }
 
+.modal-container {
+  position: relative;
+}
+
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute;
+}
+
 .collapsing {
   position: relative;
   overflow: hidden;
@@ -4888,7 +4897,7 @@ button.close {
   font-weight: 700;
   line-height: 1;
   top: 0;
-  right: 0;
+  right: 1rem;
   position: absolute;
   border: none !important;
   color: #f00;
