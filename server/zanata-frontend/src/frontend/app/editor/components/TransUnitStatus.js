@@ -47,7 +47,7 @@ class TransUnitStatus extends React.Component {
           className="TransUnit-metaDataButton"
           title="1 Error">
           <span className="u-textDanger">
-            <Icon name="dot" title="Error" size="n1" />
+            <Icon name="dot" title="Error" className="n1" />
           </span>
           <br />
           <span>{phrase.comments}</span>

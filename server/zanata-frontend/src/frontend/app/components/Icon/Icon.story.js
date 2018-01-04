@@ -3,14 +3,14 @@ import { storiesOf } from '@storybook/react'
 import { Icon } from '../'
 import iconList from '../Icon/list'
 
-function renderIcon (name, size) {
+function renderIcon (name, className) {
   return (
-    <span key={name} title={name}> <Icon name={name} className={size} /> </span>
+    <span key={name} title={name}> <Icon name={name} className={className} /> </span>
   )
 }
 
-function allIconsSize (size) {
-  return iconList.map((name) => renderIcon(name, size))
+function allIconsSize (className) {
+  return iconList.map((name) => renderIcon(name, className))
 }
 
 storiesOf('Icon', module)
