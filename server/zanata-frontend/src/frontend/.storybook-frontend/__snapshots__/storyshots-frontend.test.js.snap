@@ -16856,384 +16856,458 @@ exports[`Frontend Storyshots Notification Info 1`] = `undefined`;
 exports[`Frontend Storyshots Notification Warning 1`] = `undefined`;
 
 exports[`Frontend Storyshots Pagination default 1`] = `
-<ul
-  className="pagination pagination-md"
->
-  <li
-    className="active"
-    style={undefined}
+<span>
+  <h2>
+    <img
+      src="https://react-bootstrap.github.io/assets/logo.png"
+      width="42px"
+    />
+    Pagination
+  </h2>
+  <div
+    className="well"
   >
+    Multi-page pagination component. Set 
+    <code>
+      items
+    </code>
+     to the number of pages. 
+    <code>
+      activePage
+    </code>
+     prop dictates which page is active. 
     <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      href="https://react-bootstrap.github.io/components.html#pagination-props"
     >
-      1
+      Props for react-bootstrap pagination
     </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
+  </div>
+  <ul
+    className="pagination pagination-md"
   >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+    <li
+      className="active"
+      style={undefined}
     >
-      2
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        1
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      3
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        2
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      4
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        3
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      5
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        4
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      6
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        5
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      7
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        6
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      8
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        7
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      9
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        8
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      10
-    </a>
-  </li>
-</ul>
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        9
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
+    >
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        10
+      </a>
+    </li>
+  </ul>
+  <hr />
+  <h3>
+    More options
+  </h3>
+  <p>
+    such as 
+    <code>
+      first
+    </code>
+    , 
+    <code>
+      last
+    </code>
+    , 
+    <code>
+      previous
+    </code>
+    , 
+    <code>
+      next
+    </code>
+    , 
+    <code>
+      boundaryLinks
+    </code>
+     and 
+    <code>
+      ellipsis
+    </code>
+    .
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Pagination large 1`] = `
-<ul
-  className="pagination pagination-lg"
->
-  <li
-    className="active"
-    style={undefined}
+<span>
+  <ul
+    className="pagination pagination-lg"
   >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+    <li
+      className="active"
+      style={undefined}
     >
-      1
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        1
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      2
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        2
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      3
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        3
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      4
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        4
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      5
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        5
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      6
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        6
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      7
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        7
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      8
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        8
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      9
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        9
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      10
-    </a>
-  </li>
-</ul>
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        10
+      </a>
+    </li>
+  </ul>
+  <hr />
+  <p>
+    <code>
+      bsSize='large'
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Pagination small 1`] = `
-<ul
-  className="pagination pagination-sm"
->
-  <li
-    className="active"
-    style={undefined}
+<span>
+  <ul
+    className="pagination pagination-sm"
   >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+    <li
+      className="active"
+      style={undefined}
     >
-      1
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        1
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      2
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        2
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      3
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        3
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      4
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        4
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      5
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        5
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      6
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        6
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      7
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        7
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      8
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        8
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      9
-    </a>
-  </li>
-  <li
-    className=""
-    style={undefined}
-  >
-    <a
-      href="#"
-      onClick={[Function]}
-      role="button"
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        9
+      </a>
+    </li>
+    <li
+      className=""
+      style={undefined}
     >
-      10
-    </a>
-  </li>
-</ul>
+      <a
+        href="#"
+        onClick={[Function]}
+        role="button"
+      >
+        10
+      </a>
+    </li>
+  </ul>
+  <hr />
+  <p>
+    <code>
+      bsSize='small'
+    </code>
+  </p>
+</span>
 `;
 
 exports[`Frontend Storyshots Panel danger 1`] = `
