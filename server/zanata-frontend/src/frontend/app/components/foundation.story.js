@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { Grid, Row, Col, Well, Panel } from 'react-bootstrap'
+import { Grid, Row, Col, Well, Panel, Checkbox } from 'react-bootstrap'
 
 storiesOf('Foundation', module)
     .add('grid', () => (
@@ -25,11 +25,15 @@ storiesOf('Foundation', module)
         </Grid>
           <br />
           <Panel header='Future improvements' bsStyle='warning'>
-           <p>The <strong>CSS Grid</strong> will be a good future replacement for the bootstrap columns/flexbox combinations, but currently browser support is below 80%. (<a href="https://caniuse.com/#feat=css-grid">CanIUse</a>)</p>
+            <h4> <Checkbox  readOnly>CSS Grid</Checkbox></h4>
+            <p>The <strong>CSS Grid</strong> will be a good future replacement for the bootstrap columns/flexbox combinations, but currently browser support is below 80%. (<a href="https://caniuse.com/#feat=css-grid">CanIUse</a>)</p>
           <ul>
             <li><a href="https://css-tricks.com/snippets/css/complete-guide-grid/">https://css-tricks.com/snippets/css/complete-guide-grid/</a></li>
           <li><a href="https://open.nytimes.com/bootstrap-to-css-grid-87b3f5f830e4">https://open.nytimes.com/bootstrap-to-css-grid-87b3f5f830e4</a></li>
           </ul>
+            <hr />
+            <h4> <Checkbox  readOnly>Utility classes</Checkbox></h4>
+            <p>Add more css utility classes so that developers can add minor changes such as padding without working with the style.less file</p>
           </Panel>
         </span>
     ))
