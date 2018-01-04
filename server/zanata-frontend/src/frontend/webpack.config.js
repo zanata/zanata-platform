@@ -210,7 +210,7 @@ module.exports = function (env) {
       new ExtractTextPlugin({
         filename: '[name].[chunkhash:8].cache.css',
         // storybook should use the fallback: style-loader
-        disable: storybook
+        disable: storybook || dev
       }),
       new webpack.NoEmitOnErrorsPlugin(),
 
