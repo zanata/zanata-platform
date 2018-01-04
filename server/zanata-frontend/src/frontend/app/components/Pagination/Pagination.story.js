@@ -20,6 +20,8 @@ storiesOf('Pagination', module)
     ))
     .add('large', () => (
         <span>
+                  <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Pagination - large</h2>
+
         <Pagination
             bsSize='large'
             items={10}
@@ -30,6 +32,8 @@ storiesOf('Pagination', module)
     ))
     .add('small', () => (
       <span>
+                <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Pagination - small</h2>
+
         <Pagination
             bsSize='small'
             items={10}
