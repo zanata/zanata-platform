@@ -64,11 +64,22 @@ class TransUnitSourcePanel extends React.Component {
               {copyButton}
             </div>
             : undefined
-
+          // TODO: pass search as Prop to TransUnitSourcePanel @efloden
+          const search = 'Containers'
+          const getHighlightedText = (text, higlight) => {
+            // Split on higlight term and include term into parts, ignore case
+            const parts = text.split(new RegExp(`(${higlight})`, 'gi'))
+            return parts.map((part, index) =>
+              part.toLowerCase() === higlight.toLowerCase()
+                ? <span key={index} className="highlight">{part}</span>
+                : <span key={index}>{part}</span>
+            )
+          }
+          const final = search ? getHighlightedText(source, search) : source
           return (
             <div className="TransUnit-item" key={index}>
               {itemHeader}
-              <pre className="TransUnit-text">{source}</pre>
+              <pre className="TransUnit-text">{final}</pre>
             </div>
           )
         })
