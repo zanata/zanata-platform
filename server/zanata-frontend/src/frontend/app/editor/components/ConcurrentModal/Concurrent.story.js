@@ -20,14 +20,14 @@ storiesOf('Concurrent editing', module)
         </Alert>
     ))
     .add('transunit items', () => (
+        /* eslint-disable max-len */
         <span>
           <h1>TransUnit items</h1>
           <Image src="https://i.imgur.com/yQWlJaH.png" responsive/>
           <h2>Concurrent user notice</h2>
           <Button title="Click should trigger onClick action"
                   onClick={action('onClick')}
-                  className="EditorButton Button--link Button--small
-                  Button--concurrent">
+                  className="EditorButton Button--link Button--small Button--concurrent">
             <Icon name="user" className="n1"/> username
           </Button>
           <h2>Resolve merge conflict button</h2>
@@ -37,6 +37,7 @@ storiesOf('Concurrent editing', module)
           Resolve conflict
         </Button>
       </span>
+      /* eslint-enable max-len */
     ))
     .add('modal', () => (
       <ConcurrentModal />

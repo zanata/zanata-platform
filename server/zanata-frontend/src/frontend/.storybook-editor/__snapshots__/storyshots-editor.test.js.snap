@@ -5,11 +5,9 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -57,11 +55,9 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span
-          className="s1"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -80,11 +76,9 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -114,11 +108,9 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -159,11 +151,9 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span
-          className="s1"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -182,11 +172,9 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -216,11 +204,9 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -268,11 +254,9 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span
-          className="s1"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -291,11 +275,9 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -325,11 +307,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -374,11 +354,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
       <span
         className="CriteriaText"
       >
-        <span
-          className="s0"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s0"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -404,11 +382,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         <div
           className="well well-sm"
         >
-          <span
-            className="s0"
-          >
+          <span>
             <svg
-              className={undefined}
+              className="s0"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -437,11 +413,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span
-          className="s1"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -460,11 +434,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -494,11 +466,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -543,11 +513,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
       <span
         className="CriteriaText"
       >
-        <span
-          className="s0"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s0"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -573,11 +541,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         <div
           className="well well-sm"
         >
-          <span
-            className="s0"
-          >
+          <span>
             <svg
-              className={undefined}
+              className="s0"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -606,11 +572,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span
-          className="s1"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -629,11 +593,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -663,11 +625,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -712,11 +672,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
       <span
         className="CriteriaText"
       >
-        <span
-          className="s0"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s0"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -742,11 +700,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         <div
           className="well well-sm"
         >
-          <span
-            className="s0"
-          >
+          <span>
             <svg
-              className={undefined}
+              className="s0"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -775,11 +731,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span
-          className="s1"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -798,11 +752,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -832,11 +784,9 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span
-      className="s0"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="s0"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -884,11 +834,9 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span
-          className="s1"
-        >
+        <span>
           <svg
-            className={undefined}
+            className="s1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -907,11 +855,9 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -947,11 +893,9 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -973,11 +917,9 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -999,11 +941,9 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -5443,11 +5383,9 @@ exports[`Editor Storyshots CommentBox default 1`] = `
       className="control-label"
       htmlFor="formControlsTextarea"
     >
-      <span
-        className="s0"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s0"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -5489,11 +5427,9 @@ exports[`Editor Storyshots Concurrent editing notification 1`] = `
   className="alert alert-danger"
   role="alert"
 >
-  <span
-    className="s2"
-  >
+  <span>
     <svg
-      className={undefined}
+      className="s2"
       dangerouslySetInnerHTML={
         Object {
           "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -5542,11 +5478,9 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
     title="Click should trigger onClick action"
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -5580,11 +5514,9 @@ exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
 <span
   className={undefined}
 >
-  <span
-    className="n1"
-  >
+  <span>
     <svg
-      className={undefined}
+      className="n1"
       dangerouslySetInnerHTML={
         Object {
           "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -5614,11 +5546,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className={undefined}
     >
-      <span
-        className="n1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -5645,11 +5575,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-textMicro"
     >
-      <span
-        className="n1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -5676,11 +5604,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-textMuted u-textMini"
     >
-      <span
-        className="n1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -5709,11 +5635,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-bgHigher u-sP-1-4"
     >
-      <span
-        className="n1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -5742,11 +5666,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-bgHigher u-sP-1-2 u-textMuted"
     >
-      <span
-        className="n1"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -5784,11 +5706,10 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
       onClick={[Function]}
     >
       <span
-        className="n1"
         title="Search glossary"
       >
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -5826,11 +5747,10 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
       onClick={[Function]}
     >
       <span
-        className="n1"
         title="Search glossary"
       >
         <svg
-          className={undefined}
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -5958,11 +5878,10 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           title="Details"
         >
           <span
-            className="s1"
             title="Details"
           >
             <svg
-              className={undefined}
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -6059,11 +5978,10 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           title="Details"
         >
           <span
-            className="s1"
             title="Details"
           >
             <svg
-              className={undefined}
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -6160,11 +6078,10 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           title="Details"
         >
           <span
-            className="s1"
             title="Details"
           >
             <svg
-              className={undefined}
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -6286,11 +6203,10 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           title="Details"
         >
           <span
-            className="s1"
             title="Details"
           >
             <svg
-              className={undefined}
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -6387,11 +6303,10 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           title="Details"
         >
           <span
-            className="s1"
             title="Details"
           >
             <svg
-              className={undefined}
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -6488,11 +6403,10 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           title="Details"
         >
           <span
-            className="s1"
             title="Details"
           >
             <svg
-              className={undefined}
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -6598,11 +6512,10 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
           title="Details"
         >
           <span
-            className="s1"
             title="Details"
           >
             <svg
-              className={undefined}
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
                   "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -6795,11 +6708,9 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -6821,11 +6732,9 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -6847,11 +6756,9 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -7195,11 +7102,9 @@ exports[`Editor Storyshots SelectButton active 1`] = `
   onClick={[Function]}
   type="button"
 >
-  <span
-    className="n1"
-  >
+  <span>
     <svg
-      className={undefined}
+      className="n1"
       dangerouslySetInnerHTML={
         Object {
           "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -7224,11 +7129,9 @@ exports[`Editor Storyshots SelectButton default 1`] = `
   onClick={[Function]}
   type="button"
 >
-  <span
-    className="n1"
-  >
+  <span>
     <svg
-      className={undefined}
+      className="n1"
       dangerouslySetInnerHTML={
         Object {
           "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -7257,11 +7160,9 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -7283,11 +7184,9 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -7309,11 +7208,9 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -7343,11 +7240,9 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -7369,11 +7264,9 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -7395,11 +7288,9 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span
-      className="n1"
-    >
+    <span>
       <svg
-        className={undefined}
+        className="n1"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<use xlink:href=\\"#Icon-refresh\\" />",

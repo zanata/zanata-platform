@@ -17,7 +17,7 @@ class ImportedTMDetailPanel extends Component {
     return (
       <div title={transMemorySlug} className="TransUnit-details ellipsis">
         <Icon name="import"
-          size="1" /> {transMemorySlug}
+          className="s1" /> {transMemorySlug}
       </div>
     )
   }

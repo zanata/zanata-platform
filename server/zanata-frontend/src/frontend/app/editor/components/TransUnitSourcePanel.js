@@ -42,6 +42,7 @@ class TransUnitSourcePanel extends React.Component {
           const copySource = this.props.copyFromSource.bind(undefined, index)
 
           const copyButton = this.props.selected
+          /* eslint-disable max-len */
             ? <ul className="u-floatRight u-listHorizontal">
               <li>
                 <IconButton
@@ -49,10 +50,10 @@ class TransUnitSourcePanel extends React.Component {
                   title={'Copy ' + this.props.sourceLocale.name +
                     ' (' + this.props.sourceLocale.id + ')'}
                   onClick={copySource}
-                  className="u-floatRight Link Link--neutral u-sizeHeight-1
-                    u-sizeWidth-1 u-textCenter" />
+                  className="u-floatRight Link Link--neutral u-sizeHeight-1 u-sizeWidth-1 u-textCenter" />
               </li>
             </ul>
+            /* eslint-enable max-len */
             : undefined
 
           const itemHeader = isPlural
@@ -75,8 +76,8 @@ class TransUnitSourcePanel extends React.Component {
     // empty, but this is what is output in the Angular version
     const footer = this.props.selected
       ? (
-      <div className="TransUnit-panelFooter TransUnit-panelFooter--source
-                      u-sm-hidden">
+      /* eslint-disable max-len */
+      <div className="TransUnit-panelFooter TransUnit-panelFooter--source u-sm-hidden">
         <div className="u-sizeHeight-1_1-2">
           {/*
           <button ng-show="appCtrl.PRODUCTION"
@@ -89,6 +90,7 @@ class TransUnitSourcePanel extends React.Component {
           */}
         </div>
       </div>
+      /* eslint-enable max-len */
       )
       : undefined
 

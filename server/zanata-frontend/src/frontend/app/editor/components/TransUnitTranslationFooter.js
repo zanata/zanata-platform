@@ -170,10 +170,11 @@ class TransUnitTranslationFooter extends React.Component {
 
     // TODO translate "Save as"
     const saveAsLabel = translationHasChanged &&
-      <span className="u-textMeta u-sMR-1-4 u-floatLeft
-                       u-sizeLineHeight-1_1-4">
+      /* eslint-disable max-len */
+      <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
           Save as
       </span>
+      /* eslint-enable max-len */
 
     const actionButtonKeyShortcut =
       saveAsMode && statusShortcutKeys[selectedButtonStatus]
@@ -210,17 +211,17 @@ class TransUnitTranslationFooter extends React.Component {
       : undefined
 
     const otherActionButtonList = (
-      <ul className="EditorDropdown-content EditorDropdown-content--bordered
-                     u-rounded">
+      /* eslint-disable max-len */
+      <ul className="EditorDropdown-content EditorDropdown-content--bordered u-rounded">
         {otherActionButtons}
       </ul>
+      /* eslint-enable max-len */
     )
 
     return (
-      <div className="TransUnit-panelFooter u-cf
-                      TransUnit-panelFooter--translation">
-        <div className="TransUnit-panelFooterLeftNav u-floatLeft
-                        u-sizeHeight-1_1-2">
+      /* eslint-disable max-len */
+      <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
+        <div className="TransUnit-panelFooterLeftNav u-floatLeft u-sizeHeight-1_1-2">
           <ul className="u-listHorizontal">
           {/* don't think this was ever displayed
             <li class="u-gtemd-hidden" ng-show="appCtrl.PRODUCTION">
@@ -245,6 +246,7 @@ class TransUnitTranslationFooter extends React.Component {
             content={otherActionButtonList} />
         </div>
       </div>
+      /* eslint-enable max-len */
     )
   }
 }

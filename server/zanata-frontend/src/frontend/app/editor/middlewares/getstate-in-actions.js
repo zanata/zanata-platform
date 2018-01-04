@@ -19,7 +19,7 @@
  */
 
 export default store => next => action => {
-  const getState = :: store.getState
+  const getState = store.getState.bind(store)
   return next({
     ...action,
     getState

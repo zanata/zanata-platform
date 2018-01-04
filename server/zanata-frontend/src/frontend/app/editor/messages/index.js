@@ -1,1 +1,1 @@
-export enUS from './en-us.json'
+export {default as enUS} from './en-us.json'
