@@ -23,10 +23,11 @@ import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 public class ReviewServiceTest extends ZanataJpaTest {
 
     private static final String DESCRIPTION = "bad grammar";
+    private static final String SERVER_PATH = "https://localhost/zanata/";
     private ReviewService reviewService;
     @Mock
     private UriInfo uriInfo;
-    @Mock private UrlUtil urlUtil;
+    private UrlUtil urlUtil = new UrlUtil(SERVER_PATH, "/zanata", null, null, null);
 
     @Before
     public void setUp() throws Exception {
@@ -53,7 +54,9 @@ public class ReviewServiceTest extends ZanataJpaTest {
     public void canAddNewEntry() throws Exception {
         when(uriInfo.getPath())
                 .thenReturn("criteria");
-        when(urlUtil.restPath("criteria")).thenReturn("http://example.com/rest/criteria");
+        URI baseUri = new URI(SERVER_PATH +"rest/");
+        when(uriInfo.getBaseUri())
+                .thenReturn(baseUri);
         TransReviewCriteria dto = new TransReviewCriteria(null,
                 IssuePriority.Critical, DESCRIPTION, false);
         Response response = reviewService.addCriteria(dto);
@@ -61,7 +64,7 @@ public class ReviewServiceTest extends ZanataJpaTest {
         assertThat(entity.getDescription()).isEqualTo(DESCRIPTION);
         assertThat(entity.getId()).isNotNull();
         assertThat(response.getLocation().toString())
-                .isEqualTo("http://example.com/rest/criteria/" + entity.getId());
+                .isEqualTo(SERVER_PATH + "rest/criteria/" + entity.getId());
     }
 
     @Test
