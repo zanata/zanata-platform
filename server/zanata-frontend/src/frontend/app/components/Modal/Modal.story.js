@@ -73,10 +73,9 @@ storiesOf('Modal', module)
       </Modal.Header>
       <Modal.Body>
         <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Modals</h2>
-        <Well>See the <a href="https://react-bootstrap.github.io/components.html#modals-props-modal">react-boostrap documentation on Modals</a> for props.</Well>
-
-        <p>A modal with header, body, and set of actions in the footer. Use <code>Modal</code> in combination with other components to show or hide your Modal. The <code>Modal</code> Component comes with a few convenient "sub components": <code>Modal.Header</code>, <code>Modal.Title</code>, <code>Modal.Body</code>, and <code>Modal.Footer</code>, which you can use to build the Modal content.
-      </p>
+        <Well>
+      A modal with header, body, and set of actions in the footer. Use <code>Modal</code> in combination with other components to show or hide your Modal. The <code>Modal</code> Component comes with a few convenient "sub components": <code>Modal.Header</code>, <code>Modal.Title</code>, <code>Modal.Body</code>, and <code>Modal.Footer</code>, which you can use to build the Modal content.
+            <hr /><ul><li> <a href="https://react-bootstrap.github.io/components.html#modals-props-modal">react-boostrap Modal props</a></li></ul></Well>
       </Modal.Body>
       <Modal.Footer>
         <span className='bootstrap u-pullRight'>

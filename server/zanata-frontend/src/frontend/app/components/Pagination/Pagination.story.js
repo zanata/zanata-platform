@@ -7,7 +7,8 @@ storiesOf('Pagination', module)
       <span>
         <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Pagination</h2>
 
-        <Well>Multi-page pagination component. Set <code>items</code> to the number of pages. <code>activePage</code> prop dictates which page is active. <a href="https://react-bootstrap.github.io/components.html#pagination-props">Props for react-bootstrap pagination</a></Well>
+        <Well>Multi-page pagination component. Set <code>items</code> to the number of pages. <code>activePage</code> prop dictates which page is active.
+          <ul><li><a href="https://react-bootstrap.github.io/components.html#pagination-props">Props for react-bootstrap pagination</a></li></ul></Well>
       <Pagination
           bsSize='medium'
           items={10}

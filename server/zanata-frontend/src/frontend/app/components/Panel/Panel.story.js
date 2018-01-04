@@ -19,9 +19,9 @@ You can pass on any additional properties you need, e.g. a custom onClick handle
 
     .add('with heading', () => (
         <span>
-        <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Panel</h2>
+        <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Panel with header</h2>
 
-          <Well>Easily add a heading container to your panel with the header prop.</Well>
+          <Well>Easily add a heading container to your panel with the <code>header</code> prop.</Well>
         <Panel header='Panel header'>
           Panel content
         </Panel>
