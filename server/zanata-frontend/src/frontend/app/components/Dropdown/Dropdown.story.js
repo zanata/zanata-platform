@@ -5,8 +5,8 @@ import {DropdownButton, MenuItem, Table, Label, Well} from 'react-bootstrap'
 storiesOf('Dropdown', module)
     .add('default', () => (
         <div>
-          <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Dropdown</h2>
-          <Well>Use dropdowns where radio buttons
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Dropdown</h2>
+          <Well bsSize="large">Use dropdowns where radio buttons
             would not make sense due to too many options (a
             maximum of 7 to 15).</Well>
           <DropdownButton bsStyle='default' title='Dropdown button'
@@ -23,7 +23,6 @@ storiesOf('Dropdown', module)
           <p>The <code>Dropdown</code> expects at least one component
             with <code>bsRole="toggle"</code> and exactly one
             with <code>bsRole="menu"</code></p>
-
           <Table striped bordered condensed hover>
             <thead>
             <tr>
@@ -95,7 +94,6 @@ storiesOf('Dropdown', module)
               <td>function</td>
               <td></td>
               <td>A callback fired when a menu item is selected.
-
                 <pre><code>(eventKey: any, event: Object) => any</code></pre></td>
             </tr>
             <tr>

@@ -7,16 +7,15 @@ const now = 60
 storiesOf('ProgressBar', module)
     .add('default', () => (
         <span>
-                  <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Progress bar</h2>
-          <Well>Provide up-to-date feedback on the progress of a workflow or action with simple yet flexible progress bars.
-</Well>
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Progress bar</h2>
+          <Well bsSize="large">Provide up-to-date feedback on the progress of a workflow or action with simple yet flexible progress bars.</Well>
           <p>Add a <code>label</code> prop to show a visible percentage. For low percentages, consider adding a min-width to ensure the label's text is fully visible.</p>
           <ProgressBar now={now} label={`${now}%`} />
           <p>Add a <code>srOnly</code> prop to hide the label visually.</p>
           <ProgressBar now={60} />
           <hr />
           <h3>Props</h3>
-                     <Table striped bordered condensed hover>
+          <Table striped bordered condensed hover>
           <thead>
           <tr>
             <th>Name</th>
@@ -40,64 +39,61 @@ storiesOf('ProgressBar', module)
           </tr>
            <tr>
             <td>bsStyle</td>
-             <td>one of: <code>"success"</code>, <code>"warning"</code>, <code>"danger"</code>, <code>"info"</code>, <code>"default"</code>, <code>"primary"</code>, <code>"link"</code>
-</td>
+             <td>one of: <code>"success"</code>, <code>"warning"</code>, <code>"danger"</code>, <code>"info"</code>, <code>"default"</code>, <code>"primary"</code>, <code>"link"</code></td>
             <td>'default'</td>
             <td>Component visual or contextual style variants.</td>
-                    </tr>
-                     <tr>
+           </tr>
+           <tr>
             <td>children</td>
             <td>onlyProgressBar</td>
             <td></td>
             <td></td>
           </tr>
-                     <tr>
+           <tr>
             <td>label</td>
             <td>node</td>
             <td></td>
             <td></td>
           </tr>
-                     <tr>
+           <tr>
             <td>max</td>
             <td>number</td>
             <td>100</td>
             <td></td>
           </tr>
-                     <tr>
+           <tr>
             <td>min</td>
             <td>number</td>
             <td>0</td>
             <td></td>
           </tr>
-                     <tr>
+           <tr>
             <td>now</td>
             <td>number</td>
             <td></td>
             <td></td>
           </tr>
-                     <tr>
+           <tr>
             <td>srOnly</td>
             <td>boolean</td>
             <td>false</td>
             <td></td>
           </tr>
-                     <tr>
+           <tr>
             <td>striped</td>
             <td>boolean</td>
             <td>false</td>
             <td></td>
           </tr>
-
           </tbody>
-                    </Table>
+          </Table>
         </span>
     ))
 
     .add('translation states', () => (
         <span>
-          <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Progress bars - translation states</h2>
-          <Well>The boostrap style classes have been used for the translation progress bars and <code>bsStyle</code> props are needed.
-</Well>
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Progress bars - translation states</h2>
+          <Well bsSize="large">The boostrap style classes have been used for the translation progress bars and <code>bsStyle</code> props are needed.</Well>
           Translated
           <ProgressBar bsStyle='success' now={40} />
           <p><code>bsStyle='success'</code></p>
@@ -115,8 +111,8 @@ storiesOf('ProgressBar', module)
 
     .add('stacked', () => (
         <span>
-                    <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Progress bars - stacked</h2>
-        <Well>Nest <code>ProgressBar</code>s to stack them.</Well>
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Progress bars - stacked</h2>
+        <Well bsSize="large">Nest <code>ProgressBar</code>s to stack them.</Well>
         <ProgressBar>
           <ProgressBar striped bsStyle='success' now={35} key={1} />
           <ProgressBar bsStyle='warning' now={20} key={2} />

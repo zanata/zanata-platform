@@ -6,14 +6,14 @@ import { Button, ButtonToolbar, ButtonGroup,
 storiesOf('Button', module)
     .add('default', () => (
         <span>
-         <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Buttons</h2>
+         <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Buttons</h2>
           <p><Button onClick={action('onClick')}>
           Unstyled button
         </Button></p>
           <p><code>bsStyle="default"</code></p>
           <hr />
           <h3>Button spacing</h3>
-<p>Because React doesn't output newlines between elements, buttons on the same line are displayed flush against each other. To preserve the spacing between multiple inline buttons, wrap your button group in ButtonToolbar.</p>
+          <p>Because React doesn't output newlines between elements, buttons on the same line are displayed flush against each other. To preserve the spacing between multiple inline buttons, wrap your button group in ButtonToolbar.</p>
           <hr />
           <h3>Props</h3>
 
@@ -53,31 +53,29 @@ storiesOf('Button', module)
           </tr>
            <tr>
             <td>bsStyle</td>
-             <td>one of: <code>"success"</code>, <code>"warning"</code>, <code>"danger"</code>, <code>"info"</code>, <code>"default"</code>, <code>"primary"</code>, <code>"link"</code>
-</td>
+             <td>one of: <code>"success"</code>, <code>"warning"</code>, <code>"danger"</code>, <code>"info"</code>, <code>"default"</code>, <code>"primary"</code>, <code>"link"</code></td>
             <td>'default'</td>
             <td>Component visual or contextual style variants.</td>
-                    </tr>
+           </tr>
            <tr>
             <td>componentClass</td>
-            <td>elementType
-</td>
+            <td>elementType</td>
             <td></td>
             <td>You can use a custom element type for this component.</td>
           </tr>
-                      <tr>
+          <tr>
             <td>disabled</td>
             <td>boolean</td>
             <td>'false'</td>
             <td></td>
           </tr>
-                      <tr>
+          <tr>
             <td>href</td>
             <td>string</td>
             <td></td>
             <td></td>
           </tr>
-                                  <tr>
+          <tr>
             <td>type</td>
              <td>one of: <code>'button'</code>, <code>'reset'</code>, <code>'submit'</code></td>
             <td>'button'</td>
@@ -99,45 +97,45 @@ storiesOf('Button', module)
     .add('info', () => (
         <span>
           <h2>Info button</h2>
-        <p><Button bsStyle='info' onClick={action('onClick')}>
+          <p><Button bsStyle='info' onClick={action('onClick')}>
           Info button
-        </Button></p>
+          </Button></p>
           <p><code>bsStyle="info"</code></p>
         </span>
     ))
     .add('warning', () => (
         <span>
           <h2>Warning button</h2>
-        <p><Button bsStyle='warning' onClick={action('onClick')}>
+          <p><Button bsStyle='warning' onClick={action('onClick')}>
           Warning button
-        </Button></p>
+          </Button></p>
           <p><code>bsStyle="warning"</code></p>
         </span>
     ))
     .add('danger', () => (
         <span>
           <h2>Danger button</h2>
-        <p><Button bsStyle='danger' onClick={action('onClick')}>
+          <p><Button bsStyle='danger' onClick={action('onClick')}>
           Danger button
-        </Button></p>
+          </Button></p>
           <p><code>bsStyle="danger"</code></p>
         </span>
     ))
     .add('success', () => (
         <span>
           <h2>Success button</h2>
-        <p><Button bsStyle='success' onClick={action('onClick')}>
+          <p><Button bsStyle='success' onClick={action('onClick')}>
           Success button
-        </Button></p>
+          </Button></p>
           <p><code>bsStyle="success"</code></p>
         </span>
     ))
     .add('block', () => (
         <span>
           <h2>Button block</h2>
-        <p><Button block onClick={action('onClick')}>
+          <p><Button block onClick={action('onClick')}>
           Button block
-        </Button></p>
+          </Button></p>
           <p><code>block=true</code></p>
         </span>
     ))
@@ -145,11 +143,11 @@ storiesOf('Button', module)
         <span>
           <h2>Button sizes</h2>
           <p><ButtonGroup>
-      <Button bsStyle='primary' bsSize='large' onClick={action('onClick')}>
-        Large button</Button>
+        <Button bsStyle='primary' bsSize='large' onClick={action('onClick')}>
+          Large button</Button>
             <Button bsSize='large' onClick={action('onClick')}>Large button</Button>
           </ButtonGroup>
-      <ButtonGroup>
+          <ButtonGroup>
           <Button bsStyle='primary' onClick={action('onClick')}>
         Default button</Button>
       <Button onClick={action('onClick')}>Default button</Button>
@@ -170,15 +168,14 @@ storiesOf('Button', module)
     .add('group', () => (
         <span>
         <h2>ButtonGroup</h2>
-          <Well>Group a series of <code>Button</code>s together on a single line with the <code>ButtonGroup</code>.</Well>
-<ButtonGroup>
+          <Well bsSize="large">Group a series of <code>Button</code>s together on a single line with the <code>ButtonGroup</code>.</Well>
+        <ButtonGroup>
           <Button onClick={action('onClick')}>Left</Button>
           <Button onClick={action('onClick')}>Middle</Button>
           <Button onClick={action('onClick')}>Right</Button>
         </ButtonGroup>
           <hr />
              <h3>Props</h3>
-
           <Table striped bordered condensed hover>
           <thead>
           <tr>
@@ -201,13 +198,13 @@ storiesOf('Button', module)
             <td>'btn-group'</td>
             <td>Base CSS class and prefix for the component. Generally one should only change bsClass to provide new, non-Bootstrap, CSS styles for a component.</td>
           </tr>
-                    <tr>
+          <tr>
             <td>justified</td>
             <td>boolean</td>
             <td>'false'</td>
             <td></td>
           </tr>
-                    <tr>
+          <tr>
             <td>vertical</td>
             <td>boolean</td>
             <td>'false'</td>
@@ -220,7 +217,7 @@ storiesOf('Button', module)
     .add('toolbar', () => (
         <span>
           <h2>Button toolbar</h2>
-          <Well> Combine sets of <code>ButtonGroup</code>s into a <code>ButtonToolbar</code> for more complex components.</Well>
+          <Well bsSize="large"> Combine sets of <code>ButtonGroup</code>s into a <code>ButtonToolbar</code> for more complex components.</Well>
         <ButtonToolbar>
           <ButtonGroup>
             <Button onClick={action('onClick')}>1</Button>
@@ -262,7 +259,7 @@ storiesOf('Button', module)
     .add('nested', () => (
         <span>
           <h2>Nested ButtonGroup</h2>
-          <Well>use for adding <code>Dropdown</code>s to <code>ButtonGroup</code>s</Well>
+          <Well bsSize="large">Use for adding <code>Dropdown</code>s to <code>ButtonGroup</code>s</Well>
         <ButtonGroup>
           <Button onClick={action('onClick')}>1</Button>
           <Button onClick={action('onClick')}>2</Button>

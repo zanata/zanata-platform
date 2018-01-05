@@ -28,13 +28,13 @@ exports[`Frontend Storyshots Alert info 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Alert
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a 
     <code>
@@ -217,13 +217,13 @@ exports[`Frontend Storyshots Badge default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Badge
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Highlight new or unread items, numbers of members or any other numerical value.
   </div>
@@ -313,7 +313,7 @@ exports[`Frontend Storyshots Badge in nav item 1`] = `
     Sidebar navigation
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use this navigation layout with the project version 
     <code>
@@ -381,9 +381,15 @@ exports[`Frontend Storyshots Badge in nav item 1`] = `
   <h3>
     Related components
   </h3>
-  <code>
-    Sidebar
-  </code>
+  <p>
+    <code>
+      Sidebar
+    </code>
+    , 
+    <code>
+      Tabs
+    </code>
+  </p>
 </span>
 `;
 
@@ -391,13 +397,13 @@ exports[`Frontend Storyshots Breadcrumbs default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Breadcrumbs
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Breadcrumbs are used to indicate the current page's location. All pages 2 levels deep or more should use breadcrumbs in frontend. ie. 
     <code>
@@ -525,7 +531,7 @@ exports[`Frontend Storyshots Button default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Buttons
@@ -760,7 +766,7 @@ exports[`Frontend Storyshots Button group 1`] = `
     ButtonGroup
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Group a series of 
     <code>
@@ -908,9 +914,9 @@ exports[`Frontend Storyshots Button nested 1`] = `
     Nested ButtonGroup
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
-    use for adding 
+    Use for adding 
     <code>
       Dropdown
     </code>
@@ -1147,7 +1153,7 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
     Button toolbar
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
      Combine sets of 
     <code>
@@ -1310,13 +1316,13 @@ exports[`Frontend Storyshots Dropdown default 1`] = `
 <div>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Dropdown
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use dropdowns where radio buttons would not make sense due to too many options (a maximum of 7 to 15).
   </div>
@@ -1904,7 +1910,7 @@ exports[`Frontend Storyshots EditableText editing 1`] = `
      EditableText
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Used on Glossary page and modals for editable glossary terms.
   </div>
@@ -2052,21 +2058,23 @@ exports[`Frontend Storyshots Form default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Forms
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
-    See the 
-    <a
-      href="https://react-bootstrap.github.io/components.html#forms"
-    >
-      react-boostrap documentation on Forms
-    </a>
-     for details on usage and props.
+    <ul>
+      <li>
+        <a
+          href="https://react-bootstrap.github.io/components.html#forms"
+        >
+          Props for react-boostrap Form component
+        </a>
+      </li>
+    </ul>
   </div>
   <form
     className=""
@@ -2114,7 +2122,11 @@ exports[`Frontend Storyshots Form default 1`] = `
     Input sizes
   </h3>
   <p>
-    Use bsSize on 
+    Use 
+    <code>
+      bsSize
+    </code>
+     on 
     <code>
       FormGroup
     </code>
@@ -2131,13 +2143,13 @@ exports[`Frontend Storyshots Form validation states 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Form validation states
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Set validationState to one of 'success', 'warning' or 'error' to show validation state. Set 
     <code>
@@ -2463,7 +2475,7 @@ exports[`Frontend Storyshots Foundation grid 1`] = `
     Grids and flexbox
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
      Grid being replaced with 
     <strong>
@@ -2769,7 +2781,7 @@ exports[`Frontend Storyshots Icon default 1`] = `
      Icons
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Icons for use throughout frontend. Use 
     <code>
@@ -2837,11 +2849,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="admin"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-admin\\" />",
@@ -2860,11 +2870,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="all"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-all\\" />",
@@ -2883,11 +2891,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="assign"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-assign\\" />",
@@ -2906,11 +2912,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="attach"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-attach\\" />",
@@ -2929,11 +2933,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="block"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-block\\" />",
@@ -2952,11 +2954,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-down-double"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-chevron-down-double\\" />",
@@ -2975,11 +2975,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-down"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-chevron-down\\" />",
@@ -2998,11 +2996,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-left"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-chevron-left\\" />",
@@ -3021,11 +3017,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-right"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-chevron-right\\" />",
@@ -3044,11 +3038,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-up-double"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-chevron-up-double\\" />",
@@ -3067,11 +3059,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-up"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-chevron-up\\" />",
@@ -3090,11 +3080,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="circle"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-circle\\" />",
@@ -3113,11 +3101,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="clock"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-clock\\" />",
@@ -3136,11 +3122,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="code"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-code\\" />",
@@ -3159,11 +3143,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="comment"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-comment\\" />",
@@ -3182,11 +3164,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="copy"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-copy\\" />",
@@ -3205,11 +3185,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="cross-circle"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-cross-circle\\" />",
@@ -3228,11 +3206,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="cross"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-cross\\" />",
@@ -3251,11 +3227,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="dashboard"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-dashboard\\" />",
@@ -3274,11 +3248,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="document"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-document\\" />",
@@ -3297,11 +3269,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="dot"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-dot\\" />",
@@ -3320,11 +3290,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="download"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-download\\" />",
@@ -3343,11 +3311,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="edit"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-edit\\" />",
@@ -3366,11 +3332,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="ellipsis"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-ellipsis\\" />",
@@ -3389,11 +3353,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="export"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-export\\" />",
@@ -3412,11 +3374,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="external-link"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-external-link\\" />",
@@ -3435,11 +3395,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="filter"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-filter\\" />",
@@ -3458,11 +3416,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="folder"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-folder\\" />",
@@ -3481,11 +3437,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="glossary"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -3504,11 +3458,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="help"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-help\\" />",
@@ -3527,11 +3479,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="history"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-history\\" />",
@@ -3550,11 +3500,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="import"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-import\\" />",
@@ -3573,11 +3521,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="inbox"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-inbox\\" />",
@@ -3596,11 +3542,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="info"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -3619,11 +3563,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="keyboard"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-keyboard\\" />",
@@ -3642,11 +3584,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="language"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-language\\" />",
@@ -3665,11 +3605,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="link"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-link\\" />",
@@ -3688,11 +3626,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="location"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-location\\" />",
@@ -3711,11 +3647,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="locked"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-locked\\" />",
@@ -3734,11 +3668,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="logout"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-logout\\" />",
@@ -3757,11 +3689,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="mail"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-mail\\" />",
@@ -3780,11 +3710,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="maintain"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-maintain\\" />",
@@ -3803,11 +3731,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="menu"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-menu\\" />",
@@ -3826,11 +3752,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="minus"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-minus\\" />",
@@ -3849,11 +3773,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="next"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-next\\" />",
@@ -3872,11 +3794,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="notification"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-notification\\" />",
@@ -3895,11 +3815,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="piestats"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-piestats\\" />",
@@ -3918,11 +3836,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="plus"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -3941,11 +3857,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="previous"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-previous\\" />",
@@ -3964,11 +3878,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="project"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -3987,11 +3899,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="refresh"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-refresh\\" />",
@@ -4010,11 +3920,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="review"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-review\\" />",
@@ -4033,11 +3941,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="search"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-search\\" />",
@@ -4056,11 +3962,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="servmon"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-servmon\\" />",
@@ -4079,11 +3983,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="settings"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -4102,11 +4004,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="star-outline"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-star-outline\\" />",
@@ -4125,11 +4025,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="star"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-star\\" />",
@@ -4148,11 +4046,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="statistics"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-statistics\\" />",
@@ -4171,11 +4067,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="suggestions"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-suggestions\\" />",
@@ -4194,11 +4088,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="tick-circle"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-tick-circle\\" />",
@@ -4217,11 +4109,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="tick"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-tick\\" />",
@@ -4240,11 +4130,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="tm"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-tm\\" />",
@@ -4263,11 +4151,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="translate"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-translate\\" />",
@@ -4286,11 +4172,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="trash"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-trash\\" />",
@@ -4309,11 +4193,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="undo"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-undo\\" />",
@@ -4332,11 +4214,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="unlocked"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-unlocked\\" />",
@@ -4355,11 +4235,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="upload"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-upload\\" />",
@@ -4378,11 +4256,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="user"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-user\\" />",
@@ -4401,11 +4277,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="users"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -4424,11 +4298,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="version"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-version\\" />",
@@ -4447,11 +4319,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="warning"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-warning\\" />",
@@ -4470,11 +4340,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="zanata"
     >
-      <span
-        className="s2"
-      >
+      <span>
         <svg
-          className={undefined}
+          className="s2"
           dangerouslySetInnerHTML={
             Object {
               "__html": "<use xlink:href=\\"#Icon-zanata\\" />",
@@ -15153,13 +15021,13 @@ exports[`Frontend Storyshots Label in headings 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Labels in headings
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use labels to highlight information.
   </div>
@@ -15299,7 +15167,7 @@ exports[`Frontend Storyshots Label validation states 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Label validation states
@@ -15367,7 +15235,7 @@ exports[`Frontend Storyshots Link link page not in frontend app 1`] = `
      Link *not* in frontend
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use this link colour anywhere outside of frontend. ie. Editor, zanata.org
   </div>
@@ -15389,7 +15257,7 @@ exports[`Frontend Storyshots Link link within frontend app 1`] = `
      Link in frontend
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
      Common link component which generates 
     <code>
@@ -15488,13 +15356,13 @@ exports[`Frontend Storyshots List group default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     List group
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     List groups are a flexible and powerful component for displaying not only simple lists of elements, but complex ones with custom content.
   </div>
@@ -15743,15 +15611,19 @@ exports[`Frontend Storyshots List group with headings 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     With headings
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
-    Set the header prop to create a structured item, with a heading and a body area.
+    Set the 
+    <code>
+      header
+    </code>
+     prop to create a structured item, with a heading and a body area.
   </div>
   <div
     className="list-group"
@@ -15793,13 +15665,13 @@ exports[`Frontend Storyshots List group with links 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     With links
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Set the 
     <code>
@@ -15850,7 +15722,7 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
     LoaderText
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use this when there is content that needs to be loaded so that the user is given feedback.
   </div>
@@ -15926,13 +15798,13 @@ exports[`Frontend Storyshots Pagination default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Pagination
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Multi-page pagination component. Set 
     <code>
@@ -16115,7 +15987,7 @@ exports[`Frontend Storyshots Pagination large 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Pagination - large
@@ -16257,7 +16129,7 @@ exports[`Frontend Storyshots Pagination small 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Pagination - small
@@ -16399,13 +16271,13 @@ exports[`Frontend Storyshots Panel accordion 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Accordion
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     <code>
       Accordion
@@ -16550,7 +16422,7 @@ exports[`Frontend Storyshots Panel danger 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Panel - danger
@@ -16582,13 +16454,13 @@ exports[`Frontend Storyshots Panel default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Panel
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     By default, all the 
     <code>
@@ -16622,7 +16494,7 @@ exports[`Frontend Storyshots Panel info 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Panel - info
@@ -16654,7 +16526,7 @@ exports[`Frontend Storyshots Panel primary 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Panel - primary
@@ -16687,7 +16559,7 @@ exports[`Frontend Storyshots Panel success 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Panel - success
@@ -16719,7 +16591,7 @@ exports[`Frontend Storyshots Panel warning 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Panel - warning
@@ -16751,13 +16623,13 @@ exports[`Frontend Storyshots Panel with heading 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Panel with header
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Easily add a heading container to your panel with the 
     <code>
@@ -16787,13 +16659,13 @@ exports[`Frontend Storyshots ProgressBar default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Progress bar
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Provide up-to-date feedback on the progress of a workflow or action with simple yet flexible progress bars.
   </div>
@@ -17023,13 +16895,13 @@ exports[`Frontend Storyshots ProgressBar stacked 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Progress bars - stacked
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Nest 
     <code>
@@ -17084,13 +16956,13 @@ exports[`Frontend Storyshots ProgressBar translation states 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Progress bars - translation states
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     The boostrap style classes have been used for the translation progress bars and 
     <code>
@@ -18321,7 +18193,7 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
           >
             <span>
               <svg
-                className="iconProject"
+                className="iconProject s2"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -18882,7 +18754,7 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
           >
             <span>
               <svg
-                className="iconProject"
+                className="iconProject s2"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -19810,7 +19682,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
           >
             <span>
               <svg
-                className="iconProject"
+                className="iconProject s2"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -20341,13 +20213,13 @@ exports[`Frontend Storyshots Table default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Table
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use tables to display data - not for layouts. Use the 
     <code>
@@ -20547,15 +20419,16 @@ exports[`Frontend Storyshots Tabs horizontal 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Tabs - horizontal
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Add quick, dynamic tab functionality to transition through panes of local content.
+    <hr />
     <ul>
       <li>
         <a
@@ -20713,7 +20586,7 @@ exports[`Frontend Storyshots Tabs vertical 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Tabs - vertical
@@ -20813,7 +20686,7 @@ exports[`Frontend Storyshots TextInput default 1`] = `
      TextInput
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Basic text input field
   </div>
@@ -20840,13 +20713,13 @@ exports[`Frontend Storyshots Tooltip default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Tooltip
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Tooltip component for a more stylish alternative to that anchor tag 
     <code>
@@ -21007,7 +20880,7 @@ exports[`Frontend Storyshots TriCheckbox default 1`] = `
      TriCheckbox
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.
   </div>
@@ -21265,13 +21138,13 @@ exports[`Frontend Storyshots Well default 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Well
   </h2>
   <div
-    className="well"
+    className="well well-lg"
   >
     Use the well as a simple effect on an element to give it an inset effect.
   </div>
@@ -21367,7 +21240,7 @@ exports[`Frontend Storyshots Well large 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Well - large
@@ -21389,7 +21262,7 @@ exports[`Frontend Storyshots Well small 1`] = `
 <span>
   <h2>
     <img
-      src="https://react-bootstrap.github.io/assets/logo.png"
+      src="https://i.imgur.com/v4qLk4p.png"
       width="42px"
     />
     Well - small

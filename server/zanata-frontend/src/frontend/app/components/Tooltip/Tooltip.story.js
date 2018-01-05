@@ -11,9 +11,8 @@ const tooltip = (
 storiesOf('Tooltip', module)
     .add('default', () => (
         <span>
-                  <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Tooltip</h2>
-
-          <Well>Tooltip component for a more stylish alternative to that anchor tag <code>title</code> attribute. Attach and position tooltips with <code>OverlayTrigger</code>.
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Tooltip</h2>
+          <Well bsSize="large">Tooltip component for a more stylish alternative to that anchor tag <code>title</code> attribute. Attach and position tooltips with <code>OverlayTrigger</code>.
             <hr />
             <ul><li><a href="https://react-bootstrap.github.io/components.html#tooltips-props">Props for react-bootstrap Tooltips</a></li></ul>
           </Well>

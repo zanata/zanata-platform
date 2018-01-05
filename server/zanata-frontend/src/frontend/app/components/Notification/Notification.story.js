@@ -1,7 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Notification from './component'
-import { Well, Table } from 'react-bootstrap'
 
 storiesOf('Notification', module)
   .add('Info', () => (

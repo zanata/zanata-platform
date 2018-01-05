@@ -6,10 +6,10 @@ import { Well } from 'react-bootstrap'
 storiesOf('TextInput', module)
     .add('default', () => (
         <span>
-            <h2><img
-                src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
-                width="42px"/> TextInput</h2>
-          <Well>Basic text input field</Well>
+          <h2><img
+              src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
+              width="42px"/> TextInput</h2>
+          <Well bsSize="large">Basic text input field</Well>
       <TextInput
           maxLength={100}
           id='demo'

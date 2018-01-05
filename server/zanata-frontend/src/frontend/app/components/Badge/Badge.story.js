@@ -5,8 +5,8 @@ import {Badge, Nav, NavItem, Button, Table, Well} from 'react-bootstrap'
 storiesOf('Badge', module)
     .add('default', () => (
         <span>
-        <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Badge</h2>
-          <Well>Highlight new or unread items, numbers of members or any other numerical value.</Well>
+        <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Badge</h2>
+          <Well bsSize="large">Highlight new or unread items, numbers of members or any other numerical value.</Well>
         <p>Badge <Badge>23</Badge></p>
           <hr />
             <h3>Props</h3>
@@ -39,7 +39,7 @@ storiesOf('Badge', module)
     .add('in nav item', () => (
         <span>
           <h2>Sidebar navigation</h2>
-          <Well>Use this navigation layout with the project version <code>Sidebar</code>.</Well>
+          <Well bsSize="large">Use this navigation layout with the project version <code>Sidebar</code>.</Well>
         <p><Nav bsStyle='pills' stacked className='sg-nav-pills'>
           <NavItem className='active'>
             <Badge className='u-pullRight'>42</Badge>
@@ -53,7 +53,7 @@ storiesOf('Badge', module)
         </Nav></p>
           <hr />
           <h3>Related components</h3>
-            <code>Sidebar</code>
+          <p><code>Sidebar</code>, <code>Tabs</code></p>
         </span>
     ))
     .add('in button', () => (

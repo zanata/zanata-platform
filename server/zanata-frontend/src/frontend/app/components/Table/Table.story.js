@@ -5,10 +5,8 @@ import { Table, Well } from 'react-bootstrap'
 storiesOf('Table', module)
     .add('default', () => (
         <span>
-                            <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Table</h2>
-
-          <Well>Use tables to display data - not for layouts. Use the <code>striped</code>, <code>bordered</code>, <code>condensed</code> and <code>hover</code> props to customise the table.
-</Well>
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Table</h2>
+          <Well bsSize="large">Use tables to display data - not for layouts. Use the <code>striped</code>, <code>bordered</code>, <code>condensed</code> and <code>hover</code> props to customise the table.</Well>
         <Table striped bordered condensed hover>
           <thead>
           <tr>

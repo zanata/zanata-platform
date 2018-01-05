@@ -8,7 +8,7 @@ storiesOf('EditableText', module)
     .add('editing', () => (
         <span>
           <h2><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg" width="42px" /> EditableText</h2>
-          <Well>Used on Glossary page and modals for editable glossary terms.</Well>
+          <Well bsSize="large">Used on Glossary page and modals for editable glossary terms.</Well>
           <EditableText
             className='editable textInput textState'
             maxLength={255}

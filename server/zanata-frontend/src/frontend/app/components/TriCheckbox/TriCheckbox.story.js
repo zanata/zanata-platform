@@ -87,7 +87,7 @@ storiesOf('TriCheckbox', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> TriCheckbox</h2>
-      <Well>Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.</Well>
+      <Well bsSize="large">Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.</Well>
       <h3>Setting Intermediate</h3>
       <WithButton
         checked={false}

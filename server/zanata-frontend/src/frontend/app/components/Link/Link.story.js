@@ -9,7 +9,7 @@ storiesOf('Link', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> Link in frontend</h2>
-          <Well> Common link component which generates <code>a href</code> or in-page navigation link based on useHref.</Well>
+          <Well bsSize="large"> Common link component which generates <code>a href</code> or in-page navigation link based on useHref.</Well>
       <Link link='/languages'>Languages</Link>
           <hr />
           <h3>Props</h3>
@@ -56,7 +56,7 @@ storiesOf('Link', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> Link *not* in frontend</h2>
-                  <Well>Use this link colour anywhere outside of frontend. ie. Editor, zanata.org</Well>
+          <Well bsSize="large">Use this link colour anywhere outside of frontend. ie. Editor, zanata.org</Well>
       <Link link='http://zanata.org/language/view/ja' useHref>
         Japanese
       </Link>

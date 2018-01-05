@@ -5,15 +5,13 @@ import { Well, Table } from 'react-bootstrap'
 storiesOf('Well', module)
     .add('default', () => (
         <span>
-          <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Well</h2>
-
-          <Well>Use the well as a simple effect on an element to give it an inset effect.
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Well</h2>
+          <Well bsSize="large">Use the well as a simple effect on an element to give it an inset effect.
           </Well>
           <Well>Look I'm in a well! <a href='#'>I am a link
             in a well!</a></Well>
             <hr />
           <h3>Props</h3>
-
           <Table striped bordered condensed hover>
           <thead>
           <tr>
@@ -42,8 +40,7 @@ storiesOf('Well', module)
     ))
     .add('small', () => (
         <span>
-                    <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Well - small</h2>
-
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Well - small</h2>
         <Well bsSize='small'>Look I'm in a small well!</Well>
         <p><code>bsSize="small"</code></p>
         </span>
@@ -52,8 +49,7 @@ storiesOf('Well', module)
 
     .add('large', () => (
         <span>
-                    <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Well - large</h2>
-
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Well - large</h2>
         <Well bsSize='large'>Look I'm in a large well!</Well>
         <p><code>bsSize="large"</code></p>
         </span>

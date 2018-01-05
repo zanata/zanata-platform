@@ -5,10 +5,9 @@ import { Tabs, Tab, Row, Col, Nav, NavItem, Well } from 'react-bootstrap'
 storiesOf('Tabs', module)
     .add('horizontal', () => (
         <span>
-                  <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Tabs - horizontal</h2>
-
-          <Well>Add quick, dynamic tab functionality to transition through panes of local content.
-          <ul><li><a href="">Props for react-bootstrap Tabs</a></li></ul></Well>
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Tabs - horizontal</h2>
+          <Well bsSize="large">Add quick, dynamic tab functionality to transition through panes of local content.
+          <hr /><ul><li><a href="">Props for react-bootstrap Tabs</a></li></ul></Well>
         <Tabs defaultActiveKey={2} onSelect={action('onSelect')}
               id='uncontrolled-tab-example'>
           <Tab eventKey={1} title='Tab 1' className='contentViewContainer'>
@@ -27,7 +26,7 @@ storiesOf('Tabs', module)
     ))
     .add('vertical', () => (
         <span>
-                            <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Tabs - vertical</h2>
+                            <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Tabs - vertical</h2>
 
         <Tab.Container id='left-tabs-example' defaultActiveKey='first'
             onSelect={action('onSelect')} className='contentViewContainer'>

@@ -5,8 +5,8 @@ import { Label, Well, Table } from 'react-bootstrap'
 storiesOf('Label', module)
   .add('in headings', () => (
     <span>
-         <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Labels in headings</h2>
-          <Well>Use labels to highlight information.</Well>
+         <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Labels in headings</h2>
+          <Well bsSize="large">Use labels to highlight information.</Well>
           <h1>Label <Label>New</Label></h1>
       <h2>Label <Label>New</Label></h2>
       <h3>Label <Label>New</Label></h3>
@@ -15,7 +15,7 @@ storiesOf('Label', module)
       <p>Label <Label>New</Label></p>
           <hr />
           <h3>Props</h3>
-                    <Table striped bordered condensed hover>
+      <Table striped bordered condensed hover>
           <thead>
           <tr>
             <th>Name</th>
@@ -33,19 +33,18 @@ storiesOf('Label', module)
           </tr>
            <tr>
             <td>bsStyle</td>
-             <td>one of: <code>"success"</code>, <code>"warning"</code>, <code>"danger"</code>, <code>"info"</code>, <code>"default"</code>, <code>"primary"</code>, <code>"link"</code>
-</td>
+             <td>one of: <code>"success"</code>, <code>"warning"</code>, <code>"danger"</code>, <code>"info"</code>, <code>"default"</code>, <code>"primary"</code>, <code>"link"</code></td>
             <td>'default'</td>
             <td>Component visual or contextual style variants.</td>
-                    </tr>
+           </tr>
           </tbody>
-                    </Table>
+      </Table>
     </span>
   ))
 
   .add('validation states', () => (
     <span>
-      <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Label validation states</h2>
+      <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Label validation states</h2>
       <Label bsStyle='default'>Default</Label>
                 <p><code>bsStyle="default"</code></p>
 

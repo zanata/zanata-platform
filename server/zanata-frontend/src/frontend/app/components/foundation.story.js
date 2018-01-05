@@ -10,7 +10,7 @@ storiesOf('Foundation', module)
     .add('grid', () => (
         <span>
           <h2>Grids and flexbox</h2>
-          <Well> Grid being replaced with <strong>flexbox</strong> throughout frontend where it provides a more suitable alternative to the restrictive 12 column grid layout
+          <Well bsSize="lg"> Grid being replaced with <strong>flexbox</strong> throughout frontend where it provides a more suitable alternative to the restrictive 12 column grid layout
           <ul><li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a></li>
           <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox</a></li>
           </ul>

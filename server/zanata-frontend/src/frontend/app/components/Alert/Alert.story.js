@@ -5,13 +5,13 @@ import {Alert, Table, Well} from 'react-bootstrap'
 storiesOf('Alert', module)
     .add('info', () => (
         <span>
-          <h2><img src="https://react-bootstrap.github.io/assets/logo.png" width="42px" />Alert</h2>
-          <Well>Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a <code>Notification</code>.</Well>
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px"/>Alert</h2>
+          <Well bsSize="lg">Use this for the default alert overlay. In the case where feedback is needed from the user before dismissing the alert, use a <code>Notification</code>.</Well>
         <p><Alert bsStyle='info'>
           <strong>Holy guacamole!</strong> Best check yo self
         </Alert></p>
           <p><code>bsStyle="info"</code></p>
-          <hr />
+          <hr/>
         <h3>Props</h3>
           <Table striped bordered condensed hover>
           <thead>
@@ -35,21 +35,21 @@ storiesOf('Alert', module)
             <td>'info'</td>
             <td>Component visual or contextual style variants.</td>
           </tr>
-                   <tr>
+          <tr>
             <td>closeLabel</td>
-                     <td>string</td>
-                     <td>'Close alert'</td>
+            <td>string</td>
+            <td>'Close alert'</td>
             <td></td>
           </tr>
-                   <tr>
+          <tr>
             <td>onDismiss</td>
             <td>function</td>
             <td></td>
-                     <td>For Closeable alerts pass the <code>onDismiss</code> function</td>
+            <td>For Closeable alerts pass the <code>onDismiss</code> function</td>
           </tr>
           </tbody>
           </Table>
-          <hr />
+          <hr/>
             <h3>Related components</h3>
           <code>Notification</code>
         </span>
