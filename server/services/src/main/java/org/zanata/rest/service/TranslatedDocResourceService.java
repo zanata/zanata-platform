@@ -101,9 +101,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Context
     @SuppressFBWarnings("SE_BAD_FIELD")
     private Request request;
-    @Context
-    @SuppressFBWarnings("SE_BAD_FIELD")
-    private UriInfo uri;
+
     @Inject
     private ZanataIdentity identity;
     @Inject

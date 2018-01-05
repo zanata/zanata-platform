@@ -256,7 +256,15 @@ public class ApplicationConfiguration implements Serializable {
         if (configuredValue != null) {
             return configuredValue;
         } else {
-            return HttpRequestAndSessionHolder.getDefaultServerPath();
+
+            String defaultServerPath =
+                    HttpRequestAndSessionHolder.getDefaultServerPath();
+            if (defaultServerPath == null) {
+                log.error("server path is not configured in database and not yet generated from Http request!!!. Admin need to configure it in database");
+                // return empty string for now. See ZNTA-2319
+                return "";
+            }
+            return defaultServerPath;
         }
     }
 
