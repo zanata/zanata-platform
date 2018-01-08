@@ -156,6 +156,12 @@
         <version>1.1</version>
       </dependency>
 
+      <dependency>
+        <groupId>commons-validator</groupId>
+        <artifactId>commons-validator</artifactId>
+        <version>1.6</version>
+      </dependency>
+
       <!-- See https://issues.jboss.org/browse/WFK2-674
  For some warnings in the console. It happens when deltaspike-jsf
  doesn't run against jsf 2.1 (eap) -->
