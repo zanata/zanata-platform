@@ -60,6 +60,8 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
     @Parameter(defaultValue = "${settings.interactiveMode}")
     private boolean interactiveMode = true;
 
+    private boolean interactiveModeSet;
+
     /**
      * Enable HTTP message logging.
      */
@@ -198,12 +200,18 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
     }
 
     @Override
+    public boolean isInteractiveModeSet() {
+        return interactiveModeSet;
+    }
+
+    @Override
     public boolean isInteractiveMode() {
         return interactiveMode;
     }
 
     @Override
     public void setInteractiveMode(boolean interactiveMode) {
+        interactiveModeSet = true;
         this.interactiveMode = interactiveMode;
     }
 

@@ -2,24 +2,29 @@ package org.zanata.client.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
 import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders.allHolders;
 import static org.zanata.client.commands.Messages.get;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
@@ -108,6 +113,36 @@ public class OptionsUtilTest {
         assertThat(opts.getTransDir()).isEqualTo(new File("."));
         assertThat(opts.getIncludes()).contains("*.properties");
         assertThat(opts.getExcludes()).contains("a.properties", "b.properties");
+    }
+
+    @Test
+    public void applyUserConfigTestDefault() throws MalformedURLException {
+        opts.setUsername("username");
+        opts.setUrl(new URL("http://localhost"));
+
+        HierarchicalINIConfiguration config =
+                Mockito.mock(HierarchicalINIConfiguration.class);
+        OptionsUtil.applyUserConfig(opts, config);
+
+        verify(config).getSection("servers");
+        verify(config).getBoolean("defaults.debug", null);
+        verify(config).getBoolean("defaults.errors", null);
+        verify(config).getBoolean("defaults.quiet", null);
+        verify(config).getBoolean("defaults.batchMode", null);
+    }
+
+    @Test
+    public void applyUserConfigTest() {
+        opts.setDebug(false);
+        opts.setErrors(false);
+        opts.setQuiet(false);
+        opts.setInteractiveMode(false);
+
+        HierarchicalINIConfiguration config =
+                Mockito.mock(HierarchicalINIConfiguration.class);
+        OptionsUtil.applyUserConfig(opts, config);
+
+        verifyZeroInteractions(config);
     }
 
     @Test
