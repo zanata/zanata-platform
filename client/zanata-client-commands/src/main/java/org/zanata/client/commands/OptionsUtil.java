@@ -362,6 +362,12 @@ public class OptionsUtil {
             if (quiet != null)
                 opts.setQuiet(quiet);
         }
+
+        if (!opts.isInteractiveModeSet()) {
+            Boolean batchMode = config.getBoolean("defaults.batchMode", null);
+            if (batchMode != null)
+                opts.setInteractiveMode(!batchMode);
+        }
         if ((opts.getUsername() == null || opts.getKey() == null)
                 && opts.getUrl() != null) {
             SubnodeConfiguration servers = config.getSection("servers");
