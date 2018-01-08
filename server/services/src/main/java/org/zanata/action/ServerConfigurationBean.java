@@ -31,13 +31,13 @@ import javax.faces.bean.ViewScoped;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.beanutils.BeanUtils;
-import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.Pattern;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.validator.DomainList;
+import org.zanata.model.validator.ZanataEmail;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
@@ -78,7 +78,7 @@ public class ServerConfigurationBean implements Serializable {
     private String emailDomain;
     @EmailList
     private String adminEmail;
-    @Email
+    @ZanataEmail
     private String fromEmailAddr;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<String> fromEmailAddrProperty =

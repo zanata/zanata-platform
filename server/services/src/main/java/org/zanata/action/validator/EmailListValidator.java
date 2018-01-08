@@ -30,7 +30,8 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Validator;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.hibernate.validator.constraints.Email;
+import org.zanata.model.validator.ZanataEmail;
+import org.zanata.model.validator.ZanataEmailValidator;
 
 @ApplicationScoped
 public class EmailListValidator implements
@@ -41,11 +42,15 @@ public class EmailListValidator implements
     @Inject
     private Validator validator;
 
+    private final ZanataEmailValidator zanataEmailValidator =
+            new ZanataEmailValidator();
+
     private static class EmailHolder {
         EmailHolder(String email) {
             this.email = email;
         }
-        final @Email String email;
+        final @ZanataEmail
+        String email;
     }
 
     @Override
@@ -57,6 +62,10 @@ public class EmailListValidator implements
         // trim still required to prevent leading whitespace invalidating the
         // first email address
         for (String email : s.trim().split("\\s*,\\s*")) {
+            if (!zanataEmailValidator.isValid(email, context)) {
+                return false;
+            }
+
             Set<?> violations = validator.validate(new EmailHolder(email));
             if (!violations.isEmpty()) {
                 return false;
