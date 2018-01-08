@@ -4,40 +4,42 @@
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Grid, Row, Col, Well, Panel, Checkbox } from 'react-bootstrap'
 
 storiesOf('Foundation', module)
     .add('grid', () => (
-        <Grid>
-          <Row className='showGrid'>
+        <span>
+          <h2>Grids and flexbox</h2>
+          <Well bsSize="lg"> Grid being replaced with <strong>flexbox</strong> throughout frontend where it provides a more suitable alternative to the restrictive 12 column grid layout
+          <ul><li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a></li>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox</a></li>
+          </ul>
+         </Well>
+            <Grid>
+          <Row>
             <Col className='showGrid' xs={12} md={8}><code>
               &lt;{'Col xs={12} md={8}'} /&gt;</code></Col>
             <Col className='showGrid' xs={6} md={4}><code>
               &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
           </Row>
-          <Row className='showGrid'>
-            <Col className='showGrid' xs={6} md={4}><code>
-              &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-            <Col className='showGrid' xs={6} md={4}><code>
-              &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-            <Col className='showGrid' xsHidden md={4}><code>
-              &lt;{'Col xsHidden md={4}'} /&gt;</code></Col>
-          </Row>
-          <Row className='showGrid'>
-            <Col className='showGrid' xs={6} xsOffset={6}><code>
-              &lt;{'Col xs={6} xsOffset={6}'} /&gt;</code></Col>
-          </Row>
-          <Row className='showGrid'>
-            <Col className='showGrid' md={6} mdPush={6}><code>
-              &lt;{'Col md={6} mdPush={6}'} /&gt;</code></Col>
-            <Col className='showGrid' md={6} mdPull={6}><code>
-              &lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
-          </Row>
         </Grid>
+          <br />
+          <Panel header='Future improvements' bsStyle='warning'>
+            <h4> <Checkbox  readOnly>CSS Grid</Checkbox></h4>
+            <p>The <strong>CSS Grid</strong> will be a good future replacement for the bootstrap columns/flexbox combinations, but currently browser support is below 80%. (<a href="https://caniuse.com/#feat=css-grid">CanIUse</a>)</p>
+          <ul>
+            <li><a href="https://css-tricks.com/snippets/css/complete-guide-grid/">https://css-tricks.com/snippets/css/complete-guide-grid/</a></li>
+          <li><a href="https://open.nytimes.com/bootstrap-to-css-grid-87b3f5f830e4">https://open.nytimes.com/bootstrap-to-css-grid-87b3f5f830e4</a></li>
+          </ul>
+            <hr />
+            <h4> <Checkbox  readOnly>Utility classes</Checkbox></h4>
+            <p>Add more css utility classes so that developers can add minor changes such as padding without working with the style.less file</p>
+          </Panel>
+        </span>
     ))
     .add('colours', () => (
         <span>
-          <h3>Main colors</h3>
+          <h2>Main colors</h2>
           <small>Hover for hexcode</small><br />
           <div className='sg-color sg-brand-primary sg-lg'>
             <span className='sg-color-swatch'>
@@ -63,7 +65,7 @@ storiesOf('Foundation', module)
           <div className='sg-color sg-gray-darkest sg-lg'>
             <span className='sg-color-swatch'>
               <span className='sg-animated'>#555555</span></span></div>
-          <h3>Status colours</h3>
+          <h2>Status colours</h2>
           <div className='sg-color sg-brand-success'>
             <span className='sg-color-swatch'>
               <span className='sg-animated'>#62C876</span></span></div>
@@ -83,11 +85,11 @@ storiesOf('Foundation', module)
     ))
     .add('typography', () => (
         <span>
-          <h3>Font stack</h3>
-          <p>'Source Sans Pro', 'Helvetica Neue',
-          Helvetica, Arial, sans-serif;</p>
+          <h2>Font stack</h2>
+          <Well><code>'Source Sans Pro', 'Helvetica Neue',
+            Helvetica, Arial, sans-serif;</code></Well>
           <hr />
-        <h3>Headings</h3>
+        <h2>Headings</h2>
           <h1 className='page-header'>Page Header <small>
           With Small Text</small></h1>
           <h1>h1. Bootstrap heading <small>Secondary text</small></h1>
@@ -97,7 +99,7 @@ storiesOf('Foundation', module)
           <h5>h5. Bootstrap heading <small>Secondary text</small></h5>
           <h6>h6. Bootstrap heading <small>Secondary text</small></h6>
           <hr />
-        <h3>Text styles</h3>
+        <h2>Text styles</h2>
         <p className='lead'>Lead paragraph: vivamus sagittis lacus
         vel augue laoreet rutrum faucibus dolor auctor. Duis
         mollis, est non commodo luctus.</p>
