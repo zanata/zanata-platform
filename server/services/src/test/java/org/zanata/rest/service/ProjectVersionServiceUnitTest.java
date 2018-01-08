@@ -4,6 +4,7 @@ import java.util.List;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.assertj.core.util.Lists;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.UserService;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
@@ -57,6 +59,8 @@ public class ProjectVersionServiceUnitTest {
     private UserService userService;
     @Mock
     private ApplicationConfiguration applicationConfiguration;
+    @Mock private UriInfo uri;
+    @Mock private UrlUtil urlUtil;
 
     @Before
     public void setUp() throws Exception {
@@ -64,7 +68,8 @@ public class ProjectVersionServiceUnitTest {
         service =
             new ProjectVersionService(textFlowDAO, documentDAO, null,
                 projectIterationDAO, localeService, request, etagUtil,
-                new ResourceUtils(), null, null, userService, applicationConfiguration, null);
+                new ResourceUtils(), null, null, userService,
+                    applicationConfiguration, uri, urlUtil);
 
     }
 

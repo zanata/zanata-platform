@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 
-@ApplicationPath("/rest")
+@ApplicationPath(JaxRSApplication.REST_APP_BASE)
 @ApplicationScoped
 public class JaxRSApplication extends javax.ws.rs.core.Application {
     private static final org.slf4j.Logger log =
@@ -24,6 +24,7 @@ public class JaxRSApplication extends javax.ws.rs.core.Application {
 
     private static final Set<Class<?>> classes = buildClassesSet();
     private static final String PACKAGE_PREFIX = "org.zanata";
+    public static final String REST_APP_BASE = "/rest";
 
     @Override
     public Set<Class<?>> getClasses() {
