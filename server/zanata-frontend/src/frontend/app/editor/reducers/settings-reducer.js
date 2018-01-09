@@ -14,6 +14,7 @@ import {
 import { SHORTCUTS } from '../actions/key-shortcuts-actions'
 
 export const ENTER_SAVES_IMMEDIATELY = 'enter-saves-immediately'
+export const SYNTAX_HIGHLIGTING = 'syntax-highlighting'
 export const KEY_SUGGESTIONS_VISIBLE = 'suggestions-visible'
 
 /* Parse values of known settings to appropriate types */
@@ -22,6 +23,7 @@ function parseKnownSettings (settings) {
     try {
       switch (key) {
         case ENTER_SAVES_IMMEDIATELY:
+        case SYNTAX_HIGHLIGTING:
         case KEY_SUGGESTIONS_VISIBLE:
           return JSON.parse(value)
         default:
