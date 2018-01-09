@@ -11,6 +11,7 @@ import { ENTER_SAVES_IMMEDIATELY } from '../reducers/settings-reducer'
 
 export const SettingsPanel = ({
   enterSavesImmediately,
+  syntaxHighligting,
   hideSettings,
   updateSetting,
   isRTL
@@ -35,6 +36,11 @@ export const SettingsPanel = ({
                 id: ENTER_SAVES_IMMEDIATELY,
                 label: 'Enter key saves immediately',
                 active: enterSavesImmediately
+              },
+              {
+                id: 'syntax-highlighting',
+                label: 'Syntax Highlighting',
+                active: enterSavesImmediately
               }
             ]}
             updateSetting={updateSetting} />
@@ -46,6 +52,7 @@ export const SettingsPanel = ({
 
 SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
+  syntaxHighligting: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired,
   isRTL: PropTypes.bool.isRequired
@@ -57,6 +64,7 @@ const mapStateToProps = (state) => {
 
   return {
     enterSavesImmediately: getEnterSavesImmediately(state),
+    syntaxHighligting: getEnterSavesImmediately(state),
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false
   }
