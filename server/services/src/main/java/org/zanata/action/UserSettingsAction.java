@@ -32,7 +32,6 @@ import javax.validation.constraints.Size;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.text.StringEscapeUtils;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -48,6 +47,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.model.validator.EmailDomain;
+import org.zanata.model.validator.ZanataEmail;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.seam.security.IdentityManager;
@@ -106,7 +106,7 @@ public class UserSettingsAction implements Serializable {
     @Inject
     @Authenticated
     HAccount authenticatedAccount;
-    @Email
+    @ZanataEmail
     @NotEmpty
     @EmailDomain
     private String emailAddress;

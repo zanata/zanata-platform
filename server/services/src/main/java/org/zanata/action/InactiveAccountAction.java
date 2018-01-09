@@ -3,7 +3,6 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
@@ -20,6 +19,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
 import org.zanata.model.validator.EmailDomain;
+import org.zanata.model.validator.ZanataEmail;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataCredentials;
@@ -51,7 +51,7 @@ public class InactiveAccountAction implements Serializable {
     private AccountActivationKeyDAO accountActivationKeyDAO;
     @Inject
     private AuthenticationManager authenticationManager;
-    @Email
+    @ZanataEmail
     @NotDuplicateEmail(message = "This email address is already taken.")
     @EmailDomain
     private String email;
