@@ -9,7 +9,7 @@ import { pick } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
 import { getSyntaxHighlighting } from '../reducers'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import { monoBlue } from 'react-syntax-highlighter/styles/hljs'
+import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 /**
  * Panel to display and edit translations of a phrase.
  */
@@ -261,7 +261,7 @@ class TranslationItem extends React.Component {
     const syntaxHighlighter = this.props.syntaxOn
       ? <SyntaxHighlighter
         language='html'
-        style={monoBlue}
+        style={atelierLakesideLight}
         wrapLines
         lineStyle={syntaxStyle}>
         {translation}
