@@ -13,7 +13,7 @@ class SuggestionContents extends React.Component {
     contents: PropTypes.arrayOf(
       PropTypes.string
     ).isRequired,
-    // Include this to display a diff
+    showDiff: PropTypes.bool,
     compareTo: PropTypes.arrayOf(
       PropTypes.string
     )
@@ -38,6 +38,7 @@ class SuggestionContents extends React.Component {
    */
   contentDiv = (content, index) => {
     const compareTo = this.props.compareTo
+    const showDiff = this.props.showDiff
     const className = cx(
       'TransUnit-text',
       {
@@ -45,15 +46,20 @@ class SuggestionContents extends React.Component {
         'Difference': compareTo
       }
     )
-
-    return compareTo
+    const simpleView = compareTo
+      ? <TextDiff
+        className={className}
+        text1={index >= compareTo.length ? '' : compareTo[index]}
+        text2={content} simpleMatch />
+      : <div className={className}>
+          {content}
+      </div>
+    return showDiff
       ? <TextDiff
         className={className}
         text1={index >= compareTo.length ? '' : compareTo[index]}
         text2={content} />
-      : <div className={className}>
-          {content}
-      </div>
+      : simpleView
   }
 
   render () {

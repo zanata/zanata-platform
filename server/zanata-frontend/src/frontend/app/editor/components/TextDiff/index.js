@@ -14,7 +14,9 @@ module.exports = class extends React.Component {
   static propTypes = {
     text1: PropTypes.string.isRequired,
     text2: PropTypes.string.isRequired,
-    className: PropTypes.string
+    className: PropTypes.string,
+    // Matches are highlighted and non-matches display with line-through
+    simpleMatch: PropTypes.bool
   }
 
   static defaultProps = {
@@ -36,15 +38,21 @@ module.exports = class extends React.Component {
     var differences = compare(this.props.text1, this.props.text2)
     // modifies in-place
     diff.cleanupSemantic(differences)
-
+    const simpleMatch = this.props.simpleMatch
     const result = differences.map(([type, text], index) => {
       switch (type) {
         case -1:
-          return (<del key={index}>{text}</del>)
+          return (simpleMatch
+            ? <span className="line-through" key={index}>{text}</span>
+            : <del key={index}>{text}</del>)
         case 0:
-          return <span key={index}>{text}</span>
+          return (simpleMatch
+            ? <span className="highlight" key={index}>{text}</span>
+            : <span key={index}>{text}</span>)
         case 1:
-          return <ins key={index}>{text}</ins>
+          return (simpleMatch
+            ? ''
+            : <ins key={index}>{text}</ins>)
         default:
           console.error('invalid diff match type "' + type +
                         '". Expecting one of: -1, 0, 1')
