@@ -32,6 +32,8 @@ export const getSuggestionsPanelVisible = createSelector(
   getSettings, settingsSelectors.getSuggestionsPanelVisible)
 export const getEnterSavesImmediately = createSelector(
   getSettings, settingsSelectors.getEnterSavesImmediately)
+export const getSyntaxHighlighting = createSelector(
+  getSettings, settingsSelectors.getSyntaxHighlighting)
 export const getShortcuts = createSelector(
   getSettings, settingsSelectors.getShortcuts)
 
