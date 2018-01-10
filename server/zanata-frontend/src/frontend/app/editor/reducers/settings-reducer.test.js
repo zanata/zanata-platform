@@ -4,6 +4,7 @@ jest.disableAutomock()
 import reducer, {
   ENTER_SAVES_IMMEDIATELY,
   KEY_SUGGESTIONS_VISIBLE,
+  SYNTAX_HIGHLIGTING,
   getSuggestionsPanelVisible
 } from './settings-reducer'
 import { createAction } from 'redux-actions'
@@ -33,6 +34,11 @@ describe('settings-reducer test', () => {
           value: true,
           saving: false,
           error: undefined
+        },
+        [SYNTAX_HIGHLIGTING]: {
+          value: false,
+          saving: false,
+          error: undefined
         }
       }
     })
@@ -56,6 +62,11 @@ describe('settings-reducer test', () => {
           error: undefined
         },
         [KEY_SUGGESTIONS_VISIBLE]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [SYNTAX_HIGHLIGTING]: {
           value: false,
           saving: false,
           error: undefined
