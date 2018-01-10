@@ -24,14 +24,14 @@ class SuggestionSources extends React.Component {
 
   render () {
     const sourceContents = this.props.suggestion.sourceContents
-    const diffWith = this.props.showDiff ? this.props.search : undefined
     return (
       <div className={this.props.directionClass +
         ' TransUnit-panel TransUnit-source'}>
         <SuggestionContents
           plural={sourceContents.length > 1}
           contents={sourceContents}
-          compareTo={diffWith} />
+          showDiff={this.props.showDiff}
+          compareTo={this.props.search} />
         <SuggestionDetailsSummary
           onClick={this.props.showDetail}
           suggestion={this.props.suggestion} />

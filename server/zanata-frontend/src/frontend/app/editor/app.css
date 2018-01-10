@@ -64,3 +64,6 @@
   opacity: 1;
 }
 
+.line-through {
+    text-decoration: line-through;
+}
