@@ -30,5 +30,6 @@ require('./TextInput/TextInput.story.js')
 require('./Tooltip/Tooltip.story.js')
 require('./TriCheckbox/TriCheckbox.story')
 require('./Well/Well.story.js')
+
 require('./VersionTMMergeModal/VersionTMMergeModal.story')
 require('./RejectionsForm/RejectionsForm.story.js')

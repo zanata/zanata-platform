@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import TransUnitSourceHeader from './TransUnitSourceHeader'
 import { LoaderText } from '../../components'
 import IconButton from './IconButton'
+import { getFilterString } from '../selectors'
+import { connect } from 'react-redux'
 
 /**
  * Panel for the source of the selected phrase
@@ -16,10 +18,13 @@ class TransUnitSourcePanel extends React.Component {
     sourceLocale: PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    filterString: PropTypes.string
   }
 
   render () {
+    const filterString = this.props.filterString
+
     const isPlural = this.props.phrase.plural
 
     const header = this.props.selected
@@ -64,11 +69,21 @@ class TransUnitSourcePanel extends React.Component {
               {copyButton}
             </div>
             : undefined
-
+          const getHighlightedText = (text, higlight) => {
+            // Split on higlight term and include term into parts, ignore case
+            const parts = text.split(new RegExp(`(${higlight})`, 'gi'))
+            return parts.map((part, index) =>
+              part.toLowerCase() === higlight.toLowerCase()
+                ? <span key={index} className="highlight">{part}</span>
+                : <span key={index}>{part}</span>
+            )
+          }
+          const finalSource = filterString
+            ? getHighlightedText(source, filterString) : source
           return (
             <div className="TransUnit-item" key={index}>
               {itemHeader}
-              <pre className="TransUnit-text">{source}</pre>
+              <pre className="TransUnit-text">{finalSource}</pre>
             </div>
           )
         })
@@ -104,4 +119,11 @@ class TransUnitSourcePanel extends React.Component {
   }
 }
 
-export default TransUnitSourcePanel
+function mapStateToProps (state) {
+  return {
+    state,
+    filterString: getFilterString(state)
+  }
+}
+
+export default connect(mapStateToProps)(TransUnitSourcePanel)

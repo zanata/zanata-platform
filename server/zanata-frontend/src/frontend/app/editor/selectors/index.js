@@ -55,6 +55,11 @@ const getCurrentDocPhrases = createSelector(
   }
 )
 
+export const getFilterString = createSelectorCreator(defaultMemoize, isEqual)(
+  getFilter,
+  (filter) => filter.advanced.searchString
+)
+
 export const getFilteredPhrases = createSelector(
   getCurrentDocPhrases, getFilter,
   (phrases, { status }) => {

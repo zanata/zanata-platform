@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Button, ButtonToolbar, OverlayTrigger,
-  Tooltip } from 'react-bootstrap'
+  Tooltip, Well } from 'react-bootstrap'
 
 const tooltip = (
     <Tooltip id='tooltip'><strong>Tooltip ahoy!</strong> Check this info.
@@ -10,6 +10,12 @@ const tooltip = (
 
 storiesOf('Tooltip', module)
     .add('default', () => (
+        <span>
+          <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Tooltip</h2>
+          <Well bsSize="large">Tooltip component for a more stylish alternative to that anchor tag <code>title</code> attribute. Attach and position tooltips with <code>OverlayTrigger</code>.
+            <hr />
+            <ul><li><a href="https://react-bootstrap.github.io/components.html#tooltips-props">Props for react-bootstrap Tooltips</a></li></ul>
+          </Well>
         <ButtonToolbar>
           <OverlayTrigger placement='left' overlay={tooltip}>
             <Button bsStyle='default'>Holy guacamole!</Button>
@@ -24,4 +30,5 @@ storiesOf('Tooltip', module)
             <Button bsStyle='default'>Holy guacamole!</Button>
           </OverlayTrigger>
         </ButtonToolbar>
+        </span>
     ))
