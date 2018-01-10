@@ -63,3 +63,7 @@
 .fade.in {
   opacity: 1;
 }
+
+.highlight {
+  background-color: #ff6;
+}
