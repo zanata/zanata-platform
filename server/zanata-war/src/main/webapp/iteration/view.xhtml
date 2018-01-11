@@ -23,6 +23,9 @@
     <f:viewParam name="projectSlug" value="#{mergeTransAction.targetProjectSlug}" />
     <f:viewParam name="iterationSlug" value="#{mergeTransAction.targetVersionSlug}" />
 
+    <f:viewParam name="projectSlug" value="#{mergeMTAction.projectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{mergeMTAction.versionSlug}" />
+
     <f:event type="preRenderView" listener="#{versionHome.init(false)}"/>
     <f:event type="preRenderView" listener="#{versionHome.validateSuppliedId}"/>
   </f:metadata>
@@ -236,6 +239,8 @@
       <a4j:param name="val1" assignTo="#{docType}"/>
     </a4j:jsFunction>
 
+    <a4j:jsFunction name="mtmerge" action="#{mergeMTAction.mergeMT()}" limitRender="true"/>
+
   </h:form>
 
 
@@ -441,6 +446,9 @@
                     </li>
                   </ui:fragment>
                 </ui:fragment>
+                <li>
+                  <a href="#" onclick="mtmerge()">Fill with MT</a>
+                </li>
                 <li>
                   <h:commandLink title="#{msgs['jsf.GenerateProjectConfig']}"
                     styleClass="i__item--right"
