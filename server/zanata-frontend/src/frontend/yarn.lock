@@ -7171,7 +7171,7 @@ react-style-proptype@^3.0.0:
   dependencies:
     prop-types "^15.5.4"
 
-react-syntax-highlighter@^6.1.1:
+react-syntax-highlighter@6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-6.1.1.tgz#4d134fa9217c4025e7fd6efeadd08ba92436ee4e"
   dependencies:
