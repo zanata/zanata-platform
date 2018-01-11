@@ -45,6 +45,11 @@ public class CorePage extends AbstractPage {
     private By homeLink = By.id("nav_home");
     private By moreLink = By.id("nav_more");
 
+    protected static final By h3Header = By.tagName("h3");
+    protected static final By paragraph = By.tagName("p");
+    protected static final By inputElement = By.tagName("input");
+    protected static final By tableElement = By.tagName("table");
+
     public CorePage(WebDriver driver) {
         super(driver);
         assertNoCriticalErrors();

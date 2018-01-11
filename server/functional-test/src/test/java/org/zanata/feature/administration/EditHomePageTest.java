@@ -57,7 +57,8 @@ public class EditHomePageTest extends ZanataTestCase {
                 .enterText("This text contains *some* markup")
                 .update();
 
-        assertThat(homePage.getMainBodyContent()).isEqualTo("This text contains some markup")
+        assertThat(homePage.getMainBodyContent())
+                .isEqualTo("This text contains some markup")
                 .as("Homepage text has been updated");
     }
 }

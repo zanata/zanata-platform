@@ -122,7 +122,7 @@
                   <thead>
                     <tr>
                       <th class="l--pad-v-half">
-                        <h:selectBooleanCheckbox value="#{reindexAction.selectAll}"
+                        <h:selectBooleanCheckbox value="#{reindexAction.selectAll}" id="selectAllCheck"
                           disabled="#{not reindexAction.canceled and reindexAction.inProgress}">
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>

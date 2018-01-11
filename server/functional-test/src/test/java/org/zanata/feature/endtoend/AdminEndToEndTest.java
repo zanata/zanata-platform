@@ -143,7 +143,7 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .goToAdministration()
                 .goToManageRoleAssignments()
                 .clickMoreActions()
-                .selectCreateNewRule()
+                .clickCreateNew()
                 .enterIdentityPattern(USERROLEREGEX)
                 .selectRole("admin")
                 .saveRoleAssignment();

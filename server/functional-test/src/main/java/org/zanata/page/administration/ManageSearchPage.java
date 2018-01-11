@@ -20,8 +20,10 @@
  */
 package org.zanata.page.administration;
 
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -40,8 +42,8 @@ public class ManageSearchPage extends BasePage {
     private static final int SELECT_ALL_COLUMN = 0;
     private By classesTable = By.id("form:actions");
     private By abortButton = By.id("form:cancel");
-    private By selectAllButton = By.id("form:selectAll");
-    private By performButton = By.id("form:reindex");
+    private By selectAllButton = By.id("form:selectAllCheck");
+    private By performButton = By.id("reindex");
     private By cancelButton = By.linkText("Abort");
     private By noOpsLabel = By.id("noOperationsRunning");
     private By abortedLabel = By.id("aborted");
@@ -51,6 +53,11 @@ public class ManageSearchPage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Select all of the available actions for a data type
+     * @param clazz data type to select
+     * @return new ManageSearchPage
+     */
     public ManageSearchPage selectAllActionsFor(String clazz) {
         List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
                 readyElement(classesTable));
@@ -58,13 +65,17 @@ public class ManageSearchPage extends BasePage {
             if (tableRow.getCellContents().contains(clazz)) {
                 WebElement allActionsChkBox =
                         tableRow.getCells().get(SELECT_ALL_COLUMN)
-                                .findElement(By.tagName("input"));
+                                .findElement(inputElement);
                 Checkbox.of(allActionsChkBox).check();
             }
         }
         return new ManageSearchPage(getDriver());
     }
 
+    /**
+     * Press the Select All button
+     * @return new ManageSearchPage
+     */
     public ManageSearchPage clickSelectAll() {
         log.info("Click Select All");
         clickElement(selectAllButton);
@@ -78,24 +89,37 @@ public class ManageSearchPage extends BasePage {
         return new ManageSearchPage(getDriver());
     }
 
+    /**
+     * Query if all actions in the table are selected
+     * @return boolean all actions are selected
+     */
     public boolean allActionsSelected() {
         log.info("Query all actions selected");
         List<TableRow> tableRows =
                 WebElementUtil.getTableRows(getDriver(), readyElement(
-                        existingElement(classesTable), By.tagName("table")));
+                        existingElement(classesTable), tableElement));
         for (TableRow tableRow : tableRows) {
             // column 2, 3, 4 are checkboxes for purge, reindex and optimize
             for (int i = 1; i <= 3; i++) {
-                WebElement checkBox = tableRow.getHeaders().get(i)
-                        .findElement(By.tagName("input"));
-                if (!Checkbox.of(checkBox).checked()) {
-                    return false;
+                try {
+                    WebElement checkBox = tableRow.getCells().get(i)
+                            .findElement(inputElement);
+                    if (!Checkbox.of(checkBox).checked()) {
+                        return false;
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    throw new RuntimeException("Test oops: " +
+                            tableRow.toString() + ":" + i);
                 }
             }
         }
         return true;
     }
 
+    /**
+     * Press the Perform All Actions button and wait for 'Abort' to be displayed
+     * @return new ManageSearchPage
+     */
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
         clickElement(performButton);
@@ -104,6 +128,10 @@ public class ManageSearchPage extends BasePage {
         return new ManageSearchPage(getDriver());
     }
 
+    /**
+     * Wait for the Perform All Actions button to become available
+     * @return new ManageSearchPage
+     */
     public ManageSearchPage expectActionsToFinish() {
         log.info("Wait: all actions are finished");
         // once the button re-appears, it means the reindex is done.
@@ -111,22 +139,38 @@ public class ManageSearchPage extends BasePage {
         return new ManageSearchPage(getDriver());
     }
 
+    /**
+     * Press the Abort button
+     * @return new ManageSearchPage
+     */
     public ManageSearchPage abort() {
         log.info("Click Abort");
         clickElement(abortButton);
         return new ManageSearchPage(getDriver());
     }
 
+    /**
+     * Check if the 'No Operations Running' label is displayed
+     * @return boolean of label displayed
+     */
     public boolean noOperationsRunningIsDisplayed() {
         log.info("Query No Operations");
         return readyElement(noOpsLabel).isDisplayed();
     }
 
+    /**
+     * Check if the 'All Operations Completed' label is displayed
+     * @return boolean of label displayed
+     */
     public boolean completedIsDisplayed() {
         log.info("Query is action completed");
         return readyElement(completedLabel).isDisplayed();
     }
 
+    /**
+     * Check if the 'Operations Aborted' label is displayed
+     * @return boolean of label displayed
+     */
     public boolean abortedIsDisplayed() {
         log.info("Query is action aborted");
         return readyElement(abortedLabel).isDisplayed();

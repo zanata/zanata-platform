@@ -215,14 +215,14 @@
             </p>
           </h:panelGroup>
 
-          <h:panelGroup layout="block"  rendered="#{not empty translationMemoryAction.allTranslationMemories}">
+          <h:panelGroup layout="block"  rendered="#{not empty translationMemoryAction.allTranslationMemories}" id="allMemories">
             <h:panelGroup layout="block"  id="processResult">
               <h:panelGroup layout="span" styleClass="message--warning" rendered="#{not empty translationMemoryAction.processError}">
                 #{translationMemoryAction.processError}
               </h:panelGroup>
             </h:panelGroup>
 
-            <ul class="list--stats">
+            <ul class="list--stats" id="tmEntryList">
               <ui:repeat value="#{translationMemoryAction.allTranslationMemories}"
                 var="tm">
                 <li class="list__item--actionable" id="tm-#{tm.slug}">
