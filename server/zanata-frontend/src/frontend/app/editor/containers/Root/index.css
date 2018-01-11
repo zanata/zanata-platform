@@ -24,6 +24,10 @@ input, textarea, select, button  {
   font-size: 1rem;
 }
 
+.TransUnitItem .highlight {
+  background-color: #ff6;
+}
+
 .sidebar-editor .badge {
   font-size: 0.875rem;
   display: inline-block;

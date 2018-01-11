@@ -64,10 +64,6 @@
   opacity: 1;
 }
 
-.highlight {
-  background-color: #ff6;
-}
-
 .line-through {
     text-decoration: line-through;
 }
