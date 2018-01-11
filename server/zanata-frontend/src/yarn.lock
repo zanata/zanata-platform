@@ -9945,7 +9945,13 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.6.2:
+typescript-react-intl@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/typescript-react-intl/-/typescript-react-intl-0.1.7.tgz#8e8f2242190dbb442d9ac7d2e70e778988abaf2e"
+  dependencies:
+    typescript "^2.3.4"
+
+typescript@^2.3.4, typescript@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.6.2.tgz#3c5b6fd7f6de0914269027f03c0946758f7673a4"
 

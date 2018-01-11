@@ -8,6 +8,7 @@
     "js": "yarn run check && webpack",
     "build": "yarn run check && node scripts/build",
     "draft": "yarn run check && node scripts/build --draft",
+    "extract-messages": "yarn run check && node scripts/extract-messages",
     "watch": "yarn run check && node scripts/dev-server",
     "watch:editor": "yarn run check && node scripts/dev-server --editor",
     "styleguide-server": "yarn run check && styleguidist server",
@@ -152,6 +153,7 @@
     "suitcss-utils-text": "0.4.1",
     "svg-sprite": "1.3.7",
     "text-diff": "1.0.1",
+    "typescript-react-intl": "^0.1.7",
     "webfontloader": "1.6.28"
   }
 }
