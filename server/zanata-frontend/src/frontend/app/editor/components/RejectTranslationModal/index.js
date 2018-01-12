@@ -135,12 +135,14 @@ export class RejectTranslationModal extends Component {
           </Dropdown>
           </span>
           </div>
+          <div className="EditorRejection-input">
           <textarea ref="input"
              type="comment"
              placeholder="Provide a comment for why this translation has been rejected"
              cols="50"
              rows="10"
              className='EditorInputGroup-input is-focused InputGroup--outlined Commenting' />
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <span>

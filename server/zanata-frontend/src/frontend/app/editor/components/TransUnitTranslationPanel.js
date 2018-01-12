@@ -7,7 +7,9 @@ import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { LoaderText } from '../../components'
 import { pick } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
-
+import { getSyntaxHighlighting } from '../reducers'
+import SyntaxHighlighter from 'react-syntax-highlighter'
+import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 /**
  * Panel to display and edit translations of a phrase.
  */
@@ -40,7 +42,8 @@ class TransUnitTranslationPanel extends React.Component {
     toggleGlossary: PropTypes.func.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
-    isRTL: PropTypes.bool.isRequired
+    isRTL: PropTypes.bool.isRequired,
+    syntaxOn: PropTypes.bool.isRequired
   }
 
   componentWillMount () {
@@ -98,7 +101,8 @@ class TransUnitTranslationPanel extends React.Component {
       phrase,
       selected,
       selectPhrasePluralIndex,
-      isRTL
+      isRTL,
+      syntaxOn
     } = this.props
     var header, footer
     const isPlural = phrase.plural
@@ -168,7 +172,8 @@ class TransUnitTranslationPanel extends React.Component {
               setTextArea={this.setTextArea}
               textChanged={textChanged}
               translation={translation}
-              directionClass={directionClass} />
+              directionClass={directionClass}
+              syntaxOn={syntaxOn} />
           )
         })
     }
@@ -201,7 +206,8 @@ class TranslationItem extends React.Component {
     setTextArea: PropTypes.func.isRequired,
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string,
-    directionClass: PropTypes.string
+    directionClass: PropTypes.string,
+    syntaxOn: PropTypes.bool.isRequired
   }
 
   setTextArea = (ref) => {
@@ -246,7 +252,21 @@ class TranslationItem extends React.Component {
           {headerLabel}
         </span>
       </div>
-
+    const syntaxStyle = {
+      padding: '0.5rem',
+      width: '90%',
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word'
+    }
+    const syntaxHighlighter = this.props.syntaxOn
+      ? <SyntaxHighlighter
+        language='html'
+        style={atelierLakesideLight}
+        wrapLines
+        lineStyle={syntaxStyle}>
+        {translation}
+      </SyntaxHighlighter>
+      : ''
     return (
       <div className="TransUnit-item" key={index}>
         {itemHeader}
@@ -262,6 +282,7 @@ class TranslationItem extends React.Component {
           onFocus={this.setFocusedPlural}
           onChange={this._onChange}
           onSelect={onSelectionChange} />
+        {syntaxHighlighter}
       </div>
     )
   }
@@ -270,8 +291,8 @@ class TranslationItem extends React.Component {
 function mapStateToProps (state) {
   const {ui, context} = state
   const targetLocaleDetails = ui.uiLocales[context.lang]
-
   return {
+    syntaxOn: getSyntaxHighlighting(state),
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false
   }

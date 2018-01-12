@@ -131,6 +131,7 @@
     "react-router-redux": "4.0.8",
     "react-select": "1.0.0-rc.5",
     "react-sortable-hoc": "0.6.3",
+    "react-syntax-highlighter": "6.1.1",
     "react-textarea-autosize": "4.3.2",
     "react-toggle": "4.0.1",
     "redux": "3.5.2",

@@ -6,11 +6,18 @@ import { updateSetting } from '../actions/settings-actions'
 import { Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import SettingsOptions from '../components/SettingsOptions'
-import { getEnterSavesImmediately } from '../reducers'
-import { ENTER_SAVES_IMMEDIATELY } from '../reducers/settings-reducer'
+import {
+  getEnterSavesImmediately,
+  getSyntaxHighlighting
+ } from '../reducers'
+import {
+  ENTER_SAVES_IMMEDIATELY,
+  SYNTAX_HIGHLIGTING
+} from '../reducers/settings-reducer'
 
 export const SettingsPanel = ({
   enterSavesImmediately,
+  syntaxHighligting,
   hideSettings,
   updateSetting,
   isRTL
@@ -35,6 +42,11 @@ export const SettingsPanel = ({
                 id: ENTER_SAVES_IMMEDIATELY,
                 label: 'Enter key saves immediately',
                 active: enterSavesImmediately
+              },
+              {
+                id: SYNTAX_HIGHLIGTING,
+                label: 'Syntax Highlighting',
+                active: syntaxHighligting
               }
             ]}
             updateSetting={updateSetting} />
@@ -46,6 +58,7 @@ export const SettingsPanel = ({
 
 SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
+  syntaxHighligting: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired,
   isRTL: PropTypes.bool.isRequired
@@ -57,6 +70,7 @@ const mapStateToProps = (state) => {
 
   return {
     enterSavesImmediately: getEnterSavesImmediately(state),
+    syntaxHighligting: getSyntaxHighlighting(state),
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false
   }

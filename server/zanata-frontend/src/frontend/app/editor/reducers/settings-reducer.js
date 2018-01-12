@@ -14,6 +14,7 @@ import {
 import { SHORTCUTS } from '../actions/key-shortcuts-actions'
 
 export const ENTER_SAVES_IMMEDIATELY = 'enter-saves-immediately'
+export const SYNTAX_HIGHLIGTING = 'syntax-highlighting'
 export const KEY_SUGGESTIONS_VISIBLE = 'suggestions-visible'
 
 /* Parse values of known settings to appropriate types */
@@ -22,6 +23,7 @@ function parseKnownSettings (settings) {
     try {
       switch (key) {
         case ENTER_SAVES_IMMEDIATELY:
+        case SYNTAX_HIGHLIGTING:
         case KEY_SUGGESTIONS_VISIBLE:
           return JSON.parse(value)
         default:
@@ -47,6 +49,7 @@ export const defaultState = {
   // state for individual settings
   settings: {
     [ENTER_SAVES_IMMEDIATELY]: newSetting(false),
+    [SYNTAX_HIGHLIGTING]: newSetting(false),
     [KEY_SUGGESTIONS_VISIBLE]: newSetting(true)
   // 'suggestions-heightpercent': { value: 0.3, saving: false, error:undefined }
   // 'setting-key': { value: defaultValue, saving: false, error: undefined }
@@ -58,6 +61,8 @@ export const getSuggestionsPanelVisible = settings =>
   settings.settings[KEY_SUGGESTIONS_VISIBLE].value
 export const getEnterSavesImmediately = settings =>
   settings.settings[ENTER_SAVES_IMMEDIATELY].value
+export const getSyntaxHighlighting = settings =>
+  settings.settings[SYNTAX_HIGHLIGTING].value
 export const getShortcuts = createSelector(getEnterSavesImmediately,
   enterSaves => enterSaves ? update(SHORTCUTS, {
     // Both shortcuts are at index 0, but replacing by value in case they move
