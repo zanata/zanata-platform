@@ -24,7 +24,7 @@ input, textarea, select, button  {
   font-size: 1rem;
 }
 
-.TransUnitItem .highlight {
+.TransUnit-item .highlight {
   background-color: #ff6;
 }
 
