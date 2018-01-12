@@ -67,7 +67,7 @@
 }
 
 #RejectTranslationModal .EditorDropdown-item:hover {
-  background-color: #fcfcfc;
+  background-color: transparent;
   color: var(--TM-dropdown-text-color);
 }
 
@@ -83,4 +83,13 @@
 #RejectTranslationModal button.close {
   display: none;
   visibility: hidden;
+}
+
+.EditorRejection-input {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: var(--TM-input-border-radius);
+  border: var(--TM-input-border) !important;
+  max-width: 98%;
+  resize: vertical;
 }
