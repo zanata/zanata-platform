@@ -102,6 +102,21 @@ Build and run a server: `watch-editor`.
 
 Run tests with `make test`.
 
+## Importing types for third-party modules
+
+We use Flow type checking for our javascript code. Many third-party libraries
+we use do not include flow types, so we have to add them. We use the flow-typed
+project for many of them - a community project to document types for popular
+libraries.
+
+To update our type definitions (in frontend/flow-typed), you can run flow-typed
+and it will look for types for all the library versions we use.
+
+See: [flow-typed](https://github.com/flowtype/flow-typed)
+
+It takes a few tens of minutes to run, so we do not run this as part of a
+standard build. Someone should run it periodically, and whenever we update or
+add libraries.
 
 ## Code Guidelines
 
