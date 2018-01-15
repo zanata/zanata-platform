@@ -1123,12 +1123,12 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
               Click Me
             </button>
           </div>
-          <a
+          <button
             onClick={[Function]}
-            role="button"
             style={
               Object {
                 "background": "#28c",
+                "border": "none",
                 "borderRadius": "0 0 0 5px",
                 "color": "#fff",
                 "cursor": "pointer",
@@ -1138,14 +1138,13 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                 "padding": "5px 15px",
                 "position": "fixed",
                 "right": 0,
-                "textDecoration": "none",
                 "top": 0,
               }
             }
-            tabIndex="0"
+            type="button"
           >
             Show Info
-          </a>
+          </button>
           <div
             style={
               Object {
@@ -1162,12 +1161,12 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
               }
             }
           >
-            <a
+            <button
               onClick={[Function]}
-              role="button"
               style={
                 Object {
                   "background": "#28c",
+                  "border": "none",
                   "borderRadius": "0 0 0 5px",
                   "color": "#fff",
                   "cursor": "pointer",
@@ -1177,14 +1176,13 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                   "padding": "5px 15px",
                   "position": "fixed",
                   "right": 0,
-                  "textDecoration": "none",
                   "top": 0,
                 }
               }
-              tabIndex="0"
+              type="button"
             >
               ×
-            </a>
+            </button>
             <div
               style={undefined}
             >
@@ -1197,14 +1195,12 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                     "borderRadius": "2px",
                     "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
-                    "fontFamily": "
-    -apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", \\"Roboto\\",
-    \\"Segoe UI\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", sans-serif
-  ",
+                    "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
                     "fontWeight": 300,
                     "lineHeight": 1.45,
-                    "marginTop": "50px",
+                    "marginBottom": "20px",
+                    "marginTop": "20px",
                     "padding": "20px 40px 40px",
                   }
                 }
@@ -1249,21 +1245,18 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                     }
                   }
                 >
-                  <p
+                  <div
                     style={
                       Object {
                         "WebkitFontSmoothing": "antialiased",
                         "color": "#444",
-                        "fontFamily": "
-    -apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", \\"Roboto\\",
-    \\"Segoe UI\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", sans-serif
-  ",
+                        "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                         "fontSize": "15px",
                       }
                     }
                   >
                     Use KNOBS tab to adjust the settings, then copy your code from Story Source
-                  </p>
+                  </div>
                 </div>
                 <div>
                   <h1
@@ -1356,6 +1349,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                                 style={Object {}}
                               >
                                 <span>
+                                  {
                                   <span
                                     style={
                                       Object {
@@ -1365,6 +1359,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                                   >
                                     onClick()
                                   </span>
+                                  }
                                 </span>
                               </span>
                             </span>
@@ -1478,76 +1473,109 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                       " Component
                     </h2>
                     <table
-                      style={
-                        Object {
-                          "borderCollapse": "separate",
-                          "borderSpacing": "10px 5px",
-                          "marginLeft": -10,
-                        }
-                      }
+                      className="css-1ytzlk7"
                     >
                       <thead>
                         <tr>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             property
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             propType
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             required
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             default
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             description
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>
-                            children
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            title
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>
-                            className
-                          </td>
-                          <td>
-                            other
-                          </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            onClick
+                          </td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
+                        </tr>
+                        <tr>
+                          <td
+                            className="css-1ygfcef"
+                          >
                             disabled
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
                           </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             <span>
+                              {
                               <span
                                 style={
                                   Object {
@@ -1557,39 +1585,62 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                               >
                                 false
                               </span>
+                              }
                             </span>
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            onClick
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            children
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            title
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            className
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                       </tbody>
                     </table>
@@ -1906,12 +1957,12 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               </li>
             </ul>
           </div>
-          <a
+          <button
             onClick={[Function]}
-            role="button"
             style={
               Object {
                 "background": "#28c",
+                "border": "none",
                 "borderRadius": "0 0 0 5px",
                 "color": "#fff",
                 "cursor": "pointer",
@@ -1921,14 +1972,13 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                 "padding": "5px 15px",
                 "position": "fixed",
                 "right": 0,
-                "textDecoration": "none",
                 "top": 0,
               }
             }
-            tabIndex="0"
+            type="button"
           >
             Show Info
-          </a>
+          </button>
           <div
             style={
               Object {
@@ -1945,12 +1995,12 @@ exports[`Editor Storyshots Button colour styles 1`] = `
               }
             }
           >
-            <a
+            <button
               onClick={[Function]}
-              role="button"
               style={
                 Object {
                   "background": "#28c",
+                  "border": "none",
                   "borderRadius": "0 0 0 5px",
                   "color": "#fff",
                   "cursor": "pointer",
@@ -1960,14 +2010,13 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                   "padding": "5px 15px",
                   "position": "fixed",
                   "right": 0,
-                  "textDecoration": "none",
                   "top": 0,
                 }
               }
-              tabIndex="0"
+              type="button"
             >
               ×
-            </a>
+            </button>
             <div
               style={undefined}
             >
@@ -1980,14 +2029,12 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                     "borderRadius": "2px",
                     "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
-                    "fontFamily": "
-    -apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", \\"Roboto\\",
-    \\"Segoe UI\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", sans-serif
-  ",
+                    "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
                     "fontWeight": 300,
                     "lineHeight": 1.45,
-                    "marginTop": "50px",
+                    "marginBottom": "20px",
+                    "marginTop": "20px",
                     "padding": "20px 40px 40px",
                   }
                 }
@@ -2181,6 +2228,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                     style={Object {}}
                                   >
                                     <span>
+                                      {
                                       <span
                                         style={
                                           Object {
@@ -2190,6 +2238,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       >
                                         onClick()
                                       </span>
+                                      }
                                     </span>
                                   </span>
                                 </span>
@@ -2383,6 +2432,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                     style={Object {}}
                                   >
                                     <span>
+                                      {
                                       <span
                                         style={
                                           Object {
@@ -2392,6 +2442,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       >
                                         onClick()
                                       </span>
+                                      }
                                     </span>
                                   </span>
                                 </span>
@@ -2585,6 +2636,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                     style={Object {}}
                                   >
                                     <span>
+                                      {
                                       <span
                                         style={
                                           Object {
@@ -2594,6 +2646,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       >
                                         onClick()
                                       </span>
+                                      }
                                     </span>
                                   </span>
                                 </span>
@@ -2787,6 +2840,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                     style={Object {}}
                                   >
                                     <span>
+                                      {
                                       <span
                                         style={
                                           Object {
@@ -2796,6 +2850,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                                       >
                                         onClick()
                                       </span>
+                                      }
                                     </span>
                                   </span>
                                 </span>
@@ -2948,76 +3003,109 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                       " Component
                     </h2>
                     <table
-                      style={
-                        Object {
-                          "borderCollapse": "separate",
-                          "borderSpacing": "10px 5px",
-                          "marginLeft": -10,
-                        }
-                      }
+                      className="css-1ytzlk7"
                     >
                       <thead>
                         <tr>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             property
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             propType
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             required
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             default
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             description
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>
-                            children
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            title
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>
-                            className
-                          </td>
-                          <td>
-                            other
-                          </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            onClick
+                          </td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
+                        </tr>
+                        <tr>
+                          <td
+                            className="css-1ygfcef"
+                          >
                             disabled
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
                           </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             <span>
+                              {
                               <span
                                 style={
                                   Object {
@@ -3027,39 +3115,62 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               >
                                 false
                               </span>
+                              }
                             </span>
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            onClick
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            children
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            title
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            className
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                       </tbody>
                     </table>
@@ -3344,12 +3455,12 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                be fired.
             </button>
           </div>
-          <a
+          <button
             onClick={[Function]}
-            role="button"
             style={
               Object {
                 "background": "#28c",
+                "border": "none",
                 "borderRadius": "0 0 0 5px",
                 "color": "#fff",
                 "cursor": "pointer",
@@ -3359,14 +3470,13 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                 "padding": "5px 15px",
                 "position": "fixed",
                 "right": 0,
-                "textDecoration": "none",
                 "top": 0,
               }
             }
-            tabIndex="0"
+            type="button"
           >
             Show Info
-          </a>
+          </button>
           <div
             style={
               Object {
@@ -3383,12 +3493,12 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
               }
             }
           >
-            <a
+            <button
               onClick={[Function]}
-              role="button"
               style={
                 Object {
                   "background": "#28c",
+                  "border": "none",
                   "borderRadius": "0 0 0 5px",
                   "color": "#fff",
                   "cursor": "pointer",
@@ -3398,14 +3508,13 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                   "padding": "5px 15px",
                   "position": "fixed",
                   "right": 0,
-                  "textDecoration": "none",
                   "top": 0,
                 }
               }
-              tabIndex="0"
+              type="button"
             >
               ×
-            </a>
+            </button>
             <div
               style={undefined}
             >
@@ -3418,14 +3527,12 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                     "borderRadius": "2px",
                     "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
-                    "fontFamily": "
-    -apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", \\"Roboto\\",
-    \\"Segoe UI\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", sans-serif
-  ",
+                    "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
                     "fontWeight": 300,
                     "lineHeight": 1.45,
-                    "marginTop": "50px",
+                    "marginBottom": "20px",
+                    "marginTop": "20px",
                     "padding": "20px 40px 40px",
                   }
                 }
@@ -3549,6 +3656,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                                 style={Object {}}
                               >
                                 <span>
+                                  {
                                   <span
                                     style={
                                       Object {
@@ -3558,6 +3666,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                                   >
                                     onClick()
                                   </span>
+                                  }
                                 </span>
                               </span>
                             </span>
@@ -3633,7 +3742,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                         <div
                           style={
                             Object {
-                              "paddingLeft": 33,
+                              "paddingLeft": 48,
                               "paddingRight": 3,
                             }
                           }
@@ -3736,76 +3845,109 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                       " Component
                     </h2>
                     <table
-                      style={
-                        Object {
-                          "borderCollapse": "separate",
-                          "borderSpacing": "10px 5px",
-                          "marginLeft": -10,
-                        }
-                      }
+                      className="css-1ytzlk7"
                     >
                       <thead>
                         <tr>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             property
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             propType
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             required
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             default
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             description
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>
-                            children
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            title
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>
-                            className
-                          </td>
-                          <td>
-                            other
-                          </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            onClick
+                          </td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
+                        </tr>
+                        <tr>
+                          <td
+                            className="css-1ygfcef"
+                          >
                             disabled
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
                           </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             <span>
+                              {
                               <span
                                 style={
                                   Object {
@@ -3815,39 +3957,62 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                               >
                                 false
                               </span>
+                              }
                             </span>
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            onClick
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            children
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            title
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            className
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                       </tbody>
                     </table>
@@ -4128,12 +4293,12 @@ exports[`Editor Storyshots Button plain 1`] = `
               Unstyled button. Pretty plain. Should be used with some styles.
             </button>
           </div>
-          <a
+          <button
             onClick={[Function]}
-            role="button"
             style={
               Object {
                 "background": "#28c",
+                "border": "none",
                 "borderRadius": "0 0 0 5px",
                 "color": "#fff",
                 "cursor": "pointer",
@@ -4143,14 +4308,13 @@ exports[`Editor Storyshots Button plain 1`] = `
                 "padding": "5px 15px",
                 "position": "fixed",
                 "right": 0,
-                "textDecoration": "none",
                 "top": 0,
               }
             }
-            tabIndex="0"
+            type="button"
           >
             Show Info
-          </a>
+          </button>
           <div
             style={
               Object {
@@ -4167,12 +4331,12 @@ exports[`Editor Storyshots Button plain 1`] = `
               }
             }
           >
-            <a
+            <button
               onClick={[Function]}
-              role="button"
               style={
                 Object {
                   "background": "#28c",
+                  "border": "none",
                   "borderRadius": "0 0 0 5px",
                   "color": "#fff",
                   "cursor": "pointer",
@@ -4182,14 +4346,13 @@ exports[`Editor Storyshots Button plain 1`] = `
                   "padding": "5px 15px",
                   "position": "fixed",
                   "right": 0,
-                  "textDecoration": "none",
                   "top": 0,
                 }
               }
-              tabIndex="0"
+              type="button"
             >
               ×
-            </a>
+            </button>
             <div
               style={undefined}
             >
@@ -4202,14 +4365,12 @@ exports[`Editor Storyshots Button plain 1`] = `
                     "borderRadius": "2px",
                     "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
-                    "fontFamily": "
-    -apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", \\"Roboto\\",
-    \\"Segoe UI\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", sans-serif
-  ",
+                    "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
                     "fontWeight": 300,
                     "lineHeight": 1.45,
-                    "marginTop": "50px",
+                    "marginBottom": "20px",
+                    "marginTop": "20px",
                     "padding": "20px 40px 40px",
                   }
                 }
@@ -4333,6 +4494,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                                 style={Object {}}
                               >
                                 <span>
+                                  {
                                   <span
                                     style={
                                       Object {
@@ -4342,6 +4504,7 @@ exports[`Editor Storyshots Button plain 1`] = `
                                   >
                                     onClick()
                                   </span>
+                                  }
                                 </span>
                               </span>
                             </span>
@@ -4425,76 +4588,109 @@ exports[`Editor Storyshots Button plain 1`] = `
                       " Component
                     </h2>
                     <table
-                      style={
-                        Object {
-                          "borderCollapse": "separate",
-                          "borderSpacing": "10px 5px",
-                          "marginLeft": -10,
-                        }
-                      }
+                      className="css-1ytzlk7"
                     >
                       <thead>
                         <tr>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             property
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             propType
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             required
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             default
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             description
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>
-                            children
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            title
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>
-                            className
-                          </td>
-                          <td>
-                            other
-                          </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            onClick
+                          </td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
+                        </tr>
+                        <tr>
+                          <td
+                            className="css-1ygfcef"
+                          >
                             disabled
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
                           </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             <span>
+                              {
                               <span
                                 style={
                                   Object {
@@ -4504,39 +4700,62 @@ exports[`Editor Storyshots Button plain 1`] = `
                               >
                                 false
                               </span>
+                              }
                             </span>
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            onClick
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            children
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            title
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            className
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                       </tbody>
                     </table>
@@ -4817,12 +5036,12 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
               Button Button--small u-rounded Button--primary
             </button>
           </div>
-          <a
+          <button
             onClick={[Function]}
-            role="button"
             style={
               Object {
                 "background": "#28c",
+                "border": "none",
                 "borderRadius": "0 0 0 5px",
                 "color": "#fff",
                 "cursor": "pointer",
@@ -4832,14 +5051,13 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                 "padding": "5px 15px",
                 "position": "fixed",
                 "right": 0,
-                "textDecoration": "none",
                 "top": 0,
               }
             }
-            tabIndex="0"
+            type="button"
           >
             Show Info
-          </a>
+          </button>
           <div
             style={
               Object {
@@ -4856,12 +5074,12 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
               }
             }
           >
-            <a
+            <button
               onClick={[Function]}
-              role="button"
               style={
                 Object {
                   "background": "#28c",
+                  "border": "none",
                   "borderRadius": "0 0 0 5px",
                   "color": "#fff",
                   "cursor": "pointer",
@@ -4871,14 +5089,13 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                   "padding": "5px 15px",
                   "position": "fixed",
                   "right": 0,
-                  "textDecoration": "none",
                   "top": 0,
                 }
               }
-              tabIndex="0"
+              type="button"
             >
               ×
-            </a>
+            </button>
             <div
               style={undefined}
             >
@@ -4891,14 +5108,12 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                     "borderRadius": "2px",
                     "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
-                    "fontFamily": "
-    -apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", \\"Roboto\\",
-    \\"Segoe UI\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", sans-serif
-  ",
+                    "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
                     "fontWeight": 300,
                     "lineHeight": 1.45,
-                    "marginTop": "50px",
+                    "marginBottom": "20px",
+                    "marginTop": "20px",
                     "padding": "20px 40px 40px",
                   }
                 }
@@ -5022,6 +5237,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                                 style={Object {}}
                               >
                                 <span>
+                                  {
                                   <span
                                     style={
                                       Object {
@@ -5031,6 +5247,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                                   >
                                     onClick()
                                   </span>
+                                  }
                                 </span>
                               </span>
                             </span>
@@ -5141,76 +5358,109 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                       " Component
                     </h2>
                     <table
-                      style={
-                        Object {
-                          "borderCollapse": "separate",
-                          "borderSpacing": "10px 5px",
-                          "marginLeft": -10,
-                        }
-                      }
+                      className="css-1ytzlk7"
                     >
                       <thead>
                         <tr>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             property
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             propType
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             required
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             default
                           </th>
-                          <th>
+                          <th
+                            className="css-d52hbj"
+                          >
                             description
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>
-                            children
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            title
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>
-                            className
-                          </td>
-                          <td>
-                            other
-                          </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            onClick
+                          </td>
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
+                        </tr>
+                        <tr>
+                          <td
+                            className="css-1ygfcef"
+                          >
                             disabled
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
                           </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             <span>
+                              {
                               <span
                                 style={
                                   Object {
@@ -5220,39 +5470,62 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                               >
                                 false
                               </span>
+                              }
                             </span>
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            onClick
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            children
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                         <tr>
-                          <td>
-                            title
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            className
                           </td>
-                          <td>
-                            other
+                          <td
+                            className="css-1ygfcef"
+                          >
+                            <span />
                           </td>
-                          <td>
-                            no
-                          </td>
-                          <td>
+                          <td
+                            className="css-d52hbj"
+                          >
                             -
                           </td>
-                          <td />
+                          <td
+                            className="css-d52hbj"
+                          >
+                            -
+                          </td>
+                          <td
+                            className="css-d52hbj"
+                          />
                         </tr>
                       </tbody>
                     </table>
