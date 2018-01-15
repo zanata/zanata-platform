@@ -43,6 +43,8 @@ import org.zanata.exception.NotLoggedInException;
 @JsfPhaseListener
 public class AnonymousAccessControlPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 7857787462325457761L;
+    private static final String ERROR_PATH = "/error/";
+
     private Provider<Boolean> allowAnonymousAccessProvider;
     private ZanataIdentity identity;
 
@@ -67,7 +69,7 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
 
     @Override
     public void beforePhase(PhaseEvent phaseEvent) {
-        if (!requestingPageIsSignInOrRegister() &&
+        if (!requestingUnprotectedPage() &&
                 anonymousAccessIsNotAllowed()) {
             throw new NotLoggedInException();
         }
@@ -77,11 +79,12 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
         return !allowAnonymousAccessProvider.get() && !identity.isLoggedIn();
     }
 
-    private boolean requestingPageIsSignInOrRegister() {
+    private boolean requestingUnprotectedPage() {
         // the request URI will be the internal URI
         String contextPath = request.getContextPath();
         return request.getRequestURI().startsWith(contextPath + "/account/") ||
-                request.getRequestURI().startsWith(contextPath + "/public/");
+                request.getRequestURI().startsWith(contextPath + "/public/") ||
+                request.getRequestURI().startsWith(contextPath + ERROR_PATH);
     }
 
     @Override
