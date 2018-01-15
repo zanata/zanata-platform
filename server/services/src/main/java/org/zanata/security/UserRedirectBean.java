@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.collect.ImmutableList;
 import org.zanata.events.NotLoggedInEvent;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.util.Synchronized;
@@ -55,14 +57,26 @@ import org.zanata.util.UrlUtil;
 public class UserRedirectBean implements Serializable {
     private static final String HOME_PATH = "/";
     private static final String REGISTER_PATH = "/register";
-    private static final String ERROR_PATH = "/error/";
     private static final String LOGIN_PATH = "/sign_in";
 
-    /**
-    *
-    */
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
+
+    public static final ImmutableList<String> ERROR_PAGES_URI =
+            ImmutableList.<String>builder()
+                    .add("/404.xhtml")
+                    .add("/error.xhtml")
+                    .add("/error/missing_entity.xhtml")
+                    .add("/error/viewexpiredexception.xhtml")
+                    .build();
+
+    private static final ImmutableList<String> ERROR_PAGES_URL =
+            ImmutableList.<String>builder()
+                    .add("/404")
+                    .add("/error")
+                    .add("/error/missing_entity")
+                    .add("/error/viewexpiredexception")
+                    .build();
 
     @Inject @ContextPath
     private String contextPath;
@@ -136,7 +150,7 @@ public class UserRedirectBean implements Serializable {
     }
 
     public boolean isRedirectToError() {
-        return isRedirectTo(ERROR_PATH);
+        return isRedirectTo(ERROR_PAGES_URL);
     }
 
     public boolean isRedirectToRegister() {
@@ -172,10 +186,21 @@ public class UserRedirectBean implements Serializable {
         return path;
     }
 
+    private boolean isRedirectTo(List<String> pathWithoutContext) {
+        if (isRedirect()) {
+            String redirectPath = getPath(getUrl());
+            for (String path : pathWithoutContext) {
+                if (redirectPath.equals(path)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean isRedirectTo(String pathWithoutContext) {
         if (isRedirect()) {
-            String redirectingUrl = getUrl();
-            String redirectPath = getPath(redirectingUrl);
+            String redirectPath = getPath(getUrl());
             if (redirectPath.equals(pathWithoutContext)) {
                 return true;
             }

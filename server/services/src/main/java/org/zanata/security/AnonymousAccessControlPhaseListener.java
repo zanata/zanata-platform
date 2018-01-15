@@ -33,6 +33,8 @@ import org.apache.deltaspike.jsf.api.listener.phase.JsfPhaseListener;
 import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.exception.NotLoggedInException;
 
+import static org.zanata.security.UserRedirectBean.ERROR_PAGES_URI;
+
 /**
  * This JSF phase listener will check permissions if the anonymous user is not
  * allowed to view resources.
@@ -74,7 +76,8 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
     }
 
     private boolean anonymousAccessIsNotAllowed() {
-        return !allowAnonymousAccessProvider.get() && !identity.isLoggedIn();
+        return !ERROR_PAGES_URI.contains(request.getRequestURI()) &&
+                !allowAnonymousAccessProvider.get() && !identity.isLoggedIn();
     }
 
     private boolean requestingPageIsSignInOrRegister() {

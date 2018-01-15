@@ -40,6 +40,8 @@ import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.MoreObjects;
 
+import static org.zanata.security.UserRedirectBean.ERROR_PAGES_URI;
+
 /**
  * This class is responsible for checking for all REST requests: a) valid
  * authentication presents when accessing protected resources (e.g. no open to
@@ -128,8 +130,9 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             // login will always success since the check was done above
             // here the tryLogin() will just set up the correct system state
             zanataIdentity.tryLogin();
-        } else if (!allowAnonymousAccessProvider.get() ||
-                !HttpUtil.isReadMethod(context.getMethod())){
+        } else if (!ERROR_PAGES_URI.contains(request.getRequestURI()) &&
+                (!allowAnonymousAccessProvider.get() ||
+                        !HttpUtil.isReadMethod(context.getMethod()))) {
             // special cases for path such as '/test/' or '/oauth/' are now
             // handled by having annotation @NoSecurityCheck on those API
             // methods/classes. ZanataRestSecurityBinder will ensure that this
