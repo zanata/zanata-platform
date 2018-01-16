@@ -16,8 +16,7 @@ class ImportedTMDetailPanel extends Component {
     // FIXME use standard styles when they are available, instead of hard-coded
     return (
       <div title={transMemorySlug} className="TransUnit-details ellipsis">
-        <Icon name="import"
-          className="s1" /> {transMemorySlug}
+        <Icon name="import" className="s1" /> {transMemorySlug}
       </div>
     )
   }

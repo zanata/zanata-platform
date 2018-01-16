@@ -28,7 +28,8 @@ class DeleteEntry extends Component {
       <div className='u-blockInline'>
         <Button bsSize='small'
           onClick={() => handleDeleteEntryDisplay(true)}>
-          <Icon name='cross' className='n2 iconCross' title='cross' />
+          <Icon name='cross' className='n2' parentClassName='iconCross'
+            title='cross' />
           Delete
         </Button>
         <Overlay show={show} placement='top'

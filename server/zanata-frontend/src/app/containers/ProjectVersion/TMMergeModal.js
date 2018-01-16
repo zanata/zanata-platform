@@ -83,7 +83,8 @@ const MergeOptions = (
         in other projects and versions into this project version.
         <Link useHref link={docLink} target="_blank">
           <span title='help'>
-            <Icon name='help' className='iconHelp s0' />&nbsp;Need help?
+            <Icon name='help' className='s0' parentClassName='iconHelp' />
+            &nbsp;Need help?
           </span>
         </Link>
       </p>
@@ -112,7 +113,8 @@ const MergeOptions = (
                 <ProjectVersionHorizontal projectSlug={projectSlug}
                   versionSlug={versionSlug} />
                 <span className='item' id="languageDropdown">
-                  <Icon name="language" className="s1 iconTMX" />
+                  <Icon name="language" className="s1"
+                    parentClassName="iconTMX" />
                   <span className="languageDropdown-field">
                     {localesSelection}
                   </span>

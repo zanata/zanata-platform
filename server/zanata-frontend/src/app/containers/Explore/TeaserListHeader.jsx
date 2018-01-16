@@ -42,7 +42,8 @@ const TeaserListHeader = ({
         <div className='teaserHeader-inner'>
           <Button bsStyle='link' disabled={currentPage === 1}
             onClick={() => { updatePage(type, currentPage, totalPage, false) }}>
-            <Icon className='iconsHeader s1' name='chevron-left' />
+            <Icon className='s1' parentClassName='iconsHeader'
+              name='chevron-left' />
           </Button>
           <span className='pageCurrent'>{currentPage} of {totalPage}</span>
           <Button bsStyle='link' disabled={currentPage === totalPage}

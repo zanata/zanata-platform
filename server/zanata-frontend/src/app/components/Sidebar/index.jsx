@@ -33,7 +33,8 @@ class Sidebar extends Component {
             <div className='sidebar-content'>
               <a className='accordion-section-title'
                 onClick={this.toggleDisplay.bind(this)}>
-                <Icon name='project' className='iconProject s2' />
+                <Icon name='project' className='s2'
+                  parentClassName='iconProject' />
                 <span className='projtitle'>Zanata Server</span>
                 <svg className={toggleArrow}>
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
@@ -41,16 +42,20 @@ class Sidebar extends Component {
               <div id='accordion-1' className={displayAccordion}>
                 <Nav bsStyle='pills' stacked activeKey={1}>
                   <NavItem eventKey={1} href=''>
-                    <Icon name='users' className='s1 iconSidebar' />
+                    <Icon name='users' className='s1'
+                      parentClassName='iconSidebar' />
                   People</NavItem>
                   <NavItem eventKey={2} href=''>
-                    <Icon name='glossary' className='s1 iconSidebar' />
+                    <Icon name='glossary' className='s1'
+                      parentClassName='iconSidebar' />
                   Glossary</NavItem>
                   <NavItem eventKey={3} href=''>
-                    <Icon name='info' className='s1 iconSidebar' />
+                    <Icon name='info' className='s1'
+                      parentClassName='iconSidebar' />
                   About</NavItem>
                   <NavItem eventKey={4} href=''>
-                    <Icon name='settings' className='s1 iconSidebar' />
+                    <Icon name='settings' className='s1'
+                      parentClassName='iconSidebar' />
                   Settings </NavItem>
                 </Nav>
                 <DropdownButton title='Options' id='optionsDropdown'

@@ -30,7 +30,8 @@ describe('DraggableVersionPanels', () => {
         {" "}
         <Button bsSize='xsmall' className='close rm-version-btn'
           onClick={callback}>
-          <Icon name='cross' className='n2 iconCross' title='remove version' />
+          <Icon name='cross' className='n2' parentClassName='iconCross'
+              title='remove version'/>
         </Button>
       </ListGroupItem>
     )
@@ -65,7 +66,8 @@ describe('DraggableVersionPanels', () => {
           </span><br />
           <span className="u-textMuted versionMergeTitle-sub">(best first)</span>
           <OverlayTrigger placement='top' overlay={tooltipSort}>
-            <Icon name='info' className='s0 iconInfoVersionMerge' />
+            <Icon name='info' className='s0'
+              parentClassName='iconInfoVersionMerge' />
           </OverlayTrigger>
           <Item key={'meikai1:ver1'} index={0}
             value={someVersions[0]} removeVersion={callback} />

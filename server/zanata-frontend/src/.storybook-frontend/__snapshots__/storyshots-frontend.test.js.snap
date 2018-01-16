@@ -2849,7 +2849,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="admin"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -2870,7 +2872,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="all"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -2891,7 +2895,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="assign"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -2912,7 +2918,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="attach"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -2933,7 +2941,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="block"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -2954,7 +2964,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-down-double"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -2975,7 +2987,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-down"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -2996,7 +3010,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-left"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3017,7 +3033,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-right"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3038,7 +3056,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-up-double"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3059,7 +3079,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="chevron-up"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3080,7 +3102,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="circle"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3101,7 +3125,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="clock"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3122,7 +3148,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="code"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3143,7 +3171,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="comment"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3164,7 +3194,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="copy"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3185,7 +3217,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="cross-circle"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3206,7 +3240,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="cross"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3227,7 +3263,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="dashboard"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3248,7 +3286,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="document"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3269,7 +3309,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="dot"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3290,7 +3332,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="download"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3311,7 +3355,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="edit"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3332,7 +3378,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="ellipsis"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3353,7 +3401,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="export"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3374,7 +3424,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="external-link"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3395,7 +3447,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="filter"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3416,7 +3470,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="folder"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3437,7 +3493,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="glossary"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3458,7 +3516,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="help"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3479,7 +3539,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="history"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3500,7 +3562,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="import"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3521,7 +3585,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="inbox"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3542,7 +3608,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="info"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3563,7 +3631,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="keyboard"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3584,7 +3654,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="language"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3605,7 +3677,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="link"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3626,7 +3700,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="location"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3647,7 +3723,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="locked"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3668,7 +3746,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="logout"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3689,7 +3769,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="mail"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3710,7 +3792,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="maintain"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3731,7 +3815,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="menu"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3752,7 +3838,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="minus"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3773,7 +3861,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="next"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3794,7 +3884,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="notification"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3815,7 +3907,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="piestats"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3836,7 +3930,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="plus"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3857,7 +3953,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="previous"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3878,7 +3976,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="project"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3899,7 +3999,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="refresh"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3920,7 +4022,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="review"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3941,7 +4045,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="search"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3962,7 +4068,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="servmon"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -3983,7 +4091,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="settings"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4004,7 +4114,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="star-outline"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4025,7 +4137,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="star"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4046,7 +4160,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="statistics"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4067,7 +4183,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="suggestions"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4088,7 +4206,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="tick-circle"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4109,7 +4229,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="tick"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4130,7 +4252,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="tm"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4151,7 +4275,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="translate"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4172,7 +4298,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="trash"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4193,7 +4321,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="undo"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4214,7 +4344,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="unlocked"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4235,7 +4367,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="upload"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4256,7 +4390,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="user"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4277,7 +4413,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="users"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4298,7 +4436,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="version"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4319,7 +4459,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="warning"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4340,7 +4482,9 @@ exports[`Frontend Storyshots Icon default 1`] = `
     <p
       title="zanata"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s2"
           dangerouslySetInnerHTML={
@@ -4381,7 +4525,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="admin"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4402,7 +4548,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="all"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4423,7 +4571,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="assign"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4444,7 +4594,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="attach"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4465,7 +4617,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="block"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4486,7 +4640,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4507,7 +4663,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4528,7 +4686,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-left"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4549,7 +4709,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-right"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4570,7 +4732,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4591,7 +4755,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4612,7 +4778,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4633,7 +4801,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="clock"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4654,7 +4824,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="code"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4675,7 +4847,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="comment"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4696,7 +4870,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="copy"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4717,7 +4893,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4738,7 +4916,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4759,7 +4939,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dashboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4780,7 +4962,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="document"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4801,7 +4985,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dot"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4822,7 +5008,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="download"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4843,7 +5031,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="edit"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4864,7 +5054,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="ellipsis"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4885,7 +5077,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="export"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4906,7 +5100,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="external-link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4927,7 +5123,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="filter"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4948,7 +5146,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="folder"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4969,7 +5169,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="glossary"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -4990,7 +5192,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="help"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5011,7 +5215,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="history"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5032,7 +5238,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="import"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5053,7 +5261,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="inbox"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5074,7 +5284,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="info"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5095,7 +5307,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="keyboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5116,7 +5330,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="language"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5137,7 +5353,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5158,7 +5376,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="location"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5179,7 +5399,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="locked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5200,7 +5422,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="logout"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5221,7 +5445,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="mail"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5242,7 +5468,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="maintain"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5263,7 +5491,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="menu"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5284,7 +5514,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="minus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5305,7 +5537,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="next"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5326,7 +5560,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="notification"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5347,7 +5583,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="piestats"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5368,7 +5606,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="plus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5389,7 +5629,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="previous"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5410,7 +5652,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="project"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5431,7 +5675,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="refresh"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5452,7 +5698,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="review"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5473,7 +5721,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="search"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5494,7 +5744,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="servmon"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5515,7 +5767,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="settings"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5536,7 +5790,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star-outline"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5557,7 +5813,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5578,7 +5836,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="statistics"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5599,7 +5859,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="suggestions"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5620,7 +5882,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5641,7 +5905,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5662,7 +5928,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tm"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5683,7 +5951,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="translate"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5704,7 +5974,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="trash"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5725,7 +5997,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="undo"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5746,7 +6020,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="unlocked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5767,7 +6043,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="upload"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5788,7 +6066,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="user"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5809,7 +6089,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="users"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5830,7 +6112,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="version"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5851,7 +6135,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="warning"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5872,7 +6158,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="zanata"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n2"
         dangerouslySetInnerHTML={
@@ -5901,7 +6189,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="admin"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -5922,7 +6212,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="all"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -5943,7 +6235,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="assign"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -5964,7 +6258,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="attach"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -5985,7 +6281,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="block"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6006,7 +6304,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6027,7 +6327,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6048,7 +6350,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-left"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6069,7 +6373,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-right"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6090,7 +6396,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6111,7 +6419,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6132,7 +6442,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6153,7 +6465,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="clock"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6174,7 +6488,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="code"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6195,7 +6511,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="comment"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6216,7 +6534,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="copy"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6237,7 +6557,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6258,7 +6580,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6279,7 +6603,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dashboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6300,7 +6626,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="document"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6321,7 +6649,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dot"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6342,7 +6672,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="download"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6363,7 +6695,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="edit"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6384,7 +6718,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="ellipsis"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6405,7 +6741,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="export"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6426,7 +6764,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="external-link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6447,7 +6787,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="filter"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6468,7 +6810,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="folder"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6489,7 +6833,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="glossary"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6510,7 +6856,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="help"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6531,7 +6879,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="history"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6552,7 +6902,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="import"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6573,7 +6925,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="inbox"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6594,7 +6948,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="info"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6615,7 +6971,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="keyboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6636,7 +6994,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="language"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6657,7 +7017,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6678,7 +7040,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="location"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6699,7 +7063,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="locked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6720,7 +7086,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="logout"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6741,7 +7109,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="mail"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6762,7 +7132,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="maintain"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6783,7 +7155,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="menu"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6804,7 +7178,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="minus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6825,7 +7201,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="next"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6846,7 +7224,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="notification"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6867,7 +7247,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="piestats"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6888,7 +7270,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="plus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6909,7 +7293,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="previous"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6930,7 +7316,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="project"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6951,7 +7339,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="refresh"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6972,7 +7362,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="review"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6993,7 +7385,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="search"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7014,7 +7408,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="servmon"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7035,7 +7431,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="settings"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7056,7 +7454,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star-outline"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7077,7 +7477,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7098,7 +7500,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="statistics"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7119,7 +7523,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="suggestions"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7140,7 +7546,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7161,7 +7569,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7182,7 +7592,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tm"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7203,7 +7615,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="translate"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7224,7 +7638,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="trash"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7245,7 +7661,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="undo"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7266,7 +7684,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="unlocked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7287,7 +7707,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="upload"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7308,7 +7730,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="user"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7329,7 +7753,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="users"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7350,7 +7776,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="version"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7371,7 +7799,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="warning"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7392,7 +7822,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="zanata"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7421,7 +7853,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="admin"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7442,7 +7876,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="all"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7463,7 +7899,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="assign"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7484,7 +7922,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="attach"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7505,7 +7945,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="block"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7526,7 +7968,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7547,7 +7991,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7568,7 +8014,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-left"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7589,7 +8037,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-right"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7610,7 +8060,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7631,7 +8083,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7652,7 +8106,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7673,7 +8129,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="clock"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7694,7 +8152,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="code"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7715,7 +8175,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="comment"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7736,7 +8198,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="copy"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7757,7 +8221,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7778,7 +8244,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7799,7 +8267,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dashboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7820,7 +8290,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="document"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7841,7 +8313,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dot"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7862,7 +8336,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="download"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7883,7 +8359,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="edit"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7904,7 +8382,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="ellipsis"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7925,7 +8405,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="export"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7946,7 +8428,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="external-link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7967,7 +8451,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="filter"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -7988,7 +8474,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="folder"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8009,7 +8497,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="glossary"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8030,7 +8520,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="help"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8051,7 +8543,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="history"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8072,7 +8566,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="import"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8093,7 +8589,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="inbox"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8114,7 +8612,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="info"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8135,7 +8635,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="keyboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8156,7 +8658,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="language"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8177,7 +8681,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8198,7 +8704,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="location"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8219,7 +8727,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="locked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8240,7 +8750,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="logout"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8261,7 +8773,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="mail"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8282,7 +8796,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="maintain"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8303,7 +8819,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="menu"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8324,7 +8842,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="minus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8345,7 +8865,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="next"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8366,7 +8888,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="notification"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8387,7 +8911,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="piestats"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8408,7 +8934,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="plus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8429,7 +8957,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="previous"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8450,7 +8980,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="project"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8471,7 +9003,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="refresh"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8492,7 +9026,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="review"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8513,7 +9049,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="search"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8534,7 +9072,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="servmon"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8555,7 +9095,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="settings"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8576,7 +9118,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star-outline"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8597,7 +9141,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8618,7 +9164,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="statistics"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8639,7 +9187,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="suggestions"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8660,7 +9210,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8681,7 +9233,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8702,7 +9256,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tm"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8723,7 +9279,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="translate"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8744,7 +9302,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="trash"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8765,7 +9325,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="undo"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8786,7 +9348,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="unlocked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8807,7 +9371,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="upload"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8828,7 +9394,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="user"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8849,7 +9417,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="users"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8870,7 +9440,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="version"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8891,7 +9463,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="warning"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8912,7 +9486,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="zanata"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -8941,7 +9517,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="admin"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -8962,7 +9540,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="all"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -8983,7 +9563,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="assign"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9004,7 +9586,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="attach"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9025,7 +9609,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="block"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9046,7 +9632,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9067,7 +9655,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9088,7 +9678,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-left"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9109,7 +9701,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-right"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9130,7 +9724,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9151,7 +9747,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9172,7 +9770,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9193,7 +9793,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="clock"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9214,7 +9816,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="code"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9235,7 +9839,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="comment"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9256,7 +9862,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="copy"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9277,7 +9885,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9298,7 +9908,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9319,7 +9931,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dashboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9340,7 +9954,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="document"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9361,7 +9977,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dot"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9382,7 +10000,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="download"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9403,7 +10023,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="edit"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9424,7 +10046,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="ellipsis"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9445,7 +10069,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="export"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9466,7 +10092,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="external-link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9487,7 +10115,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="filter"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9508,7 +10138,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="folder"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9529,7 +10161,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="glossary"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9550,7 +10184,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="help"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9571,7 +10207,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="history"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9592,7 +10230,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="import"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9613,7 +10253,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="inbox"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9634,7 +10276,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="info"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9655,7 +10299,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="keyboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9676,7 +10322,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="language"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9697,7 +10345,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9718,7 +10368,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="location"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9739,7 +10391,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="locked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9760,7 +10414,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="logout"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9781,7 +10437,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="mail"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9802,7 +10460,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="maintain"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9823,7 +10483,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="menu"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9844,7 +10506,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="minus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9865,7 +10529,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="next"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9886,7 +10552,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="notification"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9907,7 +10575,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="piestats"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9928,7 +10598,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="plus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9949,7 +10621,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="previous"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9970,7 +10644,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="project"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -9991,7 +10667,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="refresh"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10012,7 +10690,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="review"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10033,7 +10713,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="search"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10054,7 +10736,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="servmon"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10075,7 +10759,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="settings"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10096,7 +10782,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star-outline"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10117,7 +10805,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10138,7 +10828,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="statistics"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10159,7 +10851,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="suggestions"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10180,7 +10874,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10201,7 +10897,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10222,7 +10920,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tm"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10243,7 +10943,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="translate"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10264,7 +10966,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="trash"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10285,7 +10989,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="undo"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10306,7 +11012,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="unlocked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10327,7 +11035,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="upload"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10348,7 +11058,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="user"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10369,7 +11081,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="users"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10390,7 +11104,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="version"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10411,7 +11127,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="warning"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10432,7 +11150,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="zanata"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s1"
         dangerouslySetInnerHTML={
@@ -10461,7 +11181,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="admin"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10482,7 +11204,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="all"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10503,7 +11227,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="assign"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10524,7 +11250,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="attach"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10545,7 +11273,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="block"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10566,7 +11296,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10587,7 +11319,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10608,7 +11342,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-left"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10629,7 +11365,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-right"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10650,7 +11388,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10671,7 +11411,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10692,7 +11434,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10713,7 +11457,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="clock"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10734,7 +11480,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="code"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10755,7 +11503,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="comment"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10776,7 +11526,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="copy"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10797,7 +11549,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10818,7 +11572,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10839,7 +11595,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dashboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10860,7 +11618,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="document"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10881,7 +11641,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dot"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10902,7 +11664,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="download"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10923,7 +11687,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="edit"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10944,7 +11710,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="ellipsis"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10965,7 +11733,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="export"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -10986,7 +11756,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="external-link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11007,7 +11779,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="filter"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11028,7 +11802,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="folder"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11049,7 +11825,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="glossary"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11070,7 +11848,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="help"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11091,7 +11871,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="history"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11112,7 +11894,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="import"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11133,7 +11917,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="inbox"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11154,7 +11940,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="info"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11175,7 +11963,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="keyboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11196,7 +11986,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="language"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11217,7 +12009,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11238,7 +12032,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="location"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11259,7 +12055,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="locked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11280,7 +12078,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="logout"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11301,7 +12101,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="mail"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11322,7 +12124,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="maintain"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11343,7 +12147,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="menu"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11364,7 +12170,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="minus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11385,7 +12193,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="next"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11406,7 +12216,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="notification"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11427,7 +12239,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="piestats"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11448,7 +12262,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="plus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11469,7 +12285,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="previous"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11490,7 +12308,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="project"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11511,7 +12331,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="refresh"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11532,7 +12354,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="review"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11553,7 +12377,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="search"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11574,7 +12400,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="servmon"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11595,7 +12423,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="settings"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11616,7 +12446,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star-outline"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11637,7 +12469,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11658,7 +12492,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="statistics"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11679,7 +12515,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="suggestions"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11700,7 +12538,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11721,7 +12561,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11742,7 +12584,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tm"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11763,7 +12607,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="translate"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11784,7 +12630,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="trash"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11805,7 +12653,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="undo"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11826,7 +12676,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="unlocked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11847,7 +12699,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="upload"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11868,7 +12722,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="user"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11889,7 +12745,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="users"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11910,7 +12768,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="version"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11931,7 +12791,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="warning"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11952,7 +12814,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="zanata"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s2"
         dangerouslySetInnerHTML={
@@ -11981,7 +12845,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="admin"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12002,7 +12868,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="all"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12023,7 +12891,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="assign"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12044,7 +12914,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="attach"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12065,7 +12937,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="block"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12086,7 +12960,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12107,7 +12983,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12128,7 +13006,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-left"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12149,7 +13029,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-right"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12170,7 +13052,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12191,7 +13075,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12212,7 +13098,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12233,7 +13121,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="clock"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12254,7 +13144,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="code"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12275,7 +13167,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="comment"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12296,7 +13190,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="copy"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12317,7 +13213,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12338,7 +13236,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12359,7 +13259,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dashboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12380,7 +13282,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="document"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12401,7 +13305,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dot"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12422,7 +13328,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="download"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12443,7 +13351,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="edit"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12464,7 +13374,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="ellipsis"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12485,7 +13397,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="export"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12506,7 +13420,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="external-link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12527,7 +13443,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="filter"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12548,7 +13466,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="folder"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12569,7 +13489,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="glossary"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12590,7 +13512,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="help"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12611,7 +13535,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="history"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12632,7 +13558,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="import"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12653,7 +13581,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="inbox"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12674,7 +13604,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="info"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12695,7 +13627,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="keyboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12716,7 +13650,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="language"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12737,7 +13673,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12758,7 +13696,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="location"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12779,7 +13719,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="locked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12800,7 +13742,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="logout"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12821,7 +13765,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="mail"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12842,7 +13788,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="maintain"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12863,7 +13811,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="menu"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12884,7 +13834,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="minus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12905,7 +13857,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="next"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12926,7 +13880,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="notification"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12947,7 +13903,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="piestats"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12968,7 +13926,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="plus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -12989,7 +13949,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="previous"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13010,7 +13972,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="project"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13031,7 +13995,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="refresh"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13052,7 +14018,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="review"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13073,7 +14041,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="search"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13094,7 +14064,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="servmon"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13115,7 +14087,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="settings"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13136,7 +14110,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star-outline"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13157,7 +14133,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13178,7 +14156,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="statistics"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13199,7 +14179,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="suggestions"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13220,7 +14202,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13241,7 +14225,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13262,7 +14248,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tm"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13283,7 +14271,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="translate"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13304,7 +14294,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="trash"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13325,7 +14317,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="undo"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13346,7 +14340,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="unlocked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13367,7 +14363,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="upload"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13388,7 +14386,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="user"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13409,7 +14409,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="users"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13430,7 +14432,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="version"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13451,7 +14455,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="warning"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13472,7 +14478,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="zanata"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s3"
         dangerouslySetInnerHTML={
@@ -13501,7 +14509,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="admin"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13522,7 +14532,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="all"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13543,7 +14555,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="assign"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13564,7 +14578,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="attach"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13585,7 +14601,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="block"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13606,7 +14624,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13627,7 +14647,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-down"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13648,7 +14670,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-left"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13669,7 +14693,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-right"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13690,7 +14716,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up-double"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13711,7 +14739,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="chevron-up"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13732,7 +14762,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13753,7 +14785,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="clock"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13774,7 +14808,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="code"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13795,7 +14831,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="comment"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13816,7 +14854,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="copy"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13837,7 +14877,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13858,7 +14900,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="cross"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13879,7 +14923,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dashboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13900,7 +14946,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="document"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13921,7 +14969,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="dot"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13942,7 +14992,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="download"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13963,7 +15015,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="edit"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -13984,7 +15038,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="ellipsis"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14005,7 +15061,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="export"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14026,7 +15084,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="external-link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14047,7 +15107,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="filter"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14068,7 +15130,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="folder"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14089,7 +15153,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="glossary"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14110,7 +15176,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="help"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14131,7 +15199,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="history"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14152,7 +15222,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="import"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14173,7 +15245,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="inbox"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14194,7 +15268,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="info"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14215,7 +15291,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="keyboard"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14236,7 +15314,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="language"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14257,7 +15337,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="link"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14278,7 +15360,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="location"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14299,7 +15383,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="locked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14320,7 +15406,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="logout"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14341,7 +15429,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="mail"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14362,7 +15452,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="maintain"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14383,7 +15475,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="menu"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14404,7 +15498,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="minus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14425,7 +15521,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="next"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14446,7 +15544,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="notification"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14467,7 +15567,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="piestats"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14488,7 +15590,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="plus"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14509,7 +15613,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="previous"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14530,7 +15636,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="project"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14551,7 +15659,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="refresh"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14572,7 +15682,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="review"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14593,7 +15705,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="search"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14614,7 +15728,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="servmon"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14635,7 +15751,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="settings"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14656,7 +15774,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star-outline"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14677,7 +15797,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="star"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14698,7 +15820,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="statistics"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14719,7 +15843,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="suggestions"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14740,7 +15866,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick-circle"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14761,7 +15889,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tick"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14782,7 +15912,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="tm"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14803,7 +15935,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="translate"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14824,7 +15958,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="trash"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14845,7 +15981,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="undo"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14866,7 +16004,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="unlocked"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14887,7 +16027,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="upload"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14908,7 +16050,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="user"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14929,7 +16073,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="users"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14950,7 +16096,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="version"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14971,7 +16119,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="warning"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -14992,7 +16142,9 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
     title="zanata"
   >
      
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s4"
         dangerouslySetInnerHTML={
@@ -17862,7 +19014,9 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       disabled={false}
       type="button"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s1"
           dangerouslySetInnerHTML={
@@ -17884,7 +19038,9 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       disabled={false}
       type="button"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s1"
           dangerouslySetInnerHTML={
@@ -18191,9 +19347,11 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
             className="accordion-section-title"
             onClick={[Function]}
           >
-            <span>
+            <span
+              className="iconProject"
+            >
               <svg
-                className="iconProject s2"
+                className="s2"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -18237,9 +19395,11 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -18265,9 +19425,11 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -18293,9 +19455,11 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -18321,9 +19485,11 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -18499,7 +19665,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
                 <span
                   className="sidebarVersion-title"
                 >
-                  <span>
+                  <span
+                    className=""
+                  >
                     <svg
                       className="s2"
                       dangerouslySetInnerHTML={
@@ -18713,7 +19881,9 @@ exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
     <a
       href="https://www.google.com"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="n1"
           dangerouslySetInnerHTML={
@@ -18752,9 +19922,11 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
             className="accordion-section-title"
             onClick={[Function]}
           >
-            <span>
+            <span
+              className="iconProject"
+            >
               <svg
-                className="iconProject s2"
+                className="s2"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -18798,9 +19970,11 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -18826,9 +20000,11 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -18854,9 +20030,11 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -18882,9 +20060,11 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -19060,7 +20240,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
                 <span
                   className="sidebarVersion-title"
                 >
-                  <span>
+                  <span
+                    className=""
+                  >
                     <svg
                       className="s2"
                       dangerouslySetInnerHTML={
@@ -19276,10 +20458,11 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
         type="button"
       >
         <span
+          className="plusicon"
           title="plus"
         >
           <svg
-            className="n1 plusicon"
+            className="n1"
             dangerouslySetInnerHTML={
               Object {
                 "__html": "<use xlink:href=\\"#Icon-plus\\" />",
@@ -19314,6 +20497,7 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
             className="input-group-addon"
           >
             <span
+              className=""
               title="search"
             >
               <svg
@@ -19573,7 +20757,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
               disabled={false}
               type="button"
             >
-              <span>
+              <span
+                className=""
+              >
                 <svg
                   className="s0"
                   dangerouslySetInnerHTML={
@@ -19605,7 +20791,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
               disabled={false}
               type="button"
             >
-              <span>
+              <span
+                className=""
+              >
                 <svg
                   className="s0"
                   dangerouslySetInnerHTML={
@@ -19637,7 +20825,9 @@ exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
               disabled={false}
               type="button"
             >
-              <span>
+              <span
+                className=""
+              >
                 <svg
                   className="s0"
                   dangerouslySetInnerHTML={
@@ -19680,9 +20870,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             className="accordion-section-title"
             onClick={[Function]}
           >
-            <span>
+            <span
+              className="iconProject"
+            >
               <svg
-                className="iconProject s2"
+                className="s2"
                 dangerouslySetInnerHTML={
                   Object {
                     "__html": "<use xlink:href=\\"#Icon-project\\" />",
@@ -19726,9 +20918,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-users\\" />",
@@ -19754,9 +20948,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
@@ -19782,9 +20978,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-info\\" />",
@@ -19810,9 +21008,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                   onClick={[Function]}
                   role="button"
                 >
-                  <span>
+                  <span
+                    className="iconSidebar"
+                  >
                     <svg
-                      className="s1 iconSidebar"
+                      className="s1"
                       dangerouslySetInnerHTML={
                         Object {
                           "__html": "<use xlink:href=\\"#Icon-settings\\" />",
@@ -19988,7 +21188,9 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
                 <span
                   className="sidebarVersion-title"
                 >
-                  <span>
+                  <span
+                    className=""
+                  >
                     <svg
                       className="s2"
                       dangerouslySetInnerHTML={

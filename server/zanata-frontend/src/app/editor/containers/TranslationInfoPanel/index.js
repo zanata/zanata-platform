@@ -115,7 +115,7 @@ class TranslationInfoPanel extends React.Component {
       : undefined
     const glossaryTitle = (
       <span>
-        <Icon name="glossary" className="s1 gloss-tab-svg" />
+        <Icon name="glossary" className="s1" parentClassName="gloss-tab-svg" />
         <span className="hide-md">Glossary</span>{glossaryCountDisplay}
       </span>
     )
@@ -131,7 +131,7 @@ class TranslationInfoPanel extends React.Component {
     return (
       <div>
         <h1 className="SidebarEditor-heading">
-          <Icon name="info" className="details-svg s1" />
+          <Icon name="info" className="s1" parentClassName='details-svg' />
           <span className="hide-md">Details</span>
           <span className="s1 u-pullRight">
             <Button bsStyle="link" onClick={this.props.close}>

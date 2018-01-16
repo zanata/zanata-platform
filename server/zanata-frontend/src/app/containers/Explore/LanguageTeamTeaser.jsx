@@ -22,7 +22,7 @@ const LanguageTeamTeaser = ({
           {details.id}
         </span>
         <div className='languageTeamTeaser-members'>
-          <Icon name='users' className='s1 iconUsers-muted' />
+          <Icon name='users' className='s1' parentClassName='iconUsers-muted' />
           {details.memberCount}
         </div>
       </div>

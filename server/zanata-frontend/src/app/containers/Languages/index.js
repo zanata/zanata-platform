@@ -124,7 +124,7 @@ class Languages extends Component {
                 <Button bsStyle='primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
-                  <Icon name='plus' className='n1 plusicon'
+                  <Icon name='plus' className='n1' parentClassName='plusicon'
                     title='plus' />&nbsp;
                   Add new language
                 </Button>

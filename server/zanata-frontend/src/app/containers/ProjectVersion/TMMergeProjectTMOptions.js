@@ -36,7 +36,8 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
       <CopyLabel type={FUZZY} value={value} />
       <OverlayTrigger placement='right' overlay={copyAsFuzzyTooltip}>
         <a className="btn-link tooltip-btn" role="button">
-          <Icon name="info" className="s0 iconInfoVersionMerge" />
+          <Icon name="info" className="s0"
+            parentClassName="iconInfoVersionMerge" />
         </a>
       </OverlayTrigger>
     </Radio>

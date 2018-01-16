@@ -22,7 +22,8 @@ export const tooltipSort = (
 )
 
 export const DragHandle = SortableHandle(() =>
-  <Icon name='menu' className='n1 drag-handle' title='click to drag' />)
+  <Icon name='menu' className='n1' parentClassName='drag-handle'
+    title='click to drag' />)
 
 export class Item extends Component {
   static propTypes = {
@@ -42,7 +43,8 @@ export class Item extends Component {
       {" "}
       <Button bsSize='xsmall' className='close rm-version-btn'
         onClick={this.removeVersion}>
-        <Icon name='cross' className='n2 iconCross' title='remove version' />
+        <Icon name='cross' className='n2' parentClassName='iconCross'
+          title='remove version' />
       </Button>
     </ListGroupItem>
   }
@@ -69,7 +71,8 @@ class Items extends Component {
         (best first)
         </span>
         <OverlayTrigger placement='top' overlay={tooltipSort}>
-          <Icon name='info' className='s0 iconInfoVersionMerge' />
+          <Icon name='info' className='s0'
+            parentClassName='iconInfoVersionMerge' />
         </OverlayTrigger>
         {sortableItems}
       </div>
