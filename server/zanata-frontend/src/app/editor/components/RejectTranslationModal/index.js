@@ -111,7 +111,8 @@ export class RejectTranslationModal extends Component {
             </Dropdown.Content>
           </Dropdown>
           <span className="PriorityDropdown">
-            <Icon name="warning" className="s2 u-textWarning" />
+            <Icon name="warning" className="s2"
+                parentClassName="u-textWarning"/>
             <span id="PriorityTitle">Priority</span>
           <Dropdown enabled isOpen={this.state.dropdownOpen2}
                     onToggle={this.toggleDropdown2}

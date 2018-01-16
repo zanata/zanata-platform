@@ -127,7 +127,7 @@ class ViewHeader extends Component {
     permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon name='locked' className='s1 iconLocked' />
+        <Icon name='locked' className='s1' parentClassName='iconLocked' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
@@ -137,7 +137,7 @@ class ViewHeader extends Component {
       <div className='projectLink'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon name='project' className='s1 iconProject' />
+            <Icon name='project' className='s1' parentClassName='iconProject' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
@@ -162,7 +162,8 @@ class ViewHeader extends Component {
               title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={this.handleClearSearch}>
-              <Icon name='cross' className='s1 iconCross-glossary' />
+              <Icon name='cross' className='s1'
+                parentClassName='iconCross-glossary' />
             </Button>
             <div className='glossaryButtons'>
                   {permission.canAddNewEntry && (
@@ -170,7 +171,8 @@ class ViewHeader extends Component {
                       <Button bsStyle='link' type='button'
                         onClick={() => handleImportFileDisplay(true)}>
                         <Row>
-                          <Icon name='import' className='iconImport s1' />
+                          <Icon name='import' className='s1'
+                            parentClassName='iconImport' />
                           <span className='hidden-lesm'>Import</span>
                         </Row>
                       </Button>
@@ -182,7 +184,8 @@ class ViewHeader extends Component {
                       <Button bsStyle='link' type='button'
                         onClick={() => handleExportFileDisplay(true)}>
                         <Row>
-                          <Icon name='export' className='iconExport s1' />
+                          <Icon name='export' className='s1'
+                            parentClassName='iconExport' />
                           <span className='hidden-lesm'>Export</span>
                         </Row>
                       </Button>
@@ -194,7 +197,7 @@ class ViewHeader extends Component {
                       <Button bsStyle='link' onClick={() =>
                         handleNewEntryDisplay(true)}>
                         <Row>
-                          <Icon name='plus' className='iconPlus2 s1' />
+                          <Icon name='plus' className='s1' parentClassName='iconPlus2' />
                           <span className='hidden-lesm'>New</span>
                         </Row>
                       </Button>
@@ -225,8 +228,8 @@ class ViewHeader extends Component {
                           ? <Icon name='chevron-down' className='s1' />
                           : <Icon name='chevron-up' className='s1' />
                         : ''}
-                      <Icon name='glossary'
-                        className='s1 iconGlossary-neutral' />
+                      <Icon name='glossary' className='s1'
+                        parentClassName='iconGlossary-neutral' />
                       <span>
                       English (United States)
                       </span>
@@ -251,7 +254,7 @@ class ViewHeader extends Component {
                   {selectedTransLocale &&
                   (<span className='hidden-xs'>
                     <Row>
-                      <Icon name='translate' className='s1 iconTranslate-neutral' />
+                      <Icon name='translate' className='s1' parentClassName='iconTranslate-neutral' />
                       <span className='u-textNeutral'>
                       {currentLocaleCount}
                       </span>
@@ -266,9 +269,9 @@ class ViewHeader extends Component {
                       {'part_of_speech' in sort
                         ? (sort.part_of_speech === true)
                           ? <Icon name='chevron-down'
-                            className='iconChevron s1' />
+                            className='s1' parentClassName='iconChevron' />
                           : <Icon name='chevron-up'
-                            className='iconChevron s1' />
+                            className='s1' parentClassName='iconChevron' />
                         : ''}
                       <span className='u-marginL--rq'>
                       Part of Speech

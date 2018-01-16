@@ -52,11 +52,12 @@ class GlossaryTermModal extends React.Component {
       ? new Date(detail.lastModifiedDate) : undefined
 
     const lastModifiedRow = lastModifiedTime ? (<Row>
-      <Icon name="history" className="s0 history-icon" />
+      <Icon name="history" className="s0" parentClassName="history-icon" />
       <span className="u-sML-1-4">
       Last modified on&nbsp;
         <FormattedDate value={lastModifiedTime} format="medium" />&nbsp;
-        <Icon name="clock" className="s0 history-icon" />&nbsp;
+        <Icon name="clock" className="s0"
+          parentClassName=" history-icon" />&nbsp;
         <FormattedTime value={lastModifiedTime} />
       </span>
     </Row>) : undefined
@@ -77,8 +78,8 @@ class GlossaryTermModal extends React.Component {
             <td>{description}</td>
             <td>{pos}</td>
             <td>
-              <Icon name="comment"
-                className="comment-icon n1" /> {targetComment}
+              <Icon name="comment" className="n1"
+                parentClassName="comment-icon " /> {targetComment}
             </td>
           </tr>
         )

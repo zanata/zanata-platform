@@ -143,7 +143,8 @@ class TMMergeProjectSources extends Component {
             <OverlayTrigger placement='right'
               overlay={fromProjectSourceTooltip}>
               <a className="btn-link tooltip-btn" role="button">
-                <Icon name="info" className="s0 iconInfoVersionMerge" />
+                <Icon name="info" className="s0"
+                  parentClassName="iconInfoVersionMerge" />
               </a>
             </OverlayTrigger>
           </div>

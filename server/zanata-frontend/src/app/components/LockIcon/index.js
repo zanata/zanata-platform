@@ -17,7 +17,7 @@ const LockIcon = ({status}) => {
   return isEntityStatusReadOnly(status)
   ? (
     <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-      <Icon name='locked' className='s0 icon-locked' />
+      <Icon name='locked' className='s0' parentClassName='icon-locked' />
     </OverlayTrigger>
   )
   : DO_NOT_RENDER

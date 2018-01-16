@@ -12,7 +12,7 @@ describe('LockIcon', () => {
       <LockIcon status={'READONLY'} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <Icon name='locked' className='s0 icon-locked' />
+      <Icon name='locked' className='s0' parentClassName='icon-locked' />
     )
     expect(actual).toEqual(expected)
   })

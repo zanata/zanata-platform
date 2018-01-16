@@ -54,7 +54,8 @@ class TMMergeImportedTM extends Component {
               <CopyLabel type={IGNORE_CHECK} value={fromImportedTM} />
               <OverlayTrigger placement='right' overlay={tooltip}>
                 <a className="btn-link tooltip-btn" role="button">
-                  <Icon name="info" className="s0 iconInfoVersionMerge" />
+                  <Icon name="info" className="s0"
+                    parentClassName="iconInfoVersionMerge" />
                 </a>
               </OverlayTrigger>
             </Radio>

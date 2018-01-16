@@ -15,7 +15,8 @@ class PeoplePage extends Component {
           <h2>People</h2>
           <div>
             <Button bsStyle='primary' id='btn-people-add-new'>
-              <Icon name='plus' className='n1 plusicon' title='plus' />&nbsp;
+              <Icon name='plus' className='n1' parentClassName='plusicon'
+                  title='plus'/>&nbsp;
               Add someone
             </Button>
           </div>

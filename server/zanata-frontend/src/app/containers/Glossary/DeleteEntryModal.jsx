@@ -69,7 +69,7 @@ class DeleteEntryModal extends Component {
           type='button' disabled={isDeleting}
           onClick={() => handleDeleteEntryDisplay(true)}>
           <LoaderText loading={isDeleting} loadingText='Deleting'>
-            <Icon name='trash' className='iconDelete s1' />
+            <Icon name='trash' className='s1' parentClassName='iconDelete' />
             <span className='hidden-lesm'>Delete</span>
           </LoaderText>
         </Button>

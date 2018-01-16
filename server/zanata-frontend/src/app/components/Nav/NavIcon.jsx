@@ -12,7 +12,8 @@ const NavIcon = ({
 }) => (
   <Icon
     name={icon}
-    className={size + ' nav-icon'}
+    className={size}
+    parentClassName='nav-icon'
     {...props}
   />
 )

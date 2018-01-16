@@ -46,7 +46,7 @@ const Modal = ({
             <Button aria-label={closeLabel}
               className='close s0'
               onClick={onHide}>
-              <Icon name='cross' className='s2 iconClose' />
+              <Icon name='cross' className='s2' parentClassName='iconClose' />
             </Button>
           )}
           {children}
