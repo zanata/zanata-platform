@@ -202,7 +202,8 @@ class NewLanguageModal extends Component {
                 Plural forms
                 <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
                   target='_blank'>
-                  <Icon name='info' className='s0 iconInfo' title='Help' />
+                  <Icon name='info' className='s0' parentClassName='iconInfo'
+                    title='Help' />
                 </a>
                 {showPluralFormsWarning &&
                   <div className='u-textSmall'

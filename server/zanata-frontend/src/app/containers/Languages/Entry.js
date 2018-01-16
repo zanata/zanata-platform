@@ -74,11 +74,12 @@ class Entry extends Component {
         </td>
         <td>
           <span className='u-textMuted'>
-            <Icon name='user' className='s1 iconUser' />
+            <Icon name='user' className='s1' parentClassName='iconUser' />
             {locale.memberCount} &nbsp;
             {permission.canAddLocale &&
               <span>
-                <Icon name='notification' className='s1 iconUser' />
+                <Icon name='notification' className='s1'
+                  parentClassName='iconUser' />
                 {locale.requestCount}
               </span>
             }

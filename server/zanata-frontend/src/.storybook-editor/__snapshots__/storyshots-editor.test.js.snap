@@ -5,7 +5,9 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -55,7 +57,9 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s1"
             dangerouslySetInnerHTML={
@@ -76,7 +80,9 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -108,7 +114,9 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -151,7 +159,9 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s1"
             dangerouslySetInnerHTML={
@@ -172,7 +182,9 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -204,7 +216,9 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -254,7 +268,9 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s1"
             dangerouslySetInnerHTML={
@@ -275,7 +291,9 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -307,7 +325,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -354,7 +374,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
       <span
         className="CriteriaText"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s0"
             dangerouslySetInnerHTML={
@@ -382,7 +404,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         <div
           className="well well-sm"
         >
-          <span>
+          <span
+            className=""
+          >
             <svg
               className="s0"
               dangerouslySetInnerHTML={
@@ -413,7 +437,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s1"
             dangerouslySetInnerHTML={
@@ -434,7 +460,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -466,7 +494,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -513,7 +543,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
       <span
         className="CriteriaText"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s0"
             dangerouslySetInnerHTML={
@@ -541,7 +573,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         <div
           className="well well-sm"
         >
-          <span>
+          <span
+            className=""
+          >
             <svg
               className="s0"
               dangerouslySetInnerHTML={
@@ -572,7 +606,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s1"
             dangerouslySetInnerHTML={
@@ -593,7 +629,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -625,7 +663,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -672,7 +712,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
       <span
         className="CriteriaText"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s0"
             dangerouslySetInnerHTML={
@@ -700,7 +742,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         <div
           className="well well-sm"
         >
-          <span>
+          <span
+            className=""
+          >
             <svg
               className="s0"
               dangerouslySetInnerHTML={
@@ -731,7 +775,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s1"
             dangerouslySetInnerHTML={
@@ -752,7 +798,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -784,7 +832,9 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
   className="RevisionBox"
 >
   <p>
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="s0"
         dangerouslySetInnerHTML={
@@ -834,7 +884,9 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
         className="Link Link--neutral"
         title="Copy"
       >
-        <span>
+        <span
+          className=""
+        >
           <svg
             className="s1"
             dangerouslySetInnerHTML={
@@ -855,7 +907,9 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -893,7 +947,9 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -917,7 +973,9 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -941,7 +999,9 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -5383,7 +5443,9 @@ exports[`Editor Storyshots CommentBox default 1`] = `
       className="control-label"
       htmlFor="formControlsTextarea"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="s0"
           dangerouslySetInnerHTML={
@@ -5427,7 +5489,9 @@ exports[`Editor Storyshots Concurrent editing notification 1`] = `
   className="alert alert-danger"
   role="alert"
 >
-  <span>
+  <span
+    className=""
+  >
     <svg
       className="s2"
       dangerouslySetInnerHTML={
@@ -5478,7 +5542,9 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
     title="Click should trigger onClick action"
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -5514,7 +5580,9 @@ exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
 <span
   className={undefined}
 >
-  <span>
+  <span
+    className=""
+  >
     <svg
       className="n1"
       dangerouslySetInnerHTML={
@@ -5546,7 +5614,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className={undefined}
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="n1"
           dangerouslySetInnerHTML={
@@ -5575,7 +5645,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-textMicro"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="n1"
           dangerouslySetInnerHTML={
@@ -5604,7 +5676,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-textMuted u-textMini"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="n1"
           dangerouslySetInnerHTML={
@@ -5635,7 +5709,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-bgHigher u-sP-1-4"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="n1"
           dangerouslySetInnerHTML={
@@ -5666,7 +5742,9 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     <span
       className="u-bgHigher u-sP-1-2 u-textMuted"
     >
-      <span>
+      <span
+        className=""
+      >
         <svg
           className="n1"
           dangerouslySetInnerHTML={
@@ -5706,6 +5784,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
       onClick={[Function]}
     >
       <span
+        className=""
         title="Search glossary"
       >
         <svg
@@ -5747,6 +5826,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
       onClick={[Function]}
     >
       <span
+        className=""
         title="Search glossary"
       >
         <svg
@@ -5878,6 +5958,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           title="Details"
         >
           <span
+            className=""
             title="Details"
           >
             <svg
@@ -5978,6 +6059,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           title="Details"
         >
           <span
+            className=""
             title="Details"
           >
             <svg
@@ -6078,6 +6160,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           title="Details"
         >
           <span
+            className=""
             title="Details"
           >
             <svg
@@ -6203,6 +6286,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           title="Details"
         >
           <span
+            className=""
             title="Details"
           >
             <svg
@@ -6303,6 +6387,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           title="Details"
         >
           <span
+            className=""
             title="Details"
           >
             <svg
@@ -6403,6 +6488,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           title="Details"
         >
           <span
+            className=""
             title="Details"
           >
             <svg
@@ -6512,6 +6598,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
           title="Details"
         >
           <span
+            className=""
             title="Details"
           >
             <svg
@@ -6708,7 +6795,9 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6732,7 +6821,9 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -6756,7 +6847,9 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7102,7 +7195,9 @@ exports[`Editor Storyshots SelectButton active 1`] = `
   onClick={[Function]}
   type="button"
 >
-  <span>
+  <span
+    className=""
+  >
     <svg
       className="n1"
       dangerouslySetInnerHTML={
@@ -7129,7 +7224,9 @@ exports[`Editor Storyshots SelectButton default 1`] = `
   onClick={[Function]}
   type="button"
 >
-  <span>
+  <span
+    className=""
+  >
     <svg
       className="n1"
       dangerouslySetInnerHTML={
@@ -7160,7 +7257,9 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7184,7 +7283,9 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7208,7 +7309,9 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7240,7 +7343,9 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7264,7 +7369,9 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={
@@ -7288,7 +7395,9 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     onClick={[Function]}
     type="button"
   >
-    <span>
+    <span
+      className=""
+    >
       <svg
         className="n1"
         dangerouslySetInnerHTML={

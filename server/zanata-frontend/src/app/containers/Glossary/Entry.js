@@ -166,7 +166,8 @@ class Entry extends Component {
                     className="btn-link-end"
                     disabled={isDeleting}
                     onClick={() => this.setShowingEntryModal(true)}>
-                    <Icon name='info' className='s1 iconInfo-noMargin' />
+                    <Icon name='info' className='s1'
+                      parentClassName='iconInfo-noMargin' />
                   </Button>
                   <EntryModal entry={entry}
                     show={this.state.showEntryModal}

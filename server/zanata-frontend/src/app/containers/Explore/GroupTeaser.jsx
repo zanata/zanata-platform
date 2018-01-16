@@ -26,9 +26,9 @@ const GroupTeaser = ({
     </div>)
   const metaData = details.owner ? (
     <div className='metaInfo'>
-      <Icon name='user' className='n1 iconUser-muted' />
+      <Icon name='user' className='n1' parentClassName='iconUser-muted' />
       <Link to={details.owner}>{details.owner}</Link>
-      <Icon name='users' className='iconUsers-muted n1' />
+      <Icon name='users' className='n1' parentClassName='iconUsers-muted' />
     </div>
   ) : undefined
   const link = getVersionGroupUrl(details.id)
@@ -44,7 +44,8 @@ const GroupTeaser = ({
         <div>
           <Link link={link} useHref className={className}>
             {status !== statusIcons.ACTIVE &&
-            (<Icon name={statusIcons[details.status]} className='s1 iconsStatus'
+            (<Icon name={statusIcons[details.status]} className='s1'
+              parentClassName='iconsStatus'
             />)}
             {details.title}
           </Link>
