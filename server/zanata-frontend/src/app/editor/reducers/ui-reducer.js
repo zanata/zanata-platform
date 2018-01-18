@@ -12,7 +12,8 @@ import {
   TOGGLE_INFO_PANEL,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
-  UI_LOCALES_FETCHED
+  UI_LOCALES_FETCHED,
+  APP_LOCALE_FETCHED
 } from '../actions/header-action-types'
 import {
   SUGGESTION_PANEL_HEIGHT_CHANGE
@@ -133,6 +134,12 @@ export default handleActions({
 
   [UI_LOCALES_FETCHED]: (state, { payload }) => update(state, {
     uiLocales: {$set: prepareLocales(payload)}
+  }),
+
+  [APP_LOCALE_FETCHED]: (state, { payload }) => update(state, {
+    appLocaleData: {
+      $set: payload
+    }
   }),
 
   [TOGGLE_KEY_SHORTCUTS]: state => update(state, {

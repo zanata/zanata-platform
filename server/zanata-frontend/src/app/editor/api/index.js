@@ -50,6 +50,19 @@ export function fetchLocales () {
   })
 }
 
+export function fetchI18nLocale (locale) {
+  const localeURL = `${serverUrl}/messages/ja.json`
+  return fetch(localeURL, {
+    credentials: 'include',
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    mode: 'cors'
+  })
+}
+
 export function fetchMyInfo () {
   const userUrl = `${apiUrl}/user`
   return fetch(userUrl, {

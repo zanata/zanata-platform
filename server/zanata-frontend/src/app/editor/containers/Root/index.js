@@ -8,7 +8,7 @@ import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
 import { getSuggestionsPanelVisible } from '../../reducers'
-import { fetchUiLocales } from '../../actions/header-actions'
+import { fetchUiLocales, fetchAppLocale } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
@@ -112,6 +112,7 @@ function mapDispatchToProps (dispatch) {
     },
     requestUiLocales: () => {
       dispatch(fetchUiLocales())
+      dispatch(fetchAppLocale('ja'))
     }
   }
 }
