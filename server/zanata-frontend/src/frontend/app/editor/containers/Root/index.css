@@ -319,7 +319,7 @@ li.DocName span.ellipsis {
 }
 
 .Editor-suggestions.is-search-active .Editor-suggestionsBody {
-  top: calc(var(--Editor-rhythm) * 3);
+  top: calc(var(--Editor-rhythm) * 3.5);
 }
 
 .Editor-suggestionsSearch {
