@@ -19,6 +19,7 @@ var postcssEsplit = require('postcss-esplit')
 var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
+var cssNano = require('cssnano')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
@@ -33,6 +34,7 @@ var postCssLoader = {
       postcssImport(),
       postcssCustomProperties,
       postcssCalc,
+      cssNano(),
       postcssColorFunction,
       postcssCustomMedia,
       postcssEsplit({
@@ -109,6 +111,10 @@ module.exports = function (env) {
   // several options have the same values for both draft and prod
   var fullBuild = draft || prod
 
+  require.extensions['.css'] = () => {
+    return;
+  };
+
   return dropUndef({
     entry: storybook ? undefined : dropUndef({
       'frontend': './app/index',
@@ -159,6 +165,8 @@ module.exports = function (env) {
 
         /* Bundles all the css and allows use of various niceties, including
          * imports, variables, calculations, and non-prefixed codes.
+         * The draft and prod options were removed as they were causing
+         * errors with css-loader. In both cases, the css is minified.
          */
         {
           test: /\.css$/,
@@ -168,18 +176,15 @@ module.exports = function (env) {
               {
                 loader: 'css-loader',
                 options: {
-                  minimize: prod,
-                  importLoaders: 1,
+                  importLoaders: 1
                 }
               },
-              draft ? undefined : 'csso-loader',
               postCssLoader
             ])
           })
         },
 
         /* Bundles bootstrap css into the same bundle as the other css.
-         * TODO look at running through csso, same as other css
          */
         {
           test: /\.less$/,
@@ -257,7 +262,6 @@ module.exports = function (env) {
 
       new ManifestPlugin()
     ]),
-
 
     resolve: {
       /* Subdirectories to check while searching up tree for module
