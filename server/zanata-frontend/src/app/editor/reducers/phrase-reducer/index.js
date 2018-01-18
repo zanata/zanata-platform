@@ -235,13 +235,17 @@ function changeSelectedIndex (state, globalState, indexUpdateCallback) {
   const { inDoc, inDocFiltered, filter, selectedPhraseId } = state
   const phrases = hasAdvancedFilter(filter.advanced)
     ? inDocFiltered[docId] : inDoc[docId]
-
-  const currentIndex = phrases.findIndex(x => x.id === selectedPhraseId)
+  const phrasesFiltered = filter.status.all
+    ? phrases
+    : phrases.filter((phrase) => {
+      return filter.status[phrase.status]
+    })
+  const currentIndex = phrasesFiltered.findIndex(x => x.id === selectedPhraseId)
 
   const newIndex = indexUpdateCallback(currentIndex)
-  const indexOutOfBounds = newIndex < 0 || newIndex >= phrases.length
+  const indexOutOfBounds = newIndex < 0 || newIndex >= phrasesFiltered.length
   if (!indexOutOfBounds && newIndex !== currentIndex) {
-    const moveToId = phrases[newIndex].id
+    const moveToId = phrasesFiltered[newIndex].id
     return selectPhrase(state, globalState, moveToId)
   }
 
