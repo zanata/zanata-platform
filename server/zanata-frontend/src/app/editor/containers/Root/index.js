@@ -13,6 +13,8 @@ import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
+import { locale, formats } from '../../config/intl'
+import { IntlProvider } from 'react-intl'
 
 /**
  * Top level of Zanata view hierarchy.
@@ -70,23 +72,25 @@ class Root extends Component {
 
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
-      <ParamPropDispatcher {...this.props}>
-        <KeyShortcutDispatcher className="Editor is-suggestions-active">
-          <Icons />
-          <EditorHeader />
-          <Sidebar>
-            <SplitPane ref="suggestionResizer"
-              split="horizontal"
-              defaultSize={pixelHeight}
-              primary="second"
-              onDragFinished={this.resizeFinished}>
-              <MainContent />
-              {this.props.showSuggestion && <SuggestionsPanel />}
-            </SplitPane>
-          </Sidebar>
-          <KeyShortcutCheatSheet />
-        </KeyShortcutDispatcher>
-      </ParamPropDispatcher>
+      <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
+        <ParamPropDispatcher {...this.props}>
+          <KeyShortcutDispatcher className="Editor is-suggestions-active">
+            <Icons />
+            <EditorHeader />
+            <Sidebar>
+              <SplitPane ref="suggestionResizer"
+                split="horizontal"
+                defaultSize={pixelHeight}
+                primary="second"
+                onDragFinished={this.resizeFinished}>
+                <MainContent />
+                {this.props.showSuggestion && <SuggestionsPanel />}
+              </SplitPane>
+            </Sidebar>
+            <KeyShortcutCheatSheet />
+          </KeyShortcutDispatcher>
+        </ParamPropDispatcher>
+      </IntlProvider>
     )
   }
 }

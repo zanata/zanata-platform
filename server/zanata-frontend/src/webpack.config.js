@@ -200,9 +200,7 @@ module.exports = function (env) {
               'less-loader'
             ]
           })
-        },
-        /* Allows loading react-intl json translations from dist/messages */
-        { test: /\.json$/, loader: 'json-loader' }
+        }
       ])
     },
 

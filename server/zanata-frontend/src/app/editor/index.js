@@ -2,12 +2,9 @@ import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { appUrl, serverUrl } from '../config'
-import { locale, formats } from './config/intl'
 import createStoreWithMiddleware from './middlewares'
-import { addLocaleData, IntlProvider } from 'react-intl'
+import { addLocaleData } from 'react-intl'
 import enLocaleData from 'react-intl/locale-data/en.js'
-import jaLocaleData from 'react-intl/locale-data/ja.js'
-import jaMessages from '../../dist/messages/ja.json'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
@@ -49,7 +46,7 @@ function runApp () {
   //   })
   // }
 
-  addLocaleData([...enLocaleData, ...jaLocaleData])
+  addLocaleData([...enLocaleData])
 
   const history = browserHistory
   history.basename = appUrl
@@ -71,21 +68,18 @@ function runApp () {
 
   const route = '/project/translate/:projectSlug/v/:versionSlug/**'
   const path = !isEmpty(appUrl) ? appUrl + route : route
-  const messages = (jaMessages !== undefined) ? jaMessages : enLocaleData
+
   // TODO when translations are available, load user locale translations with
   //   require.ensure and pass to IntlProvider as messages={...}
   // defaultLocale will use the default messages with no errors
   ReactDOM.render(
-    <IntlProvider defaultLocale={locale} locale={'ja'} formats={formats}
-      messages={messages}>
-      <Provider store={store}>
-        <Router history={enhancedHistory}>
-          {/* The ** is docId, captured as params.splat by react-router. */}
-          <Route path={path} component={Root} />
-          <Route path="/*" component={NeedSlugMessage} />
-        </Router>
-      </Provider>
-    </IntlProvider>, rootElement)
+    <Provider store={store}>
+      <Router history={enhancedHistory}>
+        {/* The ** is docId, captured as params.splat by react-router. */}
+        <Route path={path} component={Root} />
+        <Route path="/*" component={NeedSlugMessage} />
+      </Router>
+    </Provider>, rootElement)
 }
 
 if (window.Intl) {
