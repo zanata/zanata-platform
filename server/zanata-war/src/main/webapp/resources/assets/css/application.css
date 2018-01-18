@@ -73,16 +73,16 @@ Removes some of the styling on the page-level splitters
   font-size: 16px;
 }
 
-.THEMES_DEFAULT {
-  font-size: 16px;
+.THEMES_DEFAULT, .THEMES_DEFAULT .TableEditorCell-Target pre, .THEMES_DEFAULT .TableEditorCell-Target textarea {
+  font-size: 16px !important;
 }
 
-.THEMES_COMPACT {
-  font-size: 14px;
+.THEMES_COMPACT, .THEMES_COMPACT .TableEditorCell-Target pre, .THEMES_COMPACT .TableEditorCell-Target textarea {
+  font-size: 14px !important;
 }
 
-.THEMES_LOOSE {
-  font-size: 20px;
+.THEMES_LOOSE, .THEMES_LOOSE .TableEditorCell-Target pre, .THEMES_LOOSE .TableEditorCell-Target textarea {
+  font-size: 20px !important;
 }
 
 .sourceContentsContainer .g--tight {
