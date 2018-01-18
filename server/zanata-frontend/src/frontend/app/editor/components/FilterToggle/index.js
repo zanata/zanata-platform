@@ -50,7 +50,7 @@ class FilterToggle extends React.Component {
   }
 
   render () {
-    const className = cx('Toggle u-round', this.props.className)
+    const className = cx('Toggle u-curved', this.props.className)
     const dot = this.props.withDot && <Icon name="dot" className="n1" />
 
     return (
