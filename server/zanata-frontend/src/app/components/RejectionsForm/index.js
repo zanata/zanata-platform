@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
   from 'react-bootstrap'
 import { Icon, TextInput, SelectableDropdown } from '../../components'
-import Toggle from 'react-toggle'
+
 /**
  * Reject Translations Administration panel
  */
@@ -113,14 +113,6 @@ class RejectionsForm extends Component {
         <Icon name='trash' className='s0 iconEdit' />
       </Button>
       ) : DO_NOT_RENDER
-    const editableToggle = isAdminMode ? (
-      <FormGroup controlId='formInlineEditable'>
-        <ControlLabel>Editable</ControlLabel><br />
-        <Toggle icons={false} onChange={this.onEditableChange}
-          checked={this.state.isEditable} />
-      </FormGroup>
-      )
-      : DO_NOT_RENDER
     const formBtn = isAdminMode ? (
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
@@ -152,7 +144,6 @@ class RejectionsForm extends Component {
             disabled={priorityDisabled}
           />
         </FormGroup>
-        {editableToggle}
         {formBtn}
       </Form>
     )

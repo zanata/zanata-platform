@@ -4,47 +4,13 @@ import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
 import Icon from '../../components/Icon'
-import {Button, Accordion, Panel, Alert} from 'react-bootstrap'
+import {Button, Panel, Alert} from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
 
 const DO_NOT_RENDER = undefined
-
-const exampleHeader = <span>Example criteria:
-  <span className="text-muted"> click to expand</span></span>
-/* eslint-disable max-len */
-const exampleCriteria = <Accordion expanded={false} defaultExpanded={false}>
-  <Panel header={exampleHeader} eventKey="1">
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)'
-      priority={CRITICAL} />
-    <RejectionsForm
-      editable
-      className='active'
-      criteriaPlaceholder='Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)'
-      priority={MAJOR} />
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)'
-      priority={MAJOR} />
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Style Guide & Glossary Violations'
-      priority={MINOR} />
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)'
-      priority={MINOR} />
-    <RejectionsForm
-      editable
-      className='active'
-      criteriaPlaceholder='Other (reason may be in comment section/history if necessary)'
-      priority={CRITICAL} />
-  </Panel>
-</Accordion>
 /* eslint-enable max-len */
 
 class AdminReview extends Component {
@@ -95,7 +61,6 @@ class AdminReview extends Component {
       <Alert bsStyle="danger">{notification}</Alert>
     return <div className='container'>
       {notificationBar}
-      {exampleCriteria}
       <h1>Reject translations settings</h1>
       {criteriaList}
       {newEntryForm}
