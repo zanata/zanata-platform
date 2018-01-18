@@ -133,6 +133,7 @@
               <resources>
                 <resource>
                   <directory>src/dist</directory>
+                  <include>messages/*.json</include>
                   <include>editor.*.cache.js</include>
                   <include>editor.*.cache.css</include>
                   <include>editor.*.cache.css.map</include>
