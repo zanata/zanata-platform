@@ -1,4 +1,5 @@
 {
+  "automock": false,
   "collectCoverageFrom": [
     "app/**/*.{js,jsx}",
     "!**/node_modules/**",
