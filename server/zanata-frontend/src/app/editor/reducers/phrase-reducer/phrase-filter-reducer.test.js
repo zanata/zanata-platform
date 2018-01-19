@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import {
   TOGGLE_ADVANCED_PHRASE_FILTERS,

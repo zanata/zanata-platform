@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
 

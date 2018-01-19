@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 // Testing the combined phrase reducers since filter states are used in several
 // of the standard paging operations.
