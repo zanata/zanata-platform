@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
 import Icon from '../../components/Icon'
-import {Button, Panel, Alert} from 'react-bootstrap'
+import {Button, Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
@@ -59,9 +59,28 @@ class AdminReview extends Component {
 
     const notificationBar = notification &&
       <Alert bsStyle="danger">{notification}</Alert>
-    return <div className='container'>
+    return <div className='container wideView'>
+      <Breadcrumb>
+        <Breadcrumb.Item href='home'>
+          Admin
+        </Breadcrumb.Item>
+      </Breadcrumb>
       {notificationBar}
       <h1>Reject translations settings</h1>
+      <p>Description</p>
+      <Well><p>Example criteria:</p>
+        <ul>
+          <li>Translation Errors (terminology, mistranslated, addition,
+          omission, un-localized, do not translate, etc)</li>
+          <li>Language Quality (grammar, spelling, punctuation, typo,
+            ambiguous wording, product name, sentence structuring, readability,
+          word choice, not natural, too literal, style and tone, etc)</li>
+          <li>Consistency (inconsistent style or vocabulary, brand
+          inconsistency, etc.)</li>
+          <li>Format (mismatches, white-spaces, tag error or missing,
+          special character, numeric format, truncated, etc.)</li>
+        </ul>
+      </Well>
       {criteriaList}
       {newEntryForm}
       <div className='rejection-btns'>
