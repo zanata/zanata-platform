@@ -21,7 +21,6 @@
 
 import cx from 'classnames'
 import { Icon } from '../../../components'
-import IconButton from '../IconButton'
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -120,20 +119,6 @@ class SuggestionSearchInput extends React.Component {
     )
   }
 
-  clearButtonElement = () => {
-    if (!this.props.hasSearch) {
-      return undefined
-    }
-    return (
-      <span className="EditorInputGroup-addon">
-        <IconButton icon="cross"
-          title="Clear search"
-          className="n1"
-          onClick={this.clearSearch} />
-      </span>
-    )
-  }
-
   render () {
     return (
       <div className={cx('EditorInputGroup EditorInputGroup--outlined' +
@@ -153,7 +138,6 @@ class SuggestionSearchInput extends React.Component {
           onChange={this.props.onTextChange}
           className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
         {this.resultsElement()}
-        {this.clearButtonElement()}
       </div>
     )
   }
