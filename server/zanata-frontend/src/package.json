@@ -81,6 +81,7 @@
     "react-split-pane": "0.1.63",
     "react-test-renderer": "15.6.1",
     "react-transform-hmr": "1.0.4",
+    "require.all": "^2.0.3",
     "reselect": "3.0.1",
     "storybook-host": "4.1.5",
     "style-loader": "0.19.1",
