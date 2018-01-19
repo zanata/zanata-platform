@@ -31,6 +31,7 @@
     "@storybook/addons": "3.3.9",
     "@storybook/channels": "3.3.9",
     "@storybook/react": "3.3.9",
+    "@types/jest": "^22.0.1",
     "autoprefixer-loader": "3.2.0",
     "babel-core": "6.26.0",
     "babel-eslint": "6.1.0",
@@ -90,6 +91,7 @@
     "webpack-merge": "4.1.1"
   },
   "dependencies": {
+    "@types/chart.js": "^2.7.3",
     "babel-polyfill": "6.9.1",
     "caniuse-lite": "1.0.30000745",
     "chart.js": "2.7.1",
