@@ -61,7 +61,7 @@
                yet. This ensures that JS test failures will break the build.
                TODO get Jest to output junit.xml and remove this:
           -->
-          <maven.test.failure.ignore>false</maven.test.failure.ignore>
+          <testFailureIgnore>false</testFailureIgnore>
         </configuration>
         <executions>
           <!-- Installs correct version of node and yarn locally. -->
