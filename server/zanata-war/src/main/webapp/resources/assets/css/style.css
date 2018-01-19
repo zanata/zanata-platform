@@ -3866,9 +3866,12 @@ Sub-headings can be used when placing a heading under another heading.
   table-layout: fixed;
   padding: 0.375em 0.75em;
 }
+.new-zanata .list--stats .list__item__content {
+  width: 100%;
+}
 .new-zanata .list--panel .list__item__info, .new-zanata .list--stats .list__item__info {
   display: table-cell;
-  width: 100%;
+  min-width: 100%;
   vertical-align: middle;
   line-height: 1em;
 }
