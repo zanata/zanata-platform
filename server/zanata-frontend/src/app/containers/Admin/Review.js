@@ -51,14 +51,14 @@ class AdminReview extends Component {
       onSave={editEntry} description={c.description}
       priority={c.priority} />)
     const newEntryForm = this.state.showNewEntryForm ? (
-      <Panel header="Add new entry">
+      <Panel header='Add new entry'>
         <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
-          criteriaPlaceholder="fill in criteria"
+          criteriaPlaceholder='fill in criteria'
           onSave={this.saveNewEntry} />
       </Panel>) : DO_NOT_RENDER
 
     const notificationBar = notification &&
-      <Alert bsStyle="danger">{notification}</Alert>
+      <Alert bsStyle='danger'>{notification}</Alert>
     return <div className='container wideView'>
       <Breadcrumb>
         <Breadcrumb.Item href='home'>
@@ -67,8 +67,9 @@ class AdminReview extends Component {
       </Breadcrumb>
       {notificationBar}
       <h1>Reject translations settings</h1>
-      <p className="lead">What, why, how, when, blah.</p>
-      <Well><h2>Example criteria</h2>
+      <p className='lead'>What, why, how, when, blah.</p>
+      <Well bsSize='lg'><h2>Example criteria</h2>
+        <hr />
         <ul>
           <li><strong>Translation Errors</strong> (terminology, mistranslated,
           addition, omission, un-localized, do not translate, etc)</li>
