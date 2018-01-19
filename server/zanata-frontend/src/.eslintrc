@@ -12,3 +12,8 @@ rules:
     - 0              # Off, can't enforce yet as frontend all has single-quotes
     - prefer-double  # Use double quotes unless the string contains a literal
                      # double-quote character.
+  # Under standard (non-Babel) ES6 module semantics, you have to import 'react'
+  # twice in cases like this (no default export):
+  #   import * as React from 'react'
+  #   import { Component } from 'react'
+  no-duplicate-imports: 0
