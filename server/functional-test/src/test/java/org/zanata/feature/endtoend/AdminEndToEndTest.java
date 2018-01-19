@@ -107,6 +107,7 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .clickRole("user")
                 .saveUser();
         manageUserPage.waitForNotificationsGone();
+        manageUserPage.reload();
         assertThat(manageUserPage.getUserList()).contains(USERNAME);
         WiserMessage email = hasEmailRule.getMessages().get(0);
         assertThat(email.getEnvelopeReceiver()).contains(EMAIL);
