@@ -22,7 +22,7 @@ class ProirityDropdown extends Component {
         CRITICAL
       ]
     ).isRequired,
-    priorityChange: PropTypes.funciton
+    priorityChange: PropTypes.func.isRequired
   }
   constructor (props) {
     super(props)

@@ -31,7 +31,13 @@ export class RejectTranslationModal extends Component {
         'u-textDanger'
       ]
     ),
-    criteria: PropTypes.string
+    criteriaList: PropTypes.arrayOf(PropTypes.string).isRequired
+  }
+  constructor (props) {
+    super(props)
+    this.state = {
+      selectedCriteria: this.props.criteriaList[0]
+    }
   }
   // TODO: Placeholder func, update Priority prop of RejectTranslationModal
   onPriorityChange = (priority) => {
@@ -45,10 +51,13 @@ export class RejectTranslationModal extends Component {
     const {
       show,
       onHide,
-      criteria,
+      criteriaList,
       priority,
       textState
     } = this.props
+    const {
+      selectedCriteria
+    } = this.state
     return (
       <Modal show={show}
         onHide={onHide}
@@ -62,7 +71,10 @@ export class RejectTranslationModal extends Component {
             <span id="CriteriaTitle">
               Criteria
             </span>
-            <CriteriaDropdown criteria={criteria} />
+            <CriteriaDropdown
+              criteriaList={criteriaList}
+              onCriteriaChange={this.onCriteriaChange}
+              selectedCriteria={selectedCriteria} />
             <PriorityDropdown
               textState={textState}
               priority={priority}
