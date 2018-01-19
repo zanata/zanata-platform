@@ -1,5 +1,5 @@
 module.exports = {
-  parser: 'postcss-less',
+  parser: 'postcss-less-engine',
   exec: true,
   plugins: {
     'postcss-cssnext': {},
