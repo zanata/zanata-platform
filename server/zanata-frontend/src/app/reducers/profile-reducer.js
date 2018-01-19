@@ -26,9 +26,11 @@ import { keyBy } from 'lodash'
  * @param listOfMatrices original server response
  * @param {{fromDate: string, toDate: string, dates: string[]}} dateRange see
  *   DateHelper.getDateRangeFromOption(string)
- * @returns {{label: string, date: string, totalApproved: number,
-   *   totalTranslated: number, totalNeedsWork: number, totalActivity:
-   *   number}[]}
+ * @returns {{
+     label: string, date: string, totalApproved: number,
+     totalTranslated: number, totalNeedsWork: number,
+     totalActivity: number
+   }[]}
  */
 const transformToTotalWordCountsForEachDay = (listOfMatrices, dateRange) => {
   let result = []

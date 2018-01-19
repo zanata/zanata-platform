@@ -97,13 +97,13 @@ const toProjectVersionString = (projectVersion) => {
  * @param {string} projectSlug target project slug
  * @param {string} versionSlug target version slug
  * @param {{
- *  matchPercentage: number,
- *  differentDocId: boolean,
- *  differentContext: boolean,
- *  fromImportedTM: boolean,
- *  selectedLanguage: Object.<{localeId: string, displayName: string}>,
- *  selectedVersions: Array.<{projectSlug: string, version: {id: string}}>
- * }} mergeOptions
+     matchPercentage: number,
+     differentDocId: boolean,
+     differentContext: boolean,
+     fromImportedTM: boolean,
+     selectedLanguage: Object.<{localeId: string, displayName: string}>,
+     selectedVersions: Array.<{projectSlug: string, version: {id: string}}>
+   }} mergeOptions
  * @returns redux api action object
  */
 export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
