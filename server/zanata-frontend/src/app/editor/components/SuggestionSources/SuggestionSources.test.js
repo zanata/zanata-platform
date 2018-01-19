@@ -1,6 +1,6 @@
 
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
+import * as React from 'react'
+import * as ReactDOMServer from 'react-dom/server'
 import SuggestionSources from '../SuggestionSources'
 import SuggestionContents from '../SuggestionContents'
 import SuggestionDetailsSummary from '../SuggestionDetailsSummary'

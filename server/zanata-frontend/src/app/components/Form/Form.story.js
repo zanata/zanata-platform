@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Col, ControlLabel, FormGroup, FormControl, Form, InputGroup,
   Checkbox, Radio, Well } from 'react-bootstrap'

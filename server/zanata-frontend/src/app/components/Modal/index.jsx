@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import { Modal as OverlayModal } from 'react-overlays'
 import ModalHeader from './ModalHeader'
 import ModalTitle from './ModalTitle'

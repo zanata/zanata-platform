@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import 'es6-symbol/implement'
-import React from 'react'
+import * as React from 'react'
 import { render } from 'react-dom'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'

@@ -6,7 +6,7 @@ import IconButtonToggle from '../components/IconButtonToggle'
 import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
 import PhraseStatusFilter from '../components/PhraseStatusFilter'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import {
   getGlossaryVisible,
