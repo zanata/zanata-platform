@@ -87,7 +87,7 @@ public class UserSettingsAction implements Serializable {
 
     @Inject
     private CredentialsDAO credentialsDAO;
-    @SuppressFBWarnings("SE_BAD_FIELD")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     @Inject
     private EntityManager em;
     @Inject
@@ -331,6 +331,7 @@ public class UserSettingsAction implements Serializable {
         private final HCredentials newCredentials;
         private final CredentialsDAO credentialsDAO;
         private final FacesMessages facesMessages;
+        @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
         private final EntityManager em;
 
         private CredentialsCreationCallback(HCredentials newCredentials,
