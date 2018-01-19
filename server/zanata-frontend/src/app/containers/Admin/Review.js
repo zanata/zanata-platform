@@ -70,16 +70,18 @@ class AdminReview extends Component {
       <p className="lead">What, why, how, when, blah.</p>
       <Well><h2>Example criteria</h2>
         <ul>
-          <li><strong>Translation Errors</strong> (terminology, mistranslated, addition,
-          omission, un-localized, do not translate, etc)</li>
-          <li><strong>Language Quality</strong> (grammar, spelling, punctuation, typo,
-            ambiguous wording, product name, sentence structuring, readability,
-          word choice, not natural, too literal, style and tone, etc)</li>
+          <li><strong>Translation Errors</strong> (terminology, mistranslated,
+          addition, omission, un-localized, do not translate, etc)</li>
+          <li><strong>Language Quality</strong> (grammar, spelling,
+            punctuation, typo, ambiguous wording, product name,
+            sentence structuring, readability, word choice, not natural,
+          too literal, style and tone, etc)</li>
           <li><strong>Style Guide and Glossary Violations</strong></li>
-          <li><strong>Consistency</strong> (inconsistent style or vocabulary, brand
-          inconsistency, etc.)</li>
-          <li><strong>Format</strong> (mismatches, white-spaces, tag error or missing,
-          special character, numeric format, truncated, etc.)</li>
+          <li><strong>Consistency</strong> (inconsistent style or vocabulary,
+          brand inconsistency, etc.)</li>
+          <li><strong>Format</strong> (mismatches, white-spaces, tag error
+            or missing, special character, numeric format, truncated,
+          etc.)</li>
         </ul>
       </Well>
       {criteriaList}
