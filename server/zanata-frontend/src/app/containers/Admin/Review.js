@@ -67,17 +67,18 @@ class AdminReview extends Component {
       </Breadcrumb>
       {notificationBar}
       <h1>Reject translations settings</h1>
-      <p>Description</p>
-      <Well><p>Example criteria:</p>
+      <p className="lead">What, why, how, when, blah.</p>
+      <Well><h2>Example criteria</h2>
         <ul>
-          <li>Translation Errors (terminology, mistranslated, addition,
+          <li><strong>Translation Errors</strong> (terminology, mistranslated, addition,
           omission, un-localized, do not translate, etc)</li>
-          <li>Language Quality (grammar, spelling, punctuation, typo,
+          <li><strong>Language Quality</strong> (grammar, spelling, punctuation, typo,
             ambiguous wording, product name, sentence structuring, readability,
           word choice, not natural, too literal, style and tone, etc)</li>
-          <li>Consistency (inconsistent style or vocabulary, brand
+          <li><strong>Style Guide and Glossary Violations</strong></li>
+          <li><strong>Consistency</strong> (inconsistent style or vocabulary, brand
           inconsistency, etc.)</li>
-          <li>Format (mismatches, white-spaces, tag error or missing,
+          <li><strong>Format</strong> (mismatches, white-spaces, tag error or missing,
           special character, numeric format, truncated, etc.)</li>
         </ul>
       </Well>
@@ -86,7 +87,7 @@ class AdminReview extends Component {
       <div className='rejection-btns'>
         <Button bsStyle='primary' className='btn-left'
           onClick={this.showAddNewEntryForm}>
-          <Icon name='plus' className='s1' /> Add review criteria
+          <Icon name='plus' className='s1' /> New review criteria entry
         </Button>
       </div>
     </div>
