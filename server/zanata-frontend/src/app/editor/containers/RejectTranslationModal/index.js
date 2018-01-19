@@ -4,6 +4,7 @@ import Button from '../Button'
 import Dropdown from '../Dropdown'
 import { Row } from 'react-bootstrap'
 import { Modal, Icon } from '../../../components'
+import PriorityDropdown from '.'
 
  /* eslint-disable max-len */
 export const MINOR = 'Minor'
@@ -48,10 +49,9 @@ export class RejectTranslationModal extends Component {
       dropdownOpen: !prevState.dropdownOpen
     }))
   }
-  toggleDropdown2 = () => {
-    this.setState(prevState => ({
-      dropdownOpen2: !prevState.dropdownOpen2
-    }))
+  // TODO: Placeholder func, update Priority prop of RejectTranslationModal
+  priorityChange = (priority) => {
+    return priority
   }
   render () {
     const {
@@ -61,7 +61,7 @@ export class RejectTranslationModal extends Component {
       // onHide,
       // isOpen,
       // criteria,
-      // priority,
+      priority,
       textState
     } = this.props
     return (
@@ -104,31 +104,10 @@ export class RejectTranslationModal extends Component {
                 </ul>
               </Dropdown.Content>
             </Dropdown>
-            <span className="PriorityDropdown">
-              <Icon name="warning" className="s2"
-                parentClassName="u-textWarning" />
-              <span id="PriorityTitle">Priority</span>
-              <Dropdown enabled isOpen={this.state.dropdownOpen2}
-                onToggle={this.toggleDropdown2}
-                className="dropdown-menu priority">
-                <Dropdown.Button>
-                  <a className="EditorDropdown-item">
-                    <span className={textState}>{this.props.priority}</span>
-                    <Icon className="n1" name="chevron-down" />
-                  </a>
-                </Dropdown.Button>
-                <Dropdown.Content>
-                  <ul>
-                    <li className="EditorDropdown-item" onClick={this.toggleDropdown2}>
-                      <span>Minor</span></li>
-                    <li className="EditorDropdown-item" onClick={this.toggleDropdown2}>
-                      <span className="u-textWarning">Major</span></li>
-                    <li className="EditorDropdown-item" onClick={this.toggleDropdown2}>
-                      <span className="u-textDanger">Critical</span></li>
-                  </ul>
-                </Dropdown.Content>
-              </Dropdown>
-            </span>
+            <PriorityDropdown
+              textState={textState}
+              priority={priority}
+              priorityChange={this.priorityChange} />
           </div>
           <div className="EditorRejection-input">
             <textarea ref="input"
