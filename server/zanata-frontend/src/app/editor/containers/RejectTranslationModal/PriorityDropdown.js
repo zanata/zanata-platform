@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Icon } from '../../../components'
 import PropTypes from 'prop-types'
-import Dropdown from '../Dropdown'
+import Dropdown from '../../components/Dropdown'
 
 // TODO: Move these to a shared config util file
 export const MINOR = 'Minor'
