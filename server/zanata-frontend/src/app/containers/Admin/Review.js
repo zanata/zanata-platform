@@ -62,12 +62,14 @@ class AdminReview extends Component {
     return <div className='container wideView'>
       <Breadcrumb>
         <Breadcrumb.Item href='home'>
-          Admin
+          Administration
         </Breadcrumb.Item>
       </Breadcrumb>
       {notificationBar}
       <h1>Reject translations settings</h1>
-      <p className='lead'>What, why, how, when, blah.</p>
+      <p className='lead'>Set the translation rejection criteria to be used
+        in the editor. Start by adding your first 'new rejection criteria
+      entry' and add as many criteria as you require.</p>
       <Well bsSize='lg'><h2>Example criteria</h2>
         <hr />
         <ul>
