@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import Diff from 'text-diff'
+const Diff /* TS: import Diff */ = require('text-diff')
 
 const diff = new Diff()
 

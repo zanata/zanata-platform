@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Component } from 'react'
-import PropType from 'prop-types'
+import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'

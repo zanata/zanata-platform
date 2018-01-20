@@ -23,7 +23,7 @@ import 'babel-polyfill'
 import * as React from 'react'
 import { render } from 'react-dom'
 import { Nav, Icons } from './components'
-import WebFont from 'webfontloader'
+import * as WebFont from 'webfontloader'
 import { serverUrl, links as configLinks } from './config'
 
 import './styles/style.less'
