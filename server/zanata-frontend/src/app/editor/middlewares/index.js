@@ -5,7 +5,7 @@ import newContextFetchMiddleware from './new-context-fetch'
 import getStateInActions from './getstate-in-actions'
 import titleUpdateMiddleware from './title-update'
 const thunk /* TS: import thunk */ = require('redux-thunk')
-import * as createLogger from 'redux-logger'
+import createLogger from 'redux-logger'
 
 const loggerMiddleware = createLogger({
   predicate: (getState, action) =>
