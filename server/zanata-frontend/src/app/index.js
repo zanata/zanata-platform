@@ -4,7 +4,7 @@ import * as React from 'react'
 import { render } from 'react-dom'
 import { createStore, applyMiddleware, compose } from 'redux'
 const thunk /* TS: import thunk */ = require('redux-thunk')
-import createLogger from 'redux-logger'
+const createLogger /* TS: import createLogger */ = require('redux-logger')
 import { history } from './history'
 import { syncHistoryWithStore } from 'react-router-redux'
 import * as WebFont from 'webfontloader'
