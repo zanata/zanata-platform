@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 // From https://gist.github.com/turadg/9bcf08a7279e82a030a645250639fe6e
 // Also needed for TypeScript, not just Flow
