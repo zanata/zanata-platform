@@ -25,7 +25,7 @@ describe('PhraseStatusFilterTest', () => {
         withDot />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div className="Toggle u-round soClassy">
+      <div className="Toggle u-curved soClassy">
         <input className="Toggle-checkbox"
           type="checkbox"
           id="government-issued"
@@ -34,10 +34,10 @@ describe('PhraseStatusFilterTest', () => {
         <span className="Toggle-fakeCheckbox" />
         <label className="Toggle-label"
           htmlFor="government-issued"
-          title="titalic">
+          title="titalic"><Row>
           <Icon name="dot" className="n1" />
           12
-          <span className="u-hiddenVisually">titalic</span>
+          <span className="u-hiddenVisually">titalic</span></Row>
         </label>
       </div>
     )
@@ -56,7 +56,7 @@ describe('PhraseStatusFilterTest', () => {
         withDot={false} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div className="Toggle u-round soClassy">
+      <div className="Toggle u-curved soClassy">
         <input className="Toggle-checkbox"
           type="checkbox"
           id="government-issued"
@@ -65,9 +65,9 @@ describe('PhraseStatusFilterTest', () => {
         <span className="Toggle-fakeCheckbox" />
         <label className="Toggle-label"
           htmlFor="government-issued"
-          title="titalic">
+          title="titalic"><Row>
           17
-          <span className="u-hiddenVisually">titalic</span>
+          <span className="u-hiddenVisually">titalic</span></Row>
         </label>
       </div>
     )

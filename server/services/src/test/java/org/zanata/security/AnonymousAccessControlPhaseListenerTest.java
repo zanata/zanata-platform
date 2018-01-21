@@ -47,7 +47,7 @@ public class AnonymousAccessControlPhaseListenerTest {
 
     @Test
     public void anonymousAccessToUnprotectedPageIsAllowed() {
-        when(request.getRequestURI()).thenReturn("404.xhtml");
+        when(request.getRequestURI()).thenReturn("/error/404.xhtml");
         when(anonymousAccessProvider.get()).thenReturn(true);
 
         checker.beforePhase(phaseEvent);
@@ -56,7 +56,7 @@ public class AnonymousAccessControlPhaseListenerTest {
 
     @Test
     public void loggedInAccessToProtectedPageIsAllowed() {
-        when(request.getRequestURI()).thenReturn("404.xhtml");
+        when(request.getRequestURI()).thenReturn("/error/404.xhtml");
         when(anonymousAccessProvider.get()).thenReturn(false);
         when(identity.isLoggedIn()).thenReturn(true);
 
@@ -66,13 +66,29 @@ public class AnonymousAccessControlPhaseListenerTest {
 
     @Test
     public void anonymousAccessToProtectedPageIsDenied() {
-        when(request.getRequestURI()).thenReturn("404.xhtml");
+        when(request.getRequestURI()).thenReturn("/dashboard/home.xhtml");
         when(anonymousAccessProvider.get()).thenReturn(false);
         when(identity.isLoggedIn()).thenReturn(false);
 
         assertThatThrownBy(() -> checker.beforePhase(phaseEvent))
                 .isInstanceOf(NotLoggedInException.class);
 
+    }
+
+    @Test
+    public void anonymousAccessToErrorPage() {
+        when(request.getRequestURI()).thenReturn("/error/404.xhtml");
+        when(anonymousAccessProvider.get()).thenReturn(true);
+        when(identity.isLoggedIn()).thenReturn(false);
+        checker.beforePhase(phaseEvent);
+    }
+
+    @Test
+    public void anonymousAccessToErrorPage2() {
+        when(request.getRequestURI()).thenReturn("/error/index.xhtml");
+        when(anonymousAccessProvider.get()).thenReturn(true);
+        when(identity.isLoggedIn()).thenReturn(false);
+        checker.beforePhase(phaseEvent);
     }
 
 }
