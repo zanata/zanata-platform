@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import 'es6-symbol/implement'
 import React from 'react'
 import { render } from 'react-dom'

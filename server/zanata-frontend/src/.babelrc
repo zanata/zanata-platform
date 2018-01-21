@@ -9,7 +9,14 @@
       "messagesDir": "./build/messages/",
       "enforceDescriptions": true
     }],
-    // stage-2 plugins: (TODO remove them if practical)
-    "transform-class-properties"
+    // stage-2 plugin: (TODO remove if practical)
+    "transform-class-properties",
+    // the option below requires Babel 7 (https://github.com/babel/babel/pull/5422)
+    // https://github.com/search?utf8=%E2%9C%93&q=plugins+transform+es2015+modules+commonjs+nointerop+true&type=Code
+    // https://babeljs.io/docs/plugins/transform-es2015-modules-commonjs/#nointerop
+    // this plugin prevents us from accidentally using a Babel-specific import feature
+    // ["transform-es2015-modules-commonjs", {
+    //   "noInterop": true
+    // }],
   ]
 }
