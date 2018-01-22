@@ -2,6 +2,7 @@
     "compilerOptions": {
         "allowJs": true,
         "checkJs": false,
+        "importHelpers": true,
         "jsx": "react",
         "lib": [
             // We transpile to ES5 syntax, but we use babel-polyfill
@@ -10,7 +11,7 @@
         "module": "commonjs",
         "outDir": "./build/",
         // TODO fix sourcemap problems with intl-messageformat
-        // "sourceMap": true,
+        "sourceMap": true,
         // first we need to clean up our types:
         // "strict": true,
         "target": "ES5"
