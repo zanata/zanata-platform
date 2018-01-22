@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React from 'react'
 
+/* eslint-disable max-len */
 // From https://gist.github.com/turadg/9bcf08a7279e82a030a645250639fe6e
 // Also needed for TypeScript, not just Flow
 
@@ -16,5 +17,5 @@ import * as React from 'react';
  * https://facebook.github.io/jest/docs/en/configuration.html#setupfiles-array
  */
 
-delete React.createClass;
-delete React.PropTypes;
+delete React.createClass
+delete React.PropTypes
