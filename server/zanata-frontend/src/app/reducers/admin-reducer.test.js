@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import adminReducer from './admin-reducer'
 import update from 'immutability-helper'

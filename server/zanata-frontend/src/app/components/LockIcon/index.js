@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import {Tooltip, OverlayTrigger} from 'react-bootstrap'
 import {Icon} from '../../components'
 import {entityStatusPropType} from '../../utils/prop-types-util'

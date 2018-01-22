@@ -1,8 +1,7 @@
 /* global jest describe expect it */
-jest.disableAutomock()
 
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
+import * as React from 'react'
+import * as ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
 import { mount } from 'enzyme'
 import { Pager } from '.'

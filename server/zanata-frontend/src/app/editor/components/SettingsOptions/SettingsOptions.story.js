@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import { storiesOf, action } from '@storybook/react'
 import RealSettingsOptions from '.'
 
