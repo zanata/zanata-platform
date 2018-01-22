@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
 
-const ModalFooter = ({
+const ModalFooter: React.StatelessComponent<{children, props?}> = ({
   children,
   ...props
 }) => {
