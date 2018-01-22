@@ -138,7 +138,8 @@ class RejectionsForm extends Component {
           <ControlLabel>Criteria</ControlLabel><br />
           <TextInput multiline editable={isAdminMode || editable}
             type='text' numberOfLines={2} onChange={this.onTextChange}
-            placeholder={criteriaPlaceholder} value={this.state.description} />
+            maxLength={255} placeholder={criteriaPlaceholder}
+            value={this.state.description} />
         </FormGroup>
         <FormGroup controlId='formInlinePriority'>
           <ControlLabel>Priority</ControlLabel><br />
