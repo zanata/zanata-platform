@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { storiesOf } from '@storybook/react'
-import TextDiff from '.'
+const TextDiff = require('.')
 
 /*
  * See .storybook/README.md for info on the component storybook.

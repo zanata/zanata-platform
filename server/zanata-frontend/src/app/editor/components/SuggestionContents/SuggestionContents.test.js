@@ -2,7 +2,7 @@
 import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import SuggestionContents from '.'
-import TextDiff from '../TextDiff'
+const TextDiff = require('../TextDiff')
 
 describe('SuggestionContentTest', () => {
   it('SuggestionContent markup (singular)', () => {

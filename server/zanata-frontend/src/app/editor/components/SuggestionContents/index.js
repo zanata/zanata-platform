@@ -1,4 +1,4 @@
-import TextDiff from '../TextDiff'
+const TextDiff = require('../TextDiff')
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
 import cx from 'classnames'

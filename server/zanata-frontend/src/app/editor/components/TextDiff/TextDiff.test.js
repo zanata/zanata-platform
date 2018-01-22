@@ -1,7 +1,7 @@
 
 import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
-import TextDiff from '.'
+const TextDiff = require('.')
 
 describe('TextDiffTest', () => {
   it('TextDiff markup', () => {
