@@ -13,17 +13,21 @@ export const ADD_REVIEW_FAILURE = 'ADD_REVIEW_FAILURE'
  * Perform a save with the given info, and recursively start next save if
  * one has queued when the save finishes.
  */
-export function addNewReview (review) {
-  const endpoint = `${apiUrl}/trans/review/${review.id}`
+export function addNewReview (review, localeId) {
+  const endpoint = `${apiUrl}/review/trans/${localeId}`
   const apiTypes = [
     ADD_REVIEW_REQUEST,
     ADD_REVIEW_SUCCESS,
     ADD_REVIEW_FAILURE]
   const body = {
-    ...review
+    transUnitId: 1,
+    revision: 1,
+    comment: 'bad',
+    reviewCriteriaId: 1,
+    status: 'Rejected'
   }
   return {
-    [CALL_API]: buildAPIRequest(endpoint, 'POST', getJsonHeaders(), apiTypes,
+    [CALL_API]: buildAPIRequest(endpoint, 'PUT', getJsonHeaders(), apiTypes,
      JSON.stringify(body))
   }
 }
