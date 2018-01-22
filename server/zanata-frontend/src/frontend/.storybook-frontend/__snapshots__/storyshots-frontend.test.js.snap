@@ -586,7 +586,7 @@ exports[`Frontend Storyshots EditableText editing 1`] = `
   aria-label={undefined}
   autoComplete={undefined}
   autoFocus={false}
-  className="textInput"
+  className="textInput form-control"
   id={undefined}
   onBlur={[Function]}
   onChange={undefined}
@@ -13811,7 +13811,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
     className="rejectionsForm form-inline"
   >
     <div
-      className="u-flexGrow1 form-group"
+      className="has-error u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -13824,7 +13824,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="textInput"
+        className="textInput form-control"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -13937,12 +13937,75 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineButtonEdit"
+      >
+         
+      </label>
+      <br />
+      <button
+        className="btn btn-primary"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+      <button
+        className="btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="u-flexGrow1 form-group"
+      className="has-error u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -13955,7 +14018,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="textInput"
+        className="textInput form-control"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14068,12 +14131,75 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineButtonEdit"
+      >
+         
+      </label>
+      <br />
+      <button
+        className="active btn btn-primary"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+      <button
+        className="active btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="u-flexGrow1 form-group"
+      className="has-error u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14086,7 +14212,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="textInput"
+        className="textInput form-control"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14199,12 +14325,75 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineButtonEdit"
+      >
+         
+      </label>
+      <br />
+      <button
+        className="btn btn-primary"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+      <button
+        className="btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="u-flexGrow1 form-group"
+      className="has-error u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14217,7 +14406,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="textInput"
+        className="textInput form-control"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14330,12 +14519,75 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineButtonEdit"
+      >
+         
+      </label>
+      <br />
+      <button
+        className="btn btn-primary"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+      <button
+        className="btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="u-flexGrow1 form-group"
+      className="has-error u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14348,7 +14600,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="textInput"
+        className="textInput form-control"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14461,12 +14713,75 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineButtonEdit"
+      >
+         
+      </label>
+      <br />
+      <button
+        className="btn btn-primary"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+      <button
+        className="btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </div>
   </form>
   <form
     className="rejectionsForm form-inline"
   >
     <div
-      className="u-flexGrow1 form-group"
+      className="has-error u-flexGrow1 form-group"
     >
       <label
         className="control-label"
@@ -14479,7 +14794,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         aria-label={undefined}
         autoComplete={undefined}
         autoFocus={undefined}
-        className="textInput"
+        className="textInput form-control"
         id={undefined}
         onBlur={undefined}
         onChange={[Function]}
@@ -14592,6 +14907,69 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         </ul>
       </div>
     </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineButtonEdit"
+      >
+         
+      </label>
+      <br />
+      <button
+        className="active btn btn-primary"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+      <button
+        className="active btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          className="s0 iconEdit"
+        >
+          <svg
+            className={undefined}
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+      </button>
+    </div>
   </form>
   <div
     className="rejection-btns"
@@ -14653,7 +15031,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
   className="rejectionsForm form-inline"
 >
   <div
-    className="u-flexGrow1 form-group"
+    className="has-error u-flexGrow1 form-group"
   >
     <label
       className="control-label"
@@ -14666,7 +15044,7 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
       aria-label={undefined}
       autoComplete={undefined}
       autoFocus={undefined}
-      className="textInput"
+      className="textInput form-control"
       id={undefined}
       onBlur={undefined}
       onChange={[Function]}
@@ -14779,6 +15157,69 @@ exports[`Frontend Storyshots RejectionsForm editable 1`] = `
       </ul>
     </div>
   </div>
+  <div
+    className="form-group"
+  >
+    <label
+      className="control-label"
+      htmlFor="formInlineButtonEdit"
+    >
+       
+    </label>
+    <br />
+    <button
+      className="active btn btn-primary"
+      disabled={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onMouseOut={[Function]}
+      onMouseOver={[Function]}
+      type="button"
+    >
+      <span
+        className="s0 iconEdit"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+    </button>
+    <button
+      className="active btn btn-danger"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      <span
+        className="s0 iconEdit"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+    </button>
+  </div>
 </form>
 `;
 
@@ -14787,7 +15228,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
   className="rejectionsForm form-inline"
 >
   <div
-    className="u-flexGrow1 form-group"
+    className="has-error u-flexGrow1 form-group"
   >
     <label
       className="control-label"
@@ -14800,7 +15241,7 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
       aria-label={undefined}
       autoComplete={undefined}
       autoFocus={undefined}
-      className="textInput"
+      className="textInput form-control"
       id={undefined}
       onBlur={undefined}
       onChange={[Function]}
@@ -14912,6 +15353,69 @@ exports[`Frontend Storyshots RejectionsForm read only 1`] = `
         </li>
       </ul>
     </div>
+  </div>
+  <div
+    className="form-group"
+  >
+    <label
+      className="control-label"
+      htmlFor="formInlineButtonEdit"
+    >
+       
+    </label>
+    <br />
+    <button
+      className="btn btn-primary"
+      disabled={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onMouseOut={[Function]}
+      onMouseOver={[Function]}
+      type="button"
+    >
+      <span
+        className="s0 iconEdit"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+    </button>
+    <button
+      className="btn btn-danger"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      <span
+        className="s0 iconEdit"
+      >
+        <svg
+          className={undefined}
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+            }
+          }
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </span>
+    </button>
   </div>
 </form>
 `;
@@ -17252,7 +17756,7 @@ exports[`Frontend Storyshots TextInput default 1`] = `
   aria-label="TextInput"
   autoComplete={undefined}
   autoFocus={undefined}
-  className="textInput"
+  className="textInput form-control"
   id="demo"
   onBlur={undefined}
   onChange={undefined}
