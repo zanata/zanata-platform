@@ -2,6 +2,7 @@
     "compilerOptions": {
         "allowJs": true,
         "checkJs": false,
+        // "esModuleInterop": true,
         "importHelpers": true,
         "jsx": "react",
         "lib": [
@@ -9,6 +10,7 @@
             "dom", "es6", "dom.iterable", "scripthost"
         ],
         "module": "commonjs",
+        // "noEmit": true,
         "outDir": "./build/",
         // TODO fix sourcemap problems with intl-messageformat
         "sourceMap": true,

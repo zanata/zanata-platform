@@ -1,4 +1,4 @@
-import React from 'react'
+const React = require('react')
 
 /* eslint-disable max-len */
 // From https://gist.github.com/turadg/9bcf08a7279e82a030a645250639fe6e

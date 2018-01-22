@@ -1,9 +1,9 @@
 {
   "automock": false,
   "collectCoverageFrom": [
-    "app/**/*.{js,jsx}",
+    "app/**/*.(jsx?|tsx?)",
     "!**/node_modules/**",
-    "!app/**/*.story.js"
+    "!app/**/*.story.(jsx?|tsx?)"
   ],
   "coverageReporters": [
     "cobertura",
@@ -18,11 +18,13 @@
     "<rootDir>/scripts/silence-React-15-deprecations.js"
   ],
   "transform": {
-    ".*": "./node_modules/babel-jest"
+    "^.+\\.(jsx?|tsx?)$": "ts-jest"
   },
   "testPathIgnorePatterns": [
-    "/node_modules/",
-    "/__tests__/mock"
+    "<rootDir>/dist/",
+    "<rootDir>/build/",
+    "<rootDir>/node_modules/",
+    "<rootDir>/__mocks__"
   ],
   "unmockedModulePathPatterns": [
     "/node_modules",
@@ -31,6 +33,8 @@
   "moduleFileExtensions": [
     "js",
     "jsx",
-    "json"
+    "json",
+    "ts",
+    "tsx"
   ]
 }
