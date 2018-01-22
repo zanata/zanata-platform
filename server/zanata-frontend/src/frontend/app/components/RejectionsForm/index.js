@@ -123,7 +123,7 @@ class RejectionsForm extends Component {
       </FormGroup>
       )
       : DO_NOT_RENDER
-    const formBtn = true ? (
+    const formBtn = isAdminMode ? (
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
         <OverlayTrigger placement='top' overlay={tooltip}>
@@ -137,8 +137,7 @@ class RejectionsForm extends Component {
     ) : DO_NOT_RENDER
     return (
       <Form className='rejectionsForm' inline>
-        <FormGroup className={error ? 'has-error u-flexGrow1' : 'u-flexGrow1'}
-          controlId='formInlineCriteria'>
+        <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
           <ControlLabel>Criteria</ControlLabel><br />
           <TextInput multiline editable={isAdminMode || editable}
             type='text' numberOfLines={2} onChange={this.onTextChange}
