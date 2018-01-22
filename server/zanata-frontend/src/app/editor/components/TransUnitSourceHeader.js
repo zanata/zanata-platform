@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import IconButton from './IconButton'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'

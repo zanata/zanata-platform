@@ -1,4 +1,3 @@
-jest.disableAutomock()
 
 import GlossaryHelper from './GlossaryHelper'
 

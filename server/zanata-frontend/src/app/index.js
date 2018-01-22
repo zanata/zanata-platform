@@ -1,13 +1,13 @@
 import 'babel-polyfill'
 import 'es6-symbol/implement'
-import React from 'react'
+import * as React from 'react'
 import { render } from 'react-dom'
 import { createStore, applyMiddleware, compose } from 'redux'
-import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
+const thunk /* TS: import thunk */ = require('redux-thunk')
+const createLogger /* TS: import createLogger */ = require('redux-logger')
 import { history } from './history'
 import { syncHistoryWithStore } from 'react-router-redux'
-import WebFont from 'webfontloader'
+import * as WebFont from 'webfontloader'
 import { apiMiddleware } from 'redux-api-middleware'
 import rootReducer from './reducers'
 import Root from './containers/Root'

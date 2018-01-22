@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import reducer, {
   ENTER_SAVES_IMMEDIATELY,

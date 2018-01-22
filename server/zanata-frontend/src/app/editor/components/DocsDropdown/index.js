@@ -1,7 +1,7 @@
 import Dropdown from '../Dropdown'
 import { Icon } from '../../../components'
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import { Row } from 'react-bootstrap'
 
 /**
