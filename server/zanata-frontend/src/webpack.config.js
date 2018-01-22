@@ -139,7 +139,7 @@ module.exports = function (env) {
         */
         // TODO consider turning on for storybook
         storybook ? undefined : {
-          test: /\.jsx?$/,
+          test: /\.(j|t)sx?$/,
           exclude: /node_modules/,
           enforce: 'pre',
           loader: 'eslint-loader',
@@ -149,19 +149,18 @@ module.exports = function (env) {
           }
         },
 
-        /* Allows use of newer javascript syntax.
-         *  - mainly ES6/ES2015 syntax, and a few ES2016 things
-         *  - configured in .babelrc
+        /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
         {
-          test: /\.jsx?$/,
+          test: /\.(j|t)sx?$/,
           exclude: /node_modules/,
           include: join(__dirname, 'app'),
-          loader: 'babel-loader',
-          options: {
-            babelrc: true
-          }
+          loader: 'awesome-typescript-loader',
         },
+
+        /* TODO:
+        { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+        */
 
         /* Bundles all the css and allows use of various niceties, including
          * imports, variables, calculations, and non-prefixed codes.
@@ -209,6 +208,9 @@ module.exports = function (env) {
       ])
     },
 
+    /* TODO
+    devtool: "source-map",
+    */
     plugins: _.compact([
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
@@ -266,7 +268,7 @@ module.exports = function (env) {
     resolve: {
       /* Subdirectories to check while searching up tree for module
        * Default is ['', '.js'] */
-      extensions: ['.js', '.jsx', '.json', '.css', '.less']
+      extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx']
     },
 
     node: {
