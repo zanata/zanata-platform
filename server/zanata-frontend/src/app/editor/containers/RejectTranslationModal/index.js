@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Button from '../../components/Button'
 import { Row } from 'react-bootstrap'
 import { Modal } from '../../../components'
 import PriorityDropdown from './PriorityDropdown'
 import CriteriaDropdown from './CriteriaDropdown'
+import { addNewReview } from '../../actions/review-trans-actions'
 
  /* eslint-disable max-len */
 export const MINOR = 'Minor'
@@ -18,6 +20,7 @@ export class RejectTranslationModal extends Component {
   static propTypes = {
     show: PropTypes.bool,
     onHide: PropTypes.func,
+    transUnitID: PropTypes.string,
     priority: PropTypes.oneOf(
       [
         MINOR,
@@ -31,12 +34,18 @@ export class RejectTranslationModal extends Component {
         'u-textDanger'
       ]
     ),
-    criteriaList: PropTypes.arrayOf(PropTypes.string).isRequired
+    criteriaList: PropTypes.arrayOf(PropTypes.string).isRequired,
+    addNewTransReview: PropTypes.func.isRequired
   }
   constructor (props) {
     super(props)
     this.state = {
-      selectedCriteria: this.props.criteriaList[0]
+      review: {
+        id: this.props.transUnitID,
+        selectedPriority: 'Critical',
+        selectedCriteria: this.props.criteriaList[0],
+        reviewComment: 'This translation is entirely inaccurate.'
+      }
     }
   }
   // TODO: Placeholder func, update Priority prop of RejectTranslationModal
@@ -53,11 +62,15 @@ export class RejectTranslationModal extends Component {
       onHide,
       criteriaList,
       priority,
-      textState
+      textState,
+      addNewTransReview
     } = this.props
     const {
-      selectedCriteria
+      review
     } = this.state
+    const saveTransReview = () => {
+      addNewTransReview(review)
+    }
     return (
       <Modal show={show}
         onHide={onHide}
@@ -74,7 +87,7 @@ export class RejectTranslationModal extends Component {
             <CriteriaDropdown
               criteriaList={criteriaList}
               onCriteriaChange={this.onCriteriaChange}
-              selectedCriteria={selectedCriteria} />
+              selectedCriteria={review.selectedCriteria} />
             <PriorityDropdown
               textState={textState}
               priority={priority}
@@ -95,7 +108,9 @@ export class RejectTranslationModal extends Component {
               <Button className="EditorButton Button--large u-rounded Button--secondary">
                 Cancel
               </Button>
-              <Button className="EditorButton Button--large u-rounded Button--primary">
+              <Button
+                className="EditorButton Button--large u-rounded Button--primary"
+                onClick={saveTransReview}>
                 Reject translation
               </Button>
             </Row>
@@ -106,4 +121,14 @@ export class RejectTranslationModal extends Component {
   }
 }
 
-export default RejectTranslationModal
+const mapStateToProps = state => {
+  return {}
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addNewTransReview: (review) => dispatch(addNewReview(review))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RejectTranslationModal)
