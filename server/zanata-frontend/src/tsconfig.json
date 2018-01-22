@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": false,
+        "jsx": "react",
+        "lib": [
+            // We transpile to ES5 syntax, but we use babel-polyfill
+            "dom", "es6", "dom.iterable", "scripthost"
+        ],
+        "module": "commonjs",
+        "outDir": "./build/",
+        // TODO fix sourcemap problems with intl-messageformat
+        // "sourceMap": true,
+        // first we need to clean up our types:
+        // "strict": true,
+        "target": "ES5"
+    },
+    "include": [
+        "app/**/*"
+    ],
+    "exclude": [
+        "node_modules/**"
+    ]
+}
