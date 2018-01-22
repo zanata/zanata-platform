@@ -123,7 +123,7 @@ class RejectionsForm extends Component {
       </FormGroup>
       )
       : DO_NOT_RENDER
-    const formBtn = true ? (
+    const formBtn = isAdminMode ? (
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
         <OverlayTrigger placement='top' overlay={tooltip}>
