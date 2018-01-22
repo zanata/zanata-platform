@@ -29,6 +29,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.IssuePriority;
@@ -52,6 +53,8 @@ public class ReviewCriteria extends ModelEntityBase {
     @Column(columnDefinition = "varchar(32)")
     private IssuePriority priority;
     private boolean editable;
+    @Column(columnDefinition = "varchar(255)")
+    @Size(max = 255)
     @NotEmpty
     private String description;
 
