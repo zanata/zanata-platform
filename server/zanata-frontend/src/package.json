@@ -33,6 +33,7 @@
     "@storybook/channels": "3.3.9",
     "@storybook/react": "3.3.9",
     "@types/babel-core": "^6.25.3",
+    "@types/chart.js": "^2.7.3",
     "@types/classnames": "^2.2.3",
     "@types/cli-color": "^0.3.29",
     "@types/combokeys": "^2.4.6",
@@ -150,7 +151,6 @@
     "webpack-merge": "4.1.1"
   },
   "dependencies": {
-    "@types/chart.js": "^2.7.3",
     "babel-polyfill": "6.9.1",
     "caniuse-lite": "1.0.30000745",
     "chart.js": "2.7.1",
