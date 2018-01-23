@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 /**
  * Checkbox with an intermediate state.
  */

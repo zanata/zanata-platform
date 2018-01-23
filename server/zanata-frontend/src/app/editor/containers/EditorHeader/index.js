@@ -1,4 +1,4 @@
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 import ControlsHeader from '../ControlsHeader'
 import NavHeader from '../NavHeader'
 import ProgressBar from '../../components/ProgressBar'

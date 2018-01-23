@@ -3,7 +3,7 @@
  */
 import { handleActions } from 'redux-actions'
 import { chain } from 'lodash'
-import update from 'immutability-helper'
+const update /* TS: import update */ = require('immutability-helper')
 import {
   GLOSSARY_DETAILS_REQUEST,
   GLOSSARY_DETAILS_SUCCESS,

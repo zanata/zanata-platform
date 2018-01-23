@@ -1,5 +1,5 @@
 /* global document */
-import React from 'react'
+import * as React from 'react'
 import Icons from '../app/components/Icons'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { locale, formats } from '../app/editor/config/intl'

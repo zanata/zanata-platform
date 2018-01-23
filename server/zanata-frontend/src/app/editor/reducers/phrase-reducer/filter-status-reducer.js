@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import update from 'immutability-helper'
+const update /* TS: import update */ = require('immutability-helper')
 import {
   RESET_STATUS_FILTERS,
   UPDATE_STATUS_FILTER

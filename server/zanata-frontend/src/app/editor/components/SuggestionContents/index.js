@@ -1,7 +1,7 @@
 const TextDiff = require('../TextDiff')
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 
 /**
  * Display all content strings (singular or plurals) for a suggestion.

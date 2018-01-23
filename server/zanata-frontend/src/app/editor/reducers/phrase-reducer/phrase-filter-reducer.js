@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import update from 'immutability-helper'
+const update /* TS: import update */ = require('immutability-helper')
 import { composeReducers, subReducer } from 'redux-sac'
 import filterStatusReducer, { defaultState as statusDefaultState }
   from './filter-status-reducer'

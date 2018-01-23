@@ -1,6 +1,6 @@
 /* eslint-disable spaced-comment */
 /* @flow */
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 import EditorSearchInput from '../components/EditorSearchInput'
 import IconButtonToggle from '../components/IconButtonToggle'
 import Pager from '../components/Pager'

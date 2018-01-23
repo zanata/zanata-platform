@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import Lorem from 'react-lorem-component'
+const Lorem /* TS: import Lorem */ = require('react-lorem-component')
 import GlossaryTermModal from './component'
 
 /*

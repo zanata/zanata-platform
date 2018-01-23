@@ -1,4 +1,4 @@
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
 import SuggestionsHeader from './SuggestionsHeader'

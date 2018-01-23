@@ -1,5 +1,5 @@
 import { dashboardUrl } from '../api'
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 import { some } from 'lodash'
 import { LogoLoader } from '../../components'
 import * as React from 'react'

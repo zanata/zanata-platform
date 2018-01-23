@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { storiesOf, action } from '@storybook/react'
 import RejectTranslationModal from '.'
-import Lorem from 'react-lorem-component'
+const Lorem /* TS: import Lorem */ = require('react-lorem-component')
 import { MINOR, MAJOR, CRITICAL } from './index.js'
 
 /*

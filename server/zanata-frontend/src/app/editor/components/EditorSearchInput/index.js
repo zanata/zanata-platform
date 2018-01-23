@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 import { connect } from 'react-redux'
 import * as React from 'react'
 import { Component } from 'react'

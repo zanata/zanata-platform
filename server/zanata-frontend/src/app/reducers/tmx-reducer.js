@@ -4,7 +4,7 @@
 import {handleActions} from 'redux-actions'
 import {saveAs} from 'file-saver'
 import {cloneDeep, isUndefined} from 'lodash'
-import update from 'immutability-helper'
+const update /* TS: import update */ = require('immutability-helper')
 
 import {
   GET_LOCALE_FAILURE,

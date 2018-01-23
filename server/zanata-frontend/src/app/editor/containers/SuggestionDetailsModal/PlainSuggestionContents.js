@@ -6,7 +6,7 @@ import * as React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import SuggestionContents from '../../components/SuggestionContents'
-import cx from 'classnames'
+const cx /* TS: import cx */ = require('classnames')
 
 class PlainSuggestionContents extends Component {
   static propTypes = {

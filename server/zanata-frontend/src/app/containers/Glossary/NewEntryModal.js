@@ -9,7 +9,7 @@ import {
   glossaryToggleNewEntryModal,
   glossaryCreateNewEntry
 } from '../../actions/glossary-actions'
-import update from 'immutability-helper'
+const update /* TS: import update */ = require('immutability-helper')
 
 class NewEntryModal extends Component {
   static propTypes = {

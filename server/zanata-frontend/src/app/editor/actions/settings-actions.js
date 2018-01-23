@@ -30,13 +30,23 @@ export const fetchSettings = () => dispatch => dispatch({
   }
 })
 
+// Should be pretty fast: https://stackoverflow.com/a/34491287/14379
+function emptyObject(obj) {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * Save one or more settings to the server
  * settings: object of setting name to value
  */
 export const saveSettings = settings => dispatch => new Promise(
   (resolve, reject) => {
-    if (keys(settings).length === 0) {
+    if (emptyObject(settings)) {
       // no settings to save, something must have gone wrong
       const error = new Error('trying to save empty settings object')
       console.error(error)

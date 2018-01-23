@@ -1,9 +1,9 @@
 {
   "automock": false,
   "collectCoverageFrom": [
-    "app/**/*.(jsx?|tsx?)",
+    "app/**/*.{js,jsx,ts,tsx}",
     "!**/node_modules/**",
-    "!app/**/*.story.(jsx?|tsx?)"
+    "!app/**/*.story.{js,jsx,ts,tsx}"
   ],
   "coverageReporters": [
     "cobertura",
@@ -18,7 +18,7 @@
     "<rootDir>/scripts/silence-React-15-deprecations.js"
   ],
   "transform": {
-    "^.+\\.(jsx?|tsx?)$": "ts-jest"
+    "\\.(jsx?|tsx?)$": "ts-jest"
   },
   "testPathIgnorePatterns": [
     "<rootDir>/dist/",
