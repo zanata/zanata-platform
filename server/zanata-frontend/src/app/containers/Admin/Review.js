@@ -13,7 +13,6 @@ import {selectors} from '../../reducers/admin-reducer'
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
 
-
 class AdminReview extends Component {
   static propTypes = {
     criteria: PropType.arrayOf(PropType.shape({
