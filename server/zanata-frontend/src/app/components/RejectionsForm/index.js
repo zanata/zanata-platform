@@ -4,7 +4,6 @@ import * as PropTypes from 'prop-types'
 import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
   from 'react-bootstrap'
 import { Icon, TextInput, SelectableDropdown } from '../../components'
-import Toggle from 'react-toggle'
 import { isEmpty } from 'lodash'
 
 /**
