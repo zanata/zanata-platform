@@ -13,6 +13,7 @@ import {selectors} from '../../reducers/admin-reducer'
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
 
+
 class AdminReview extends Component {
   static propTypes = {
     criteria: PropType.arrayOf(PropType.shape({
@@ -73,18 +74,18 @@ class AdminReview extends Component {
       <Well bsSize='lg'><h2>Example criteria</h2>
         <hr />
         <ul>
-          <li><strong>Translation Errors</strong> (terminology, mistranslated,
-          addition, omission, un-localized, do not translate, etc)</li>
-          <li><strong>Language Quality</strong> (grammar, spelling,
+          <li><strong>Translation Errors</strong>: terminology, mistranslated,
+          addition, omission, un-localized, do not translate, etc</li>
+          <li><strong>Language Quality</strong>: grammar, spelling,
             punctuation, typo, ambiguous wording, product name,
             sentence structuring, readability, word choice, not natural,
-          too literal, style and tone, etc)</li>
+          too literal, style and tone, etc</li>
           <li><strong>Style Guide and Glossary Violations</strong></li>
-          <li><strong>Consistency</strong> (inconsistent style or vocabulary,
-          brand inconsistency, etc.)</li>
-          <li><strong>Format</strong> (mismatches, white-spaces, tag error
+          <li><strong>Consistency</strong>: inconsistent style or vocabulary,
+          brand inconsistency, etc.</li>
+          <li><strong>Format</strong>: mismatches, white-spaces, tag error
             or missing, special character, numeric format, truncated,
-          etc.)</li>
+          etc.</li>
         </ul>
       </Well>
       {criteriaList}
