@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import { SET_SIDEBAR_VISIBILITY } from '../actions/action-types'
 import {

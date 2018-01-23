@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import glossaryReducer from './glossary-reducer'
 import {

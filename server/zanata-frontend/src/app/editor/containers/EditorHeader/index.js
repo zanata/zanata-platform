@@ -3,8 +3,8 @@ import ControlsHeader from '../ControlsHeader'
 import NavHeader from '../NavHeader'
 import ProgressBar from '../../components/ProgressBar'
 import { connect } from 'react-redux'
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import ZanataLogoLoader from '../ZanataLogoLoader'
 
 /**

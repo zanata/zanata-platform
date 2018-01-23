@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /* @flow */
 import { handleActions } from 'redux-actions'
 import { createSelector } from 'reselect'
@@ -28,12 +29,13 @@ export const DEFAULT_LOCALE = {
 }
 
 export const GLOSSARY_TAB = 'GLOSSARY_TAB'
-export const identity = (key: any) => {
+export const identity = (key/*: any*/) => {
   // TODO pahuang implement gettextCatalog.getString
   // console.log('gettextCatalog.getString')
   return key
 }
 
+/*::
 type State = {
   +panels: {
     +navHeader: {
@@ -52,8 +54,9 @@ type State = {
   },
   +showSettings: bool
 }
+*/
 
-const defaultState: State = {
+const defaultState /*: State*/ = {
   panels: {
     navHeader: {
       visible: true
@@ -79,12 +82,13 @@ const defaultState: State = {
 
 /* selectors */
 export const getNavHeaderVisible =
-  (state: State) => state.panels.navHeader.visible
+  (state/*: State*/) => state.panels.navHeader.visible
 // always show sidebar when settings is on
-export const getSidebarVisible = (state: State) =>
+export const getSidebarVisible = (state/*: State*/) =>
   state.panels.sidebar.visible || state.showSettings
-export const getSidebarTab = (state: State) => state.panels.sidebar.selectedTab
-export const getShowSettings = (state: State) => state.showSettings
+export const getSidebarTab = (state/*: State*/) =>
+  state.panels.sidebar.selectedTab
+export const getShowSettings = (state/*: State*/) => state.showSettings
 export const getGlossaryVisible = createSelector(getSidebarVisible,
   getShowSettings, getSidebarTab,
     (sidebar, settings, tab) => sidebar && !settings && tab === GLOSSARY_TAB)
@@ -92,7 +96,7 @@ export const getGlossaryVisible = createSelector(getSidebarVisible,
 export const getInfoPanelVisible = createSelector(getSidebarVisible,
   getShowSettings, (sidebar, settings) => sidebar && !settings)
 export const getKeyShortcutsVisible =
-  (state: State) => state.panels.keyShortcuts.visible
+  (state/*: State*/) => state.panels.keyShortcuts.visible
 
 /* instruct immutability-helper to toggle a boolean value */
 const $toggle = {$apply: bool => !bool}

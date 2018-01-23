@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import TransUnitSourceHeader from './TransUnitSourceHeader'
 import { LoaderText } from '../../components'
 import IconButton from './IconButton'

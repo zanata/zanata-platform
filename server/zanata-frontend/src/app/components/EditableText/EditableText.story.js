@@ -1,8 +1,8 @@
-import React from 'react'
+import * as React from 'react'
 import { storiesOf } from '@storybook/react'
 import { EditableText } from '../'
 import { Well, Table } from 'react-bootstrap'
-import PropTypes from "prop-types";
+import * as PropTypes from "prop-types";
 
 storiesOf('EditableText', module)
     .add('editing', () => (

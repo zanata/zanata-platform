@@ -1,9 +1,8 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-import ReactDOMServer from 'react-dom/server'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import * as ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
 import TriCheckbox from '.'
 

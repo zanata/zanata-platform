@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import contextReducer from './context-reducer'
 import { ROUTING_PARAMS_CHANGED } from '../actions/action-types'

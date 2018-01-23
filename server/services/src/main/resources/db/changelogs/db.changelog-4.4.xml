@@ -40,6 +40,10 @@
     <dropNotNullConstraint tableName="HTextFlowTargetReviewComment"
       columnName="comment" columnDataType="longtext" />
   </changeSet>
+  <changeSet id="4" author="aeng@redhat.com">
+    <addNotNullConstraint tableName="ReviewCriteria"
+        columnName="description" columnDataType="varchar(255)" />
+  </changeSet>
 
 
 </databaseChangeLog>

@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
 import { Button } from 'react-bootstrap'

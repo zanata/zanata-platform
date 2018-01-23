@@ -1,7 +1,7 @@
-import React from 'react'
-import {storiesOf, action} from '@storybook/react'
-import {Button, Alert, OverlayTrigger, Tooltip} from 'react-bootstrap'
-import {Icon} from '../../components'
+import * as React from 'react'
+import { storiesOf, action } from '@storybook/react'
+import { Button, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Icon } from '../../components'
 import RejectionsForm from '.'
 import {MINOR, MAJOR, CRITICAL} from "./index";
 

@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import dropdownReducer from './dropdown-reducer'
 import {

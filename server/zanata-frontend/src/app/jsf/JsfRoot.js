@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
 import { Router, Route } from 'react-router'
 import ProjectVersion from '../containers/ProjectVersion'

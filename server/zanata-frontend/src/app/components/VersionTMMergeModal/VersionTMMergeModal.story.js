@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import {storiesOf} from '@storybook/react'
 import {action, decorateAction} from '@storybook/addon-actions'
 import {Modal, Icon} from '../../components'
