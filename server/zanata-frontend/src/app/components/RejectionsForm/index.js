@@ -1,10 +1,8 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip
-}
+import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
   from 'react-bootstrap'
-import {Icon, TextInput, SelectableDropdown} from '../../components'
+import { Icon, TextInput, SelectableDropdown } from '../../components'
 
 /**
  * Reject Translations Administration panel
@@ -18,7 +16,7 @@ const tooltipSave = (<Tooltip id='tooltip'>Save criteria</Tooltip>)
 
 const tooltipDelete = (<Tooltip id='tooltip'>Delete criteria</Tooltip>)
 
-function priorityToTextState(priority) {
+function priorityToTextState (priority) {
   switch (priority) {
     case CRITICAL:
       return 'u-textDanger'
@@ -30,7 +28,7 @@ function priorityToTextState(priority) {
 }
 
 const priorityToDisplay =
-    p => <span className={priorityToTextState(p)}>{p}</span>
+  p => <span className={priorityToTextState(p)}>{p}</span>
 
 class RejectionsForm extends Component {
   static propTypes = {
@@ -59,13 +57,11 @@ class RejectionsForm extends Component {
     description: '',
     isAdminMode: false,
     displayDelete: true,
-    onSave: () => {
-    },
-    onDelete: () => {
-    }
+    onSave: () => {},
+    onDelete: () => {}
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       description: this.props.description,
@@ -101,8 +97,7 @@ class RejectionsForm extends Component {
   onDelete = () => {
     this.props.onDelete(this.props.entityId)
   }
-
-  render() {
+  render () {
     const {
       editable,
       className,
@@ -115,50 +110,47 @@ class RejectionsForm extends Component {
     const title = <span className={textState}>{this.state.priority}</span>
     const priorityDisabled = !isAdminMode && !editable
     const deleteBtn = displayDelete
-        ? (
-            <OverlayTrigger placement='top' overlay={tooltipDelete}>
-              <Button bsStyle='danger' className={className}
-                      onClick={this.onDelete}>
-                <Icon name='trash' className='s0 iconEdit'/>
-              </Button>
-            </OverlayTrigger>
-        ) : DO_NOT_RENDER
+      ? (
+      <OverlayTrigger placement='top' overlay={tooltipDelete}>
+        <Button bsStyle='danger' className={className} onClick={this.onDelete}>
+          <Icon name='trash' className='s0 iconEdit' />
+        </Button>
+      </OverlayTrigger>
+      ) : DO_NOT_RENDER
     const formBtn = isAdminMode ? (
-        <FormGroup controlId='formInlineButtonEdit'>
-          <ControlLabel>&nbsp;</ControlLabel><br/>
-          <OverlayTrigger placement='top' overlay={tooltipSave}>
-            <Button bsStyle='primary' className={className}
-                    onClick={this.onSave}>
-              <Icon name='tick' className='s0 iconEdit'/>
-            </Button>
-          </OverlayTrigger>
-          {deleteBtn}
-        </FormGroup>
+      <FormGroup controlId='formInlineButtonEdit'>
+        <ControlLabel>&nbsp;</ControlLabel><br />
+        <OverlayTrigger placement='top' overlay={tooltipSave}>
+          <Button bsStyle='primary' className={className} onClick={this.onSave}>
+            <Icon name='tick' className='s0 iconEdit' />
+          </Button>
+        </OverlayTrigger>
+        {deleteBtn}
+      </FormGroup>
     ) : DO_NOT_RENDER
     return (
-        <Form className='rejectionsForm' inline>
-          <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
-            <ControlLabel>Criteria</ControlLabel><br/>
-            <TextInput multiline editable={isAdminMode || editable}
-                       type='text' numberOfLines={2}
-                       onChange={this.onTextChange}
-                       placeholder={criteriaPlaceholder} maxLength={255}
-                       value={this.state.description}/>
-          </FormGroup>
-          <FormGroup controlId='formInlinePriority'>
-            <ControlLabel>Priority</ControlLabel><br/>
-            <SelectableDropdown
-                id={criterionId + 'review-criteria-dropdown-basic'}
-                onSelectDropdownItem={this.onPriorityChange}
-                selectedValue={this.state.priority}
-                title={title}
-                valueToDisplay={priorityToDisplay}
-                values={[MINOR, MAJOR, CRITICAL]}
-                disabled={priorityDisabled}
-            />
-          </FormGroup>
-          {formBtn}
-        </Form>
+      <Form className='rejectionsForm' inline>
+        <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
+          <ControlLabel>Criteria</ControlLabel><br />
+          <TextInput multiline editable={isAdminMode || editable}
+            type='text' numberOfLines={2} onChange={this.onTextChange}
+            placeholder={criteriaPlaceholder} maxLength={255}
+            value={this.state.description} />
+        </FormGroup>
+        <FormGroup controlId='formInlinePriority'>
+          <ControlLabel>Priority</ControlLabel><br />
+          <SelectableDropdown
+            id={criterionId + 'review-criteria-dropdown-basic'}
+            onSelectDropdownItem={this.onPriorityChange}
+            selectedValue={this.state.priority}
+            title={title}
+            valueToDisplay={priorityToDisplay}
+            values={[MINOR, MAJOR, CRITICAL]}
+            disabled={priorityDisabled}
+          />
+        </FormGroup>
+        {formBtn}
+      </Form>
     )
   }
 }
