@@ -27,6 +27,14 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
  * [ZNTA-1227](https://zanata.atlassian.net/browse/ZNTA-1227) - Switch client/common code from hamcrest assert to assertj
 
 ##### Bug Fixes
+ * [ZNTA-2363](https://zanata.atlassian.net/browse/ZNTA-2363) - Fix width of project version language list items
+ * [ZNTA-2362](https://zanata.atlassian.net/browse/ZNTA-2362) - TM creation date is not aligned properly.
+ * [ZNTA-2361](https://zanata.atlassian.net/browse/ZNTA-2361) - Review Criteria description field is a text area and not limited
+ * [ZNTA-2360](https://zanata.atlassian.net/browse/ZNTA-2360) - Review Criteria can be created without defined criteria, is unusable
+ * [ZNTA-2353](https://zanata.atlassian.net/browse/ZNTA-2353) - Cannot add a Yahoo/Fedora account to an existing account
+ * [ZNTA-2345](https://zanata.atlassian.net/browse/ZNTA-2345) - Request add version to group Send button permanently disabled
+ * [ZNTA-2344](https://zanata.atlassian.net/browse/ZNTA-2344) - GWT editor text size in target does not change with option
+ * [ZNTA-2342](https://zanata.atlassian.net/browse/ZNTA-2342) - React editor: filtering by state breaks keyboard navigation
  * [ZNTA-2327](https://zanata.atlassian.net/browse/ZNTA-2327) - Yellowish glossary page. 
  * [ZNTA-2320](https://zanata.atlassian.net/browse/ZNTA-2320) - Frontend watch tasks failing
  * [ZNTA-2317](https://zanata.atlassian.net/browse/ZNTA-2317) - [ERROR] "parseQuery() will be replaced with getOptions()" while zanata build.
