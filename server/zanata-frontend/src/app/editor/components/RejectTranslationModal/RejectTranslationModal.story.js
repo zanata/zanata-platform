@@ -3,7 +3,7 @@ import { storiesOf, action } from '@storybook/react'
 import RejectTranslationModal from '.'
 import RejectTranslationModalNoCrit from './RejectTranslationModalNoCrit'
 import Lorem from 'react-lorem-component'
-import { MINOR, MAJOR, CRITICAL } from './index.js'
+import { CRITICAL } from './index.js'
 
 /*
  * TODO add stories showing the range of states
