@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import MainContent from '../MainContent'
 import ParamPropDispatcher from '../ParamPropDispatcher'
 import EditorHeader from '../EditorHeader'
+import RejectTranslationModal from '../RejectTranslationModal'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
@@ -62,7 +63,7 @@ class Root extends Component {
       this.props.saveSuggestionPanelHeight(panelSize)
     }
   }
-
+  /* eslint-disable max-len */
   render () {
     const pixelHeight = this.props.showSuggestion
       ? this.props.percentHeight * window.innerHeight
@@ -74,6 +75,16 @@ class Root extends Component {
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
           <Icons />
           <EditorHeader />
+          <RejectTranslationModal
+            show
+            transUnitID={'be13a23aa42cad149919cc1fe84e6a47'}
+            language={'ja'}
+            criteriaList={
+              ['Translation Errors (terminology, mistranslated addition, omission, un-localized, do not translate, etc)',
+              'Other (reason may be in comment section/history if necessary)']
+            }
+            priority={'Critical'}
+            textState="u-textDanger" />
           <Sidebar>
             <SplitPane ref="suggestionResizer"
               split="horizontal"
