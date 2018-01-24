@@ -8,10 +8,6 @@ import { Modal, Icon } from '../../../components'
 /**
  * TODO add a concise description of this component
  */
-export const MINOR = 'Minor'
-export const MAJOR = 'Major'
-export const CRITICAL = 'Critical'
-
 
 export class RejectTranslationModalNoCrit extends Component {
   static propTypes = {
