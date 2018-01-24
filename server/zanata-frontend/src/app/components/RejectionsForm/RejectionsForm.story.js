@@ -6,13 +6,12 @@ import RejectionsForm from '.'
 import {MINOR, MAJOR, CRITICAL} from "./index";
 
 const tooltipDeleteConfirmation = (
-    <Tooltip><span
-        id='tooltip'>Are you sure you want to delete this criteria?<br/>
+    <Tooltip id='tooltip'>Are you sure you want to delete this criteria?<br/>
   <span className="button-spacing"><Button bsStyle='danger' type='button'
                                            className='btn-sm'
                                            onClick={action('onClick')}>Delete</Button>
   <Button bsStyle='default' type='button' className='btn-sm'
-          onClick={action('onClick')}>Cancel</Button></span></span>
+          onClick={action('onClick')}>Cancel</Button></span>
     </Tooltip>)
 
 storiesOf('RejectionsForm', module)
