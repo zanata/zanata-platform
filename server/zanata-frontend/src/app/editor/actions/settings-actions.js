@@ -1,6 +1,5 @@
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
 import { createAction } from 'redux-actions'
-import keys from 'lodash/keys'
 import {
   SETTINGS_REQUEST,
   SETTINGS_SUCCESS,
@@ -31,13 +30,13 @@ export const fetchSettings = () => dispatch => dispatch({
 })
 
 // Should be pretty fast: https://stackoverflow.com/a/34491287/14379
-function emptyObject(obj) {
+function emptyObject (obj) {
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
-      return false;
+      return false
     }
   }
-  return true;
+  return true
 }
 
 /**
