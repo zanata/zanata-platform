@@ -20,21 +20,21 @@ export class RejectTranslationModal extends Component {
     key: PropTypes.string,
     onHide: PropTypes.func,
     toggleDropdown: PropTypes.func,
-    isOpen: PropTypes.bool.isRequired,
+    isOpen: PropTypes.bool,
     priority: PropTypes.oneOf(
         [
           MINOR,
           MAJOR,
           CRITICAL
         ]
-    ).isRequired,
+    ),
     textState: PropTypes.oneOf (
         [
             'u-textWarning',
             'u-textDanger'
         ]
     ),
-    criteria: PropTypes.string.isRequired
+    criteria: PropTypes.string
   }
 
   constructor (props) {
