@@ -69,7 +69,6 @@
     "@types/react-select": "^1.1.0",
     "@types/react-sidebar": "^2.2.2",
     "@types/react-sortable-hoc": "^0.6.1",
-    "@types/react-split-pane": "^0.1.67",
     "@types/react-syntax-highlighter": "^0.0.3",
     "@types/react-test-renderer": "^16.0.0",
     "@types/react-textarea-autosize": "^4.3.1",

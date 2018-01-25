@@ -521,12 +521,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-split-pane@^0.1.67":
-  version "0.1.67"
-  resolved "https://registry.yarnpkg.com/@types/react-split-pane/-/react-split-pane-0.1.67.tgz#b209a96bbf868a42ca170d3f8bbd94e371a6af6c"
-  dependencies:
-    react-split-pane "*"
-
 "@types/react-syntax-highlighter@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-0.0.3.tgz#c15aeac29eb193d11ac3a70e3d489f8539e6ee1a"
@@ -8714,7 +8708,15 @@ react-sortable-hoc@0.6.8:
     lodash "^4.12.0"
     prop-types "^15.5.7"
 
-react-split-pane@*, react-split-pane@^0.1.74:
+react-split-pane@0.1.63:
+  version "0.1.63"
+  resolved "https://registry.yarnpkg.com/react-split-pane/-/react-split-pane-0.1.63.tgz#fadb3960cc659911dd05ffbc88acee4be9f53583"
+  dependencies:
+    inline-style-prefixer "^3.0.2"
+    prop-types "^15.5.8"
+    react-style-proptype "^3.0.0"
+
+react-split-pane@^0.1.74:
   version "0.1.74"
   resolved "https://registry.yarnpkg.com/react-split-pane/-/react-split-pane-0.1.74.tgz#cf79fc98b51ab0763fdc778749b810a102b036ca"
   dependencies:
@@ -8722,14 +8724,6 @@ react-split-pane@*, react-split-pane@^0.1.74:
     "@types/react" "^16.0.18"
     inline-style-prefixer "^3.0.6"
     prop-types "^15.5.10"
-    react-style-proptype "^3.0.0"
-
-react-split-pane@0.1.63:
-  version "0.1.63"
-  resolved "https://registry.yarnpkg.com/react-split-pane/-/react-split-pane-0.1.63.tgz#fadb3960cc659911dd05ffbc88acee4be9f53583"
-  dependencies:
-    inline-style-prefixer "^3.0.2"
-    prop-types "^15.5.8"
     react-style-proptype "^3.0.0"
 
 react-style-proptype@^3.0.0:
