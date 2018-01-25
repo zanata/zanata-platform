@@ -6,10 +6,8 @@ import { Row } from 'react-bootstrap'
 import { Modal } from '../../../components'
 import PriorityDropdown from './PriorityDropdown'
 import CriteriaDropdown from './CriteriaDropdown'
-import {
-  addNewReview,
-  fetchAllCriteria
-} from '../../actions/review-trans-actions'
+import { addNewReview } from '../../actions/review-trans-actions'
+import update from 'immutability-helper'
 
  /* eslint-disable max-len */
 export const MINOR = 'Minor'
@@ -43,28 +41,32 @@ export class RejectTranslationModal extends Component {
         'u-textDanger'
       ]
     ),
-    criteriaList: PropTypes.arrayOf(PropTypes.string).isRequired,
-    fetchAllCriteria: PropTypes.func.isRequired,
     addNewTransReview: PropTypes.func.isRequired
+  }
+  defaultState = {
+    review: {
+      id: 0,
+      selectedPriority: 'Minor',
+      selectedCriteria: {
+        index: 0,
+        editable: true,
+        description: '',
+        priority: MINOR
+      },
+      reviewComment: ''
+    }
   }
   constructor (props) {
     super(props)
-    this.state = {
-      criteria: [],
-      review: {
-        id: this.props.transUnitID,
-        selectedPriority: 'Critical',
-        selectedCriteria: this.props.criteriaList[0],
-        reviewComment: 'This translation is entirely inaccurate.'
-      }
-    }
+    this.state = this.defaultState
   }
-  componentDidMount () {
-    this.props.fetchAllCriteria()
-  }
-  // TODO: Placeholder func, update Priority prop of RejectTranslationModal
-  onPriorityChange = (priority) => {
-    return priority
+  onPriorityChange = (event) => {
+    event.persist()
+    this.setState(prevState => ({
+      review: update(prevState.review, {
+        selectedPriority: {$set: event.target.innerText}
+      })
+    }))
   }
   // TODO: Placeholder func, update Criteria prop of RejectTranslationModal
   onCriteriaChange = (criteria) => {
@@ -75,8 +77,7 @@ export class RejectTranslationModal extends Component {
       show,
       onHide,
       language,
-      criteriaList,
-      priority,
+      criteria,
       textState,
       addNewTransReview
     } = this.props
@@ -100,12 +101,12 @@ export class RejectTranslationModal extends Component {
               Criteria
             </span>
             <CriteriaDropdown
-              criteriaList={criteriaList}
+              criteriaList={criteria}
               onCriteriaChange={this.onCriteriaChange}
               selectedCriteria={review.selectedCriteria} />
             <PriorityDropdown
               textState={textState}
-              priority={priority}
+              priority={review.selectedPriority}
               priorityChange={this.onPriorityChange} />
           </div>
           <div className="EditorRejection-input">
@@ -136,17 +137,10 @@ export class RejectTranslationModal extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    criteria: state.criteria
-  }
-}
-
 const mapDispatchToProps = dispatch => {
   return {
-    fetchAllCriteria: () => dispatch(fetchAllCriteria()),
     addNewTransReview: (review, lang) => dispatch(addNewReview(review, lang))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RejectTranslationModal)
+export default connect(null, mapDispatchToProps)(RejectTranslationModal)

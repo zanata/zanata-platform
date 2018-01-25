@@ -3,6 +3,9 @@ import { Icon } from '../../../components'
 import PropTypes from 'prop-types'
 import Dropdown from '../../components/Dropdown'
 
+export const MINOR = 'Minor'
+export const MAJOR = 'Major'
+export const CRITICAL = 'Critical'
 /* eslint-disable max-len */
 
 /**
@@ -11,9 +14,18 @@ import Dropdown from '../../components/Dropdown'
  */
 class CriteriaDropdown extends Component {
   static propTypes = {
-    criteriaList: PropTypes.arrayOf(PropTypes.string).isRequired,
+    criteriaList: PropTypes.arrayOf(PropTypes.shape({
+      editable: PropTypes.bool.isRequired,
+      description: PropTypes.string.isRequired,
+      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
+    })),
     onCriteriaChange: PropTypes.func.isRequired,
-    selectedCriteria: PropTypes.string.isRequired
+    selectedCriteria: PropTypes.shape({
+      index: PropTypes.number.isRequired,
+      editable: PropTypes.bool.isRequired,
+      description: PropTypes.string.isRequired,
+      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
+    })
   }
   constructor (props) {
     super(props)
@@ -33,7 +45,7 @@ class CriteriaDropdown extends Component {
         <li key={index}
           className="EditorDropdown-item"
           onClick={onCriteriaChange}>
-          {value}
+          {value.description}
         </li>
       )
     })
@@ -43,7 +55,7 @@ class CriteriaDropdown extends Component {
         className="dropdown-menu Criteria">
         <Dropdown.Button>
           <a className="EditorDropdown-item">
-            {selectedCriteria}
+            {selectedCriteria.description}
             <Icon className="n1" name="chevron-down" />
           </a>
         </Dropdown.Button>

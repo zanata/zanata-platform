@@ -15,6 +15,11 @@ import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
+import { fetchAllCriteria } from '../../actions/review-trans-actions'
+
+export const MINOR = 'Minor'
+export const MAJOR = 'Major'
+export const CRITICAL = 'Critical'
 
 /**
  * Top level of Zanata view hierarchy.
@@ -24,11 +29,18 @@ class Root extends Component {
     percentHeight: PropTypes.number.isRequired,
     showSuggestion: PropTypes.bool,
     requestUiLocales: PropTypes.func.isRequired,
-    saveSuggestionPanelHeight: PropTypes.func.isRequired
+    saveSuggestionPanelHeight: PropTypes.func.isRequired,
+    fetchAllCriteria: PropTypes.func.isRequired,
+    criteria: PropTypes.arrayOf(PropTypes.shape({
+      editable: PropTypes.bool.isRequired,
+      description: PropTypes.string.isRequired,
+      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
+    }))
   }
 
   componentDidMount () {
     this.props.requestUiLocales()
+    this.props.fetchAllCriteria()
     window.addEventListener('resize', this.onWindowResize)
   }
 
@@ -80,10 +92,7 @@ class Root extends Component {
             show
             transUnitID={'be13a23aa42cad149919cc1fe84e6a47'}
             language={'ja'}
-            criteriaList={
-              ['Translation Errors (terminology, mistranslated addition, omission, un-localized, do not translate, etc)',
-              'Other (reason may be in comment section/history if necessary)']
-            }
+            criteria={this.props.criteria}
             priority={'Critical'}
             textState="u-textDanger" />
           <Sidebar>
@@ -105,7 +114,9 @@ class Root extends Component {
 
 function mapStateToProps (state) {
   const { sidebar, suggestions } = state.ui.panels
+  const criteria = state.review.criteria
   return {
+    criteria: criteria,
     percentHeight: suggestions.heightPercent,
     showSidebar: sidebar.visible,
     showSuggestion: getSuggestionsPanelVisible(state)
@@ -120,7 +131,8 @@ function mapDispatchToProps (dispatch) {
     },
     requestUiLocales: () => {
       dispatch(fetchUiLocales())
-    }
+    },
+    fetchAllCriteria: () => dispatch(fetchAllCriteria())
   }
 }
 

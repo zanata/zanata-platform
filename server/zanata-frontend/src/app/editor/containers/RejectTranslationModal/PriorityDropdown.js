@@ -35,8 +35,12 @@ class ProirityDropdown extends Component {
       dropdownOpen: !prevState.dropdownOpen
     }))
   }
+  onPriorityChange = (event) => {
+    this.props.priorityChange(event)
+    this.toggleDropdown()
+  }
   render () {
-    const { textState, priority, priorityChange } = this.props
+    const { textState, priority } = this.props
     return (
       <span className="PriorityDropdown">
         <Icon name="warning" className="s2"
@@ -53,11 +57,14 @@ class ProirityDropdown extends Component {
           </Dropdown.Button>
           <Dropdown.Content>
             <ul>
-              <li className="EditorDropdown-item" onClick={priorityChange}>
+              <li className="EditorDropdown-item"
+                onClick={this.onPriorityChange}>
                 <span>Minor</span></li>
-              <li className="EditorDropdown-item" onClick={priorityChange}>
+              <li className="EditorDropdown-item"
+                onClick={this.onPriorityChange}>
                 <span className="u-textWarning">Major</span></li>
-              <li className="EditorDropdown-item" onClick={priorityChange}>
+              <li className="EditorDropdown-item"
+                onClick={this.onPriorityChange}>
                 <span className="u-textDanger">Critical</span></li>
             </ul>
           </Dropdown.Content>
