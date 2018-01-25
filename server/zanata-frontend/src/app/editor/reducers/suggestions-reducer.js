@@ -1,7 +1,6 @@
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import {
-  DIFF_SETTING_CHANGED,
   PHRASE_SUGGESTION_STARTED_COPYING,
   PHRASE_SUGGESTION_FINISHED_COPYING,
   PHRASE_SUGGESTIONS_UPDATED,
@@ -16,7 +15,6 @@ import {
 const defaultState = {
   searchType: 'phrase',
   showDetailModalForIndex: undefined,
-  showDiff: true,
   textSearch: {
     loading: false,
     searchStrings: [],
@@ -38,9 +36,6 @@ const defaultState = {
 }
 
 const suggestionsReducer = handleActions({
-  [DIFF_SETTING_CHANGED]: state =>
-    update(state, {showDiff: {$set: !state.showDiff}}),
-
   // could add action.copying and combine started+finished actions
   [PHRASE_SUGGESTION_FINISHED_COPYING]: (state, {payload: {phraseId, index}}) =>
     update(state, { searchByPhrase: { [phraseId]: { suggestions: { [index]: {

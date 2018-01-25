@@ -6,7 +6,7 @@ import SuggestionsBody from './SuggestionsBody'
 import SuggestionDetailsModal from './SuggestionDetailsModal'
 import { isUndefined, pick } from 'lodash'
 import { connect } from 'react-redux'
-import { getSuggestionsPanelVisible } from '../reducers'
+import { getSuggestionsPanelVisible, getSuggestionsDiff } from '../reducers'
 import {
   copySuggestionN,
   clearSearch,
@@ -141,6 +141,7 @@ function mapStateToProps (state) {
   return {
     ...state.suggestions,
     search: specificSearch,
+    showDiff: getSuggestionsDiff(state),
     showPanel: getSuggestionsPanelVisible(state),
     phraseSelected: state.phrases.selectedPhraseId !== undefined,
     isRTLSource: context.sourceLocale.isRTL,
