@@ -11,7 +11,7 @@ import SuggestionsPanel from '../SuggestionsPanel'
 import { getSuggestionsPanelVisible } from '../../reducers'
 import { fetchUiLocales } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
-import SplitPane from 'react-split-pane'
+import * as SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
 

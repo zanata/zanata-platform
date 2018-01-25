@@ -1,5 +1,5 @@
-import Combokeys from 'combokeys'
-import globalBind from 'combokeys/plugins/global-bind'
+import * as Combokeys from 'combokeys'
+import * as globalBind from 'combokeys/plugins/global-bind'
 import { setSaveAsMode } from '../actions/key-shortcuts-actions'
 import { getShortcuts } from '../reducers'
 import * as React from 'react'
