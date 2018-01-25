@@ -193,7 +193,7 @@ class TransUnitTranslationPanel extends React.Component {
   }
 }
 
-class TranslationItem extends React.Component {
+export class TranslationItem extends React.Component {
   static propTypes = {
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
