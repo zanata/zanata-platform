@@ -1,5 +1,4 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import versionReducer from './version-reducer'
 

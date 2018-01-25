@@ -1,6 +1,6 @@
 import cx from 'classnames'
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 
 /**
  * Dropdown with both an action button and a toggle button.

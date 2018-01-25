@@ -19,8 +19,9 @@
  *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-import React, {Component} from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+import { Component } from 'react'
+import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 import { isAdmin } from '../../config'

@@ -1,4 +1,3 @@
-jest.disableAutomock()
 import { CALL_API } from 'redux-api-middleware'
 import {
   fetchVersionLocales,

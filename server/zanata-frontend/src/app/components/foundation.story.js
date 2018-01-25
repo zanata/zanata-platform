@@ -2,7 +2,7 @@
  * Foundational stories, not demonstrating any component in particular.
  */
 
-import React from 'react'
+import * as React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Grid, Row, Col, Well, Panel, Checkbox } from 'react-bootstrap'
 
