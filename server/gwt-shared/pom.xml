@@ -6,7 +6,7 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>org.zanata</groupId>
-    <version>4.4.0-SNAPSHOT</version>
+    <version>4.4.0-alpha-3</version>
   </parent>
 
   <artifactId>gwt-shared</artifactId>
@@ -18,7 +18,7 @@
     <connection>scm:git:git://github.com/zanata/zanata.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
     <url>https://github.com/zanata/zanata</url>
-    <tag>HEAD</tag>
+    <tag>platform-4.4.0-alpha-3</tag>
   </scm>
 
   <build>
