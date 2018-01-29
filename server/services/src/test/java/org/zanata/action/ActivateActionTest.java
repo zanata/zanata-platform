@@ -23,6 +23,7 @@ package org.zanata.action;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.InSessionScope;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +44,7 @@ import javax.inject.Inject;
 import java.util.Date;
 
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author djansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -76,28 +78,44 @@ public class ActivateActionTest {
                 identityManager, urlUtil, facesMessages);
     }
 
-    @Test(expected = KeyNotFoundException.class)
+    @Test
     public void nullKeyTest() {
         action.setActivationKey(null);
-        action.validateActivationKey();
+        try {
+            action.validateActivationKey();
+            Assert.fail("Expected KeyNotFoundException");
+        } catch (KeyNotFoundException knfe) {
+            assertThat(knfe.getMessage()).contains("null activation key");
+        }
     }
 
-    @Test(expected = KeyNotFoundException.class)
+    @Test
     public void keyNoLongerExists() {
         action.setActivationKey("1234567890");
         when(accountActivationKeyDAO.findById(action.getActivationKey(), false))
                 .thenReturn(null);
-        action.validateActivationKey();
+        try {
+            action.validateActivationKey();
+            Assert.fail("Expected KeyNotFoundException");
+        } catch (KeyNotFoundException knfe) {
+            assertThat(knfe.getMessage()).contains("activation key: 1234567890");
+        }
     }
 
-    @Test(expected = ActivationLinkExpiredException.class)
+    @Test
     public void expiredKeyTest() {
         HAccountActivationKey key = new HAccountActivationKey();
         key.setCreationDate(new Date(0L));
         action.setActivationKey("1234567890");
         when(accountActivationKeyDAO.findById(action.getActivationKey(), false))
                 .thenReturn(key);
-        action.validateActivationKey();
+        try {
+            action.validateActivationKey();
+            Assert.fail("Expected ActivationLinkExpiredException");
+        } catch (ActivationLinkExpiredException alee) {
+            assertThat(alee.getMessage())
+                    .contains("Activation link expired:1234567890");
+        }
     }
 
     @Test
