@@ -29,19 +29,25 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.JaxRSApplication;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.ServerPath;
+import com.google.common.collect.Lists;
 
 /**
  * Get the URL for the current page in URL encoded format for use in the query
@@ -56,20 +62,25 @@ public class UrlUtil implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String ENCODING = "UTF-8";
-    @Inject
-    @ServerPath
     private String serverPath;
-    @Inject
-    @ContextPath
     private String contextPath;
-    @Inject
     private WindowContext windowContext;
-    @Inject
-    @Named("dswidQuery")
     private String dswidQuery;
-    @Inject
-    @Named("dswidParam")
     private String dswidParam;
+
+    public UrlUtil() {
+    }
+
+    @Inject
+    public UrlUtil(@ServerPath String serverPath, @ContextPath String contextPath,
+            WindowContext windowContext, @Named("dswidQuery") String dswidQuery,
+            @Named("dswidParam") String dswidParam) {
+        this.serverPath = serverPath;
+        this.contextPath = contextPath;
+        this.windowContext = windowContext;
+        this.dswidQuery = dswidQuery;
+        this.dswidParam = dswidParam;
+    }
 
     /**
      * Get the local url part, including context path, for the given page
@@ -352,6 +363,37 @@ public class UrlUtil implements Serializable {
 
     public String inactiveAccountPage() {
         return contextPath + "/account/inactive" + dswidQuery;
+    }
+
+    /**
+     * This helper method should be used to construct REST url. You can inject
+     * UriInfo and call the getPath() method to get a resource relative path.
+     *
+     * @param relativePath
+     *            a REST resource relative path (after
+     *            protocol://server:port/rest/)
+     * @return absolute path to the REST resource
+     */
+    public String restPath(String relativePath) {
+        return joinPaths(joinPaths(serverPath, JaxRSApplication.REST_APP_BASE), relativePath);
+    }
+
+    /**
+     *
+     * @see UrlUtil#restPath(java.lang.String)
+     */
+    public URI restPathURI(String relativePath) {
+        return UriBuilder.fromUri(restPath(relativePath)).build();
+    }
+
+    static String joinPaths(String one, String two) {
+        if (one.endsWith("/") && two.startsWith("/")) {
+            return one + two.substring(1);
+        } else if (!one.endsWith("/") && !two.startsWith("/")) {
+            return one + "/" + two;
+        }
+        // either one ends with / or two start with /
+        return one + two;
     }
 
 }

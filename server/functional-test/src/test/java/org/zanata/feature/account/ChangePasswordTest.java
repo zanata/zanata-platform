@@ -21,7 +21,6 @@
 package org.zanata.feature.account;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Trace;
@@ -48,14 +47,13 @@ public class ChangePasswordTest extends ZanataTestCase {
 
     @Trace(summary = "The user can change their password", testCaseIds = 5704)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("Flaky test")
     public void changePasswordSuccessful() throws Exception {
         DashboardBasePage dashboard = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .gotoSettingsAccountTab()
-                .typeOldPassword("translator")
-                .typeNewPassword("newpassword")
+                .enterOldPassword("translator")
+                .enterNewPassword("newpassword")
                 .clickUpdatePasswordButton();
         dashboard.expectNotification(DashboardAccountTab.PASSWORD_UPDATE_SUCCESS);
         dashboard.logout();
@@ -78,13 +76,13 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .gotoSettingsAccountTab()
-                .typeOldPassword("nottherightpassword")
-                .typeNewPassword("somenewpassword")
+                .enterOldPassword("nottherightpassword")
+                .enterNewPassword("somenewpassword")
                 .clickUpdatePasswordButton();
 
         assertThat(dashboardAccountTab.getErrors())
                 .contains(DashboardAccountTab.INCORRECT_OLD_PASSWORD_ERROR)
-                .as("The old password incorrect error is shown");
+                .as("Old password is incorrect error is shown");
     }
 
     @Trace(summary = "The user must enter a non-empty new password " +
@@ -111,8 +109,8 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .gotoSettingsAccountTab()
-                .typeOldPassword("translator")
-                .typeNewPassword(tooShort)
+                .enterOldPassword("translator")
+                .enterNewPassword(tooShort)
                 .clickUpdatePasswordButton();
 
         assertThat(dashboardAccountTab.getErrors())

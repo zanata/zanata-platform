@@ -118,7 +118,7 @@ public class ApplicationConfiguration implements Serializable {
      * server when new user register.
      *
      * Usage: server administrator can enable this in system property
-     * zanata.enforce.matchingusernames. In standalone.xml:
+     * zanata.enforce.matchingusernames. In standalone*.xml:
      *
      * <pre>
      * {@code <property name="zanata.enforce.matchingusernames" value="true" />}
@@ -192,8 +192,8 @@ public class ApplicationConfiguration implements Serializable {
             smtpAppenderInstance.activateOptions();
             // Safe to add more than once
             rootLogger.addAppender(smtpAppenderInstance);
-            log.info("Email log appender is enabled [level: "
-                    + smtpAppenderInstance.getThreshold().toString() + "]");
+            log.info("Email log appender is enabled [level: {}]",
+                    smtpAppenderInstance.getThreshold());
         } else {
             rootLogger.removeAppender(EMAIL_APPENDER_NAME);
             log.info("Email log appender is disabled.");
@@ -256,7 +256,15 @@ public class ApplicationConfiguration implements Serializable {
         if (configuredValue != null) {
             return configuredValue;
         } else {
-            return HttpRequestAndSessionHolder.getDefaultServerPath();
+
+            String defaultServerPath =
+                    HttpRequestAndSessionHolder.getDefaultServerPath();
+            if (defaultServerPath == null) {
+                log.error("server path is not configured in database and not yet generated from Http request!!!. Admin need to configure it in database");
+                // return empty string for now. See ZNTA-2319
+                return "";
+            }
+            return defaultServerPath;
         }
     }
 
@@ -536,7 +544,7 @@ public class ApplicationConfiguration implements Serializable {
      * server when new user register.
      *
      * Usage: server administrator can enable this in system property
-     * zanata.enforce.matchingusernames. In standalone.xml:
+     * zanata.enforce.matchingusernames. In standalone*.xml:
      *
      * <pre>
      * {@code <property name="zanata.enforce.matchingusernames" value="true" />}

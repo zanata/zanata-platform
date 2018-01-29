@@ -33,6 +33,7 @@ import org.zanata.util.HashUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Sean Flanigan <a
@@ -138,6 +139,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         }
     }
 
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     @Override
     public void run() throws Exception {
         logOptions();
@@ -203,9 +205,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         }
 
         if (pullSrc) {
-            log.warn("Pull Type set to '"
-                    + pullType
-                    + "': existing source-language files may be overwritten/deleted");
+            log.warn("Pull Type set to '{}': existing source-language files may be overwritten/deleted", pullType);
             confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
         } else {
             confirmWithUser(

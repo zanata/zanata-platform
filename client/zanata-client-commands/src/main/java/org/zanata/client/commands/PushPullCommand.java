@@ -57,6 +57,8 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.util.PathUtil;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 
 /**
@@ -108,6 +110,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
         }
     }
 
+    @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     protected void debug(Object jaxbElement) {
         try {
             if (getOpts().isDebugSet() && getOpts().getLogHttp()) {
@@ -116,7 +119,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
                 log.debug("{}", writer);
             }
         } catch (JAXBException e) {
-            log.debug(e.toString(), e);
+            log.debug("{}", e.toString(), e);
         }
     }
 

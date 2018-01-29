@@ -52,8 +52,8 @@ public class InitOptionsImpl extends ConfigurableProjectOptionsImpl implements
     @Override
     public void setInteractiveMode(boolean interactiveMode) {
         if (!interactiveMode) {
-            log.warn(getCommandName()
-                    + " command can only be run with interactive mode. Interactive mode option ignored.");
+            log.warn("{} command can only be run with interactive mode. Interactive mode option ignored.",
+                    getCommandName());
         }
         super.setInteractiveMode(true);
     }

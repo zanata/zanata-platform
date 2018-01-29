@@ -595,7 +595,7 @@ public class ZanataIdentity implements Identity, Serializable {
         } catch (FailedLoginException | CredentialException | AccountException e) {
             if (log.isDebugEnabled()) {
                 log.debug(
-                        "Login failed for: " + getCredentials().getUsername(),
+                        "Login failed for: {}", getCredentials().getUsername(),
                         e);
             }
             handleLoginException(e);
@@ -603,7 +603,7 @@ public class ZanataIdentity implements Identity, Serializable {
             // if it's not one of the above subclasses, a LoginException may indicate
             // a configuration problem
             log.error(
-                    "Login failed for: " + getCredentials().getUsername(),
+                    "Login failed for: {}", getCredentials().getUsername(),
                     e);
             handleLoginException(e);
         }

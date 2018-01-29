@@ -44,6 +44,8 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Iterables.all;
 
@@ -273,6 +275,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         return obsoleteDocs;
     }
 
+    @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
     private void pushCurrentModule() throws IOException, RuntimeException {
         AbstractPushStrategy strat = getStrategy(getOpts());
         File sourceDir = getOpts().getSrcDir();
@@ -283,9 +286,9 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
         if (!sourceDir.exists() && !strat.isTransOnly()) {
             if (getOpts().getEnableModules()) {
-                log.info("source directory '" + sourceDir
-                        + "' not found; skipping docs push for module "
-                        + getOpts().getCurrentModule());
+                log.info("source directory '{}' not found; skipping docs push for module {}",
+                        sourceDir,
+                        getOpts().getCurrentModule());
                 return;
             } else {
                 throw new RuntimeException("directory '" + sourceDir
@@ -360,9 +363,8 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         }
 
         if (pushTrans()) {
-            log.warn("pushType set to '"
-                    + getOpts().getPushType()
-                    + "': existing translations on server may be overwritten/deleted");
+            log.warn("pushType set to '{}': existing translations on server may be overwritten/deleted",
+                    getOpts().getPushType());
         }
 
         if (strat.isTransOnly()) {
@@ -764,10 +766,10 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
     private void copyTransForDocument(String docName) {
         if (getOpts().isDryRun()) {
-            log.info("Skipping Copy Trans for " + docName + " (due to dry run)");
+            log.info("Skipping Copy Trans for {} (due to dry run)", docName);
             return;
         }
-        log.info("Running Copy Trans for " + docName);
+        log.info("Running Copy Trans for {}", docName);
         try {
             this.copyTransClient.startCopyTrans(getOpts().getProj(),
                     getOpts().getProjectVersion(), docName);

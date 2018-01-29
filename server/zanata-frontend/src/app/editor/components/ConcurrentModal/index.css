@@ -1,0 +1,43 @@
+:root {
+  --ConcEditing-Button-primary-color: #03A6D7;
+  --ConcEditing-color-muted: #BDD4DC;
+  --ConcEditing-color-neutral: #a2b3be;
+  --ConcEditing-Panel-spacing: 2rem;
+  --ConcEditing-Border-radius: 0.25rem;
+}
+
+.Button--concurrent {
+  color: var(--ConcEditing-Button-primary-color);
+  text-shadow: none;
+}
+
+.Button--concurrent .n1 {
+  vertical-align: middle;
+}
+
+#ConflictsModal .u-floatRight .EditorButton {
+  margin-top: 0.375rem;
+}
+
+.revisionBox textarea {
+  border: solid 1px var(--ConcEditing-color-neutral);
+  border-radius: var(--ConcEditing-Border-radius);
+  width: 97%;
+  padding: 0.75rem;
+  font-size: 1.05rem;
+}
+
+.revisionBox textarea:hover {
+  border: solid 1px var(--ConcEditing-color-muted);
+}
+
+.revisionBox textarea:focus {
+  border: solid 2px var(--ConcEditing-Button-primary-color);
+}
+
+/* React bootstrap styling */
+
+#ConflictsModal .panel {
+  margin-bottom: var(--ConcEditing-Panel-spacing);
+  padding-bottom: var(--ConcEditing-Panel-spacing);
+}

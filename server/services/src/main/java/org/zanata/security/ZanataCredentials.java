@@ -127,7 +127,7 @@ public class ZanataCredentials implements Serializable {
                         ((AuthenticationTypeCallback) callbacks[i])
                                 .setAuthType(getAuthType());
                     } else {
-                        log.warn("Unsupported callback " + callbacks[i]);
+                        log.warn("Unsupported callback {}", callbacks[i].getClass());
                     }
                 }
             }

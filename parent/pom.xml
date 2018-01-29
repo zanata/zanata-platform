@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>parent</artifactId>
-  <version>4.4.0-SNAPSHOT</version>
+  <version>4.5.0-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -214,6 +214,7 @@
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
     <!-- Note: Fedora 23 has 2.4.4. -->
     <groovy.version>2.4.4</groovy.version>
+    <!-- Fedora 27 is still on 18.0: https://apps.fedoraproject.org/packages/guava -->
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
     <jaxb.api.version>2.2.12</jaxb.api.version>
@@ -238,7 +239,7 @@
     <findbugs.excludeFilterFile>zanata-build-tools/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
-    <slf4j.version>1.7.18</slf4j.version>
+    <slf4j.version>1.7.22</slf4j.version>
   </properties>
 
   <build>
@@ -490,7 +491,7 @@
               <banRepositories>true</banRepositories>
               <banPluginRepositories>true</banPluginRepositories>
               <allowedRepositories combine.children="append">
-                <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
+                <allowedRepository>sonatype-snapshots</allowedRepository>
               </allowedRepositories>
             </requireNoRepositories>
             <requireUpperBoundDeps />
@@ -566,6 +567,11 @@
               <groupId>com.overstock.findbugs</groupId>
               <artifactId>library-detectors</artifactId>
               <version>1.1</version>
+            </plugin>
+            <plugin>
+              <groupId>jp.skypencil.findbugs.slf4j</groupId>
+              <artifactId>bug-pattern</artifactId>
+              <version>1.3.0</version>
             </plugin>
           </plugins>
         </configuration>
@@ -942,7 +948,7 @@
         <dupfind.skip>false</dupfind.skip>
         <enforcer.skip>false</enforcer.skip>
         <!-- These violations will be picked up by FindBugsPublisher -->
-        <findbugs.failOnError>true</findbugs.failOnError>
+        <findbugs.failOnError>false</findbugs.failOnError>
         <findbugs.skip>false</findbugs.skip>
         <!-- These violations will be picked up by WarningsPublisher -->
         <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
@@ -1537,11 +1543,11 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
+      <id>sonatype-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
     <repository>
-      <id>sonatype-nexus-staging</id>
+      <id>sonatype-staging</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>

@@ -61,7 +61,7 @@ public class FacesNavigationUtil {
         try {
             externalContext.redirect(externalContext.encodeActionURL(url));
         } catch (IOException | IllegalStateException e) {
-            log.warn("error redirecting to url:" + url, e);
+            log.warn("error redirecting to url: {}", url, e);
             throw e;
         }
         context.responseComplete();

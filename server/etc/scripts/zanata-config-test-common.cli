@@ -1,9 +1,9 @@
 # jboss cli specification for an operation request
 # [/node-type=node-name (/node-type=node-name)*] : operation-name [( [parameter-name=parameter-value (,parameter-name=parameter-value)*] )]
-# The default variable substitution are turned off by default in bin/jboss-cli.xml so ${var} will be passed to standalone-full.xml as is.
+# The default variable substitution are turned off by default in bin/jboss-cli.xml so ${var} will be passed to standalone-full-ha.xml as is.
 
 # run cli in offline (embeded server) mode, pipe std out to local script terminal
-embed-server --std-out=echo --server-config=standalone-full.xml
+embed-server --std-out=echo --server-config=standalone-full-ha.xml
 
 batch
 # ==== system properties /system-property=foo:add(value=bar) ====
@@ -32,7 +32,7 @@ batch
 
 ## default file logging (server.log) unchanged
 ## Allow stdout handler to handle INFO logging
-/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=INFO)
+#/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=INFO)
 
 ## Disable some startup warnings triggered by third-party jars
 /subsystem=logging/logger=org.jboss.as.server.deployment:add

@@ -57,20 +57,18 @@ public class GlossaryCSVReaderTest {
     }
 
     @Test
-    public void extractGlossaryTest1() throws IOException {
-
+    public void extractGlossary() throws IOException {
         GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US);
         int entryPerLocale = 2;
 
         File sourceFile =
                 new File("src/test/resources/glossary/translate1.csv");
 
-        Reader inputStreamReader =
-                new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
-        BufferedReader br = new BufferedReader(inputStreamReader);
+        BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(sourceFile), "UTF-8"));
 
         Map<LocaleId, List<GlossaryEntry>> glossaries =
-                reader.extractGlossary(br,
+                reader.extractGlossary(bufferedReader,
                         GlossaryResource.GLOBAL_QUALIFIED_NAME);
 
         assertThat(glossaries.keySet()).hasSize(2);
@@ -79,29 +77,40 @@ public class GlossaryCSVReaderTest {
         for (Map.Entry<LocaleId, List<GlossaryEntry>> entry : glossaries
                 .entrySet()) {
             assertThat(entry.getValue()).hasSize(entryPerLocale);
+            assertEntry(entry);
         }
     }
 
     @Test
-    public void extractGlossaryTest2() throws IOException {
+    public void extractGlossaryWithOtherHeaders() throws IOException {
         GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US);
         int entryPerLocale = 2;
 
         File sourceFile =
                 new File("src/test/resources/glossary/translate2.csv");
 
-        Reader inputStreamReader =
-                new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
-        BufferedReader br = new BufferedReader(inputStreamReader);
+        BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(sourceFile), "UTF-8"));
 
-        Map<LocaleId, List<GlossaryEntry>> glossaries =
-                reader.extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
+        Map<LocaleId, List<GlossaryEntry>> glossaries = reader.extractGlossary(
+                bufferedReader, GlossaryResource.GLOBAL_QUALIFIED_NAME);
 
         assertThat(glossaries.keySet()).hasSize(2);
         assertThat(glossaries.keySet()).contains(LocaleId.ES, new LocaleId("zh"));
+
         for (Map.Entry<LocaleId, List<GlossaryEntry>> entry : glossaries
             .entrySet()) {
             assertThat(entry.getValue()).hasSize(entryPerLocale);
+            assertEntry(entry);
         }
+    }
+
+    private void assertEntry(Map.Entry<LocaleId, List<GlossaryEntry>> entry) {
+        assertThat(entry.getValue().get(0).getDescription()
+                .startsWith("testing of hello"));
+        assertThat(entry.getValue().get(1).getDescription()
+                .startsWith("testing of morning"));
+        assertThat(entry.getValue().get(0).getPos()).isEqualTo("verb");
+        assertThat(entry.getValue().get(1).getPos()).isEqualTo("noun");
     }
 }

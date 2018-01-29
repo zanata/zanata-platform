@@ -58,97 +58,135 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .as("The email indicates the expected server url");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setRegisterURLTest() {
         String url = "http://myserver.com/register";
-        ServerConfigurationPage serverConfigurationPage =
-                new LoginWorkFlow().signIn("admin", "admin")
-                        .goToAdministration().goToServerConfigPage()
-                        .inputRegisterURL(url).save().goToServerConfigPage();
+        ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToAdministration()
+                .goToServerConfigPage()
+                .inputRegisterURL(url)
+                .save()
+                .goToServerConfigPage();
+
         assertThat(serverConfigurationPage.expectFieldValue(
                 ServerConfigurationPage.registerUrlField, url))
                         .as("The expected url was displayed");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAdministratorEmailTest() {
-        new LoginWorkFlow().signIn("admin", "admin").goToAdministration()
-                .goToServerConfigPage().inputAdminEmail("lara@example.com")
-                .save().gotoMorePage().clickContactAdmin()
-                .inputMessage("Test pattern").send(HomePage.class);
+        new LoginWorkFlow().signIn("admin", "admin")
+                .goToAdministration()
+                .goToServerConfigPage()
+                .inputAdminEmail("lara@example.com")
+                .save()
+                .gotoMorePage()
+                .clickContactAdmin()
+                .inputMessage("Test pattern")
+                .send(HomePage.class);
+
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeReceiver())
                 .contains("lara@example.com").as("The recipient admin was set");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("unstable")
     public void setAdministratorEmailFromTest() {
         String email = "lara@example.com";
         ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
-                .signIn("admin", "admin").goToAdministration()
-                .goToServerConfigPage().inputAdminFromEmail(email).save()
+                .signIn("admin", "admin")
+                .goToAdministration()
+                .goToServerConfigPage()
+                .inputAdminFromEmail(email)
+                .save()
                 .goToServerConfigPage();
+
         assertThat(serverConfigurationPage.expectFieldValue(
                 ServerConfigurationPage.fromEmailField, email));
+
         serverConfigurationPage.goToHomePage().logout();
         new RegisterWorkFlow().registerInternal("test1", "test1", "test123",
                 "test1@test.com");
+
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeSender())
                 .contains("lara@example.com")
                 .as("The server email sender was set");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setHelpURLTest() {
         MorePage morePage = new LoginWorkFlow().signIn("admin", "admin")
-                .goToAdministration().goToServerConfigPage()
-                .inputHelpURL("http://www.test.com").save().gotoMorePage();
+                .goToAdministration()
+                .goToServerConfigPage()
+                .inputHelpURL("http://www.test.com")
+                .save()
+                .gotoMorePage();
+
         assertThat(morePage.getHelpURL()).isEqualTo("http://www.test.com/")
                 .as("The help URL was set correctly");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsetTermsOfUseURL() {
         RegisterPage registerPage = new LoginWorkFlow().signIn("admin", "admin")
-                .goToAdministration().goToServerConfigPage()
-                .inputTermsOfUseURL("http://www.test.com").save()
-                .goToServerConfigPage().inputTermsOfUseURL("").save().logout()
+                .goToAdministration()
+                .goToServerConfigPage()
+                .inputTermsOfUseURL("http://www.test.com")
+                .save()
+                .goToServerConfigPage()
+                .inputTermsOfUseURL("")
+                .save()
+                .logout()
                 .goToRegistration();
+
         assertThat(registerPage.termsOfUseUrlVisible()).isFalse()
                 .as("The Terms of Use URL is not visible");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setTermsOfUseURLTest() {
         RegisterPage registerPage = new LoginWorkFlow().signIn("admin", "admin")
-                .goToAdministration().goToServerConfigPage()
-                .inputTermsOfUseURL("http://www.test.com").save().logout()
+                .goToAdministration()
+                .goToServerConfigPage()
+                .inputTermsOfUseURL("http://www.test.com")
+                .save()
+                .logout()
                 .goToRegistration();
+
         assertThat(registerPage.getTermsUrl()).isEqualTo("http://www.test.com/")
                 .as("The Terms of Use URL was set correctly");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setEmailLoggingTest() {
         ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
-                .signIn("admin", "admin").goToAdministration()
-                .goToServerConfigPage().clickLoggingEnabledCheckbox()
+                .signIn("admin", "admin")
+                .goToAdministration()
+                .goToServerConfigPage()
+                .clickLoggingEnabledCheckbox()
                 .selectLoggingLevel("Error")
-                .inputLogEmailTarget("lara@example.com").save()
+                .inputLogEmailTarget("lara@example.com")
+                .save()
                 .goToServerConfigPage();
+
         assertThat(serverConfigurationPage.selectedLoggingLevel())
                 .isEqualTo("Error").as("Level is correct");
         assertThat(serverConfigurationPage.getLogEmailTarget())
                 .isEqualTo("lara@example.com").as("Recipient is correct");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setPiwikTest() {
-        ServerConfigurationPage serverConfigurationPage =
-                new LoginWorkFlow().signIn("admin", "admin")
-                        .goToAdministration().goToServerConfigPage()
-                        .inputPiwikUrl("http://example.com/piwik")
-                        .inputPiwikID("12345").save().goToServerConfigPage();
+        ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToAdministration()
+                .goToServerConfigPage()
+                .inputPiwikUrl("http://example.com/piwik")
+                .inputPiwikID("12345")
+                .save()
+                .goToServerConfigPage();
+
         assertThat(serverConfigurationPage.getPiwikUrl())
                 .isEqualTo("http://example.com/piwik")
                 .as("Piwik url is correct is correct");

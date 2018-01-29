@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.4.0-SNAPSHOT</version>
+    <version>4.5.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -14,14 +14,14 @@
 
   <properties>
     <allow.deploy.skip>true</allow.deploy.skip>
-    <selenium.version>3.4.0</selenium.version>
+    <selenium.version>3.8.1</selenium.version>
 
     <!--Cargo Settings -->
     <cargo.host>localhost</cargo.host>
     <!--jboss port offset -->
     <cargo.port.offset>0</cargo.port.offset>
     <!-- This may be changed by the JBOSS_HTTP_PORT profile -->
-    <!-- This needs to agree with the http socket-binding in standalone.xml -->
+    <!-- This needs to agree with the http socket-binding in standalone*.xml -->
     <cargo.servlet.port>8180</cargo.servlet.port>
     <cargo.jboss.management-http.port>10090</cargo.jboss.management-http.port>
     <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
@@ -204,8 +204,8 @@
 
     <dependency>
       <groupId>net.lightbody.bmp</groupId>
-      <artifactId>browsermob-core-littleproxy</artifactId>
-      <version>2.1.0-beta-4</version>
+      <artifactId>browsermob-core</artifactId>
+      <version>2.1.5</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.code.findbugs</groupId>
@@ -237,12 +237,12 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
-      <version>1.53</version>
+      <version>1.58</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.53</version>
+      <version>1.58</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
@@ -998,7 +998,7 @@
                 <echo />
                 <echo>Unless skipping tests, you must choose an appserver:</echo>
                 <echo>-Dappserver=jbosseap6 or -Dappserver=wildfly8</echo>
-                <echo>For jbosseap6, env var EAP7_URL should point to an EAP zip file.</echo>
+                <echo>For jbosseap6, env var EAP71_URL should point to an EAP zip file.</echo>
                 <echo />
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
                 <echo />
@@ -1028,7 +1028,7 @@
             <configuration>
               <target unless="skipFuncTests">
                 <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)" unless="appserver" />
-                <fail message="'cargo.installation' property is null (set env var EAP7_URL or else use -DskipFuncTests)" unless="cargo.installation" />
+                <fail message="'cargo.installation' property is null (set env var EAP71_URL or else use -DskipFuncTests)" unless="cargo.installation" />
               </target>
             </configuration>
           </execution>
@@ -1116,7 +1116,7 @@
             </files>
 
             <properties>
-              <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
+              <cargo.jboss.configuration>standalone-full-ha</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
               <!-- These properties will be interpolated by Cargo into the configfiles above -->

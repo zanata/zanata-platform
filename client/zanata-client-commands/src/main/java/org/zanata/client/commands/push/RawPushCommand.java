@@ -78,6 +78,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode;
 import static org.zanata.client.commands.StringUtil.multiline;
 
@@ -90,7 +92,7 @@ import static org.zanata.client.commands.StringUtil.multiline;
  */
 public class RawPushCommand extends PushPullCommand<PushOptions> {
     private static final Logger log = LoggerFactory
-            .getLogger(PushCommand.class);
+            .getLogger(RawPushCommand.class);
 
     private static final Pattern fileTypeSpecPattern = Pattern.compile(multiline(
             "(?x)        # enable regex comments",
@@ -216,6 +218,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @param serverFileTypes
      * @param fileTypesSpec
      */
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public ImmutableList<FileTypeInfo> getActualFileTypes(
             List<FileTypeInfo> serverFileTypes, List<String> fileTypesSpec) {
 
@@ -460,8 +463,9 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                 }
             } catch (IOException | RuntimeException e) {
                 log.error(
-                        "Operation failed: " + e.getMessage() + "\n\n"
+                        "Operation failed: {}\n\n"
                                 + "    To retry from the last document, please add the option: {}\n",
+                        e.toString(),
                         getOpts().buildFromDocArgument(localDocName));
                 throw new RuntimeException(e.getMessage(), e);
             }
@@ -752,8 +756,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                     fileStream.close();
                 } catch (IOException e) {
                     log.error(
-                            "failed to close input stream for file "
-                                    + file.getAbsolutePath(), e);
+                            "failed to close input stream for file {}",
+                                    file.getAbsolutePath(), e);
                 }
                 fileStream = null;
             }

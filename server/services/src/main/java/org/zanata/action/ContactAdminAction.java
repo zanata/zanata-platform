@@ -40,6 +40,8 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Handles send email to admin - Contact admin(Registered and non-registered
  * users)
@@ -103,12 +105,13 @@ public class ContactAdminAction implements Serializable {
         }
     }
 
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     private void sendEmailFailedNotification(Exception e, String fromName) {
         StringBuilder sb = new StringBuilder()
                 .append("Failed to send email with subject \'").append(subject)
                 .append("\' , message \'").append(message).append("\', from \'")
                 .append(fromName).append("\'");
-        log.error("{}. {}", sb.toString(), e);
+        log.error(sb.toString(), e);
         facesMessages.addGlobal(sb.toString());
     }
 

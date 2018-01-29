@@ -25,10 +25,15 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.infinispan.AdvancedCache;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.util.CommonMarkRenderer;
+import org.zanata.util.Zanata;
+
+import static org.infinispan.context.Flag.IGNORE_RETURN_VALUES;
 
 /**
  * This component caches the latest HTML version of the home page's content.
@@ -39,20 +44,21 @@ import org.zanata.util.CommonMarkRenderer;
 @Named("homePage")
 @ApplicationScoped
 public class HomePage {
+    private static final String CACHE_KEY = "org.zanata.action.HomePage.html";
     @Inject
     private ApplicationConfiguration applicationConfiguration;
     @Inject
     private CommonMarkRenderer renderer;
-    private String html;
+    @Inject @Zanata
+    private AdvancedCache<Object, Object> cache;
 
     /**
      * Returns the rendered, sanitised HTML for the home page content set by
      * admin.
-     *
-     * @return
      */
     @Transactional(readOnly = true)
     public String getHtml() {
+        String html = (String) cache.get(CACHE_KEY);
         if (html == null) {
             String text = applicationConfiguration.getHomeContent();
             if (text == null) {
@@ -60,6 +66,7 @@ public class HomePage {
             } else {
                 html = renderer.renderToHtmlSafe(text);
             }
+            cache.withFlags(IGNORE_RETURN_VALUES).put(CACHE_KEY, html);
         }
         return html;
     }
@@ -70,6 +77,6 @@ public class HomePage {
      */
     public void clearHtml(@Observes(
             during = TransactionPhase.AFTER_SUCCESS) HomeContentChangedEvent event) {
-        html = null;
+        cache.withFlags(IGNORE_RETURN_VALUES).remove(CACHE_KEY);
     }
 }

@@ -33,6 +33,7 @@ import org.zanata.page.BasePage;
 public class ManageUserAccountPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ManageUserAccountPage.class);
+
     public static String PASSWORD_ERROR = "Passwords do not match";
     private By passwordField = By.id("userdetailForm:password:input:password");
     private By passwordConfirmField =
@@ -42,6 +43,7 @@ public class ManageUserAccountPage extends BasePage {
     private By saveButton = By.id("userdetailForm:userdetailSave");
     private By cancelButton = By.id("userdetailForm:userdetailCancel");
     private Map<String, String> roleMap;
+    private String rolePrefix = "userdetailForm:roles:input:roles:";
 
     public ManageUserAccountPage(WebDriver driver) {
         super(driver);
@@ -53,61 +55,104 @@ public class ManageUserAccountPage extends BasePage {
         roleMap.put("user", "4");
     }
 
+    /**
+     * Enter a display name for the user
+     * @param fullName string to enter
+     * @return new ManageUserAccountPage
+     */
     public ManageUserAccountPage enterFullName(String fullName) {
         log.info("Enter name {}", fullName);
-        enterText(readyElement(fullNameField), fullName);
+        enterText(fullNameField, fullName);
         return new ManageUserAccountPage(getDriver());
     }
 
+    /**
+     * Get the current display name for the user
+     * @return display name string
+     */
     public String getCurrentName() {
         log.info("Query user's name");
-        return readyElement(fullNameField).getAttribute("value");
+        return getAttribute(fullNameField, "value");
     }
 
+    /**
+     * Enter a password for the user
+     * @param password string to enter
+     * @return new ManageUserAccountPage
+     */
     public ManageUserAccountPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        enterText(readyElement(passwordField), password);
+        enterText(passwordField, password);
         return new ManageUserAccountPage(getDriver());
     }
 
+    /**
+     * Enter a confirmation password for the user
+     * @param confirmPassword string to enter
+     * @return new ManageUserAccountPage
+     */
     public ManageUserAccountPage enterConfirmPassword(String confirmPassword) {
         log.info("Enter confirm password {}", confirmPassword);
-        enterText(readyElement(passwordConfirmField), confirmPassword);
+        enterText(passwordConfirmField, confirmPassword);
         return new ManageUserAccountPage(getDriver());
     }
 
+    /**
+     * Press the enabled checkbox
+     * @return new ManageUserAccountPage
+     */
     public ManageUserAccountPage clickEnabled() {
         log.info("Click Enabled");
         clickElement(enabledField);
         return new ManageUserAccountPage(getDriver());
     }
 
+    /**
+     * Press a named role checkbox
+     * @param role checkbox name to select
+     * @return new ManageUserAccountPage
+     */
     public ManageUserAccountPage clickRole(String role) {
         log.info("Click role {}", role);
-        clickElement(readyElement(By.id("userdetailForm:roles:input:roles:"
-                .concat(roleMap.get(role)))));
+        clickElement(By.id(rolePrefix.concat(roleMap.get(role))));
         return new ManageUserAccountPage(getDriver());
     }
 
+    /**
+     * Query if a named role is checked
+     * @param role name to query
+     * @return boolean is role checked
+     */
     public boolean isRoleChecked(String role) {
         log.info("Query is role {} checked", role);
-        return readyElement(By.id(
-                "userdetailForm:rolesField:roles:".concat(roleMap.get(role))))
+        return readyElement(By.id(rolePrefix.concat(roleMap.get(role))))
                         .isSelected();
     }
 
+    /**
+     * Press the Save button
+     * @return new ManageUserPage
+     */
     public ManageUserPage saveUser() {
         log.info("Click Save");
         clickElement(saveButton);
         return new ManageUserPage(getDriver());
     }
 
+    /**
+     * Press the Save button, expecting a failure condition
+     * @return new ManageUserAccountPage
+     */
     public ManageUserAccountPage saveUserExpectFailure() {
-        log.info("Click Save");
+        log.info("Click Save, expecting failure");
         clickElement(saveButton);
         return new ManageUserAccountPage(getDriver());
     }
 
+    /**
+     * Press the Cancel button
+     * @return new ManageUserPage
+     */
     public ManageUserPage cancelEditUser() {
         log.info("Click Cancel");
         clickElement(cancelButton);

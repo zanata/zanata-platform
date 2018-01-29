@@ -150,7 +150,7 @@ public class SeamDispatch implements Dispatch, Serializable {
             throw new AuthorizationError(e);
         } catch (Throwable e) {
             ctx.rollback();
-            log.error("Error dispatching action: " + e, e);
+            log.error("Error dispatching action", e);
             throw new ActionException(e);
         }
     }
@@ -216,7 +216,7 @@ public class SeamDispatch implements Dispatch, Serializable {
             throw new AuthorizationError(e);
         } catch (Throwable e) {
             ctx.rollback();
-            log.error("Error dispatching action: " + e, e);
+            log.error("Error dispatching action", e);
             throw new ActionException(e);
         }
     }

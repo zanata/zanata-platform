@@ -396,6 +396,56 @@ abstract class AbstractPage(val driver: WebDriver) {
     }
 
     /**
+     * Enter text into an element, using a locator
+     * @param findBy locator of element
+     * @param text text to enter
+     */
+    fun enterText(findBy: By, text: String) {
+        enterText(readyElement(findBy), text);
+    }
+
+    /**
+     * Retrieve the text from an element, using a locator
+     *
+     * @param findBy locator of target element
+     */
+    fun getText(findBy: By): String {
+        return getText(existingElement(findBy));
+    }
+
+    /**
+     * Retrieve the text from an element
+     *
+     * @param webElement target element
+     */
+    fun getText(webElement: WebElement): String {
+        scrollIntoView(webElement);
+        waitForElementReady(webElement);
+        return webElement.getText();
+    }
+
+    /**
+     * Retrieve an attribute value from an element, by locator
+     *
+     * @param findBy locator of target element
+     * @param attribute name of attribute to query
+     */
+    fun getAttribute(findBy: By, attribute: String): String {
+        return getAttribute(existingElement(findBy), attribute)
+    }
+
+    /**
+     * Retrieve an attribute value from an element
+     *
+     * @param webElement target element
+     * @param attribute name of attribute to query
+     */
+    fun getAttribute(webElement: WebElement, attribute: String): String {
+        return webElement.getAttribute(attribute) ?: ""
+    }
+
+
+    /**
      * 'Touch' a text field to see if it's writable. For cases where fields are
      * available but briefly won't accept text for some reason
 

@@ -425,7 +425,7 @@ public class CopyTransWorkFactory implements Serializable {
                     .validateWithServerRules(projectVersion, sources,
                             translations, ValidationAction.State.Error);
             if (!validationMessages.isEmpty()) {
-                log.warn(validationMessages.toString());
+                log.warn("Validation failed: {}", validationMessages);
                 return true;
             }
         }

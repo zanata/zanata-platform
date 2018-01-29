@@ -102,7 +102,7 @@ public class ValidateEmailAction implements Serializable {
 
     private boolean isExpiredDate(Date createdDate) {
         if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS)) {
-            log.info("Creation date expired:" + createdDate);
+            log.info("Creation date expired: {}", createdDate);
             facesMessages.addGlobal(SEVERITY_ERROR,
                     "Link expired. Please update your email again.");
             return true;

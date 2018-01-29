@@ -42,6 +42,7 @@ public abstract class BasicOptionsImpl implements BasicOptions {
     private boolean quiet = false;
     private boolean quietSet;
     private boolean interactiveMode = true;
+    private boolean interactiveModeSet;
     private List<CommandHook> commandHooks = new ArrayList<CommandHook>();
 
     public BasicOptionsImpl() {
@@ -109,6 +110,7 @@ public abstract class BasicOptionsImpl implements BasicOptions {
 
     @Override
     public void setInteractiveMode(boolean interactiveMode) {
+        interactiveModeSet = true;
         this.interactiveMode = interactiveMode;
     }
 
@@ -131,6 +133,11 @@ public abstract class BasicOptionsImpl implements BasicOptions {
     @Override
     public boolean isQuietSet() {
         return quietSet;
+    }
+
+    @Override
+    public boolean isInteractiveModeSet() {
+        return interactiveModeSet;
     }
 
     @Override

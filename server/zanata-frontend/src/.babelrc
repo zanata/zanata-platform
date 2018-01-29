@@ -1,0 +1,25 @@
+{
+  // Allows use of modern JavaScript syntax and JSX
+  "presets": [
+    "env",
+    // "react", // Currently brings in Flow, see below.
+    "stage-3"
+  ],
+
+  // Extracts strings for translation.
+  // Strings are output to .json files in the specified messagesDir
+  "plugins": [
+    ["react-intl", {
+      "messagesDir": "./build/messages/",
+      "enforceDescriptions": true
+    }],
+    // stage-2 plugins: (TODO remove them if practical)
+    "transform-class-properties",
+    // In Babel 6, preset-react brings in Flow, which we don't need.
+    // https://github.com/babel/babel/issues/6095
+    // TODO these jsx/react plugins can be replaced by preset-react in Babel 7
+    "syntax-jsx",
+    "transform-react-jsx",
+    "transform-react-display-name",
+  ]
+}

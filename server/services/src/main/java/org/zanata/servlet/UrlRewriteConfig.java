@@ -126,6 +126,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/account/register").to("/account/register.xhtml"))
                 .addRule(Join.path("/account/sign_out").to("/account/logout.xhtml"))
                 .addRule(Join.path("/account/ssologin").to("/account/ssologin.xhtml"))
+                .addRule(Join.path("/account/singleopenidlogin").to("/account/singleopenidlogin.xhtml"))
                 // open id return url
                 .addRule(Join.path("/openid").to("/account/openid.xhtml"))
                 .addRule(Join.path("/account/validate_email/{key}").to("/account/email_validation.xhtml"))
@@ -136,7 +137,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/dashboard/{section}").to("/dashboard/home.xhtml"))
                 .where("section").matches(".*")
 
-                .addRule(Join.path("/error/").to("/error.xhtml"))
+                .addRule(Join.path("/error/").to("/error/home.xhtml"))
                 .addRule(Join.pathNonBinding("/error/{path}").to("/error/{path}.xhtml"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.xhtml"))
 
@@ -181,7 +182,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/webtrans/Application.html").to("/webtrans/Application.xhtml")).when(Direction.isInbound())
                 .addRule(Join.path("/webtrans/translate").to("/webtrans/Application.xhtml"))
 
-                .addRule(Join.path("/404").to("/404.xhtml"))
+                .addRule(Join.path("/404").to("/error/404.xhtml"))
                 // OAuth authorization
                 .addRule(Join.path("/oauth/").to("/oauth/home.xhtml"))
                 ;

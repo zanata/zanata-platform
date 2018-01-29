@@ -31,6 +31,7 @@ import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.Account;
+import org.zanata.util.UrlUtil;
 
 @RequestScoped
 @Named("accountService")
@@ -62,6 +63,8 @@ public class AccountService implements AccountResource {
     private ZanataIdentity identity;
     @Inject
     private Session session;
+    @Inject
+    private UrlUtil urlUtil;
 
     @Override
     public Response get() {
@@ -73,7 +76,7 @@ public class AccountService implements AccountResource {
         }
         Account result = new Account();
         getAccountDetails(hAccount, result);
-        log.debug("HTTP GET result :\n" + result);
+        log.debug("HTTP GET result :\n{}", result);
         return Response.ok(result).build();
     }
 
@@ -87,7 +90,7 @@ public class AccountService implements AccountResource {
         if (hAccount == null) {
             // creating
             operation = "insert";
-            response = Response.created(uri.getAbsolutePath());
+            response = Response.created(urlUtil.restPathURI(uri.getPath()));
             hAccount = new HAccount();
             HPerson person = new HPerson();
             person.setAccount(hAccount);
