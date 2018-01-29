@@ -38,6 +38,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.InSessionScope;
 import org.junit.Before;
@@ -58,6 +59,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
@@ -74,6 +76,7 @@ import org.zanata.util.UrlUtil;
 @InRequestScope
 @InSessionScope
 @RunWith(CdiUnitRunner.class)
+@AdditionalClasses(CurrentUserImpl.class)
 public class NewProfileActionTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)

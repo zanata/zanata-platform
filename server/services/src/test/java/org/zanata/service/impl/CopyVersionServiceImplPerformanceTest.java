@@ -63,6 +63,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowBuilder;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.EntityManagerFactoryRule;
 import org.zanata.service.MockInitialContextRule;
@@ -93,7 +94,9 @@ import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
         FileSystemPersistService.class,
         TranslationStateCache.class,
         VersionStateCacheImpl.class,
-        ValidationServiceImpl.class })
+        ValidationServiceImpl.class,
+        CurrentUserImpl.class
+})
 public class CopyVersionServiceImplPerformanceTest extends ZanataTest {
     private static final Logger log = LoggerFactory
             .getLogger(CopyVersionServiceImplPerformanceTest.class);

@@ -28,9 +28,9 @@ import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.resource.UserResource;
 import org.zanata.rest.service.AccountService;
 import org.zanata.rest.service.GlossaryService;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 import com.google.common.base.Strings;
@@ -44,8 +44,7 @@ import com.google.common.base.Strings;
 @Transactional(readOnly = true)
 public class UserService implements UserResource {
     @Inject
-    @Authenticated
-    private HAccount authenticatedAccount;
+    private CurrentUser currentUser;
     @Inject
     private GravatarService gravatarServiceImpl;
     @Inject
@@ -67,10 +66,10 @@ public class UserService implements UserResource {
     @Override
     @CheckLoggedIn
     public Response getMyInfo() {
-        if (authenticatedAccount == null) {
+        if (!currentUser.isLoggedIn()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        User user = getUserInfo(authenticatedAccount, true);
+        User user = getUserInfo(currentUser.getAccount(), true);
         return Response.ok(user).build();
     }
 
@@ -85,14 +84,15 @@ public class UserService implements UserResource {
 
     @Override
     public Response getAccountDetails() {
-        if (authenticatedAccount == null) {
+        if (!currentUser.isLoggedIn()) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         HAccount account =
-                accountDAO.getByUsername(authenticatedAccount.getUsername());
+                accountDAO.getByUsername(currentUser.getUsername());
+        assert account != null;
         // we may not need to return apiKey (and generating it
         // without asking) anymore once client switched to OAuth
-        if (Strings.isNullOrEmpty(authenticatedAccount.getApiKey())) {
+        if (Strings.isNullOrEmpty(account.getApiKey())) {
             accountDAO.createApiKey(account);
         }
         Account dto = new Account();
@@ -103,7 +103,7 @@ public class UserService implements UserResource {
     @Override
     public Response getGlossaryPermission(
             @DefaultValue(GlossaryService.GLOBAL_QUALIFIED_NAME) String qualifiedName) {
-        if (authenticatedAccount == null) {
+        if (!currentUser.isLoggedIn()) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         Permission permission = new Permission();
@@ -134,7 +134,7 @@ public class UserService implements UserResource {
 
     @Override
     public Response getLocalesPermission() {
-        if (authenticatedAccount == null) {
+        if (!currentUser.isLoggedIn()) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         Permission permission = new Permission();
@@ -198,27 +198,24 @@ public class UserService implements UserResource {
     public Permission getUserPermission() {
         Permission permission = new Permission();
         boolean isAdmin = false;
-        if (authenticatedAccount != null) {
+        if (currentUser.isLoggedIn()) {
             isAdmin = identity.hasRole("admin");
         }
         permission.put("isAdmin", isAdmin);
-        permission.put("isLoggedIn", authenticatedAccount != null);
+        permission.put("isLoggedIn", currentUser.isLoggedIn());
         return permission;
     }
 
     public UserService() {
     }
 
-    @java.beans.ConstructorProperties({ "authenticatedAccount",
-            "gravatarServiceImpl", "accountDAO", "personDAO", "projectDAO",
-            "identity", "applicationConfiguration" })
-    protected UserService(final HAccount authenticatedAccount,
+    protected UserService(final CurrentUser currentUser,
             final GravatarService gravatarServiceImpl,
             final AccountDAO accountDAO, final PersonDAO personDAO,
             final ProjectDAO projectDAO, final ZanataIdentity identity,
             final ApplicationConfiguration applicationConfiguration,
             final IdentityManager identityManager) {
-        this.authenticatedAccount = authenticatedAccount;
+        this.currentUser = currentUser;
         this.gravatarServiceImpl = gravatarServiceImpl;
         this.accountDAO = accountDAO;
         this.personDAO = personDAO;
@@ -240,7 +237,7 @@ public class UserService implements UserResource {
     public Response getSettings(String prefix) {
         String dotPrefix = prefix + ".";
         int trim = dotPrefix.length();
-        HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+        HAccount account = accountDAO.findById(currentUser.getAccount().getId(), true);
         Map<String, String> options = new HashMap<String, String>();
         account.getEditorOptions().values().stream()
             .filter(o -> o.getName().startsWith(dotPrefix))
@@ -256,7 +253,7 @@ public class UserService implements UserResource {
      */
     @Transactional(readOnly = false)
     public Response postSettings(String prefix, Map<String, String> settings) {
-        HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+        HAccount account = accountDAO.findById(currentUser.getAccount().getId(), true);
         for (Map.Entry<String, String> entry : settings.entrySet()) {
             String name = prefix + "." + entry.getKey();
             // Look up the existing option

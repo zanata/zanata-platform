@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
+import org.zanata.seam.security.AltCurrentUser;
 import org.zanata.security.ZanataIdentity;
 
 import java.util.List;
@@ -17,8 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     private ProjectDAO dao;
-
     private PersonDAO personDAO;
+    private AltCurrentUser currentUser = new AltCurrentUser();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -37,7 +38,8 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     @Before
     public void setup() {
-        dao = new ProjectDAO((Session) getEm().getDelegate());
+        dao = new ProjectDAO((Session) getEm().getDelegate(),
+                currentUser);
         personDAO = new PersonDAO((Session) getEm().getDelegate());
     }
 
@@ -115,7 +117,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
     @Test
     public void getOffsetListPrivateProject() {
         HPerson person = personDAO.findById(4L);
-        dao.setAuthenticatedAccount(person.getAccount());
+        currentUser.account = person.getAccount();
         List<HProject> projects = dao.getOffsetList(-1, -1, false, false, false);
         assertThat(projects).hasSize(5);
     }

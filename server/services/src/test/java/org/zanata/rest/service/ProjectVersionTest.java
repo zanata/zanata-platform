@@ -17,6 +17,7 @@ import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
@@ -52,6 +54,7 @@ import org.zanata.webtrans.shared.rpc.MergeRule;
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
+@AdditionalClasses(CurrentUserImpl.class)
 public class ProjectVersionTest extends ZanataDbunitJpaTest {
 
     @Inject
