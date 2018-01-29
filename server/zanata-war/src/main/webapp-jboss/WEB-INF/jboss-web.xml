@@ -17,6 +17,11 @@ in case changes are required for production deployment (eg Ansible playbooks).
   </resource-ref>
 
   <resource-ref>
+    <res-ref-name>infinispan/hibernate-search</res-ref-name>
+    <jndi-name>java:jboss/infinispan/container/hibernate-search</jndi-name>
+  </resource-ref>
+
+  <resource-ref>
     <res-ref-name>mail/Default</res-ref-name>
     <jndi-name>java:jboss/mail/Default</jndi-name>
   </resource-ref>

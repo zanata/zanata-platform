@@ -106,15 +106,15 @@
 
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
-        value="org.hibernate.search.store.impl.FSDirectoryProvider" />
+        value="infinispan" />
       <property name="hibernate.search.default.locking_strategy"
         value="simple" />
 
       <!-- to use an existing cache manager (Good for external configuration) -->
-      <!--<property name="hibernate.search.infinispan.cachemanager_jndiname"
-        value="java:jboss/infinispan/container/hibernate-search"/>-->
+      <property name="hibernate.search.infinispan.cachemanager_jndiname"
+        value="java:jboss/infinispan/container/hibernate-search"/>
       <!-- 50 Meg chunk size by default -->
-      <!--<property name="hibernate.search.infinispan.chunk_size" value="52428800"/>
+      <property name="hibernate.search.infinispan.chunk_size" value="52428800"/>
       <property name="hibernate.search.infinispan.indexwriter.ram_buffer_size"
         value="30"/>
       <property
@@ -122,7 +122,7 @@
         value="21"/>
       <property
         name="hibernate.search.infinispan.indexwriter.merge_max_size"
-        value="21"/>-->
+        value="21"/>
       <property name="hibernate.search.lucene_version" value="LUCENE_5_3_1" />
       <property name="hibernate.search.worker.batch_size" value="50" />
 

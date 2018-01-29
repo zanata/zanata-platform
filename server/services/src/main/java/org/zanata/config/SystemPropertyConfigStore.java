@@ -66,7 +66,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
      * @see SystemConfigStartupCheck
      */
     private static final Set<String> REQUIRED_PROP_KEYS = ImmutableSet
-            .of(KEY_ZANATA_HOME, KEY_JAVAMELODY_STORAGE_DIRECTORY, KEY_HIBERNATE_SEARCH_INDEX_BASE);
+            .of(KEY_ZANATA_HOME, KEY_JAVAMELODY_STORAGE_DIRECTORY);
 
     /**
      * Server-wide switch to enable/disable OAuth support
