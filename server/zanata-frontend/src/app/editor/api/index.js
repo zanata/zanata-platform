@@ -5,7 +5,7 @@
 // The relevant docs for this fetch are at
 // https://www.npmjs.com/package/whatwg-fetch
 // (it is just a wrapper around whatwg-fetch)
-const fetch = require('isomorphic-fetch')
+import fetch from 'isomorphic-fetch'
 import { encode } from '../utils/doc-id-util'
 import {
   STATUS_UNTRANSLATED,

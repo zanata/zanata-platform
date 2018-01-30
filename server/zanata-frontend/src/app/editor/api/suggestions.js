@@ -1,4 +1,4 @@
-const fetch = require('isomorphic-fetch')
+import fetch from 'isomorphic-fetch'
 import { apiUrl } from '../../config'
 import { chain, sortBy } from 'lodash'
 import { oneLiner } from '../utils/string-utils'
