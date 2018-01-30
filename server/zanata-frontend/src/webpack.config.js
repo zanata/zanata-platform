@@ -20,6 +20,10 @@ var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 var cssNano = require('cssnano')
+// `CheckerPlugin` is optional. Use it if you want async error reporting.
+// We need this plugin to detect a `--watch` mode. It may be removed later
+// after https://github.com/webpack/webpack/issues/3460 will be resolved.
+const { CheckerPlugin } = require('awesome-typescript-loader')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
@@ -221,6 +225,8 @@ module.exports = function (env) {
             callback();
         })
       },
+
+      new CheckerPlugin(),
 
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
