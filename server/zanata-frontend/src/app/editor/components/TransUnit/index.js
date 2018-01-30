@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 import { GLOSSARY_TAB } from '../../reducers/ui-reducer'
 import { getSuggestionsPanelVisible } from '../../reducers'
 import TransUnitStatus from '../TransUnitStatus'

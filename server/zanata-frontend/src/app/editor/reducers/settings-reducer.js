@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-const update /* TS: import update */ = require('immutability-helper')
+import update from 'immutability-helper'
 import { createSelector } from 'reselect'
 import { has, keys, mapValues, omit, pick } from 'lodash'
 import {

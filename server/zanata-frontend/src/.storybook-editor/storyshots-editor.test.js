@@ -1,4 +1,4 @@
-const initStoryshots /* TS: import initStoryshots */ = require('@storybook/addon-storyshots').default
+import initStoryshots from '@storybook/addon-storyshots'
 import {
   mockAddons,
   notNoTestRegex,

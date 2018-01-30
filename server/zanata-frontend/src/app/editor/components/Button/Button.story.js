@@ -1,5 +1,5 @@
 import * as React from 'react'
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 import { storiesOf, action } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import { host } from 'storybook-host'

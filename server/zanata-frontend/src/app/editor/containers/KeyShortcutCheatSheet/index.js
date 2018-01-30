@@ -1,4 +1,4 @@
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 import { Icon } from '../../../components'
 import KeyCombinations from '../../components/KeyCombinations'
 import { chain, each, map, values } from 'lodash'

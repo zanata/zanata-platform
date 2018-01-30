@@ -7,7 +7,7 @@ import {
   LOCALE_SELECTED,
   STATS_FETCHED
 } from '../actions/header-action-types'
-const update /* TS: import update */ = require('immutability-helper')
+import update from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
 import { dashboardUrl, projectPageUrl } from '../api'
 

@@ -1,4 +1,4 @@
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
 

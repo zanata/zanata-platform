@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 import IconButton from '../IconButton'
 import * as React from 'react'
 import * as PropTypes from 'prop-types'

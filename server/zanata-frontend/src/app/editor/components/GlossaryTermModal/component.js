@@ -4,7 +4,7 @@ import { Panel, Row, Table } from 'react-bootstrap'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { Icon, LoaderText, Modal } from '../../../components'
 import { isEmpty } from 'lodash'
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 
 /**
  * Modal to show detail for a single glossary term

@@ -1,4 +1,4 @@
-const update /* TS: import update */ = require('immutability-helper')
+import update from 'immutability-helper'
 import { handleActions } from 'redux-actions'
 import {
   OPEN_DROPDOWN, CLOSE_DROPDOWN, TOGGLE_DROPDOWN

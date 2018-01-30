@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-const update /* TS: import update */ = require('immutability-helper')
+import update from 'immutability-helper'
 import {
   DIFF_SETTING_CHANGED,
   PHRASE_SUGGESTION_STARTED_COPYING,

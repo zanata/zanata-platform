@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {storiesOf} from '@storybook/react'
 import {Icon} from '../'
-const iconList = require('../Icon/list')
+import iconList from '../Icon/list'
 import {Table, Well} from 'react-bootstrap'
 
 function renderIcon(name, size) {

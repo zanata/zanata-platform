@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-const update /* TS: import update */ = require('immutability-helper')
+import update from 'immutability-helper'
 import phraseFilterReducer, { defaultState as defaultFilterState }
   from './phrase-filter-reducer'
 import { composeReducers, subReducer } from 'redux-sac'

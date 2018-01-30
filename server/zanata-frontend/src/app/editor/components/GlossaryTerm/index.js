@@ -7,7 +7,7 @@ import * as PropTypes from 'prop-types'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 
 class GlossaryTerm extends React.Component {
   static propTypes = {

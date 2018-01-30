@@ -6,7 +6,7 @@
  *   enhanced: watch('myWatcher')(selector)
  */
 
-const reduxWatch = require('redux-watch')
+import reduxWatch from 'redux-watch'
 
 const withLog = name => f => {
   if (process.env && (process.env.NODE_ENV === 'development')) {

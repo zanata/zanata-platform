@@ -21,7 +21,7 @@
 
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 import Button from './Button'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'

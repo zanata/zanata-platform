@@ -19,7 +19,7 @@ import {
   SUGGESTION_PANEL_HEIGHT_CHANGE
 } from '../actions/suggestions-action-types'
 import { prepareLocales } from '../utils/Util'
-const update /* TS: import update */ = require('immutability-helper')
+import update from 'immutability-helper'
 
 // TODO extract this to a common config
 export const DEFAULT_LOCALE = {

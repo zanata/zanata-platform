@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-const cx /* TS: import cx */ = require('classnames')
+import cx from 'classnames'
 import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
 import * as React from 'react'

@@ -1,5 +1,5 @@
 import {handleActions} from 'redux-actions'
-const update /* TS: import update */ = require('immutability-helper')
+import update from 'immutability-helper'
 import {
   GET_ALL_CRITERIA_SUCCESS,
   ADD_CRITERION_SUCCESS,

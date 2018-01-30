@@ -1,4 +1,4 @@
-const moment /* TS: import moment */ = require('moment')
+import moment from 'moment'
 // this import MUST come after import for moment
 import 'moment-range'
 import { isEmpty, findKey } from 'lodash'

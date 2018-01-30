@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-const moment /* TS: import moment */ = require('moment')
+import moment from 'moment'
 import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
