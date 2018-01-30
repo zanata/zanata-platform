@@ -1,4 +1,10 @@
 {
+    "awesomeTypescriptLoaderOptions": {
+        "reportFiles": [
+            "app/**/*.{js,jsx,ts,tsx}"
+        ],
+        "useCache": true
+    },
     "compilerOptions": {
         "allowJs": true,
         "checkJs": false,
