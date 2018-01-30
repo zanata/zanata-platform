@@ -1,6 +1,8 @@
-import moment from 'moment'
-// this import MUST come after import for moment
-import 'moment-range'
+// @ts-check
+import * as Moment from 'moment'
+import { extendMoment } from 'moment-range'
+const moment = extendMoment(Moment)
+
 import { isEmpty, findKey } from 'lodash'
 
 var DateHelper = {
@@ -16,7 +18,7 @@ var DateHelper = {
     var dates = []
     const range = moment.range(fromDate, toDate)
 
-    range.by('days', function (moment) {
+    Array.from(range.by('days')).forEach(moment => {
       dates.push(moment.format(dateFormat))
     })
 
