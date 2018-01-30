@@ -2,7 +2,7 @@
  * Displays just the content text for source and translation of a suggestion
  */
 
-import * as React from 'react'
+import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import SuggestionContents from '../../components/SuggestionContents'

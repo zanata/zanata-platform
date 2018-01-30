@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import cx from 'classnames'
 import { GLOSSARY_TAB } from '../../reducers/ui-reducer'
