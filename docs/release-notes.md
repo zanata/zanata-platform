@@ -5,6 +5,58 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
 
 ##### Changes
  * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+ * [ZNTA-2326](https://zanata.atlassian.net/browse/ZNTA-2326) - Remove overlay
+ * [ZNTA-2308](https://zanata.atlassian.net/browse/ZNTA-2308) - Expand contents of frontend-storybook
+ * [ZNTA-2293](https://zanata.atlassian.net/browse/ZNTA-2293) - Changes to project version sidebar design
+ * [ZNTA-2280](https://zanata.atlassian.net/browse/ZNTA-2280) - Add descriptions to all waitFor instances in FT
+ * [ZNTA-2252](https://zanata.atlassian.net/browse/ZNTA-2252) - Prep for frontend/editor css merge
+ * [ZNTA-2233](https://zanata.atlassian.net/browse/ZNTA-2233) - Add more linting rules to stylelintrc
+ * [ZNTA-2231](https://zanata.atlassian.net/browse/ZNTA-2231) - Add a css linter to frontend
+ * [ZNTA-2230](https://zanata.atlassian.net/browse/ZNTA-2230) - Improve frontend caching
+ * [ZNTA-2225](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+ * [ZNTA-2224](https://zanata.atlassian.net/browse/ZNTA-2224) - Tidy up editor css
+ * [ZNTA-2219](https://zanata.atlassian.net/browse/ZNTA-2219) - Nice-ify the glossary count in alpha editor
+ * [ZNTA-2216](https://zanata.atlassian.net/browse/ZNTA-2216) - Admin page to define review criteria
+ * [ZNTA-2215](https://zanata.atlassian.net/browse/ZNTA-2215) - Reject criteria in gwt editor
+ * [ZNTA-2197](https://zanata.atlassian.net/browse/ZNTA-2197) - Unmaintained Hibernate Search config for some entities
+ * [ZNTA-2176](https://zanata.atlassian.net/browse/ZNTA-2176) - Update project "invite only" to "private"
+ * [ZNTA-2174](https://zanata.atlassian.net/browse/ZNTA-2174) - Limit push/pull/download resources in private project
+ * [ZNTA-2173](https://zanata.atlassian.net/browse/ZNTA-2173) - Hide 'private' project
+ * [ZNTA-1952](https://zanata.atlassian.net/browse/ZNTA-1952) - More focused PR template
+ * [ZNTA-1694](https://zanata.atlassian.net/browse/ZNTA-1694) - Implement People frontend
+ * [ZNTA-1668](https://zanata.atlassian.net/browse/ZNTA-1668) - Translator should be able to see untranslated glossary entries
+ * [ZNTA-1227](https://zanata.atlassian.net/browse/ZNTA-1227) - Switch client/common code from hamcrest assert to assertj
+
+##### Bug Fixes
+ * [ZNTA-2367](https://zanata.atlassian.net/browse/ZNTA-2367) - Lucene error
+ * [ZNTA-2363](https://zanata.atlassian.net/browse/ZNTA-2363) - Fix width of project version language list items
+ * [ZNTA-2362](https://zanata.atlassian.net/browse/ZNTA-2362) - TM creation date is not aligned properly.
+ * [ZNTA-2361](https://zanata.atlassian.net/browse/ZNTA-2361) - Review Criteria description field is a text area and not limited
+ * [ZNTA-2360](https://zanata.atlassian.net/browse/ZNTA-2360) - Review Criteria can be created without defined criteria, is unusable
+ * [ZNTA-2353](https://zanata.atlassian.net/browse/ZNTA-2353) - Cannot add a Yahoo/Fedora account to an existing account
+ * [ZNTA-2345](https://zanata.atlassian.net/browse/ZNTA-2345) - Request add version to group Send button permanently disabled
+ * [ZNTA-2344](https://zanata.atlassian.net/browse/ZNTA-2344) - GWT editor text size in target does not change with option
+ * [ZNTA-2342](https://zanata.atlassian.net/browse/ZNTA-2342) - React editor: filtering by state breaks keyboard navigation
+ * [ZNTA-2327](https://zanata.atlassian.net/browse/ZNTA-2327) - Yellowish glossary page. 
+ * [ZNTA-2320](https://zanata.atlassian.net/browse/ZNTA-2320) - Frontend watch tasks failing
+ * [ZNTA-2317](https://zanata.atlassian.net/browse/ZNTA-2317) - [ERROR] "parseQuery() will be replaced with getOptions()" while zanata build.
+ * [ZNTA-2307](https://zanata.atlassian.net/browse/ZNTA-2307) - Fix translation count in alpha editor
+ * [ZNTA-2273](https://zanata.atlassian.net/browse/ZNTA-2273) - Zanata behind proxy may return incorrect url in REST response
+ * [ZNTA-2247](https://zanata.atlassian.net/browse/ZNTA-2247) - Glossary csv upload assumes column positions
+ * [ZNTA-2241](https://zanata.atlassian.net/browse/ZNTA-2241) - Translation Status Dropdown Button in Alpha Editor not working
+ * [ZNTA-2240](https://zanata.atlassian.net/browse/ZNTA-2240) - Alpha editor sidebar closes when any area is clicked
+ * [ZNTA-2214](https://zanata.atlassian.net/browse/ZNTA-2214) - Fix help redirects
+ * [ZNTA-2212](https://zanata.atlassian.net/browse/ZNTA-2212) - Consistency of headings, buttons and text in frontend
+ * [ZNTA-1375](https://zanata.atlassian.net/browse/ZNTA-1375) - Zanata allows invalid email address, fails to send verification email
+ * [ZNTA-1117](https://zanata.atlassian.net/browse/ZNTA-1117) - Zanata client help needs to be specific about command argument order
+ * [ZNTA-747](https://zanata.atlassian.net/browse/ZNTA-747) - RTL Support
+ * [ZNTA-166](https://zanata.atlassian.net/browse/ZNTA-166) - Client reports 405 error when pushing files with no basename
+ * [ZNTA-110](https://zanata.atlassian.net/browse/ZNTA-110) - Suggestion view should highlight matching text of results when diff view is turned off.
+ * [ZNTA-68](https://zanata.atlassian.net/browse/ZNTA-68) - Highlight words in text flows that match filter text.
+ * [ZNTA-53](https://zanata.atlassian.net/browse/ZNTA-53) - Add text flow history to activity panel.
+
+-----------------------
+
 ## 4.3.3
 ##### Bug Fixes
  * [ZNTA-2303](https://zanata.atlassian.net/browse/ZNTA-2303) - Single open id provider sign in shows 404 after sign in

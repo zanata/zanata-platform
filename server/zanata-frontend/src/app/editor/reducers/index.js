@@ -35,6 +35,8 @@ export const getEnterSavesImmediately = createSelector(
   getSettings, settingsSelectors.getEnterSavesImmediately)
 export const getSyntaxHighlighting = createSelector(
   getSettings, settingsSelectors.getSyntaxHighlighting)
+export const getSuggestionsDiff = createSelector(
+  getSettings, settingsSelectors.getSuggestionsDiff)
 export const getShortcuts = createSelector(
   getSettings, settingsSelectors.getShortcuts)
 

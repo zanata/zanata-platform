@@ -20,7 +20,6 @@ describe('suggestions-reducer test', () => {
     expect(suggestionsReducer(undefined, {})).toEqual({
       searchType: 'phrase',
       showDetailModalForIndex: undefined,
-      showDiff: true,
       textSearch: {
         loading: false,
         searchStrings: [],
@@ -35,13 +34,6 @@ describe('suggestions-reducer test', () => {
         }
       }
     })
-  })
-
-  it('can toggle showing diff', () => {
-    const off = suggestionsReducer(undefined, { type: DIFF_SETTING_CHANGED })
-    const on = suggestionsReducer(off, { type: DIFF_SETTING_CHANGED })
-    expect(off.showDiff).toEqual(false)
-    expect(on.showDiff).toEqual(true)
   })
 
   it('can begin and end phrase copying', () => {

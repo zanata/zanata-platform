@@ -5,6 +5,7 @@ import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
   from 'react-bootstrap'
 import { Icon, TextInput, SelectableDropdown } from '../../components'
 import Toggle from 'react-toggle'
+import { isEmpty } from 'lodash'
 /**
  * Reject Translations Administration panel
  */
@@ -106,6 +107,7 @@ class RejectionsForm extends Component {
       criterionId
     } = this.props
     const textState = priorityToTextState(this.state.priority)
+    const error = isEmpty(this.state.description)
     const title = <span className={textState}>{this.state.priority}</span>
     const priorityDisabled = !isAdminMode && !editable
     const deleteBtn = displayDelete
@@ -126,7 +128,8 @@ class RejectionsForm extends Component {
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
         <OverlayTrigger placement='top' overlay={tooltip}>
-          <Button bsStyle='primary' className={className} onClick={this.onSave}>
+          <Button bsStyle='primary' className={className} onClick={this.onSave}
+            disabled={error}>
             <Icon name='tick' className='s0 iconEdit' />
           </Button>
         </OverlayTrigger>
