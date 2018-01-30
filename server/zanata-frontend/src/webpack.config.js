@@ -212,6 +212,16 @@ module.exports = function (env) {
     devtool: "source-map",
     */
     plugins: _.compact([
+      // This makes it easier to see if watch has picked up changes yet.
+      // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
+      // There's probably a config option for this (stats?) but I can't find it.
+      function() {
+        this.plugin('watch-run', function(watching, callback) {
+            console.log('Begin compile at ' + new Date());
+            callback();
+        })
+      },
+
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
       new ExtractTextPlugin({
