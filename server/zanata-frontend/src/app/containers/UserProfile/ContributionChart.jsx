@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import utilsDate from '../../utils/DateHelper'
 import { Line as LineChart } from 'react-chartjs-2'

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Sidebar from '.'
 import AboutPage from '../../containers/ProjectVersion/AboutPage'

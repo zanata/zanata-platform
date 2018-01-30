@@ -1,6 +1,6 @@
 /* global jest describe it expect */
 
-import * as React from 'react'
+import React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'

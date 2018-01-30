@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 const moment /* TS: import moment */ = require('moment')
 import { range } from 'lodash'
