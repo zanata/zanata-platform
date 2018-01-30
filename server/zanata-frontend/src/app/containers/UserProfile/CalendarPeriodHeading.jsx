@@ -1,9 +1,9 @@
 // @ts-check
 import * as PropTypes from 'prop-types'
-import React, {StatelessComponent} from 'react'
+import React from 'react'
 import dateUtils from '../../utils/DateHelper'
 
-/** @type { StatelessComponent<{selectedDay, dateRange, props?}> } */
+/** @type { React.StatelessComponent<{selectedDay, dateRange, props?}> } */
 const CalendarPeriodHeading = ({
   selectedDay,
   dateRange,
