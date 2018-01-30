@@ -2,8 +2,10 @@
     "compilerOptions": {
         "allowJs": true,
         "checkJs": false,
-        // "esModuleInterop": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
         "importHelpers": true,
+        "skipLibCheck": true,
         "jsx": "react",
         "lib": [
             // We transpile to ES5 syntax, but we use babel-polyfill

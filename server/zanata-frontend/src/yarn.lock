@@ -10462,9 +10462,13 @@ typescript-react-intl@^0.1.7:
   dependencies:
     typescript "^2.3.4"
 
-typescript@*, typescript@^2.3.4, typescript@^2.6.2:
+typescript@*, typescript@^2.3.4:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.6.2.tgz#3c5b6fd7f6de0914269027f03c0946758f7673a4"
+
+typescript@rc:
+  version "2.7.0-rc"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.7.0-rc.tgz#bf86a065a3a0be1e072c3fb7d64e8976f33b8365"
 
 ua-parser-js@^0.7.9:
   version "0.7.17"
