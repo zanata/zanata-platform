@@ -21,7 +21,7 @@
 
 import cx from 'classnames'
 import { connect } from 'react-redux'
-import * as React from 'react'
+import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'

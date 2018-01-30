@@ -1,5 +1,5 @@
 
-import * as React from 'react'
+import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'

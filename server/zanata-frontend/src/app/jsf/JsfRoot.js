@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
 import { Router, Route } from 'react-router'

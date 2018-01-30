@@ -1,6 +1,6 @@
 /* global jest describe it expect */
 
-import * as React from 'react'
+import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import CancellableProgressBar from './CancellableProgressBar'
 import { ProgressBar } from 'react-bootstrap'

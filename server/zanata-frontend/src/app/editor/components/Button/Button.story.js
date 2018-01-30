@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import cx from 'classnames'
 import { storiesOf, action } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'

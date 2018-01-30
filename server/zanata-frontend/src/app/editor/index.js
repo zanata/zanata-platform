@@ -1,5 +1,5 @@
 import 'babel-polyfill'
-import * as React from 'react'
+import React from 'react'
 import * as ReactDOM from 'react-dom'
 import { appUrl, serverUrl } from '../config'
 import { locale, formats } from './config/intl'
