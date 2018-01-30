@@ -27,6 +27,7 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
  * [ZNTA-1227](https://zanata.atlassian.net/browse/ZNTA-1227) - Switch client/common code from hamcrest assert to assertj
 
 ##### Bug Fixes
+ * [ZNTA-2367](https://zanata.atlassian.net/browse/ZNTA-2367) - Lucene error
  * [ZNTA-2363](https://zanata.atlassian.net/browse/ZNTA-2363) - Fix width of project version language list items
  * [ZNTA-2362](https://zanata.atlassian.net/browse/ZNTA-2362) - TM creation date is not aligned properly.
  * [ZNTA-2361](https://zanata.atlassian.net/browse/ZNTA-2361) - Review Criteria description field is a text area and not limited
