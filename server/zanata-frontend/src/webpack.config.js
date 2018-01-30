@@ -153,6 +153,8 @@ module.exports = function (env) {
           }
         },
 
+        // TODO add tslint for tsx? files
+
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
         {
@@ -212,9 +214,6 @@ module.exports = function (env) {
       ])
     },
 
-    /* TODO
-    devtool: "source-map",
-    */
     plugins: _.compact([
       // This makes it easier to see if watch has picked up changes yet.
       // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
@@ -297,6 +296,6 @@ module.exports = function (env) {
     /* fail on first error */
     bail: fullBuild,
 
-    devtool: prod ? 'source-map' : 'eval'
+    devtool: prod ? 'source-map' : 'eval-source-map'
   })
 }
