@@ -92,6 +92,9 @@ public class AuthenticationManager implements Serializable {
     private boolean saml2Enabled;
     @Inject
     private SamlIdentity samlIdentity;
+    @Inject
+    private SamlAccountService samlAccountService;
+
 
     /**
      * Logs in a user using a specified authentication type.
@@ -182,7 +185,8 @@ public class AuthenticationManager implements Serializable {
     public void ssoLogin() {
         if (saml2Enabled) {
             samlIdentity.authenticate();
-
+            // here we try to auto merge account if email matches
+            samlAccountService.tryMergeToExistingAccount();
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
                     && isAccountEnabledAndActivated()) {
                 samlIdentity.login();

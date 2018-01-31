@@ -22,7 +22,6 @@ package org.zanata.servlet
 
 import com.google.common.annotations.VisibleForTesting
 import org.zanata.security.AuthenticationManager
-import org.zanata.security.SamlAccountService
 import org.zanata.security.SamlAttributes
 import org.zanata.util.UrlUtil
 import java.io.IOException
@@ -49,16 +48,13 @@ class SAMLFilter() : Filter {
     private lateinit var urlUtil: UrlUtil
     @Inject
     private lateinit var samlAttributes: SamlAttributes
-    @Inject
-    private lateinit var samlAccountService: SamlAccountService
 
     @VisibleForTesting
     constructor(authenticationManager: AuthenticationManager, urlUtil: UrlUtil,
-                samlAttributes: SamlAttributes, samlAccountService: SamlAccountService) : this() {
+                samlAttributes: SamlAttributes) : this() {
         this.authenticationManager = authenticationManager
         this.urlUtil = urlUtil
         this.samlAttributes = samlAttributes
-        this.samlAccountService = samlAccountService
     }
 
     @Throws(ServletException::class)
@@ -70,8 +66,6 @@ class SAMLFilter() : Filter {
         if (request is HttpServletRequest) {
             if (samlAttributes.isAuthenticated) {
                 authenticationManager.ssoLogin()
-                // here we try to auto merge account if email matches
-                samlAccountService.tryMergeToExistingAccount()
                 performRedirection(response as HttpServletResponse)
                 return
             }

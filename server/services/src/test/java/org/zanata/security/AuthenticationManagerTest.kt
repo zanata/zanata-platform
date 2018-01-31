@@ -70,6 +70,8 @@ class AuthenticationManagerTest {
     private lateinit var samlIdentity: SamlIdentity
     @Inject
     private lateinit var authenticationManager: AuthenticationManager
+    @Mock
+    @Produces private lateinit var samlAccountService: SamlAccountService
 
     @Test
     @InRequestScope
@@ -105,5 +107,19 @@ class AuthenticationManagerTest {
         authenticationManager.onLoginCompleted(LoginCompleted(AuthenticationType.SAML2))
 
         verify(identity, never()).addRole(anyString())
+    }
+
+    @Test
+    @InRequestScope
+    fun onSSOLogin() {
+        given(identity.credentials).willReturn(credentials)
+        val username = "admin"
+        given(credentials.username).willReturn(username)
+        given(identityStore.isUserEnabled(username)).willReturn(true)
+
+        authenticationManager.ssoLogin()
+
+        verify(samlIdentity).authenticate()
+        verify(samlAccountService).tryMergeToExistingAccount()
     }
 }
