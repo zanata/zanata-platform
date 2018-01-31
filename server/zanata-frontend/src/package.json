@@ -3,8 +3,13 @@
   "version": "1.1.0",
   "description": "Zanata front-end package",
   "main": "index.js",
+  "//": "engines: NB ver ranges should match .nvmrc and ../pom.xml",
+  "engines": {
+    "node": ">=8.1.3",
+    "yarn": ">=0.27.5"
+  },
   "scripts": {
-    "check": "check-node-version --node $(cat .nvmrc) --yarn $(cat .yarn-version) --print",
+    "check": "node scripts/check-engines",
     "js": "yarn run check && webpack",
     "build": "yarn run check && node scripts/build",
     "draft": "yarn run check && node scripts/build --draft",
@@ -92,6 +97,7 @@
     "@types/webpack-merge": "^4.1.1",
     "autoprefixer-loader": "3.2.0",
     "babel-eslint": "6.1.0",
+    "check-engines": "^1.5.0",
     "classnames": "2.2.5",
     "css-loader": "0.28.8",
     "csso-loader": "0.0.6",
@@ -146,7 +152,6 @@
     "babel-polyfill": "6.9.1",
     "caniuse-lite": "1.0.30000745",
     "chart.js": "2.7.1",
-    "check-node-version": "3.2.0",
     "cli-color": "1.2.0",
     "combokeys": "2.4.6",
     "defined": "1.0.0",
