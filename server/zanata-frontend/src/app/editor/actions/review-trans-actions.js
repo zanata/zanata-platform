@@ -25,8 +25,8 @@ export function addNewReview (review, localeId) {
   const body = {
     transUnitId: 154,
     revision: 1,
-    comment: 'This translation makes absolutely no sense.',
-    reviewCriteriaId: 1,
+    comment: review.reviewComment,
+    reviewCriteriaId: review.criteriaId,
     status: 'Rejected'
   }
   return {

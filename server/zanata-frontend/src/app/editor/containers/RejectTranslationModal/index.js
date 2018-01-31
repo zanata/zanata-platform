@@ -13,6 +13,7 @@ import update from 'immutability-helper'
 export const MINOR = 'Minor'
 export const MAJOR = 'Major'
 export const CRITICAL = 'Critical'
+export const priorities = [MINOR, MAJOR, CRITICAL]
 
 /**
  * Modal to collect feedback on the reason for rejecting a translation.
@@ -46,8 +47,11 @@ export class RejectTranslationModal extends Component {
   defaultState = {
     review: {
       id: 0,
-      selectedPriority: 'Minor',
-      selectedCriteria: ''
+      selectedPriority: MINOR,
+      priorityId: 0,
+      selectedCriteria: '',
+      criteriaId: 0,
+      reviewComment: ''
     }
   }
   constructor (props) {
@@ -57,23 +61,36 @@ export class RejectTranslationModal extends Component {
   componentWillReceiveProps (nextProps) {
     this.setState(prevState => ({
       review: update(prevState.review, {
-        selectedCriteria: {$set: nextProps.criteria[0].description}
+        selectedCriteria: {$set: nextProps.criteria[0].description},
+        selectedPriority: {$set: nextProps.priority}
       })
     }))
   }
   onPriorityChange = (event) => {
     event.persist()
+    const priorityIdIndex = priorities.indexOf(event.target.innerText)
     this.setState(prevState => ({
       review: update(prevState.review, {
-        selectedPriority: {$set: event.target.innerText}
+        selectedPriority: {$set: event.target.innerText},
+        priorityId: {$set: priorityIdIndex}
       })
     }))
   }
   onCriteriaChange = (event) => {
     event.persist()
+    const criteriaIdIndex = this.props.criteria.indexOf(event.target.innerText)
     this.setState(prevState => ({
       review: update(prevState.review, {
-        selectedCriteria: {$set: event.target.innerText}
+        selectedCriteria: {$set: event.target.innerText},
+        criteriaId: {$set: criteriaIdIndex}
+      })
+    }))
+  }
+  setReviewComment = (event) => {
+    event.persist()
+    this.setState(prevState => ({
+      review: update(prevState.review, {
+        reviewComment: {$set: event.target.value}
       })
     }))
   }
@@ -119,6 +136,7 @@ export class RejectTranslationModal extends Component {
               type="comment"
               placeholder="Provide a comment for why this translation has been rejected"
               cols="50"
+              onChange={this.setReviewComment}
               rows="10"
               className='EditorInputGroup-input is-focused InputGroup--outlined Commenting' />
           </div>
