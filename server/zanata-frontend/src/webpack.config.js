@@ -143,7 +143,7 @@ module.exports = function (env) {
         */
         // TODO consider turning on for storybook
         storybook ? undefined : {
-          test: /\.(j|t)sx?$/,
+          test: /\.jsx?$/,
           exclude: /node_modules/,
           enforce: 'pre',
           loader: 'eslint-loader',
