@@ -1,6 +1,6 @@
 // @ts-check
 import * as PropTypes from 'prop-types'
-import React, {StatelessComponent} from 'react'
+import React from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
 import { Button } from 'react-bootstrap'
@@ -15,7 +15,7 @@ const cssClass = {
   needswork: 'warning'
 }
 
-/** @type { StatelessComponent<{key?, dateLabel?, date?, wordCount?, selectedDay?, selectedContentState?, handleSelectedDayChanged?, props?}> } */
+/** @type { React.StatelessComponent<{key?, dateLabel?, date?, wordCount?, selectedDay?, selectedContentState?, handleSelectedDayChanged?, props?}> } */
 const DayMatrix = ({
   dateLabel,
   date,

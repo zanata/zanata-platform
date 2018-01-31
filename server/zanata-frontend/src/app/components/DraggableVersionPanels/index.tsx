@@ -1,12 +1,13 @@
-import React from 'react'
-import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {FromProjectVersionType} from '../../utils/prop-types-util'
+import React, { ClassAttributes, ReactElement, StatelessComponent } from 'react'
+import { Component } from 'react'
 import {Icon, LockIcon} from '../../components'
+import {FromProjectVersionType} from '../../utils/prop-types-util'
 import {
   SortableContainer,
   SortableElement,
-  SortableHandle
+  SortableHandle,
+  WrappedComponent
 } from 'react-sortable-hoc'
 import {
   Button,
@@ -26,16 +27,19 @@ export const DragHandle = SortableHandle(() =>
   <Icon name='menu' className='n1' parentClassName='drag-handle'
     title='click to drag' />)
 
-export class Item extends Component {
-  static propTypes = {
+interface ItemProps {
+  dispatch: (action: any) => void
+  removeVersion: (...args: any[]) => any,
+  value: any,
+}
+
+export class Item extends Component<ItemProps, {}> {
+  private static propTypes = {
     value: FromProjectVersionType.isRequired,
     removeVersion: PropTypes.func.isRequired
   }
-  removeVersion = () => {
-    const { value: { version, projectSlug } } = this.props
-    this.props.removeVersion(projectSlug, version)
-  }
-  render () {
+
+  public render () {
     const { value: { version, projectSlug } } = this.props
     return <ListGroupItem className='v' >
       <DragHandle />
@@ -49,15 +53,38 @@ export class Item extends Component {
       </Button>
     </ListGroupItem>
   }
-}
-const SortableItem = SortableElement(Item)
 
-class Items extends Component {
-  static propTypes = {
+  private removeVersion = () => {
+    const { value: { version, projectSlug } } = this.props
+    this.props.removeVersion(projectSlug, version)
+  }
+}
+
+const SortableItem = SortableElement(Item as any) as any
+
+type EntityStatus = 'READONLY' | 'ACTIVE' | 'OBSOLETE'
+
+interface VersionDto {
+  id: string
+  status: EntityStatus
+}
+
+interface FromProjectVersion {
+  projectSlug: string,
+  version: VersionDto
+}
+
+interface ItemsProps {
+  items: FromProjectVersion[]
+  removeVersion: (...args: any[]) => any
+}
+
+class Items extends Component<ItemsProps, {}> {
+  private static propTypes = {
     items: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     removeVersion: PropTypes.func.isRequired
   }
-  render () {
+  public render () {
     const { items, removeVersion } = this.props
     const sortableItems = items.map((value, index) => (
       <SortableItem
@@ -81,18 +108,22 @@ class Items extends Component {
   }
 }
 
-const SortableList = SortableContainer(Items)
+const SortableList = SortableContainer(Items as any) as any
 
 /**
  * Draggable version priority list
  */
-class DraggableVersionPanels extends Component {
-  static propTypes = {
+class DraggableVersionPanels extends Component<{
+  selectedVersions: FromProjectVersion[];
+  onDraggableMoveEnd: (...args: any[]) => any;
+  removeVersion: (...args: any[]) => any;
+}, {}> {
+  private static propTypes = {
     selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     onDraggableMoveEnd: PropTypes.func.isRequired,
     removeVersion: PropTypes.func.isRequired
   }
-  render () {
+  public render () {
     if (this.props.selectedVersions.length === 0) {
       return (
         <span className="no-v text-muted">

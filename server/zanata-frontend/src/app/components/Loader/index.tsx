@@ -1,10 +1,8 @@
-// @ts-check
-import React from 'react'
 import * as PropTypes from 'prop-types'
+import React from 'react'
 import Loading from 'react-loading'
 
-/** @type { React.StatelessComponent<{className}> } */
-const Loader = ({ className = 'loader' }) => {
+const Loader: React.SFC<LoaderProps> = ({ className = 'loader' }) => {
   return (
     <span className={className}>
       <span>
@@ -12,6 +10,10 @@ const Loader = ({ className = 'loader' }) => {
       </span>
     </span>
   )
+}
+
+interface LoaderProps {
+  className: string
 }
 
 Loader.propTypes = {

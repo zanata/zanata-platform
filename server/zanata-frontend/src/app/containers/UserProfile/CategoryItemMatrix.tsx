@@ -1,11 +1,8 @@
-// @ts-check
 import * as PropTypes from 'prop-types'
 import React from 'react'
 import { isEmpty, isUndefined } from 'lodash'
 
-/** @type
- * { React.StatelessComponent<{itemTitle, itemName, wordCount, props?}> } */
-const CategoryItemMatrix = ({
+const CategoryItemMatrix: React.SFC<{itemTitle, itemName, wordCount, props?}> = ({
   itemTitle,
   itemName,
   wordCount,
