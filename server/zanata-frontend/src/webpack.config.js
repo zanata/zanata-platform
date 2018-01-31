@@ -153,7 +153,17 @@ module.exports = function (env) {
           }
         },
 
-        // TODO add tslint for tsx? files
+        // TODO consider turning on for storybook
+        storybook ? undefined : {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          enforce: 'pre',
+          loader: 'tslint-loader',
+          options: {
+            failOnHint: !dev,
+            formatter: 'verbose',
+          }
+        },
 
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
