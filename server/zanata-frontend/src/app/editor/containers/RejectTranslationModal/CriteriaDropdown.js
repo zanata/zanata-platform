@@ -20,12 +20,7 @@ class CriteriaDropdown extends Component {
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })),
     onCriteriaChange: PropTypes.func.isRequired,
-    selectedCriteria: PropTypes.shape({
-      index: PropTypes.number.isRequired,
-      editable: PropTypes.bool.isRequired,
-      description: PropTypes.string.isRequired,
-      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
-    })
+    selectedCriteria: PropTypes.string.isRequired
   }
   constructor (props) {
     super(props)
@@ -55,7 +50,7 @@ class CriteriaDropdown extends Component {
         className="dropdown-menu Criteria">
         <Dropdown.Button>
           <a className="EditorDropdown-item">
-            {selectedCriteria.description}
+            {selectedCriteria}
             <Icon className="n1" name="chevron-down" />
           </a>
         </Dropdown.Button>

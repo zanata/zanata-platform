@@ -47,18 +47,19 @@ export class RejectTranslationModal extends Component {
     review: {
       id: 0,
       selectedPriority: 'Minor',
-      selectedCriteria: {
-        index: 0,
-        editable: true,
-        description: '',
-        priority: MINOR
-      },
-      reviewComment: ''
+      selectedCriteria: ''
     }
   }
   constructor (props) {
     super(props)
     this.state = this.defaultState
+  }
+  componentWillReceiveProps (nextProps) {
+    this.setState(prevState => ({
+      review: update(prevState.review, {
+        selectedCriteria: {$set: nextProps.criteria[0].description}
+      })
+    }))
   }
   onPriorityChange = (event) => {
     event.persist()
@@ -68,9 +69,13 @@ export class RejectTranslationModal extends Component {
       })
     }))
   }
-  // TODO: Placeholder func, update Criteria prop of RejectTranslationModal
-  onCriteriaChange = (criteria) => {
-    return criteria
+  onCriteriaChange = (event) => {
+    event.persist()
+    this.setState(prevState => ({
+      review: update(prevState.review, {
+        selectedCriteria: {$set: event.target.innerText}
+      })
+    }))
   }
   render () {
     const {
