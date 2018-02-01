@@ -104,7 +104,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                     filterOutObsolete, person);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("select p from HProject p ")
+        sb.append("select DISTINCT p from HProject p ")
             .append(condition)
             .append("order by UPPER(p.name) asc");
         Query q = getSession().createQuery(sb.toString());
