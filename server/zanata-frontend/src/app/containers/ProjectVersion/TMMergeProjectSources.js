@@ -12,7 +12,7 @@ import Toggle from 'react-toggle'
 
 import {
   ProjectType, FromProjectVersionType
-} from '../../utils/prop-types-util.js'
+} from '../../utils/prop-types-util'
 
 const DO_NOT_RENDER = undefined
 const ALL = 'ALL'

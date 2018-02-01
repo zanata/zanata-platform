@@ -1,7 +1,7 @@
 import React from 'react'
 import {OverlayTrigger, Tooltip} from 'react-bootstrap'
 import {Icon} from '../../components'
-import {isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
+import {EntityStatus, isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 import {entityStatusPropType} from '../../utils/prop-types-util'
 
 const DO_NOT_RENDER = null
@@ -21,7 +21,7 @@ const LockIcon: React.SFC<LockIconProps> = ({status}) => {
 }
 
 interface LockIconProps {
-  status: any // TODO should be one of entityStatuses
+  status: EntityStatus
 }
 
 LockIcon.propTypes = {

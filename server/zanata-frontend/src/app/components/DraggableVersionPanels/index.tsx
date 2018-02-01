@@ -2,7 +2,8 @@ import * as PropTypes from 'prop-types'
 import React, { ClassAttributes, ReactElement, StatelessComponent } from 'react'
 import { Component } from 'react'
 import {Icon, LockIcon} from '../../components'
-import {FromProjectVersionType} from '../../utils/prop-types-util'
+import { FromProjectVersion, FromProjectVersionType
+} from '../../utils/prop-types-util'
 import {
   SortableContainer,
   SortableElement,
@@ -61,18 +62,6 @@ export class Item extends Component<ItemProps, {}> {
 }
 
 const SortableItem = SortableElement(Item as any) as any
-
-type EntityStatus = 'READONLY' | 'ACTIVE' | 'OBSOLETE'
-
-interface VersionDto {
-  id: string
-  status: EntityStatus
-}
-
-interface FromProjectVersion {
-  projectSlug: string,
-  version: VersionDto
-}
 
 interface ItemsProps {
   items: FromProjectVersion[]
