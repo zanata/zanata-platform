@@ -10,7 +10,8 @@ import { moveNext, movePrevious } from './phrase-navigation-actions'
 import { copySuggestionN } from './suggestions-actions'
 import {
   STATUS_TRANSLATED,
-  STATUS_NEEDS_WORK
+  STATUS_NEEDS_WORK,
+  STATUS_REJECTED
 } from '../utils/status-util'
 
 function shortcutInfo (keys, eventActionCreator, description, eventType) {
@@ -82,7 +83,8 @@ export const SHORTCUTS = {
       keys: ['mod+shift+s'],
       sequenceKeys: [
         shortcutInfo('n', saveAs(STATUS_NEEDS_WORK), 'Save as Needs Work'),
-        shortcutInfo('t', saveAs(STATUS_TRANSLATED), 'Save as Translated')
+        shortcutInfo('t', saveAs(STATUS_TRANSLATED), 'Save as Translated'),
+        shortcutInfo('r', saveAs(STATUS_REJECTED), 'Save as Rejected')
         // TODO support approved status
         // shortcutInfo('a', saveAs('approved'), 'Save as Approved')
       ]

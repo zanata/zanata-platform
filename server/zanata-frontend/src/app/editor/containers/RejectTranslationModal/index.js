@@ -22,7 +22,8 @@ export class RejectTranslationModal extends Component {
   static propTypes = {
     show: PropTypes.bool,
     onHide: PropTypes.func,
-    transUnitID: PropTypes.string,
+    transUnitID: PropTypes.number,
+    revision: PropTypes.number,
     language: PropTypes.string,
     criteria: PropTypes.arrayOf(PropTypes.shape({
       editable: PropTypes.bool.isRequired,
@@ -61,6 +62,8 @@ export class RejectTranslationModal extends Component {
   componentWillReceiveProps (nextProps) {
     this.setState(prevState => ({
       review: update(prevState.review, {
+        id: {$set: nextProps.transUnitID},
+        revision: {$set: nextProps.revision},
         selectedCriteria: {$set: nextProps.criteria[0].description},
         selectedPriority: {$set: nextProps.priority}
       })

@@ -33,13 +33,17 @@ class CriteriaDropdown extends Component {
       dropdownOpen: !prevState.dropdownOpen
     }))
   }
+  onCriteriaChange = (event) => {
+    this.props.onCriteriaChange(event)
+    this.toggleDropdown()
+  }
   render () {
-    const { onCriteriaChange, criteriaList, selectedCriteria } = this.props
+    const { criteriaList, selectedCriteria } = this.props
     const options = criteriaList.map((value, index) => {
       return (
         <li key={index}
           className="EditorDropdown-item"
-          onClick={onCriteriaChange}>
+          onClick={this.onCriteriaChange}>
           {value.description}
         </li>
       )

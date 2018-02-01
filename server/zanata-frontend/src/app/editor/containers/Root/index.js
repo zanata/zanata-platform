@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import MainContent from '../MainContent'
 import ParamPropDispatcher from '../ParamPropDispatcher'
 import EditorHeader from '../EditorHeader'
-import RejectTranslationModal from '../RejectTranslationModal'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
@@ -15,7 +14,6 @@ import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
-import { fetchAllCriteria } from '../../actions/review-trans-actions'
 
 export const MINOR = 'Minor'
 export const MAJOR = 'Major'
@@ -29,18 +27,11 @@ class Root extends Component {
     percentHeight: PropTypes.number.isRequired,
     showSuggestion: PropTypes.bool,
     requestUiLocales: PropTypes.func.isRequired,
-    saveSuggestionPanelHeight: PropTypes.func.isRequired,
-    fetchAllCriteria: PropTypes.func.isRequired,
-    criteria: PropTypes.arrayOf(PropTypes.shape({
-      editable: PropTypes.bool.isRequired,
-      description: PropTypes.string.isRequired,
-      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
-    }))
+    saveSuggestionPanelHeight: PropTypes.func.isRequired
   }
 
   componentDidMount () {
     this.props.requestUiLocales()
-    this.props.fetchAllCriteria()
     window.addEventListener('resize', this.onWindowResize)
   }
 
@@ -76,7 +67,6 @@ class Root extends Component {
       this.props.saveSuggestionPanelHeight(panelSize)
     }
   }
-  /* eslint-disable max-len */
   render () {
     const pixelHeight = this.props.showSuggestion
       ? this.props.percentHeight * window.innerHeight
@@ -88,13 +78,6 @@ class Root extends Component {
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
           <Icons />
           <EditorHeader />
-          <RejectTranslationModal
-            show
-            transUnitID={'be13a23aa42cad149919cc1fe84e6a47'}
-            language={'ja'}
-            criteria={this.props.criteria}
-            priority={'Critical'}
-            textState="u-textDanger" />
           <Sidebar>
             <SplitPane ref="suggestionResizer"
               split="horizontal"
@@ -114,9 +97,7 @@ class Root extends Component {
 
 function mapStateToProps (state) {
   const { sidebar, suggestions } = state.ui.panels
-  const criteria = state.review.criteria
   return {
-    criteria: criteria,
     percentHeight: suggestions.heightPercent,
     showSidebar: sidebar.visible,
     showSuggestion: getSuggestionsPanelVisible(state)
@@ -131,8 +112,7 @@ function mapDispatchToProps (dispatch) {
     },
     requestUiLocales: () => {
       dispatch(fetchUiLocales())
-    },
-    fetchAllCriteria: () => dispatch(fetchAllCriteria())
+    }
   }
 }
 

@@ -20,6 +20,13 @@ import {
   undoEdit
 } from '../../actions/phrases-actions'
 import { togglePhraseSuggestions } from '../../actions/suggestions-actions'
+import RejectTranslationModal from '../../containers/RejectTranslationModal'
+import { fetchAllCriteria } from '../../actions/review-trans-actions'
+
+export const MINOR = 'Minor'
+export const MAJOR = 'Major'
+export const CRITICAL = 'Critical'
+export const priorities = [MINOR, MAJOR, CRITICAL]
 
 const transUnitClassByStatus = {
   untranslated: 'TransUnit--neutral',
@@ -53,7 +60,13 @@ class TransUnit extends React.Component {
     //   'translated',
     //   'approved'
     // ])
-    selected: PropTypes.bool.isRequired
+    selected: PropTypes.bool.isRequired,
+    fetchAllCriteria: PropTypes.func.isRequired,
+    criteria: PropTypes.arrayOf(PropTypes.shape({
+      editable: PropTypes.bool.isRequired,
+      description: PropTypes.string.isRequired,
+      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
+    }))
   }
 
   constructor (props) {
@@ -61,6 +74,10 @@ class TransUnit extends React.Component {
     this.state = {
       saveDropdownKey: {}
     }
+  }
+
+  componentDidMount () {
+    this.props.fetchAllCriteria()
   }
 
   selectPhrase = () => {
@@ -112,12 +129,21 @@ class TransUnit extends React.Component {
     ])
 
     return (
-      <div className={className}
-        onClick={this.selectPhrase}>
-        <TransUnitStatus phrase={this.props.phrase} />
-        <TransUnitSourcePanel {...phraseSourcePanelProps} />
-        <TransUnitTranslationPanel {...phraseTranslationPanelProps}
-          saveDropdownKey={this.props.phrase.id} />
+      <div>
+        <div className={className}
+          onClick={this.selectPhrase}>
+          <TransUnitStatus phrase={this.props.phrase} />
+          <TransUnitSourcePanel {...phraseSourcePanelProps} />
+          <TransUnitTranslationPanel {...phraseTranslationPanelProps}
+            saveDropdownKey={this.props.phrase.id} />
+        </div>
+        <RejectTranslationModal
+          show
+          transUnitID={154}
+          language={'ja'}
+          criteria={this.props.criteria}
+          priority={'Critical'}
+          textState="u-textDanger" />
       </div>
     )
   }
@@ -166,11 +192,13 @@ function mapStateToProps (state, ownProps) {
   ])
 
   const saveAsMode = state.phrases.saveAsMode
+  const criteria = state.review.criteria
 
   return {
     ...passThroughProps,
     // TODO add something for looking up locale name instead, or check
     //      whether it comes with the response.
+    criteria: criteria,
     translationLocale: {
       id: state.context.lang,
       name: getLocaleName(state)
@@ -233,7 +261,8 @@ function mapDispatchToProps (dispatch, ownProps) {
     undoEdit: (event) => {
       event.stopPropagation()
       dispatch(undoEdit())
-    }
+    },
+    fetchAllCriteria: () => dispatch(fetchAllCriteria())
   }
 }
 

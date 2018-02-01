@@ -23,8 +23,8 @@ export function addNewReview (review, localeId) {
     ADD_REVIEW_SUCCESS,
     ADD_REVIEW_FAILURE]
   const body = {
-    transUnitId: 154,
-    revision: 1,
+    transUnitId: review.id,
+    revision: review.revision,
     comment: review.reviewComment,
     reviewCriteriaId: review.criteriaId,
     status: 'Rejected'
