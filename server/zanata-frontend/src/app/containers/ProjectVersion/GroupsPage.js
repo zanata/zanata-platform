@@ -5,11 +5,9 @@ import { Button, InputGroup, FormGroup, FormControl, Pagination, Table
 } from 'react-bootstrap'
 import { Icon } from '../../components'
 
-
 class GroupsPage extends Component {
 
   render() {
-
     return (
       /* eslint-disable max-len */
         <div className='flexTab wideView'>
