@@ -10,6 +10,7 @@ import {
   SETTINGS_SAVE_FAILURE
 } from './settings-action-types'
 import { apiUrl } from '../../config'
+import { isEmptyObject } from '../../utils/ObjectUtils'
 
 export const settingsUrl = `${apiUrl}/user/settings/webeditor`
 
@@ -29,23 +30,13 @@ export const fetchSettings = () => dispatch => dispatch({
   }
 })
 
-// Should be pretty fast: https://stackoverflow.com/a/34491287/14379
-function emptyObject (obj) {
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      return false
-    }
-  }
-  return true
-}
-
 /**
  * Save one or more settings to the server
  * settings: object of setting name to value
  */
 export const saveSettings = settings => dispatch => new Promise(
   (resolve, reject) => {
-    if (emptyObject(settings)) {
+    if (isEmptyObject(settings)) {
       // no settings to save, something must have gone wrong
       const error = new Error('trying to save empty settings object')
       console.error(error)
