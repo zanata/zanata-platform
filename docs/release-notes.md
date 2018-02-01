@@ -1,3 +1,9 @@
+## 4.4.1
+##### Bug Fixes
+ * [ZNTA-2374](https://zanata.atlassian.net/browse/ZNTA-2374) - SSO login with existing account only works on the second time
+
+-----------------------
+
 ## 4.4.0
 ##### Infrastructure Changes
 Zanata now requires a system property 'zanata.home' as the root for all its file system storage needs.
@@ -36,7 +42,7 @@ The property 'zanata.file.directory' is still supported, but if it is missing, a
  * [ZNTA-2345](https://zanata.atlassian.net/browse/ZNTA-2345) - Request add version to group Send button permanently disabled
  * [ZNTA-2344](https://zanata.atlassian.net/browse/ZNTA-2344) - GWT editor text size in target does not change with option
  * [ZNTA-2342](https://zanata.atlassian.net/browse/ZNTA-2342) - React editor: filtering by state breaks keyboard navigation
- * [ZNTA-2327](https://zanata.atlassian.net/browse/ZNTA-2327) - Yellowish glossary page. 
+ * [ZNTA-2327](https://zanata.atlassian.net/browse/ZNTA-2327) - Yellowish glossary page.
  * [ZNTA-2320](https://zanata.atlassian.net/browse/ZNTA-2320) - Frontend watch tasks failing
  * [ZNTA-2317](https://zanata.atlassian.net/browse/ZNTA-2317) - [ERROR] "parseQuery() will be replaced with getOptions()" while zanata build.
  * [ZNTA-2307](https://zanata.atlassian.net/browse/ZNTA-2307) - Fix translation count in alpha editor
