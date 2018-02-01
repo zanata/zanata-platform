@@ -1,35 +1,35 @@
-// @ts-check
-import * as Moment from 'moment'
 import { extendMoment } from 'moment-range'
-const moment = extendMoment(Moment)
-
 import { isEmpty, findKey } from 'lodash'
+/* tslint:disable */
+const M = require('moment')
+/* tslint:enable */
+const moment = extendMoment(M)
 
-var DateHelper = {
+const DateHelper = {
   shortDateFormat: 'DD/MM/YYYY',
   shortDateTimeFormat: 'DD/MM/YYYY HH:mm',
   dateFormat: 'YYYY-MM-DD',
   dateRangeDisplayFmt: 'DD MMM, YYYY',
   dateSingleDisplayFmt: 'DD MMM, YYYY (dddd)',
-  getDateRangeFromOption: function (dateRange) {
+  getDateRangeFromOption (dateRange) {
     const dateFormat = this.dateFormat
     const fromDate = dateRange.startDate
     const toDate = dateRange.endDate
-    var dates = []
+    const dates = []
     const range = moment.range(fromDate, toDate)
 
-    Array.from(range.by('days')).forEach(moment => {
-      dates.push(moment.format(dateFormat))
+    Array.from(range.by('days')).forEach(m => {
+      dates.push(m.format(dateFormat))
     })
 
     return {
       fromDate: fromDate.format(dateFormat),
       toDate: toDate.format(dateFormat),
-      dates: dates
+      dates
     }
   },
 
-  dayAsLabel: function (dateStr, numOfDays) {
+  dayAsLabel (dateStr, numOfDays) {
     const date = moment(dateStr)
     const dayOfWeekFmt = 'ddd'
     const dayOfMonthFmt = 'D/MM'
@@ -47,23 +47,23 @@ var DateHelper = {
     }
   },
 
-  isInFuture: function (dateStr) {
+  isInFuture (dateStr) {
     return moment(dateStr).isAfter(moment())
   },
 
-  getDate: function (milliseconds) {
+  getDate (milliseconds) {
     if (!isEmpty(milliseconds)) {
-      return new Date(parseInt(milliseconds))
+      return new Date(parseInt(milliseconds, 10))
     } else {
       return undefined
     }
   },
 
-  formatDate: function (date, format) {
+  formatDate (date, format) {
     return moment(date).format(format)
   },
 
-  shortDate: function (date) {
+  shortDate (date) {
     if (date) {
       return this.formatDate(date, this.shortDateFormat)
     } else {
@@ -71,7 +71,7 @@ var DateHelper = {
     }
   },
 
-  shortDateTime: function (date) {
+  shortDateTime (date) {
     if (date) {
       return this.formatDate(date, this.shortDateTimeFormat)
     } else {
@@ -86,9 +86,9 @@ var DateHelper = {
    * @days - days different to check. Must be 0 or more.
    * returns {startDate: startDate, endDate: adjustedEndDate}
    */
-  keepDateInRange: function (startDate, endDate, days) {
+  keepDateInRange (startDate, endDate, days) {
     if (days < 0) {
-      console.error('Days must be more 0 or more.', days)
+      throw new Error(`days must be more 0 or more: ${days}`)
     }
     const range = moment.range(startDate, endDate)
     const adjustedEndDate = range.diff('days') >= days
@@ -100,7 +100,7 @@ var DateHelper = {
     }
   },
 
-  getDefaultDateRange: function () {
+  getDefaultDateRange () {
     return {
       'This week': {
         startDate: function startDate (now) {
@@ -145,7 +145,7 @@ var DateHelper = {
     }
   },
 
-  getDateRange: function (option) {
+  getDateRange (option) {
     const dateRange = this.getDefaultDateRange()[option]
     return {
       startDate: dateRange.startDate(),
@@ -153,7 +153,7 @@ var DateHelper = {
     }
   },
 
-  getDateRangeLabel: function (dateRange) {
+  getDateRangeLabel (dateRange) {
     const now = moment()
     return findKey(this.getDefaultDateRange(), function (range) {
       return moment(range.startDate(now)).isSame(dateRange.startDate, 'day') &&
