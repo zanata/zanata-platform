@@ -14,9 +14,6 @@
   "moduleNameMapper": {
     "\\.(css|less)$": "<rootDir>/__mocks__/cssMock.js"
   },
-  "setupFiles": [
-    "<rootDir>/scripts/silence-React-15-deprecations.js"
-  ],
   "transform": {
     "\\.(jsx?|tsx?)$": "ts-jest"
   },
