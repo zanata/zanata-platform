@@ -13,7 +13,7 @@ const Loader: React.SFC<LoaderProps> = ({ className = 'loader' }) => {
 }
 
 interface LoaderProps {
-  className: string
+  className?: string
 }
 
 Loader.propTypes = {
