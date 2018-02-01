@@ -11,7 +11,8 @@ import { copySuggestionN } from './suggestions-actions'
 import {
   STATUS_TRANSLATED,
   STATUS_NEEDS_WORK,
-  STATUS_REJECTED
+  STATUS_REJECTED,
+  STATUS_APPROVED
 } from '../utils/status-util'
 
 function shortcutInfo (keys, eventActionCreator, description, eventType) {
@@ -84,9 +85,8 @@ export const SHORTCUTS = {
       sequenceKeys: [
         shortcutInfo('n', saveAs(STATUS_NEEDS_WORK), 'Save as Needs Work'),
         shortcutInfo('t', saveAs(STATUS_TRANSLATED), 'Save as Translated'),
-        shortcutInfo('r', saveAs(STATUS_REJECTED), 'Save as Rejected')
-        // TODO support approved status
-        // shortcutInfo('a', saveAs('approved'), 'Save as Approved')
+        shortcutInfo('r', saveAs(STATUS_REJECTED), 'Save as Rejected'),
+        shortcutInfo('a', saveAs(STATUS_APPROVED), 'Save as Approved')
       ]
     },
     eventActionCreator: saveAsModeActionCreator,

@@ -17,7 +17,7 @@ export const STATUS_REJECTED = 'rejected'
 /**
  * TODO: Implement Review Mode for Administrators to determine this variable
  */
-const REVIEW_MODE = false
+const REVIEW_MODE = true
 
 /**
  * Get a string representing the status that should be

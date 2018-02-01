@@ -15,10 +15,6 @@ import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
 
-export const MINOR = 'Minor'
-export const MAJOR = 'Major'
-export const CRITICAL = 'Critical'
-
 /**
  * Top level of Zanata view hierarchy.
  */

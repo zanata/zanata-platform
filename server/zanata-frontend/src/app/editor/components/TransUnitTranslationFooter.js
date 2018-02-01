@@ -48,7 +48,9 @@ const statusNames = {
 
 const statusShortcutKeys = {
   needswork: <kbd>n</kbd>,
-  translated: <kbd>t</kbd>
+  translated: <kbd>t</kbd>,
+  approved: <kbd>a</kbd>,
+  rejected: <kbd>r</kbd>
 }
 
 /**
@@ -89,9 +91,10 @@ class TransUnitTranslationFooter extends React.Component {
                          buttonClassByStatus[status])
 
     const saveCallback = (event) => {
-      status === 'rejected'
-        ? this.props.showRejectModal()
-        : savePhraseWithStatus(phrase, status, event)
+      if (status === 'rejected') {
+        this.props.showRejectModal()
+      }
+      savePhraseWithStatus(phrase, status, event)
     }
 
     const shortcutKey = saveAsMode && statusShortcutKeys[status]
