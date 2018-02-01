@@ -68,7 +68,8 @@ class TransUnitTranslationFooter extends React.Component {
     openDropdown: PropTypes.any,
     saveAsMode: PropTypes.bool.isRequired,
     showSuggestions: PropTypes.bool.isRequired,
-    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired
+    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
+    showRejectModal: PropTypes.func.isRequired
   }
 
   componentWillMount () {
@@ -88,7 +89,9 @@ class TransUnitTranslationFooter extends React.Component {
                          buttonClassByStatus[status])
 
     const saveCallback = (event) => {
-      savePhraseWithStatus(phrase, status, event)
+      status === 'rejected'
+        ? this.props.showRejectModal()
+        : savePhraseWithStatus(phrase, status, event)
     }
 
     const shortcutKey = saveAsMode && statusShortcutKeys[status]

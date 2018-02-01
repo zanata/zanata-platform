@@ -72,17 +72,24 @@ class TransUnit extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      saveDropdownKey: {}
+      saveDropdownKey: {},
+      showRejectModal: false
     }
-  }
-
-  componentDidMount () {
-    this.props.fetchAllCriteria()
   }
 
   selectPhrase = () => {
     const { phrase, selectPhrase } = this.props
     selectPhrase(phrase.id)
+  }
+
+  toggleRejectModal = () => {
+    // Only Fetch the criteria for this translation we intend to reject
+    if (!this.state.showRejectModal) {
+      this.props.fetchAllCriteria()
+    }
+    this.setState(prevState => ({
+      showRejectModal: !prevState.showRejectModal
+    }))
   }
 
   render () {
@@ -128,6 +135,17 @@ class TransUnit extends React.Component {
       'undoEdit'
     ])
 
+    // Only Load the Reject Translation Modal when it is to be opened
+    const rejectTranslationModal = this.state.showRejectModal
+      ? <RejectTranslationModal
+        show={this.state.showRejectModal}
+        onHide={this.toggleRejectModal}
+        transUnitID={this.props.phrase.id}
+        revision={this.props.phrase.revision}
+        language={this.props.translationLocale.id}
+        criteria={this.props.criteria} />
+      : undefined
+
     return (
       <div>
         <div className={className}
@@ -135,15 +153,10 @@ class TransUnit extends React.Component {
           <TransUnitStatus phrase={this.props.phrase} />
           <TransUnitSourcePanel {...phraseSourcePanelProps} />
           <TransUnitTranslationPanel {...phraseTranslationPanelProps}
-            saveDropdownKey={this.props.phrase.id} />
+            saveDropdownKey={this.props.phrase.id}
+            showRejectModal={this.toggleRejectModal} />
         </div>
-        <RejectTranslationModal
-          show
-          transUnitID={154}
-          language={'ja'}
-          criteria={this.props.criteria}
-          priority={'Critical'}
-          textState="u-textDanger" />
+        {rejectTranslationModal}
       </div>
     )
   }

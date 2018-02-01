@@ -20,38 +20,26 @@ export const priorities = [MINOR, MAJOR, CRITICAL]
  */
 export class RejectTranslationModal extends Component {
   static propTypes = {
-    show: PropTypes.bool,
-    onHide: PropTypes.func,
-    transUnitID: PropTypes.number,
-    revision: PropTypes.number,
-    language: PropTypes.string,
+    show: PropTypes.bool.isRequired,
+    onHide: PropTypes.func.isRequired,
+    transUnitID: PropTypes.number.isRequired,
+    revision: PropTypes.number.isRequired,
+    language: PropTypes.string.isRequired,
     criteria: PropTypes.arrayOf(PropTypes.shape({
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })),
-    priority: PropTypes.oneOf(
-      [
-        MINOR,
-        MAJOR,
-        CRITICAL
-      ]
-    ).isRequired,
-    textState: PropTypes.oneOf(
-      [
-        'u-textWarning',
-        'u-textDanger'
-      ]
-    ),
     addNewTransReview: PropTypes.func.isRequired
   }
   defaultState = {
     review: {
       id: 0,
+      revision: 1,
       selectedPriority: MINOR,
       priorityId: 0,
       selectedCriteria: '',
-      criteriaId: 0,
+      criteriaId: 1,
       reviewComment: ''
     }
   }
@@ -65,7 +53,7 @@ export class RejectTranslationModal extends Component {
         id: {$set: nextProps.transUnitID},
         revision: {$set: nextProps.revision},
         selectedCriteria: {$set: nextProps.criteria[0].description},
-        selectedPriority: {$set: nextProps.priority}
+        selectedPriority: {$set: nextProps.criteria[0].priority}
       })
     }))
   }
@@ -81,11 +69,12 @@ export class RejectTranslationModal extends Component {
   }
   onCriteriaChange = (event) => {
     event.persist()
-    const criteriaIdIndex = this.props.criteria.indexOf(event.target.innerText)
+    const criteriaIdIndex = this.props.criteria.findIndex(x => x.description === event.target.innerText)
     this.setState(prevState => ({
       review: update(prevState.review, {
         selectedCriteria: {$set: event.target.innerText},
-        criteriaId: {$set: criteriaIdIndex}
+        // FIXME: The criteria on the server are not zero indexed
+        criteriaId: {$set: criteriaIdIndex + 1}
       })
     }))
   }
@@ -97,13 +86,21 @@ export class RejectTranslationModal extends Component {
       })
     }))
   }
+  textState = () => {
+    if (this.state.review.selectedPriority === MAJOR) {
+      return 'u-textWarning'
+    } else if (this.state.review.selectedPriority === CRITICAL) {
+      return 'u-textDanger'
+    } else {
+      return ''
+    }
+  }
   render () {
     const {
       show,
       onHide,
       language,
       criteria,
-      textState,
       addNewTransReview
     } = this.props
     const {
@@ -130,7 +127,7 @@ export class RejectTranslationModal extends Component {
               onCriteriaChange={this.onCriteriaChange}
               selectedCriteria={review.selectedCriteria} />
             <PriorityDropdown
-              textState={textState}
+              textState={this.textState()}
               priority={review.selectedPriority}
               priorityChange={this.onPriorityChange} />
           </div>
@@ -147,7 +144,9 @@ export class RejectTranslationModal extends Component {
         <Modal.Footer>
           <span>
             <Row>
-              <Button className="EditorButton Button--large u-rounded Button--secondary">
+              <Button
+                className="EditorButton Button--large u-rounded Button--secondary"
+                onClick={onHide}>
                 Cancel
               </Button>
               <Button
