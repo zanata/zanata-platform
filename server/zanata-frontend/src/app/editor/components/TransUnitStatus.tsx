@@ -19,6 +19,7 @@ interface TransUnitStatusProps {
  * and some other metadata about a phrase.
  */
 class TransUnitStatus extends React.Component<TransUnitStatusProps, any> {
+  // @ts-ignore: unused
   private static propTypes = {
     phrase: PropTypes.object.isRequired
   }

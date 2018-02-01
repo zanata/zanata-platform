@@ -10,6 +10,7 @@ const CategoryMatrixTable = ({
   category,
   categoryTitle,
   categoryName,
+  // @ts-ignore: unused?
   ...props
 }) => {
   let categoryMatrix = {}

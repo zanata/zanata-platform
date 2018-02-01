@@ -20,6 +20,8 @@
             // We transpile to ES5 syntax, but we use babel-polyfill
             "dom", "es6", "dom.iterable", "scripthost"
         ],
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "module": "commonjs",
         "outDir": "./build/",
         "sourceMap": true,

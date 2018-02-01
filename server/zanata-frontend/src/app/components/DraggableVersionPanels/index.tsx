@@ -1,5 +1,5 @@
 import * as PropTypes from 'prop-types'
-import React, { ClassAttributes, ReactElement, StatelessComponent } from 'react'
+import React from 'react'
 import { Component } from 'react'
 import {Icon, LockIcon} from '../../components'
 import { FromProjectVersion, FromProjectVersionType
@@ -8,7 +8,6 @@ import {
   SortableContainer,
   SortableElement,
   SortableHandle,
-  WrappedComponent
 } from 'react-sortable-hoc'
 import {
   Button,
@@ -35,6 +34,7 @@ interface ItemProps {
 }
 
 export class Item extends Component<ItemProps, {}> {
+  // @ts-ignore: unused
   private static propTypes = {
     value: FromProjectVersionType.isRequired,
     removeVersion: PropTypes.func.isRequired
@@ -69,6 +69,7 @@ interface ItemsProps {
 }
 
 class Items extends Component<ItemsProps, {}> {
+  // @ts-ignore: unused
   private static propTypes = {
     items: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     removeVersion: PropTypes.func.isRequired
@@ -107,6 +108,7 @@ class DraggableVersionPanels extends Component<{
   onDraggableMoveEnd: (...args: any[]) => any;
   removeVersion: (...args: any[]) => any;
 }, {}> {
+  // @ts-ignore: unused
   private static propTypes = {
     selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     onDraggableMoveEnd: PropTypes.func.isRequired,

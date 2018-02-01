@@ -7,6 +7,7 @@ import dateUtils from '../../utils/DateHelper'
 const CalendarPeriodHeading = ({
   selectedDay,
   dateRange,
+  // @ts-ignore: unused?
   ...props
 }) => {
   const period = selectedDay

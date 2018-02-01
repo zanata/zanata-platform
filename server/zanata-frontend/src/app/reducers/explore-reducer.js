@@ -17,6 +17,7 @@ import {
 } from '../actions/explore-actions'
 
 export default handleActions({
+  // @ts-ignore: unused action
   [SEARCH_PROJECT_REQUEST]: (state, action) => {
     let newState = cloneDeep(state)
     newState.loading.Project = true
@@ -41,6 +42,7 @@ export default handleActions({
       ...newState
     }
   },
+  // @ts-ignore: unused action
   [SEARCH_LANG_TEAM_REQUEST]: (state, action) => {
     let newState = cloneDeep(state)
     newState.loading.LanguageTeam = true
@@ -65,6 +67,7 @@ export default handleActions({
       ...newState
     }
   },
+  // @ts-ignore: unused action
   [SEARCH_PEOPLE_REQUEST]: (state, action) => {
     let newState = cloneDeep(state)
     newState.loading.Person = true
@@ -89,6 +92,7 @@ export default handleActions({
       ...newState
     }
   },
+  // @ts-ignore: unused action
   [SEARCH_GROUP_REQUEST]: (state, action) => {
     let newState = cloneDeep(state)
     newState.loading.Group = true

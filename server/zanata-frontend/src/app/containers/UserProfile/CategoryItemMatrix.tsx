@@ -6,6 +6,7 @@ const CategoryItemMatrix: React.SFC<{itemTitle, itemName, wordCount, props?}> = 
   itemTitle,
   itemName,
   wordCount,
+  // @ts-ignore: unused?
   ...props
 }) => {
   const title = isEmpty(itemTitle) || isUndefined(itemTitle) ||

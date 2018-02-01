@@ -23,6 +23,7 @@ const DayMatrix = ({
   selectedDay,
   selectedContentState,
   handleSelectedDayChanged,
+  // @ts-ignore: unused?
   ...props
 }) => {
   const dateIsInFuture = date ? dateUtil.isInFuture(date) : false
