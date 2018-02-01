@@ -67,16 +67,11 @@ class LanguagesPage extends Component {
               <td>3 days ago</td>
             </tr>
             <tr>
-              <ProgressBar>
+              <td colSpan='3' className='progRow'>
+                <ProgressBar>
                 <ProgressBar className='progress-bar-success'
-                             now={10} key={1} />
-                <ProgressBar className='progress-bar-warning'
-                             now={7} key={2} />
-                <ProgressBar className='progress-bar-danger'
-                             now={3} key={3} />
-                <ProgressBar className='progress-bar-info'
-                             now={10} key={4} />
-            </ProgressBar>
+                             now={100} key={1} />
+              </ProgressBar></td>
             </tr>
             <tr>
               <td>French</td>
@@ -84,9 +79,9 @@ class LanguagesPage extends Component {
               <td>5 days ago</td>
             </tr>
             <tr>
-              <ProgressBar>
+              <td colSpan='3' className='progRow'><ProgressBar>
                 <ProgressBar className='progress-bar-success'
-                             now={10} key={1} />
+                             now={33} key={1} />
                 <ProgressBar className='progress-bar-warning'
                              now={7} key={2} />
                 <ProgressBar className='progress-bar-danger'
@@ -94,6 +89,7 @@ class LanguagesPage extends Component {
                 <ProgressBar className='progress-bar-info'
                              now={10} key={4} />
               </ProgressBar>
+              </td>
             </tr>
             <tr>
               <td>German</td>
@@ -101,16 +97,15 @@ class LanguagesPage extends Component {
               <td>12 days ago</td>
             </tr>
             <tr>
+              <td colSpan='3' className='progRow'>
               <ProgressBar>
                 <ProgressBar className='progress-bar-success'
                              now={10} key={1} />
                 <ProgressBar className='progress-bar-warning'
                              now={7} key={2} />
                 <ProgressBar className='progress-bar-danger'
-                             now={3} key={3} />
-                <ProgressBar className='progress-bar-info'
-                             now={10} key={4} />
-            </ProgressBar>
+                             now={33} key={3} />
+              </ProgressBar></td>
             </tr>
             </tbody>
           </Table>
