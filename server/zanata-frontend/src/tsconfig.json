@@ -5,25 +5,24 @@
         ],
         "useCache": true
     },
+    // https://www.typescriptlang.org/docs/handbook/compiler-options.html
     "compilerOptions": {
+        // scan any JS files for type information
         "allowJs": true,
+        // only check JS files which have // @ts-check
         "checkJs": false,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
+        // import tslib instead of duplicating generated code
         "importHelpers": true,
-        "skipLibCheck": true,
         "jsx": "react",
         "lib": [
             // We transpile to ES5 syntax, but we use babel-polyfill
             "dom", "es6", "dom.iterable", "scripthost"
         ],
         "module": "commonjs",
-        // "noEmit": true,
         "outDir": "./build/",
-        // TODO fix sourcemap problems with intl-messageformat
         "sourceMap": true,
-        // first we need to clean up our types:
-        // "strict": true,
         "target": "ES5"
     },
     "include": [
