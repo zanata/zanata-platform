@@ -36,6 +36,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -121,7 +122,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         }
 
         q.setCacheable(true)
-                .setComment("ProjectDAO.getOffsetList");
+                .setComment("ProjectDAO.getOffsetList")
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         @SuppressWarnings("unchecked")
         List<HProject> list = q.list();
         return list;
@@ -134,7 +136,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
         String condition = constructFilterCondition(filterOutActive,
                 filterOutReadOnly, filterOutObsolete, person);
-        String query = "select count(*) from HProject p " + condition;
+        String query = "select count(distinct p) from HProject p " + condition;
         Query q = getSession().createQuery(query);
         if (person != null) {
             q.setParameter("person", person);

@@ -110,6 +110,8 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
         List<HProject> projects =
                 dao.getOffsetList(-1, -1, false, false, false);
         assertThat(projects.size()).isEqualTo(4);
+        int size = dao.getFilterProjectSize(false, false, false);
+        assertThat(projects.size()).isEqualTo(size);
     }
 
     @Test
@@ -118,5 +120,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
         dao.setAuthenticatedAccount(person.getAccount());
         List<HProject> projects = dao.getOffsetList(-1, -1, false, false, false);
         assertThat(projects).hasSize(5);
+        int size = dao.getFilterProjectSize(false, false, false);
+        assertThat(projects.size()).isEqualTo(size);
     }
 }
