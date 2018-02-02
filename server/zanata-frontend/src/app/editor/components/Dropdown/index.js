@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 
 /**
@@ -57,18 +57,18 @@ class Dropdown extends React.Component {
         contentCount++
         return child
       }
-      throw Error('<Dropdown> can only contain <Dropdown.Button> and ' +
+      throw new Error('<Dropdown> can only contain <Dropdown.Button> and ' +
         '<Dropdown.Content> elements, but found <' + child.type + '>. ' +
         'Put the always-visible part in <Dropdown.Button> and the revealed ' +
         'part in <Dropdown.Content>')
     })
 
     if (buttonCount !== 1) {
-      throw Error('<Dropdown> must contain exactly one <Dropdown.Button>, ' +
+      throw new Error('<Dropdown> must contain exactly one <Dropdown.Button>, ' +
         ' but found ' + buttonCount)
     }
     if (contentCount !== 1) {
-      throw Error('<Dropdown> must contain exactly one <Dropdown.Content>, ' +
+      throw new Error('<Dropdown> must contain exactly one <Dropdown.Content>, ' +
         'but found ' + contentCount)
     }
 

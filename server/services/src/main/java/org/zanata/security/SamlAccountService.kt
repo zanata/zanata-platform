@@ -30,6 +30,7 @@ import org.zanata.model.security.HSaml2Credentials
 import org.zanata.security.annotations.SAML
 import org.zanata.security.annotations.SAMLAttribute
 import org.zanata.security.annotations.SAMLAttribute.AttributeName.EMAIL
+import java.io.Serializable
 import java.security.Principal
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject
@@ -42,7 +43,7 @@ class SamlAccountService @Inject constructor(
         @SAMLAttribute(EMAIL) private val email: String,
         @SAML private val principal: Principal,
         private val accountDAO: AccountDAO,
-        private val credentialsDAO: CredentialsDAO) {
+        private val credentialsDAO: CredentialsDAO) : Serializable {
 
     private fun isFirstSignIn(uniqueId: String): Boolean = credentialsDAO.findByUser(uniqueId) == null
 
@@ -61,5 +62,6 @@ class SamlAccountService @Inject constructor(
 
     companion object {
         private val log: Logger = LoggerFactory.getLogger(SamlAccountService::class.java)
+        private const val serialVersionUID: Long = 1L
     }
 }

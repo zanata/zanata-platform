@@ -2,7 +2,7 @@
  * Display for a single glossary term.
  */
 
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'

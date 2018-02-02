@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 import cx from 'classnames'
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Button } from 'react-bootstrap'
 import Icon from '../../../components/Icon'

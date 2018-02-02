@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-import * as React from 'react'
+import React from 'react'
 import {storiesOf} from '@storybook/react'
 import ActivityFeedItem from '.'
 import {MINOR, MAJOR, CRITICAL} from "./index";

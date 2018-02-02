@@ -1,6 +1,10 @@
-import * as React from 'react'
+// @ts-check
+import React from 'react'
 import * as PropTypes from 'prop-types'
 
+/**
+ * @type { React.StatelessComponent<{children, props?}> }
+ */
 const ModalTitle = ({
   children,
   ...props

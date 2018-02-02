@@ -21,15 +21,19 @@ import {
 } from '../actions/common-actions'
 import { keyBy } from 'lodash'
 
+/* eslint-enable max-len */
 /**
  *
  * @param listOfMatrices original server response
  * @param {{fromDate: string, toDate: string, dates: string[]}} dateRange see
  *   DateHelper.getDateRangeFromOption(string)
- * @returns {{label: string, date: string, totalApproved: number,
-   *   totalTranslated: number, totalNeedsWork: number, totalActivity:
-   *   number}[]}
+ * @returns {{
+     label: string, date: string, totalApproved: number,
+     totalTranslated: number, totalNeedsWork: number,
+     totalActivity: number
+   }[]}
  */
+/* eslint-disable max-len */
 const transformToTotalWordCountsForEachDay = (listOfMatrices, dateRange) => {
   let result = []
   let index = 0

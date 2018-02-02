@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../components'
 import TransUnit from '../components/TransUnit'

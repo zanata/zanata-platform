@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Alert, Button, Panel, Label } from 'react-bootstrap'
 import { Modal } from '../../../components'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'

@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-import * as React from 'react'
+import React from 'react'
 import { isEmpty } from 'lodash'
 import * as PropTypes from 'prop-types'
 import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'

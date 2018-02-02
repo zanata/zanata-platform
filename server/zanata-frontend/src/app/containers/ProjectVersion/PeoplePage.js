@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from "prop-types";
 import { Button, InputGroup, FormGroup, FormControl, Pagination, Table

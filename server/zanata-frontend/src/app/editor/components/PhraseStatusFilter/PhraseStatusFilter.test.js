@@ -1,8 +1,8 @@
 /* global jest describe it expect */
 
-import * as React from 'react'
+import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-dom/test-utils'
+import * as TestUtils from 'react-dom/test-utils'
 import { PhraseStatusFilter } from '.'
 import FilterToggle from '../FilterToggle'
 import { Icon } from '../../../components'

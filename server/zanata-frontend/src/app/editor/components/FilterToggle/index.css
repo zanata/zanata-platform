@@ -81,11 +81,6 @@ not conflict with the other frontend code
   opacity: 0.8;
 }
 
-nav.flex-wrapper  .Toggle-fakeCheckbox {
-  padding-bottom: 1rem;
-  padding-right: 0.7rem;
-}
-
 nav.flex-wrapper:first-of-type(label.Toggle-label) {
   margin-left: 0.375rem;
 }
