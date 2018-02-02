@@ -13,17 +13,16 @@ export const GET_ALL_CRITERIA_SUCCESS = 'GET_ALL_CRITERIA_SUCCESS'
 export const GET_ALL_CRITERIA_FAILURE = 'GET_ALL_CRITERIA_FAILURE'
 
 /**
- * Perform a save with the given info, and recursively start next save if
- * one has queued when the save finishes.
+ * Perform a save of a translation review with the given review data
  */
-export function addNewReview (review, localeId) {
-  const endpoint = `${apiUrl}/review/trans/${localeId}`
+export function rejectTranslation (review) {
+  const endpoint = `${apiUrl}/review/trans/${review.localeId}`
   const apiTypes = [
     ADD_REVIEW_REQUEST,
     ADD_REVIEW_SUCCESS,
     ADD_REVIEW_FAILURE]
   const body = {
-    transUnitId: review.id,
+    transUnitId: review.transUnitId,
     revision: review.revision,
     comment: review.reviewComment,
     reviewCriteriaId: review.criteriaId,

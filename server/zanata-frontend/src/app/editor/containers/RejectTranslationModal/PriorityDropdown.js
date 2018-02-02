@@ -2,11 +2,7 @@ import React, { Component } from 'react'
 import { Icon } from '../../../components'
 import PropTypes from 'prop-types'
 import Dropdown from '../../components/Dropdown'
-
-// TODO: Move these to a shared config util file
-export const MINOR = 'Minor'
-export const MAJOR = 'Major'
-export const CRITICAL = 'Critical'
+import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 /**
  * A Local Editor Dropdown coponent that selects the Priority of a

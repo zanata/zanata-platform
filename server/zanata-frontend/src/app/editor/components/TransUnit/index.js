@@ -21,12 +21,7 @@ import {
 } from '../../actions/phrases-actions'
 import { togglePhraseSuggestions } from '../../actions/suggestions-actions'
 import RejectTranslationModal from '../../containers/RejectTranslationModal'
-import { fetchAllCriteria } from '../../actions/review-trans-actions'
-
-export const MINOR = 'Minor'
-export const MAJOR = 'Major'
-export const CRITICAL = 'Critical'
-export const priorities = [MINOR, MAJOR, CRITICAL]
+import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 const transUnitClassByStatus = {
   untranslated: 'TransUnit--neutral',
@@ -61,7 +56,6 @@ class TransUnit extends React.Component {
     //   'approved'
     // ])
     selected: PropTypes.bool.isRequired,
-    fetchAllCriteria: PropTypes.func.isRequired,
     criteria: PropTypes.arrayOf(PropTypes.shape({
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
@@ -83,10 +77,6 @@ class TransUnit extends React.Component {
   }
 
   toggleRejectModal = () => {
-    // Only Fetch the criteria for this translation we intend to reject
-    if (!this.state.showRejectModal) {
-      this.props.fetchAllCriteria()
-    }
     this.setState(prevState => ({
       showRejectModal: !prevState.showRejectModal
     }))
@@ -137,15 +127,14 @@ class TransUnit extends React.Component {
 
     // Only Load the Reject Translation Modal when it is to be opened
     const rejectTranslationModal = this.state.showRejectModal
-      ? <RejectTranslationModal
-        show={this.state.showRejectModal}
-        onHide={this.toggleRejectModal}
-        transUnitID={this.props.phrase.id}
-        revision={this.props.phrase.revision}
-        language={this.props.translationLocale.id}
-        criteria={this.props.criteria} />
-      : undefined
-
+       ? <RejectTranslationModal
+         show={this.state.showRejectModal}
+         onHide={this.toggleRejectModal}
+         transUnitID={this.props.phrase.id}
+         revision={this.props.phrase.revision}
+         localeId={this.props.translationLocale.id}
+         criteria={this.props.criteria} />
+       : undefined
     return (
       <div>
         <div className={className}
@@ -274,8 +263,7 @@ function mapDispatchToProps (dispatch, ownProps) {
     undoEdit: (event) => {
       event.stopPropagation()
       dispatch(undoEdit())
-    },
-    fetchAllCriteria: () => dispatch(fetchAllCriteria())
+    }
   }
 }
 

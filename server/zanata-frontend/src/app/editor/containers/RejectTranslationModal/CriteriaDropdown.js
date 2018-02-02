@@ -2,11 +2,7 @@ import React, { Component } from 'react'
 import { Icon } from '../../../components'
 import PropTypes from 'prop-types'
 import Dropdown from '../../components/Dropdown'
-
-export const MINOR = 'Minor'
-export const MAJOR = 'Major'
-export const CRITICAL = 'Critical'
-/* eslint-disable max-len */
+import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 /**
  * A Local Editor Dropdown coponent that selects the Criteria

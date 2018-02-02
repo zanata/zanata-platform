@@ -1,6 +1,6 @@
 import { CALL_API } from 'redux-api-middleware'
 import { apiUrl } from '../../config'
-import { addNewReview, fetchAllCriteria } from './review-trans-actions'
+import { rejectTranslation, fetchAllCriteria } from './review-trans-actions'
 
 export const ADD_REVIEW_REQUEST = 'ADD_REVIEW_REQUEST'
 export const ADD_REVIEW_SUCCESS = 'ADD_REVIEW_SUCCESS'
@@ -19,7 +19,8 @@ describe('review-trans-actions', () => {
   })
   it('can add a new review', () => {
     const review = {
-      id: 0,
+      transUnitId: 0,
+      localeId: 'ja',
       revision: 1,
       selectedPriority: 'Minor',
       priorityId: 0,
@@ -27,8 +28,7 @@ describe('review-trans-actions', () => {
       criteriaId: 1,
       reviewComment: ''
     }
-    const localeId = 'ja'
-    const apiAction = addNewReview(review, localeId)
+    const apiAction = rejectTranslation(review)
     expect(apiAction[CALL_API].endpoint).toEqual(
       apiUrl + '/review/trans/ja'
     )

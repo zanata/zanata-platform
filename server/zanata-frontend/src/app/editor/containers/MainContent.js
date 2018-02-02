@@ -5,6 +5,8 @@ import { Icon } from '../../components'
 import TransUnit from '../components/TransUnit'
 import { connect } from 'react-redux'
 import { getCurrentPagePhraseDetail } from '../selectors'
+import { fetchAllCriteria } from '../actions/review-trans-actions'
+import { MINOR, MAJOR, CRITICAL } from '../utils/reject-trans-util'
 
 /**
  * The main content section showing the current page of TransUnit source,
@@ -13,7 +15,16 @@ import { getCurrentPagePhraseDetail } from '../selectors'
 class MainContent extends React.Component {
   static propTypes = {
     maximised: PropTypes.bool.isRequired,
-    phrases: PropTypes.arrayOf(PropTypes.object).isRequired
+    phrases: PropTypes.arrayOf(PropTypes.object).isRequired,
+    fetchAllCriteria: PropTypes.func.isRequired,
+    criteria: PropTypes.arrayOf(PropTypes.shape({
+      editable: PropTypes.bool.isRequired,
+      description: PropTypes.string.isRequired,
+      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
+    }))
+  }
+  componentDidMount () {
+    this.props.fetchAllCriteria()
   }
 
   render () {
@@ -41,7 +52,8 @@ class MainContent extends React.Component {
       // TODO can just use a selector to get the phrase object, easy.
       return (
         <li key={phrase.id}>
-          <TransUnit index={phrase.id} phrase={phrase} />
+          <TransUnit index={phrase.id} phrase={phrase}
+            criteria={this.props.criteria} />
         </li>
       )
     })
@@ -75,4 +87,10 @@ function mapStateToProps (state, ownProps) {
   }
 }
 
-export default connect(mapStateToProps)(MainContent)
+function mapDispatchToProps (dispatch) {
+  return {
+    fetchAllCriteria: () => dispatch(fetchAllCriteria())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainContent)

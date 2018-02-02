@@ -6,14 +6,11 @@ import { Row } from 'react-bootstrap'
 import { Modal } from '../../../components'
 import PriorityDropdown from './PriorityDropdown'
 import CriteriaDropdown from './CriteriaDropdown'
-import { addNewReview } from '../../actions/review-trans-actions'
+import { rejectTranslation } from '../../actions/review-trans-actions'
 import update from 'immutability-helper'
-
- /* eslint-disable max-len */
-export const MINOR = 'Minor'
-export const MAJOR = 'Major'
-export const CRITICAL = 'Critical'
-export const priorities = [MINOR, MAJOR, CRITICAL]
+import {
+  MINOR, MAJOR, CRITICAL, priorities, textState
+} from '../../utils/reject-trans-util'
 
 /**
  * Modal to collect feedback on the reason for rejecting a translation.
@@ -24,8 +21,9 @@ export class RejectTranslationModal extends Component {
     onHide: PropTypes.func.isRequired,
     transUnitID: PropTypes.number.isRequired,
     revision: PropTypes.number.isRequired,
-    language: PropTypes.string.isRequired,
+    localeId: PropTypes.string.isRequired,
     criteria: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
@@ -34,8 +32,6 @@ export class RejectTranslationModal extends Component {
   }
   defaultState = {
     review: {
-      id: 0,
-      revision: 1,
       selectedPriority: MINOR,
       priorityId: 0,
       selectedCriteria: '',
@@ -50,76 +46,73 @@ export class RejectTranslationModal extends Component {
   componentWillReceiveProps (nextProps) {
     this.setState(prevState => ({
       review: update(prevState.review, {
-        id: {$set: nextProps.transUnitID},
-        revision: {$set: nextProps.revision},
         selectedCriteria: {$set: nextProps.criteria[0].description},
         selectedPriority: {$set: nextProps.criteria[0].priority}
       })
     }))
   }
   onPriorityChange = (event) => {
-    event.persist()
+    const selectedPriority = event.target.innerText
     const priorityIdIndex = priorities.indexOf(event.target.innerText)
     this.setState(prevState => ({
       review: update(prevState.review, {
-        selectedPriority: {$set: event.target.innerText},
+        selectedPriority: {$set: selectedPriority},
         priorityId: {$set: priorityIdIndex}
       })
     }))
   }
   onCriteriaChange = (event) => {
-    event.persist()
-    const criteriaIdIndex = this.props.criteria.findIndex(x => x.description === event.target.innerText)
+    const selectedCriteria = event.target.innerText
+    const criteriaIdIndex = this.props.criteria.findIndex(
+      x => x.description === event.target.innerText)
+    const criteriaId = this.props.criteria[criteriaIdIndex]
     this.setState(prevState => ({
       review: update(prevState.review, {
-        selectedCriteria: {$set: event.target.innerText},
-        // FIXME: The criteria on the server are not zero indexed
-        criteriaId: {$set: criteriaIdIndex + 1}
+        selectedCriteria: {$set: selectedCriteria},
+        criteriaId: {$set: criteriaId}
       })
     }))
   }
   setReviewComment = (event) => {
-    event.persist()
+    const reviewComment = event.target.value
     this.setState(prevState => ({
       review: update(prevState.review, {
-        reviewComment: {$set: event.target.value}
+        reviewComment: {$set: reviewComment}
       })
     }))
   }
-  textState = () => {
-    if (this.state.review.selectedPriority === MAJOR) {
-      return 'u-textWarning'
-    } else if (this.state.review.selectedPriority === CRITICAL) {
-      return 'u-textDanger'
-    } else {
-      return ''
+  saveTransReview = () => {
+    const review = {
+      localeId: this.props.localeId,
+      transUnitId: this.props.transUnitID,
+      revision: this.props.revision,
+      criteriaId: this.state.review.criteriaId,
+      reviewComment: this.state.review.reviewComment
     }
+    this.props.addNewTransReview(review)
+    this.props.onHide()
   }
   render () {
     const {
       show,
       onHide,
-      language,
-      criteria,
-      addNewTransReview
+      criteria
     } = this.props
     const {
       review
     } = this.state
-    const saveTransReview = () => {
-      addNewTransReview(review, language)
-    }
+    const priorityTextState = textState(review.selectedPriority)
     return (
       <Modal show={show}
         onHide={onHide}
-        key="reject-translation-modal"
-        id="RejectTranslationModal">
+        key='reject-translation-modal'
+        id='RejectTranslationModal'>
         <Modal.Header>
           <Modal.Title>Reject translation</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="flex">
-            <span id="CriteriaTitle">
+          <div className='flex'>
+            <span id='CriteriaTitle'>
               Criteria
             </span>
             <CriteriaDropdown
@@ -127,31 +120,34 @@ export class RejectTranslationModal extends Component {
               onCriteriaChange={this.onCriteriaChange}
               selectedCriteria={review.selectedCriteria} />
             <PriorityDropdown
-              textState={this.textState()}
+              textState={priorityTextState}
               priority={review.selectedPriority}
               priorityChange={this.onPriorityChange} />
           </div>
-          <div className="EditorRejection-input">
-            <textarea ref="input"
-              type="comment"
-              placeholder="Provide a comment for why this translation has been rejected"
-              cols="50"
+          <div className='EditorRejection-input'>
+            <textarea ref='input'
+              type='comment'
+              placeholder='Provide a comment for why this translation has been
+               rejected'
+              cols='50'
               onChange={this.setReviewComment}
-              rows="10"
-              className='EditorInputGroup-input is-focused InputGroup--outlined Commenting' />
+              rows='10'
+              className='EditorInputGroup-input is-focused InputGroup--outlined
+               Commenting' />
           </div>
         </Modal.Body>
         <Modal.Footer>
           <span>
             <Row>
               <Button
-                className="EditorButton Button--large u-rounded Button--secondary"
+                className='EditorButton Button--large u-rounded
+                Button--secondary'
                 onClick={onHide}>
                 Cancel
               </Button>
               <Button
-                className="EditorButton Button--large u-rounded Button--primary"
-                onClick={saveTransReview}>
+                className='EditorButton Button--large u-rounded Button--primary'
+                onClick={this.saveTransReview}>
                 Reject translation
               </Button>
             </Row>
@@ -164,7 +160,8 @@ export class RejectTranslationModal extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addNewTransReview: (review, lang) => dispatch(addNewReview(review, lang))
+    addNewTransReview: (review) => dispatch(rejectTranslation(review)
+    )
   }
 }
 
