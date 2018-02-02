@@ -134,11 +134,13 @@
     word-wrap: break-word;
     white-space: pre-wrap;
   }
-  //fixes to Versions page
-  form#j_idt38.l--push-bottom-0 ~ .g.u-fullWidth {
-    height: 100vh;
+  //fixes to Versions/Projects page
+  form#j_idt38.l--push-bottom-0 ~ .g.u-fullWidth,
+  li#projects.is-active  {
+    height: 80vh;
   }
-  #versions_form ~ ul.dropdown__content li {
-    position: relative;
+  // fix to settings dropdowns on languages tab
+  li#settings ul.tabsContent {
+    height: 80vh;
   }
 }
