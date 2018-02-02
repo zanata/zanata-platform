@@ -36,6 +36,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -104,7 +105,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                     filterOutObsolete, person);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("select p from HProject p ")
+        sb.append("select distinct p, UPPER(p.name) from HProject p ")
             .append(condition)
             .append("order by UPPER(p.name) asc");
         Query q = getSession().createQuery(sb.toString());
@@ -123,8 +124,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         q.setCacheable(true)
                 .setComment("ProjectDAO.getOffsetList");
         @SuppressWarnings("unchecked")
-        List<HProject> list = q.list();
-        return list;
+        List<Object[]> list = q.list();
+        return list.stream().map(obj -> (HProject) obj[0])
+                .collect(Collectors.toList());
     }
 
     public int getFilterProjectSize(boolean filterOutActive,
@@ -134,7 +136,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
         String condition = constructFilterCondition(filterOutActive,
                 filterOutReadOnly, filterOutObsolete, person);
-        String query = "select count(*) from HProject p " + condition;
+        String query = "select count(distinct p) from HProject p " + condition;
         Query q = getSession().createQuery(query);
         if (person != null) {
             q.setParameter("person", person);
@@ -148,6 +150,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return totalCount.intValue();
     }
 
+    /**
+     * IMPORTANT: This method will potentially returns duplicate results.
+     * Caller are required to use 'distinct' to filter out duplication
+     */
     private String constructFilterCondition(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete,
             @Nullable HPerson person) {
