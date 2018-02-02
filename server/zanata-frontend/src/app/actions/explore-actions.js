@@ -44,7 +44,7 @@ const getSearchProjectResults = (dispatch, searchText, pages, callbacks) => {
     SEARCH_PROJECT_REQUEST,
     {
       type: SEARCH_PROJECT_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -73,7 +73,7 @@ const getSearchLanguageTeamResults = (dispatch, searchText,
     SEARCH_LANG_TEAM_REQUEST,
     {
       type: SEARCH_LANG_TEAM_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -100,7 +100,7 @@ const getSearchPeopleResults = (dispatch, searchText, pages, callbacks) => {
     SEARCH_PEOPLE_REQUEST,
     {
       type: SEARCH_PEOPLE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -127,7 +127,7 @@ const getSearchGroupResults = (dispatch, searchText, pages, callbacks) => {
     SEARCH_GROUP_REQUEST,
     {
       type: SEARCH_GROUP_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {

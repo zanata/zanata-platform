@@ -1,5 +1,5 @@
 import { CALL_API } from 'redux-api-middleware'
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import { includes, isEmpty } from 'lodash'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
 import {
@@ -64,7 +64,7 @@ const getLocalesList = (state) => {
     LOAD_LANGUAGES_REQUEST,
     {
       type: LOAD_LANGUAGES_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -90,7 +90,7 @@ const searchLocales = (query) => {
     LOAD_LANGUAGES_SUGGESTION_REQUEST,
     {
       type: LOAD_LANGUAGES_SUGGESTION_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -116,7 +116,7 @@ const getLocalesPermission = (dispatch) => {
     LANGUAGE_PERMISSION_REQUEST,
     {
       type: LANGUAGE_PERMISSION_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -143,7 +143,7 @@ const getUserInfo = (dispatch) => {
     LOAD_USER_REQUEST,
     {
       type: LOAD_USER_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -169,7 +169,7 @@ const deleteLanguage = (dispatch, localeId) => {
     LANGUAGE_DELETE_REQUEST,
     {
       type: LANGUAGE_DELETE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         dispatch(getLocalesList(state))
         return res
       },
@@ -193,7 +193,7 @@ const createNewLanguage = (details, dispatch) => {
     CREATE_LANGUAGE_REQUEST,
     {
       type: CREATE_LANGUAGE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -270,7 +270,7 @@ export const handleUpdateSearch = (search) => {
 }
 
 export const handleDelete = (localeId) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     dispatch(deleteLanguage(dispatch, localeId))
   }
 }
@@ -289,7 +289,7 @@ export const handleNewLanguageDisplay =
   createAction(TOGGLE_NEW_LANGUAGE_DISPLAY)
 
 export const handleLoadSuggestion = (query) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     if (!isEmpty(query)) {
       dispatch(searchLocales(query))
     }
@@ -297,7 +297,7 @@ export const handleLoadSuggestion = (query) => {
 }
 
 export const handleSaveNewLanguage = (details) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     dispatch(createNewLanguage(details, dispatch))
   }
 }

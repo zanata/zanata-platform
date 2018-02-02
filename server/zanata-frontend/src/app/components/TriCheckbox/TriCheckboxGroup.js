@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -35,7 +36,7 @@ class TriCheckboxGroup extends Component {
   masterCheckBoxClick = (event) => {
     event.persist()
     if (event.target.checked) {
-      this.setState((prevState, props) => ({
+      this.setState((_prevState, props) => ({
         checked: true,
         indeterminate: false,
         options: props.options.map((value) => {
@@ -44,7 +45,7 @@ class TriCheckboxGroup extends Component {
         })
       }))
     } else {
-      this.setState((prevState, props) => ({
+      this.setState((_prevState, props) => ({
         checked: false,
         indeterminate: false,
         options: props.options.map((value) => {
@@ -58,7 +59,7 @@ class TriCheckboxGroup extends Component {
 
   subCheckboxClick = (event) => {
     event.persist()
-    this.setState((prevState, props) => ({
+    this.setState((_prevState, props) => ({
       options: props.options.map((value) => {
         if (event.target.name === value.name) {
           value.checked = !value.checked

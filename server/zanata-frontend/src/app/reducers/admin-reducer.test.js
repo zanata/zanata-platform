@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global jest describe it expect */
 
 import adminReducer from './admin-reducer'

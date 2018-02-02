@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global jest describe it expect */
 
 import glossaryReducer from './glossary-reducer'

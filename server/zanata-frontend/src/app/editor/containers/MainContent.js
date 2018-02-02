@@ -1,3 +1,4 @@
+// @ts-nocheck
 import cx from 'classnames'
 import React from 'react'
 import * as PropTypes from 'prop-types'
@@ -50,7 +51,7 @@ class MainContent extends React.Component {
       )
     }
 
-    const transUnits = phrases.map((phrase, index) => {
+    const transUnits = phrases.map((phrase, _index) => {
       // FIXME maybe use phrase id, next page will have
       //       same index for different id. Not sure if
       //       that will matter though.
@@ -102,7 +103,7 @@ class MainContent extends React.Component {
   }
 }
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state, _ownProps) {
   // TODO replace with selector
   const maximised = !state.ui.panels.navHeader.visible
   const showReviewModal = state.review.showReviewModal

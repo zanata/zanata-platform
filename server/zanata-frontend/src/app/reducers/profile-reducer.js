@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { handleActions } from 'redux-actions'
 import {ContentStates} from '../constants/Options'
 import utilsDate from '../utils/DateHelper'

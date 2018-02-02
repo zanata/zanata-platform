@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import {storiesOf, action} from '@storybook/react'
 import { Alert, Button, Image } from 'react-bootstrap'

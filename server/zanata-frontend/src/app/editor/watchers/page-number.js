@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
  * Update page number from query string whenever it changes.
  *
@@ -8,7 +9,7 @@
 import watch from './watch'
 import { getLocationPageNumber } from '../selectors'
 import { UPDATE_PAGE } from '../actions/controls-header-actions'
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 
 export const watchQueryStringPageNumber = store => {
   const watcher = watch('page-number > watchQueryStringPageNumber')(

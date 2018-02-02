@@ -1,4 +1,4 @@
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 
 export const MOVE_NEXT = 'MOVE_NEXT'
 export const moveNext = createAction(MOVE_NEXT)

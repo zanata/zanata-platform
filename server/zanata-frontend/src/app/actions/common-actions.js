@@ -1,5 +1,5 @@
 // @ts-check
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import { auth } from '../config'
 
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE'

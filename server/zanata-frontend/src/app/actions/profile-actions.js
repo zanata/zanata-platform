@@ -1,4 +1,4 @@
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { isEmpty, includes, forEach } from 'lodash'
 import utilsDate from '../utils/DateHelper'
@@ -38,7 +38,7 @@ const getUserStatistics = (username, fromDate, toDate) => {
     USER_STATS_REQUEST,
     {
       type: USER_STATS_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -58,7 +58,7 @@ const getUserStatistics = (username, fromDate, toDate) => {
 }
 
 const loadUserStats = (username, dateRangeOption) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     const dateRange = utilsDate.getDateRangeFromOption(dateRangeOption)
     dispatch(getUserStatistics(username, dateRange.fromDate, dateRange.toDate))
   }
@@ -71,7 +71,7 @@ const getLocaleDetail = (localeId) => {
     GET_LOCALE_REQUEST,
     {
       type: GET_LOCALE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -97,7 +97,7 @@ const getUserInfo = (dispatch, username, dateRangeOption) => {
     LOAD_USER_REQUEST,
     {
       type: LOAD_USER_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -125,7 +125,7 @@ export const profileInitialLoad = (username) => {
     if (isEmpty(username) && !isLoggedIn) {
       // redirect to login screen if no username is found url
       // and user is not logged in
-      window.location = serverUrl + links.loginUrl
+      window.location.href = serverUrl + links.loginUrl
     } else {
       dispatch(getUserInfo(dispatch, username,
         getState().profile.dateRange))

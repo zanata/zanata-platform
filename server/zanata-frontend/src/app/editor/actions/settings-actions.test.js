@@ -9,7 +9,7 @@ import {
   updateSetting,
   saveSettings
 } from './settings-actions'
-// import { createAction } from 'redux-actions'
+// import { createAction } from 'typesafe-actions'
 import {
   SETTINGS_REQUEST,
   SETTINGS_SUCCESS,

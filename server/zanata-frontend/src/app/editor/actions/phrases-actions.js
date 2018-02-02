@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { savePhrase } from '../api'
 import { toggleDropdown } from '.'
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import {
   COPY_FROM_SOURCE,
   COPY_FROM_ALIGNED_SOURCE,

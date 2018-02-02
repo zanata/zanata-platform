@@ -1,6 +1,6 @@
 import { getSaveButtonStatus, hasTranslationChanged }
   from '../utils/phrase-util'
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import {
   copyFromAlignedSource,
   undoEdit,

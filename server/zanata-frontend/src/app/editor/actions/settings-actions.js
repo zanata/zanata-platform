@@ -1,5 +1,5 @@
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import {
   SETTINGS_REQUEST,
   SETTINGS_SUCCESS,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { storiesOf, action } from '@storybook/react'
 import { Button } from 'react-bootstrap'
@@ -58,4 +59,3 @@ storiesOf('RejectionsForm', module)
         </div>
       </div>
   ))
-

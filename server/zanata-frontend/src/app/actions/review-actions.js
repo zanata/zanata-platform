@@ -1,4 +1,4 @@
-// import { createAction } from 'redux-actions'
+// import { createAction } from 'typesafe-actions'
 import { CALL_API } from 'redux-api-middleware'
 import {
   getJsonHeaders,

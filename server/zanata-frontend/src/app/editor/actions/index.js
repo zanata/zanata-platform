@@ -1,4 +1,4 @@
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import {
   ROUTING_PARAMS_CHANGED,
   SET_SIDEBAR_VISIBILITY,

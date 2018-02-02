@@ -1,4 +1,4 @@
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import {
   RESET_STATUS_FILTERS,
   UPDATE_STATUS_FILTER,

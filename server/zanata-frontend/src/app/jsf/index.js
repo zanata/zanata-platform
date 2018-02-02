@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * This is to add React components to existing jsf page besides sidebar/legacy.
  * Created by pahuang on 6/23/17.

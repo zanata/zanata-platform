@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { storiesOf, action } from '@storybook/react'
 import { Pagination, Well } from 'react-bootstrap'
@@ -40,4 +41,3 @@ storiesOf('Pagination', module)
         <p><code>bsSize='small'</code></p>
       </span>
     ))
-

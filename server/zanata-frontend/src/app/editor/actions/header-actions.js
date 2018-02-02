@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   fetchStatistics,
   fetchLocales,
@@ -20,7 +21,7 @@ import {
   HEADER_DATA_FETCHED
 } from './header-action-types'
 import { some, curry, isEmpty } from 'lodash'
-import { createAction } from 'redux-actions'
+import { createAction } from 'typesafe-actions'
 import { equals } from '../utils/string-utils'
 
 export const hideSidebar = createAction(HIDE_SIDEBAR)
@@ -29,7 +30,7 @@ export const toggleInfoPanel = createAction(TOGGLE_INFO_PANEL)
 export const toggleHeader = createAction(TOGGLE_HEADER)
 export const toggleKeyboardShortcutsModal = createAction(TOGGLE_KEY_SHORTCUTS)
 
-const unwrapResponse = (dispatch, errorMsg, response) => {
+const unwrapResponse = (_dispatch, _errorMsg, response) => {
   if (response.status >= 400) {
     // FIXME replace with api middleware and use standard error handling
     // new Error(errorMsg))
@@ -79,7 +80,7 @@ export const headerDataFetched = createAction(HEADER_DATA_FETCHED)
 
 // this is a get all action that will wait until all promises are resovled
 export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     const checkResponse = curry(unwrapResponse)(dispatch)
 
     // FIXME make the checkResponse just reject with the error code

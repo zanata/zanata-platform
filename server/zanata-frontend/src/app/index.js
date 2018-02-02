@@ -1,3 +1,4 @@
+// @ts-nocheck
 import 'babel-polyfill'
 import 'es6-symbol/implement'
 import React from 'react'
@@ -28,7 +29,7 @@ WebFont.load({
 // const routerMiddleware = syncHistory(history)
 
 const logger = createLogger({
-  predicate: (getState, action) =>
+  predicate: (_getState, _action) =>
   process.env && (process.env.NODE_ENV === 'development')
 })
 

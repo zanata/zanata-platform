@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global jest describe it expect */
 
 import { SET_SIDEBAR_VISIBILITY } from '../actions/action-types'
