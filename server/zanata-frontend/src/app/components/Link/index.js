@@ -1,3 +1,4 @@
+// @ts-check
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Link as RouterLink } from 'react-router'
@@ -5,7 +6,7 @@ import { Link as RouterLink } from 'react-router'
 /**
  * Common link component which generates <a href> or in-page navigation link
  * based on useHref.
- */
+ * @type { React.StatelessComponent<{id, children, link, useHref, props?}> } */
 const Link = ({
   children,
   link,

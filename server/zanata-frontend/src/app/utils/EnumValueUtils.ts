@@ -1,3 +1,4 @@
+import { tuple } from './tuple'
 
 export const processStatusCodes = [
   'NotAccepted', 'Waiting', 'Running', 'Finished', 'Cancelled', 'Failed']
@@ -7,27 +8,30 @@ const isStatusCodeEnded = statusCode => {
     statusCode === 'Failed'
 }
 /**
- * @param {{statusCode: string}} processStatus
- * @returns {boolean} whether a process status represents an ended process
+ * @returns whether a process status represents an ended process
  */
-export function isProcessEnded (processStatus) {
+export function isProcessEnded (processStatus: {statusCode: string}) {
   return processStatus && isStatusCodeEnded(processStatus.statusCode)
 }
 
-export const entityStatuses = ['READONLY', 'ACTIVE', 'OBSOLETE']
+export const entityStatuses = tuple('READONLY', 'ACTIVE', 'OBSOLETE')
+export type EntityStatus = typeof entityStatuses[number]
+
 export function isEntityStatusReadOnly (status) {
   return status === 'READONLY'
 }
 
-export const internalTMChoice = ['SelectNone', 'SelectAny', 'SelectSome']
+export const internalTMChoice = tuple('SelectNone', 'SelectAny', 'SelectSome')
+export type InternalTMChoice = typeof internalTMChoice[number]
 
 /**
- *
- * @param {boolean} isFromAllProjects if we want to search TM from all projects
- * @param {Array.<string>} fromVersions
- * @returns {*}
+ * @param isFromAllProjects if we want to search TM from all projects
+ * @param fromVersions
  */
-export function toInternalTMSource (isFromAllProjects, fromVersions) {
+export function toInternalTMSource (isFromAllProjects: boolean, fromVersions: string[]): {
+  choice: InternalTMChoice;
+  projectIterationIds?: string[];
+} {
   if (isFromAllProjects) {
     return {
       choice: 'SelectAny'

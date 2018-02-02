@@ -3,7 +3,7 @@
 import React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-dom/test-utils'
+import * as TestUtils from 'react-dom/test-utils'
 import TriCheckbox from '.'
 
 const callback = function () {}

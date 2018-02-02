@@ -2,7 +2,7 @@
 
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-dom/test-utils'
+import * as TestUtils from 'react-dom/test-utils'
 import { mount } from 'enzyme'
 import { Pager } from '.'
 import { Icon } from '../../../components'

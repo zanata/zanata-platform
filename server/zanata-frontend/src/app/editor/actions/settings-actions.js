@@ -1,6 +1,5 @@
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
 import { createAction } from 'redux-actions'
-import keys from 'lodash/keys'
 import {
   SETTINGS_REQUEST,
   SETTINGS_SUCCESS,
@@ -11,6 +10,7 @@ import {
   SETTINGS_SAVE_FAILURE
 } from './settings-action-types'
 import { apiUrl } from '../../config'
+import { isEmptyObject } from '../../utils/ObjectUtils'
 
 export const settingsUrl = `${apiUrl}/user/settings/webeditor`
 
@@ -36,7 +36,7 @@ export const fetchSettings = () => dispatch => dispatch({
  */
 export const saveSettings = settings => dispatch => new Promise(
   (resolve, reject) => {
-    if (keys(settings).length === 0) {
+    if (isEmptyObject(settings)) {
       // no settings to save, something must have gone wrong
       const error = new Error('trying to save empty settings object')
       console.error(error)

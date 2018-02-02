@@ -17,3 +17,9 @@ rules:
   #   import * as React from 'react'
   #   import { Component } from 'react'
   no-duplicate-imports: 0
+  max-len:
+    - 2  // error to enforce compliance, disable when needed
+    - 80 // line length (characters)
+    - 2   // count tabs as 2 characters (required, but we don't allow tabs)
+    // allow JSX to exceed 80 characters (https://twitter.com/timtyrrell/status/689912501165658112)
+    - { ignorePattern: "\\s*<" }

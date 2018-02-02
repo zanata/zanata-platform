@@ -4,7 +4,7 @@ jest.disableAutomock()
 import React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-addons-test-utils'
+import * as TestUtils from 'react-addons-test-utils'
 import COMPONENT_NAME_HERE from '.'
 
 describe('COMPONENT_NAME_HERE Test', () => {

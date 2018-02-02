@@ -1,3 +1,4 @@
+// @ts-check
 import { combineReducers } from 'redux'
 import { createSelector } from 'reselect'
 import { routerReducer as routing } from 'react-router-redux'
