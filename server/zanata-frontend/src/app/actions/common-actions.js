@@ -1,4 +1,3 @@
-// @ts-check
 import { createAction } from 'typesafe-actions'
 import { auth } from '../config'
 
