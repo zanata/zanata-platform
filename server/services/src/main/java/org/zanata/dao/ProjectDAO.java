@@ -124,8 +124,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         q.setCacheable(true)
                 .setComment("ProjectDAO.getOffsetList");
         @SuppressWarnings("unchecked")
-        List<HProject> list = q.list();
-        return list;
+        List<Object[]> list = q.list();
+        return list.stream().map(obj -> (HProject) obj[0])
+                .collect(Collectors.toList());
     }
 
     public int getFilterProjectSize(boolean filterOutActive,
@@ -149,6 +150,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return totalCount.intValue();
     }
 
+    /**
+     * IMPORTANT: This method will potentially returns duplicate results.
+     * Caller are required to use 'distinct' to filter out duplication
+     */
     private String constructFilterCondition(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete,
             @Nullable HPerson person) {
