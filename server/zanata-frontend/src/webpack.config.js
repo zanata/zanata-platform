@@ -232,7 +232,7 @@ module.exports = function (env, isEditor, devServerPort) {
       // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
       // There's probably a config option for this (stats?) but I can't find it.
       function () {
-        this.plugin('watch-run', function (watching, callback) {
+        this.plugin('watch-run', function (_watching, callback) {
           // eslint-disable-next-line no-console
           console.log('Begin compile at ' + new Date())
           callback()
