@@ -71,8 +71,9 @@ var postCssLoader = {
  * More info:
  *   https://blog.flennik.com/the-fine-art-of-the-webpack-2-config-dc4d19d7f172
  */
-module.exports = function (env) {
+module.exports = function (env, isEditor, devServerPort) {
   var buildtype = env && env.buildtype || 'prod'
+  const distDir = isEditor ? 'dist.editor' : 'dist'
 
   /**
    * Development build.
@@ -126,13 +127,16 @@ module.exports = function (env) {
     }),
 
     output: storybook ? undefined : dropUndef({
-      path: join(__dirname, 'dist'),
+      path: join(__dirname, distDir),
       filename: fullBuild ? '[name].[chunkhash:8].cache.js' : '[name].js',
       chunkFilename: fullBuild ? '[name].[chunkhash:8].cache.js' : '[name].js',
       // includes comments in the generated code about where the code came from
       pathinfo: dev,
       // required for hot module replacement
-      publicPath: dev ? 'http://localhost:8000/' : undefined
+      // or is it https://github.com/webpack-contrib/style-loader/issues/55 ?
+      publicPath: dev
+      ? `http://localhost:${devServerPort}/`
+      : undefined
     }),
     module: {
       rules: _.compact([
