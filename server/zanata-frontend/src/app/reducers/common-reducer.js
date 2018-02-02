@@ -6,8 +6,7 @@ import {
 } from '../actions/common-actions'
 
 export default handleActions({
-  // @ts-ignore: unused
-  [CLEAR_MESSAGE]: (state, action) => {
+  [CLEAR_MESSAGE]: (state, _action) => {
     return {
       ...state,
       notification: null

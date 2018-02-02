@@ -103,28 +103,23 @@ const DateHelper = {
   getDefaultDateRange () {
     return {
       'This week': {
-        // @ts-ignore: unused now
-        startDate: function startDate (now) {
+        startDate: function startDate (_now) {
           return moment().weekday(0)
         },
-        // @ts-ignore: unused now
-        endDate: function endDate (now) {
+        endDate: function endDate (_now) {
           return moment().weekday(6)
         }
       },
       'Last week': {
-        // @ts-ignore: unused now
-        startDate: function startDate (now) {
+        startDate: function startDate (_now) {
           return moment().weekday(-7)
         },
-        // @ts-ignore: unused now
-        endDate: function endDate (now) {
+        endDate: function endDate (_now) {
           return moment().weekday(-1)
         }
       },
       'This month': {
-        // @ts-ignore: unused now
-        startDate: function startDate (now) {
+        startDate: function startDate (_now) {
           return moment().date(1)
         },
         endDate: function endDate (now) {
@@ -135,8 +130,7 @@ const DateHelper = {
         startDate: function startDate (now) {
           return moment().month(now.month() - 1).date(1)
         },
-        // @ts-ignore: unused now
-        endDate: function endDate (now) {
+        endDate: function endDate (_now) {
           return moment().date(0)
         }
       },

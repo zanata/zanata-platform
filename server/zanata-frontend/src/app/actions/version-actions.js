@@ -75,8 +75,7 @@ export const fetchProjectPage = (projectSearchTerm) => {
     {
       type: PROJECT_PAGE_SUCCESS,
       meta: {timestamp},
-      // @ts-ignore: unused params
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return getJSON(res).then((json) => json.results)
       }
     },
@@ -118,8 +117,7 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const types = [VERSION_TM_MERGE_REQUEST,
     {
       type: VERSION_TM_MERGE_SUCCESS,
-      // @ts-ignore: unused params
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && ~contentType.indexOf('json')) {
           // Just making sure res.json() does not raise an error
