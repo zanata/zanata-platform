@@ -38,7 +38,7 @@ class CriteriaDropdown extends Component {
     const options = criteriaList.map((value, index) => {
       return (
         <li key={index}
-          className="EditorDropdown-item"
+          className='EditorDropdown-item'
           onClick={this.onCriteriaChange}>
           {value.description}
         </li>
@@ -47,11 +47,11 @@ class CriteriaDropdown extends Component {
     return (
       <Dropdown enabled isOpen={this.state.dropdownOpen}
         onToggle={this.toggleDropdown}
-        className="dropdown-menu Criteria">
+        className='dropdown-menu Criteria'>
         <Dropdown.Button>
-          <a className="EditorDropdown-item">
+          <a className='EditorDropdown-item'>
             {selectedCriteria}
-            <Icon className="n1" name="chevron-down" />
+            <Icon className='n1' name='chevron-down' />
           </a>
         </Dropdown.Button>
         <Dropdown.Content>

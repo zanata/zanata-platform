@@ -19,12 +19,12 @@ public interface TranslationReviewResource {
     String SERVICE_PATH = "/review/trans/{localeId}";
 
     /**
-     * Update/insert translation
+     * Update/insert translation review comment
      *
      * @param localeId
      *            locale id of translation
      * @param data
-     *            information of updated translation
+     *            information of translation review
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>

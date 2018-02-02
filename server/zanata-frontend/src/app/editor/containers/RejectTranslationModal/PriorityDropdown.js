@@ -38,30 +38,30 @@ class ProirityDropdown extends Component {
   render () {
     const { textState, priority } = this.props
     return (
-      <span className="PriorityDropdown">
-        <Icon name="warning" className="s2"
-          parentClassName="u-textWarning" />
-        <span id="PriorityTitle">Priority</span>
+      <span className='PriorityDropdown'>
+        <Icon name='warning' className='s2'
+          parentClassName='u-textWarning' />
+        <span id='PriorityTitle'>Priority</span>
         <Dropdown enabled isOpen={this.state.dropdownOpen}
           onToggle={this.toggleDropdown}
-          className="dropdown-menu priority">
+          className='dropdown-menu priority'>
           <Dropdown.Button>
-            <a className="EditorDropdown-item">
+            <a className='EditorDropdown-item'>
               <span className={textState}>{priority}</span>
-              <Icon className="n1" name="chevron-down" />
+              <Icon className='n1' name='chevron-down' />
             </a>
           </Dropdown.Button>
           <Dropdown.Content>
             <ul>
-              <li className="EditorDropdown-item"
+              <li className='EditorDropdown-item'
                 onClick={this.onPriorityChange}>
                 <span>Minor</span></li>
-              <li className="EditorDropdown-item"
+              <li className='EditorDropdown-item'
                 onClick={this.onPriorityChange}>
-                <span className="u-textWarning">Major</span></li>
-              <li className="EditorDropdown-item"
+                <span className='u-textWarning'>Major</span></li>
+              <li className='EditorDropdown-item'
                 onClick={this.onPriorityChange}>
-                <span className="u-textDanger">Critical</span></li>
+                <span className='u-textDanger'>Critical</span></li>
             </ul>
           </Dropdown.Content>
         </Dropdown>
