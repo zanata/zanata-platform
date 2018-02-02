@@ -5,6 +5,7 @@ import AboutPage from '../../containers/ProjectVersion/AboutPage'
 import PeoplePage from '../../containers/ProjectVersion/PeoplePage'
 import GroupsPage from '../../containers/ProjectVersion/GroupsPage'
 import LanguagesPage from "../../containers/ProjectVersion/LanguagesPage";
+import DocumentsPage from "../../containers/ProjectVersion/DocumentsPage";
 
 const aboutText = 'This is one rocking project version. This is the best' +
     ' project version ever.'
@@ -47,5 +48,11 @@ storiesOf('Sidebar', module)
         <div>
           <Sidebar />
           <LanguagesPage />
+        </div>
+    ))
+    .add('DocumentsPage', () => (
+        <div>
+          <Sidebar />
+          <DocumentsPage />
         </div>
     ))

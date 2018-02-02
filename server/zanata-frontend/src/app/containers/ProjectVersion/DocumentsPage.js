@@ -2,21 +2,22 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from "prop-types";
 import { InputGroup, FormGroup, FormControl, Pagination, Table,
-  ProgressBar } from 'react-bootstrap'
+  ProgressBar
+} from 'react-bootstrap'
 import { Icon } from '../../components'
 
-class LanguagesPage extends Component {
+class DocumentsPage extends Component {
 
   render() {
     return (
       /* eslint-disable max-len */
         <div className='flexTab wideView'>
-          <h2>Languages</h2>
+          <h2>Documents</h2>
           <div className='toolbar'>
             <FormGroup className='searchBox'>
               <InputGroup>
                 <FormControl type='text'
-                 value='Search languages'/>
+                 value='Search documents'/>
                 <InputGroup.Addon>
                   <Icon name='search'
                    className='s1'
@@ -28,7 +29,7 @@ class LanguagesPage extends Component {
               <FormControl componentClass='select'
                 id='sort-options'>
                 return
-                <option>Last active</option>
+                <option>Last modified</option>
                 <option>Alphabetical</option>
               </FormControl>
             </div>
@@ -61,7 +62,7 @@ class LanguagesPage extends Component {
             </thead>
             <tbody>
             <tr>
-              <td>Assamese</td>
+              <td><a href="">MobyDick.txt</a></td>
               <td>100%</td>
               <td>3 days ago</td>
             </tr>
@@ -73,7 +74,7 @@ class LanguagesPage extends Component {
               </ProgressBar></td>
             </tr>
             <tr>
-              <td>French</td>
+              <td><a href="">A-really-long-filename-to-test.txt</a></td>
               <td>33%</td>
               <td>5 days ago</td>
             </tr>
@@ -91,7 +92,7 @@ class LanguagesPage extends Component {
               </td>
             </tr>
             <tr>
-              <td>German</td>
+              <td><a href="">Day Of The Triffids.txt</a></td>
               <td>10%</td>
               <td>12 days ago</td>
             </tr>
@@ -114,4 +115,4 @@ class LanguagesPage extends Component {
   }
 }
 
-export default LanguagesPage
+export default DocumentsPage
