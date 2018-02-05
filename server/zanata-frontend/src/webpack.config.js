@@ -210,8 +210,8 @@ module.exports = function (env) {
             },
             {
               loader: 'sass-loader', options: {
-                includePaths: ['./node_modules',
-                  './src/app/styles']
+                includePaths: ['/node_modules',
+                  '/app/styles']
               }
             }
           ]
