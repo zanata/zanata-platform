@@ -1,3 +1,4 @@
+// @ts-check
 import { combineReducers } from 'redux'
 import { createSelector } from 'reselect'
 import { routerReducer as routing } from 'react-router-redux'
@@ -36,6 +37,8 @@ export const getEnterSavesImmediately = createSelector(
   getSettings, settingsSelectors.getEnterSavesImmediately)
 export const getSyntaxHighlighting = createSelector(
   getSettings, settingsSelectors.getSyntaxHighlighting)
+export const getSuggestionsDiff = createSelector(
+  getSettings, settingsSelectors.getSuggestionsDiff)
 export const getShortcuts = createSelector(
   getSettings, settingsSelectors.getShortcuts)
 

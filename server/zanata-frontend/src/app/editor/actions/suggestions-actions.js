@@ -3,7 +3,6 @@ import { getSuggestions } from '../api/suggestions'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 import { debounce, isUndefined } from 'lodash'
 import {
-  DIFF_SETTING_CHANGED,
   SET_SUGGESTION_SEARCH_TYPE,
   COPY_SUGGESTION,
   TEXT_SUGGESTION_STARTED_COPYING,
@@ -17,8 +16,10 @@ import {
   SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX
 } from './suggestions-action-types'
 import { updateSetting } from './settings-actions'
-import { KEY_SUGGESTIONS_VISIBLE } from '../reducers/settings-reducer'
-import { getSuggestionsPanelVisible } from '../reducers'
+import {
+  KEY_SUGGESTIONS_VISIBLE, SUGGESTIONS_DIFF
+} from '../reducers/settings-reducer'
+import { getSuggestionsPanelVisible, getSuggestionsDiff } from '../reducers'
 
 export function toggleSuggestions () {
   return (dispatch, getState) => {
@@ -47,7 +48,12 @@ export function togglePhraseSuggestions () {
   }
 }
 
-export const diffSettingChanged = createAction(DIFF_SETTING_CHANGED)
+export function diffSettingChanged () {
+  return (dispatch, getState) => {
+    const visible = getSuggestionsDiff(getState())
+    dispatch(updateSetting(SUGGESTIONS_DIFF, !visible))
+  }
+}
 
 export function clearSearch () {
   return changeSearchText('')

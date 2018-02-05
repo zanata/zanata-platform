@@ -7,7 +7,7 @@ import ProjectVersionLink from '../components/ProjectVersionLink'
 /* Disabled UI locale changes until zanata-spa is internationalised
 import UiLanguageDropdown from '../components/UiLanguageDropdown'
 */
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { toggleDropdown } from '../actions'

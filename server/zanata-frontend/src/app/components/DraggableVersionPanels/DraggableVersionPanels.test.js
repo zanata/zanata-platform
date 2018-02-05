@@ -1,6 +1,6 @@
 /* global jest describe it expect */
 
-import * as React from 'react'
+import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import DraggableVersionPanels, {Item, DragHandle, tooltipSort} from '.'
 import {Button, ListGroup, ListGroupItem, OverlayTrigger} from 'react-bootstrap'

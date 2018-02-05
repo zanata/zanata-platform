@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 import {Label} from 'react-bootstrap'

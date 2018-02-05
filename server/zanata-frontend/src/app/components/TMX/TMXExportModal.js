@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {size} from 'lodash'
@@ -56,7 +56,7 @@ class TMXExportModal extends Component {
   static propTypes = {
     show: PropTypes.bool,
     showSourceLanguages: PropTypes.bool,
-    type: PropTypes.oneOf(TMX_ALL, TMX_PROJECT, TMX_VERSION).isRequired,
+    type: PropTypes.oneOf([TMX_ALL, TMX_PROJECT, TMX_VERSION]).isRequired,
     srcLanguages: PropTypes.arrayOf(PropTypes.object),
     handleOnClose: PropTypes.func,
     handleExportTMX: PropTypes.func,

@@ -1,3 +1,4 @@
+// @ts-check
 import { handleActions } from 'redux-actions'
 import { cloneDeep } from 'lodash'
 import {
@@ -16,7 +17,7 @@ import {
 } from '../actions/explore-actions'
 
 export default handleActions({
-  [SEARCH_PROJECT_REQUEST]: (state, action) => {
+  [SEARCH_PROJECT_REQUEST]: (state, _action) => {
     let newState = cloneDeep(state)
     newState.loading.Project = true
     return {
@@ -40,7 +41,7 @@ export default handleActions({
       ...newState
     }
   },
-  [SEARCH_LANG_TEAM_REQUEST]: (state, action) => {
+  [SEARCH_LANG_TEAM_REQUEST]: (state, _action) => {
     let newState = cloneDeep(state)
     newState.loading.LanguageTeam = true
     return {
@@ -64,7 +65,7 @@ export default handleActions({
       ...newState
     }
   },
-  [SEARCH_PEOPLE_REQUEST]: (state, action) => {
+  [SEARCH_PEOPLE_REQUEST]: (state, _action) => {
     let newState = cloneDeep(state)
     newState.loading.Person = true
     return {
@@ -88,7 +89,7 @@ export default handleActions({
       ...newState
     }
   },
-  [SEARCH_GROUP_REQUEST]: (state, action) => {
+  [SEARCH_GROUP_REQUEST]: (state, _action) => {
     let newState = cloneDeep(state)
     newState.loading.Group = true
     return {

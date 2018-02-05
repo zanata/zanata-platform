@@ -1,5 +1,5 @@
 
-import * as React from 'react'
+import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import TranslatingIndicator from '.'
 import { Icon } from '../../../components'

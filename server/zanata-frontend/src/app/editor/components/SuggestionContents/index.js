@@ -1,5 +1,5 @@
 import TextDiff from '../TextDiff'
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import cx from 'classnames'
 

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
@@ -21,7 +21,7 @@ import {
 } from '../../actions/version-actions'
 import {
   ProjectType, LocaleType, FromProjectVersionType, processStatusType
-} from '../../utils/prop-types-util.js'
+} from '../../utils/prop-types-util'
 import {isProcessEnded, IGNORE_CHECK, FUZZY} from '../../utils/EnumValueUtils'
 import {getVersionLanguageSettingsUrl} from '../../utils/UrlHelper'
 import {
