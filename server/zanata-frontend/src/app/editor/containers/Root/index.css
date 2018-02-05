@@ -996,6 +996,14 @@ label span.n1 {
   background-color: var(--Editor-color-dark);
 }
 
+.controlHeader {
+  min-height: 2.25rem!important
+  padding-top: 0.2rem;
+}
+
+.TransUnit-panelFooterLeftNav .Button--snug .u-textMini {
+  vertical-align: text-top;
+}
 /**
  * Media Queries
  */
