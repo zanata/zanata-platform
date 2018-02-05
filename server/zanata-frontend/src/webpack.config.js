@@ -24,6 +24,7 @@ var cssNano = require('cssnano')
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
 const { CheckerPlugin } = require('awesome-typescript-loader')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
@@ -198,7 +199,23 @@ module.exports = function (env) {
             ])
           })
         },
-
+        {
+          test: /\.scss$/,
+          use: [
+            {
+              loader: 'style-loader'
+            },
+            {
+              loader: 'css-loader'
+            },
+            {
+              loader: 'sass-loader', options: {
+                includePaths: ['./node_modules',
+                  './src/app/styles']
+              }
+            }
+          ]
+        },
         /* Bundles bootstrap css into the same bundle as the other css.
          */
         {
@@ -236,6 +253,13 @@ module.exports = function (env) {
       },
 
       new CheckerPlugin(),
+
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          ecma: 8, //es6
+          warnings: false
+        }
+      }),
 
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
@@ -293,7 +317,8 @@ module.exports = function (env) {
     resolve: {
       /* Subdirectories to check while searching up tree for module
        * Default is ['', '.js'] */
-      extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx']
+      extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx',
+        '.scss']
     },
 
     node: {
