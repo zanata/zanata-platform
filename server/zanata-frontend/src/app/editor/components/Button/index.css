@@ -48,6 +48,11 @@ not conflict with the other frontend code
   outline: inherit;
 }
 
+.EditorButton:hover, html input[type=button], input[type=reset], input[type=submit] {
+  cursor: pointer;
+  -webkit-appearance: button;
+}
+
 /* Default */
 
 .Button--default {
@@ -229,3 +234,4 @@ not conflict with the other frontend code
   padding: var(--Button-padding-small);
   font-size: calc(14/16)rem;
 }
+
