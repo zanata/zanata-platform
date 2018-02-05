@@ -20,11 +20,11 @@ var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 var cssNano = require('cssnano')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
 const { CheckerPlugin } = require('awesome-typescript-loader')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
