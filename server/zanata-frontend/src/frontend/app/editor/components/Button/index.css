@@ -230,7 +230,7 @@ not conflict with the other frontend code
   font-size: calc(14/16)rem;
 }
 
-EditorButton:hover, html input[type=button], input[type=reset], input[type=submit] {
+.EditorButton:hover, html input[type=button], input[type=reset], input[type=submit] {
   cursor: pointer;
   -webkit-appearance: button;
 }
