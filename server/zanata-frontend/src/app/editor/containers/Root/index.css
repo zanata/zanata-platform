@@ -997,7 +997,7 @@ label span.n1 {
 }
 
 .controlHeader {
-  min-height: 2.25rem!important
+  min-height: 2.25rem !important;
   padding-top: 0.2rem;
 }
 
