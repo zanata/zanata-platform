@@ -10,6 +10,9 @@ const defaultState = {
   criteria: []
 }
 
+// selectors
+export const getCriteria = state => state.review.criteria
+
 // utility function
 const getErrorMessage = action => {
   if (action.error) {

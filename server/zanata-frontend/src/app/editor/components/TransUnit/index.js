@@ -20,7 +20,6 @@ import {
   undoEdit
 } from '../../actions/phrases-actions'
 import { togglePhraseSuggestions } from '../../actions/suggestions-actions'
-import RejectTranslationModal from '../../containers/RejectTranslationModal'
 import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 const transUnitClassByStatus = {
@@ -60,26 +59,20 @@ class TransUnit extends React.Component {
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
-    }))
+    })),
+    toggleRejectModal: PropTypes.func.isRequired
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      saveDropdownKey: {},
-      showRejectModal: false
+      saveDropdownKey: {}
     }
   }
 
   selectPhrase = () => {
     const { phrase, selectPhrase } = this.props
     selectPhrase(phrase.id)
-  }
-
-  toggleRejectModal = () => {
-    this.setState(prevState => ({
-      showRejectModal: !prevState.showRejectModal
-    }))
   }
 
   render () {
@@ -124,17 +117,6 @@ class TransUnit extends React.Component {
       'translationLocale',
       'undoEdit'
     ])
-
-    // Only Load the Reject Translation Modal when it is to be opened
-    const rejectTranslationModal = this.state.showRejectModal
-       ? <RejectTranslationModal
-         show={this.state.showRejectModal}
-         onHide={this.toggleRejectModal}
-         transUnitID={this.props.phrase.id}
-         revision={this.props.phrase.revision}
-         localeId={this.props.translationLocale.id}
-         criteria={this.props.criteria} />
-       : undefined
     return (
       <div>
         <div className={className}
@@ -143,9 +125,8 @@ class TransUnit extends React.Component {
           <TransUnitSourcePanel {...phraseSourcePanelProps} />
           <TransUnitTranslationPanel {...phraseTranslationPanelProps}
             saveDropdownKey={this.props.phrase.id}
-            showRejectModal={this.toggleRejectModal} />
+            showRejectModal={this.props.toggleRejectModal} />
         </div>
-        {rejectTranslationModal}
       </div>
     )
   }

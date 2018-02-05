@@ -27,7 +27,7 @@ export class RejectTranslationModal extends Component {
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
-    })),
+    })).isRequired,
     addNewTransReview: PropTypes.func.isRequired
   }
   defaultState = {

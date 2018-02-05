@@ -14,7 +14,7 @@ class CriteriaDropdown extends Component {
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
-    })),
+    })).isRequired,
     onCriteriaChange: PropTypes.func.isRequired,
     selectedCriteria: PropTypes.string.isRequired
   }
