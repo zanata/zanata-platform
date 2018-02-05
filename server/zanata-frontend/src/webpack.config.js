@@ -210,7 +210,7 @@ module.exports = function (env) {
             },
             {
               loader: 'sass-loader', options: {
-                includePaths: ['/node_modules',
+                includePaths: ['/node_modules/grommet',
                   '/app/styles']
               }
             }
