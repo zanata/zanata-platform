@@ -2,6 +2,7 @@ package org.zanata.rest.editor.service.resource;
 
 import org.zanata.rest.editor.dto.ReviewData;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
@@ -39,5 +40,5 @@ public interface TranslationReviewResource {
     @Consumes({ MediaType.APPLICATION_JSON,
             MediaType.APPLICATION_JSON })
     Response put(@PathParam("localeId") String localeId,
-            ReviewData data);
+            @NotNull ReviewData data);
 }

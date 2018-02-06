@@ -73,4 +73,34 @@ public class ReviewData implements Serializable {
         this.status = status;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ReviewData that = (ReviewData) o;
+
+        if (transUnitId != null ? !transUnitId.equals(that.transUnitId) :
+                that.transUnitId != null) return false;
+        if (revision != null ? !revision.equals(that.revision) :
+                that.revision != null) return false;
+        if (comment != null ? !comment.equals(that.comment) :
+                that.comment != null)
+            return false;
+        if (reviewCriteriaId != null ?
+                !reviewCriteriaId.equals(that.reviewCriteriaId) :
+                that.reviewCriteriaId != null) return false;
+        return status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = transUnitId != null ? transUnitId.hashCode() : 0;
+        result = 31 * result + (revision != null ? revision.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result +
+                (reviewCriteriaId != null ? reviewCriteriaId.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
+    }
 }

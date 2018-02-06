@@ -1,8 +1,6 @@
 package org.zanata.rest.editor.service;
 
 import com.google.common.collect.Lists;
-import net.customware.gwt.dispatch.shared.ActionException;
-import org.omg.PortableInterceptor.ACTIVE;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ReviewCriteriaDAO;
@@ -24,10 +22,9 @@ import org.zanata.webtrans.shared.model.ReviewCriterionId;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.util.List;
-
 
 @Path(TranslationReviewResource.SERVICE_PATH)
 @RequestScoped
@@ -35,22 +32,38 @@ public class TranslationReviewService implements TranslationReviewResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationReviewService.class);
 
-    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-    @Inject
     private LocaleService localeServiceImpl;
-    @Inject
     private ZanataIdentity identity;
-    @Inject
     private ReviewCriteriaDAO reviewCriteriaDAO;
-    @Inject
-    @Authenticated
     private HAccount authenticatedAccount;
-    @Inject
     private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
+    @Inject
+    public TranslationReviewService(
+            TextFlowTargetDAO textFlowTargetDAO,
+            LocaleService localeServiceImpl,
+            ZanataIdentity identity,
+            ReviewCriteriaDAO reviewCriteriaDAO,
+            TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO,
+            @Authenticated HAccount authenticatedAccount) {
+
+        this.textFlowTargetDAO = textFlowTargetDAO;
+        this.localeServiceImpl = localeServiceImpl;
+        this.identity =identity;
+        this.reviewCriteriaDAO = reviewCriteriaDAO;
+        this.textFlowTargetReviewCommentsDAO = textFlowTargetReviewCommentsDAO;
+        this.authenticatedAccount = authenticatedAccount;
+    }
+
     @Override
-    public Response put(String localeId, ReviewData data) {
+    public Response put(String localeId, @NotNull ReviewData data) {
+        if (data == null) {
+            return Response.status(
+                    Response.Status.BAD_REQUEST)
+                    .entity(Lists.newArrayList("data is invalid"))
+                    .build();
+        }
         HLocale locale =
                 localeServiceImpl.getByLocaleId(localeId);
         if (locale == null) {
