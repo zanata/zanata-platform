@@ -21,7 +21,8 @@ export class RejectTranslationModal extends Component {
     show: PropTypes.bool.isRequired,
     onHide: PropTypes.func.isRequired,
     transUnitID: PropTypes.number.isRequired,
-    revision: PropTypes.number.isRequired,
+    // Initial flyweight fetch of phrases does not include the revision detail
+    revision: PropTypes.number,
     localeId: PropTypes.string.isRequired,
     criteria: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,

@@ -9,7 +9,7 @@ import {
 describe('review-trans-reducer', () => {
   it('generates initial state', () => {
     expect(review(undefined, {})).toEqual({
-      notification: null,
+      notification: undefined,
       criteria: []
     })
   })
@@ -22,7 +22,7 @@ describe('review-trans-reducer', () => {
         priority: 'Critical'
       }]
     })).toEqual({
-      notification: null,
+      notification: undefined,
       criteria: [{
         editable: true,
         description: 'invariable invariant variable',

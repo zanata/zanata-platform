@@ -26,7 +26,7 @@ import Button from './Button'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
 import { Row } from 'react-bootstrap'
-import { defaultSaveStatus, nonDefaultValidSaveStatuses }
+import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
 
@@ -91,7 +91,7 @@ class TransUnitTranslationFooter extends React.Component {
                          buttonClassByStatus[status])
 
     const saveCallback = (event) => {
-      if (status === 'rejected') {
+      if (status === STATUS_REJECTED) {
         this.props.showRejectModal()
       }
       savePhraseWithStatus(phrase, status, event)

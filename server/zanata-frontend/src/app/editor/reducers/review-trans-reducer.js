@@ -6,7 +6,7 @@ import {
 } from '../actions/review-trans-actions'
 
 const defaultState = {
-  notification: null,
+  notification: undefined,
   criteria: []
 }
 
