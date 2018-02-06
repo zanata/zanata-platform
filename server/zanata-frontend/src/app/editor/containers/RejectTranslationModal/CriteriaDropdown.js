@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { Component } from 'react'
 import { Icon } from '../../../components'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import Dropdown from '../../components/Dropdown'
 import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
