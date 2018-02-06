@@ -32,29 +32,19 @@ public class TranslationReviewService implements TranslationReviewResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationReviewService.class);
 
-    private TextFlowTargetDAO textFlowTargetDAO;
-    private LocaleService localeServiceImpl;
-    private ZanataIdentity identity;
-    private ReviewCriteriaDAO reviewCriteriaDAO;
-    private HAccount authenticatedAccount;
-    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
-
     @Inject
-    public TranslationReviewService(
-            TextFlowTargetDAO textFlowTargetDAO,
-            LocaleService localeServiceImpl,
-            ZanataIdentity identity,
-            ReviewCriteriaDAO reviewCriteriaDAO,
-            TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO,
-            @Authenticated HAccount authenticatedAccount) {
-
-        this.textFlowTargetDAO = textFlowTargetDAO;
-        this.localeServiceImpl = localeServiceImpl;
-        this.identity =identity;
-        this.reviewCriteriaDAO = reviewCriteriaDAO;
-        this.textFlowTargetReviewCommentsDAO = textFlowTargetReviewCommentsDAO;
-        this.authenticatedAccount = authenticatedAccount;
-    }
+    private TextFlowTargetDAO textFlowTargetDAO;
+    @Inject
+    private LocaleService localeServiceImpl;
+    @Inject
+    private ZanataIdentity identity;
+    @Inject
+    private ReviewCriteriaDAO reviewCriteriaDAO;
+    @Authenticated
+    @Inject
+    private HAccount authenticatedAccount;
+    @Inject
+    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
     @Override
     public Response put(String localeId, @NotNull ReviewData data) {
@@ -109,5 +99,27 @@ public class TranslationReviewService implements TranslationReviewResource {
 
         log.info("success");
         return Response.ok(data).build();
+    }
+
+    public TranslationReviewService() {
+    }
+
+    @java.beans.ConstructorProperties({ "textFlowTargetDAO",
+            "localeServiceImpl", "identity", "reviewCriteriaDAO",
+            "textFlowTargetReviewCommentsDAO", "authenticatedAccount" })
+    protected TranslationReviewService(
+            TextFlowTargetDAO textFlowTargetDAO,
+            LocaleService localeServiceImpl,
+            ZanataIdentity identity,
+            ReviewCriteriaDAO reviewCriteriaDAO,
+            TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO,
+            HAccount authenticatedAccount) {
+
+        this.textFlowTargetDAO = textFlowTargetDAO;
+        this.localeServiceImpl = localeServiceImpl;
+        this.identity =identity;
+        this.reviewCriteriaDAO = reviewCriteriaDAO;
+        this.textFlowTargetReviewCommentsDAO = textFlowTargetReviewCommentsDAO;
+        this.authenticatedAccount = authenticatedAccount;
     }
 }

@@ -216,7 +216,7 @@ public class TranslationReviewServiceTest {
         assertThat(response.getStatus())
                 .isEqualTo(Response.Status.OK.getStatusCode());
         assertThat(response.getEntity()).isNotNull();
-        assertThat((ReviewData) response.getEntity()).isEqualTo(data);
+        assertThat(response.getEntity()).isEqualTo(data);
     }
 
     private HTextFlowTarget buildTft(String localeId, EntityStatus status,
