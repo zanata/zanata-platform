@@ -7,6 +7,7 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
+var path = require('path');
 var stylelint = require('stylelint')
 var postcssDiscardDuplicates = require('postcss-discard-duplicates')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -20,7 +21,6 @@ var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 var cssNano = require('cssnano')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
@@ -201,20 +201,17 @@ module.exports = function (env) {
         },
         {
           test: /\.scss$/,
-          use: [
-            {
-              loader: 'style-loader'
-            },
-            {
-              loader: 'css-loader'
-            },
-            {
-              loader: 'sass-loader', options: {
-                includePaths: ['/node_modules/grommet',
-                  '/app/styles']
-              }
+          loaders: [{
+            loader: 'style-loader'
+          }, {
+            loader: 'css-loader'
+          }, {
+            loader: 'sass-loader',
+            options: {
+              outputStyle: 'compressed',
+              includePaths: ['./node_modules']
             }
-          ]
+          }]
         },
         /* Bundles bootstrap css into the same bundle as the other css.
          */
@@ -253,13 +250,6 @@ module.exports = function (env) {
       },
 
       new CheckerPlugin(),
-
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          ecma: 8, //es6
-          warnings: false
-        }
-      }),
 
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
