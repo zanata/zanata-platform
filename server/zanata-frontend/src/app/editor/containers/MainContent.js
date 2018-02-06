@@ -9,6 +9,7 @@ import { fetchAllCriteria } from '../actions/review-trans-actions'
 import { getCriteria } from '../reducers/review-trans-reducer'
 import { MINOR, MAJOR, CRITICAL } from '../utils/reject-trans-util'
 import RejectTranslationModal from '../containers/RejectTranslationModal'
+import { isUndefined } from 'lodash'
 /**
  * The main content section showing the current page of TransUnit source,
  * status and translations.
@@ -79,6 +80,11 @@ class MainContent extends React.Component {
       { 'is-maximised': maximised })
     const selectedPhrase = this.props.phrases.find(
       x => x.id === this.props.selectedPhraseId)
+    // Need to check whether phrase itself is undefined since the detail may not
+    // yet have been fetched from the server.
+    const selectedPhraseRevision = !isUndefined(selectedPhrase)
+      ? selectedPhrase.revision
+      : undefined
     // TODO scrollbar width container+child were not brought over
     //      from the angular code yet.
     return (
@@ -90,14 +96,11 @@ class MainContent extends React.Component {
             {transUnits}
           </ul>
         </div>
-        // TODO: The Phrases are loaded first with partial data not including
-        //  the revision id. The RejectTranslationModal should allow for this
-        //  and display a loading graphic while the full details are fetched.
         <RejectTranslationModal
           show={this.state.showRejectModal}
           onHide={this.toggleRejectModal}
-          transUnitID={selectedPhrase.id}
-          revision={selectedPhrase.revision}
+          transUnitID={this.props.selectedPhraseId}
+          revision={selectedPhraseRevision}
           localeId={this.props.translationLocale.id}
           criteria={this.props.criteria} />
       </main>
