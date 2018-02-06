@@ -1,11 +1,12 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { Component } from 'react'
+import * as PropTypes from 'prop-types'
 import {
   Button,
   Popover,
   Overlay
 } from 'react-bootstrap'
-import ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom'
 import { Icon } from '../../components'
 
 class DeleteEntry extends Component {

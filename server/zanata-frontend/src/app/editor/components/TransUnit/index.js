@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import cx from 'classnames'
 import { GLOSSARY_TAB } from '../../reducers/ui-reducer'
 import { getSuggestionsPanelVisible } from '../../reducers'

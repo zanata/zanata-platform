@@ -8,7 +8,7 @@ import ProjectVersionLink from '../components/ProjectVersionLink'
 import UiLanguageDropdown from '../components/UiLanguageDropdown'
 */
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { toggleDropdown } from '../actions'
 import { changeUiLocale } from '../actions/header-actions'

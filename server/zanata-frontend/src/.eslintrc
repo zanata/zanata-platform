@@ -12,3 +12,14 @@ rules:
     - 0              # Off, can't enforce yet as frontend all has single-quotes
     - prefer-double  # Use double quotes unless the string contains a literal
                      # double-quote character.
+  # Under standard (non-Babel) ES6 module semantics, you have to import 'react'
+  # twice in cases like this (no default export):
+  #   import * as React from 'react'
+  #   import { Component } from 'react'
+  no-duplicate-imports: 0
+  max-len:
+    - 2  // error to enforce compliance, disable when needed
+    - 80 // line length (characters)
+    - 2   // count tabs as 2 characters (required, but we don't allow tabs)
+    // allow JSX to exceed 80 characters (https://twitter.com/timtyrrell/status/689912501165658112)
+    - { ignorePattern: "\\s*<" }

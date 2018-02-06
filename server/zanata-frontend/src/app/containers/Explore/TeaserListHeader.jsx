@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { Icon, Loader } from '../../components'
 import { Button } from 'react-bootstrap'
 

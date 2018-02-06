@@ -1,5 +1,6 @@
+// @ts-check
+import * as PropTypes from 'prop-types'
 import React from 'react'
-import PropTypes from 'prop-types'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
 import { Button } from 'react-bootstrap'
@@ -14,6 +15,7 @@ const cssClass = {
   needswork: 'warning'
 }
 
+/** @type { React.StatelessComponent<{key?, dateLabel?, date?, wordCount?, selectedDay?, selectedContentState?, handleSelectedDayChanged?, props?}> } */
 const DayMatrix = ({
   dateLabel,
   date,
@@ -21,6 +23,7 @@ const DayMatrix = ({
   selectedDay,
   selectedContentState,
   handleSelectedDayChanged,
+  // @ts-ignore: unused?
   ...props
 }) => {
   const dateIsInFuture = date ? dateUtil.isInFuture(date) : false

@@ -21,8 +21,9 @@
 
 import cx from 'classnames'
 import { Icon } from '../../../components'
+import { Row } from 'react-bootstrap'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 
 /**
  * Styled checkbox to toggle a filter option on and off.
@@ -49,7 +50,7 @@ class FilterToggle extends React.Component {
   }
 
   render () {
-    const className = cx('Toggle u-round', this.props.className)
+    const className = cx('Toggle u-curved', this.props.className)
     const dot = this.props.withDot && <Icon name="dot" className="n1" />
 
     return (
@@ -63,9 +64,11 @@ class FilterToggle extends React.Component {
         <label className="Toggle-label"
           htmlFor={this.props.id}
           title={this.props.title}>
+          <Row>
             {dot}
             {this.props.count}
-          <span className="u-hiddenVisually">{this.props.title}</span>
+            <span className="u-hiddenVisually">{this.props.title}</span>
+          </Row>
         </label>
       </div>
     )

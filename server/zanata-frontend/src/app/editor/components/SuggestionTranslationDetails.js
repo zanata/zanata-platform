@@ -1,6 +1,6 @@
 import Button from './Button'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import SuggestionMatchPercent from './SuggestionMatchPercent'
 import SuggestionUpdateMessage from './SuggestionUpdateMessage'
 

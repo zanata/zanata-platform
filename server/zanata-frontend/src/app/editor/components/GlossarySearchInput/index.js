@@ -22,7 +22,7 @@
 import cx from 'classnames'
 import { Icon } from '../../../components'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 
 /**
  * Styled text input that displays result count.

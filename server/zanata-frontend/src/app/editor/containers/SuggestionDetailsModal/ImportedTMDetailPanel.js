@@ -3,8 +3,9 @@
  * match.
  */
 
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { Component } from 'react'
+import * as PropTypes from 'prop-types'
 import { Icon } from '../../../components'
 import { Panel, Label, Row } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'

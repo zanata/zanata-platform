@@ -1,5 +1,5 @@
 /* global jest expect */
-import renderer from 'react-test-renderer'
+import * as renderer from 'react-test-renderer'
 
 /*
  * Test function that renders stories into snapshots.

@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom'
 import { appUrl, serverUrl } from '../config'
 import createStoreWithMiddleware from './middlewares'
 import { addLocaleData } from 'react-intl'

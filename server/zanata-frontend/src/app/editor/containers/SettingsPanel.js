@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { hideSettings } from '../actions'
 import { updateSetting } from '../actions/settings-actions'

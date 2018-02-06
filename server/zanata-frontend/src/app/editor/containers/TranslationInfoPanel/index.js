@@ -1,6 +1,6 @@
 // TODO damason split this into separate components for each tab and panel
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { setSidebarVisibility } from '../../actions'
 import { Tabs, FormGroup, InputGroup,
   FormControl, Button } from 'react-bootstrap'

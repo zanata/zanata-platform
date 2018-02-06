@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+// @ts-check
+import React from 'react'
+import { Component } from 'react'
 
 class Icons extends Component {
   render () {

@@ -3865,9 +3865,12 @@ Sub-headings can be used when placing a heading under another heading.
   table-layout: fixed;
   padding: 0.375em 0.75em;
 }
+.new-zanata .list--stats .list__item__content {
+  width: 100%;
+}
 .new-zanata .list--panel .list__item__info, .new-zanata .list--stats .list__item__info {
   display: table-cell;
-  width: 100%;
+  min-width: 100%;
   vertical-align: middle;
   line-height: 1em;
 }
@@ -7592,22 +7595,22 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
         <nav class="tabs__nav panel__header">
           <ul>
             <li>
-              <a href="#" class="is-active"><i aria-hidden="true" class="i i--infinity"></i><span class="is-invisible">All</span></a>
+              <a href="#" class="is-active"><i  class="i i--infinity"></i><span class="is-invisible">All</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></a>
+              <a href="#"><i  class="i i--pencil"></i><span class="is-invisible">Maintainer</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></a>
+              <a href="#"><i  class="i i--network"></i><span class="is-invisible">Translator</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--eye"></i><span class="is-invisible">Reviewer</span></a>
+              <a href="#"><i  class="i i--eye"></i><span class="is-invisible">Reviewer</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--star"></i><span class="is-invisible">Starred</span></a>
+              <a href="#"><i  class="i i--star"></i><span class="is-invisible">Starred</span></a>
             </li>
             <li class="tab__end">
-              <a href="#"><i aria-hidden="true" class="i i--plus i i--large"></i><span class="is-invisible">New Project</span></a>
+              <a href="#"><i  class="i i--plus i i--large"></i><span class="is-invisible">New Project</span></a>
             </li>
           </ul>
         </nav>
@@ -7618,16 +7621,16 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                 <h2 class="delta heading--secondary">All Projects</h2>
               </div>
               <div class="g__item w--4-10 w--4-10-s txt--align-right txt--s-align-right">
-                <span class="txt--meta">5 of 12 <i aria-hidden="true" class="i i--clipboard"></i></span>
+                <span class="txt--meta">5 of 12 <i  class="i i--clipboard"></i></span>
                 <div class="dropdown dropdown--inline dropdown--right">
                   <div class="dropdown__toggle" href="#">
-                    <i aria-hidden="true" class="i i--clock"></i><span class="is-invisible">Recent</span>
+                    <i  class="i i--clock"></i><span class="is-invisible">Recent</span>
                     <i class="i i--arrow-down dropdown__toggle__icon"></i>
                   </div>
                   <ul class="dropdown__content">
                     <li class="dropdown__header">Sort by:</li>
-                    <li><a href="#">Recent <i aria-hidden="true" class="i i--clock"></i></a></li>
-                    <li><a href="#">Alphabetically <i aria-hidden="true" class="i i--clock"></i></a></li>
+                    <li><a href="#">Recent <i  class="i i--clock"></i></a></li>
+                    <li><a href="#">Alphabetically <i  class="i i--clock"></i></a></li>
                   </ul>
                 </div>
               </div>
@@ -7642,10 +7645,10 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                 <div class="g__item w--1-4 w--1-4-s txt--align-right txt--s-align-right">
                   <ul class=" list--horizontal">
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></span>
+                      <span class="txt--meta"><i  class="i i--network"></i><span class="is-invisible">Translator</span></span>
                     </li>
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
+                      <span class="txt--meta"><i  class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
                     </li>
                   </ul>
                 </div>
@@ -7656,13 +7659,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <i class="i i--arrow-down dropdown__toggle__icon"></i>
                     <ul class="dropdown__toggle__content list--horizontal ">
                       <li>
-                        <a href="new-page.html" title="Version 3.0"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
+                        <a href="new-page.html" title="Version 3.0"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
                       </li>
                       <li>
-                        <a href="#" title="43 Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
+                        <a href="#" title="43 Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
                       </li>
                       <li>
-                        <a href="#" title="16 Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
+                        <a href="#" title="16 Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
                       </li>
                       <li>
                         <a href="#" title="Go to Japanese translation">JP</a>
@@ -7676,13 +7679,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <li>
                       <ul class="list--horizontal">
                         <li>
-                          <a href="#" title="Version"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
+                          <a href="#" title="Version"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
                         </li>
                         <li>
-                          <a href="#" title="Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
+                          <a href="#" title="Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
                         </li>
                         <li>
-                          <a href="#" title="Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
+                          <a href="#" title="Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
                         </li>
                       </ul>
                     </li>
@@ -7716,10 +7719,10 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                 <div class="g__item w--1-4 w--1-4-s txt--align-right txt--s-align-right">
                   <ul class=" list--horizontal">
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></span>
+                      <span class="txt--meta"><i  class="i i--network"></i><span class="is-invisible">Translator</span></span>
                     </li>
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
+                      <span class="txt--meta"><i  class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
                     </li>
                   </ul>
                 </div>
@@ -7730,13 +7733,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <i class="i i--arrow-down dropdown__toggle__icon"></i>
                     <ul class="dropdown__toggle__content list--horizontal ">
                       <li>
-                        <a href="new-page.html" title="Version 3.0"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
+                        <a href="new-page.html" title="Version 3.0"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
                       </li>
                       <li>
-                        <a href="#" title="43 Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
+                        <a href="#" title="43 Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
                       </li>
                       <li>
-                        <a href="#" title="16 Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
+                        <a href="#" title="16 Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
                       </li>
                       <li>
                         <a href="#" title="Go to Japanese translation">JP</a>
@@ -7750,13 +7753,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <li>
                       <ul class="list--horizontal">
                         <li>
-                          <a href="#" title="Version"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
+                          <a href="#" title="Version"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
                         </li>
                         <li>
-                          <a href="#" title="Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
+                          <a href="#" title="Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
                         </li>
                         <li>
-                          <a href="#" title="Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
+                          <a href="#" title="Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
                         </li>
                       </ul>
                     </li>

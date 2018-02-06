@@ -1,9 +1,8 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-dom/test-utils'
+import * as ReactDOMServer from 'react-dom/server'
+import * as TestUtils from 'react-dom/test-utils'
 import { EditorSearchInput } from '.'
 import { Panel, Button } from 'react-bootstrap'
 

@@ -1,2 +1,4 @@
 node_modules/**
 settings.json
+*.ts
+*.tsx

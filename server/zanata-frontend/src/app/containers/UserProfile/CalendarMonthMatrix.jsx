@@ -1,5 +1,6 @@
+// @ts-check
+import * as PropTypes from 'prop-types'
 import React from 'react'
-import PropTypes from 'prop-types'
 import moment from 'moment'
 import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
@@ -17,6 +18,7 @@ const classes = {
     }
   }
 }
+/** @type { React.StatelessComponent<{matrixData, selectedDay, selectedContentState, dateRange, handleSelectedDayChanged}> } */
 const CalendarMonthMatrix = ({
   matrixData,
   selectedDay,

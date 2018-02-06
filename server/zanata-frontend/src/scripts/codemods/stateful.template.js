@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react'
+import React from 'react'
+import { Component } from 'react'
+import * as PropTypes from 'prop-types'
 
 /**
  * Action button with an icon and title, unstyled.

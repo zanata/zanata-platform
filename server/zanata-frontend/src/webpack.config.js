@@ -19,6 +19,11 @@ var postcssEsplit = require('postcss-esplit')
 var ReactIntlAggregatePlugin = require('react-intl-aggregate-webpack-plugin')
 var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
+var cssNano = require('cssnano')
+// `CheckerPlugin` is optional. Use it if you want async error reporting.
+// We need this plugin to detect a `--watch` mode. It may be removed later
+// after https://github.com/webpack/webpack/issues/3460 will be resolved.
+const { CheckerPlugin } = require('awesome-typescript-loader')
 
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
@@ -33,6 +38,7 @@ var postCssLoader = {
       postcssImport(),
       postcssCustomProperties,
       postcssCalc,
+      cssNano(),
       postcssColorFunction,
       postcssCustomMedia,
       postcssEsplit({
@@ -109,6 +115,10 @@ module.exports = function (env) {
   // several options have the same values for both draft and prod
   var fullBuild = draft || prod
 
+  require.extensions['.css'] = () => {
+    return;
+  };
+
   return dropUndef({
     entry: storybook ? undefined : dropUndef({
       'frontend': './app/index',
@@ -143,22 +153,35 @@ module.exports = function (env) {
           }
         },
 
-        /* Allows use of newer javascript syntax.
-         *  - mainly ES6/ES2015 syntax, and a few ES2016 things
-         *  - configured in .babelrc
-         */
-        {
-          test: /\.jsx?$/,
+        // TODO consider turning on for storybook
+        storybook ? undefined : {
+          test: /\.tsx?$/,
           exclude: /node_modules/,
-          include: join(__dirname, 'app'),
-          loader: 'babel-loader',
+          enforce: 'pre',
+          loader: 'tslint-loader',
           options: {
-            babelrc: true
+            failOnHint: !dev,
+            formatter: 'verbose',
           }
         },
 
+        /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
+         */
+        {
+          test: /\.(j|t)sx?$/,
+          exclude: /node_modules/,
+          include: join(__dirname, 'app'),
+          loader: 'awesome-typescript-loader',
+        },
+
+        /* TODO:
+        { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+        */
+
         /* Bundles all the css and allows use of various niceties, including
          * imports, variables, calculations, and non-prefixed codes.
+         * The draft and prod options were removed as they were causing
+         * errors with css-loader. In both cases, the css is minified.
          */
         {
           test: /\.css$/,
@@ -168,18 +191,15 @@ module.exports = function (env) {
               {
                 loader: 'css-loader',
                 options: {
-                  minimize: prod,
-                  importLoaders: 1,
+                  importLoaders: 1
                 }
               },
-              draft ? undefined : 'csso-loader',
               postCssLoader
             ])
           })
         },
 
         /* Bundles bootstrap css into the same bundle as the other css.
-         * TODO look at running through csso, same as other css
          */
         {
           test: /\.less$/,
@@ -205,6 +225,18 @@ module.exports = function (env) {
     },
 
     plugins: _.compact([
+      // This makes it easier to see if watch has picked up changes yet.
+      // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
+      // There's probably a config option for this (stats?) but I can't find it.
+      function() {
+        this.plugin('watch-run', function(watching, callback) {
+            console.log('Begin compile at ' + new Date());
+            callback();
+        })
+      },
+
+      new CheckerPlugin(),
+
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
       new ExtractTextPlugin({
@@ -258,11 +290,10 @@ module.exports = function (env) {
       new ManifestPlugin()
     ]),
 
-
     resolve: {
       /* Subdirectories to check while searching up tree for module
        * Default is ['', '.js'] */
-      extensions: ['.js', '.jsx', '.json', '.css', '.less']
+      extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx']
     },
 
     node: {
@@ -275,6 +306,6 @@ module.exports = function (env) {
     /* fail on first error */
     bail: fullBuild,
 
-    devtool: prod ? 'source-map' : 'eval'
+    devtool: prod ? 'source-map' : 'eval-source-map'
   })
 }

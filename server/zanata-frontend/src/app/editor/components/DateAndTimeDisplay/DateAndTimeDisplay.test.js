@@ -1,8 +1,7 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import React from 'react'
-import ReactDOMServer from 'react-dom/server'
+import * as ReactDOMServer from 'react-dom/server'
 import DateAndTimeDisplay from '.'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { locale, formats } from '../../config/intl'

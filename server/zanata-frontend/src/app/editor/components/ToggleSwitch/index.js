@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 
 /**
  * Checkbox that appears as a slider-style switch

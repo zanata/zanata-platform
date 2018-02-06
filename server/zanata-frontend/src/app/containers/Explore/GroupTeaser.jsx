@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { Link, Icon } from '../../components'
 import { getVersionGroupUrl } from '../../utils/UrlHelper'
 

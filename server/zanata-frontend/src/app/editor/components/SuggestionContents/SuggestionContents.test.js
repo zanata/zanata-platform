@@ -1,7 +1,6 @@
-jest.disableAutomock()
 
 import React from 'react'
-import ReactDOMServer from 'react-dom/server'
+import * as ReactDOMServer from 'react-dom/server'
 import SuggestionContents from '.'
 import TextDiff from '../TextDiff'
 

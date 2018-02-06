@@ -1,11 +1,12 @@
+import * as PropTypes from 'prop-types'
 import React from 'react'
-import PropTypes from 'prop-types'
 import { isEmpty, isUndefined } from 'lodash'
 
-const CategoryItemMatrix = ({
+const CategoryItemMatrix: React.SFC<{itemTitle, itemName, wordCount, props?}> = ({
   itemTitle,
   itemName,
   wordCount,
+  // @ts-ignore: unused?
   ...props
 }) => {
   const title = isEmpty(itemTitle) || isUndefined(itemTitle) ||

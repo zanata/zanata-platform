@@ -3,7 +3,7 @@ import globalBind from 'combokeys/plugins/global-bind'
 import { setSaveAsMode } from '../actions/key-shortcuts-actions'
 import { getShortcuts } from '../reducers'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { map } from 'lodash'
 
@@ -68,7 +68,8 @@ class KeyShortcutDispatcher extends React.Component {
 
   enableKeysFor = ({ keys, eventType }, handler) => {
     if (!Array.isArray(keys)) {
-      throw Error('keyConfig does not contain a "keys" value that is an array')
+      throw new Error(
+        'keyConfig does not contain a "keys" value that is an array')
     }
     // Note: eventType may be undefined
     this.combokeys.bindGlobal(keys, handler, eventType)
@@ -124,7 +125,7 @@ class KeyShortcutDispatcher extends React.Component {
   render () {
     // tabIndex is to make it focusable.
     return (
-      <div tabIndex="0"
+      <div tabIndex={0}
         className={this.props.className}
         ref={this.setShortcutContainer}>
         {this.props.children}

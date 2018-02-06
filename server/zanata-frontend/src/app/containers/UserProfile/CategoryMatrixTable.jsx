@@ -1,13 +1,16 @@
+// @ts-check
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { forOwn } from 'lodash'
 import CategoryItemMatrix from './CategoryItemMatrix'
 
+/** @type { React.StatelessComponent<{key, matrixData, category, categoryTitle, categoryName, props?}> } */
 const CategoryMatrixTable = ({
   matrixData,
   category,
   categoryTitle,
   categoryName,
+  // @ts-ignore: unused?
   ...props
 }) => {
   let categoryMatrix = {}

@@ -3,7 +3,7 @@ import { encode } from '../../utils/doc-id-util'
 import Dropdown from '../Dropdown'
 import { Icon } from '../../../components'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { Row } from 'react-bootstrap'
 
 /**

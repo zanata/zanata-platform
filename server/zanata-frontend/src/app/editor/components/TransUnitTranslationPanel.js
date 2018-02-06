@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import TransUnitTranslationHeader from './TransUnitTranslationHeader'
@@ -8,8 +8,13 @@ import { LoaderText } from '../../components'
 import { pick } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
 import { getSyntaxHighlighting } from '../reducers'
-import SyntaxHighlighter from 'react-syntax-highlighter'
+import SyntaxHighlighter, { registerLanguage }
+  from 'react-syntax-highlighter/light'
+import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
+
+registerLanguage('xml', xml)
+
 /**
  * Panel to display and edit translations of a phrase.
  */
@@ -188,7 +193,7 @@ class TransUnitTranslationPanel extends React.Component {
   }
 }
 
-class TranslationItem extends React.Component {
+export class TranslationItem extends React.Component {
   static propTypes = {
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
@@ -258,7 +263,7 @@ class TranslationItem extends React.Component {
       whiteSpace: 'pre-wrap',
       wordWrap: 'break-word'
     }
-    const syntaxHighlighter = this.props.syntaxOn
+    const syntaxHighlighter = (this.props.syntaxOn && selected)
       ? <SyntaxHighlighter
         language='html'
         style={atelierLakesideLight}

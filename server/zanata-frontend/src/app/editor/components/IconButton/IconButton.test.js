@@ -1,9 +1,8 @@
-jest.disableAutomock()
 
 import React from 'react'
-import ReactDOM from 'react-dom'
-import ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-dom/test-utils'
+import * as ReactDOM from 'react-dom'
+import * as ReactDOMServer from 'react-dom/server'
+import * as TestUtils from 'react-dom/test-utils'
 import { Icon } from '../../../components'
 import IconButton from '.'
 

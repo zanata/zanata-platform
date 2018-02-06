@@ -20,7 +20,7 @@
  */
 
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { Icon } from '../../components'
 import IconButton from '../components/IconButton'
 import IconButtonToggle from '../components/IconButtonToggle'

@@ -4,7 +4,7 @@ import KeyCombinations from '../../components/KeyCombinations'
 import { chain, each, map, values } from 'lodash'
 import { connect } from 'react-redux'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { getShortcuts, getKeyShortcutsVisible } from '../../reducers'
 import { toggleKeyboardShortcutsModal } from '../../actions/header-actions'
 

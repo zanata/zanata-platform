@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { Component } from 'react'
+import * as PropTypes from 'prop-types'
 import {InputGroup, Col, FormControl, OverlayTrigger, Radio, Well,
   Tooltip, Panel} from 'react-bootstrap'
 import {
@@ -11,7 +12,7 @@ import Toggle from 'react-toggle'
 
 import {
   ProjectType, FromProjectVersionType
-} from '../../utils/prop-types-util.js'
+} from '../../utils/prop-types-util'
 
 const DO_NOT_RENDER = undefined
 const ALL = 'ALL'

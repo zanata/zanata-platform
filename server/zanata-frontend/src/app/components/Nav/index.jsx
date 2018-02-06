@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import NavItem from './NavItem'
 import { getDswid } from '../../utils/UrlHelper'
 import { remove } from 'lodash'

@@ -1,8 +1,8 @@
+import * as PropTypes from 'prop-types'
 import React from 'react'
-import PropTypes from 'prop-types'
 import Loading from 'react-loading'
 
-const Loader = ({ className = 'loader' }) => {
+const Loader: React.SFC<LoaderProps> = ({ className = 'loader' }) => {
   return (
     <span className={className}>
       <span>
@@ -10,6 +10,10 @@ const Loader = ({ className = 'loader' }) => {
       </span>
     </span>
   )
+}
+
+interface LoaderProps {
+  className?: string
 }
 
 Loader.propTypes = {

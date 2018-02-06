@@ -1,5 +1,6 @@
+// @ts-check
+import * as PropTypes from 'prop-types'
 import React from 'react'
-import PropTypes from 'prop-types'
 import ContentStateFilter from './ContentStateFilter'
 import CalendarMonthMatrix from './CalendarMonthMatrix'
 import CalendarPeriodHeading from './CalendarPeriodHeading'
@@ -11,6 +12,7 @@ import {
  * Bottom section of contribution statistic page.
  * See RecentContribution for main page.
  */
+/** @type { React.StatelessComponent<{dateRange, selectedContentState, selectedDay, wordCountForEachDay, wordCountForSelectedDay, handleFilterChanged, handleSelectedDayChanged}> } */
 const FilterableMatrixTable = ({
   dateRange,
   selectedContentState,

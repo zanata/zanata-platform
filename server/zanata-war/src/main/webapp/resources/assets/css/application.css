@@ -73,16 +73,16 @@ Removes some of the styling on the page-level splitters
   font-size: 16px;
 }
 
-.THEMES_DEFAULT {
-  font-size: 16px;
+.THEMES_DEFAULT, .THEMES_DEFAULT .TableEditorCell-Target pre, .THEMES_DEFAULT .TableEditorCell-Target textarea {
+  font-size: 16px !important;
 }
 
-.THEMES_COMPACT {
-  font-size: 14px;
+.THEMES_COMPACT, .THEMES_COMPACT .TableEditorCell-Target pre, .THEMES_COMPACT .TableEditorCell-Target textarea {
+  font-size: 14px !important;
 }
 
-.THEMES_LOOSE {
-  font-size: 20px;
+.THEMES_LOOSE, .THEMES_LOOSE .TableEditorCell-Target pre, .THEMES_LOOSE .TableEditorCell-Target textarea {
+  font-size: 20px !important;
 }
 
 .sourceContentsContainer .g--tight {
@@ -908,6 +908,26 @@ a.downloadLink {
 .translatorEditorContainer > div:nth-of-type(4) input {
   top: 1px;
   position: relative;
+}
+
+.gwt-SplitLayoutPanel *::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+
+.gwt-SplitLayoutPanel *::-webkit-scrollbar
+{
+  width: 14px;
+  background-color: #F5F5F5;
+}
+
+.gwt-SplitLayoutPanel *::-webkit-scrollbar-thumb
+{
+  background-color: #03A6D7;
+  border-radius: 10px;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%,color-stop(.5,rgba(255, 255, 255, .2)),color-stop(.5, transparent), to(transparent));
 }
 
 .translationContainer > div:nth-of-type(2) > div > div:nth-of-type(2) {

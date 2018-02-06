@@ -21,7 +21,7 @@
 
 import React from 'react'
 import { isEmpty } from 'lodash'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 

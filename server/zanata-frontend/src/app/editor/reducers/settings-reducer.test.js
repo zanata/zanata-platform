@@ -1,10 +1,10 @@
 /* global jest describe it expect */
-jest.disableAutomock()
 
 import reducer, {
   ENTER_SAVES_IMMEDIATELY,
   KEY_SUGGESTIONS_VISIBLE,
   SYNTAX_HIGHLIGTING,
+  SUGGESTIONS_DIFF,
   getSuggestionsPanelVisible
 } from './settings-reducer'
 import { createAction } from 'redux-actions'
@@ -39,6 +39,11 @@ describe('settings-reducer test', () => {
           value: false,
           saving: false,
           error: undefined
+        },
+        [SUGGESTIONS_DIFF]: {
+          value: true,
+          saving: false,
+          error: undefined
         }
       }
     })
@@ -68,6 +73,11 @@ describe('settings-reducer test', () => {
         },
         [SYNTAX_HIGHLIGTING]: {
           value: false,
+          saving: false,
+          error: undefined
+        },
+        [SUGGESTIONS_DIFF]: {
+          value: true,
           saving: false,
           error: undefined
         },

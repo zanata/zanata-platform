@@ -1,9 +1,9 @@
+import * as PropTypes from 'prop-types'
 import React from 'react'
-import PropTypes from 'prop-types'
 
-const ModalFooter = ({
+const ModalFooter: React.StatelessComponent<{children: any, props?: any}> = ({
   children,
-  ...props
+  ...props,
 }) => {
   return (
     <div className='modal-footer'
@@ -17,8 +17,8 @@ const ModalFooter = ({
 ModalFooter.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node]
-  )
+    PropTypes.node,
+  ])
 }
 
 export default ModalFooter

@@ -1,8 +1,7 @@
-jest.disableAutomock()
 
 import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-dom/test-utils'
+import * as ReactDOMServer from 'react-dom/server'
+import * as TestUtils from 'react-dom/test-utils'
 import Dropdown from '.'
 
 describe('DropdownTest', () => {

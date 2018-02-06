@@ -22,7 +22,7 @@
 import cx from 'classnames'
 import IconButton from '../IconButton'
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 
 /**
  * An action button with an icon, title and background styling.

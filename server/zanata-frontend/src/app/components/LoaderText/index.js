@@ -1,7 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { Loader } from '../../components'
 
+/** @type { React.StatelessComponent<{children, loading, loadingText, props?}> } */
 const LoaderText = ({
   children,
   loading,
