@@ -1,3 +1,10 @@
+## 4.4.2
+##### Bug Fixes
+ * [ZNTA-2375](https://zanata.atlassian.net/browse/ZNTA-2375) - Single project is shown multiple times on explore page.
+ * [ZNTA-2372](https://zanata.atlassian.net/browse/ZNTA-2372) - 400 bad request on TM merge Translations for poject version without document.
+
+-----------------------
+
 ## 4.4.1
 ##### Bug Fixes
  * [ZNTA-2374](https://zanata.atlassian.net/browse/ZNTA-2374) - SSO login with existing account only works on the second time
