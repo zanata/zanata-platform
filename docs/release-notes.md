@@ -1,3 +1,9 @@
+## 4.4.3
+##### Bug Fixes
+ * [ZNTA-2371](https://zanata.atlassian.net/browse/ZNTA-2371) - Few version setting options are getting hide if we have more than 2 versions
+
+-----------------------
+
 ## 4.4.2
 ##### Bug Fixes
  * [ZNTA-2375](https://zanata.atlassian.net/browse/ZNTA-2375) - Single project is shown multiple times on explore page.
