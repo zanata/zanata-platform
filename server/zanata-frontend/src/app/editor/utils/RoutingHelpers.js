@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router'
+import { keys } from 'lodash'
 
 const isChromium = window.chrome
 const vendorName = window.navigator.vendor
@@ -18,7 +19,7 @@ export const replaceRouteQuery = (location, paramsToReplace) => {
       ...paramsToReplace
     }
   }
-  Object.keys(newLocation.query).forEach(key => {
+  keys(newLocation.query).forEach(key => {
     if (!newLocation.query[key]) {
       delete newLocation.query[key]
     }
