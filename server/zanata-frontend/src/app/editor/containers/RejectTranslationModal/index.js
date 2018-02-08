@@ -136,6 +136,7 @@ export class RejectTranslationModal extends Component {
               cols='50'
               onChange={this.setReviewComment}
               rows='10'
+              maxLength='500'
               className='EditorInputGroup-input is-focused InputGroup--outlined
                Commenting' />
           </div>
