@@ -4,6 +4,7 @@ import * as PropTypes from 'prop-types'
 import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
   from 'react-bootstrap'
 import { Icon, TextInput, SelectableDropdown } from '../../components'
+import Toggle from 'react-toggle'
 import { isEmpty } from 'lodash'
 
 /**
@@ -120,6 +121,14 @@ class RejectionsForm extends Component {
         </Button>
       </OverlayTrigger>
       ) : DO_NOT_RENDER
+    const editableToggle = isAdminMode ? (
+      <FormGroup id='toggleComment' controlId='formInlineEditable'>
+        <ControlLabel>Comment required</ControlLabel><br />
+        <Toggle icons={false} onChange={this.onEditableChange}
+          checked={this.state.isEditable} />
+      </FormGroup>
+      )
+      : DO_NOT_RENDER
     const formBtn = isAdminMode ? (
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
@@ -153,6 +162,7 @@ class RejectionsForm extends Component {
             disabled={priorityDisabled}
           />
         </FormGroup>
+        {editableToggle}
         {formBtn}
       </Form>
     )
