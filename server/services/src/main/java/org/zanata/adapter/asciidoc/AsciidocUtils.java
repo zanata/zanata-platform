@@ -117,10 +117,6 @@ public class AsciidocUtils {
         return " ";
     }
 
-    public final static String getBlockSkeleton() {
-        return "****";
-    }
-
     public final static boolean isAdmonition(
             Map<String, Object> attributes) {
         if (attributes.containsKey("style")) {

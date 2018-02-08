@@ -50,7 +50,8 @@ public class ManageSearchTest extends ZanataTestCase {
     @Trace(summary = "The administrator can clear and regenerate all of the " +
             "search indexes")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("RHBZ1180948 JBoss issue")
+    @Ignore("Unstable - sometimes the button isn't ready and sometimes " +
+            "the index fails to complete.")
     public void regenerateSearchIndexes() throws Exception {
         ManageSearchPage manageSearchPage = dashboardPage
                 .goToAdministration()

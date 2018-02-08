@@ -23,17 +23,22 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import javax.xml.bind.Unmarshaller;
 
+import com.google.common.collect.ImmutableList;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.client.TempTransFileRule;
+import org.zanata.client.TestUtils;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
@@ -47,6 +52,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
 public class XmlStrategyTest {
@@ -75,6 +81,33 @@ public class XmlStrategyTest {
         strategy.setPushOptions(opts);
 
         sourceResource = new Resource("test");
+    }
+
+    @Test
+    public void findDocNamesTest() throws IOException {
+        PushOptions mockPushOption = Mockito.mock(PushOptions.class);
+        File sourceDir = TestUtils.fileFromClasspath("xliffDir");
+        LocaleList locales = new LocaleList();
+        String sourceLocale = "en-US";
+
+        ImmutableList<String> include = ImmutableList.of();
+        ImmutableList<String> exclude = ImmutableList.of();
+
+        when(mockPushOption.getLocaleMapList()).thenReturn(locales);
+        when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
+        when(mockPushOption.getDefaultExcludes()).thenReturn(true);
+        when(mockPushOption.getCaseSensitive()).thenReturn(true);
+        when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
+        when(mockPushOption.getValidate()).thenReturn("xsd");
+
+        strategy.setPushOptions(mockPushOption);
+
+        Set<String> localDocNames =
+                strategy.findDocNames(sourceDir, include, exclude,
+                        mockPushOption.getDefaultExcludes(),
+                        mockPushOption.getCaseSensitive(),
+                        mockPushOption.getExcludeLocaleFilenames());
+        Assert.assertEquals(7, localDocNames.size());
     }
 
     @Test

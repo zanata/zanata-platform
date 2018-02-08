@@ -32,7 +32,6 @@ import javax.validation.constraints.Size;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.text.StringEscapeUtils;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -48,6 +47,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.model.validator.EmailDomain;
+import org.zanata.model.validator.ZanataEmail;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.seam.security.IdentityManager;
@@ -86,6 +86,11 @@ public class UserSettingsAction implements Serializable {
     private static final long serialVersionUID = 1937219523042662641L;
 
     @Inject
+    private CredentialsDAO credentialsDAO;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
+    @Inject
+    private EntityManager em;
+    @Inject
     private EmailService emailServiceImpl;
     @Inject
     private EmailChangeService emailChangeService;
@@ -106,7 +111,7 @@ public class UserSettingsAction implements Serializable {
     @Inject
     @Authenticated
     HAccount authenticatedAccount;
-    @Email
+    @ZanataEmail
     @NotEmpty
     @EmailDomain
     private String emailAddress;
@@ -227,12 +232,14 @@ public class UserSettingsAction implements Serializable {
                 OpenIdProviderType.valueOf(providerTypeStr);
         HOpenIdCredentials newCreds = new HOpenIdCredentials();
         newCreds.setAccount(authenticatedAccount);
+        CredentialsCreationCallback callback = new CredentialsCreationCallback(
+                newCreds, credentialsDAO, facesMessages, em);
         if (providerType == OpenIdProviderType.Generic) {
             authenticationManager.openIdAuthenticate(openId, providerType,
-                    new CredentialsCreationCallback(newCreds));
+                    callback);
         } else {
             authenticationManager.openIdAuthenticate(providerType,
-                    new CredentialsCreationCallback(newCreds));
+                    callback);
         }
     }
 
@@ -316,26 +323,24 @@ public class UserSettingsAction implements Serializable {
     }
 
     /**
-     * Callback for credential creation.
+     * Callback for credential creation. Not a CDI bean, so no @Inject fields.
      */
     private static class CredentialsCreationCallback
             implements OpenIdAuthCallback, Serializable {
-        @Inject
-        private CredentialsDAO credentialsDAO;
-        @Inject
-        private FacesMessages facesMessages;
-        @SuppressFBWarnings("SE_BAD_FIELD")
-        @Inject
-        private EntityManager em;
         private static final long serialVersionUID = 1L;
-        private HCredentials newCredentials;
+        private final HCredentials newCredentials;
+        private final CredentialsDAO credentialsDAO;
+        private final FacesMessages facesMessages;
+        @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
+        private final EntityManager em;
 
-        @SuppressWarnings("unused")
-        public CredentialsCreationCallback() {
-        }
-
-        private CredentialsCreationCallback(HCredentials newCredentials) {
+        private CredentialsCreationCallback(HCredentials newCredentials,
+                CredentialsDAO credentialsDAO, FacesMessages facesMessages,
+                EntityManager em) {
             this.newCredentials = newCredentials;
+            this.credentialsDAO = credentialsDAO;
+            this.facesMessages = facesMessages;
+            this.em = em;
         }
 
         @Override
@@ -344,7 +349,6 @@ public class UserSettingsAction implements Serializable {
             if (result.isAuthenticated()) {
                 this.newCredentials.setUser(result.getAuthenticatedId());
                 this.newCredentials.setEmail(result.getEmail());
-                // NB: Seam component injection won't work on callbacks
                 // TODO [CDI] commented out programmatically starting
                 // conversation
                 // Conversation.instance().begin(true, false); // (To retain

@@ -90,4 +90,12 @@ public class UrlUtilTest extends ZanataTest {
         String localUrl = urlUtil.getLocalUrl(request);
         assertThat(localUrl).contains(queryString).contains(contextPath);
     }
+
+    @Test
+    public void canJoinPaths() {
+        assertThat(UrlUtil.joinPaths("a/", "/b")).isEqualTo("a/b");
+        assertThat(UrlUtil.joinPaths("a", "b")).isEqualTo("a/b");
+        assertThat(UrlUtil.joinPaths("a", "/b")).isEqualTo("a/b");
+        assertThat(UrlUtil.joinPaths("a/", "b")).isEqualTo("a/b");
+    }
 }

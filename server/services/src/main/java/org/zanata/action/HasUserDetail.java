@@ -23,15 +23,15 @@ package org.zanata.action;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.model.validator.EmailDomain;
+import org.zanata.model.validator.ZanataEmail;
 
 public interface HasUserDetail {
     String USERNAME_REGEX = "^([a-z\\d][a-z\\d_]*){3,20}$";
     int USERNAME_MAX_LENGTH = 20;
 
-    @Email
+    @ZanataEmail
     @NotEmpty
     @EmailDomain
     String getEmail();

@@ -53,6 +53,8 @@ public interface BasicOptions {
 
     void setInteractiveMode(boolean interactiveMode);
 
+    boolean isInteractiveModeSet();
+
     /**
      * Used to generate the command line interface and its usage help. This name
      * should match the Maven Mojo's 'goal' annotation and must match the @SubCommand

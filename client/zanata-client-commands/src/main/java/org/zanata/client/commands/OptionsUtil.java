@@ -362,17 +362,25 @@ public class OptionsUtil {
             if (quiet != null)
                 opts.setQuiet(quiet);
         }
+
+        if (!opts.isInteractiveModeSet()) {
+            Boolean batchMode = config.getBoolean("defaults.batchMode", null);
+            if (batchMode != null)
+                opts.setInteractiveMode(!batchMode);
+        }
         if ((opts.getUsername() == null || opts.getKey() == null)
                 && opts.getUrl() != null) {
             SubnodeConfiguration servers = config.getSection("servers");
-            String prefix = ConfigUtil.findPrefix(servers, opts.getUrl());
-            if (prefix != null) {
-                if (opts.getUsername() == null) {
-                    opts.setUsername(servers.getString(prefix + ".username",
-                            null));
-                }
-                if (opts.getKey() == null) {
-                    opts.setKey(servers.getString(prefix + ".key", null));
+            if (servers != null) {
+                String prefix = ConfigUtil.findPrefix(servers, opts.getUrl());
+                if (prefix != null) {
+                    if (opts.getUsername() == null) {
+                        opts.setUsername(servers.getString(prefix + ".username",
+                                null));
+                    }
+                    if (opts.getKey() == null) {
+                        opts.setKey(servers.getString(prefix + ".key", null));
+                    }
                 }
             }
         }

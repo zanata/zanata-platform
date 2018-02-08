@@ -96,7 +96,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         TranslationMemoryEditPage translationMemoryEditPage = tmMemoryPage
                 .clickCreateNew()
                 .enterMemoryID(nonUniqueTMId)
-                .enterMemoryDescription("Meh")
+                .enterTMDescription("Meh")
                 .clickSaveAndExpectFailure();
 
         assertThat(translationMemoryEditPage.getErrors())
@@ -193,8 +193,6 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     @Trace(summary = "The administrator can clear the content of a " +
             "translation memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    // fails intermittently
-    @Ignore
     public void clearTranslationMemory() throws Exception {
         String clearTMId = "cleartmtest";
         File importFile = testFileGenerator.openTestFile("test-tmx.xml");
@@ -212,6 +210,10 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
 
         tmMemoryPage = tmMemoryPage.clickOptions(clearTMId)
                 .clickClearTMAndAccept(clearTMId);
+
+        // TODO there seems to be some issue here, fix
+        tmMemoryPage.reload();
+        tmMemoryPage.expectNumberOfEntries(0, clearTMId);
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
                 .isEqualTo("0")
@@ -247,8 +249,6 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     @Trace(summary = "The administrator must clear a translation memory " +
             "entry before it can be deleted")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    // fails intermittently
-    @Ignore
     public void mustClearBeforeDelete() throws Exception {
         String forceClear = "forcecleartodelete";
         File importFile = testFileGenerator.openTestFile("test-tmx.xml");
@@ -268,7 +268,10 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .as("The item cannot yet be deleted");
 
         tmMemoryPage = tmMemoryPage.clickClearTMAndAccept(forceClear);
-        tmMemoryPage.getNumberOfEntries(forceClear);
+
+        // TODO there seems to be some issue here, fix
+        tmMemoryPage.reload();
+        tmMemoryPage.expectNumberOfEntries(0, forceClear);
 
         assertThat(tmMemoryPage.clickOptions(forceClear).canDelete(forceClear))
                 .isTrue()

@@ -1,0 +1,37 @@
+{
+  "automock": false,
+  "collectCoverageFrom": [
+    "app/**/*.{js,jsx,ts,tsx}",
+    "!**/node_modules/**",
+    "!app/**/*.story.{js,jsx,ts,tsx}"
+  ],
+  "coverageReporters": [
+    "cobertura",
+    "html",
+    "lcov",
+    "text"
+  ],
+  "moduleNameMapper": {
+    "\\.(css|less)$": "<rootDir>/__mocks__/cssMock.js"
+  },
+  "transform": {
+    "\\.(jsx?|tsx?)$": "ts-jest"
+  },
+  "testPathIgnorePatterns": [
+    "<rootDir>/dist/",
+    "<rootDir>/build/",
+    "<rootDir>/node_modules/",
+    "<rootDir>/__mocks__"
+  ],
+  "unmockedModulePathPatterns": [
+    "/node_modules",
+    "/app"
+  ],
+  "moduleFileExtensions": [
+    "js",
+    "jsx",
+    "json",
+    "ts",
+    "tsx"
+  ]
+}

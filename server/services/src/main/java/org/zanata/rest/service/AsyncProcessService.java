@@ -78,6 +78,9 @@ public class AsyncProcessService {
     @Inject
     private ZanataIdentity identity;
 
+    // NOTE: uriInfo usage in this class is limited to return relative path.
+    // The zanata client will be responsible to construct the full url.
+    // therefore this class do not suffer from proxy rewrite url problem (ZNTA-2273)
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Context
     private UriInfo uriInfo;

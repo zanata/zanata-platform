@@ -20,13 +20,11 @@
  */
 package org.zanata.rest.review;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,15 +36,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ReviewCriteriaDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.ReviewCriteria;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.rest.dto.TransReviewCriteria;
 import org.zanata.security.annotations.CheckRole;
 import com.google.common.annotations.VisibleForTesting;
+
+import static org.zanata.model.ReviewCriteria.DESCRIPTION_MAX_LENGTH;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -63,13 +65,17 @@ public class ReviewService {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    private UrlUtil urlUtil;
+
     public ReviewService() {
     }
 
     @VisibleForTesting
-    protected ReviewService(ReviewCriteriaDAO reviewCriteriaDAO, UriInfo uriInfo) {
+    protected ReviewService(ReviewCriteriaDAO reviewCriteriaDAO, UriInfo uriInfo, UrlUtil urlUtil) {
         this.reviewCriteriaDAO = reviewCriteriaDAO;
         this.uriInfo = uriInfo;
+        this.urlUtil = urlUtil;
     }
 
     public static TransReviewCriteria fromModel(ReviewCriteria criteria) {
@@ -82,17 +88,18 @@ public class ReviewService {
     @Path("criteria")
     @Transactional
     public Response addCriteria(TransReviewCriteria criteria) {
+        Optional<Response> response = validateReviewCriteria(criteria);
+        if (response.isPresent()) {
+            return response.get();
+        }
         ReviewCriteria reviewCriteria =
                 new ReviewCriteria(criteria.getPriority(),
                         criteria.isEditable(), criteria.getDescription());
         reviewCriteriaDAO.makePersistent(reviewCriteria);
-        try {
-            return Response.created(new URI(uriInfo.getRequestUri() + "/" + reviewCriteria.getId()))
-                    .entity(fromModel(reviewCriteria))
-                    .build();
-        } catch (URISyntaxException e) {
-            throw new ZanataServiceException(e);
-        }
+        return Response.created(UriBuilder.fromUri(urlUtil.restPath(
+                uriInfo.getPath())).path(reviewCriteria.getId().toString()).build())
+                .entity(fromModel(reviewCriteria))
+                .build();
     }
 
     @PUT
@@ -100,6 +107,10 @@ public class ReviewService {
     @CheckRole("admin")
     @Transactional
     public Response editCriteria(@PathParam("id") Long id, TransReviewCriteria criteria) {
+        Optional<Response> response = validateReviewCriteria(criteria);
+        if (response.isPresent()) {
+            return response.get();
+        }
         ReviewCriteria reviewCriteria =
                 reviewCriteriaDAO.findById(id);
         if (reviewCriteria == null) {
@@ -136,5 +147,23 @@ public class ReviewService {
                 resultList.stream().map(ReviewService::fromModel).collect(
                         Collectors.toList());
         return Response.ok(entity).build();
+    }
+
+    /**
+     * Validate DTO in service due to missing hibernate validator in gwt-shared
+     * DTO.
+     *
+     * TODO: move validation to DTO
+     *
+     * @param criteria
+     */
+    private Optional<Response> validateReviewCriteria(TransReviewCriteria criteria) {
+        String description = criteria.getDescription();
+        if (StringUtils.isBlank(description) ||
+                StringUtils.length(description) > DESCRIPTION_MAX_LENGTH) {
+            return Optional
+                    .of(Response.status(Response.Status.BAD_REQUEST).build());
+        }
+        return Optional.empty();
     }
 }

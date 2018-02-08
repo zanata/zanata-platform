@@ -34,6 +34,7 @@ import java.util.List;
 public class RoleAssignmentsPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(RoleAssignmentsPage.class);
+
     private By moreActions = By.id("roleassign-more-actions");
     private By newRuleButton = By.linkText("New Rule");
     private By roleTable = By.className("list--stats");
@@ -42,30 +43,34 @@ public class RoleAssignmentsPage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Press the More Actions dropdown
+     * @return new RoleAssignmentsPage
+     */
     public RoleAssignmentsPage clickMoreActions() {
         log.info("Click More Actions dropdown");
         clickElement(moreActions);
         return new RoleAssignmentsPage(getDriver());
     }
 
-    public EditRoleAssignmentPage selectCreateNewRule() {
-        log.info("Click Create New in dropdown");
-        clickLinkAfterAnimation(By.linkText("New Rule"));
-        return new EditRoleAssignmentPage(getDriver());
-    }
-
+    /**
+     * Select the Create New Rule option from the drop down
+     * @return new EditRoleAssignmentPage
+     */
     public EditRoleAssignmentPage clickCreateNew() {
-        log.info("Click Create New");
-        clickElement(newRuleButton);
+        log.info("Click Create New dropdown option");
+        clickLinkAfterAnimation(newRuleButton);
         return new EditRoleAssignmentPage(getDriver());
     }
 
+    /**
+     * Query the rules, returning a list of patterns
+     * @return list of pattern strings
+     */
     public List<String> getRulesByPattern() {
         log.info("Query role rules");
         List<String> ret = new ArrayList<>();
-        List<String> names =
-                WebElementUtil.elementsToText(getDriver(), roleTable);
-        for (String name : names) {
+        for (String name : WebElementUtil.elementsToText(getDriver(), roleTable)) {
             ret.add(name.substring(name.lastIndexOf(':') + 1).trim());
         }
         return ret;

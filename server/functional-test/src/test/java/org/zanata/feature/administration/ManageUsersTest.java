@@ -126,6 +126,7 @@ public class ManageUsersTest extends ZanataTestCase {
                 .as("The user can access the administration panel");
     }
 
+    @Trace(summary = "The administrator can change a user account's name")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeUsersName() {
         ManageUserAccountPage manageUserAccountPage = dashboardPage

@@ -263,7 +263,7 @@
     <a href="#" class="panel__header__back"
       onclick="removeActiveRows('documents-document_list');toggleColumn('documents')"
       title="#{msgs['jsf.Documents']}">
-      <i class="i--huge i--arrow-left" aria-hidden="true"></i>
+      <i class="i--huge i--arrow-left" ></i>
     </a>
 
     <h2 class="panel__heading">
@@ -327,7 +327,7 @@
             <ui:repeat
               value="#{versionHomeAction.documentsTabLanguageFilter.currentPage}"
               var="hLocale">
-              <li class="progress-bar__expander">
+              <li class="progress-bar__expander panels__panel__item">
 
                 <ui:fragment rendered="#{hLocale.active}">
                   <a

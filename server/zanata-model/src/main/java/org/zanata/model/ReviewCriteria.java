@@ -29,7 +29,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.IssuePriority;
 
 
@@ -44,10 +46,16 @@ import org.zanata.common.IssuePriority;
 public class ReviewCriteria extends ModelEntityBase {
     public static final String QUERY_BY_DESCRIPTION = "ReviewCriteriaByDescription";
     private static final long serialVersionUID = -8213113671271711837L;
+
+    public static final int DESCRIPTION_MAX_LENGTH = 255;
+
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(32)")
     private IssuePriority priority;
     private boolean editable;
+    @Column(columnDefinition = "varchar(255)")
+    @Size(max = 255)
+    @NotEmpty
     private String description;
 
     public IssuePriority getPriority() {

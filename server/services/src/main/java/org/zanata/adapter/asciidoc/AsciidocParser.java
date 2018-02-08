@@ -30,7 +30,6 @@ import java.util.Optional;
 import static org.zanata.adapter.asciidoc.AsciidocUtils.ATTR_WHITELIST;
 import static org.zanata.adapter.asciidoc.AsciidocUtils.NEWLINE;
 import static org.zanata.adapter.asciidoc.AsciidocUtils.getAdmonitionSkeleton;
-import static org.zanata.adapter.asciidoc.AsciidocUtils.getBlockSkeleton;
 import static org.zanata.adapter.asciidoc.AsciidocUtils.getDocAttribute;
 import static org.zanata.adapter.asciidoc.AsciidocUtils.getId;
 import static org.zanata.adapter.asciidoc.AsciidocUtils.getRole;
@@ -81,12 +80,13 @@ public class AsciidocParser {
 
     private void parse(@Nonnull ContentNode node) {
         Optional<String> id = getId(node.getAttributes());
+        Optional<String> role = getRole(node.getAttributes());
         if (id.isPresent()) {
             appendNewLine();
             appendNonTranslatable(id.get(), AsciidocUtils.getResId(id.get()),
                     true);
         }
-        Optional<String> role = getRole(node.getAttributes());
+
         if (role.isPresent()) {
             appendNewLine();
             appendNonTranslatable(role.get(),
@@ -119,7 +119,7 @@ public class AsciidocParser {
                     eventBuilder.endTextUnit();
                     appendNewLine();
                 } else {
-                    appendBlock();
+                    appendNewLine();
                     eventBuilder.startTextUnit();
                     for (String content : block.getLines()) {
                         eventBuilder.addToTextUnit(content + NEWLINE);
@@ -129,7 +129,7 @@ public class AsciidocParser {
                     eventBuilder.setTextUnitTranslatable(true);
                     eventBuilder.endTextUnit();
                     processInnerBlock(block);
-                    appendBlock();
+                    appendNewLine();
                 }
             }
         } else if(node instanceof Table) {
@@ -174,9 +174,8 @@ public class AsciidocParser {
 
     private void processInnerBlock(StructuralNode node) {
         for (StructuralNode innerNode : node.getBlocks()) {
-            appendBlock();
             parse(innerNode);
-            appendBlock();
+            appendNewLine();
         }
     }
 
@@ -194,10 +193,6 @@ public class AsciidocParser {
                         "", true);
             }
         }
-    }
-
-    private void appendBlock() {
-        appendNonTranslatable(getBlockSkeleton(), "", true);
     }
 
     private void parseBlockTitle(String title) {

@@ -31,6 +31,7 @@ import org.zanata.page.languages.LanguagesPage;
 public class AddLanguagePage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AddLanguagePage.class);
+
     private By saveButton = By.id("btn-new-language-save");
     private By localeId = By.className("react-autosuggest__input");
     private By suggestList =
@@ -38,19 +39,32 @@ public class AddLanguagePage extends BasePage {
     private By suggestRow = By.className("react-autosuggest__suggestion");
     private By enabledByDefaultCheckbox = By.id("chk-new-language-enabled");
     private By pluralsWarning = By.id("new-language-pluralforms-warning");
+    private By languageOption = By.name("new-language-displayName");
+    private By newLanguageName = By.id("new-language-name");
+    private By newLanguageNativeName = By.id("new-language-nativeName");
 
     public AddLanguagePage(final WebDriver driver) {
         super(driver);
     }
 
+    /**
+     * Enter a string into the language search field
+     * @param language string to enter
+     * @return new AddLanguagePage
+     */
     public AddLanguagePage enterSearchLanguage(String language) {
         log.info("Enter language {}", language);
-        enterText(readyElement(localeId), language);
+        enterText(localeId, language);
         // Pause for a moment, as quick actions can break here
         slightPause();
         return new AddLanguagePage(getDriver());
     }
 
+    /**
+     * Select a language from the search dropdown
+     * @param language option to select
+     * @return new AddLanguagePage
+     */
     public AddLanguagePage selectSearchLanguage(final String language) {
         log.info("Select language {}", language);
         waitForAMoment().withMessage("language to be clicked")
@@ -59,8 +73,8 @@ public class AddLanguagePage extends BasePage {
                     existingElement(suggestList).findElements(suggestRow);
             boolean clickedLanguage = false;
             for (WebElement row : suggestions) {
-                if (row.findElement(By.name("new-language-displayName"))
-                        .getText().contains(language)) {
+                if (existingElement(row, languageOption).getText()
+                        .contains(language)) {
                     row.click();
                     clickedLanguage = true;
                     break;
@@ -71,6 +85,10 @@ public class AddLanguagePage extends BasePage {
         return new AddLanguagePage(getDriver());
     }
 
+    /**
+     * Wait for the plurals warning to show
+     * @return new AddLanguagePage
+     */
     public AddLanguagePage expectPluralsWarning() {
         log.info("Expect plurals warning");
         waitForPageSilence();
@@ -78,6 +96,10 @@ public class AddLanguagePage extends BasePage {
         return new AddLanguagePage(getDriver());
     }
 
+    /**
+     * Click Enable by default if not already enabled
+     * @return new AddLanguagePage
+     */
     public AddLanguagePage enableLanguageByDefault() {
         log.info("Click Enable by default");
         if (!readyElement(enabledByDefaultCheckbox).isSelected()) {
@@ -86,6 +108,10 @@ public class AddLanguagePage extends BasePage {
         return new AddLanguagePage(getDriver());
     }
 
+    /**
+     * Click Disable by default if not already disabled
+     * @return new AddLanguagePage
+     */
     public AddLanguagePage disableLanguageByDefault() {
         log.info("Click Disable by default");
         if (readyElement(enabledByDefaultCheckbox).isSelected()) {
@@ -94,20 +120,34 @@ public class AddLanguagePage extends BasePage {
         return new AddLanguagePage(getDriver());
     }
 
+    /**
+     * Retrieve the name for the new language
+     * @return String language name
+     */
     public String getNewLanguageName() {
-        return existingElement(By.id("new-language-name"))
-                .getAttribute("value");
+        return getAttribute(newLanguageName, "value");
     }
 
+    /**
+     * Retrieve the native name for the new language
+     * @return String native language name
+     */
     public String getNewLanguageNativeName() {
-        return existingElement(By.id("new-language-nativeName"))
-                .getAttribute("value");
+        return getAttribute(newLanguageNativeName, "value");
     }
 
+    /**
+     * Retrieve the locale code for the new language
+     * @return String language locale code
+     */
     public String getNewLanguageCode() {
-        return existingElement(localeId).getAttribute("value");
+        return getAttribute(localeId, "value");
     }
 
+    /**
+     * Press the Save button
+     * @return new LanguagesPage
+     */
     public LanguagesPage saveLanguage() {
         log.info("Click Save");
         clickAndCheckErrors(readyElement(saveButton));

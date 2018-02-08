@@ -22,6 +22,7 @@ package org.zanata.adapter.glossary;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +46,15 @@ import com.google.common.collect.Maps;
  *
  **/
 public class GlossaryCSVReader extends AbstractGlossaryPushReader {
+
     private final LocaleId srcLang;
     private final static String POS = "POS";
+    private final static String[] POSSYNONYMS =
+            {"POS", "PARTOFSPEECH", "PART OF SPEECH"};
     private final static String DESC = "DESCRIPTION";
+    private final static String[] DESCSYNONYMS =
+            {"DESCRIPTION", "DESC", "DEFINITION"};
+    private final static int TERM = 0;
 
     /**
      * This class will close the reader
@@ -68,7 +75,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
             Map<Integer, LocaleId> localeColMap =
                     setupLocalesMap(records, descriptionMap);
 
-            LocaleId srcLocale = localeColMap.get(0);
+            LocaleId srcLocale = localeColMap.get(TERM);
 
             if (!srcLang.equals(srcLocale)) {
                 throw new RuntimeException("input source language '" + srcLang
@@ -77,20 +84,23 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
             }
             Map<LocaleId, List<GlossaryEntry>> results = Maps.newHashMap();
 
-            for (int i = 1; i < records.size(); i++) {
-                CSVRecord row = records.get(i);
+            for (CSVRecord row : records.subList(1, records.size())) {
+                GlossaryEntry entry = new GlossaryEntry();
+                entry.setSrcLang(srcLocale);
+                if (descriptionMap.containsKey(POS)) {
+                    entry.setPos(row.get(descriptionMap.get(POS)));
+                }
+                if (descriptionMap.containsKey(DESC)) {
+                    entry.setDescription(row.get(descriptionMap.get(DESC)));
+                }
+                entry.setQualifiedName(new QualifiedName(qualifiedName));
+
                 for (int x = 1; x < row.size()
                     && localeColMap.containsKey(x); x++) {
 
-                    GlossaryEntry entry = new GlossaryEntry();
-                    entry.setSrcLang(srcLocale);
-                    entry.setPos(row.get(descriptionMap.get(POS)));
-                    entry.setDescription(row.get(descriptionMap.get(DESC)));
-                    entry.setQualifiedName(new QualifiedName(qualifiedName));
-
                     GlossaryTerm srcTerm = new GlossaryTerm();
                     srcTerm.setLocale(srcLocale);
-                    srcTerm.setContent(row.get(0));
+                    srcTerm.setContent(row.get(TERM));
 
                     entry.getGlossaryTerms().add(srcTerm);
 
@@ -100,8 +110,8 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
                     GlossaryTerm transTerm = new GlossaryTerm();
                     transTerm.setLocale(transLocaleId);
                     transTerm.setContent(transContent);
-
                     entry.getGlossaryTerms().add(transTerm);
+
                     List<GlossaryEntry> list = results.get(transLocaleId);
                     if (list == null) {
                         list = Lists.newArrayList();
@@ -117,8 +127,9 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     }
 
     /**
-     * Basic validation of CVS file format - At least 2 rows in the CVS file -
-     * Empty content validation - All row must have the same column count
+     * Basic validation of CSV file format - At least 2 rows in the CSV file -
+     * Empty content validation - All rows must have the same column count.
+     * @param records list of records representing a csv file
      */
     private void validateCSVEntries(@Nonnull List<CSVRecord> records) {
         if (records.isEmpty()) {
@@ -138,33 +149,46 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     }
 
     /**
-     * Parser reads from all from first row and exclude column from description
-     * map. Format of CVS: {source locale},{locale},{locale}...,pos,description
+     * Parser reads from all from first row and up to first recognised
+     * non-locale column mapping.
+     * Format of CSV: {source locale},{locale},{locale}...,pos,description
+     * @param records list of records representing a csv file
+     * @param descriptionMap header locations of non-locale columns
      */
     private Map<Integer, LocaleId> setupLocalesMap(List<CSVRecord> records,
             Map<String, Integer> descriptionMap) {
-        Map<Integer, LocaleId> localeColMap = new HashMap<Integer, LocaleId>();
+        Map<Integer, LocaleId> localeColMap = new HashMap<>();
         CSVRecord headerRow = records.get(0);
-        for (int row = 0; row <= headerRow.size()
-                && !descriptionMap.containsValue(row); row++) {
+        for (int column = 0; column < headerRow.size()
+                && !descriptionMap.containsValue(column); column++) {
             LocaleId locale =
-                    new LocaleId(StringUtils.trim(headerRow.get(row)));
-            localeColMap.put(row, locale);
+                    new LocaleId(StringUtils.trim(headerRow.get(column)));
+            localeColMap.put(column, locale);
         }
         return localeColMap;
     }
 
     /**
-     * Read last 2 columns in CSV:
-     * {source locale},{locale},{locale}...,pos,description
+     * Locate trailing data columns in CSV:
+     * {source locale},{locale},{locale}...,pos,description,...
      *
-     * @param records
+     * @param records list of records representing a csv file
      */
     private Map<String, Integer> setupDescMap(List<CSVRecord> records) {
-        Map<String, Integer> descMap = new HashMap<String, Integer>();
+        Map<String, Integer> descMap = new HashMap<>();
         CSVRecord headerRow = records.get(0);
-        descMap.put(POS, headerRow.size() - 2);
-        descMap.put(DESC, headerRow.size() - 1);
+        for (int position = 1; position < headerRow.size(); position++) {
+            String headerItem = headerRow.get(position);
+            if (headerItem.trim().length() == 0) {
+                continue;
+            }
+            if (Arrays.asList(POSSYNONYMS).contains(headerItem.toUpperCase())) {
+                descMap.put(POS, position);
+            } else if (Arrays.asList(DESCSYNONYMS)
+                    .contains(headerItem.toUpperCase())) {
+                descMap.put(DESC, position);
+            }
+        }
         return descMap;
     }
 }

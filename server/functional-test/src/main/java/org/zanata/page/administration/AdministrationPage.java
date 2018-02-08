@@ -27,6 +27,7 @@ import org.zanata.page.BasePage;
 public class AdministrationPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AdministrationPage.class);
+
     private final By CONFIGURE_SERVER_LINK =
             By.id("Admin_Server_configuration_home");
     private final By MANAGE_USER_LINK = By.id("Admin_Manage_users_home");
@@ -39,29 +40,50 @@ public class AdministrationPage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Click the Server Configuration button
+     * @return new ServerConfigurationPage
+     */
     public ServerConfigurationPage goToServerConfigPage() {
         log.info("Click Server Configuration");
         clickLinkAfterAnimation(CONFIGURE_SERVER_LINK);
         return new ServerConfigurationPage(getDriver());
     }
 
+    /**
+     * Click the Manage Users button
+     * @return new ManageUserPage
+     */
     public ManageUserPage goToManageUserPage() {
         log.info("Click Manage Users");
         clickLinkAfterAnimation(MANAGE_USER_LINK);
         return new ManageUserPage(getDriver());
     }
 
+    /**
+     * Click the Translation Memory button
+     * @return new TranslationMemoryPage
+     */
     public TranslationMemoryPage goToTranslationMemoryPage() {
         log.info("Click Translation Memory");
         clickLinkAfterAnimation(MANAGE_TM_LINK);
         return new TranslationMemoryPage(getDriver());
     }
 
+    /**
+     * Click the Manage Search button
+     * @return new ManageSearchPage
+     */
     public ManageSearchPage goToManageSeachPage() {
+        log.info("Click Manage Search");
         clickLinkAfterAnimation(MANAGE_SEARCH_LINK);
         return new ManageSearchPage(getDriver());
     }
 
+    /**
+     * Click the Manage Roles button
+     * @return new RoleAssignmentsPage
+     */
     public RoleAssignmentsPage goToManageRoleAssignments() {
         log.info("Click Manage Roles");
         clickLinkAfterAnimation(MANAGE_ROLES_ASSIGN_LINK);
