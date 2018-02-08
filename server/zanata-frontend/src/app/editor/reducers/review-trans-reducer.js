@@ -2,11 +2,13 @@ import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import {
   GET_ALL_CRITERIA_SUCCESS,
-  GET_ALL_CRITERIA_FAILURE
+  GET_ALL_CRITERIA_FAILURE,
+  TOGGLE_REVIEW_MODAL
 } from '../actions/review-trans-actions'
 
 const defaultState = {
   notification: undefined,
+  showReviewModal: false,
   criteria: []
 }
 
@@ -31,6 +33,13 @@ const review = handleActions({
     return update(state, {
       notification: {
         $set: `Failed to retrieve review criteria. ${getErrorMessage(action)}`
+      }
+    })
+  },
+  [TOGGLE_REVIEW_MODAL]: (state, action) => {
+    return update(state, {
+      showReviewModal: {
+        $set: !state.showReviewModal
       }
     })
   }

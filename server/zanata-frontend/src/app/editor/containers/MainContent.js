@@ -5,7 +5,9 @@ import { Icon } from '../../components'
 import TransUnit from '../components/TransUnit'
 import { connect } from 'react-redux'
 import { getCurrentPagePhraseDetail } from '../selectors'
-import { fetchAllCriteria } from '../actions/review-trans-actions'
+import {
+  fetchAllCriteria, toggleReviewModal
+} from '../actions/review-trans-actions'
 import { getCriteria } from '../reducers/review-trans-reducer'
 import { MINOR, MAJOR, CRITICAL } from '../utils/reject-trans-util'
 import RejectTranslationModal from '../containers/RejectTranslationModal'
@@ -17,7 +19,9 @@ import { isUndefined } from 'lodash'
 class MainContent extends React.Component {
   static propTypes = {
     maximised: PropTypes.bool.isRequired,
+    showReviewModal: PropTypes.bool.isRequired,
     phrases: PropTypes.arrayOf(PropTypes.object).isRequired,
+    toggleReviewModal: PropTypes.func.isRequired,
     fetchAllCriteria: PropTypes.func.isRequired,
     criteria: PropTypes.arrayOf(PropTypes.shape({
       editable: PropTypes.bool.isRequired,
@@ -29,19 +33,8 @@ class MainContent extends React.Component {
     }).isRequired,
     selectedPhraseId: PropTypes.number
   }
-  constructor (props) {
-    super(props)
-    this.state = {
-      showRejectModal: false
-    }
-  }
   componentDidMount () {
     this.props.fetchAllCriteria()
-  }
-  toggleRejectModal = () => {
-    this.setState(prevState => ({
-      showRejectModal: !prevState.showRejectModal
-    }))
   }
   render () {
     const { maximised, phrases } = this.props
@@ -71,7 +64,7 @@ class MainContent extends React.Component {
             index={phrase.id}
             phrase={phrase}
             criteria={this.props.criteria}
-            toggleRejectModal={this.toggleRejectModal} />
+            toggleRejectModal={this.props.toggleReviewModal} />
         </li>
       )
     })
@@ -97,8 +90,8 @@ class MainContent extends React.Component {
           </ul>
         </div>
         <RejectTranslationModal
-          show={this.state.showRejectModal}
-          onHide={this.toggleRejectModal}
+          show={this.props.showReviewModal}
+          onHide={this.props.toggleReviewModal}
           transUnitID={this.props.selectedPhraseId}
           revision={selectedPhraseRevision}
           localeId={this.props.translationLocale.id}
@@ -112,8 +105,10 @@ class MainContent extends React.Component {
 function mapStateToProps (state, ownProps) {
   // TODO replace with selector
   const maximised = !state.ui.panels.navHeader.visible
+  const showReviewModal = state.review.showReviewModal
   return {
     maximised,
+    showReviewModal: showReviewModal,
     criteria: getCriteria(state),
     phrases: getCurrentPagePhraseDetail(state),
     translationLocale: {
@@ -125,6 +120,7 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    toggleReviewModal: () => dispatch(toggleReviewModal()),
     fetchAllCriteria: () => dispatch(fetchAllCriteria())
   }
 }

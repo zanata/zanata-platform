@@ -8,6 +8,7 @@ import {
   savePhraseWithStatus } from './phrases-actions'
 import { moveNext, movePrevious } from './phrase-navigation-actions'
 import { copySuggestionN } from './suggestions-actions'
+import { toggleReviewModal } from './review-trans-actions'
 import {
   STATUS_TRANSLATED,
   STATUS_NEEDS_WORK,
@@ -211,7 +212,11 @@ function saveAs (status) {
         if (isSaving || (isCurrentStatus && !hasTranslationChanged(phrase))) {
           return
         }
-        dispatch(savePhraseWithStatus(phrase, status))
+        if (status === STATUS_REJECTED) {
+          dispatch(toggleReviewModal())
+        } else {
+          dispatch(savePhraseWithStatus(phrase, status))
+        }
       }
     }
   }

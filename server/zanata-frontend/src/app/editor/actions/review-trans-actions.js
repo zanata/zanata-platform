@@ -6,6 +6,7 @@ import {
 } from '../../actions/common-actions'
 import { savePhraseWithStatus } from './phrases-actions'
 import { STATUS_REJECTED } from '../utils/status-util'
+import { createAction } from 'redux-actions'
 
 export const ADD_REVIEW_REQUEST = 'ADD_REVIEW_REQUEST'
 export const ADD_REVIEW_SUCCESS = 'ADD_REVIEW_SUCCESS'
@@ -13,6 +14,8 @@ export const ADD_REVIEW_FAILURE = 'ADD_REVIEW_FAILURE'
 export const GET_ALL_CRITERIA_REQUEST = 'GET_ALL_CRITERIA_REQUEST'
 export const GET_ALL_CRITERIA_SUCCESS = 'GET_ALL_CRITERIA_SUCCESS'
 export const GET_ALL_CRITERIA_FAILURE = 'GET_ALL_CRITERIA_FAILURE'
+
+export const TOGGLE_REVIEW_MODAL = 'TOGGLE_REVIEW_MODAL'
 
 /**
  * Perform a save of a translation review with the given review data
@@ -43,6 +46,8 @@ export function rejectTranslation (dispatch, review) {
      JSON.stringify(body))
   }
 }
+
+export const toggleReviewModal = createAction(TOGGLE_REVIEW_MODAL)
 
 export function fetchAllCriteria () {
   const endpoint = `${apiUrl}/review`
