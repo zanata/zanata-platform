@@ -20,9 +20,9 @@
  */
 
 import React from 'react'
-import {storiesOf} from '@storybook/react'
+import { storiesOf } from '@storybook/react'
 import ActivityFeedItem from '.'
-import {MINOR, MAJOR, CRITICAL} from "./index";
+import { MINOR, MAJOR, CRITICAL } from "./index";
 
 /*
  * See .storybook/README.md for info on the component storybook.
