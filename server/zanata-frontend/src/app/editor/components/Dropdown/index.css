@@ -97,6 +97,10 @@ not conflict with the other frontend code
   background-color: var(--Dropdown-item-hover-color-bg);
 }
 
+.TransUnit-panelFooter .EditorDropdown .EditorButton {
+  min-width: 15px;
+}
+
 /**
  * Modifiers
  */
