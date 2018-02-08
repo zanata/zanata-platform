@@ -30,7 +30,8 @@ export class RejectTranslationModal extends Component {
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,
-    addNewTransReview: PropTypes.func.isRequired
+    addNewTransReview: PropTypes.func.isRequired,
+    selectedPhrase: PropTypes.object
   }
   defaultState = {
     review: {
@@ -89,7 +90,8 @@ export class RejectTranslationModal extends Component {
       transUnitId: this.props.transUnitID,
       revision: this.props.revision,
       criteriaId: this.state.review.criteriaId,
-      reviewComment: this.state.review.reviewComment
+      reviewComment: this.state.review.reviewComment,
+      phrase: this.props.selectedPhrase
     }
     this.props.addNewTransReview(review)
     this.props.onHide()
@@ -162,7 +164,7 @@ export class RejectTranslationModal extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addNewTransReview: (review) => dispatch(rejectTranslation(review)
+    addNewTransReview: (review) => dispatch(rejectTranslation(dispatch, review)
     )
   }
 }

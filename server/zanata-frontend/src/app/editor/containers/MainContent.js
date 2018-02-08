@@ -102,7 +102,8 @@ class MainContent extends React.Component {
           transUnitID={this.props.selectedPhraseId}
           revision={selectedPhraseRevision}
           localeId={this.props.translationLocale.id}
-          criteria={this.props.criteria} />
+          criteria={this.props.criteria}
+          selectedPhrase={selectedPhrase} />
       </main>
     )
   }

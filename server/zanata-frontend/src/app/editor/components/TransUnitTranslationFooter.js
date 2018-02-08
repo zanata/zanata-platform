@@ -93,8 +93,9 @@ class TransUnitTranslationFooter extends React.Component {
     const saveCallback = (event) => {
       if (status === STATUS_REJECTED) {
         this.props.showRejectModal()
+      } else {
+        savePhraseWithStatus(phrase, status, event)
       }
-      savePhraseWithStatus(phrase, status, event)
     }
 
     const shortcutKey = saveAsMode && statusShortcutKeys[status]
