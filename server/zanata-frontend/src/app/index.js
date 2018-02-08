@@ -14,7 +14,6 @@ import Root from './containers/Root'
 
 import './styles/style.less'
 import './editor/index.css'
-import './styles/index.scss'
 
 WebFont.load({
   google: {

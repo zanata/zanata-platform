@@ -7,7 +7,6 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
-var path = require('path');
 var stylelint = require('stylelint')
 var postcssDiscardDuplicates = require('postcss-discard-duplicates')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -29,13 +28,6 @@ const { CheckerPlugin } = require('awesome-typescript-loader')
 /* Helper so we can use ternary with undefined to not specify a key */
 function dropUndef (obj) {
   return _(obj).omitBy(_.isNil).value()
-}
-
-var sassLoader = {
-  loader: 'sass-loader',
-  options: {
-    includePaths: ['./node_modules']
-  }
 }
 
 var postCssLoader = {
@@ -206,21 +198,6 @@ module.exports = function (env) {
             ])
           })
         },
-        {
-          test: /\.scss$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: _.compact([
-              {
-                loader: 'css-loader',
-            options: {
-                  importLoaders: 1
-            }
-              },
-              sassLoader
-             ])
-          })
-        },
         /* Bundles bootstrap css into the same bundle as the other css.
          */
         {
@@ -315,8 +292,7 @@ module.exports = function (env) {
     resolve: {
       /* Subdirectories to check while searching up tree for module
        * Default is ['', '.js'] */
-      extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx',
-        '.scss']
+      extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx']
     },
 
     node: {
