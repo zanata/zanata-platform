@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!--
+  ~ Copyright 2018, Red Hat, Inc. and individual contributors
+  ~  as indicated by the @author tags. See the copyright.txt file in the
+  ~  distribution for a full listing of individual contributors.
+  ~
+  ~  This is free software; you can redistribute it and/or modify it
+  ~  under the terms of the GNU Lesser General Public License as
+  ~  published by the Free Software Foundation; either version 2.1 of
+  ~  the License, or (at your option) any later version.
+  ~
+  ~  This software is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~  Lesser General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU Lesser General Public
+  ~  License along with this software; if not, write to the Free
+  ~  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>Alter HGlossaryEntry description to 500</comment>
+    <sql>UPDATE HGlossaryEntry SET description=SUBSTRING(description,1,500);</sql>
+    <modifyDataType tableName="HGlossaryEntry" columnName="description"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Alter HGlossaryEntry sourceRef to 500</comment>
+    <sql>UPDATE HGlossaryEntry SET sourceRef=SUBSTRING(sourceRef,1,500);</sql>
+    <modifyDataType tableName="HGlossaryEntry" columnName="sourceRef"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Alter HGlossaryTerm content to 500</comment>
+    <sql>UPDATE HGlossaryTerm SET content=SUBSTRING(content,1,500);</sql>
+    <modifyDataType tableName="HGlossaryTerm" columnName="content"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
+  <changeSet id="4" author="aeng@redhat.com">
+    <comment>Alter HGlossaryTerm comment to 500</comment>
+    <sql>UPDATE HGlossaryTerm SET comment=SUBSTRING(comment,1,500);</sql>
+    <modifyDataType tableName="HGlossaryTerm" columnName="comment"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
+</databaseChangeLog>

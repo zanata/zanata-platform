@@ -94,7 +94,7 @@ class NewEntryModal extends Component {
               editable
               editing
               placeholder='The new term'
-              maxLength={255}
+              maxLength={500}
               onChange={this.handleContentChanged.bind(this)}>
               {this.state.entry.srcTerm.content}
             </EditableText>
@@ -118,7 +118,7 @@ class NewEntryModal extends Component {
               editable
               editing
               placeholder='The definition of this term'
-              maxLength={255}
+              maxLength={500}
               onChange={this.handleDescChanged.bind(this)}>
               {this.state.entry.description}
             </EditableText>

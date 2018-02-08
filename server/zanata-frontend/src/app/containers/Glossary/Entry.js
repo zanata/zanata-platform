@@ -110,6 +110,7 @@ class Entry extends Component {
           title={transContent}
           editable={transSelected && editable}
           editing={selected}
+          maxLength={500}
           onChange={(e) => handleTermFieldUpdate('locale', e)}
           placeholder='Add a translation…'
           emptyReadOnlyText='No translation'>
@@ -152,6 +153,7 @@ class Entry extends Component {
                 title={entry.pos}
                 editable={!transSelected && editable}
                 editing={selected}
+                maxLength={255}
                 onChange={(e) => handleTermFieldUpdate('pos', e)}
                 placeholder='Add part of speech'
                 emptyReadOnlyText='No part of speech'>
