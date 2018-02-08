@@ -80,8 +80,11 @@ class TransUnitTranslationFooter extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { toggleDropdown, saveDropdownKey } = nextProps
+    const { toggleDropdown, saveDropdownKey, saveAsMode } = nextProps
     this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
+    if (saveAsMode === true) {
+      this.refs.saveTransDropdown.focus()
+    }
   }
 
   saveButtonElement = (status) => {
@@ -224,7 +227,6 @@ class TransUnitTranslationFooter extends React.Component {
       </ul>
       /* eslint-enable max-len */
     )
-
     return (
       /* eslint-disable max-len */
       <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
@@ -243,7 +245,8 @@ class TransUnitTranslationFooter extends React.Component {
             {glossaryIcon}
           </ul>
         </div>
-        <div className="u-floatRight">
+        <div className="u-floatRight"
+          ref='saveTransDropdown' tabIndex='0' >
           {saveAsLabel}
           <SplitDropdown
             onToggle={this.toggleDropdown}
