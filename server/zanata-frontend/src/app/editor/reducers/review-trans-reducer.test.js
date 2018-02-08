@@ -10,7 +10,8 @@ describe('review-trans-reducer', () => {
   it('generates initial state', () => {
     expect(review(undefined, {})).toEqual({
       notification: undefined,
-      criteria: []
+      criteria: [],
+      showReviewModal: false
     })
   })
   it('can recieve criteria', () => {
@@ -27,7 +28,8 @@ describe('review-trans-reducer', () => {
         editable: true,
         description: 'invariable invariant variable',
         priority: 'Critical'
-      }]
+      }],
+      showReviewModal: false
     })
   })
   it('can handle get criteria failure', () => {
@@ -36,7 +38,8 @@ describe('review-trans-reducer', () => {
       payload: 'text'
     })).toEqual({
       notification: 'Failed to retrieve review criteria. undefined',
-      criteria: []
+      criteria: [],
+      showReviewModal: false
     })
   })
 })
