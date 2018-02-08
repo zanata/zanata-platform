@@ -31,6 +31,13 @@ function dropUndef (obj) {
   return _(obj).omitBy(_.isNil).value()
 }
 
+var sassLoader = {
+  loader: 'sass-loader',
+  options: {
+    includePaths: ['./node_modules']
+  }
+}
+
 var postCssLoader = {
   loader: 'postcss-loader',
   options: {
@@ -201,17 +208,18 @@ module.exports = function (env) {
         },
         {
           test: /\.scss$/,
-          loaders: [{
-            loader: 'style-loader'
-          }, {
-            loader: 'css-loader'
-          }, {
-            loader: 'sass-loader',
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: _.compact([
+              {
+                loader: 'css-loader',
             options: {
-              outputStyle: 'compressed',
-              includePaths: ['./node_modules']
+                  importLoaders: 1
             }
-          }]
+              },
+              sassLoader
+             ])
+          })
         },
         /* Bundles bootstrap css into the same bundle as the other css.
          */
