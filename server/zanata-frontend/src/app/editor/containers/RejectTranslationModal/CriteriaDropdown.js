@@ -52,7 +52,7 @@ class CriteriaDropdown extends Component {
         <Dropdown.Button>
           <a className='EditorDropdown-item'>
             {selectedCriteria}
-            <Icon className='n1' name='chevron-down' />
+            <Icon className='n1 u-pullRight' name='chevron-down' />
           </a>
         </Dropdown.Button>
         <Dropdown.Content>

@@ -28,7 +28,7 @@ describe('review-trans-actions', () => {
       criteriaId: 1,
       reviewComment: ''
     }
-    const apiAction = rejectTranslation(review)
+    const apiAction = rejectTranslation(undefined, review)
     expect(apiAction[CALL_API].endpoint).toEqual(
       apiUrl + '/review/trans/ja'
     )

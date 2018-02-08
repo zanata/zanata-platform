@@ -45,7 +45,7 @@ describe('CriteriaDropdown', () => {
         <Dropdown.Button>
           <a className='EditorDropdown-item'>
             {'One'}
-            <Icon className='n1' name='chevron-down' />
+            <Icon className='n1 u-pullRight' name='chevron-down' />
           </a>
         </Dropdown.Button>
         <Dropdown.Content>
