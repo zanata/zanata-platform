@@ -17,6 +17,7 @@ import {
   DOCUMENT_SELECTED,
   LOCALE_SELECTED,
   STATS_FETCHED,
+  UPDATE_COUNTS,
   HEADER_DATA_FETCHED
 } from './header-action-types'
 import { some, curry, isEmpty } from 'lodash'
@@ -36,6 +37,8 @@ const unwrapResponse = (dispatch, errorMsg, response) => {
   }
   return response.json()
 }
+
+export const updateCounts = createAction(UPDATE_COUNTS)
 
 export const uiLocaleFetched = createAction(UI_LOCALES_FETCHED)
 

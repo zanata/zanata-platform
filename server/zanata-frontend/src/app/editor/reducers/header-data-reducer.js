@@ -5,7 +5,8 @@ import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
   LOCALE_SELECTED,
-  STATS_FETCHED
+  STATS_FETCHED,
+  UPDATE_COUNTS
 } from '../actions/header-action-types'
 import update from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
@@ -80,7 +81,20 @@ const headerDataReducer = handleActions({
     update(state, { context: { selectedLocale: {$set: payload} } }),
 
   [STATS_FETCHED]: (state, { payload }) => update(state, {
-    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } })
+    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } }),
+
+  [UPDATE_COUNTS]: (state, { payload: {
+    counts, statusBefore, statusAfter } }) => {
+    return update(state, {
+      context: {
+        selectedDoc: { counts:
+        {
+          statusBefore: { $set: counts[statusBefore] - 1 },
+          statusAfter: { $set: counts[statusAfter] + 1 }
+        }
+      }}
+    })
+  }
 }, defaultState)
 
 export default headerDataReducer
