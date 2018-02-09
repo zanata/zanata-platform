@@ -14,7 +14,7 @@ import {
   STATUS_APPROVED
 } from '../utils/status-util'
 import { apiUrl, serverUrl } from '../../config'
-import { stableStringify } from 'faster-stable-stringify'
+import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
 
