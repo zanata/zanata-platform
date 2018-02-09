@@ -6,6 +6,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentState;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -26,6 +27,7 @@ public class ReviewData implements Serializable {
     private Integer revision;
 
     @JsonProperty("comment")
+    @Size(max = 500)
     private String comment;
 
     private Long reviewCriteriaId;
