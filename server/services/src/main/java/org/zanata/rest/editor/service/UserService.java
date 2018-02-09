@@ -148,16 +148,16 @@ public class UserService implements UserResource {
     }
 
     @Override
-    public Response getUserPermissions(HLocale locale, HProject project) {
+    public Response getUserPermissions(String localeId, String projectSlug) {
         if (authenticatedAccount == null) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         Permission permission = new Permission();
         boolean canReview = identity.hasPermissionWithAnyTargets("translation-review",
-                project, locale);
+                projectSlug, localeId);
         boolean canTranslate = identity.hasPermissionWithAnyTargets(
-                SecurityService.TranslationAction.MODIFY.action(), project,
-                locale);
+                SecurityService.TranslationAction.MODIFY.action(), projectSlug,
+                localeId);
         permission.put("reviewer", canReview);
         permission.put("translator", canTranslate);
         return Response.ok(permission).build();

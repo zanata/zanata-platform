@@ -116,7 +116,7 @@ public interface UserResource {
      *         the server while performing this operation.
      */
     @Produces({ MediaType.APPLICATION_JSON })
-    @Path("/permission/roles")
+    @Path("/permission/roles/locale/{localeId}/project/{projectSlug}")
     @GET
     Response getUserPermissions(@PathParam("localeId") String localeId,
             @PathParam("projectSlug") String projectSlug);
