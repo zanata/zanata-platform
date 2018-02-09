@@ -3,9 +3,10 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {
-  Button, InputGroup, FormGroup, FormControl,
+  InputGroup, FormGroup, FormControl,
   Badge, Pagination
 } from 'react-bootstrap'
+import { Button } from 'grommet'
 import Helmet from 'react-helmet'
 import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
@@ -122,7 +123,7 @@ class Languages extends Component {
             </h1>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary'
+                <Button className='btn-primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1' parentClassName='plusicon'
