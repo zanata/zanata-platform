@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { storiesOf, action } from '@storybook/react'
+import React from 'react'
+import { storiesOf } from '@storybook/react'
 import RejectTranslationModal from '.'
 import RejectTranslationModalNoCrit from './RejectTranslationModalNoCrit'
 import Lorem from 'react-lorem-component'

@@ -1,3 +1,4 @@
+// @ts-check
 import { CALL_API, getJSON } from 'redux-api-middleware'
 import { createAction } from 'redux-actions'
 import {
@@ -74,7 +75,7 @@ export const fetchProjectPage = (projectSearchTerm) => {
     {
       type: PROJECT_PAGE_SUCCESS,
       meta: {timestamp},
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return getJSON(res).then((json) => json.results)
       }
     },
@@ -93,26 +94,30 @@ const toProjectVersionString = (projectVersion) => {
   return `${projectVersion.projectSlug}/${projectVersion.version.id}`
 }
 
+/* eslint-disable max-len */
 /**
  * @param {string} projectSlug target project slug
  * @param {string} versionSlug target version slug
  * @param {{
- *  matchPercentage: number,
- *  differentDocId: boolean,
- *  differentContext: boolean,
- *  fromImportedTM: boolean,
- *  selectedLanguage: Object.<{localeId: string, displayName: string}>,
- *  selectedVersions: Array.<{projectSlug: string, version: {id: string}}>
- * }} mergeOptions
+     matchPercentage: number,
+     differentProject: boolean,
+     differentDocId: boolean,
+     differentContext: boolean,
+     fromImportedTM: boolean,
+     fromAllProjects: boolean,
+     selectedLanguage: {localeId: string, displayName: string},
+     selectedVersions: Array.<{projectSlug: string, version: {id: string}}>
+   }} mergeOptions
  * @returns redux api action object
  */
+/* eslint-enable max-len */
 export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const endpoint =
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/tm-merge`
   const types = [VERSION_TM_MERGE_REQUEST,
     {
       type: VERSION_TM_MERGE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && ~contentType.indexOf('json')) {
           // Just making sure res.json() does not raise an error

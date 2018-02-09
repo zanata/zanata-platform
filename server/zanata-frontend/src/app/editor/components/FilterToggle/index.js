@@ -22,7 +22,7 @@
 import cx from 'classnames'
 import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 
 /**

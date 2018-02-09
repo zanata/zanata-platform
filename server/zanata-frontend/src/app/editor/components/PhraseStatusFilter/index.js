@@ -1,5 +1,5 @@
 import FilterToggle from '../FilterToggle'
-import * as React from 'react'
+import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'

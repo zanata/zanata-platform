@@ -19,15 +19,15 @@
  * site: http://www.fsf.org.
  */
 
-import * as React from 'react'
+import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {FormattedMessage} from 'react-intl'
-import Icon from '../../../components/Icon'
-import Link from '../../../components/Link'
+import { FormattedMessage } from 'react-intl'
+import { Icon } from '../../../components'
+import { Link } from '../../../components'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
-import {Well} from 'react-bootstrap'
-import {profileUrl} from '../../api'
+import { Well } from 'react-bootstrap'
+import { profileUrl } from '../../api'
 
 export const MINOR = 'Minor'
 export const MAJOR = 'Major'

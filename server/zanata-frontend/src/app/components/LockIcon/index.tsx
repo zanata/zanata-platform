@@ -1,18 +1,15 @@
-import * as React from 'react'
-import {Tooltip, OverlayTrigger} from 'react-bootstrap'
+import React from 'react'
+import {OverlayTrigger, Tooltip} from 'react-bootstrap'
 import {Icon} from '../../components'
+import {EntityStatus, isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 import {entityStatusPropType} from '../../utils/prop-types-util'
-import {isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 
 const DO_NOT_RENDER = null
 
 /**
  * Version Lock Icon with tooltip
- *
- * @param status
- * @returns {XML}
  */
-const LockIcon = ({status}) => {
+const LockIcon: React.SFC<LockIconProps> = ({status}) => {
   const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
   return isEntityStatusReadOnly(status)
   ? (
@@ -22,6 +19,11 @@ const LockIcon = ({status}) => {
   )
   : DO_NOT_RENDER
 }
+
+interface LockIconProps {
+  status: EntityStatus
+}
+
 LockIcon.propTypes = {
   status: entityStatusPropType
 }

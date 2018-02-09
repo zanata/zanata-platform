@@ -1,0 +1,36 @@
+{
+    "awesomeTypescriptLoaderOptions": {
+        "reportFiles": [
+            "app/**/*.{js,jsx,ts,tsx}"
+        ],
+        "useCache": true
+    },
+    // https://www.typescriptlang.org/docs/handbook/compiler-options.html
+    "compilerOptions": {
+        // scan any JS files for type information
+        "allowJs": true,
+        // only check JS files which have // @ts-check
+        "checkJs": false,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        // import tslib instead of duplicating generated code
+        "importHelpers": true,
+        "jsx": "react",
+        "lib": [
+            // We transpile to ES5 syntax, but we use babel-polyfill
+            "dom", "es6", "dom.iterable", "scripthost"
+        ],
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "module": "commonjs",
+        "outDir": "./build/",
+        "sourceMap": true,
+        "target": "ES5"
+    },
+    "include": [
+        "app/**/*"
+    ],
+    "exclude": [
+        "node_modules/**"
+    ]
+}
