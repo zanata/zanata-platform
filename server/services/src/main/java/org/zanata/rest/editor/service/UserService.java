@@ -20,6 +20,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.rest.dto.Account;
@@ -34,6 +35,7 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 import com.google.common.base.Strings;
+import org.zanata.service.SecurityService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -142,6 +144,22 @@ public class UserService implements UserResource {
         boolean canAdd = identity.hasPermission("", "insert-language");
         permission.put("canDeleteLocale", canDelete);
         permission.put("canAddLocale", canAdd);
+        return Response.ok(permission).build();
+    }
+
+    @Override
+    public Response getUserPermissions(HLocale locale, HProject project) {
+        if (authenticatedAccount == null) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        Permission permission = new Permission();
+        boolean canReview = identity.hasPermissionWithAnyTargets("translation-review",
+                project, locale);
+        boolean canTranslate = identity.hasPermissionWithAnyTargets(
+                SecurityService.TranslationAction.MODIFY.action(), project,
+                locale);
+        permission.put("reviewer", canReview);
+        permission.put("translator", canTranslate);
         return Response.ok(permission).build();
     }
 

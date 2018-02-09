@@ -106,6 +106,22 @@ public interface UserResource {
     Response getLocalesPermission();
 
     /**
+     * Get permission for Translation and Review interactions of current authenticated user.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing permission information {@link org.zanata.rest.editor.dto.org.zanata.rest.editor.dto.Permission}<br>
+     *         FORBIDDEN(403) - If no authenticated user found. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Path("/permission/roles")
+    @GET
+    Response getUserPermissions(@PathParam("localeId") String localeId,
+            @PathParam("projectSlug") String projectSlug);
+
+    /**
      * Retrieve settings for the current authenticated user that begin with prefix.
      *
      * @param prefix only return settings that begin with this prefix, separated
