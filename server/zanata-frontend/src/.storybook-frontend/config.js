@@ -5,6 +5,10 @@ import { addLocaleData, IntlProvider } from 'react-intl'
 import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@storybook/react'
 import './storybook.less'
+import 'grommet/grommet.min.css'
+// import 'grommet/grommet-aruba.min.css'
+// import 'grommet/grommet-hpe.min.css'
+// import 'grommet/grommet-hpinc.min.css'
 
 // Storyshots test runs this file too, with no document available.
 if (typeof document !== 'undefined') {

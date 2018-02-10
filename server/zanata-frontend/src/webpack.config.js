@@ -194,7 +194,7 @@ module.exports = function (env) {
                   importLoaders: 1
                 }
               },
-              postCssLoader
+              storybook ? undefined: postCssLoader
             ])
           })
         },
