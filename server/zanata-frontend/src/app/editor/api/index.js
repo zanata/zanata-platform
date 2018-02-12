@@ -15,6 +15,7 @@ import {
   STATUS_REJECTED
 } from '../utils/status-util'
 import { apiUrl, serverUrl } from '../../config'
+import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
 
@@ -118,7 +119,7 @@ export function savePhrase ({ id, revision, plural },
       'Content-Type': 'application/json'
     },
     mode: 'cors',
-    body: JSON.stringify({
+    body: stableStringify({
       id,
       revision,
       plural,

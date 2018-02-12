@@ -112,11 +112,15 @@ const version = handleActions({
     })
   },
   [VERSION_TM_MERGE_FAILURE]: (state, action) => {
+    const defaultMsg = 'We were unable perform the operation. Please try again.'
+    const response = action && action.payload ? action.payload.response
+      : undefined
+    const msg = defaultMsg +
+      (response && response.error ? ' (' + response.error + ')' : '')
     return update(state, {
       TMMerge: { triggered: { $set: false } },
       notification: { $set: {
-        message:
-          'We were unable perform the operation. Please try again.'
+        message: msg
       } }
     })
   },

@@ -17,7 +17,7 @@
 
 <composite:implementation>
   <p class="l--float-right txt--neutral l--push-left-half">
-    <i aria-hidden="true"
+    <i
       class="i--large #{activityEntry.getActivityTypeIconClass(cc.attrs.value)}"
       title="#{activityEntry.getActivityTitle(cc.attrs.value)}"></i>
     <span class="is-invisible">#{activityEntry.getActivityTitle(cc.attrs.value)}</span>
@@ -33,7 +33,7 @@
 
   <ul class="list--horizontal txt--meta">
     <li>
-      <i aria-hidden="true" class="i i--clock txt--neutral"
+      <i  class="i i--clock txt--neutral"
         title="#{msgs['jsf.Time']}"></i>
       <span
         class="is-invisible">#{msgs['jsf.Time']}</span>#{activityEntry.getHowLongAgoDescription(cc.attrs.value)}
@@ -45,14 +45,14 @@
         <ui:fragment rendered="#{not isVersionDeleted and canViewProject}">
           <a class="bx--break-all bx--block"
             href="#{activityEntry.getDocumentUrl(cc.attrs.value)}">
-            <i aria-hidden="true" class="i i--document txt--neutral l--push-right-quarter"
+            <i  class="i i--document txt--neutral l--push-right-quarter"
               title="#{msgs['jsf.Document']}"></i>
             <span class="is-invisible">#{msgs['jsf.Document']}</span>
             #{docName}
           </a>
         </ui:fragment>
         <h:panelGroup layout="block" styleClass="bx--break-all" rendered="#{isVersionDeleted or not canViewProject}">
-          <i aria-hidden="true" class="i i--document txt--neutral l--push-right-quarter"
+          <i  class="i i--document txt--neutral l--push-right-quarter"
             title="#{msgs['jsf.Document']}"></i>
           <span class="is-invisible">#{msgs['jsf.Document']}</span>
           <span class="txt--neutral">#{docName}</span>
@@ -64,7 +64,7 @@
     <ui:fragment
       rendered="#{languageName != null and !languageName.isEmpty()}">
       <li class="#{cc.attrs.hideInfo ? 'reveal__target': ''}">
-        <i aria-hidden="true" class="i i--language txt--neutral"
+        <i  class="i i--language txt--neutral"
           title="#{msgs['jsf.Language']}"></i>
         <span class="is-invisible">#{msgs['jsf.Language']}</span>
         <ui:fragment rendered="#{not isVersionDeleted and canViewProject}">
@@ -81,7 +81,7 @@
     <ui:fragment
       rendered="#{versionName != null and !versionName.isEmpty()}">
       <li class="#{cc.attrs.hideInfo ? 'reveal__target': ''}">
-        <i aria-hidden="true" class="i i--version txt--neutral"
+        <i  class="i i--version txt--neutral"
           title="#{msgs['jsf.Version']}">
           <span class="is-invisible">#{msgs['jsf.Version']}</span>
         </i>

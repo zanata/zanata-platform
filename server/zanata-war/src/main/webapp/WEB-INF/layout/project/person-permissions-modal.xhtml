@@ -55,7 +55,7 @@
   <ui:param name="person" value="#{projectPermissionDialog.data.person}"/>
   <ui:param name="memberSelected" value="#{(not empty person) and projectHomeAction.isMember(person)}"/>
 
-  <div class="modal" id="#{id}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal" id="#{id}" tabindex="-1" role="dialog" >
     <h:panelGroup layout="block" id="#{id}-content" styleClass="modal__dialog l--constrain-medium">
       <header class="modal__header">
         <h2 class="modal__title">
