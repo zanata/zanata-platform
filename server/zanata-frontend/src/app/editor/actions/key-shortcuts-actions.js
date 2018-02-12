@@ -84,10 +84,12 @@ export const SHORTCUTS = {
     keyConfig: {
       keys: ['mod+shift+s'],
       sequenceKeys: [
-        shortcutInfo('n', saveAs(STATUS_NEEDS_WORK), 'Save as Needs Work'),
-        shortcutInfo('t', saveAs(STATUS_TRANSLATED), 'Save as Translated'),
-        shortcutInfo('r', saveAs(STATUS_REJECTED), 'Save as Rejected'),
-        shortcutInfo('a', saveAs(STATUS_APPROVED), 'Save as Approved')
+        shortcutInfo(['n', 'N'],
+          saveAs(STATUS_NEEDS_WORK), 'Save as Needs Work'),
+        shortcutInfo(['t', 'T'],
+          saveAs(STATUS_TRANSLATED), 'Save as Translated'),
+        shortcutInfo(['r', 'R'], saveAs(STATUS_REJECTED), 'Save as Rejected'),
+        shortcutInfo(['a', 'A'], saveAs(STATUS_APPROVED), 'Save as Approved')
       ]
     },
     eventActionCreator: saveAsModeActionCreator,
