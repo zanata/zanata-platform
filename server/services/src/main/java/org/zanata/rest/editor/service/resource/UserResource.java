@@ -108,6 +108,11 @@ public interface UserResource {
     /**
      * Get permission for Translation and Review interactions of current authenticated user.
      *
+     * @param localeId
+     *            target locale
+     * @param projectSlug
+     *            Project identifier
+     *
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - Response containing permission information {@link org.zanata.rest.editor.dto.org.zanata.rest.editor.dto.Permission}<br>

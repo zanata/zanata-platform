@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -148,7 +149,9 @@ public class UserService implements UserResource {
     }
 
     @Override
-    public Response getUserPermissions(String localeId, String projectSlug) {
+    public Response getUserPermissions(
+            @PathParam("localeId") String localeId,
+            @PathParam("projectSlug") String projectSlug) {
         if (authenticatedAccount == null) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
