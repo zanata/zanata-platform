@@ -13,6 +13,8 @@ import {
   MINOR, MAJOR, CRITICAL, priorities, textState
 } from '../../utils/reject-trans-util'
 
+const textLimit = 500
+
 /**
  * Modal to collect feedback on the reason for rejecting a translation.
  */
@@ -41,7 +43,7 @@ export class RejectTranslationModal extends Component {
       criteriaId: 1,
       reviewComment: ''
     },
-    charsLeft: 500
+    charsLeft: textLimit
   }
   constructor (props) {
     super(props)
@@ -80,7 +82,7 @@ export class RejectTranslationModal extends Component {
   setReviewComment = (event) => {
     const reviewComment = event.target.value
     const charCount = event.target.value.length
-    const charLeft = 500 - charCount
+    const charLeft = textLimit - charCount
     this.setState(prevState => ({
       review: update(prevState.review, {
         reviewComment: {$set: reviewComment}
@@ -140,7 +142,7 @@ export class RejectTranslationModal extends Component {
               cols='50'
               onChange={this.setReviewComment}
               rows='10'
-              maxLength='500'
+              maxLength={textLimit}
               className='EditorInputGroup-input is-focused InputGroup--outlined
                Commenting' />
             <p>{this.state.charsLeft}</p>
