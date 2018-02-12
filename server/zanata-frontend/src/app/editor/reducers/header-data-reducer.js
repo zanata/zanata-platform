@@ -5,7 +5,8 @@ import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
   LOCALE_SELECTED,
-  STATS_FETCHED
+  STATS_FETCHED,
+  USER_PERMISSION_SUCCESS
 } from '../actions/header-action-types'
 import update from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
@@ -39,7 +40,11 @@ const defaultState = {
       },
       id: ''
     },
-    selectedLocale: ''
+    selectedLocale: '',
+    permissions: {
+      reviewer: false,
+      translator: false
+    }
   }
 }
 
@@ -51,7 +56,6 @@ const headerDataReducer = handleActions({
   [HEADER_DATA_FETCHED]: (state, { payload: {
     documents, locales, versionSlug, projectInfo, myInfo, permissions } }) => {
     const projectSlug = projectInfo.id
-    console.log(permissions)
     return update(state, {
       user: {
         name: {$set: myInfo.name},
@@ -68,8 +72,7 @@ const headerDataReducer = handleActions({
           version: {$set: versionSlug},
           url: {$set: projectPageUrl(projectSlug, versionSlug)},
           docs: {$set: prepareDocs(documents)},
-          locales: {$set: prepareLocales(locales)},
-          permissions: {$set: permissions}
+          locales: {$set: prepareLocales(locales)}
         }
       }
     })
@@ -82,7 +85,10 @@ const headerDataReducer = handleActions({
     update(state, { context: { selectedLocale: {$set: payload} } }),
 
   [STATS_FETCHED]: (state, { payload }) => update(state, {
-    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } })
+    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } }),
+
+  [USER_PERMISSION_SUCCESS]: (state, { payload }) => update(state, {
+    permissions: {$set: payload} })
 }, defaultState)
 
 export default headerDataReducer

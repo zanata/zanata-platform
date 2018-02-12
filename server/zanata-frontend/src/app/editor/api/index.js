@@ -13,6 +13,14 @@ import {
   STATUS_TRANSLATED,
   STATUS_APPROVED
 } from '../utils/status-util'
+import {
+  USER_PERMISSION_REQUEST,
+  USER_PERMISSION_SUCCESS,
+  USER_PERMISSION_FAILURE
+} from '../actions/header-action-types'
+import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
+import { CALL_API } from 'redux-api-middleware'
+import { includes } from 'lodash'
 import { apiUrl, serverUrl } from '../../config'
 import { stableStringify } from 'faster-stable-stringify'
 
@@ -24,6 +32,29 @@ export function projectPageUrl (projectSlug, versionSlug) {
 
 export function profileUrl (username) {
   return `${serverUrl}/profile/view/${username}`
+}
+
+export function getUserPermissions (localeId, projectSlug) {
+  const endpoint =
+  `${apiUrl}/user/permission/roles/locale/${localeId}/project/${projectSlug}`
+  const apiTypes = [
+    USER_PERMISSION_REQUEST,
+    {
+      type: USER_PERMISSION_SUCCESS,
+      payload: (action, state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    USER_PERMISSION_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
 }
 
 export function fetchStatistics (projectSlug, versionSlug, docId, localeId) {

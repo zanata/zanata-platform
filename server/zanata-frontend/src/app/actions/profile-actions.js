@@ -16,10 +16,6 @@ export const FILTER_UPDATE = 'FILTER_UPDATE'
 export const DATE_RANGE_UPDATE = 'DATE_RANGE_UPDATE'
 export const SELECT_DAY_UPDATE = 'SELECT_DAY_UPDATE'
 
-export const USER_PERMISSION_REQUEST = 'USER_PERMISSION_REQUEST'
-export const USER_PERMISSION_SUCCESS = 'USER_PERMISSION_SUCCESS'
-export const USER_PERMISSION_FAILURE = 'USER_PERMISSION_FAILURE'
-
 export const USER_STATS_REQUEST = 'USER_STATS_REQUEST'
 export const USER_STATS_SUCCESS = 'USER_STATS_SUCCESS'
 export const USER_STATS_FAILURE = 'USER_STATS_FAILURE'
@@ -34,31 +30,6 @@ export const updateSelectDay = createAction(SELECT_DAY_UPDATE)
 
 const getStatsEndPoint = (username, fromDate, toDate) => {
   return apiUrl + '/stats/user/' + username + '/' + fromDate + '..' + toDate
-}
-
-export const getUserPermissions = (localeId, projectSlug) => {
-  const endpoint = `/permission/roles/locale/${localeId}/project/${projectSlug}`
-  const apiTypes = [
-    USER_PERMISSION_REQUEST,
-    {
-      type: USER_PERMISSION_SUCCESS,
-      payload: (action, state, res) => {
-        const contentType = res.headers.get('Content-Type')
-        if (contentType && includes(contentType, 'json')) {
-          return res.json().then((json) => {
-            return json
-          })
-        }
-      },
-      meta: {
-        receivedAt: Date.now()
-      }
-    },
-    USER_PERMISSION_FAILURE
-  ]
-  return {
-    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
-  }
 }
 
 const getUserStatistics = (username, fromDate, toDate) => {

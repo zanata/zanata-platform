@@ -4,7 +4,8 @@ import {
   fetchMyInfo,
   fetchProjectInfo,
   fetchDocuments,
-  fetchVersionLocales
+  fetchVersionLocales,
+  getUserPermissions
 } from '../api'
 import {
   HIDE_SIDEBAR,
@@ -17,14 +18,9 @@ import {
   DOCUMENT_SELECTED,
   LOCALE_SELECTED,
   STATS_FETCHED,
-  HEADER_DATA_FETCHED,
-  USER_PERMISSION_REQUEST,
-  USER_PERMISSION_SUCCESS,
-  USER_PERMISSION_FAILURE
+  HEADER_DATA_FETCHED
 } from './header-action-types'
-import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
-import { CALL_API } from 'redux-api-middleware'
-import { some, curry, isEmpty, includes } from 'lodash'
+import { some, curry, isEmpty } from 'lodash'
 import { createAction } from 'redux-actions'
 import { equals } from '../utils/string-utils'
 
@@ -40,31 +36,6 @@ const unwrapResponse = (dispatch, errorMsg, response) => {
     // new Error(errorMsg))
   }
   return response.json()
-}
-
-const getUserPermissions = (localeId, projectSlug) => {
-  const endpoint = `/permission/roles/locale/${localeId}/project/${projectSlug}`
-  const apiTypes = [
-    USER_PERMISSION_REQUEST,
-    {
-      type: USER_PERMISSION_SUCCESS,
-      payload: (action, state, res) => {
-        const contentType = res.headers.get('Content-Type')
-        if (contentType && includes(contentType, 'json')) {
-          return res.json().then((json) => {
-            return json
-          })
-        }
-      },
-      meta: {
-        receivedAt: Date.now()
-      }
-    },
-    USER_PERMISSION_FAILURE
-  ]
-  return {
-    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
-  }
 }
 
 export const uiLocaleFetched = createAction(UI_LOCALES_FETCHED)
@@ -112,6 +83,8 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
   return (dispatch, getState) => {
     const checkResponse = curry(unwrapResponse)(dispatch)
 
+    dispatch(getUserPermissions(localeId, projectSlug))
+
     // FIXME make the checkResponse just reject with the error code
     //       no need to handle error messages or anything.
 
@@ -139,19 +112,17 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
           e.message = 'version locales fetch failed: ' + e.message
           throw e
         })
-    const userPermissionsPromise = getUserPermissions(localeId, projectSlug)
 
     // FIXME Split to separate handlers for easier debugging and maintenance.
     //       There is no real dependency for each of these requests to have to
     //       all complete before storing the relevant data.
     Promise.all([docListPromise, projectInfoPromise,
-      myInfoPromise, versionLocalesPromise, userPermissionsPromise])
+      myInfoPromise, versionLocalesPromise])
         .then((all) => {
           const documents = all[0]
           const projectInfo = all[1]
           const myInfo = all[2]
           const locales = all[3]
-          const permissions = all[4]
 
           if (isEmpty(documents)) {
             // redirect if no documents in version
@@ -178,8 +149,7 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
             projectInfo: projectInfo,
             versionSlug: versionSlug,
             documents: documents,
-            locales: locales,
-            permissions: permissions
+            locales: locales
           }
 
           dispatch(headerDataFetched(data))
