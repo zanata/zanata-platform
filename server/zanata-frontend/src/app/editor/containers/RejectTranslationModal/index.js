@@ -40,7 +40,8 @@ export class RejectTranslationModal extends Component {
       selectedCriteria: '',
       criteriaId: 1,
       reviewComment: ''
-    }
+    },
+    charsLeft: 500
   }
   constructor (props) {
     super(props)
@@ -78,10 +79,13 @@ export class RejectTranslationModal extends Component {
   }
   setReviewComment = (event) => {
     const reviewComment = event.target.value
+    const charCount = event.target.value.length
+    const charLeft = 500 - charCount
     this.setState(prevState => ({
       review: update(prevState.review, {
         reviewComment: {$set: reviewComment}
-      })
+      }),
+      charsLeft: charLeft
     }))
   }
   saveTransReview = () => {
@@ -139,6 +143,7 @@ export class RejectTranslationModal extends Component {
               maxLength='500'
               className='EditorInputGroup-input is-focused InputGroup--outlined
                Commenting' />
+            <p>{this.state.charsLeft}</p>
           </div>
         </Modal.Body>
         <Modal.Footer>
