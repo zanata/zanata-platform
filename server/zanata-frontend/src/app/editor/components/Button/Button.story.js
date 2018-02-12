@@ -1,7 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import cx from 'classnames'
-import { storiesOf, action } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import { host } from 'storybook-host'
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs'

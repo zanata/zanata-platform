@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react'
-import { storiesOf, action } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import { storiesOf } from '@storybook/react'
 import { Tabs, Tab, Row, Col, Nav, NavItem, Well } from 'react-bootstrap'
 
 storiesOf('Tabs', module)
