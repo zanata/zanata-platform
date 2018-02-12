@@ -1,5 +1,3 @@
-/* global jest describe it expect */
-
 import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
@@ -8,6 +6,7 @@ import {
 } from '../actions/header-action-types'
 import headerDataReducer from './header-data-reducer'
 
+/* global describe it expect */
 const EXAMPLE_HEADER_DATA = {
   documents: [
     { name: 'file01.txt' },
@@ -38,6 +37,10 @@ const EXAMPLE_HEADER_DATA = {
   myInfo: {
     name: 'rick',
     gravatarHash: '12345'
+  },
+  permissions: {
+    reviewer: false,
+    translator: true
   }
 }
 
@@ -51,6 +54,10 @@ describe('header-data-reducer test', () => {
         dashboardUrl: ''
       },
       context: {
+        permissions: {
+          reviewer: false,
+          translator: false
+        },
         projectVersion: {
           project: {
             slug: '',
@@ -103,6 +110,10 @@ describe('header-data-reducer test', () => {
         dashboardUrl: '/dashboard'
       },
       context: {
+        permissions: {
+          reviewer: false,
+          translator: false
+        },
         projectVersion: {
           project: {
             slug: 'myproject',
@@ -114,15 +125,19 @@ describe('header-data-reducer test', () => {
           locales: {
             'en-US': {
               id: 'en-US',
-              name: 'English (United States)'
+              isRTL: undefined,
+              name: 'English (United States)',
+              nplurals: undefined
             },
             de: {
               id: 'de',
+              isRTL: undefined,
               name: 'German',
               nplurals: 2
             },
             ja: {
               id: 'ja',
+              isRTL: undefined,
               name: 'Japanese',
               nplurals: 1
             }
