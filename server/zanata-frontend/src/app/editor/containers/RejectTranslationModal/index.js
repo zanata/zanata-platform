@@ -69,9 +69,8 @@ export class RejectTranslationModal extends Component {
   }
   onCriteriaChange = (event) => {
     const selectedCriteria = event.target.innerText
-    const criteriaIdIndex = this.props.criteria.findIndex(
-      x => x.description === event.target.innerText)
-    const criteriaId = this.props.criteria[criteriaIdIndex]
+    const criteriaId = this.props.criteria.find(
+      x => x.description === event.target.innerText).id
     this.setState(prevState => ({
       review: update(prevState.review, {
         selectedCriteria: {$set: selectedCriteria},
