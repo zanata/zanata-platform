@@ -33,7 +33,7 @@ const user = {
   username: 'damason',
   name: 'David Mason',
   imageUrl:
-      'http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
+      '//www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
 }
 
 storiesOf('ActivityFeedItem', module)

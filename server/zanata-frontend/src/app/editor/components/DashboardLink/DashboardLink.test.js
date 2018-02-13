@@ -6,7 +6,7 @@ import DashboardLink from '.'
 describe('DashboardLinkTest', () => {
   it('DashboardLink markup', () => {
     const profilePicSrc =
-      'http://www.emoji-cheat-sheet.com/graphics/emojis/smiling_imp.png'
+      '//www.emoji-cheat-sheet.com/graphics/emojis/smiling_imp.png'
 
     const actual = ReactDOMServer.renderToStaticMarkup(
       <DashboardLink name="Hades"
