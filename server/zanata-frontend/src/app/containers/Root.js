@@ -11,6 +11,7 @@ import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import { user } from '../config'
 import AdminReview from '../containers/Admin/Review'
+import Admin from '../containers/Admin/index'
 
 export default class Root extends Component {
   static propTypes = {
@@ -35,6 +36,7 @@ export default class Root extends Component {
             <Route path='languages' component={Languages} />
             <Route path='project/:project/version/:version'
               component={ProjectVersion} />
+            <Route path='admin/home' component={Admin} />
             <Route path='admin/review' component={AdminReview} />
             <Route path='profile/view/:username' component={UserProfile} />
             <Redirect from='profile' to={`profile/view/${username}`} />
