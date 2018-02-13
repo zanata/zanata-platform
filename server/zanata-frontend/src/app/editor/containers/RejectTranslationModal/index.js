@@ -32,7 +32,7 @@ export class RejectTranslationModal extends Component {
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
-    })),
+    })).isRequired,
     addNewTransReview: PropTypes.func.isRequired,
     selectedPhrase: PropTypes.object
   }
@@ -107,7 +107,7 @@ export class RejectTranslationModal extends Component {
     const { show, criteria } = this.props
     const { review } = this.state
     const priorityTextState = textState(review.selectedPriority)
-    const criteriaTile = (!isUndefined(criteria))
+    const criteriaTile = (criteria.length > 0)
         ? <div className='flex'>
           <span id='CriteriaTitle'>
             Criteria
