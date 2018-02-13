@@ -55,7 +55,7 @@ export function fetchUiLocales () {
   }
 }
 
-// fetches react-intl translation json files for app localization
+// fetches react-intl translation json files for app i18n
 export function fetchAppLocale (locale) {
   return (dispatch) => {
     fetchI18nLocale(locale)

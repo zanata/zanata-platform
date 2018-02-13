@@ -52,7 +52,7 @@ export function fetchLocales () {
 }
 
 export function fetchI18nLocale (locale) {
-  const localeURL = `${serverUrl}/messages/ja.json`
+  const localeURL = `${serverUrl}/messages/${locale}.json`
   return fetch(localeURL, {
     credentials: 'include',
     method: 'GET',

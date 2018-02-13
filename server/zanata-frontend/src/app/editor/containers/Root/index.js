@@ -105,6 +105,10 @@ function mapStateToProps (state) {
   }
 }
 
+// App Locale for I18n of Editor UI
+// TODO: Move this into props, allow selection in editor
+const appLocale = 'en-us'
+
 function mapDispatchToProps (dispatch) {
   return {
     saveSuggestionPanelHeight: (pixelHeight) => {
@@ -113,7 +117,7 @@ function mapDispatchToProps (dispatch) {
     },
     requestUiLocales: () => {
       dispatch(fetchUiLocales())
-      dispatch(fetchAppLocale('ja'))
+      dispatch(fetchAppLocale(appLocale))
     }
   }
 }
