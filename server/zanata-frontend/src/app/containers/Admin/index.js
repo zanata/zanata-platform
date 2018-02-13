@@ -25,6 +25,7 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 import { isAdmin } from '../../config'
+import { Grid, Col } from 'react-bootstrap'
 
 import {
   showExportTMXModal
@@ -51,6 +52,14 @@ class Admin extends Component {
     return (
       <div className='page wideView' id='admin'>
         <div className='u-centerBlock'>
+          <Grid>
+            <Col xs={6}>
+              Item 1
+            </Col>
+            <Col xs={6}>
+              Item 2
+            </Col>
+          </Grid>
           <TMXExportModal />
         </div>
       </div>
