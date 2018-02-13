@@ -108,10 +108,11 @@ public interface UserResource {
     /**
      * Get permission for Translation and Review interactions of current authenticated user.
      *
-     * @param localeId
-     *            target locale
      * @param projectSlug
      *            Project identifier
+     *
+     * @param localeId
+     *            target locale
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
@@ -121,10 +122,10 @@ public interface UserResource {
      *         the server while performing this operation.
      */
     @Produces({ MediaType.APPLICATION_JSON })
-    @Path("/permission/roles/locale/{localeId}/project/{projectSlug}")
+    @Path("/permission/roles/project/{projectSlug}")
     @GET
-    Response getUserPermissions(@PathParam("localeId") String localeId,
-            @PathParam("projectSlug") String projectSlug);
+    Response getUserPermissions(@PathParam("projectSlug") String projectSlug,
+            @QueryParam("localeId") String localeId);
 
     /**
      * Retrieve settings for the current authenticated user that begin with prefix.

@@ -149,9 +149,7 @@ public class UserService implements UserResource {
     }
 
     @Override
-    public Response getUserPermissions(
-            @PathParam("localeId") String localeId,
-            @PathParam("projectSlug") String projectSlug) {
+    public Response getUserPermissions(String projectSlug, String localeId) {
         if (authenticatedAccount == null) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
