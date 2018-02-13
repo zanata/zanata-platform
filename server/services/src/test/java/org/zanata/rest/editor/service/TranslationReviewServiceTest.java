@@ -164,27 +164,6 @@ public class TranslationReviewServiceTest {
     }
 
     @Test
-    public void testReviewCriteriaNull() {
-        String locale = "de";
-        ReviewData data = new ReviewData();
-        data.setTransUnitId(1L);
-        data.setReviewCriteriaId(1L);
-
-        HTextFlowTarget tft = buildTft(locale, EntityStatus.ACTIVE,
-                ContentState.Translated);
-        HLocale hLocale = tft.getLocale();
-
-        when(localeServiceImpl.getByLocaleId(locale)).thenReturn(hLocale);
-        when(textFlowTargetDAO.getTextFlowTarget(data.getTransUnitId(),
-                hLocale.getLocaleId())).thenReturn(tft);
-        when(reviewCriteriaDAO.findById(data.getReviewCriteriaId())).thenReturn(null);
-
-        Response response = service.put(locale, data);
-        assertThat(response.getStatus())
-                .isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
-    }
-
-    @Test
     public void testPut() {
         String locale = "de";
         ReviewData data = new ReviewData();
