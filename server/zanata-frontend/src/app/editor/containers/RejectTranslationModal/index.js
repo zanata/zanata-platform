@@ -9,7 +9,7 @@ import PriorityDropdown from './PriorityDropdown'
 import CriteriaDropdown from './CriteriaDropdown'
 import { rejectTranslation } from '../../actions/review-trans-actions'
 import update from 'immutability-helper'
-import { isUndefined } from 'lodash'
+import { isUndefined, isEmpty } from 'lodash'
 import {
   MINOR, MAJOR, CRITICAL, priorities, textState
 } from '../../utils/reject-trans-util'
@@ -27,7 +27,7 @@ export class RejectTranslationModal extends Component {
     // Initial flyweight fetch of phrases does not include the revision detail
     revision: PropTypes.number,
     localeId: PropTypes.string.isRequired,
-    criteria: PropTypes.arrayOf(PropTypes.shape({
+    criteriaList: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
@@ -62,7 +62,7 @@ export class RejectTranslationModal extends Component {
   }
   onCriteriaChange = (event) => {
     const selectedCriteria = event.target.innerText
-    const criteriaId = this.props.criteria.find(
+    const criteriaId = this.props.criteriaList.find(
       x => x.description === event.target.innerText).id
     this.setState(prevState => ({
       review: update(prevState.review, {
@@ -91,7 +91,7 @@ export class RejectTranslationModal extends Component {
       reviewComment: this.state.review.reviewComment,
       phrase: this.props.selectedPhrase
     }
-    if (!isUndefined(review.criteriaId) || review.reviewComment.length > 0) {
+    if (!isUndefined(review.criteriaId) || !isEmpty(review.reviewComment)) {
       this.props.addNewTransReview(review)
       this.onHideResetState()
     } else {
@@ -104,16 +104,16 @@ export class RejectTranslationModal extends Component {
   }
   /* eslint-disable max-len */
   render () {
-    const { show, criteria } = this.props
+    const { show, criteriaList } = this.props
     const { review } = this.state
     const priorityTextState = textState(review.selectedPriority)
-    const criteriaTile = (criteria.length > 0)
+    const criteriaTile = (!isEmpty(criteriaList))
         ? <div className='flex'>
           <span id='CriteriaTitle'>
             Criteria
           </span>
           <CriteriaDropdown
-            criteriaList={criteria}
+            criteriaList={criteriaList}
             onCriteriaChange={this.onCriteriaChange}
             selectedCriteria={review.selectedCriteria} />
           <PriorityDropdown

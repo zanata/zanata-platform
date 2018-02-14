@@ -23,7 +23,7 @@ class MainContent extends React.Component {
     phrases: PropTypes.arrayOf(PropTypes.object).isRequired,
     toggleReviewModal: PropTypes.func.isRequired,
     fetchAllCriteria: PropTypes.func.isRequired,
-    criteria: PropTypes.arrayOf(PropTypes.shape({
+    criteriaList: PropTypes.arrayOf(PropTypes.shape({
       editable: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
@@ -63,7 +63,7 @@ class MainContent extends React.Component {
           <TransUnit
             index={phrase.id}
             phrase={phrase}
-            criteria={this.props.criteria}
+            criteria={this.props.criteriaList}
             toggleRejectModal={this.props.toggleReviewModal} />
         </li>
       )
@@ -95,7 +95,7 @@ class MainContent extends React.Component {
           transUnitID={this.props.selectedPhraseId}
           revision={selectedPhraseRevision}
           localeId={this.props.translationLocale.id}
-          criteria={this.props.criteria}
+          criteriaList={this.props.criteriaList}
           selectedPhrase={selectedPhrase} />
       </main>
     )
@@ -109,7 +109,7 @@ function mapStateToProps (state, ownProps) {
   return {
     maximised,
     showReviewModal: showReviewModal,
-    criteria: getCriteria(state),
+    criteriaList: getCriteria(state),
     phrases: getCurrentPagePhraseDetail(state),
     translationLocale: {
       id: state.context.lang
