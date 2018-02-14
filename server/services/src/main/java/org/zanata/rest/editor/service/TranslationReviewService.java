@@ -85,14 +85,12 @@ public class TranslationReviewService implements TranslationReviewResource {
         identity.checkPermission("review-comment", locale, project);
 
         HTextFlowTargetReviewComment hComment;
-        ReviewCriterionId reviewId = data.getReviewCriteriaId() == null
-                ? null
-                : new ReviewCriterionId(data.getReviewCriteriaId());
-        ReviewCriteria reviewCriteria = reviewId == null
-                ? null
-                : reviewCriteriaDAO.findById(reviewId.getId());
-
-        hComment = hTextFlowTarget.addReview(authenticatedAccount.getPerson(), reviewCriteria, data.getComment());
+        ReviewCriteria criteria = null;
+        if (data.getReviewCriteriaId() != null) {
+            ReviewCriterionId reviewId = new ReviewCriterionId(data.getReviewCriteriaId());
+            criteria = reviewCriteriaDAO.findById(reviewId.getId());
+        }
+        hComment = hTextFlowTarget.addReview(authenticatedAccount.getPerson(), criteria, data.getComment());
         textFlowTargetReviewCommentsDAO.makePersistent(hComment);
         textFlowTargetReviewCommentsDAO.flush();
 
