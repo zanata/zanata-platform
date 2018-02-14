@@ -58,14 +58,7 @@ export function fetchUiLocales () {
 // fetches react-intl translation json files for app i18n
 export function fetchAppLocale (locale) {
   return (dispatch) => {
-    fetchI18nLocale(locale)
-        .then(curry(unwrapResponse)(dispatch, 'fetch react-intl locale failed'))
-        .then(appLocale => dispatch(appLocaleFetched(appLocale)))
-        .catch(err => {
-          console.error('Failed to fetch react-intl locales', err)
-          // FIXME replace with api middleware and use standard error handling
-          // return {type: FETCH_FAILED, error: err}
-        })
+    dispatch(fetchI18nLocale(locale))
   }
 }
 

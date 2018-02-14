@@ -1,13 +1,13 @@
-/* global jest describe it expect */
-
 import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
   LOCALE_SELECTED,
-  STATS_FETCHED
+  STATS_FETCHED,
+  LOCALE_MESSAGES_SUCCESS
 } from '../actions/header-action-types'
 import headerDataReducer from './header-data-reducer'
 
+/* global describe it expect */
 const EXAMPLE_HEADER_DATA = {
   documents: [
     { name: 'file01.txt' },
@@ -38,6 +38,13 @@ const EXAMPLE_HEADER_DATA = {
   myInfo: {
     name: 'rick',
     gravatarHash: '12345'
+  }
+}
+
+const EXAMPLE_LOCALE_MESSAGES = {
+  'ActivityFeedItem.comment': {
+    'defaultMessage': '{name} has commented on a translation',
+    'description': 'Title for a comment in the activity feed.'
   }
 }
 
@@ -72,7 +79,8 @@ describe('header-data-reducer test', () => {
           },
           id: ''
         },
-        selectedLocale: ''
+        selectedLocale: '',
+        localeMessages: {}
       }
     })
   })
@@ -139,7 +147,8 @@ describe('header-data-reducer test', () => {
           },
           id: ''
         },
-        selectedLocale: ''
+        selectedLocale: '',
+        localeMessages: {}
       }
     })
   })
@@ -155,7 +164,13 @@ describe('header-data-reducer test', () => {
     })
     expect(selected.context.selectedLocale).toEqual('de')
   })
-
+  it('can recieve locale messages', () => {
+    const withMessages = headerDataReducer(undefined, {
+      type: LOCALE_MESSAGES_SUCCESS,
+      payload: EXAMPLE_LOCALE_MESSAGES
+    })
+    expect(withMessages.localeMessages).toEqual(EXAMPLE_LOCALE_MESSAGES)
+  })
   it('can receive stats', () => {
     const withStats = headerDataReducer(undefined, {
       type: STATS_FETCHED,

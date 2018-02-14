@@ -15,6 +15,7 @@ import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
 import { locale, formats } from '../../config/intl'
+import { appLocale } from '../../../config'
 import { IntlProvider } from 'react-intl'
 
 /**
@@ -25,7 +26,8 @@ class Root extends Component {
     percentHeight: PropTypes.number.isRequired,
     showSuggestion: PropTypes.bool,
     requestUiLocales: PropTypes.func.isRequired,
-    saveSuggestionPanelHeight: PropTypes.func.isRequired
+    saveSuggestionPanelHeight: PropTypes.func.isRequired,
+    localeMessages: PropTypes.object
   }
 
   componentDidMount () {
@@ -73,7 +75,7 @@ class Root extends Component {
 
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
-      <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
+      <IntlProvider defaultLocale={locale} locale={appLocale} formats={formats}>
         <ParamPropDispatcher {...this.props}>
           <KeyShortcutDispatcher className="Editor is-suggestions-active">
             <Icons />
@@ -104,10 +106,6 @@ function mapStateToProps (state) {
     showSuggestion: getSuggestionsPanelVisible(state)
   }
 }
-
-// App Locale for I18n of Editor UI
-// TODO: Move this into props, allow selection in editor
-const appLocale = 'en-us'
 
 function mapDispatchToProps (dispatch) {
   return {

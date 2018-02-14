@@ -13,7 +13,15 @@ import {
   STATUS_TRANSLATED,
   STATUS_APPROVED
 } from '../utils/status-util'
-import { apiUrl, serverUrl } from '../../config'
+import {
+  LOCALE_MESSAGES_REQUEST,
+  LOCALE_MESSAGES_SUCCESS,
+  LOCALE_MESSAGES_FAILURE
+} from '../actions/header-action-types'
+import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
+import { CALL_API } from 'redux-api-middleware'
+import { includes } from 'lodash'
+import { apiUrl, serverUrl, appUrl } from '../../config'
 import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
@@ -52,16 +60,24 @@ export function fetchLocales () {
 }
 
 export function fetchI18nLocale (locale) {
-  const localeURL = `${serverUrl}/messages/${locale}.json`
-  return fetch(localeURL, {
-    credentials: 'include',
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+  const endpoint = `${appUrl}/messages/${locale}.json`
+  const apiTypes = [
+    LOCALE_MESSAGES_REQUEST,
+    {
+      type: LOCALE_MESSAGES_SUCCESS,
+      payload: (action, state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
     },
-    mode: 'cors'
-  })
+    LOCALE_MESSAGES_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
 }
 
 export function fetchMyInfo () {
