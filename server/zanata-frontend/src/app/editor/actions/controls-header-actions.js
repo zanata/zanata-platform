@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { getLocation, getPageIndex, getMaxPageIndex } from '../selectors'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 
 /* Adjust the page number so it is in the valid range.
  * Dispatch after changing the filter.

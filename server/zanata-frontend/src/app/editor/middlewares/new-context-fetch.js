@@ -1,5 +1,6 @@
+// @ts-nocheck
 import stateChangeDispatchMiddleware from './state-change-dispatch'
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import {
   fetchHeaderInfo,
   selectDoc,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import cx from 'classnames'
 import React from 'react'
 import * as PropTypes from 'prop-types'

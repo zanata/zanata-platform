@@ -1,4 +1,4 @@
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import { auth } from '../config'
 
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE'

@@ -1,4 +1,5 @@
-import { createAction } from 'typesafe-actions'
+// @ts-nocheck
+import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { isEmpty, includes, forEach } from 'lodash'
 import utilsDate from '../utils/DateHelper'

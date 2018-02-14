@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Component to dispatch props.params to get them into redux state.
  *

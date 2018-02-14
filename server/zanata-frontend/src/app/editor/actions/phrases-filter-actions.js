@@ -1,4 +1,5 @@
-import { createAction } from 'typesafe-actions'
+// @ts-nocheck
+import { createAction } from 'redux-actions'
 import {
   RESET_STATUS_FILTERS,
   UPDATE_STATUS_FILTER,

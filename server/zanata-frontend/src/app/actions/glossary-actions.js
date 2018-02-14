@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { cloneDeep, includes, debounce, last } from 'lodash'
 import { saveAs } from 'file-saver'

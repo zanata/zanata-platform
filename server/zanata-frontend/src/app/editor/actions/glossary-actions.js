@@ -1,8 +1,9 @@
+// @ts-nocheck
 /**
  * Actions related to the glossary.
  */
 
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import { debounce, isEmpty } from 'lodash'
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
 

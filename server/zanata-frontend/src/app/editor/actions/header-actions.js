@@ -21,7 +21,7 @@ import {
   HEADER_DATA_FETCHED
 } from './header-action-types'
 import { some, curry, isEmpty } from 'lodash'
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import { equals } from '../utils/string-utils'
 
 export const hideSidebar = createAction(HIDE_SIDEBAR)

@@ -1,5 +1,5 @@
 import { CALL_API } from 'redux-api-middleware'
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import { includes, isEmpty } from 'lodash'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
 import {

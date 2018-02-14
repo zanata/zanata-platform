@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { getSaveButtonStatus, hasTranslationChanged }
   from '../utils/phrase-util'
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import {
   copyFromAlignedSource,
   undoEdit,

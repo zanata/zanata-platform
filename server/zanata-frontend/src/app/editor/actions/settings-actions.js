@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { CALL_API_ENHANCED } from '../middlewares/call-api'
-import { createAction } from 'typesafe-actions'
+import { createAction } from 'redux-actions'
 import {
   SETTINGS_REQUEST,
   SETTINGS_SUCCESS,
