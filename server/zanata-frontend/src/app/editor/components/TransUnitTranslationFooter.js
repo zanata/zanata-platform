@@ -26,7 +26,7 @@ import Button from './Button'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
 import { Row } from 'react-bootstrap'
-import { defaultSaveStatus, nonDefaultValidSaveStatuses }
+import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
 
@@ -48,7 +48,9 @@ const statusNames = {
 
 const statusShortcutKeys = {
   needswork: <kbd>n</kbd>,
-  translated: <kbd>t</kbd>
+  translated: <kbd>t</kbd>,
+  approved: <kbd>a</kbd>,
+  rejected: <kbd>r</kbd>
 }
 
 /**
@@ -68,7 +70,8 @@ class TransUnitTranslationFooter extends React.Component {
     openDropdown: PropTypes.any,
     saveAsMode: PropTypes.bool.isRequired,
     showSuggestions: PropTypes.bool.isRequired,
-    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired
+    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
+    showRejectModal: PropTypes.func.isRequired
   }
 
   componentWillMount () {
@@ -77,8 +80,11 @@ class TransUnitTranslationFooter extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { toggleDropdown, saveDropdownKey } = nextProps
+    const { toggleDropdown, saveDropdownKey, saveAsMode } = nextProps
     this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
+    if (saveAsMode === true) {
+      this.refs.saveTransDropdown.focus()
+    }
   }
 
   saveButtonElement = (status) => {
@@ -88,7 +94,11 @@ class TransUnitTranslationFooter extends React.Component {
                          buttonClassByStatus[status])
 
     const saveCallback = (event) => {
-      savePhraseWithStatus(phrase, status, event)
+      if (status === STATUS_REJECTED) {
+        this.props.showRejectModal()
+      } else {
+        savePhraseWithStatus(phrase, status, event)
+      }
     }
 
     const shortcutKey = saveAsMode && statusShortcutKeys[status]
@@ -217,7 +227,6 @@ class TransUnitTranslationFooter extends React.Component {
       </ul>
       /* eslint-enable max-len */
     )
-
     return (
       /* eslint-disable max-len */
       <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
@@ -236,7 +245,8 @@ class TransUnitTranslationFooter extends React.Component {
             {glossaryIcon}
           </ul>
         </div>
-        <div className="u-floatRight">
+        <div className="u-floatRight"
+          ref='saveTransDropdown' tabIndex='0' >
           {saveAsLabel}
           <SplitDropdown
             onToggle={this.toggleDropdown}

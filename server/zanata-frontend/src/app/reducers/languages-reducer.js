@@ -45,7 +45,7 @@ export default handleActions({
   [CLEAR_MESSAGE]: (state, action) => {
     return {
       ...state,
-      notification: null
+      notification: undefined
     }
   },
   [LOAD_USER_REQUEST]: (state, action) => {

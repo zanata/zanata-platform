@@ -11,7 +11,8 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
-  STATUS_APPROVED
+  STATUS_APPROVED,
+  STATUS_REJECTED
 } from '../utils/status-util'
 import { apiUrl, serverUrl } from '../../config'
 import stableStringify from 'faster-stable-stringify'
@@ -143,6 +144,8 @@ function phraseStatusToTransUnitStatus (status) {
       return 'Translated'
     case STATUS_APPROVED:
       return 'Approved'
+    case STATUS_REJECTED:
+      return 'Rejected'
     default:
       console.error('Save attempt with invalid status', status)
   }

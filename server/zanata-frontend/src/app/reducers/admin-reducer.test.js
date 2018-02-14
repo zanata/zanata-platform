@@ -41,7 +41,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Failed to retrieve review criteria. 401 - Unauthorized')
   })
@@ -71,7 +71,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Operation failed. 401 - Unauthorized')
   })
@@ -107,7 +107,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Operation failed. 401 - Unauthorized')
   })
@@ -141,7 +141,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Operation failed. 401 - Unauthorized')
   })
