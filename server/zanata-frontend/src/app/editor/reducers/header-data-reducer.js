@@ -40,11 +40,11 @@ const defaultState = {
       },
       id: ''
     },
-    selectedLocale: '',
-    permissions: {
-      reviewer: false,
-      translator: false
-    }
+    selectedLocale: ''
+  },
+  permissions: {
+    reviewer: false,
+    translator: false
   }
 }
 

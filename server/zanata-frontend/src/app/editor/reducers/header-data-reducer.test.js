@@ -54,10 +54,6 @@ describe('header-data-reducer test', () => {
         dashboardUrl: ''
       },
       context: {
-        permissions: {
-          reviewer: false,
-          translator: false
-        },
         projectVersion: {
           project: {
             slug: '',
@@ -80,6 +76,10 @@ describe('header-data-reducer test', () => {
           id: ''
         },
         selectedLocale: ''
+      },
+      permissions: {
+        reviewer: false,
+        translator: false
       }
     })
   })
@@ -110,10 +110,6 @@ describe('header-data-reducer test', () => {
         dashboardUrl: '/dashboard'
       },
       context: {
-        permissions: {
-          reviewer: false,
-          translator: false
-        },
         projectVersion: {
           project: {
             slug: 'myproject',
@@ -155,6 +151,10 @@ describe('header-data-reducer test', () => {
           id: ''
         },
         selectedLocale: ''
+      },
+      permissions: {
+        reviewer: false,
+        translator: false
       }
     })
   })
