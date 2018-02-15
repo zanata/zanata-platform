@@ -55,98 +55,98 @@ class Admin extends Component {
         <div className='u-centerBlock'>
           <Grid>
             <h1>Administration</h1>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='settings' className='s3' />
+                <ListGroupItem href='/admin/server_configuration.xhtml'>
+                  <Icon name='settings' className='s2' />
                   Server configuration
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='user' className='s3' />
+                <ListGroupItem href='/admin/usermanager.xhtml'>
+                  <Icon name='user' className='s2' />
                   Manage users
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='users' className='s3' />
+                <ListGroupItem href='/admin/rolemanager.xhtml'>
+                  <Icon name='users' className='s2' />
                   Manage roles
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='search' className='s3' />
+                <ListGroupItem href='/admin/search.xhtml'>
+                  <Icon name='search' className='s2' />
                   Manage search
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='assign' className='s3' />
+                <ListGroupItem href='/admin/rolerules.xhtml'>
+                  <Icon name='assign' className='s2' />
                   Role assignment rules
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='tm' className='s3' />
+                <ListGroupItem href='/tm/home.xhtml'>
+                  <Icon name='tm' className='s2' />
                   Translation memory
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='clock' className='s3' />
+                <ListGroupItem href='/admin/processmanager.xhtml'>
+                  <Icon name='clock' className='s2' />
                   Process manager
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='piestats' className='s3' />
+                <ListGroupItem href='/admin/stats.xhtml'>
+                  <Icon name='piestats' className='s2' />
                   Overall statistics
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='servmon' className='s3' />
+                <ListGroupItem href='/admin/monitoring'>
+                  <Icon name='servmon' className='s2' />
                   Server monitoring
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='document' className='s3' />
+                <ListGroupItem href='/admin/cachestats.xhtml'>
+                  <Icon name='document' className='s2' />
                   Cache statistics
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='export' className='s3' />
+                <ListGroupItem href={showExportTMXModal}>
+                  <Icon name='export' className='s2' />
                   Export all to TMX
                 </ListGroupItem>
               </ListGroup>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={3}>
+            <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='#'>
-                  <Icon name='tick' className='s3' />
+                <ListGroupItem href='/admin/review'>
+                  <Icon name='tick' className='s2' />
                   Review criteria
                 </ListGroupItem>
               </ListGroup>
