@@ -6,6 +6,8 @@ import { isString } from 'util';
 // reconfiguring or replacing Babel.
 test('can require all local js files', () => {
     const sourceFiles = /^.*\.(js|jsx|ts|tsx)$/
+    // We skip test and story files because they don't just define functions
+    // and constants, they have side effects:
     const testFiles = /\.(story|test)\.(js|ts)x?$/
     const dirsToSkip = /^\.|node_modules$|entrypoint$/
     const modules = require('require.all')({
@@ -21,7 +23,7 @@ test('can require all local js files', () => {
         require: name => true,
     })
     const count = Object.keys(modules).length
-    if (count < 286) throw new Error("Missing modules")
+    if (count < 250) throw new Error(`Some modules may be missing: only found ${count} modules`)
 
     let countStrings = 0
     for (const key in modules) {
