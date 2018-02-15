@@ -5,7 +5,13 @@ import { Icon } from '../../components'
 import TransUnit from '../components/TransUnit'
 import { connect } from 'react-redux'
 import { getCurrentPagePhraseDetail } from '../selectors'
-
+import {
+  fetchAllCriteria, toggleReviewModal
+} from '../actions/review-trans-actions'
+import { getCriteria } from '../reducers/review-trans-reducer'
+import { MINOR, MAJOR, CRITICAL } from '../utils/reject-trans-util'
+import RejectTranslationModal from '../containers/RejectTranslationModal'
+import { isUndefined } from 'lodash'
 /**
  * The main content section showing the current page of TransUnit source,
  * status and translations.
@@ -13,12 +19,25 @@ import { getCurrentPagePhraseDetail } from '../selectors'
 class MainContent extends React.Component {
   static propTypes = {
     maximised: PropTypes.bool.isRequired,
-    phrases: PropTypes.arrayOf(PropTypes.object).isRequired
+    showReviewModal: PropTypes.bool.isRequired,
+    phrases: PropTypes.arrayOf(PropTypes.object).isRequired,
+    toggleReviewModal: PropTypes.func.isRequired,
+    fetchAllCriteria: PropTypes.func.isRequired,
+    criteriaList: PropTypes.arrayOf(PropTypes.shape({
+      editable: PropTypes.bool.isRequired,
+      description: PropTypes.string.isRequired,
+      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
+    })).isRequired,
+    translationLocale: PropTypes.shape({
+      id: PropTypes.string.isRequired
+    }).isRequired,
+    selectedPhraseId: PropTypes.number
   }
-
+  componentDidMount () {
+    this.props.fetchAllCriteria()
+  }
   render () {
     const { maximised, phrases } = this.props
-
     if (phrases.length === 0) {
       // TODO translate "No content"
       return (
@@ -41,14 +60,24 @@ class MainContent extends React.Component {
       // TODO can just use a selector to get the phrase object, easy.
       return (
         <li key={phrase.id}>
-          <TransUnit index={phrase.id} phrase={phrase} />
+          <TransUnit
+            index={phrase.id}
+            phrase={phrase}
+            criteria={this.props.criteriaList}
+            toggleRejectModal={this.props.toggleReviewModal} />
         </li>
       )
     })
 
     const className = cx('Editor-content TransUnit-container',
       { 'is-maximised': maximised })
-
+    const selectedPhrase = this.props.phrases.find(
+      x => x.id === this.props.selectedPhraseId)
+    // Need to check whether phrase itself is undefined since the detail may not
+    // yet have been fetched from the server.
+    const selectedPhraseRevision = !isUndefined(selectedPhrase)
+      ? selectedPhrase.revision
+      : undefined
     // TODO scrollbar width container+child were not brought over
     //      from the angular code yet.
     return (
@@ -60,6 +89,14 @@ class MainContent extends React.Component {
             {transUnits}
           </ul>
         </div>
+        <RejectTranslationModal
+          show={this.props.showReviewModal}
+          onHide={this.props.toggleReviewModal}
+          transUnitID={this.props.selectedPhraseId}
+          revision={selectedPhraseRevision}
+          localeId={this.props.translationLocale.id}
+          criteriaList={this.props.criteriaList}
+          selectedPhrase={selectedPhrase} />
       </main>
     )
   }
@@ -68,11 +105,24 @@ class MainContent extends React.Component {
 function mapStateToProps (state, ownProps) {
   // TODO replace with selector
   const maximised = !state.ui.panels.navHeader.visible
-
+  const showReviewModal = state.review.showReviewModal
   return {
     maximised,
-    phrases: getCurrentPagePhraseDetail(state)
+    showReviewModal: showReviewModal,
+    criteriaList: getCriteria(state),
+    phrases: getCurrentPagePhraseDetail(state),
+    translationLocale: {
+      id: state.context.lang
+    },
+    selectedPhraseId: state.phrases.selectedPhraseId
   }
 }
 
-export default connect(mapStateToProps)(MainContent)
+function mapDispatchToProps (dispatch) {
+  return {
+    toggleReviewModal: () => dispatch(toggleReviewModal()),
+    fetchAllCriteria: () => dispatch(fetchAllCriteria())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainContent)

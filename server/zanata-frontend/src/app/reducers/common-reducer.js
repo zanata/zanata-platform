@@ -9,7 +9,7 @@ export default handleActions({
   [CLEAR_MESSAGE]: (state, _action) => {
     return {
       ...state,
-      notification: null
+      notification: undefined
     }
   }
 },

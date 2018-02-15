@@ -33,7 +33,6 @@
 @import './components/FilterToggle/index.css';
 @import './components/ToggleSwitch/index.css';
 @import './components/TransUnit/index.css';
-@import './components/RejectTranslationModal/index.css';
 @import './components/InputGroup/index.css';
 @import 'components/ConcurrentModal/index.css';
 
@@ -45,6 +44,7 @@
 @import './containers/Root/index.css';
 @import './containers/SuggestionDetailsModal/index.css';
 @import './containers/Sidebar/index.css';
+@import './containers/RejectTranslationModal/index.css';
 
 /**
  * Theme

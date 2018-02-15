@@ -68,7 +68,7 @@ const glossary = handleActions({
   [CLEAR_MESSAGE]: (state, action) => {
     return {
       ...state,
-      notification: null
+      notification: undefined
     }
   },
   [GLOSSARY_INIT_STATE_FROM_URL]: (state, action) => {

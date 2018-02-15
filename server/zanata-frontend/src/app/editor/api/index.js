@@ -11,7 +11,8 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
-  STATUS_APPROVED
+  STATUS_APPROVED,
+  STATUS_REJECTED
 } from '../utils/status-util'
 import {
   USER_PERMISSION_REQUEST,
@@ -22,7 +23,7 @@ import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { includes } from 'lodash'
 import { apiUrl, serverUrl } from '../../config'
-import { stableStringify } from 'faster-stable-stringify'
+import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
 
@@ -174,6 +175,8 @@ function phraseStatusToTransUnitStatus (status) {
       return 'Translated'
     case STATUS_APPROVED:
       return 'Approved'
+    case STATUS_REJECTED:
+      return 'Rejected'
     default:
       console.error('Save attempt with invalid status', status)
   }

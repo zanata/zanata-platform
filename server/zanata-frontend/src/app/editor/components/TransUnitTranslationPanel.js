@@ -135,7 +135,8 @@ class TransUnitTranslationPanel extends React.Component {
         'suggestionSearchType',
         'toggleDropdown',
         'toggleGlossary',
-        'toggleSuggestionPanel'
+        'toggleSuggestionPanel',
+        'showRejectModal'
       ])
       footer = <TransUnitTranslationFooter {...footerProps} />
     }
