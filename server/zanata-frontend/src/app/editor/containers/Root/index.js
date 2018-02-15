@@ -8,7 +8,7 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
-import { getSuggestionsPanelVisible } from '../../reducers'
+import { getSuggestionsPanelVisible, getAppLocale } from '../../reducers'
 import { fetchUiLocales, fetchAppLocale } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
@@ -26,8 +26,13 @@ class Root extends Component {
     percentHeight: PropTypes.number.isRequired,
     showSuggestion: PropTypes.bool,
     requestUiLocales: PropTypes.func.isRequired,
+    requestAppLocale: PropTypes.func.isRequired,
     saveSuggestionPanelHeight: PropTypes.func.isRequired,
     localeMessages: PropTypes.object
+  }
+
+  componentWillMount () {
+    this.props.requestAppLocale()
   }
 
   componentDidMount () {
@@ -67,24 +72,26 @@ class Root extends Component {
       this.props.saveSuggestionPanelHeight(panelSize)
     }
   }
-
   render () {
     const pixelHeight = this.props.showSuggestion
       ? this.props.percentHeight * window.innerHeight
       : 0
-
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
-      <IntlProvider defaultLocale={locale} locale={appLocale} formats={formats}>
+      <IntlProvider defaultLocale={locale}
+        locale={appLocale}
+        formats={formats}
+        key={this.props.localeMessages}
+        messages={this.props.localeMessages}>
         <ParamPropDispatcher {...this.props}>
-          <KeyShortcutDispatcher className="Editor is-suggestions-active">
+          <KeyShortcutDispatcher className='Editor is-suggestions-active'>
             <Icons />
             <EditorHeader />
             <Sidebar>
-              <SplitPane ref="suggestionResizer"
-                split="horizontal"
+              <SplitPane ref='suggestionResizer'
+                split='horizontal'
                 defaultSize={pixelHeight}
-                primary="second"
+                primary='second'
                 onDragFinished={this.resizeFinished}>
                 <MainContent />
                 {this.props.showSuggestion && <SuggestionsPanel />}
@@ -103,19 +110,22 @@ function mapStateToProps (state) {
   return {
     percentHeight: suggestions.heightPercent,
     showSidebar: sidebar.visible,
-    showSuggestion: getSuggestionsPanelVisible(state)
+    showSuggestion: getSuggestionsPanelVisible(state),
+    localeMessages: getAppLocale(state)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    requestAppLocale: () => {
+      dispatch(fetchAppLocale(appLocale))
+    },
     saveSuggestionPanelHeight: (pixelHeight) => {
       const percent = pixelHeight / window.innerHeight
       dispatch(saveSuggestionPanelHeight(percent))
     },
     requestUiLocales: () => {
       dispatch(fetchUiLocales())
-      dispatch(fetchAppLocale(appLocale))
     }
   }
 }

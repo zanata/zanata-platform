@@ -4,7 +4,8 @@ import * as ReactDOM from 'react-dom'
 import { appUrl, serverUrl } from '../config'
 import createStoreWithMiddleware from './middlewares'
 import { addLocaleData } from 'react-intl'
-import enLocaleData from 'react-intl/locale-data/en.js'
+import enLocaleData from 'react-intl/locale-data/en'
+import jaLocaleData from 'react-intl/locale-data/ja'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
@@ -47,6 +48,7 @@ function runApp () {
   // }
 
   addLocaleData([...enLocaleData])
+  addLocaleData(jaLocaleData)
 
   const history = browserHistory
   history.basename = appUrl

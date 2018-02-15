@@ -44,7 +44,7 @@
     "description": "Title for an item in the activity feed showing a translator has deleted the translation. The inserted section is from ActivityFeedItem.deleted.deletedTranslation"
   },
   "TranslatingIndicator.translating": {
-    "defaultMessage": "Translating",
-    "description": "Indicator of editor translating mode"
+    "defaultMessage": "翻訳中",
+    "description": "翻訳モードを示す"
   }
 }
