@@ -48,6 +48,8 @@ describe('status-util', () => {
     expect(nonDefaultValidSaveStatuses({
       translations: ['', ''],
       newTranslations: ['', '']
+    }, {
+      permissions: { reviewer: true, translator: true }
     })).toEqual([])
   })
 
@@ -62,6 +64,8 @@ describe('status-util', () => {
     expect(nonDefaultValidSaveStatuses({
       translations: ['foo', 'bar'],
       newTranslations: ['food', 'bart']
+    }, {
+      permissions: { reviewer: true, translator: true }
     })).toEqual([STATUS_NEEDS_WORK])
   })
 
@@ -70,6 +74,8 @@ describe('status-util', () => {
       status: STATUS_REJECTED,
       translations: ['foo', 'bar'],
       newTranslations: ['foo', 'bar']
+    }, {
+      permissions: { reviewer: true, translator: true }
     })).toEqual([STATUS_TRANSLATED, STATUS_NEEDS_WORK])
   })
 
@@ -78,6 +84,8 @@ describe('status-util', () => {
       status: STATUS_APPROVED,
       translations: ['foo', 'bar'],
       newTranslations: ['foo', 'bar']
+    }, {
+      permissions: { reviewer: true, translator: true }
     })).toEqual([STATUS_TRANSLATED, STATUS_NEEDS_WORK])
   })
 

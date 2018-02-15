@@ -71,7 +71,11 @@ class TransUnitTranslationFooter extends React.Component {
     saveAsMode: PropTypes.bool.isRequired,
     showSuggestions: PropTypes.bool.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
-    showRejectModal: PropTypes.func.isRequired
+    showRejectModal: PropTypes.func.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired
   }
 
   componentWillMount () {
@@ -149,7 +153,8 @@ class TransUnitTranslationFooter extends React.Component {
       suggestionCount,
       suggestionSearchType,
       toggleGlossary,
-      toggleSuggestionPanel
+      toggleSuggestionPanel,
+      permissions
     } = this.props
 
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
@@ -199,7 +204,7 @@ class TransUnitTranslationFooter extends React.Component {
       </Button>
     )
 
-    const otherStatuses = nonDefaultValidSaveStatuses(phrase)
+    const otherStatuses = nonDefaultValidSaveStatuses(phrase, permissions)
     const otherActionButtons = otherStatuses.map((status, index) => {
       return (
         <li key={index}>

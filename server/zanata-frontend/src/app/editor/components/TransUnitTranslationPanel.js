@@ -48,7 +48,11 @@ class TransUnitTranslationPanel extends React.Component {
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
     isRTL: PropTypes.bool.isRequired,
-    syntaxOn: PropTypes.bool.isRequired
+    syntaxOn: PropTypes.bool.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired
   }
 
   componentWillMount () {
@@ -136,7 +140,8 @@ class TransUnitTranslationPanel extends React.Component {
         'toggleDropdown',
         'toggleGlossary',
         'toggleSuggestionPanel',
-        'showRejectModal'
+        'showRejectModal',
+        'permissions'
       ])
       footer = <TransUnitTranslationFooter {...footerProps} />
     }
@@ -295,12 +300,13 @@ export class TranslationItem extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const {ui, context} = state
+  const {ui, context, headerData} = state
   const targetLocaleDetails = ui.uiLocales[context.lang]
   return {
     syntaxOn: getSyntaxHighlighting(state),
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
-        : false
+        : false,
+    permissions: headerData.permissions
   }
 }
 
