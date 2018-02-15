@@ -26,7 +26,6 @@ class EntryModal extends Component {
     if (term) {
       const person = term.lastModifiedBy
       const date = term.lastModifiedDate
-
       const isPersonEmpty = isEmpty(person)
       const isDateEmpty = isEmpty(date)
 
@@ -151,6 +150,20 @@ class EntryModal extends Component {
                 multiline
                 onChange={(e) => handleTermFieldUpdate('comment', e)}>
                 {comment}
+              </EditableText>
+            </div>
+          ) : ''}
+          {!transSelected ? (
+            <div className='modal-section'>
+              <label className='text-bold'>External ID</label>
+              <EditableText
+                editable
+                editing
+                maxLength={100}
+                placeholder='Optional: Set an ID for external tools'
+                emptyReadOnlyText='No external ID'
+                onChange={(e) => handleTermFieldUpdate('externalId', e)}>
+                {entry.externalId}
               </EditableText>
             </div>
           ) : ''}

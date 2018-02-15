@@ -349,6 +349,9 @@ const glossary = handleActions({
       case 'description':
         newSelectedTerm.description = action.payload.value
         break
+      case 'externalId':
+        newSelectedTerm.externalId = action.payload.value
+        break
       case 'comment':
         if (newSelectedTerm.transTerm) {
           newSelectedTerm.transTerm.comment = action.payload.value

@@ -36,6 +36,7 @@ var GlossaryHelper = {
     entry.sourceReference = data.srcTerm.reference
     entry.glossaryTerms = []
     entry.qualifiedName = {name: qualifiedName}
+    entry.externalId = data.externalId
 
     var srcTerm = this.generateTermDTO(data.srcTerm, false)
     if (!isUndefined(srcTerm)) {
@@ -109,6 +110,7 @@ var GlossaryHelper = {
       id: entry.id,
       pos: defined(entry.pos, ''),
       description: defined(entry.description, ''),
+      externalId: defined(entry.externalId, ''),
       termsCount: entry.termsCount > 0 ? entry.termsCount - 1 : 0,
       srcTerm: srcTerm,
       transTerm: transTerm,
@@ -129,6 +131,7 @@ var GlossaryHelper = {
         ? this.toEmptyString(entry.transTerm.comment) : ''
       const desc = this.toEmptyString(entry.description)
       const pos = this.toEmptyString(entry.pos)
+      const extId = this.toEmptyString(entry.externalId)
 
       const oriSource = this.toEmptyString(
         originalEntry.srcTerm.content)
@@ -138,10 +141,12 @@ var GlossaryHelper = {
         ? this.toEmptyString(originalEntry.transTerm.comment) : ''
       const oriDesc = this.toEmptyString(originalEntry.description)
       const oriPos = this.toEmptyString(originalEntry.pos)
+      const oriExtId = this.toEmptyString(originalEntry.externalId)
 
       let isSrcModified = (desc !== oriDesc) ||
         (pos !== oriPos) ||
-        (source !== oriSource)
+        (source !== oriSource) ||
+        (extId !== oriExtId)
       let isTransModified = (trans !== oriTrans) || (comment !== oriComment)
 
       let isSrcValid = !isEmpty(trim(source))
