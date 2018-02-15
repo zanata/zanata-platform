@@ -135,7 +135,8 @@ class TransUnitTranslationPanel extends React.Component {
         'suggestionSearchType',
         'toggleDropdown',
         'toggleGlossary',
-        'toggleSuggestionPanel'
+        'toggleSuggestionPanel',
+        'showRejectModal'
       ])
       footer = <TransUnitTranslationFooter {...footerProps} />
     }
@@ -263,7 +264,7 @@ export class TranslationItem extends React.Component {
       whiteSpace: 'pre-wrap',
       wordWrap: 'break-word'
     }
-    const syntaxHighlighter = this.props.syntaxOn
+    const syntaxHighlighter = (this.props.syntaxOn && selected)
       ? <SyntaxHighlighter
         language='html'
         style={atelierLakesideLight}

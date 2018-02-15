@@ -25,6 +25,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
@@ -59,6 +60,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Named("webtrans.gwt.AddReviewCommentHandler")
 @ActionHandlerFor(AddReviewCommentAction.class)
 @RequestScoped
+@Transactional
 public class AddReviewCommentHandler extends
         AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult> {
     @Inject

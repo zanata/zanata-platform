@@ -63,7 +63,6 @@ class Root extends Component {
       this.props.saveSuggestionPanelHeight(panelSize)
     }
   }
-
   render () {
     const pixelHeight = this.props.showSuggestion
       ? this.props.percentHeight * window.innerHeight

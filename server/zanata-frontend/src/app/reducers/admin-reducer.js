@@ -13,7 +13,7 @@ import {
 } from '../actions/review-actions'
 
 const defaultState = {
-  notification: null,
+  notification: undefined,
   review: {
     criteria: []
   }
@@ -91,4 +91,3 @@ const admin = handleActions({
 }, defaultState)
 
 export default admin
-

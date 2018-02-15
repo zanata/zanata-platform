@@ -93,3 +93,10 @@
   max-width: 98%;
   resize: vertical;
 }
+
+.EditorRejection-input p {
+  position: relative;
+  float: left;
+  bottom: 15px;
+  left: -5px;
+}

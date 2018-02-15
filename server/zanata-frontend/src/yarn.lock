@@ -4000,6 +4000,10 @@ fast-memoize@^2.2.7:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/fast-memoize/-/fast-memoize-2.2.8.tgz#d7f899f31d037b12d9db4281912f9018575720b1"
 
+faster-stable-stringify@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/faster-stable-stringify/-/faster-stable-stringify-1.0.0.tgz#5dad92bffcadff8405a42b0965b033fe957d919c"
+
 fastparse@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.1.tgz#d1e2643b38a94d7583b479060e6c4affc94071f8"
