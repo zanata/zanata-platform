@@ -6,7 +6,7 @@ import { isString } from 'util';
 // reconfiguring or replacing Babel.
 test('can require all local js files', () => {
     const sourceFiles = /^.*\.(js|jsx|ts|tsx)$/
-    const testFiles = /\.test\.(js|ts)x?$/
+    const testFiles = /\.(story|test)\.(js|ts)x?$/
     const dirsToSkip = /^\.|node_modules$|entrypoint$/
     const modules = require('require.all')({
         dir: '.',
