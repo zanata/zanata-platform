@@ -25,7 +25,8 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 import { isAdmin } from '../../config'
-import { Grid, Col } from 'react-bootstrap'
+import { Grid, Col, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Icon } from '../../components'
 
 import {
   showExportTMXModal
@@ -53,11 +54,102 @@ class Admin extends Component {
       <div className='page wideView' id='admin'>
         <div className='u-centerBlock'>
           <Grid>
-            <Col xs={6}>
-              Item 1
+            <h1>Administration</h1>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='settings' className='s3' />
+                  Server configuration
+                </ListGroupItem>
+              </ListGroup>
             </Col>
-            <Col xs={6}>
-              Item 2
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='user' className='s3' />
+                  Manage users
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='users' className='s3' />
+                  Manage roles
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='search' className='s3' />
+                  Manage search
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='assign' className='s3' />
+                  Role assignment rules
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='tm' className='s3' />
+                  Translation memory
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='clock' className='s3' />
+                  Process manager
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='piestats' className='s3' />
+                  Overall statistics
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='servmon' className='s3' />
+                  Server monitoring
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='document' className='s3' />
+                  Cache statistics
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='export' className='s3' />
+                  Export all to TMX
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col xs={12} sm={6} md={4} lg={3}>
+              <ListGroup>
+                <ListGroupItem href='#'>
+                  <Icon name='tick' className='s3' />
+                  Review criteria
+                </ListGroupItem>
+              </ListGroup>
             </Col>
           </Grid>
           <TMXExportModal />
