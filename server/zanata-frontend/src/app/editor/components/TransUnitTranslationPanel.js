@@ -151,7 +151,8 @@ class TransUnitTranslationPanel extends React.Component {
       openDropdown,
       saveAsMode,
       saveDropdownKey,
-      textChanged } = this.props
+      textChanged,
+      permissions } = this.props
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
 
     // TODO use dedicated phrase.isLoading variable when available
@@ -185,7 +186,8 @@ class TransUnitTranslationPanel extends React.Component {
               textChanged={textChanged}
               translation={translation}
               directionClass={directionClass}
-              syntaxOn={syntaxOn} />
+              syntaxOn={syntaxOn}
+              permissions={permissions} />
           )
         })
     }
@@ -219,7 +221,11 @@ export class TranslationItem extends React.Component {
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string,
     directionClass: PropTypes.string,
-    syntaxOn: PropTypes.bool.isRequired
+    syntaxOn: PropTypes.bool.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired
   }
 
   setTextArea = (ref) => {
@@ -245,7 +251,8 @@ export class TranslationItem extends React.Component {
       selected,
       selectedPluralIndex,
       translation,
-      directionClass
+      directionClass,
+      permissions
     } = this.props
 
     // TODO make this translatable
@@ -279,6 +286,7 @@ export class TranslationItem extends React.Component {
         {translation}
       </SyntaxHighlighter>
       : ''
+    const cantEditTranslation = !permissions.translator || dropdownIsOpen
     return (
       <div className="TransUnit-item" key={index}>
         {itemHeader}
@@ -287,7 +295,7 @@ export class TranslationItem extends React.Component {
         <Textarea
           ref={this.setTextArea}
           className={directionClass + ' TransUnit-text'}
-          disabled={dropdownIsOpen}
+          disabled={cantEditTranslation}
           rows={1}
           value={translation}
           placeholder="Enter a translation…"

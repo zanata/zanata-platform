@@ -49,6 +49,10 @@ export function nonDefaultValidSaveStatuses (phrase, permissions) {
  * translations of a phrase.
  */
 function allValidSaveStatuses (phrase, permissions) {
+  if (!permissions.translator && !permissions.reviewer) {
+    // User does not have privileges for any operations.
+    return []
+  }
   if (hasNoTranslation(phrase)) {
     // only possible state is untranslated
     return [STATUS_UNTRANSLATED]
