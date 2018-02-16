@@ -88,8 +88,7 @@ import javax.transaction.UserTransaction;
 @AdditionalClasses({
         VersionStateCacheImpl.class,
         // needed by service locator
-        TransactionUtilImpl.class,
-        CurrentUserImpl.class
+        TransactionUtilImpl.class
 })
 public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     @Inject
