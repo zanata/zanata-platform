@@ -22,7 +22,7 @@ package org.zanata.seam.security;
 
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -33,7 +33,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@SessionScoped
+@RequestScoped
 public class CurrentUserImpl implements CurrentUser {
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
@@ -44,14 +44,13 @@ public class CurrentUserImpl implements CurrentUser {
     @PostConstruct
     private void resolve() {
         // Note: the Dependent-scoped HAccount will be destroyed when this
-        // bean is destroyed (SessionScoped, thus when session is destroyed).
+        // (RequestScoped) bean is destroyed.
         // Ref: https://rmannibucau.wordpress.com/2015/03/02/cdi-and-instance-3-pitfalls-you-need-to-know/
         account = accountInstance.get();
     }
 
     /**
-     * Note that the HAccount will be null if the user is not authenticated,
-     * and will generally be disconnected from the Hibernate session.
+     * Note that the HAccount will be null if the user is not authenticated.
      */
     @Nullable
     @Override
