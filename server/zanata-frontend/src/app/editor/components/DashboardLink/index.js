@@ -13,7 +13,7 @@ class DashboardLink extends React.Component {
 
   static defaultProps = {
     // default "mystery man" icon
-    gravatarUrl: 'https://www.gravatar.com/avatar/?d=mm'
+    gravatarUrl: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y'
   }
 
   render () {
