@@ -20,6 +20,7 @@
  */
 package org.zanata.client.commands.glossary.search;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
@@ -102,7 +103,12 @@ public class GlossarySearchCommand extends ConfigurableCommand<GlossarySearchOpt
                 log.debug("Entry: {}", resultNode);
                 log.info("Result:");
                 log.info("ID: {}", resultNode.get("id").asText());
-                log.info("Part of Speech: {}", resultNode.get("pos").asText());
+                log.info("Part of Speech: {}",
+                        ObjectUtils.firstNonNull(resultNode.get("pos").asText(),
+                                StringUtils.EMPTY));
+                log.info("Description: {}",
+                        ObjectUtils.firstNonNull(resultNode.get("description").asText(),
+                                StringUtils.EMPTY));
                 List<String> contents = new ArrayList<>();
                 JsonNode content = resultNode.get("glossaryTerms");
                 if (content.isArray()) {
