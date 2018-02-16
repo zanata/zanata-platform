@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global jest describe expect it */
 
 import React from 'react'

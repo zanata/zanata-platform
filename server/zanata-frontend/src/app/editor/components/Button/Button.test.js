@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as ReactDOMServer from 'react-dom/server'
@@ -7,7 +7,7 @@ import Button from '.'
 
 describe('ButtonTest', () => {
   it('Button markup', () => {
-    const clickFun = function (e) {}
+    const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
         title="Come on! Do it! Do it!"
@@ -29,7 +29,7 @@ describe('ButtonTest', () => {
   })
 
   it('Button markup (disabled)', () => {
-    const clickFun = function (e) {}
+    const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
         disabled={true}

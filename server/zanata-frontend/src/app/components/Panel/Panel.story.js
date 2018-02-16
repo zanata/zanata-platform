@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Panel, Well, Accordion } from 'react-bootstrap'

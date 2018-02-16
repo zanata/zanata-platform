@@ -1,3 +1,4 @@
+// @ts-nocheck
 import review from './review-trans-reducer'
 
 import {

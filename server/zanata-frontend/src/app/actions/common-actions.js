@@ -1,4 +1,3 @@
-// @ts-check
 import { createAction } from 'redux-actions'
 import { auth } from '../config'
 

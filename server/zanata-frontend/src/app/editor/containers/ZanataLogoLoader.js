@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { dashboardUrl } from '../api'
 import cx from 'classnames'
 import { some } from 'lodash'

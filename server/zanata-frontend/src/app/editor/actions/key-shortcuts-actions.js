@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getSaveButtonStatus, hasTranslationChanged }
   from '../utils/phrase-util'
 import { createAction } from 'redux-actions'

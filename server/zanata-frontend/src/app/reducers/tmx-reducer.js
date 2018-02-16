@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * reducer for TMX components
  */

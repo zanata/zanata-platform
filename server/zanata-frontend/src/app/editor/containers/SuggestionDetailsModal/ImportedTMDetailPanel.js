@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * A react-bootstrap Panel that displays details for an IMPORTED_TM suggestion
  * match.

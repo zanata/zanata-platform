@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import IconButton from '../IconButton'
@@ -6,7 +6,7 @@ import IconButtonToggle from '.'
 
 describe('IconButtonToggleTest', () => {
   it('IconButtonToggle markup', () => {
-    let clickFun = function (e) {}
+    let clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(<IconButtonToggle
       icon="classical"
       title="Mozart"
@@ -26,7 +26,7 @@ describe('IconButtonToggleTest', () => {
   })
 
   it('IconButtonToggle adds active style', () => {
-    var clickFun = function (e) {}
+    var clickFun = function (_e) {}
 
     const actual = ReactDOMServer.renderToStaticMarkup(<IconButtonToggle
       icon="classical"
