@@ -54,7 +54,7 @@ const gravatarUrl = (hash, size) => {
 
 const headerDataReducer = handleActions({
   [HEADER_DATA_FETCHED]: (state, { payload: {
-    documents, locales, versionSlug, projectInfo, myInfo, permissions } }) => {
+    documents, locales, versionSlug, projectInfo, myInfo } }) => {
     const projectSlug = projectInfo.id
     return update(state, {
       user: {
