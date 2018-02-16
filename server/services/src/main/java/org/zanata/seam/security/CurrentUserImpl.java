@@ -21,9 +21,7 @@
 package org.zanata.seam.security;
 
 import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.zanata.model.HAccount;
@@ -38,16 +36,10 @@ public class CurrentUserImpl implements CurrentUser {
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     @Authenticated
-    private Instance<HAccount> accountInstance;
+    // Note: the Dependent-scoped HAccount bean is bound to the lifecycle of
+    // this (RequestScoped) bean.
+    // Ref: https://rmannibucau.wordpress.com/2015/03/02/cdi-and-instance-3-pitfalls-you-need-to-know/
     private HAccount account;
-
-    @PostConstruct
-    private void resolve() {
-        // Note: the Dependent-scoped HAccount will be destroyed when this
-        // (RequestScoped) bean is destroyed.
-        // Ref: https://rmannibucau.wordpress.com/2015/03/02/cdi-and-instance-3-pitfalls-you-need-to-know/
-        account = accountInstance.get();
-    }
 
     /**
      * Note that the HAccount will be null if the user is not authenticated.
