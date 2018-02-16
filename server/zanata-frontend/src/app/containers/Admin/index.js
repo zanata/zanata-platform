@@ -66,7 +66,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/usermanager.xhtml'>
+                <ListGroupItem id='Admin_Manage_users_home'
+                  href='/admin/usermanager.xhtml'>
                   <Icon name='user' className='s2' />
                   Manage users
                 </ListGroupItem>
@@ -74,7 +75,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/rolemanager.xhtml'>
+                <ListGroupItem id='Admin_Manage_roles_home'
+                  href='/admin/rolemanager.xhtml'>
                   <Icon name='users' className='s2' />
                   Manage roles
                 </ListGroupItem>
@@ -82,7 +84,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/search.xhtml'>
+                <ListGroupItem id='Admin_Manage_search_home'
+                  href='/admin/search.xhtml'>
                   <Icon name='search' className='s2' />
                   Manage search
                 </ListGroupItem>
@@ -90,7 +93,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/rolerules.xhtml'>
+                <ListGroupItem id='Admin_Role_Assignment_Rules_home'
+                  href='/admin/rolerules.xhtml'>
                   <Icon name='assign' className='s2' />
                   Role assignment rules
                 </ListGroupItem>
@@ -98,7 +102,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/tm/home.xhtml'>
+                <ListGroupItem id='Translation_Memory_home'
+                  href='/tm/home.xhtml'>
                   <Icon name='tm' className='s2' />
                   Translation memory
                 </ListGroupItem>
@@ -106,7 +111,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/processmanager.xhtml'>
+                <ListGroupItem id='Process_Management_home'
+                  href='/admin/processmanager.xhtml'>
                   <Icon name='clock' className='s2' />
                   Process manager
                 </ListGroupItem>
@@ -114,7 +120,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/stats.xhtml'>
+                <ListGroupItem id='Admin_Manage_stats_home'
+                  href='/admin/stats.xhtml'>
                   <Icon name='piestats' className='s2' />
                   Overall statistics
                 </ListGroupItem>
@@ -122,7 +129,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/monitoring'>
+                <ListGroupItem id='Admin_Monitoring_home'
+                  href='/admin/monitoring'>
                   <Icon name='servmon' className='s2' />
                   Server monitoring
                 </ListGroupItem>
@@ -130,7 +138,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/cachestats.xhtml'>
+                <ListGroupItem id='Cache_Stats_Home'
+                  href='/admin/cachestats.xhtml'>
                   <Icon name='document' className='s2' />
                   Cache statistics
                 </ListGroupItem>
@@ -138,7 +147,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href={showExportTMXModal}>
+                <ListGroupItem id='exportTMXAllLink'
+                  href={showExportTMXModal}>
                   <Icon name='export' className='s2' />
                   Export all to TMX
                 </ListGroupItem>
@@ -146,7 +156,8 @@ class Admin extends Component {
             </Col>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/review'>
+                <ListGroupItem id='reviewCriteria'
+                  href='/admin/review'>
                   <Icon name='tick' className='s2' />
                   Review criteria
                 </ListGroupItem>
