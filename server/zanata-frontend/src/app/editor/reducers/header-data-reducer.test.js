@@ -99,7 +99,7 @@ describe('header-data-reducer test', () => {
     expect(withData).toEqual({
       user: {
         name: 'rick',
-        gravatarUrl: '//www.gravatar.com/avatar/12345?d=mm&ampr=g&amps=72',
+        gravatarUrl: 'https://www.gravatar.com/avatar/12345?d=mm&ampr=g&amps=72',
         dashboardUrl: '/dashboard'
       },
       context: {
