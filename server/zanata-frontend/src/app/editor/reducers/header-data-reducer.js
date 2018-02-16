@@ -44,7 +44,7 @@ const defaultState = {
 }
 
 const gravatarUrl = (hash, size) => {
-  return `https://www.gravatar.com/avatar/${hash}?d=mm&=g&s=${size}`
+  return `https://www.gravatar.com/avatar/${hash}?d=mm&r=g&s=${size}`
 }
 
 const headerDataReducer = handleActions({
