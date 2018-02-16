@@ -71,7 +71,7 @@ public class GlossarySearchCommand extends ConfigurableCommand<GlossarySearchOpt
 
         String project = getOpts().getProject();
         String qualifiedName = getQualifiedProjectName(project, client);
-        if (qualifiedName == null) return;
+        if (StringUtils.isBlank(qualifiedName)) return;
         if (StringUtils.isBlank(getOpts().getFilter())) {
             log.error("Filter query parameter required");
             return;
@@ -99,7 +99,6 @@ public class GlossarySearchCommand extends ConfigurableCommand<GlossarySearchOpt
         JsonNode results = jsonMap.get("results");
         if (results.isArray()) {
             for (JsonNode resultNode : results) {
-                log.info("");
                 log.debug("Entry: {}", resultNode);
                 log.info("Result:");
                 log.info("ID: {}", resultNode.get("id").asText());
@@ -114,6 +113,6 @@ public class GlossarySearchCommand extends ConfigurableCommand<GlossarySearchOpt
                 log.info("Content: {}", contents);
             }
         }
-        log.info("");
+        log.info("---");
     }
 }

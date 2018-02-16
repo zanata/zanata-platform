@@ -104,7 +104,7 @@ public class GlossaryClient {
     }
 
     public Response find(String query, String qualifiedName) {
-        return webResource().path("entries/")
+        return webResource().path("entries")
                 .queryParam("qualifiedName", qualifiedName)
                 .queryParam("filter", query)
                 .request(MediaType.APPLICATION_JSON_TYPE)
