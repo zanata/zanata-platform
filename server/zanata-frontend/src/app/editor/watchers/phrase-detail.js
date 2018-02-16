@@ -51,7 +51,7 @@ function fetchPhraseDetail (locale, phraseIds) {
         PHRASE_DETAIL_REQUEST,
         {
           type: PHRASE_DETAIL_SUCCESS,
-          payload: (action, state, res) => getJSON(res)
+          payload: (_action, _state, res) => getJSON(res)
             .then(details => transUnitDetailToPhraseDetail(details, locale))
         },
         PHRASE_DETAIL_FAILURE

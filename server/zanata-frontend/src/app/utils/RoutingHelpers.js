@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { history } from '../history'
 
 const isChromium = window.chrome

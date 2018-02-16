@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -304,7 +305,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch, _ownProps) {
   // TODO put all the branch-specific stuff here for a start
   return {
     onSelectionChange: (event) => {

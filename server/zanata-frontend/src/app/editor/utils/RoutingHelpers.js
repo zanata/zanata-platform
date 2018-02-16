@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { browserHistory } from 'react-router'
 
 const isChromium = window.chrome

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createAction } from 'redux-actions'
 import { getSuggestions } from '../api/suggestions'
 import { waitForPhraseDetail } from '../utils/phrase-util'
@@ -73,7 +74,7 @@ const dispatchFindTextSuggestionsWhenInactive = debounce(
 const suggestionSearchTextChange = createAction(SUGGESTION_SEARCH_TEXT_CHANGE)
 
 export function changeSearchText (searchText) {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     dispatch(suggestionSearchTextChange(searchText))
     dispatchFindTextSuggestionsWhenInactive(dispatch, searchText)
   }
@@ -300,11 +301,5 @@ export function findPhraseSuggestions (phrase) {
 export const saveSuggestionPanelHeight =
   createAction(SUGGESTION_PANEL_HEIGHT_CHANGE)
 
-/**
- * Open or close the suggestion detail modal.
- *
- * @param indexOrUndefined undefined to hide the modal, index of suggestion in
- *   the current suggestion list to show detail for that suggestion in the modal
- */
 export const showDetailForSuggestionByIndex =
   createAction(SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX)

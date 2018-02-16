@@ -6,7 +6,7 @@ import stateChangeDispatchMiddleware from './state-change-dispatch'
  * e.g. My Project (1.0) to Afrikaans - Zanata Web Translation
  */
 const titleUpdateMiddleware = stateChangeDispatchMiddleware(
-  (dispatch, oldState, newState) => {
+  (_dispatch, oldState, newState) => {
     const pre = oldState.context
     const { versionSlug } = newState.context
 

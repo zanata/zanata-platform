@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Panel to search the glossary and display glossary terms.
  */

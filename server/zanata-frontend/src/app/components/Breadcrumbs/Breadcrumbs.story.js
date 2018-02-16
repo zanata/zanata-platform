@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Breadcrumb, Well } from 'react-bootstrap'
@@ -25,4 +26,3 @@ storiesOf('Breadcrumbs', module)
           <p>Breadcrumb component itself doesn't have any specific public properties</p>
         </span>
     ))
-

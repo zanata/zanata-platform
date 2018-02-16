@@ -36,7 +36,7 @@ const review = handleActions({
       }
     })
   },
-  [TOGGLE_REVIEW_MODAL]: (state, action) => {
+  [TOGGLE_REVIEW_MODAL]: (state, _action) => {
     return update(state, {
       showReviewModal: {
         $set: !state.showReviewModal

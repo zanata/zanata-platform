@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { cloneDeep, includes, debounce, last } from 'lodash'
@@ -128,7 +129,7 @@ const getGlossaryTerms = (state) => {
     GLOSSARY_TERMS_REQUEST,
     {
       type: GLOSSARY_TERMS_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -154,7 +155,7 @@ const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
     GLOSSARY_STATS_REQUEST,
     {
       type: GLOSSARY_STATS_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         return res.json().then((json) => {
           resetTerms && dispatch(getGlossaryTerms(state))
           return json
@@ -175,7 +176,7 @@ const getPermission = (dispatch, qualifiedName) => {
     GLOSSARY_PERMISSION_REQUEST,
     {
       type: GLOSSARY_PERMISSION_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
@@ -198,7 +199,7 @@ const getQualifiedName = (dispatch, projectSlug) => {
     GLOSSARY_GET_QUALIFIED_NAME_REQUEST,
     {
       type: GLOSSARY_GET_QUALIFIED_NAME_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return res.json().then((json) => {
           const qualifiedName = json.name
           dispatch(getPermission(dispatch, qualifiedName))
@@ -220,7 +221,7 @@ const getProjectDetails = (projectSlug) => {
     PROJECT_GET_DETAILS_REQUEST,
     {
       type: PROJECT_GET_DETAILS_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return res.json().then((json) => {
           return json
         })
@@ -249,7 +250,7 @@ const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
     GLOSSARY_UPLOAD_REQUEST,
     {
       type: GLOSSARY_UPLOAD_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
@@ -272,13 +273,13 @@ const createGlossaryTerm = (dispatch, qualifiedName, term) => {
   const apiTypes = [
     {
       type: GLOSSARY_CREATE_REQUEST,
-      payload: (action, state) => {
+      payload: (_action, _state) => {
         return term
       }
     },
     {
       type: GLOSSARY_CREATE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
@@ -305,13 +306,13 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
   const apiTypes = [
     {
       type: GLOSSARY_UPDATE_REQUEST,
-      payload: (action, state) => {
+      payload: (_action, _state) => {
         return term
       }
     },
     {
       type: GLOSSARY_UPDATE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return res.json().then((json) => {
           needRefresh &&
             dispatch(getGlossaryStats(dispatch, qualifiedName, false))
@@ -333,13 +334,13 @@ const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_REQUEST,
-      payload: (action, state) => {
+      payload: (_action, _state) => {
         return id
       }
     },
     {
       type: GLOSSARY_DELETE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, state.glossary.qualifiedName,
             true))
@@ -359,13 +360,13 @@ const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_ALL_REQUEST,
-      payload: (action, state) => {
+      payload: (_action, _state) => {
         return ''
       }
     },
     {
       type: GLOSSARY_DELETE_ALL_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, _res) => {
         return dispatch(getGlossaryStats(dispatch, qualifiedName, true))
       }
     },
@@ -384,13 +385,13 @@ const glossaryExport = (type, qualifiedName) => {
   const apiTypes = [
     {
       type: GLOSSARY_EXPORT_REQUEST,
-      payload: (action, state) => {
+      payload: (_action, _state) => {
         return ''
       }
     },
     {
       type: GLOSSARY_EXPORT_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         return res.blob().then((blob) => {
           const selectedType = state.glossary.exportFile.type.value
           const fileName = 'glossary.' +
