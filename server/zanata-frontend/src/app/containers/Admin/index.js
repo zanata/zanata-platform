@@ -57,7 +57,8 @@ class Admin extends Component {
             <h1>Administration</h1>
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
-                <ListGroupItem href='/admin/server_configuration.xhtml'>
+                <ListGroupItem id='Admin_Server_configuration_home'
+                  href='/admin/server_configuration.xhtml'>
                   <Icon name='settings' className='s2' />
                   Server configuration
                 </ListGroupItem>
