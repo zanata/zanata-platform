@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createStore, applyMiddleware } from 'redux'
 import { apiMiddleware } from 'redux-api-middleware'
 import enhancedCallApi from './call-api'
@@ -8,7 +9,7 @@ import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 
 const loggerMiddleware = createLogger({
-  predicate: (getState, action) =>
+  predicate: (_getState, action) =>
     process.env && (process.env.NODE_ENV === 'development'),
   actionTransformer: (action) => {
     return {

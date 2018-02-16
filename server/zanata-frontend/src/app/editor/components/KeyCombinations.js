@@ -32,11 +32,11 @@ const symbols = {
 
 /**
  * Convert strings like cmd into symbols like ⌘
- * @param  {String} combo Key combination, e.g. 'mod+f'
+ * @param  {String} combination Key combination, e.g. 'mod+f'
  * @return {String} The key combination with symbols
  */
-function symbolizeKey (combo) {
-  combo = combo.split('+')
+function symbolizeKey (combination) {
+  const combo = combination.split('+')
 
   for (var i = 0; i < combo.length; i++) {
     // try to resolve command / ctrl based on OS:

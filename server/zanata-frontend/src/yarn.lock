@@ -10369,6 +10369,10 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
+typesafe-actions@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/typesafe-actions/-/typesafe-actions-1.1.2.tgz#af88ede3ee254be425c3e0e02de11b182830ae48"
+
 typescript-react-intl@^0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/typescript-react-intl/-/typescript-react-intl-0.1.7.tgz#8e8f2242190dbb442d9ac7d2e70e778988abaf2e"

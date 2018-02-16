@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -45,7 +46,7 @@ class Root extends Component {
   }
 
   // TODO could debounce this
-  onWindowResize = (e) => {
+  onWindowResize = (_e) => {
     // Reach in and override the dragged pixel size of the resizer component.
     // This is a workaround, needed because once the resizer is dragged, only
     // the size prop will override the dragged size, but specifying size prop

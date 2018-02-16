@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {handleActions} from 'redux-actions'
 import update from 'immutability-helper'
 import {

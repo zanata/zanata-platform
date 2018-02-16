@@ -1,3 +1,6 @@
+// @ts-nocheck
+/* global describe it expect */
+
 import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
@@ -7,7 +10,6 @@ import {
 } from '../actions/header-action-types'
 import headerDataReducer from './header-data-reducer'
 
-/* global describe it expect */
 const EXAMPLE_HEADER_DATA = {
   documents: [
     { name: 'file01.txt' },

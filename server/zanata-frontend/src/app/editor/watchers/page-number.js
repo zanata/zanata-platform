@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
  * Update page number from query string whenever it changes.
  *

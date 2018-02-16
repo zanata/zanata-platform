@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getSaveButtonStatus, hasTranslationChanged }
   from '../utils/phrase-util'
 import { createAction } from 'redux-actions'
@@ -8,9 +9,12 @@ import {
   savePhraseWithStatus } from './phrases-actions'
 import { moveNext, movePrevious } from './phrase-navigation-actions'
 import { copySuggestionN } from './suggestions-actions'
+import { toggleReviewModal } from './review-trans-actions'
 import {
   STATUS_TRANSLATED,
-  STATUS_NEEDS_WORK
+  STATUS_NEEDS_WORK,
+  STATUS_REJECTED,
+  STATUS_APPROVED
 } from '../utils/status-util'
 
 function shortcutInfo (keys, eventActionCreator, description, eventType) {
@@ -81,10 +85,12 @@ export const SHORTCUTS = {
     keyConfig: {
       keys: ['mod+shift+s'],
       sequenceKeys: [
-        shortcutInfo('n', saveAs(STATUS_NEEDS_WORK), 'Save as Needs Work'),
-        shortcutInfo('t', saveAs(STATUS_TRANSLATED), 'Save as Translated')
-        // TODO support approved status
-        // shortcutInfo('a', saveAs('approved'), 'Save as Approved')
+        shortcutInfo(['n', 'N'],
+          saveAs(STATUS_NEEDS_WORK), 'Save as Needs Work'),
+        shortcutInfo(['t', 'T'],
+          saveAs(STATUS_TRANSLATED), 'Save as Translated'),
+        shortcutInfo(['r', 'R'], saveAs(STATUS_REJECTED), 'Save as Rejected'),
+        shortcutInfo(['a', 'A'], saveAs(STATUS_APPROVED), 'Save as Approved')
       ]
     },
     eventActionCreator: saveAsModeActionCreator,
@@ -209,7 +215,11 @@ function saveAs (status) {
         if (isSaving || (isCurrentStatus && !hasTranslationChanged(phrase))) {
           return
         }
-        dispatch(savePhraseWithStatus(phrase, status))
+        if (status === STATUS_REJECTED) {
+          dispatch(toggleReviewModal())
+        } else {
+          dispatch(savePhraseWithStatus(phrase, status))
+        }
       }
     }
   }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import cx from 'classnames'
 import ControlsHeader from '../ControlsHeader'
 import NavHeader from '../NavHeader'

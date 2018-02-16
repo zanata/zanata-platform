@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Foundational stories, not demonstrating any component in particular.
  */
@@ -134,5 +135,3 @@ storiesOf('Foundation', module)
         blandit sit amet non magna.</p>
       </span>
     ))
-
-

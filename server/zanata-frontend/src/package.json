@@ -9,6 +9,7 @@
     "yarn": ">=0.27.5"
   },
   "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('You must use Yarn to install, not NPM')\"",
     "check": "node scripts/check-engines",
     "js": "yarn run check && webpack",
     "build": "yarn run check && node scripts/build",
@@ -203,6 +204,7 @@
     "text-diff": "1.0.1",
     "ts-jest": "^22.0.1",
     "tslib": "^1.9.0",
+    "typesafe-actions": "^1.1.2",
     "typescript-react-intl": "^0.1.7",
     "webfontloader": "1.6.28"
   }
