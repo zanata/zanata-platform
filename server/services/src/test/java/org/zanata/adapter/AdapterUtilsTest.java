@@ -39,8 +39,7 @@ public class AdapterUtilsTest {
             AdapterUtils.readStream(URI.create(""));
             Assert.fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException iae) {
-            assertThat(iae.getMessage()).contains("Could not open the URI. " +
-                    "The URI must be absolute: URL is null");
+            assertThat(iae.getMessage()).contains("absolute");
         }
     }
 
@@ -51,8 +50,7 @@ public class AdapterUtilsTest {
                     .create("http://2aff:eaff:eaff:7aff:8aff:5aff:faff:eaff:8080/foo"));
             Assert.fail("Expected FileFormatAdapterException");
         } catch (FileFormatAdapterException ffae) {
-            assertThat(ffae.getMessage()).contains("Could not open the URI. " +
-                    "The URI may be malformed: URL is null");
+            assertThat(ffae.getMessage()).contains("malformed");
         }
     }
 
@@ -62,8 +60,7 @@ public class AdapterUtilsTest {
             AdapterUtils.readStream(URI.create("http://tmp"));
             Assert.fail("Expected FileFormatAdapterException");
         } catch (FileFormatAdapterException ffae) {
-            assertThat(ffae.getMessage()).contains("Could not open the URL. " +
-                    "The URL is OK but the input stream could not be opened.\ntmp");
+            assertThat(ffae.getMessage()).contains("stream");
         }
     }
 }
