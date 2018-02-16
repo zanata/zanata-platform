@@ -27,4 +27,4 @@ export const isAdmin = config.permission
   : false
 export const user = config.user
 export const allowRegister = config.allowRegister || false
-export const appLocale = config.appLocale
+export const appLocale = config.appLocale || 'en'

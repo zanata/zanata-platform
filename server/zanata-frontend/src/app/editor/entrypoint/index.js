@@ -5,15 +5,13 @@ import * as ReactDOM from 'react-dom'
 import { appUrl, serverUrl } from '../../config'
 import createStoreWithMiddleware from '../middlewares'
 import { addLocaleData } from 'react-intl'
-import enLocaleData from 'react-intl/locale-data/en'
-import jaLocaleData from 'react-intl/locale-data/ja'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import rootReducer from '../reducers'
 import addWatchers from '../watchers'
 import { isEmpty } from 'lodash'
-
+import { appLocale } from '../../config'
 import Root from '../containers/Root'
 import NeedSlugMessage from '../containers/NeedSlugMessage'
 import { fetchSettings } from '../actions/settings-actions'
@@ -36,20 +34,8 @@ import '../index.css'
  *  - ensuring the required css for the React component tree is available
  */
 function runApp () {
-  // TODO add all the relevant locale data
-  // Something like:
-  //  import en from './react-intl/locale-data/en'
-  //  import de from './react-intl/locale-data/de'
-  //    ... then just addLocaleData(en) etc.
-  // See https://github.com/yahoo/react-intl/blob/master/UPGRADE.md
-  // if ('ReactIntlLocaleData' in window) {
-  //   Object.keys(window.ReactIntlLocaleData).forEach(lang => {
-  //     addLocaleData(window.ReactIntlLocaleData[lang])
-  //   })
-  // }
-
-  addLocaleData([...enLocaleData])
-  addLocaleData(jaLocaleData)
+  // Dynamically load the locale data of the selected appLocale
+  addLocaleData(require(`react-intl/locale-data/${appLocale}`))
 
   const history = browserHistory
   history.basename = appUrl
