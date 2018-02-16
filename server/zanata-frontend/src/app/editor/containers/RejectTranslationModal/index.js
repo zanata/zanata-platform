@@ -15,6 +15,7 @@ import {
   MINOR, MAJOR, CRITICAL, priorities, textState
 } from '../../utils/reject-trans-util'
 
+export const UNSPECIFIED = 'Unspecified Criteria'
 const textLimit = 500
 
 /**
@@ -41,11 +42,17 @@ export class RejectTranslationModal extends Component {
     review: {
       selectedPriority: MINOR,
       priorityId: 0,
-      selectedCriteria: '-- Select a predefined criteria --',
+      criteriaDescription: '-- Select a predefined criteria --',
       criteriaId: undefined,
       reviewComment: ''
     },
-    charsLeft: textLimit
+    charsLeft: textLimit,
+    selectedCriteria: {
+      id: undefined,
+      editable: false,
+      description: '',
+      priority: MINOR
+    }
   }
   constructor (props) {
     super(props)
@@ -62,14 +69,26 @@ export class RejectTranslationModal extends Component {
     }))
   }
   onCriteriaChange = (event) => {
-    const selectedCriteria = event.target.innerText
-    const criteriaId = this.props.criteriaList.find(
-      x => x.description === event.target.innerText).id
+    const selectedCriteria = this.props.criteriaList.find(
+      x => x.description === event.target.innerText)
     this.setState(prevState => ({
       review: update(prevState.review, {
-        selectedCriteria: {$set: selectedCriteria},
-        criteriaId: {$set: criteriaId}
-      })
+        criteriaDescription: {$set: selectedCriteria.description},
+        criteriaId: {$set: selectedCriteria.id},
+        selectedPriority: {$set: selectedCriteria.priority}
+      }),
+      selectedCriteria: selectedCriteria
+    }))
+  }
+  onUnspecifiedCriteria = () => {
+    const unspecifiedCriteria = this.defaultState.selectedCriteria
+    this.setState(prevState => ({
+      review: update(prevState.review, {
+        criteriaDescription: {$set: UNSPECIFIED},
+        criteriaId: {$set: undefined},
+        selectedPriority: {$set: unspecifiedCriteria.priority}
+      }),
+      selectedCriteria: unspecifiedCriteria
     }))
   }
   setReviewComment = (event) => {
@@ -106,7 +125,7 @@ export class RejectTranslationModal extends Component {
   /* eslint-disable max-len */
   render () {
     const { show, criteriaList } = this.props
-    const { review } = this.state
+    const { review, selectedCriteria } = this.state
     const priorityTextState = textState(review.selectedPriority)
     const criteriaTile = (!isEmpty(criteriaList))
         ? <div className='flex'>
@@ -116,13 +135,17 @@ export class RejectTranslationModal extends Component {
           <CriteriaDropdown
             criteriaList={criteriaList}
             onCriteriaChange={this.onCriteriaChange}
-            selectedCriteria={review.selectedCriteria} />
+            onUnspecifiedCriteria={this.onUnspecifiedCriteria}
+            criteriaDescription={review.criteriaDescription} />
           <PriorityDropdown
             textState={priorityTextState}
             priority={review.selectedPriority}
             priorityChange={this.onPriorityChange} />
         </div>
         : undefined
+    const canReject = (
+      (!isEmpty(review.reviewComment)) ||
+      (selectedCriteria.editable === false))
     return (
       <Modal show={show}
         onHide={this.onHideResetState}
@@ -157,7 +180,8 @@ export class RejectTranslationModal extends Component {
               </Button>
               <Button
                 className='EditorButton Button--large u-rounded Button--primary'
-                onClick={this.saveTransReview}>
+                onClick={this.saveTransReview}
+                disabled={!canReject}>
                 Reject translation
               </Button>
             </Row>

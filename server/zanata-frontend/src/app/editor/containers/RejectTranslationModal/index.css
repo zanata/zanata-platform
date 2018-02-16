@@ -7,6 +7,7 @@
   --TM-text-color: rgb(84, 102, 119);
   --TM-icon-vert-alignment: middle;
   --TM-dropdown-text-color: #03a6d7;
+  --Button-color-neutral: color(#416988 tint(50%));
 }
 
 #RejectTranslationModal .flex {
@@ -83,6 +84,11 @@
 #RejectTranslationModal button.close {
   display: none;
   visibility: hidden;
+}
+
+#RejectTranslationModal .EditorButton:disabled {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-neutral);
 }
 
 .EditorRejection-input {
