@@ -23,11 +23,11 @@
 import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
-import { Nav, Icons } from './components'
+import { Nav, Icons } from '../components'
 import * as WebFont from 'webfontloader'
-import { serverUrl, links as configLinks } from './config'
+import { serverUrl, links as configLinks } from '../config'
 
-import './styles/style.less'
+import '../styles/style.less'
 
 /**
  * Root component that display only side menu bar.
@@ -60,5 +60,5 @@ render(
   document.getElementById('root')
 )
 
-import mountReactToJsf from './jsf'
+import mountReactToJsf from '../jsf'
 mountReactToJsf()

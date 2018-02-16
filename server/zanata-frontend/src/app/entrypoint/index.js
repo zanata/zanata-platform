@@ -6,15 +6,15 @@ import { render } from 'react-dom'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import { history } from './history'
+import { history } from '../history'
 import { syncHistoryWithStore } from 'react-router-redux'
 import * as WebFont from 'webfontloader'
 import { apiMiddleware } from 'redux-api-middleware'
-import rootReducer from './reducers'
-import Root from './containers/Root'
+import rootReducer from '../reducers'
+import Root from '../containers/Root'
 
-import './styles/style.less'
-import './editor/index.css'
+import '../styles/style.less'
+import '../editor/index.css'
 
 WebFont.load({
   google: {
@@ -45,10 +45,13 @@ const finalCreateStore = compose(
 // Call and assign the store with no initial state
 const store = ((initialState) => {
   const store = finalCreateStore(rootReducer, initialState)
+  // @ts-ignore module.hot
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
-    module.hot.accept('./reducers', () => {
-      const nextRootReducer = require('./reducers')
+    // @ts-ignore module.hot
+    module.hot.accept('../reducers', () => {
+      const nextRootReducer =
+        /** @type {any} */ (require('../reducers'))
       store.replaceReducer(nextRootReducer)
     })
   }
@@ -58,6 +61,7 @@ const store = ((initialState) => {
 const enhancedHistory = syncHistoryWithStore(history, store)
 
 render(
+  // @ts-ignore store
   <Root store={store} history={enhancedHistory} />,
   document.getElementById('root')
 )

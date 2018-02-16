@@ -121,9 +121,9 @@ module.exports = function (env, isEditor, devServerPort) {
 
   return dropUndef({
     entry: storybook ? undefined : dropUndef({
-      'frontend': './app/index',
-      'editor': './app/editor/index.js',
-      'frontend.legacy': fullBuild ? './app/legacy' : undefined
+      'frontend': './app/entrypoint/index',
+      'editor': './app/editor/entrypoint/index.js',
+      'frontend.legacy': fullBuild ? './app/entrypoint/legacy' : undefined
     }),
 
     output: storybook ? undefined : dropUndef({
