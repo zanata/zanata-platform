@@ -66,7 +66,7 @@ export function fetchI18nLocale (locale) {
     LOCALE_MESSAGES_REQUEST,
     {
       type: LOCALE_MESSAGES_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
