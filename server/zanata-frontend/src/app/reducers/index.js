@@ -1,4 +1,3 @@
-// @ts-check
 import { combineReducers } from 'redux'
 import { routerReducer as routing } from 'react-router-redux'
 import glossary from './glossary-reducer'

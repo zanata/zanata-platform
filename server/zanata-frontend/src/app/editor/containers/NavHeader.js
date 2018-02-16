@@ -1,3 +1,4 @@
+// @ts-nocheck
 import DashboardLink from '../components/DashboardLink'
 import DocsDropdown from '../components/DocsDropdown'
 import { Icon } from '../../components'

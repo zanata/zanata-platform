@@ -9,26 +9,32 @@
     "compilerOptions": {
         // scan any JS files for type information
         "allowJs": true,
-        // only check JS files which have // @ts-check
-        "checkJs": false,
+        // also check JS files unless they have // @ts-ignore
+        "checkJs": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        // import tslib instead of duplicating generated code
+        // import 'tslib' instead of duplicating generated code
         "importHelpers": true,
         "jsx": "react",
         "lib": [
             // We transpile to ES5 syntax, but we use babel-polyfill
             "dom", "es6", "dom.iterable", "scripthost"
         ],
+        "module": "commonjs",
+        // webpack/jest deal with the output themselves.
+        // This helps to avoid confusing jest with extra copies of mocks.
+        "noEmit": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "module": "commonjs",
+        // NB not used if noEmit is true
         "outDir": "./build/",
         "sourceMap": true,
         "target": "ES5"
     },
     "include": [
-        "app/**/*"
+        "app/**/*",
+        ".storybook-editor/**/*",
+        ".storybook-frontend/**/*"
     ],
     "exclude": [
         "node_modules/**"

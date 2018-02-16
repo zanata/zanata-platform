@@ -1,5 +1,5 @@
 /* eslint-disable spaced-comment */
-/* @flow */
+/* @flow */ // TODO convert to TS
 import { handleActions } from 'redux-actions'
 import { createSelector } from 'reselect'
 import {
@@ -23,9 +23,9 @@ import update from 'immutability-helper'
 
 // TODO extract this to a common config
 export const DEFAULT_LOCALE = {
-  'localeId': 'en-US',
-  'name': 'English',
-  'isRTL': false
+  localeId: 'en-US',
+  name: 'English',
+  isRTL: false
 }
 
 export const GLOSSARY_TAB = 'GLOSSARY_TAB'

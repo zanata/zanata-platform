@@ -1,7 +1,9 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { storiesOf, action } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import { storiesOf } from '@storybook/react'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
 import { Table, Col, Well } from 'react-bootstrap'

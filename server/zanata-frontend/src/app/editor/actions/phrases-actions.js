@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { savePhrase } from '../api'
 import { toggleDropdown } from '.'
 import { createAction } from 'redux-actions'

@@ -9168,6 +9168,10 @@ require-uncached@^1.0.2:
     caller-path "^0.1.0"
     resolve-from "^1.0.0"
 
+require.all@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/require.all/-/require.all-2.0.3.tgz#cf6ebd730c80f38051f8bcf00c0e39fefb0e1b0f"
+
 requires-port@1.0.x, requires-port@1.x.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
@@ -10368,6 +10372,10 @@ type-is@~1.6.15:
 typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+typesafe-actions@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/typesafe-actions/-/typesafe-actions-1.1.2.tgz#af88ede3ee254be425c3e0e02de11b182830ae48"
 
 typescript-react-intl@^0.1.7:
   version "0.1.7"
