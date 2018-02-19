@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Icon } from '../../../components'

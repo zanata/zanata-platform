@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -75,18 +76,18 @@ class RejectionsForm extends Component {
 
   onEditableChange = e => {
     const checked = e.target.checked
-    this.setState(prevState => ({
+    this.setState(_prevState => ({
       isEditable: checked
     }))
   }
   onTextChange = e => {
     const text = e.target.value
-    this.setState(prevState => ({
+    this.setState(_prevState => ({
       description: text
     }))
   }
   onPriorityChange = p => {
-    this.setState(prevState => ({
+    this.setState(_prevState => ({
       priority: p
     }))
   }

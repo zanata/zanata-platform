@@ -1,27 +1,28 @@
+// @ts-nocheck
 import 'babel-polyfill'
 import React from 'react'
 import * as ReactDOM from 'react-dom'
-import { appUrl, serverUrl } from '../config'
-import { locale, formats } from './config/intl'
-import createStoreWithMiddleware from './middlewares'
+import { appUrl, serverUrl } from '../../config'
+import { locale, formats } from '../config/intl'
+import createStoreWithMiddleware from '../middlewares'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import enLocaleData from 'react-intl/locale-data/en.js'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
-import rootReducer from './reducers'
-import addWatchers from './watchers'
+import rootReducer from '../reducers'
+import addWatchers from '../watchers'
 import { isEmpty } from 'lodash'
 
-import Root from './containers/Root'
-import NeedSlugMessage from './containers/NeedSlugMessage'
-import { fetchSettings } from './actions/settings-actions'
+import Root from '../containers/Root'
+import NeedSlugMessage from '../containers/NeedSlugMessage'
+import { fetchSettings } from '../actions/settings-actions'
 
 // Set the path that webpack will try to load extra chunks from
 // This is needed to load intl-polyfill
 __webpack_public_path__ = serverUrl || '/' // eslint-disable-line
 
-import './index.css'
+import '../index.css'
 
 /**
  * Top level of the Zanata editor app.

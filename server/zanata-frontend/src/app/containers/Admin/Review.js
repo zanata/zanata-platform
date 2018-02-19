@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropType from 'prop-types'

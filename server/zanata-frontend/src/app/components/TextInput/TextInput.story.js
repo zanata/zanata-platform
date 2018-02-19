@@ -1,5 +1,7 @@
+// @ts-nocheck
 import React from 'react'
-import { storiesOf, action } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import { storiesOf } from '@storybook/react'
 import { TextInput } from '../'
 import { Well } from 'react-bootstrap'
 

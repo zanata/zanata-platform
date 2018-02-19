@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { storiesOf, action } from '@storybook/react'
 import { Button, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -111,7 +112,3 @@ storiesOf('RejectionsForm', module)
           </OverlayTrigger>
         </div>
     ))
-
-
-
-

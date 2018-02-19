@@ -53,7 +53,7 @@ export function watchRequiredPhraseList (store) {
     }, 1000)
 
   store.subscribe(watcher(
-    ({ project, version, lang, docId }, prevState) => {
+    ({ project, version, lang, docId }, _prevState) => {
       if (isEmpty(project) || isEmpty(version) ||
         isEmpty(lang) || isEmpty(docId)) {
         return
@@ -108,7 +108,7 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
         },
         {
           type: PHRASE_LIST_SUCCESS,
-          payload: (action, state, res) =>
+          payload: (_action, _state, res) =>
             getJSON(res).then(phraseList => ({
               docId,
               phraseList: phraseList.map(phrase => ({

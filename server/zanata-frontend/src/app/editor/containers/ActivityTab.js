@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -61,7 +62,7 @@ class ActivityTab extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (_state) {
   // Dummy data. Kept for structure reference.
   // FIXME delete when the component is wired into the app.
   const lastModifiedTime = new Date()
@@ -123,7 +124,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (_dispatch) {
   // FIXME dummy actions
   /* eslint-disable no-console */
   return {

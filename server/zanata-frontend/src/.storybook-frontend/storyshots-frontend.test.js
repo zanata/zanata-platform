@@ -1,6 +1,5 @@
 import initStoryshots from '@storybook/addon-storyshots'
 import {
-  mockAddons,
   notNoTestRegex,
   snapshotWithoutDecorators
 } from '../.storybook-editor/storyshots-util'

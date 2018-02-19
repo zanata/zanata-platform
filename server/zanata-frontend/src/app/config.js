@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* Responsible for reading config to present to other modules. */
 
 import { mapValues } from 'lodash'

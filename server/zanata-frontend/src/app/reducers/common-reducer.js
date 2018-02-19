@@ -1,4 +1,3 @@
-// @ts-check
 import { handleActions } from 'redux-actions'
 import {
   CLEAR_MESSAGE,
@@ -9,7 +8,7 @@ export default handleActions({
   [CLEAR_MESSAGE]: (state, _action) => {
     return {
       ...state,
-      notification: null
+      notification: undefined
     }
   }
 },

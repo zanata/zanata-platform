@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import {storiesOf} from '@storybook/react'
 import {action, decorateAction} from '@storybook/addon-actions'
