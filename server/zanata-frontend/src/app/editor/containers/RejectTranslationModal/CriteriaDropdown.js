@@ -3,8 +3,9 @@ import { Component } from 'react'
 import { Icon } from '../../../components'
 import * as PropTypes from 'prop-types'
 import Dropdown from '../../components/Dropdown'
-import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
-import { UNSPECIFIED } from './index'
+import {
+  MINOR, MAJOR, CRITICAL, UNSPECIFIED
+} from '../../utils/reject-trans-util'
 
 /**
  * A Local Editor Dropdown coponent that selects the Criteria
@@ -33,32 +34,24 @@ class CriteriaDropdown extends Component {
     }))
   }
   onCriteriaChange = (event) => {
-    this.props.onCriteriaChange(event)
-    this.toggleDropdown()
-  }
-  onUnspecifiedCriteria = () => {
-    this.props.onUnspecifiedCriteria()
+    if (event.target.innerText === UNSPECIFIED.description) {
+      this.props.onUnspecifiedCriteria()
+    } else {
+      this.props.onCriteriaChange(event)
+    }
     this.toggleDropdown()
   }
   render () {
     const { criteriaList, criteriaDescription } = this.props
     const options = criteriaList.map((value, index) => {
       return (
-        <li key={index + 1}
+        <li key={index}
           className='EditorDropdown-item'
           onClick={this.onCriteriaChange}>
           {value.description}
         </li>
       )
     })
-    // FIXME: should not be modifying the options array
-    options.unshift(
-      <li key={0}
-        className='EditorDropdown-item'
-        onClick={this.onUnspecifiedCriteria}>
-        {UNSPECIFIED}
-      </li>
-    )
     return (
       <Dropdown enabled isOpen={this.state.dropdownOpen}
         onToggle={this.toggleDropdown}

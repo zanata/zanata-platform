@@ -4,7 +4,6 @@ import CriteriaDropdown from './CriteriaDropdown'
 import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 import { Icon } from '../../../components'
 import Dropdown from '../../components/Dropdown'
-import { UNSPECIFIED } from './index'
 
 const defaultClick = () => {}
 const criteriaList = [{
@@ -22,22 +21,13 @@ const criteriaList = [{
 }]
 const options = criteriaList.map((value, index) => {
   return (
-    <li key={index + 1}
+    <li key={index}
       className='EditorDropdown-item'
       onClick={defaultClick}>
       {value.description}
     </li>
   )
 })
-
-// FIXME: should not be modifying the options array
-options.unshift(
-  <li key={0}
-    className='EditorDropdown-item'
-    onClick={defaultClick}>
-    {UNSPECIFIED}
-  </li>
-)
 /* global describe it expect */
 describe('CriteriaDropdown', () => {
   it('renders default markup', () => {

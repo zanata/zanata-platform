@@ -19,15 +19,21 @@ describe('review-trans-reducer', () => {
     expect(review(undefined, {
       type: GET_ALL_CRITERIA_SUCCESS,
       payload: [{
+        id: 1,
         editable: true,
         description: 'invariable invariant variable',
         priority: 'Critical'
       }]
     })).toEqual({
       notification: undefined,
-      criteria: [{
-        editable: true,
+      criteria: [
+        {editable: true,
+        description: 'Unspecified Criteria',
+        id: undefined,
+        priority: 'Minor'},
+        {editable: true,
         description: 'invariable invariant variable',
+        id: 1,
         priority: 'Critical'
       }],
       showReviewModal: false
