@@ -58,7 +58,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Admin_Server_configuration_home'
-                  href='/admin/server_configuration.xhtml'>
+                  href='/admin/server_configuration'>
                   <Icon name='settings' className='s2' />
                   Server configuration
                 </ListGroupItem>
@@ -67,7 +67,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Admin_Manage_users_home'
-                  href='/admin/usermanager.xhtml'>
+                  href='/admin/usermanager'>
                   <Icon name='user' className='s2' />
                   Manage users
                 </ListGroupItem>
@@ -76,7 +76,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Admin_Manage_roles_home'
-                  href='/admin/rolemanager.xhtml'>
+                  href='/admin/rolemanager'>
                   <Icon name='users' className='s2' />
                   Manage roles
                 </ListGroupItem>
@@ -85,7 +85,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Admin_Manage_search_home'
-                  href='/admin/search.xhtml'>
+                  href='/admin/search'>
                   <Icon name='search' className='s2' />
                   Manage search
                 </ListGroupItem>
@@ -94,7 +94,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Admin_Role_Assignment_Rules_home'
-                  href='/admin/rolerules.xhtml'>
+                  href='/admin/rolerules'>
                   <Icon name='assign' className='s2' />
                   Role assignment rules
                 </ListGroupItem>
@@ -103,7 +103,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Translation_Memory_home'
-                  href='/tm/home.xhtml'>
+                  href='/tm/home'>
                   <Icon name='tm' className='s2' />
                   Translation memory
                 </ListGroupItem>
@@ -112,7 +112,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Process_Management_home'
-                  href='/admin/processmanager.xhtml'>
+                  href='/admin/processmanager'>
                   <Icon name='clock' className='s2' />
                   Process manager
                 </ListGroupItem>
@@ -121,7 +121,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Admin_Manage_stats_home'
-                  href='/admin/stats.xhtml'>
+                  href='/admin/stats'>
                   <Icon name='piestats' className='s2' />
                   Overall statistics
                 </ListGroupItem>
@@ -139,7 +139,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Cache_Stats_Home'
-                  href='/admin/cachestats.xhtml'>
+                  href='/admin/cachestats'>
                   <Icon name='document' className='s2' />
                   Cache statistics
                 </ListGroupItem>
