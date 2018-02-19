@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -17,6 +18,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
@@ -36,7 +38,6 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 import com.google.common.base.Strings;
-import org.zanata.service.SecurityService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -63,6 +64,8 @@ public class UserService implements UserResource {
     private ZanataIdentity identity;
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+    @Inject
+    private LocaleDAO localeDAO;
 
     @Inject
     private IdentityManager identityManager;
@@ -149,16 +152,20 @@ public class UserService implements UserResource {
     }
 
     @Override
-    public Response getUserPermissions(String projectSlug, String localeId) {
+    public Response getUserPermissions(
+            @PathParam("projectSlug") String projectSlug,
+            @QueryParam("localeId") String localeId) {
         if (authenticatedAccount == null) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         Permission permission = new Permission();
-        boolean canReview = identity.hasPermissionWithAnyTargets("translation-review",
-                projectSlug, localeId);
+        HProject project = projectDAO.getBySlug(projectSlug);
+        LocaleId localeID = new LocaleId(localeId);
+        HLocale locale = localeDAO.findByLocaleId(localeID);
+        boolean canReview = identity.hasPermissionWithAnyTargets(
+                "translation-review", project, locale);
         boolean canTranslate = identity.hasPermissionWithAnyTargets(
-                SecurityService.TranslationAction.MODIFY.action(), projectSlug,
-                localeId);
+                "modify-translation", project, locale);
         permission.put("reviewer", canReview);
         permission.put("translator", canTranslate);
         return Response.ok(permission).build();
