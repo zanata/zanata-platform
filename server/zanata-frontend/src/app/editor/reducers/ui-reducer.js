@@ -21,13 +21,7 @@ import {
 } from '../actions/suggestions-action-types'
 import { prepareLocales } from '../utils/Util'
 import update from 'immutability-helper'
-
-// TODO extract this to a common config
-export const DEFAULT_LOCALE = {
-  localeId: 'en-US',
-  name: 'English',
-  isRTL: false
-}
+import { DEFAULT_LOCALE } from '../../config'
 
 export const GLOSSARY_TAB = 'GLOSSARY_TAB'
 export const identity = (key/*: any*/) => {

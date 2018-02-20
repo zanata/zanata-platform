@@ -8,6 +8,12 @@ const rawConfig = window.config
 const config = mapValues(rawConfig || {}, (value) =>
   isJsonString(value) ? JSON.parse(value) : value)
 
+export const DEFAULT_LOCALE = {
+  localeId: 'en-US',
+  name: 'English',
+  isRTL: false
+}
+
 // URL this app is deployed to
 export const appUrl = config.appUrl || ''
 
@@ -27,4 +33,4 @@ export const isAdmin = config.permission
   : false
 export const user = config.user
 export const allowRegister = config.allowRegister || false
-export const appLocale = config.appLocale || 'en'
+export const appLocale = config.appLocale || DEFAULT_LOCALE['localeId']
