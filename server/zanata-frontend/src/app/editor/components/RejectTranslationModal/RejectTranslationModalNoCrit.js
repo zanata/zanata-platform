@@ -1,10 +1,10 @@
+// @ts-nocheck
 import * as React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import Button from '../Button'
-import Dropdown from '../Dropdown'
 import { Row } from 'react-bootstrap'
-import { Modal, Icon } from '../../../components'
+import { Modal } from '../../../components'
 /**
  * TODO add a concise description of this component
  */
