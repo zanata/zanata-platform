@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.2.21</kotlin.version>
+    <kotlin.version>1.2.0</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 <!-- We can use these if we don't want the lang/API version set by the compiler version:
