@@ -6,14 +6,14 @@ export const UNSPECIFIEDTEXT = 'Unspecified Criteria'
 
 export interface Criteria {
   id?: number,
-  editable: boolean,
+  commentRequired: boolean,
   description: string,
   priority: any
 }
 
 export const UNSPECIFIED: Criteria = {
   id: undefined,
-  editable: true,
+  commentRequired: true,
   description: UNSPECIFIEDTEXT,
   priority: MINOR
 }

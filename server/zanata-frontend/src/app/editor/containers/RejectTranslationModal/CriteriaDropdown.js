@@ -14,7 +14,7 @@ import {
 class CriteriaDropdown extends Component {
   static propTypes = {
     criteriaList: PropTypes.arrayOf(PropTypes.shape({
-      editable: PropTypes.bool.isRequired,
+      commentRequired: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,

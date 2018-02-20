@@ -35,7 +35,7 @@ public class TransReviewCriteria implements IsSerializable, Serializable {
     private Long id;
     private IssuePriority priority;
     private String description;
-    private boolean editable;
+    private boolean commentRequired;
 
     public TransReviewCriteria() {
     }
@@ -45,7 +45,7 @@ public class TransReviewCriteria implements IsSerializable, Serializable {
         this.id = id;
         this.priority = priority;
         this.description = description;
-        this.editable = editable;
+        this.commentRequired = editable;
     }
 
 
@@ -57,8 +57,8 @@ public class TransReviewCriteria implements IsSerializable, Serializable {
         return description;
     }
 
-    public boolean isEditable() {
-        return editable;
+    public boolean isCommentRequired() {
+        return commentRequired;
     }
 
     public Long getId() {

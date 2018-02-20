@@ -20,18 +20,18 @@ describe('review-trans-reducer', () => {
       type: GET_ALL_CRITERIA_SUCCESS,
       payload: [{
         id: 1,
-        editable: true,
+        commentRequired: true,
         description: 'invariable invariant variable',
         priority: 'Critical'
       }]
     })).toEqual({
       notification: undefined,
       criteria: [
-        {editable: true,
+        {commentRequired: true,
         description: 'Unspecified Criteria',
         id: undefined,
         priority: 'Minor'},
-        {editable: true,
+        {commentRequired: true,
         description: 'invariable invariant variable',
         id: 1,
         priority: 'Critical'

@@ -29,7 +29,7 @@ export class RejectTranslationModal extends Component {
     localeId: PropTypes.string.isRequired,
     criteriaList: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
-      editable: PropTypes.bool.isRequired,
+      commentRequired: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,
@@ -137,8 +137,8 @@ export class RejectTranslationModal extends Component {
         : undefined
     const cantReject = (
       (isEmpty(review.reviewComment)) &&
-      (selectedCriteria.editable === true))
-    const commentPlaceholder = (selectedCriteria.editable === true)
+      (selectedCriteria.commentRequired === true))
+    const commentPlaceholder = (selectedCriteria.commentRequired === true)
       ? 'You must provide a comment for why this translation has been rejected'
       : 'Provide a comment for why this translation has been rejected'
     return (
