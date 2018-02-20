@@ -6,7 +6,7 @@ import {
   fetchProjectInfo,
   fetchDocuments,
   fetchVersionLocales,
-  getUserPermissions
+  getTranslationPermission
 } from '../api'
 import {
   HIDE_SIDEBAR,
@@ -84,7 +84,7 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
   return (dispatch, _getState) => {
     const checkResponse = curry(unwrapResponse)(dispatch)
 
-    dispatch(getUserPermissions(localeId, projectSlug))
+    dispatch(getTranslationPermission(localeId, projectSlug))
 
     // FIXME make the checkResponse just reject with the error code
     //       no need to handle error messages or anything.

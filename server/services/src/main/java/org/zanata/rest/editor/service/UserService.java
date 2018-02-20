@@ -152,7 +152,7 @@ public class UserService implements UserResource {
     }
 
     @Override
-    public Response getUserPermissions(
+    public Response getTranslationPermission(
             @PathParam("projectSlug") String projectSlug,
             @QueryParam("localeId") String localeId) {
         if (authenticatedAccount == null) {

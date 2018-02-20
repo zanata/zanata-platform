@@ -124,7 +124,7 @@ public interface UserResource {
     @Produces({ MediaType.APPLICATION_JSON })
     @Path("/permission/roles/project/{projectSlug}")
     @GET
-    Response getUserPermissions(@PathParam("projectSlug") String projectSlug,
+    Response getTranslationPermission(@PathParam("projectSlug") String projectSlug,
             @QueryParam("localeId") String localeId);
 
     /**
