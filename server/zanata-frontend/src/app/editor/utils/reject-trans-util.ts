@@ -4,7 +4,14 @@ export const CRITICAL = 'Critical'
 export const priorities = [MINOR, MAJOR, CRITICAL]
 export const UNSPECIFIEDTEXT = 'Unspecified Criteria'
 
-export const UNSPECIFIED = {
+export interface Criteria {
+  id?: number,
+  editable: boolean,
+  description: string,
+  priority: any
+}
+
+export const UNSPECIFIED: Criteria = {
   id: undefined,
   editable: true,
   description: UNSPECIFIEDTEXT,
