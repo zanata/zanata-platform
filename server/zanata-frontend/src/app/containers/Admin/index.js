@@ -148,7 +148,8 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='exportTMXAllLink'
-                  href={showExportTMXModal}>
+                  href='#'
+                  onClick={this.props.toggleTMXExportModal}>
                   <Icon name='export' className='s2' />
                   Export all to TMX
                 </ListGroupItem>
