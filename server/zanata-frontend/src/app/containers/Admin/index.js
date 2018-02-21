@@ -103,7 +103,7 @@ class Admin extends Component {
             <Col xs={12} sm={5} lg={3}>
               <ListGroup>
                 <ListGroupItem id='Translation_Memory_home'
-                  href='/tm/home'>
+                  href='/tm/home.xhtml'>
                   <Icon name='tm' className='s2' />
                   Translation memory
                 </ListGroupItem>
