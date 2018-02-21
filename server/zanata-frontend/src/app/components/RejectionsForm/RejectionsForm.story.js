@@ -9,14 +9,14 @@ import { MINOR, MAJOR, CRITICAL } from "./index";
 storiesOf('RejectionsForm', module)
   .add('read only', () => (
       <RejectionsForm
-          editable={false}
+          commentRequired={false}
           criteriaPlaceholder='Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)'
           priority={MINOR} textState='text-info' />
    ))
-   .add('editable', () => (
+   .add('commentRequired', () => (
         <RejectionsForm
             className='active'
-            editable={true}
+            commentRequired={true}
             criteriaPlaceholder='Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)'
             priority={MINOR} textState='text-info' />
     ))
@@ -24,28 +24,28 @@ storiesOf('RejectionsForm', module)
       <div className='container'>
         <h1>Reject translations settings</h1>
         <RejectionsForm
-            editable={false}
+            commentRequired={false}
             criteriaPlaceholder='Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)'
             priority={CRITICAL} textState='text-danger' />
         <RejectionsForm
-            editable={true}
+            commentRequired={true}
             className='active'
             criteriaPlaceholder='Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)'
             priority={MAJOR} textState='text-warning' />
         <RejectionsForm
-            editable={false}
+            commentRequired={false}
             criteriaPlaceholder='Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)'
             priority={MAJOR} textState='text-warning' />
         <RejectionsForm
-            editable={false}
+            commentRequired={false}
             criteriaPlaceholder='Style Guide & Glossary Violations'
             priority={MINOR} textState='text-info' />
         <RejectionsForm
-            editable={false}
+            commentRequired={false}
             criteriaPlaceholder='Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)'
             priority={MINOR} textState='text-info' />
         <RejectionsForm
-            editable={true}
+            commentRequired={true}
             className='active'
             criteriaPlaceholder='Other (reason may be in comment section/history if necessary)'
             priority={CRITICAL} textState='text-danger' />

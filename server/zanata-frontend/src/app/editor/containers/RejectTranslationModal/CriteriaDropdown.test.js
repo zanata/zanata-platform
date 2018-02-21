@@ -7,15 +7,15 @@ import Dropdown from '../../components/Dropdown'
 
 const defaultClick = () => {}
 const criteriaList = [{
-  editable: false,
+  commentRequired: false,
   description: 'One',
   priority: MINOR
 }, {
-  editable: false,
+  commentRequired: false,
   description: 'Two',
   priority: MAJOR
 }, {
-  editable: false,
+  commentRequired: false,
   description: 'Three',
   priority: CRITICAL
 }]
@@ -35,7 +35,8 @@ describe('CriteriaDropdown', () => {
       <CriteriaDropdown
         criteriaList={criteriaList}
         onCriteriaChange={defaultClick}
-        selectedCriteria='One'
+        onUnspecifiedCriteria={defaultClick}
+        criteriaDescription='One'
       />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(

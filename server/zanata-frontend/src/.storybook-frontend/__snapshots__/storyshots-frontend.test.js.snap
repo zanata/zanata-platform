@@ -19061,7 +19061,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
 </div>
 `;
 
-exports[`Frontend Storyshots RejectionsForm editable 1`] = `
+exports[`Frontend Storyshots RejectionsForm commentRequired 1`] = `
 <form
   className="rejectionsForm form-inline"
 >
