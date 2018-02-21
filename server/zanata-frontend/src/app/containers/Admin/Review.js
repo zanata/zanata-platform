@@ -20,28 +20,28 @@ const exampleHeader = <span>Example criteria:
 const exampleCriteria = <Accordion expanded={false} defaultExpanded={false}>
   <Panel header={exampleHeader} eventKey="1">
     <RejectionsForm
-      editable={false}
+      commentRequired={false}
       criteriaPlaceholder='Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)'
       priority={CRITICAL} />
     <RejectionsForm
-      editable
+      commentRequired
       className='active'
       criteriaPlaceholder='Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)'
       priority={MAJOR} />
     <RejectionsForm
-      editable={false}
+      commentRequired={false}
       criteriaPlaceholder='Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)'
       priority={MAJOR} />
     <RejectionsForm
-      editable={false}
+      commentRequired={false}
       criteriaPlaceholder='Style Guide & Glossary Violations'
       priority={MINOR} />
     <RejectionsForm
-      editable={false}
+      commentRequired={false}
       criteriaPlaceholder='Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)'
       priority={MINOR} />
     <RejectionsForm
-      editable
+      commentRequired
       className='active'
       criteriaPlaceholder='Other (reason may be in comment section/history if necessary)'
       priority={CRITICAL} />
@@ -52,7 +52,7 @@ const exampleCriteria = <Accordion expanded={false} defaultExpanded={false}>
 class AdminReview extends Component {
   static propTypes = {
     criteria: PropType.arrayOf(PropType.shape({
-      editable: PropType.bool.isRequired,
+      commentRequired: PropType.bool.isRequired,
       description: PropType.string.isRequired,
       priority: PropType.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,
@@ -82,7 +82,7 @@ class AdminReview extends Component {
   render () {
     const {criteria, deleteEntry, editEntry, notification} = this.props
     const criteriaList = criteria.map((c, i) => <RejectionsForm key={i}
-      editable={c.editable} entityId={c.id} onDelete={deleteEntry}
+      commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
       criteriaPlaceholder={c.description} isAdminMode displayDelete
       onSave={editEntry} description={c.description}
       priority={c.priority} />)

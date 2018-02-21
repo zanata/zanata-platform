@@ -57,7 +57,7 @@ class TransUnit extends React.Component {
     // ])
     selected: PropTypes.bool.isRequired,
     criteria: PropTypes.arrayOf(PropTypes.shape({
-      editable: PropTypes.bool.isRequired,
+      commentRequired: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })),
