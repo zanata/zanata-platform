@@ -41,11 +41,11 @@ public class TransReviewCriteria implements IsSerializable, Serializable {
     }
 
     public TransReviewCriteria(Long id, IssuePriority priority, String description,
-            boolean editable) {
+            boolean commentRequired) {
         this.id = id;
         this.priority = priority;
         this.description = description;
-        this.commentRequired = editable;
+        this.commentRequired = commentRequired;
     }
 
 
