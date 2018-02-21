@@ -12,75 +12,30 @@
 @import "legacy.less";
 @import "./bstrap-styleguide.less";
 
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.htmlStyle {
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  background-color: #fff;
+  font-size: @font-size-base;
+}
+
+.u-fullWidth {
+  width: 100%;
+}
+
+.u-blockPadding {
+  padding: @spacing-rh;
+}
+
 /* Base containers */
 .bstrapReact {
-  html {
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  }
-
-  .htmlStyle {
-    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    background-color: #fff;
-    font-size: @font-size-base;
-  }
-
-  body {
-    margin: 0;
-    line-height: @line-height-base;
-    color: @text-color;
-    background-color: #fff;
-    font-size: 1rem;
-  }
-
-  .bodyTemplate {
-    background-color: #fff;
-    font-size: @font-size-base !important;
-  }
-
-  .view {
-    width: 100%;
-    height: 100%;
-  }
-
-  .page {
-    overflow: hidden;
-  }
-
-  .abs {
-    position: absolute;
-  }
-
-  body.bodyStyle {
-    margin: 0;
-    color: @color-dark;
-  }
-
-  .container {
-    margin-right: auto;
-    margin-left: auto;
-    padding-right: @spacing-base;
-    padding-left: @spacing-base;
-  }
-
-  .container:focus {
-    outline: 0;
-  }
-
-  .container:after {
-    display: block;
-    clear: both;
-    content: "";
-  }
-
-  .containerSidebar {
-    margin-left: 4.5rem;
-    background-color: #fff;
-  }
-
   .containerEditor {
     margin-left: 6rem;
     width: 100%;
@@ -92,6 +47,11 @@
     margin-left: auto;
     padding-right: @spacing-base;
     padding-left: @spacing-base;
+  }
+
+  .containerSidebar {
+    margin-left: 4.5rem;
+    background-color: #fff;
   }
 
   .wideView {
@@ -136,14 +96,6 @@
     border: none;
     line-height: 1;
     margin-right: @spacing-rh;
-  }
-
-  .u-fullWidth {
-    width: 100%;
-  }
-
-  .u-blockPadding {
-    padding: @spacing-rh;
   }
 
   .textState {
