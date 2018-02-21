@@ -17,12 +17,15 @@ import {
 import {
   USER_PERMISSION_REQUEST,
   USER_PERMISSION_SUCCESS,
-  USER_PERMISSION_FAILURE
+  USER_PERMISSION_FAILURE,
+  LOCALE_MESSAGES_REQUEST,
+  LOCALE_MESSAGES_SUCCESS,
+  LOCALE_MESSAGES_FAILURE
 } from '../actions/header-action-types'
 import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { includes } from 'lodash'
-import { apiUrl, serverUrl } from '../../config'
+import { apiUrl, serverUrl, appUrl } from '../../config'
 import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
@@ -81,6 +84,27 @@ export function fetchLocales () {
     credentials: 'include',
     method: 'GET'
   })
+}
+
+export function fetchI18nLocale (locale) {
+  const endpoint = `${appUrl}/messages/${locale}.json`
+  const apiTypes = [
+    LOCALE_MESSAGES_REQUEST,
+    {
+      type: LOCALE_MESSAGES_SUCCESS,
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    LOCALE_MESSAGES_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
 }
 
 export function fetchMyInfo () {

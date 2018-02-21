@@ -56,3 +56,4 @@ export const getInfoPanelVisible = createSelector(
   getUi, uiSelectors.getInfoPanelVisible)
 export const getKeyShortcutsVisible = createSelector(
   getUi, uiSelectors.getKeyShortcutsVisible)
+export const getAppLocale = state => state.headerData.localeMessages
