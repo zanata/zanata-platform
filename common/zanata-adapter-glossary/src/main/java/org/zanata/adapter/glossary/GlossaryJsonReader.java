@@ -44,7 +44,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class GlossaryJsonReader {
+public class GlossaryJsonReader extends AbstractGlossaryPushReader {
     private final LocaleId srcLang;
 
     private final static String TERM = "term";
