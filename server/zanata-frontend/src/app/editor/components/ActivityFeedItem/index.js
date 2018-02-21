@@ -43,6 +43,7 @@ const statusToWellClass = {
   untranslated: 'well-untranslated'
 }
 
+  /* eslint-disable max-len */
 class ActivityFeedItem extends Component {
   static propTypes = {
     criteria: PropTypes.string,
@@ -62,7 +63,7 @@ class ActivityFeedItem extends Component {
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired,
+      imageUrl: PropTypes.string.isRequired
     }).isRequired
   }
 
@@ -70,15 +71,15 @@ class ActivityFeedItem extends Component {
     const {user, type, status} = this.props
     // Uses href because editor app is separate from frontend app
     const comment = (
-      <span className="comment">
-        <Well bsSize="small">
-        <Icon name="comment" className="s0"/>
+      <span className='comment'>
+        <Well bsSize='small'>
+          <Icon name='comment' className='s0' />
           {this.props.commentText}
         </Well>
       </span>
     )
     const criteria = (
-      <span className="CriteriaText">
+      <span className='CriteriaText'>
         {this.props.criteria}
       </span>
     )
@@ -86,8 +87,8 @@ class ActivityFeedItem extends Component {
       <Link useHref link={profileUrl(user.username)}>{user.name}</Link>
     )
     const priority = (
-      <span className="CriteriaText">
-        <Icon name="warning" className="s0"/>
+      <span className='CriteriaText'>
+        <Icon name='warning' className='s0' />
         <span className={this.props.textStatus}>
           {this.props.priority}
         </span>
@@ -95,9 +96,9 @@ class ActivityFeedItem extends Component {
     )
     if (type === 'comment') {
       return (
-        <FormattedMessage id="ActivityFeedItem.comment"
-          description="Title for a comment in the activity feed."
-          defaultMessage="{name} has commented on a translation"
+        <FormattedMessage id='ActivityFeedItem.comment'
+          description='Title for a comment in the activity feed.'
+          defaultMessage='{name} has commented on a translation'
           values={{
             name
           }}
@@ -109,121 +110,121 @@ class ActivityFeedItem extends Component {
       case 'approved':
         // Nested formatted messages are needed to highlight part of the message
         const approvedTranslation = (
-          <span className="u-textHighlight">
-            <FormattedMessage id="ActivityFeedItem.approved.approvedTranslation"
+          <span className='u-textHighlight'>
+            <FormattedMessage id='ActivityFeedItem.approved.approvedTranslation'
               description={
                 'Highlighted section inserted into ActivityFeedItem.approved'}
-              defaultMessage="approved a translation"/>
+              defaultMessage='approved a translation' />
           </span>
         )
         return (
-          <FormattedMessage id="ActivityFeedItem.approved"
+          <FormattedMessage id='ActivityFeedItem.approved'
             description={
               'Title for an item in the activity feed showing a reviewer ' +
               'approved the translation. The inserted section is from ' +
               'ActivityFeedItem.approved.approvedTranslation'}
-            defaultMessage="{name} has {approvedTranslation}"
+            defaultMessage='{name} has {approvedTranslation}'
             values={{
               name,
               approvedTranslation
-          }}/>
+            }} />
         )
 
       case 'rejected':
         // Nested formatted messages are needed to highlight part of the message
         const rejectedTranslation = (
-          <span className="u-textWarning">
-            <FormattedMessage id="ActivityFeedItem.rejected.rejectedTranslation"
+          <span className='u-textWarning'>
+            <FormattedMessage id='ActivityFeedItem.rejected.rejectedTranslation'
               description={
                 'Highlighted section inserted into ActivityFeedItem.rejected'}
-              defaultMessage="rejected a translation"/>
+              defaultMessage='rejected a translation' />
           </span>
         )
         return (
-          <FormattedMessage id="ActivityFeedItem.rejected"
+          <FormattedMessage id='ActivityFeedItem.rejected'
             description={
               'Title for an item in the activity feed showing a reviewer ' +
               'rejected the translation. The inserted section is from ' +
               'ActivityFeedItem.rejected.rejectedTranslation'}
-            defaultMessage="{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}"
+            defaultMessage='{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}'
             values={{
               comment,
               criteria,
               name,
               priority,
               rejectedTranslation
-          }}/>
+            }} />
         )
 
       case 'translated':
         // Nested formatted messages are needed to highlight part of the message
         const translatedRevision = (
-          <span className="u-textSuccess">
+          <span className='u-textSuccess'>
             <FormattedMessage
-              id="ActivityFeedItem.translated.translatedRevision"
+              id='ActivityFeedItem.translated.translatedRevision'
               description={
                 'Highlighted section inserted into ActivityFeedItem.translated'}
-              defaultMessage="created a translation revision"/>
+              defaultMessage='created a translation revision' />
           </span>
         )
         return (
-          <FormattedMessage id="ActivityFeedItem.translated"
+          <FormattedMessage id='ActivityFeedItem.translated'
             description={
               'Title for an item in the activity feed showing a ' +
               'translator added a translation. The inserted section is from ' +
               'ActivityFeedItem.translated.translatedRevision'}
-            defaultMessage="{name} has {translatedRevision}"
+            defaultMessage='{name} has {translatedRevision}'
             values={{
               name,
               translatedRevision
-          }}/>
+            }} />
         )
 
       case 'fuzzy':
         // Nested formatted messages are needed to highlight part of the message
         const fuzzyRevision = (
-          <span className="u-textUnsure">
-            <FormattedMessage id="ActivityFeedItem.fuzzy.fuzzyRevision"
+          <span className='u-textUnsure'>
+            <FormattedMessage id='ActivityFeedItem.fuzzy.fuzzyRevision'
               description={
                 'Highlighted section inserted into ActivityFeedItem.fuzzy'}
-              defaultMessage="created a fuzzy revision"/>
+              defaultMessage='created a fuzzy revision' />
           </span>
         )
         return (
-          <FormattedMessage id="ActivityFeedItem.fuzzy"
+          <FormattedMessage id='ActivityFeedItem.fuzzy'
             description={
               'Title for an item in the activity feed showing a ' +
               'translator saved a fuzzy translation (a translation that ' +
               'still needs to be edited). The inserted section is from ' +
               'ActivityFeedItem.fuzzy.fuzzyRevision'}
-            defaultMessage="{name} has {fuzzyRevision}"
+            defaultMessage='{name} has {fuzzyRevision}'
             values={{
               name,
               fuzzyRevision
-          }}/>
+            }} />
         )
 
       case 'untranslated':
         // Nested formatted messages are needed to highlight part of the message
         const deletedTranslation = (
-          <span className="u-textPrimary">
-            <FormattedMessage id="ActivityFeedItem.deleted.deletedTranslation"
+          <span className='u-textPrimary'>
+            <FormattedMessage id='ActivityFeedItem.deleted.deletedTranslation'
               description={
                 'Highlighted section inserted into ActivityFeedItem.deleted'}
-              defaultMessage="deleted a translation"/>
+              defaultMessage='deleted a translation' />
           </span>
         )
         return (
-          <FormattedMessage id="ActivityFeedItem.deleted"
+          <FormattedMessage id='ActivityFeedItem.deleted'
             description={
               'Title for an item in the activity feed showing a ' +
               'translator has deleted the translation. The inserted ' +
               'section is from ActivityFeedItem.deleted.deletedTranslation'}
-            defaultMessage="{name} has {deletedTranslation}"
+            defaultMessage='{name} has {deletedTranslation}'
             values={{
               name,
               deletedTranslation
-          }}/>
+            }} />
         )
 
       default:
@@ -231,31 +232,31 @@ class ActivityFeedItem extends Component {
     }
   }
 
-  render() {
+  render () {
     const {content, lastModifiedTime, status, type, user} = this.props
     const isComment = type === 'comment'
 
     return (
       /* eslint-disable max-len */
-      <div className="RevisionBox">
+      <div className='RevisionBox'>
         <p>
-          <Icon name={isComment ? 'comment' : 'refresh'} className="s0"/>
+          <Icon name={isComment ? 'comment' : 'refresh'} className='s0' />
           <Link useHref link={profileUrl(user.username)}>
             {/* TODO use component for avatar image */}
-            <img className="u-round ActivityAvatar" src={user.imageUrl}/>
+            <img className='u-round ActivityAvatar' src={user.imageUrl} />
           </Link>
           {this.getMessage()}
         </p>
         <Well className={isComment ? '' : statusToWellClass[status]}>
           {content}
-          <span className="u-pullRight">
-          <button className="Link Link--neutral" title="Copy">
-              <Icon name='copy' className="s1" />
-          </button>
+          <span className='u-pullRight'>
+            <button className='Link Link--neutral' title='Copy'>
+              <Icon name='copy' className='s1' />
+            </button>
           </span>
         </Well>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
-          className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"/>
+          className='u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
       </div>
       /* eslint-enable max-len */
     )

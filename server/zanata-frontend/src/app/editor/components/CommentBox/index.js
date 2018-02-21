@@ -43,25 +43,25 @@ class CommentBox extends React.Component {
   setCommentText = (event) => {
     this.setState({commentText: event.target.value})
   }
-
+  /* eslint-disable max-len */
   render () {
     return (
-      <div className="TransUnit-commentBox">
-        <FormGroup controlId="formControlsTextarea">
+      <div className='TransUnit-commentBox'>
+        <FormGroup controlId='formControlsTextarea'>
           <ControlLabel>
-            <Icon name="comment" className="s0" /> Post a comment
+            <Icon name='comment' className='s0' /> Post a comment
           </ControlLabel><br />
-          <FormControl componentClass="textarea"
-            placeholder="..." onChange={this.setCommentText} />
+          <FormControl componentClass='textarea'
+            placeholder='...' onChange={this.setCommentText} />
         </FormGroup>
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
-          className="EditorButton Button--small u-rounded Button--primary u-pullRight">
+          className='EditorButton Button--small u-rounded Button--primary u-pullRight'>
          Post comment
         </Button>
       </div>
     )
   }
 }
-
+/* eslint-enable max-len */
 export default CommentBox

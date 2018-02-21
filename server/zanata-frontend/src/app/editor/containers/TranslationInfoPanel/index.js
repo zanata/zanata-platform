@@ -10,8 +10,7 @@ import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from '../GlossaryTab'
-// Use this when the activity tab is activated
-// import ActivityTab from './ActivityTab'
+import ActivityTab from '../ActivityTab'
 
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
@@ -122,12 +121,12 @@ class TranslationInfoPanel extends React.Component {
     )
 
     // Use this when activity tab is activated
-    // const activityTitle = (
-    //   <span>
-    //     <Icon name="clock" className="s1 gloss-tab-svg" />
-    //     <span className="hide-md">Activity</span>
-    //   </span>
-    // )
+    const activityTitle = (
+      <span>
+        <Icon name="clock" className="s1 gloss-tab-svg" />
+        <span className="hide-md">Activity</span>
+      </span>
+    )
 
     return (
       <div>
@@ -149,9 +148,8 @@ class TranslationInfoPanel extends React.Component {
               Tab 1 content
             </div>
           </Tab> */ }
-          <GlossaryTab eventKey={1} title={glossaryTitle} />
-          {/* Use this when activity tab is activated
-            <ActivityTab eventKey={2} title={activityTitle} /> */}
+          <ActivityTab eventKey={1} title={activityTitle} />
+          <GlossaryTab eventKey={2} title={glossaryTitle} />
 
         </Tabs>
       </div>

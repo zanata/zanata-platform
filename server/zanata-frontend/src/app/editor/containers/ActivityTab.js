@@ -45,12 +45,12 @@ class ActivityTab extends React.Component {
     } = this.props
 
     return (
-      <Tab eventKey={eventKey} title="">
-        <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
+      <Tab eventKey={eventKey} title=''>
+        <div className='SidebarEditor-wrapper' id='SidebarEditorTabs-pane2'>
           <ActivitySelectList selectItem={selectActivityTypeFilter}
             selected={selectedActivites} />
         </div>
-        <div className="SidebarActivity">
+        <div className='SidebarActivity'>
           <LanguageSelectList selectItem={selectLanguageFilter}
             selected={selectedLanguages} />
           <CommentBox postComment={postComment} />
