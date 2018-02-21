@@ -38,7 +38,7 @@ class App extends Component {
     return (
       <div className='bstrapReact'>
         <div className='view H(100vh)! Fld(c) Fld(r)--sm'>
-
+          <Icons />
           <Helmet
             title='Zanata'
             titleTemplate='Zanata: %s'
