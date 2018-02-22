@@ -72,8 +72,8 @@ class TransUnit extends React.Component {
   }
 
   selectPhrase = () => {
-    const { phrase, selectPhrase } = this.props
-    selectPhrase(phrase.id)
+    const { phrase, selectPhrase, translationLocale } = this.props
+    selectPhrase(phrase.id, translationLocale.id)
   }
 
   render () {
@@ -224,7 +224,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       dispatch(savePhraseWithStatus(phrase, status))
     },
     selectPhrase: () => {
-      dispatch(selectPhrase(ownProps.phrase.id))
+      dispatch(selectPhrase(ownProps.phrase.id, ownProps.translationLocale.id))
     },
     selectPhrasePluralIndex: (phraseId, index) => {
       dispatch(selectPhrasePluralIndex(phraseId, index))

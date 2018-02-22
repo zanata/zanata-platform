@@ -50,7 +50,6 @@ class MainContent extends React.Component {
         </div>
       )
     }
-
     const transUnits = phrases.map((phrase, _index) => {
       // FIXME maybe use phrase id, next page will have
       //       same index for different id. Not sure if
@@ -65,7 +64,8 @@ class MainContent extends React.Component {
             index={phrase.id}
             phrase={phrase}
             criteria={this.props.criteriaList}
-            toggleRejectModal={this.props.toggleReviewModal} />
+            toggleRejectModal={this.props.toggleReviewModal}
+            translationLocale={this.props.translationLocale} />
         </li>
       )
     })

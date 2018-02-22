@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { savePhrase } from '../api'
+import { savePhrase, fetchTransUnitHistory } from '../api'
 import { toggleDropdown } from '.'
 import { createAction } from 'redux-actions'
 import {
@@ -52,8 +52,9 @@ export const undoEdit = createAction(UNDO_EDIT)
  * Set the selected phrase to the given ID.
  * Only one phrase is selected at a time.
  */
-export function selectPhrase (phraseId) {
+export function selectPhrase (phraseId, localeId) {
   return (dispatch) => {
+    dispatch(fetchTransUnitHistory(localeId, phraseId))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(createAction(SELECT_PHRASE)(phraseId))
   }
