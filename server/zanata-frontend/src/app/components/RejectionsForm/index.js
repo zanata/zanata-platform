@@ -122,7 +122,7 @@ class RejectionsForm extends Component {
         </Button>
       </OverlayTrigger>
       ) : DO_NOT_RENDER
-    const editableToggle = isAdminMode ? (
+    const commentToggle = isAdminMode ? (
       <FormGroup id='toggleComment' controlId='formInlineEditable'>
         <ControlLabel>Comment required</ControlLabel><br />
         <Toggle icons={false} onChange={this.onEditableChange}
@@ -163,7 +163,7 @@ class RejectionsForm extends Component {
             disabled={priorityDisabled}
           />
         </FormGroup>
-        {editableToggle}
+        {commentToggle}
         {formBtn}
       </Form>
     )
