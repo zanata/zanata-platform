@@ -3,6 +3,7 @@ import {
   fetchStatistics,
   fetchLocales,
   fetchI18nLocale,
+  fetchTransUnitHistory,
   fetchMyInfo,
   fetchProjectInfo,
   fetchDocuments,
@@ -60,6 +61,13 @@ export function fetchUiLocales () {
 export function fetchAppLocale (locale) {
   return (dispatch) => {
     dispatch(fetchI18nLocale(locale))
+  }
+}
+
+// fetches transunit history data for activity panel
+export function fetchTransHist (localeId, transUnitId) {
+  return (dispatch) => {
+    dispatch(fetchTransUnitHistory(localeId, transUnitId))
   }
 }
 

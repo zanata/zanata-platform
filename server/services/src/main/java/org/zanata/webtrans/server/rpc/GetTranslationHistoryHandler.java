@@ -144,7 +144,7 @@ public class GetTranslationHistoryHandler extends
             throws ActionException {
     }
 
-    private static class TargetHistoryToTransHistoryItemFunction
+    public static class TargetHistoryToTransHistoryItemFunction
             implements Function<HTextFlowTargetHistory, TransHistoryItem> {
 
         @Override

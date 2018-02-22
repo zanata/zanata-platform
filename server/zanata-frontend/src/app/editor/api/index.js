@@ -17,7 +17,10 @@ import {
 import {
   LOCALE_MESSAGES_REQUEST,
   LOCALE_MESSAGES_SUCCESS,
-  LOCALE_MESSAGES_FAILURE
+  LOCALE_MESSAGES_FAILURE,
+  TRANS_HISTORY_REQUEST,
+  TRANS_HISTORY_SUCCESS,
+  TRANS_HISTORY_FAILURE
 } from '../actions/header-action-types'
 import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
 import { CALL_API } from 'redux-api-middleware'
@@ -76,6 +79,27 @@ export function fetchI18nLocale (locale) {
       }
     },
     LOCALE_MESSAGES_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
+export function fetchTransUnitHistory (localeId, transUnitId) {
+  const endpoint = `${apiUrl}/transhist/${localeId}?transUnitId=${transUnitId}`
+  const apiTypes = [
+    TRANS_HISTORY_REQUEST,
+    {
+      type: TRANS_HISTORY_SUCCESS,
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    TRANS_HISTORY_FAILURE]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
   }
