@@ -22,7 +22,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }]
     const getAll = adminReducer(initial, {
       type: GET_ALL_CRITERIA_SUCCESS,
@@ -53,7 +53,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }
     const added = adminReducer(initial, {
       type: ADD_CRITERION_SUCCESS,
@@ -83,7 +83,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }
     const updatedCriteria = update(criteria,
       {description: {$set: 'new reason'}})
@@ -119,7 +119,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }
     const withSomething = adminReducer(initial, {
       type: ADD_CRITERION_SUCCESS,

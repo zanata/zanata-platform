@@ -33,7 +33,7 @@ export function addNewCriterion (criterion) {
     ADD_CRITERION_FAILURE]
   const body = {
     ...criterion,
-    editable: criterion.isEditable
+    commentRequired: criterion.isCommentRequired
   }
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'POST', getJsonHeaders(), apiTypes,
@@ -63,7 +63,7 @@ export function editCriterion (criterion) {
   const endpoint = `${apiUrl}/review/criteria/${criterion.id}`
   const body = {
     ...criterion,
-    editable: criterion.isEditable
+    commentRequired: criterion.isCommentRequired
   }
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'PUT', getJsonHeaders(), types,
