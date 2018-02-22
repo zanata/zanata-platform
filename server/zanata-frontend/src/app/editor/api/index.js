@@ -17,11 +17,13 @@ import {
 import {
   LOCALE_MESSAGES_REQUEST,
   LOCALE_MESSAGES_SUCCESS,
-  LOCALE_MESSAGES_FAILURE,
+  LOCALE_MESSAGES_FAILURE
+} from '../actions/header-action-types'
+import {
   TRANS_HISTORY_REQUEST,
   TRANS_HISTORY_SUCCESS,
   TRANS_HISTORY_FAILURE
-} from '../actions/header-action-types'
+} from '../actions/activity-action-types'
 import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { includes } from 'lodash'
