@@ -12,28 +12,6 @@
 @import "legacy.less";
 @import "./bstrap-styleguide.less";
 
-html {
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.htmlStyle {
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  background-color: #fff;
-  font-size: @font-size-base;
-}
-
-.u-fullWidth {
-  width: 100%;
-}
-
-.u-blockPadding {
-  padding: @spacing-rh;
-}
-
 /* Base containers */
 .bstrapReact {
   .containerEditor {
@@ -3406,71 +3384,6 @@ html {
     width: 1.6em;
   }
 
-  .u-textNeutral-top {
-    color: @color-neutral;
-    margin-top: 0.3em;
-  }
-
-  .u-textNeutral, .txt--neutral {
-    color: @color-neutral;
-  }
-
-  .iconUser {
-    fill: #03A6D7;
-    margin-right: @spacing-re;
-    vertical-align: sub;
-  }
-
-  .iconProject {
-    margin-right: @spacing-re;
-  }
-
-  .iconLanguage {
-    vertical-align: sub;
-  }
-
-  .iconUser-muted {
-    color: @color-muted;
-    margin-right: @spacing-rh;
-  }
-
-  .iconsStatus {
-    margin-right: @spacing-rh;
-  }
-
-  .iconDelete {
-    vertical-align: sub;
-  }
-
-  .iconsHeader {
-    vertical-align: sub;
-  }
-
-  .iconUsers-muted, .iconTranslate-muted {
-    color: @color-muted;
-    margin-right: @spacing-rh;
-    margin-left: @spacing-rq;
-    vertical-align: sub;
-  }
-
-  .iconTranslate-neutral, .iconLanguage-neutral, .iconGlossary-neutral {
-    color: rgb(189, 212, 220);
-    margin-left: @spacing-rq;
-    margin-right: @spacing-re;
-  }
-
-  img.avatar-round {
-    margin-right: @spacing-rq;
-    border-radius: @border-radius-img;
-    height: 2.25rem;
-    width: 2.25rem;
-  }
-
-  .u-textMutedLeft {
-    color: @color-muted;
-    margin-left: @spacing-rq;
-  }
-
   .pageCurrent {
     color: @color-muted;
     margin-left: @spacing-re;
@@ -4002,42 +3915,6 @@ html {
 
   .btn-left {
     margin-right: 1.5rem;
-  }
-
-  .lineClamp {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    max-height: 24px;
-    padding-left: @spacing-rh;
-  }
-
-  a.lineClamp {
-    display: -webkit-box;
-    *display: inline;
-    zoom: 1;
-  }
-
-  a.lineClamp:after {
-    content: ".";
-    font-size: 0;
-    visibility: hidden;
-    display: inline-block;
-    overflow: hidden;
-    height: 0;
-    width: 0;
-  }
-
-  .u-embedResponsive {
-    position: relative;
-    display: block;
-    overflow: hidden;
-    height: 0;
-    padding: 0;
-  }
-
-  .u-block {
-    display: block;
   }
 
   /* Panels - inherits classnames from bootstrap */
@@ -4798,11 +4675,6 @@ html {
     color: #f00;
   }
 
-  //fix for admin panel icons
-  .panel__header i.i--add:not(.i--large) {
-    color: inherit !important;
-  }
-
   .btn-group-vertical > .btn-group:before, .btn-group:after, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container--fluid:after, .container--fluid:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .modal-header:after, .modal-header:before, .nav:after, .nav:before, .navbar-collapse:after, .navbar-collapse:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
     display: table;
     content: " ";
@@ -4814,48 +4686,6 @@ html {
 
   .glyphicon-modal-window:before {
     content: "\e237";
-  }
-
-  .u-centerBlock {
-    display: block;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  .u-pullRight {
-    float: right !important;
-  }
-
-  .u-pullLeft {
-    float: left !important;
-  }
-
-  .hide {
-    display: none !important;
-  }
-
-  .show {
-    display: block !important;
-  }
-
-  .invisible {
-    visibility: hidden;
-  }
-
-  .text-hide {
-    font: 0/0 a;
-    color: transparent;
-    border: 0;
-    background-color: transparent;
-    text-shadow: none;
-  }
-
-  .hidden {
-    display: none !important;
-  }
-
-  .affix {
-    position: fixed;
   }
 
   //IE 10 fix (ms-viewport)
@@ -4900,23 +4730,6 @@ html {
     max-width: 36.05em;
   }
 
-  .button--small i.i--settings {
-    vertical-align: baseline;
-  }
-
-  i.i--left.i--lock, i.i--left.i--trash {
-    color: #fff;
-    vertical-align: baseline;
-  }
-
-  #versionPage.g {
-    width: 100%;
-  }
-
-  #fileUpload-toggleBtn i.i--add, #addMember-btn i.i--add {
-    color: @color-dark;
-  }
-
   .tabsContent {
     padding-bottom: @spacing-base-and-a-half;
   }
@@ -4937,27 +4750,6 @@ html {
 
   table.tableSearch {
     max-width: 36.05em;
-  }
-
-  .panel__header i.i--add:not(.i--large) {
-    color: #fff;
-  }
-
-  .button--small i.i--settings {
-    vertical-align: baseline;
-  }
-
-  i.i--left.i--lock, i.i--left.i--trash {
-    color: #fff;
-    vertical-align: baseline;
-  }
-
-  #versionPage.g {
-    width: 100%;
-  }
-
-  #fileUpload-toggleBtn i.i--add, #addMember-btn i.i--add {
-    color: @color-dark;
   }
 
   .textMeta.content {
