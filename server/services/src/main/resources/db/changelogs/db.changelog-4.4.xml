@@ -37,15 +37,6 @@
       referencedColumnNames="id" />
   </changeSet>
 
-  <changeSet id="4" author="djansen@redhat.com">
-    <comment>Add externalId column to HGlossaryEntry</comment>
-    <addColumn tableName="HGlossaryEntry">
-      <column name="externalId" type="varchar(100)">
-        <constraints nullable="true" unique="true"/>
-      </column>
-    </addColumn>
-  </changeSet>
-
   <changeSet id="5" author="pahuang@redhat.com">
     <dropNotNullConstraint tableName="HTextFlowTargetReviewComment"
       columnName="comment" columnDataType="longtext" />
@@ -54,6 +45,16 @@
   <changeSet id="6" author="aeng@redhat.com">
     <addNotNullConstraint tableName="ReviewCriteria"
         columnName="description" columnDataType="varchar(255)"/>
+  </changeSet>
+
+  <changeSet id="1" author="djansen@redhat.com">
+    <comment>Add externalId column to HGlossaryEntry</comment>
+    <addColumn tableName="HGlossaryEntry">
+      <column name="externalId" type="varchar(100)">
+        <constraints nullable="true" unique="true"/>
+      </column>
+    </addColumn>
+    <addUniqueConstraint tableName="HGlossaryEntry" columnNames="externalId"/>
   </changeSet>
 
 </databaseChangeLog>
