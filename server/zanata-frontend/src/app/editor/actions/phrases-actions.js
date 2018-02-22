@@ -20,7 +20,9 @@ import {
   defaultSaveStatus,
   transUnitStatusToPhraseStatus,
   STATUS_REJECTED,
-  STATUS_APPROVED
+  STATUS_APPROVED,
+  STATUS_TRANSLATED,
+  STATUS_NEEDS_WORK
 } from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
 
@@ -131,11 +133,12 @@ export function savePhraseWithStatus (phrase, status) {
       localeId: stateBefore.context.lang,
       status,
       translations: phrase.newTranslations,
-      reviewer: stateBefore.headerData.permissions.reviwer,
+      reviewer: stateBefore.headerData.permissions.reviewer,
       translator: stateBefore.headerData.permissions.translator
     }
-
-    if (!saveInfo.translator) {
+    if (!saveInfo.translator && (
+        saveInfo.status === STATUS_TRANSLATED ||
+        saveInfo.status === STATUS_NEEDS_WORK)) {
       // User does not have required permissions to translate
       return
     }
