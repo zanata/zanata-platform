@@ -25,7 +25,7 @@ class MainContent extends React.Component {
     toggleReviewModal: PropTypes.func.isRequired,
     fetchAllCriteria: PropTypes.func.isRequired,
     criteriaList: PropTypes.arrayOf(PropTypes.shape({
-      editable: PropTypes.bool.isRequired,
+      commentRequired: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,

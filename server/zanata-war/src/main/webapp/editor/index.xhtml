@@ -53,7 +53,8 @@
        data-user="#{authenticatedAccountHome.getUser()}"
        data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
        data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
-                     "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'>
+                     "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'
+       data-app-locale="#{localeSelectorAction.getLocale()}">
   </div>
 
 

@@ -2,7 +2,7 @@
 
 import contextReducer from './context-reducer'
 import { ROUTING_PARAMS_CHANGED } from '../actions/action-types'
-import { DEFAULT_LOCALE } from './ui-reducer'
+import { DEFAULT_LOCALE } from '../../config'
 
 describe('context-reducer test', () => {
   it('generates initial state', () => {

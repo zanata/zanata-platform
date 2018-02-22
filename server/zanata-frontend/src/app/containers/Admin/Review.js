@@ -18,7 +18,7 @@ const DO_NOT_RENDER = undefined
 class AdminReview extends Component {
   static propTypes = {
     criteria: PropType.arrayOf(PropType.shape({
-      editable: PropType.bool.isRequired,
+      commentRequired: PropType.bool.isRequired,
       description: PropType.string.isRequired,
       priority: PropType.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,
@@ -48,7 +48,7 @@ class AdminReview extends Component {
   render () {
     const {criteria, deleteEntry, editEntry, notification} = this.props
     const criteriaList = criteria.map((c, i) => <RejectionsForm key={i}
-      editable={c.editable} entityId={c.id} onDelete={deleteEntry}
+      commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
       criteriaPlaceholder={c.description} isAdminMode displayDelete
       onSave={editEntry} description={c.description}
       priority={c.priority} />)
