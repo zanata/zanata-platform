@@ -26,7 +26,6 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 import { isAdmin } from '../../config'
-import Helmet from 'react-helmet'
 
 import {
   showExportTMXModal
@@ -43,23 +42,17 @@ class Admin extends Component {
   render () {
     if (!isAdmin) {
       return (
-        <div>
-          <Helmet title='Administration' />
-          <div className='wideView' id='admin'>
-            <div className='u-centerBlock'>
-              <p>You are not authorised to access to this page</p>
-            </div>
+        <div className='wideView' id='admin'>
+          <div className='u-centerBlock'>
+            <p>You are not authorised to access to this page</p>
           </div>
         </div>
       )
     }
     return (
-      <div>
-        <Helmet title='Administration' />
-        <div className='page wideView' id='admin'>
-          <div className='u-centerBlock'>
-            <TMXExportModal />
-          </div>
+      <div className='page wideView' id='admin'>
+        <div className='u-centerBlock'>
+          <TMXExportModal />
         </div>
       </div>
     )
