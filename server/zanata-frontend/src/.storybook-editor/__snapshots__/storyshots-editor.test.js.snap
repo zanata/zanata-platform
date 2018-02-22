@@ -27,7 +27,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     >
       <img
         className="u-round ActivityAvatar"
-        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
     <span>
@@ -136,7 +136,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     >
       <img
         className="u-round ActivityAvatar"
-        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
     <span>
@@ -238,7 +238,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     >
       <img
         className="u-round ActivityAvatar"
-        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
     <span>
@@ -347,7 +347,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     >
       <img
         className="u-round ActivityAvatar"
-        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
     <span>
@@ -516,7 +516,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     >
       <img
         className="u-round ActivityAvatar"
-        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
     <span>
@@ -685,7 +685,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     >
       <img
         className="u-round ActivityAvatar"
-        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
     <span>
@@ -854,7 +854,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     >
       <img
         className="u-round ActivityAvatar"
-        src="http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
+        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
       />
     </a>
     <span>

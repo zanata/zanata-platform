@@ -2,6 +2,7 @@
 import {
   fetchStatistics,
   fetchLocales,
+  fetchI18nLocale,
   fetchMyInfo,
   fetchProjectInfo,
   fetchDocuments,
@@ -14,6 +15,7 @@ import {
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
   UI_LOCALES_FETCHED,
+  APP_LOCALE_FETCHED,
   CHANGE_UI_LOCALE,
   DOCUMENT_SELECTED,
   LOCALE_SELECTED,
@@ -39,6 +41,7 @@ const unwrapResponse = (_dispatch, _errorMsg, response) => {
 }
 
 export const uiLocaleFetched = createAction(UI_LOCALES_FETCHED)
+export const appLocaleFetched = createAction(APP_LOCALE_FETCHED)
 
 export function fetchUiLocales () {
   return (dispatch) => {
@@ -50,6 +53,13 @@ export function fetchUiLocales () {
           // FIXME replace with api middleware and use standard error handling
           // return {type: FETCH_FAILED, error: err}
         })
+  }
+}
+
+// fetches react-intl translation json files for app i18n
+export function fetchAppLocale (locale) {
+  return (dispatch) => {
+    dispatch(fetchI18nLocale(locale))
   }
 }
 

@@ -23,6 +23,7 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
+import { FormattedMessage } from 'react-intl'
 
 /**
  * Indicator that shows 'Translating' when the user is
@@ -41,11 +42,13 @@ class TranslatingIndicator extends React.Component {
   render () {
     return (
       /* eslint-disable max-len */
-      <button className="Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4">
+      <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4'>
         <Row>
-          <Icon name="translate" className="s2" /> <span
-            className="u-ltemd-hidden TransIndicator u-sMR-1-4">
-            {this.props.gettextCatalog.getString('Translating')}
+          <Icon name='translate' className='s2' /> <span
+            className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
+            <FormattedMessage id='TranslatingIndicator.translating'
+              description={'Indicator of editor translating mode'}
+              defaultMessage='Translating' />
           </span>
         </Row>
       </button>

@@ -46,7 +46,7 @@ class RejectionsForm extends Component {
     description: PropTypes.string.isRequired,
     onSave: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
-    editable: PropTypes.bool,
+    commentRequired: PropTypes.bool,
     // if it's in admin mode, we will allow user to update
     isAdminMode: PropTypes.bool.isRequired,
     // whether delete button shoud be displayed
@@ -57,7 +57,7 @@ class RejectionsForm extends Component {
 
   static defaultProps = {
     criterionId: 'review-criteria',
-    editable: false,
+    commentRequired: false,
     description: '',
     isAdminMode: false,
     displayDelete: true,
@@ -69,7 +69,7 @@ class RejectionsForm extends Component {
     super(props)
     this.state = {
       description: this.props.description,
-      isEditable: this.props.editable,
+      isCommentRequired: this.props.commentRequired,
       priority: this.props.priority
     }
   }
@@ -77,7 +77,7 @@ class RejectionsForm extends Component {
   onEditableChange = e => {
     const checked = e.target.checked
     this.setState(_prevState => ({
-      isEditable: checked
+      isCommentRequired: checked
     }))
   }
   onTextChange = e => {
@@ -95,7 +95,7 @@ class RejectionsForm extends Component {
     this.props.onSave({
       ...this.state,
       id: this.props.entityId,
-      editable: this.state.isEditable
+      commentRequired: this.state.isCommentRequired
     })
   }
   onDelete = () => {
@@ -103,7 +103,7 @@ class RejectionsForm extends Component {
   }
   render () {
     const {
-      editable,
+      commentRequired,
       className,
       isAdminMode,
       displayDelete,
@@ -113,7 +113,7 @@ class RejectionsForm extends Component {
     const textState = priorityToTextState(this.state.priority)
     const error = isEmpty(this.state.description)
     const title = <span className={textState}>{this.state.priority}</span>
-    const priorityDisabled = !isAdminMode && !editable
+    const priorityDisabled = !isAdminMode && !commentRequired
     const deleteBtn = displayDelete
       ? (
       <OverlayTrigger placement='top' overlay={tooltipDelete}>
@@ -126,7 +126,7 @@ class RejectionsForm extends Component {
       <FormGroup id='toggleComment' controlId='formInlineEditable'>
         <ControlLabel>Comment required</ControlLabel><br />
         <Toggle icons={false} onChange={this.onEditableChange}
-          checked={this.state.isEditable} />
+          checked={this.state.isCommentRequired} />
       </FormGroup>
       )
       : DO_NOT_RENDER
@@ -146,7 +146,7 @@ class RejectionsForm extends Component {
       <Form className='rejectionsForm' inline>
         <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
           <ControlLabel>Criteria</ControlLabel><br />
-          <TextInput multiline editable={isAdminMode || editable}
+          <TextInput multiline editable={isAdminMode || commentRequired}
             type='text' numberOfLines={2} onChange={this.onTextChange}
             placeholder={criteriaPlaceholder} maxLength={255}
             value={this.state.description} />

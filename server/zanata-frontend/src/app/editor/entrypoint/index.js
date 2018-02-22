@@ -3,17 +3,15 @@ import 'babel-polyfill'
 import React from 'react'
 import * as ReactDOM from 'react-dom'
 import { appUrl, serverUrl } from '../../config'
-import { locale, formats } from '../config/intl'
 import createStoreWithMiddleware from '../middlewares'
-import { addLocaleData, IntlProvider } from 'react-intl'
-import enLocaleData from 'react-intl/locale-data/en.js'
+import { addLocaleData } from 'react-intl'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import rootReducer from '../reducers'
 import addWatchers from '../watchers'
 import { isEmpty } from 'lodash'
-
+import { appLocale } from '../../config'
 import Root from '../containers/Root'
 import NeedSlugMessage from '../containers/NeedSlugMessage'
 import { fetchSettings } from '../actions/settings-actions'
@@ -36,19 +34,8 @@ import '../index.css'
  *  - ensuring the required css for the React component tree is available
  */
 function runApp () {
-  // TODO add all the relevant locale data
-  // Something like:
-  //  import en from './react-intl/locale-data/en'
-  //  import de from './react-intl/locale-data/de'
-  //    ... then just addLocaleData(en) etc.
-  // See https://github.com/yahoo/react-intl/blob/master/UPGRADE.md
-  // if ('ReactIntlLocaleData' in window) {
-  //   Object.keys(window.ReactIntlLocaleData).forEach(lang => {
-  //     addLocaleData(window.ReactIntlLocaleData[lang])
-  //   })
-  // }
-
-  addLocaleData([...enLocaleData])
+  // Dynamically load the locale data of the selected appLocale
+  addLocaleData(require(`react-intl/locale-data/${appLocale}`))
 
   const history = browserHistory
   history.basename = appUrl
@@ -75,15 +62,13 @@ function runApp () {
   //   require.ensure and pass to IntlProvider as messages={...}
   // defaultLocale will use the default messages with no errors
   ReactDOM.render(
-    <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
-      <Provider store={store}>
-        <Router history={enhancedHistory}>
-          {/* The ** is docId, captured as params.splat by react-router. */}
-          <Route path={path} component={Root} />
-          <Route path="/*" component={NeedSlugMessage} />
-        </Router>
-      </Provider>
-    </IntlProvider>, rootElement)
+    <Provider store={store}>
+      <Router history={enhancedHistory}>
+        {/* The ** is docId, captured as params.splat by react-router. */}
+        <Route path={path} component={Root} />
+        <Route path="/*" component={NeedSlugMessage} />
+      </Router>
+    </Provider>, rootElement)
 }
 
 if (window.Intl) {
