@@ -20,26 +20,31 @@
  */
 package org.zanata.rest.editor.service;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.rest.editor.service.resource.TransUnitHistoryResource;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.rpc.GetTranslationHistoryHandler;
+import org.zanata.webtrans.shared.model.ReviewComment;
+import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,10 +64,13 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
     @Inject
     private TransUnitUtils transUnitUtils;
 
+    @Inject
+    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
     @Override
     public Response get(String localeId, Long transUnitId) {
         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+        TransUnitId tUnitId = new TransUnitId(transUnitId);
         HTextFlow hTextFlow =
                 textFlowDAO.findById(transUnitId, false);
         HTextFlowTarget hTextFlowTarget =
@@ -70,8 +78,25 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
         Map<Integer, HTextFlowTargetHistory> history =
                 hTextFlowTarget.getHistory();
         Iterable<TransHistoryItem> historyItems =
-                Iterables.transform(history.values(),
-                        new GetTranslationHistoryHandler.TargetHistoryToTransHistoryItemFunction());
-        return Response.ok(Lists.newArrayList(historyItems)).build();
+            Iterables.transform(history.values(),
+                new GetTranslationHistoryHandler.TargetHistoryToTransHistoryItemFunction());
+        List<ReviewComment> reviewComments = getReviewComments(tUnitId, hLocale);
+        GetTranslationHistoryResult result =
+            new GetTranslationHistoryResult(Lists.newArrayList(historyItems),
+            null, Lists.newArrayList(reviewComments));
+        return Response.ok(result).build();
+    }
+
+    protected List<ReviewComment>
+        getReviewComments(TransUnitId transUnitId, HLocale hLocale) {
+        List<HTextFlowTargetReviewComment> hComments =
+            textFlowTargetReviewCommentsDAO.getReviewComments(
+                transUnitId,
+                hLocale.getLocaleId());
+        return Lists.transform(hComments, input -> new ReviewComment(
+                new ReviewCommentId(input.getId()),
+                input.getCommentText(), input.getCommenterName(),
+                input.getCreationDate()
+            ));
     }
 }
