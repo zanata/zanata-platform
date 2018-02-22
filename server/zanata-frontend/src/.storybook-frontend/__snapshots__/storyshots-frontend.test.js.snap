@@ -18286,7 +18286,7 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18306,13 +18306,13 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -18417,7 +18417,7 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18437,13 +18437,13 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -18548,7 +18548,7 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18568,13 +18568,13 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -18679,7 +18679,7 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Style Guide & Glossary Violations"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18699,13 +18699,13 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -18810,7 +18810,7 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18830,13 +18830,13 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -18941,7 +18941,7 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Other (reason may be in comment section/history if necessary)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18961,13 +18961,13 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19110,7 +19110,7 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -19130,13 +19130,13 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19241,7 +19241,7 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -19261,13 +19261,13 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19372,7 +19372,7 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -19392,13 +19392,13 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19503,7 +19503,7 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Style Guide & Glossary Violations"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -19523,13 +19523,13 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19634,7 +19634,7 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -19654,13 +19654,13 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19765,7 +19765,7 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Other (reason may be in comment section/history if necessary)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -19785,13 +19785,13 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19902,7 +19902,7 @@ exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
 </div>
 `;
 
-exports[`Frontend Storyshots RejectionsForm commentRequired 1`] = `
+exports[`Frontend Storyshots RejectionsForm editable 1`] = `
 <form
   className="rejectionsForm form-inline"
 >
@@ -19928,7 +19928,7 @@ exports[`Frontend Storyshots RejectionsForm commentRequired 1`] = `
       onKeyDown={undefined}
       onSelect={undefined}
       placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-      readOnly={false}
+      readOnly={true}
       style={
         Object {
           "height": 0,
@@ -19948,13 +19948,13 @@ exports[`Frontend Storyshots RejectionsForm commentRequired 1`] = `
     </label>
     <br />
     <div
-      className="dropdown btn-group btn-group-sm btn-group-default"
+      className="dropdown disabled btn-group btn-group-sm btn-group-default"
     >
       <button
         aria-expanded={false}
         aria-haspopup={true}
         className="dropdown-toggle btn btn-sm btn-default"
-        disabled={false}
+        disabled={true}
         id="review-criteriareview-criteria-dropdown-basic"
         onClick={[Function]}
         onKeyDown={[Function]}
