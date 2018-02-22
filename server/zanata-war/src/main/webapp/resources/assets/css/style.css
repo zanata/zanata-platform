@@ -3338,7 +3338,8 @@ All icons also need the class `.i` added to them.
 
 Zanata icon webfont is preloaded in the following pages:
    1. gwt-editor/../webtrans/Application.xhtml
-   2. zanata-war/../WEB-INF/template/template_nobanner.xhtml
+   2. zanata-war/../WEB-INF/template/template.xhtml
+   3. zanata-war/../WEB-INF/template/template_nobanner.xhtml
 
 */
 @font-face {
