@@ -197,7 +197,6 @@
     color: @color-dark;
   }
 
-
   .page {
     overflow: hidden;
   }
@@ -346,11 +345,11 @@
     position: relative;
     margin-top: -1rem;
   }
-  .button--group input[type=radio]:checked+.button--Off, .button--group input[type=radio]:checked+.button--Off:hover {
+  .button--group input[type=radio]:checked + .button--Off, .button--group input[type=radio]:checked + .button--Off:hover {
     background-color: #546677 !important;
     color: #f7f7f7 !important;
   }
-  .button--group input[type=radio]:checked+.button--danger, .button--group input[type=radio]:checked+.button--danger:hover {
+  .button--group input[type=radio]:checked + .button--danger, .button--group input[type=radio]:checked + .button--danger:hover {
     color: #f7f7f7 !important;
   }
   label {
@@ -430,7 +429,7 @@
   }
   //fixes to Versions/Projects page
   #projectsWrapper ~ .g.u-fullWidth,
-  li#projects.is-active  {
+  li#projects.is-active {
     padding-bottom: 12rem;
   }
   // fix to settings dropdowns on languages tab
