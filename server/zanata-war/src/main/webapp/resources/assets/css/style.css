@@ -3335,6 +3335,11 @@ Also adds a hyphen to these words, except in Chrome, Opera and Android.
 
 All icons also need the class `.i` added to them.
 
+
+Zanata icon webfont is preloaded in the following pages:
+   1. gwt-editor/../webtrans/Application.xhtml
+   2. zanata-war/../WEB-INF/template/template_nobanner.xhtml
+
 */
 @font-face {
   font-family: 'zanata';

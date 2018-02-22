@@ -34,10 +34,21 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com/"
           crossorigin="anonymous" />
+    <!-- Preloader for zanata (icon) webfont.
+    zanata-war/src/main/webapp/resources/assets/css/style.css
+    Lines 3339-3342
+    -->
     <link rel="preload" as="font" crossorigin="anonymous" type="font/woff"
-          href="#{request.contextPath}/resources/assets/fonts/zanata-v6/zanata.woff" />
+      href="#{request.contextPath}/resources/assets/fonts/zanata-v6/zanata.woff" />
+    <!-- Preloader for fontello (jsf page icon) webfont.
+    1.  zanata-war/src/main/webapp/resources/fontello/css/fontello.css
+        Lines 3-6
+    2.  services/src/test/java/org/zanata/webtrans/public/images/fontello/css
+        /fontello.css
+        Lines 3-6
+    -->
     <link rel="preload" as="font" crossorigin="anonymous" type="font/woff"
-          href="#{request.contextPath}/resources/fontello/font/fontello.woff" />
+      href="#{request.contextPath}/resources/fontello/font/fontello.woff" />
 
     <!--[if gt IE 8]><!-->
     <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/assets/css/style.css"/>
