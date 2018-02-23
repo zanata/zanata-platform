@@ -112,9 +112,13 @@ class TextInput extends Component {
   }
 
   _onChange = (e) => {
-    const {onChange, onChangeText} = this.props
-    if (onChangeText) onChangeText(e.target.value)
-    if (onChange) onChange(e)
+    const {onChange, onChangeText, maxLength} = this.props
+    const textValue = e.target.value
+    const limitText = (textValue.length > maxLength)
+      ? textValue.slice(0, maxLength)
+      : textValue
+    if (onChangeText) onChangeText(limitText)
+    if (onChange && (textValue.length > maxLength)) onChange(e)
   }
 
   _onFocus = (e) => {
