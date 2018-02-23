@@ -62,7 +62,6 @@ class ActivityFeedItem extends Component {
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
       imageUrl: PropTypes.string.isRequired
     }).isRequired
   }
@@ -84,7 +83,7 @@ class ActivityFeedItem extends Component {
       </span>
     )
     const name = (
-      <Link useHref link={profileUrl(user.username)}>{user.name}</Link>
+      <Link useHref link={profileUrl(user.name)}>{user.name}</Link>
     )
     const priority = (
       <span className='CriteriaText'>
