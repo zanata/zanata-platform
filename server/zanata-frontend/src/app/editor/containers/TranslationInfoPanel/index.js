@@ -3,7 +3,7 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { setSidebarVisibility } from '../../actions'
 import { Tabs, FormGroup, InputGroup,
-  FormControl, Button } from 'react-bootstrap'
+  FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined, orderBy } from 'lodash'
@@ -48,6 +48,18 @@ class TranslationInfoPanel extends React.Component {
       })
     ),
     isRTL: PropTypes.bool.isRequired
+  }
+
+  constructor (props) {
+    super(props)
+    this.handleSelectTab = this.handleSelectTab.bind(this)
+    this.state = {
+      key: 1
+    }
+  }
+
+  handleSelectTab (key) {
+    this.setState({ key })
   }
 
   sidebarDetails = () => {
@@ -127,7 +139,7 @@ class TranslationInfoPanel extends React.Component {
 
   filterActivityItems = () => {
     const { reviewComments, historyItems } = this.props
-    if (isEmpty(reviewComments)) {
+    if (isEmpty(reviewComments) && isEmpty(historyItems)) {
       return undefined
     }
     const reviewCommentsList = reviewComments.map((value) => {
@@ -198,12 +210,18 @@ class TranslationInfoPanel extends React.Component {
         <div className="SidebarEditor-wrapper">
           {this.sidebarDetails()}
         </div>
-        <Tabs id="SidebarEditor-tabsPane1" defaultActiveKey={1}>
-          <ActivityTab
-            activityItems={activityItems}
-            eventKey={1}
-            title={activityTitle} />
-          <GlossaryTab eventKey={2} title={glossaryTitle} />
+        <Tabs activeKey={this.state.key}
+          onSelect={this.handleSelectTab}
+          id="SidebarEditor-tabsPane1">
+          <Tab eventKey={1} title={activityTitle}>
+            <ActivityTab
+              activeKey={this.state.key}
+              activityItems={activityItems} />
+          </Tab>
+          <Tab eventKey={2} title={glossaryTitle}>
+            <GlossaryTab
+              activeKey={this.state.key} />
+          </Tab>
         </Tabs>
       </div>
     )
