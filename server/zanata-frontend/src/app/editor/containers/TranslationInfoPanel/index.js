@@ -1,5 +1,4 @@
 // @ts-nocheck
-// TODO damason split this into separate components for each tab and panel
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { setSidebarVisibility } from '../../actions'
@@ -27,6 +26,29 @@ class TranslationInfoPanel extends React.Component {
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
       lastModifiedTime: PropTypes.instanceOf(Date)
+    }),
+    transHistory: PropTypes.shape({
+      historyItems: PropTypes.arrayOf(
+        PropTypes.shape({
+          contents: PropTypes.arrayOf(PropTypes.string),
+          modifiedBy: PropTypes.string,
+          modifiedDate: PropTypes.number,
+          optionalTag: PropTypes.string,
+          revisionComment: PropTypes.string,
+          status: PropTypes.string,
+          versionNum: PropTypes.string
+        })
+      ),
+      // TODO: determine this from reviewComments and historyItems
+      latest: PropTypes.any,
+      reviewComments: PropTypes.arrayOf(
+        PropTypes.shape({
+          comment: PropTypes.string,
+          commenterName: PropTypes.string,
+          creationDate: PropTypes.numer,
+          id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
+        })
+      )
     }),
     isRTL: PropTypes.bool.isRequired
   }
@@ -158,13 +180,14 @@ class TranslationInfoPanel extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const { glossary, phrases, context } = state
+  const { glossary, phrases, context, activity } = state
   const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
 
   const { results, searchText } = glossary
   const glossaryResults = results.get(searchText)
   const glossaryCount = glossaryResults ? glossaryResults.length : 0
+  const transHistory = activity.transHistory
 
   // Need to check whether phrase itself is undefined since the detail may not
   // yet have been fetched from the server.
@@ -176,6 +199,7 @@ function mapStateToProps (state) {
   const newProps = {
     glossaryCount,
     hasSelectedPhrase,
+    transHistory,
     isRTL
   }
 
