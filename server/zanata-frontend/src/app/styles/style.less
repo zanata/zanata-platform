@@ -9,11 +9,16 @@
 @import "../components/TMX/index.less";
 @import "../components/TriCheckbox/index.less";
 @import "../components/RejectionsForm/index.less";
-@import "legacy.less";
+@import "legacy.less"; // jsf and gwt overrides
 @import "./bstrap-styleguide.less";
 
-/* Base containers */
+/* Class wrapper for bootstrap css. Used in:
+   1. components/Nav/index.js
+   2. entrypoint/index.js
+   2. containers/App.js
+ */
 .bstrapReact {
+
   .containerEditor {
     margin-left: 6rem;
     width: 100%;
@@ -6157,6 +6162,7 @@
 
 }
 
+/* Media queries shared between jsf and bootstrap pages */
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
 
