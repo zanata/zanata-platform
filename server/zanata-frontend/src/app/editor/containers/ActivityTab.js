@@ -65,60 +65,7 @@ class ActivityTab extends React.Component {
 function mapStateToProps (_state) {
   // Dummy data. Kept for structure reference.
   // FIXME delete when the component is wired into the app.
-  const lastModifiedTime = new Date()
   return {
-    activityItems: [
-      {
-        type: 'revision',
-        content: 'নাম',
-        lastModifiedTime,
-        status: 'approved',
-        user: {
-          name: 'Reviewdude',
-          imageUrl:
-            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
-        }
-      }, {
-        type: 'revision',
-        content: 'নাম',
-        lastModifiedTime,
-        status: 'translated',
-        user: {
-          name: 'Kathryn',
-          imageUrl:
-            'https://gravatar.com/avatar/7e5aaf4eee27288eab09561fa201675a'
-        }
-      }, {
-        type: 'comment',
-        content: 'I have no idea what I am doing',
-        lastModifiedTime,
-        user: {
-          name: 'Kathryn',
-          imageUrl:
-            'https://gravatar.com/avatar/7e5aaf4eee27288eab09561fa201675a'
-        }
-      }, {
-        type: 'revision',
-        content: 'নাম',
-        lastModifiedTime,
-        status: 'fuzzy',
-        user: {
-          name: 'Kathryn',
-          imageUrl:
-            'https://gravatar.com/avatar/7e5aaf4eee27288eab09561fa201675a'
-        }
-      }, {
-        type: 'revision',
-        content: 'নাম',
-        lastModifiedTime,
-        status: 'rejected',
-        user: {
-          name: 'Reviewdude',
-          imageUrl:
-            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
-        }
-      }
-    ],
     selectedActivites: 'all',
     selectedLanguages: 'current'
   }

@@ -11,6 +11,22 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 
+// Dummy data. Kept for structure reference.
+// FIXME delete when the component is wired into the app.
+const lastModifiedTime = new Date()
+const defaultActivityItems = [
+  {
+    type: 'revision',
+    content: 'নাম',
+    lastModifiedTime,
+    status: 'approved',
+    user: {
+      name: 'Reviewdude',
+      imageUrl:
+        'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+    }
+  }]
+
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
@@ -27,29 +43,25 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedBy: PropTypes.string,
       lastModifiedTime: PropTypes.instanceOf(Date)
     }),
-    transHistory: PropTypes.shape({
-      historyItems: PropTypes.arrayOf(
-        PropTypes.shape({
-          contents: PropTypes.arrayOf(PropTypes.string),
-          modifiedBy: PropTypes.string,
-          modifiedDate: PropTypes.number,
-          optionalTag: PropTypes.string,
-          revisionComment: PropTypes.string,
-          status: PropTypes.string,
-          versionNum: PropTypes.string
-        })
-      ),
-      // TODO: determine this from reviewComments and historyItems
-      latest: PropTypes.any,
-      reviewComments: PropTypes.arrayOf(
-        PropTypes.shape({
-          comment: PropTypes.string,
-          commenterName: PropTypes.string,
-          creationDate: PropTypes.numer,
-          id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
-        })
-      )
-    }),
+    historyItems: PropTypes.arrayOf(
+      PropTypes.shape({
+        contents: PropTypes.arrayOf(PropTypes.string),
+        modifiedBy: PropTypes.string,
+        modifiedDate: PropTypes.number,
+        optionalTag: PropTypes.string,
+        revisionComment: PropTypes.string,
+        status: PropTypes.string,
+        versionNum: PropTypes.string
+      })
+    ),
+    reviewComments: PropTypes.arrayOf(
+      PropTypes.shape({
+        comment: PropTypes.string,
+        commenterName: PropTypes.string,
+        creationDate: PropTypes.numer,
+        id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
+      })
+    ),
     isRTL: PropTypes.bool.isRequired
   }
 
@@ -81,7 +93,6 @@ class TranslationInfoPanel extends React.Component {
       </ul>
     )
   }
-
   detailItem = (label, value) => {
     const valueDisplay = isEmpty(value)
         ? <span className="SidebarEditor-details--nocontent">No content</span>
@@ -129,6 +140,27 @@ class TranslationInfoPanel extends React.Component {
     )
   }
 
+  filterActivityItems = () => {
+    const { reviewComments } = this.props
+    if (isEmpty(reviewComments)) {
+      return defaultActivityItems
+    }
+    const reviewCommentsList = reviewComments.map((value, index) => {
+      return {
+        type: 'comment',
+        content: value.comment,
+        lastModifiedTime: Date(value.modifiedDate),
+        status: 'rejected',
+        user: {
+          name: value.commenterName,
+          imageUrl:
+            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+        }
+      }
+    })
+    return reviewCommentsList
+  }
+
   render () {
     const { glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
@@ -150,6 +182,8 @@ class TranslationInfoPanel extends React.Component {
       </span>
     )
 
+    const activityItems = this.filterActivityItems()
+
     return (
       <div>
         <h1 className="SidebarEditor-heading">
@@ -165,14 +199,11 @@ class TranslationInfoPanel extends React.Component {
           {this.sidebarDetails()}
         </div>
         <Tabs id="SidebarEditor-tabsPane1" defaultActiveKey={1}>
-          { /* <Tab eventKey={2} title={activityTitle}>
-            <div className="sidebar-wrapper" id="tab1">
-              Tab 1 content
-            </div>
-          </Tab> */ }
-          <ActivityTab eventKey={1} title={activityTitle} />
+          <ActivityTab
+            activityItems={activityItems}
+            eventKey={1}
+            title={activityTitle} />
           <GlossaryTab eventKey={2} title={glossaryTitle} />
-
         </Tabs>
       </div>
     )
@@ -187,7 +218,8 @@ function mapStateToProps (state) {
   const { results, searchText } = glossary
   const glossaryResults = results.get(searchText)
   const glossaryCount = glossaryResults ? glossaryResults.length : 0
-  const transHistory = activity.transHistory
+  const historyItems = activity.transHistory.historyItems
+  const reviewComments = activity.transHistory.reviewComments
 
   // Need to check whether phrase itself is undefined since the detail may not
   // yet have been fetched from the server.
@@ -199,7 +231,8 @@ function mapStateToProps (state) {
   const newProps = {
     glossaryCount,
     hasSelectedPhrase,
-    transHistory,
+    historyItems,
+    reviewComments,
     isRTL
   }
 
