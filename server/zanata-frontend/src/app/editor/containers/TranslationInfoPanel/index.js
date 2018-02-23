@@ -6,8 +6,9 @@ import { Tabs, FormGroup, InputGroup,
   FormControl, Button } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
-import { isEmpty, isUndefined } from 'lodash'
+import { isEmpty, isUndefined, orderBy } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
+import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 
@@ -125,17 +126,16 @@ class TranslationInfoPanel extends React.Component {
   }
 
   filterActivityItems = () => {
-    const { reviewComments } = this.props
+    const { reviewComments, historyItems } = this.props
     if (isEmpty(reviewComments)) {
       return undefined
     }
-    const reviewCommentsList = reviewComments.map((value, index) => {
+    const reviewCommentsList = reviewComments.map((value) => {
       const lastModified = new Date(value.creationDate)
       return {
         type: 'comment',
         content: value.comment,
         lastModifiedTime: lastModified,
-        status: 'rejected',
         user: {
           name: value.commenterName,
           imageUrl:
@@ -143,7 +143,22 @@ class TranslationInfoPanel extends React.Component {
         }
       }
     })
-    return reviewCommentsList
+    const historyItemsList = historyItems.map((value) => {
+      const lastModified = new Date(value.modifiedDate)
+      return {
+        type: 'revision',
+        content: value.contents[0],
+        lastModifiedTime: lastModified,
+        status: transUnitStatusToPhraseStatus(value.status),
+        user: {
+          name: value.modifiedBy,
+          imageUrl:
+            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+        }
+      }
+    })
+    const combinedHistory = reviewCommentsList.concat(historyItemsList)
+    return orderBy(combinedHistory, ['lastModifiedTime'], ['desc'])
   }
 
   render () {

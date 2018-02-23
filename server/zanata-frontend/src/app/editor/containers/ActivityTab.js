@@ -20,8 +20,8 @@ class ActivityTab extends React.Component {
       content: PropTypes.string.isRequired,
       lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
       // TODO damason define type for status
-      status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
-        'untranslated']),
+      status: PropTypes.oneOf(['translated', 'needswork', 'approved',
+      'rejected', 'untranslated']),
       user: PropTypes.shape({
         name: PropTypes.string.isRequired,
         imageUrl: PropTypes.string.isRequired

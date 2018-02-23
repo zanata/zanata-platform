@@ -56,7 +56,7 @@ class ActivityFeedItem extends Component {
       MAJOR,
       CRITICAL
     ]),
-    status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
+    status: PropTypes.oneOf(['translated', 'needswork', 'approved', 'rejected',
       'untranslated']),
     textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']),
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
@@ -179,7 +179,7 @@ class ActivityFeedItem extends Component {
             }} />
         )
 
-      case 'fuzzy':
+      case 'needswork':
         // Nested formatted messages are needed to highlight part of the message
         const fuzzyRevision = (
           <span className='u-textUnsure'>
