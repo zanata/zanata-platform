@@ -11,22 +11,6 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 
-// Dummy data. Kept for structure reference.
-// FIXME delete when the component is wired into the app.
-const lastModifiedTime = new Date()
-const defaultActivityItems = [
-  {
-    type: 'revision',
-    content: 'নাম',
-    lastModifiedTime,
-    status: 'approved',
-    user: {
-      name: 'Reviewdude',
-      imageUrl:
-        'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
-    }
-  }]
-
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
@@ -58,7 +42,7 @@ class TranslationInfoPanel extends React.Component {
       PropTypes.shape({
         comment: PropTypes.string,
         commenterName: PropTypes.string,
-        creationDate: PropTypes.numer,
+        creationDate: PropTypes.number,
         id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
       })
     ),
@@ -143,13 +127,14 @@ class TranslationInfoPanel extends React.Component {
   filterActivityItems = () => {
     const { reviewComments } = this.props
     if (isEmpty(reviewComments)) {
-      return defaultActivityItems
+      return undefined
     }
     const reviewCommentsList = reviewComments.map((value, index) => {
+      const lastModified = new Date(value.creationDate)
       return {
         type: 'comment',
         content: value.comment,
-        lastModifiedTime: Date(value.modifiedDate),
+        lastModifiedTime: lastModified,
         status: 'rejected',
         user: {
           name: value.commenterName,

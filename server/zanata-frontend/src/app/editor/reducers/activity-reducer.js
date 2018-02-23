@@ -4,9 +4,9 @@ import update from 'immutability-helper'
 
 const defaultState = {
   transHistory: {
-    historyItems: {},
+    historyItems: undefined,
     latest: {},
-    reviewComments: {}
+    reviewComments: undefined
   }
 }
 

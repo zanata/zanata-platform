@@ -7,6 +7,9 @@ import ActivitySelectList from '../components/ActivitySelectList'
 import LanguageSelectList from '../components/LanguageSelectList'
 import CommentBox from '../components/CommentBox'
 import ActivityFeedItem from '../components/ActivityFeedItem'
+import { isEmpty } from 'lodash'
+
+const DO_NOT_RENDER = undefined
 
 class ActivityTab extends React.Component {
 
@@ -23,7 +26,7 @@ class ActivityTab extends React.Component {
         name: PropTypes.string.isRequired,
         imageUrl: PropTypes.string.isRequired
       }).isRequired
-    })).isRequired,
+    })),
     // eventKey prop to use for the bootstrap Tab
     eventKey: PropTypes.number.isRequired,
     postComment: PropTypes.func.isRequired,
@@ -43,7 +46,10 @@ class ActivityTab extends React.Component {
       selectedActivites,
       selectedLanguages
     } = this.props
-
+    const ActivityItems = (isEmpty(activityItems))
+      ? DO_NOT_RENDER
+      : activityItems.map((item, index) => (
+        <ActivityFeedItem key={index} {...item} />))
     return (
       <Tab eventKey={eventKey} title=''>
         <div className='SidebarEditor-wrapper' id='SidebarEditorTabs-pane2'>
@@ -54,8 +60,7 @@ class ActivityTab extends React.Component {
           <LanguageSelectList selectItem={selectLanguageFilter}
             selected={selectedLanguages} />
           <CommentBox postComment={postComment} />
-          {activityItems.map((item, index) => (
-            <ActivityFeedItem key={index} {...item} />))}
+          {ActivityItems}
         </div>
       </Tab>
     )
