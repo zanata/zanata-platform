@@ -3,9 +3,8 @@
 */
 
 @import "./variables.less";
-
-.new-zanata { //body class
-
+.new-zanata {
+  //body class
   .bg--pop-highest {
     border: none;
   }
@@ -13,25 +12,21 @@
     width: 100%;
     height: 100%;
   }
-
   html {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
-
   .htmlStyle {
     font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 1.5;
     background-color: #fff;
     font-size: @font-size-base;
   }
-
   .u-fullWidth {
     width: 100%;
   }
-
   .u-blockPadding {
     padding: @spacing-rh;
   }
@@ -39,67 +34,54 @@
     color: @color-neutral;
     margin-top: 0.3em;
   }
-
   .u-textNeutral, .txt--neutral {
     color: @color-neutral;
   }
-
   .iconUser {
     fill: #03A6D7;
     margin-right: @spacing-re;
     vertical-align: sub;
   }
-
   .iconProject {
     margin-right: @spacing-re;
   }
-
   .iconLanguage {
     vertical-align: sub;
   }
-
   .iconUser-muted {
     color: @color-muted;
     margin-right: @spacing-rh;
   }
-
   .iconsStatus {
     margin-right: @spacing-rh;
   }
-
   .iconDelete {
     vertical-align: sub;
   }
-
   .iconsHeader {
     vertical-align: sub;
   }
-
   .iconUsers-muted, .iconTranslate-muted {
     color: @color-muted;
     margin-right: @spacing-rh;
     margin-left: @spacing-rq;
     vertical-align: sub;
   }
-
   .iconTranslate-neutral, .iconLanguage-neutral, .iconGlossary-neutral {
     color: rgb(189, 212, 220);
     margin-left: @spacing-rq;
     margin-right: @spacing-re;
   }
-
   img.avatar-round {
     margin-right: @spacing-rq;
     border-radius: @border-radius-img;
     height: 2.25rem;
     width: 2.25rem;
   }
-
   .u-textMutedLeft {
     color: @color-muted;
     margin-left: @spacing-rq;
   }
-
   .lineClamp {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -107,13 +89,11 @@
     max-height: 24px;
     padding-left: @spacing-rh;
   }
-
   a.lineClamp {
     display: -webkit-box;
     *display: inline;
     zoom: 1;
   }
-
   a.lineClamp:after {
     content: ".";
     font-size: 0;
@@ -123,7 +103,6 @@
     height: 0;
     width: 0;
   }
-
   .u-embedResponsive {
     position: relative;
     display: block;
@@ -131,37 +110,29 @@
     height: 0;
     padding: 0;
   }
-
   .u-block {
     display: block;
   }
-
   .u-centerBlock {
     display: block;
     margin-right: auto;
     margin-left: auto;
   }
-
   .u-pullRight {
     float: right !important;
   }
-
   .u-pullLeft {
     float: left !important;
   }
-
   .hide {
     display: none !important;
   }
-
   .show {
     display: block !important;
   }
-
   .invisible {
     visibility: hidden;
   }
-
   .text-hide {
     font: 0/0 a;
     color: transparent;
@@ -169,68 +140,53 @@
     background-color: transparent;
     text-shadow: none;
   }
-
   .hidden {
     display: none !important;
   }
-
   .affix {
     position: fixed;
-  }
-
-  //fix for admin panel icons
+  } //fix for admin panel icons
   .panel__header i.i--add:not(.i--large) {
     color: inherit !important;
   }
-
   .button--small i.i--settings {
     vertical-align: baseline;
   }
-
   i.i--left.i--lock, i.i--left.i--trash {
     color: #fff;
     vertical-align: baseline;
   }
-
   #versionPage.g {
     width: 100%;
   }
-
   #fileUpload-toggleBtn i.i--add, #addMember-btn i.i--add {
     color: @color-dark;
   }
-
   .page {
     overflow: hidden;
   }
-
   .abs {
     position: absolute;
   }
-
   .container {
     margin-right: auto;
     margin-left: auto;
     padding-right: @spacing-base;
     padding-left: @spacing-base;
   }
-
   .container:focus {
     outline: 0;
   }
-
   .container:after {
     display: block;
     clear: both;
     content: "";
   }
-
   body.templateStyle {
     background-color: inherit;
     font-size: inherit;
     overflow: hidden !important;
   }
-
   .templateWrapper {
     align-items: flex-start;
     -webkit-align-items: flex-start;
@@ -246,7 +202,6 @@
     -webkit-flex-shrink: 0;
     height: 100%;
   }
-
   .templateContainer {
     align-items: flex-start;
     -webkit-align-items: flex-start;
@@ -265,11 +220,9 @@
     width: 100%;
     position: fixed;
   }
-
   .templateContainer .rootMain {
     min-width: fit-content;
   }
-
   .rootMain {
     max-width: 100%;
     width: 100%;
@@ -280,7 +233,6 @@
     padding-top: 0 !important;
     margin-bottom: @spacing-base-and-a-half;
   }
-
   .rootMain-content {
     align-items: flex-start;
     -webkit-align-items: flex-start;
@@ -348,11 +300,11 @@
     position: relative;
     margin-top: -1rem;
   }
-  .button--group input[type=radio]:checked + .button--Off, .button--group input[type=radio]:checked + .button--Off:hover {
+  .button--group input[type=radio]:checked+.button--Off, .button--group input[type=radio]:checked+.button--Off:hover {
     background-color: #546677 !important;
     color: #f7f7f7 !important;
   }
-  .button--group input[type=radio]:checked + .button--danger, .button--group input[type=radio]:checked + .button--danger:hover {
+  .button--group input[type=radio]:checked+.button--danger, .button--group input[type=radio]:checked+.button--danger:hover {
     color: #f7f7f7 !important;
   }
   label {
@@ -367,12 +319,10 @@
   /* Fix for Search and Replace in GWT */
   table .projectWideSearchResultsDocumentBody {
     display: table !important;
-  }
-  // Bugfix for a container, do not remove
+  } // Bugfix for a container, do not remove
   .GNM0BIKDBN {
     min-width: unset;
-  }
-  // GWT cancel buttons at bottom of pages
+  } // GWT cancel buttons at bottom of pages
   form .button.button--link {
     padding: 0.1875em 0.75em
   }
@@ -401,7 +351,6 @@
     display: flex !important;
     padding: 10px !important;
   }
-
   #gwt-debug-transHistoryTabPanel .gwt-TabLayoutPanelContent {
     overflow-x: hidden !important;
   }
@@ -429,13 +378,10 @@
     min-height: 1em;
     word-wrap: break-word;
     white-space: pre-wrap;
-  }
-  //fixes to Versions/Projects page
-  #projectsWrapper ~ .g.u-fullWidth,
-  li#projects.is-active {
+  } //fixes to Versions/Projects page
+  #projectsWrapper~.g.u-fullWidth, li#projects.is-active {
     padding-bottom: 12rem;
-  }
-  // fix to settings dropdowns on languages tab
+  } // fix to settings dropdowns on languages tab
   li#settings ul.tabsContent {
     padding-bottom: 10rem;
   }
