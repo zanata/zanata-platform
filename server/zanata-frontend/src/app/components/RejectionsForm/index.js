@@ -80,7 +80,8 @@ class RejectionsForm extends Component {
       isCommentRequired: checked
     }))
   }
-  onTextChange = text => {
+  onTextChange = e => {
+    const text = e.target.value
     this.setState(_prevState => ({
       description: text
     }))
@@ -146,7 +147,7 @@ class RejectionsForm extends Component {
         <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
           <ControlLabel>Criteria</ControlLabel><br />
           <TextInput multiline editable={isAdminMode || commentRequired}
-            type='text' numberOfLines={2} onChangeText={this.onTextChange}
+            type='text' numberOfLines={2} onChange={this.onTextChange}
             placeholder={criteriaPlaceholder} maxLength={255}
             value={this.state.description} />
         </FormGroup>
