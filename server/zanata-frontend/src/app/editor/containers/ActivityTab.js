@@ -66,7 +66,6 @@ function mapStateToProps (_state) {
   // Dummy data. Kept for structure reference.
   // FIXME delete when the component is wired into the app.
   return {
-    selectedActivites: 'all',
     selectedLanguages: 'current'
   }
 }
@@ -76,8 +75,6 @@ function mapDispatchToProps (_dispatch) {
   /* eslint-disable no-console */
   return {
     postComment: (e) => console.log('postComment: ' + e),
-    selectActivityTypeFilter:
-      (e) => console.log('selectActivityTypeFilter: ' + e),
     selectLanguageFilter:
       (e) => console.log('selectLanguageFilter: ' + e)
   }

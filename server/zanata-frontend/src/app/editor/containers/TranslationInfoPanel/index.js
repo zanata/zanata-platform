@@ -53,13 +53,20 @@ class TranslationInfoPanel extends React.Component {
   constructor (props) {
     super(props)
     this.handleSelectTab = this.handleSelectTab.bind(this)
+    this.selectActivityTypeFilter =
+      this.selectActivityTypeFilter.bind(this)
     this.state = {
-      key: 1
+      key: 1,
+      selectedActivites: 'all'
     }
   }
 
   handleSelectTab (key) {
     this.setState({ key })
+  }
+
+  selectActivityTypeFilter (activityFilterType) {
+    this.setState(({ selectedActivites: activityFilterType }))
   }
 
   sidebarDetails = () => {
@@ -216,7 +223,9 @@ class TranslationInfoPanel extends React.Component {
           <Tab eventKey={1} title={activityTitle}>
             <ActivityTab
               activeKey={this.state.key}
-              activityItems={activityItems} />
+              activityItems={activityItems}
+              selectedActivites={this.state.selectedActivites}
+              selectActivityTypeFilter={this.selectActivityTypeFilter} />
           </Tab>
           <Tab eventKey={2} title={glossaryTitle}>
             <GlossaryTab

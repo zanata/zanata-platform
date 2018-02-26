@@ -1,24 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import SelectButtonList from '../../components/SelectButtonList'
-
-const items = [
-  {
-    id: 'all',
-    icon: 'clock',
-    label: 'All'
-  },
-  {
-    id: 'comments',
-    icon: 'comment',
-    label: 'Comments'
-  },
-  {
-    id: 'updates',
-    icon: 'refresh',
-    label: 'Updates'
-  }
-]
+import { filterActivityTypes } from '../../utils/activity-util'
 
 const idType = PropTypes.oneOf(['all', 'comments', 'updates'])
 
@@ -30,7 +13,7 @@ class ActivitySelectList extends React.Component {
 
   render () {
     return (
-      <SelectButtonList items={items}
+      <SelectButtonList items={filterActivityTypes}
         className="Button--secondary" selected={this.props.selected}
         selectItem={this.props.selectItem}
       />
