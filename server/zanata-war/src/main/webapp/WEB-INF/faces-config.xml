@@ -171,7 +171,7 @@
     <navigation-case>
       <from-action>#{serverConfigurationBean.update}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/admin/home.xhtml</to-view-id>
+      <to-view-id>/admin/home</to-view-id>
       <redirect/>
     </navigation-case>
   </navigation-rule>

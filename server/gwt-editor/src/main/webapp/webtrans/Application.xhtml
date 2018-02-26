@@ -20,7 +20,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>#{msgs['jsf.PageTitle']}</title>
     <link type="image/x-icon" rel="shortcut icon"
-        href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
+      href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
+
+    <!-- Preloader for zanata (icon) webfont.
+    zanata-war/src/main/webapp/resources/assets/css/style.css
+    Lines 3339-3342
+    -->
+    <link rel="preload" as="font" crossorigin="anonymous" type="font/woff"
+      href="#{request.contextPath}/resources/assets/fonts/zanata-v6/zanata.woff" />
+    <!-- Preloader for fontello (jsf page icon) webfont.
+    1.  zanata-war/src/main/webapp/resources/fontello/css/fontello.css
+        Lines 3-6
+    2.  services/src/test/java/org/zanata/webtrans/public/images/fontello/css
+        /fontello.css
+        Lines 3-6
+    -->
+    <link rel="preload" as="font" crossorigin="anonymous" type="font/woff"
+      href="#{request.contextPath}/resources/fontello/font/fontello.woff" />
+
     <link rel="stylesheet" href="#{frontendAssets.frontendCss}" type="text/css"/>
     <link type="text/css" rel="stylesheet"
       href="#{request.contextPath}/resources/fontello/css/fontello.css"/>

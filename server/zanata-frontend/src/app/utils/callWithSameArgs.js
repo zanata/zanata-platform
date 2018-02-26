@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Safe chained function
  *

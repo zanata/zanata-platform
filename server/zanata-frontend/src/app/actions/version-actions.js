@@ -1,4 +1,3 @@
-// @ts-check
 import { CALL_API, getJSON } from 'redux-api-middleware'
 import { createAction } from 'redux-actions'
 import {

@@ -11,9 +11,19 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
-  STATUS_APPROVED
+  STATUS_APPROVED,
+  STATUS_REJECTED
 } from '../utils/status-util'
-import { apiUrl, serverUrl } from '../../config'
+import {
+  LOCALE_MESSAGES_REQUEST,
+  LOCALE_MESSAGES_SUCCESS,
+  LOCALE_MESSAGES_FAILURE
+} from '../actions/header-action-types'
+import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
+import { CALL_API } from 'redux-api-middleware'
+import { includes } from 'lodash'
+import { apiUrl, serverUrl, appUrl } from '../../config'
+import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
 
@@ -48,6 +58,27 @@ export function fetchLocales () {
     credentials: 'include',
     method: 'GET'
   })
+}
+
+export function fetchI18nLocale (locale) {
+  const endpoint = `${appUrl}/messages/${locale}.json`
+  const apiTypes = [
+    LOCALE_MESSAGES_REQUEST,
+    {
+      type: LOCALE_MESSAGES_SUCCESS,
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    LOCALE_MESSAGES_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
 }
 
 export function fetchMyInfo () {
@@ -117,7 +148,7 @@ export function savePhrase ({ id, revision, plural },
       'Content-Type': 'application/json'
     },
     mode: 'cors',
-    body: JSON.stringify({
+    body: stableStringify({
       id,
       revision,
       plural,
@@ -142,6 +173,8 @@ function phraseStatusToTransUnitStatus (status) {
       return 'Translated'
     case STATUS_APPROVED:
       return 'Approved'
+    case STATUS_REJECTED:
+      return 'Rejected'
     default:
       console.error('Save attempt with invalid status', status)
   }

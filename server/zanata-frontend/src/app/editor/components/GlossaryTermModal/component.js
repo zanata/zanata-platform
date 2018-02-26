@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Panel, Row, Table } from 'react-bootstrap'

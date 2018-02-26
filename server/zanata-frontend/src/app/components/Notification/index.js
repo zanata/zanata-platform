@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Notification from './component'
 import { connect } from 'react-redux'
 import { clearMessage } from '../../actions/common-actions'
@@ -5,7 +6,7 @@ import { clearMessage } from '../../actions/common-actions'
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    handleClearMessage: (termId) => dispatch(clearMessage())
+    handleClearMessage: (_termId) => dispatch(clearMessage())
   }
 }
 

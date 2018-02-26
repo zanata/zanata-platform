@@ -9,7 +9,6 @@ import {
   updateSetting,
   saveSettings
 } from './settings-actions'
-// import { createAction } from 'redux-actions'
 import {
   SETTINGS_REQUEST,
   SETTINGS_SUCCESS,
