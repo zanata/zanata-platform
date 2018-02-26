@@ -44,9 +44,11 @@ describe('CriteriaDropdown', () => {
         onToggle={defaultClick}
         className='dropdown-menu Criteria'>
         <Dropdown.Button>
-          <a className='EditorDropdown-item'>
+          <a className='EditorDropdown-item ellipsis'>
             {'One'}
-            <Icon className='n1 u-pullRight' name='chevron-down' />
+            <span className='arrow'>
+              <Icon className='n1' name='chevron-down' />
+            </span>
           </a>
         </Dropdown.Button>
         <Dropdown.Content>

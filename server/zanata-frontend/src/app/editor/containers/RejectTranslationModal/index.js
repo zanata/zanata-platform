@@ -40,7 +40,7 @@ export class RejectTranslationModal extends Component {
     review: {
       selectedPriority: MINOR,
       priorityId: 0,
-      criteriaDescription: '-- Select a predefined criteria --',
+      criteriaDescription: '',
       criteriaId: undefined,
       reviewComment: ''
     },

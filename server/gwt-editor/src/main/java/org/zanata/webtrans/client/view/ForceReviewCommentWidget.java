@@ -63,8 +63,7 @@ public class ForceReviewCommentWidget extends ShortcutContextAwareDialogBox
         panel.setWidth("800px");
         listBox = new ListBox();
         listBox.setMultipleSelect(false);
-        // add an empty item
-        listBox.addItem("--- Select a predefined criteria ---");
+        listBox.addItem("");
         panel.add(listBox);
         panel.add(inputWidget);
         DialogBoxCloseButton button = new DialogBoxCloseButton(this);
