@@ -7,6 +7,7 @@ import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
 import { Icon, TextInput, SelectableDropdown } from '../../components'
 import Toggle from 'react-toggle'
 import { isEmpty } from 'lodash'
+
 /**
  * Reject Translations Administration panel
  */
@@ -15,7 +16,9 @@ export const MAJOR = 'Major'
 export const CRITICAL = 'Critical'
 const DO_NOT_RENDER = undefined
 
-const tooltip = (<Tooltip id='tooltip'>Save criteria</Tooltip>)
+const tooltipSave = (<Tooltip id='tooltip'>Save criteria</Tooltip>)
+
+const tooltipDelete = (<Tooltip id='tooltip'>Delete criteria</Tooltip>)
 
 function priorityToTextState (priority) {
   switch (priority) {
@@ -113,13 +116,15 @@ class RejectionsForm extends Component {
     const priorityDisabled = !isAdminMode && !commentRequired
     const deleteBtn = displayDelete
       ? (
-      <Button bsStyle='danger' className={className} onClick={this.onDelete}>
-        <Icon name='trash' className='s0 iconEdit' />
-      </Button>
+      <OverlayTrigger placement='top' overlay={tooltipDelete}>
+        <Button bsStyle='danger' className={className} onClick={this.onDelete}>
+          <Icon name='trash' className='s0 iconEdit' />
+        </Button>
+      </OverlayTrigger>
       ) : DO_NOT_RENDER
     const commentToggle = isAdminMode ? (
-      <FormGroup controlId='formInlineEditable'>
-        <ControlLabel>Editable</ControlLabel><br />
+      <FormGroup id='toggleComment' controlId='formInlineEditable'>
+        <ControlLabel>Comment required</ControlLabel><br />
         <Toggle icons={false} onChange={this.onEditableChange}
           checked={this.state.isCommentRequired} />
       </FormGroup>
@@ -128,7 +133,7 @@ class RejectionsForm extends Component {
     const formBtn = isAdminMode ? (
       <FormGroup controlId='formInlineButtonEdit'>
         <ControlLabel>&nbsp;</ControlLabel><br />
-        <OverlayTrigger placement='top' overlay={tooltip}>
+        <OverlayTrigger placement='top' overlay={tooltipSave}>
           <Button bsStyle='primary' className={className} onClick={this.onSave}
             disabled={error}>
             <Icon name='tick' className='s0 iconEdit' />
@@ -143,7 +148,8 @@ class RejectionsForm extends Component {
           <ControlLabel>Criteria</ControlLabel><br />
           <TextInput multiline editable={isAdminMode || commentRequired}
             type='text' numberOfLines={2} onChange={this.onTextChange}
-            placeholder={criteriaPlaceholder} value={this.state.description} />
+            placeholder={criteriaPlaceholder} maxLength={255}
+            value={this.state.description} />
         </FormGroup>
         <FormGroup controlId='formInlinePriority'>
           <ControlLabel>Priority</ControlLabel><br />
