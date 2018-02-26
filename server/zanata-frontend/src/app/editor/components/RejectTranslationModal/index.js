@@ -89,9 +89,11 @@ export class RejectTranslationModal extends Component {
             onToggle={this.toggleDropdown}
             className="dropdown-menu Criteria">
             <Dropdown.Button>
-            <a className="EditorDropdown-item">
+            <a className="EditorDropdown-item ellipsis">
               {this.props.criteria}
-              <Icon className="n1" name="chevron-down" />
+              <span className='arrow'>
+                <Icon className="n1" name="chevron-down" />
+              </span>
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
@@ -122,7 +124,9 @@ export class RejectTranslationModal extends Component {
             <Dropdown.Button>
               <a className="EditorDropdown-item">
                 <span className={textState}>{this.props.priority}</span>
-                <Icon className="n1" name="chevron-down" />
+                <span className='arrow'>
+                  <Icon className="n1" name="chevron-down" />
+                </span>
               </a>
             </Dropdown.Button>
             <Dropdown.Content>
