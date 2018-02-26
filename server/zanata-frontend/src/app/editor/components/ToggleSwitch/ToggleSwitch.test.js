@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import * as TestUtils from 'react-dom/test-utils'

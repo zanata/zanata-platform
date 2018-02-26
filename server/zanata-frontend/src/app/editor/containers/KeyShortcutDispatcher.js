@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Combokeys from 'combokeys'
 import globalBind from 'combokeys/plugins/global-bind'
 import { setSaveAsMode } from '../actions/key-shortcuts-actions'

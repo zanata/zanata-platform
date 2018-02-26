@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
@@ -35,7 +36,7 @@ class SelectButton extends React.Component {
     selectItem: PropTypes.func.isRequired
   }
 
-  selectItem = (event) => {
+  selectItem = (_event) => {
     this.props.selectItem(this.props.id, !this.props.selected)
   }
 

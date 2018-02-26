@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import GlossaryHelper from './GlossaryHelper'
 
 describe('GlossaryHelperTest', function () {

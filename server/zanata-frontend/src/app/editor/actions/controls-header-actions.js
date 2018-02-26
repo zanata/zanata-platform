@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getLocation, getPageIndex, getMaxPageIndex } from '../selectors'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
 import { createAction } from 'redux-actions'

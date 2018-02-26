@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -8,12 +9,15 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
-import { getSuggestionsPanelVisible } from '../../reducers'
-import { fetchUiLocales } from '../../actions/header-actions'
+import { getSuggestionsPanelVisible, getAppLocale } from '../../reducers'
+import { fetchUiLocales, fetchAppLocale } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
+import { locale, formats } from '../../config/intl'
+import { appLocale } from '../../../config'
+import { IntlProvider } from 'react-intl'
 
 /**
  * Top level of Zanata view hierarchy.
@@ -23,7 +27,13 @@ class Root extends Component {
     percentHeight: PropTypes.number.isRequired,
     showSuggestion: PropTypes.bool,
     requestUiLocales: PropTypes.func.isRequired,
-    saveSuggestionPanelHeight: PropTypes.func.isRequired
+    requestAppLocale: PropTypes.func.isRequired,
+    saveSuggestionPanelHeight: PropTypes.func.isRequired,
+    localeMessages: PropTypes.object
+  }
+
+  componentWillMount () {
+    this.props.requestAppLocale()
   }
 
   componentDidMount () {
@@ -36,7 +46,7 @@ class Root extends Component {
   }
 
   // TODO could debounce this
-  onWindowResize = (e) => {
+  onWindowResize = (_e) => {
     // Reach in and override the dragged pixel size of the resizer component.
     // This is a workaround, needed because once the resizer is dragged, only
     // the size prop will override the dragged size, but specifying size prop
@@ -63,31 +73,35 @@ class Root extends Component {
       this.props.saveSuggestionPanelHeight(panelSize)
     }
   }
-
   render () {
     const pixelHeight = this.props.showSuggestion
       ? this.props.percentHeight * window.innerHeight
       : 0
-
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
-      <ParamPropDispatcher {...this.props}>
-        <KeyShortcutDispatcher className="Editor is-suggestions-active">
-          <Icons />
-          <EditorHeader />
-          <Sidebar>
-            <SplitPane ref="suggestionResizer"
-              split="horizontal"
-              defaultSize={pixelHeight}
-              primary="second"
-              onDragFinished={this.resizeFinished}>
-              <MainContent />
-              {this.props.showSuggestion && <SuggestionsPanel />}
-            </SplitPane>
-          </Sidebar>
-          <KeyShortcutCheatSheet />
-        </KeyShortcutDispatcher>
-      </ParamPropDispatcher>
+      <IntlProvider defaultLocale={locale}
+        locale={appLocale}
+        formats={formats}
+        key={this.props.localeMessages}
+        messages={this.props.localeMessages}>
+        <ParamPropDispatcher {...this.props}>
+          <KeyShortcutDispatcher className='Editor is-suggestions-active'>
+            <Icons />
+            <EditorHeader />
+            <Sidebar>
+              <SplitPane ref='suggestionResizer'
+                split='horizontal'
+                defaultSize={pixelHeight}
+                primary='second'
+                onDragFinished={this.resizeFinished}>
+                <MainContent />
+                {this.props.showSuggestion && <SuggestionsPanel />}
+              </SplitPane>
+            </Sidebar>
+            <KeyShortcutCheatSheet />
+          </KeyShortcutDispatcher>
+        </ParamPropDispatcher>
+      </IntlProvider>
     )
   }
 }
@@ -97,12 +111,16 @@ function mapStateToProps (state) {
   return {
     percentHeight: suggestions.heightPercent,
     showSidebar: sidebar.visible,
-    showSuggestion: getSuggestionsPanelVisible(state)
+    showSuggestion: getSuggestionsPanelVisible(state),
+    localeMessages: getAppLocale(state)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    requestAppLocale: () => {
+      dispatch(fetchAppLocale(appLocale))
+    },
     saveSuggestionPanelHeight: (pixelHeight) => {
       const percent = pixelHeight / window.innerHeight
       dispatch(saveSuggestionPanelHeight(percent))

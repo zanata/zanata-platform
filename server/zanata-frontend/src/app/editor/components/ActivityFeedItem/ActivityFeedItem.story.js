@@ -20,9 +20,9 @@
  */
 
 import React from 'react'
-import {storiesOf} from '@storybook/react'
+import { storiesOf } from '@storybook/react'
 import ActivityFeedItem from '.'
-import {MINOR, MAJOR, CRITICAL} from "./index";
+import { MINOR, MAJOR, CRITICAL } from "./index";
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -33,7 +33,7 @@ const user = {
   username: 'damason',
   name: 'David Mason',
   imageUrl:
-      'http://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
+      'https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
 }
 
 storiesOf('ActivityFeedItem', module)

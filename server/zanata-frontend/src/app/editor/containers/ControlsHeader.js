@@ -1,5 +1,6 @@
+// @ts-nocheck
 /* eslint-disable spaced-comment */
-/* @flow */
+/* @flow */ // TODO convert to TS
 import cx from 'classnames'
 import EditorSearchInput from '../components/EditorSearchInput'
 import IconButtonToggle from '../components/IconButtonToggle'

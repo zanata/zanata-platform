@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Modal to display the details for a group of suggestion matches.
  */
