@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as ReactDOMServer from 'react-dom/server'
@@ -8,7 +8,7 @@ import IconButton from '.'
 
 describe('IconButtonTest', () => {
   it('IconButton markup', () => {
-    const clickFun = function (e) {}
+    const clickFun = function (_e) {}
 
     const actual = ReactDOMServer.renderToStaticMarkup(<IconButton
       icon="classical"
@@ -30,7 +30,7 @@ describe('IconButtonTest', () => {
   })
 
   it('IconButton markup (disabled)', () => {
-    const clickFun = function (e) {}
+    const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(<IconButton
       icon="tea"
       title="Tea"

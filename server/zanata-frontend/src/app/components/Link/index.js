@@ -1,4 +1,3 @@
-// @ts-check
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Link as RouterLink } from 'react-router'

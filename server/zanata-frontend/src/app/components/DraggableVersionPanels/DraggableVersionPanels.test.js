@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global jest describe it expect */
 
 import React from 'react'
@@ -6,7 +7,7 @@ import DraggableVersionPanels, {Item, DragHandle, tooltipSort} from '.'
 import {Button, ListGroup, ListGroupItem, OverlayTrigger} from 'react-bootstrap'
 import {Icon, LockIcon} from '../../components'
 
-const callback = function (e) {}
+const callback = function (_e) {}
 
 describe('DraggableVersionPanels', () => {
   it('can render a draggable Item', () => {

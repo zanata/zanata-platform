@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { connect } from 'react-redux'
 import GlossaryTermModal from './component'
 import { map } from 'lodash'

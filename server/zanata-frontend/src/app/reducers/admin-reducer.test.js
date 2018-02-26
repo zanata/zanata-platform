@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global jest describe it expect */
 
 import adminReducer from './admin-reducer'
@@ -21,7 +22,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }]
     const getAll = adminReducer(initial, {
       type: GET_ALL_CRITERIA_SUCCESS,
@@ -41,7 +42,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Failed to retrieve review criteria. 401 - Unauthorized')
   })
@@ -52,7 +53,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }
     const added = adminReducer(initial, {
       type: ADD_CRITERION_SUCCESS,
@@ -71,7 +72,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Operation failed. 401 - Unauthorized')
   })
@@ -82,7 +83,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }
     const updatedCriteria = update(criteria,
       {description: {$set: 'new reason'}})
@@ -107,7 +108,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Operation failed. 401 - Unauthorized')
   })
@@ -118,7 +119,7 @@ describe('admin-reducer test', () => {
       id: 1,
       priority: 'Major',
       description: 'bad grammar',
-      editable: false
+      commentRequired: false
     }
     const withSomething = adminReducer(initial, {
       type: ADD_CRITERION_SUCCESS,
@@ -141,7 +142,7 @@ describe('admin-reducer test', () => {
       payload: {
         message: '401 - Unauthorized'
       }})
-    expect(initial.notification).toBeNull()
+    expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual('Operation failed. 401 - Unauthorized')
   })

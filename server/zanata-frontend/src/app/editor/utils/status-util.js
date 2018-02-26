@@ -15,6 +15,11 @@ export const STATUS_APPROVED = 'approved'
 export const STATUS_REJECTED = 'rejected'
 
 /**
+ * TODO: Implement Review Mode for Administrators to determine this variable
+ */
+const REVIEW_MODE = true
+
+/**
  * Get a string representing the status that should be
  * the selected status on the save button dropdown.
  *
@@ -56,9 +61,9 @@ function allValidSaveStatuses (phrase) {
     return [STATUS_NEEDS_WORK]
   } else if
     (phrase.status === STATUS_REJECTED && !hasTranslationChanged(phrase)) {
-    // rejected state cannot be saved in this editor yet, but should display
-    // as a disabled button until the text is changed.
     return [STATUS_REJECTED, STATUS_TRANSLATED, STATUS_NEEDS_WORK]
+  } else if (REVIEW_MODE && phrase.status === STATUS_TRANSLATED) {
+    return [STATUS_APPROVED, STATUS_NEEDS_WORK, STATUS_REJECTED]
   } else {
     // TODO also need to handle 'approved' and 'rejected'
     //      when user is a reviewer and in review mode

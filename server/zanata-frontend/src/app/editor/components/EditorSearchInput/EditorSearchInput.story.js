@@ -1,7 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
+import { storiesOf } from '@storybook/react'
 import { EditorSearchInput as RealEditorSearchInput } from '.'
 
 // Simple wrapper component to handle text updates for the story

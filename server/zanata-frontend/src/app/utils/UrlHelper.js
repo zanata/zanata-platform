@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serverUrl } from '../config'
 
 /**
@@ -50,4 +51,3 @@ export function getProfileUrl (username) {
 export function getVersionGroupUrl (slug) {
   return serverUrl + '/version-group/view/' + slug + getDswid()
 }
-

@@ -50,10 +50,11 @@ public class ReviewCriteria extends ModelEntityBase {
     public static final int DESCRIPTION_MAX_LENGTH = 255;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "varchar(32)")
+    @Column(columnDefinition = "varchar(32)", nullable = false)
     private IssuePriority priority;
-    private boolean editable;
-    @Column(columnDefinition = "varchar(255)")
+    @Column(nullable = false)
+    private boolean commentRequired;
+    @Column(columnDefinition = "varchar(255)", nullable = false)
     @Size(max = 255)
     @NotEmpty
     private String description;
@@ -62,18 +63,18 @@ public class ReviewCriteria extends ModelEntityBase {
         return priority;
     }
 
-    public boolean isEditable() {
-        return editable;
+    public boolean isCommentRequired() {
+        return commentRequired;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public ReviewCriteria(IssuePriority priority, boolean editable,
+    public ReviewCriteria(IssuePriority priority, boolean commentRequired,
             String description) {
         this.priority = priority;
-        this.editable = editable;
+        this.commentRequired = commentRequired;
         this.description = description;
     }
 
@@ -84,8 +85,8 @@ public class ReviewCriteria extends ModelEntityBase {
         this.priority = priority;
     }
 
-    public void setEditable(boolean editable) {
-        this.editable = editable;
+    public void setCommentRequired(boolean commentRequired) {
+        this.commentRequired = commentRequired;
     }
 
     public void setDescription(String description) {
@@ -98,13 +99,13 @@ public class ReviewCriteria extends ModelEntityBase {
         if (!(o instanceof ReviewCriteria)) return false;
         if (!super.equals(o)) return false;
         ReviewCriteria that = (ReviewCriteria) o;
-        return editable == that.editable &&
+        return commentRequired == that.commentRequired &&
                 priority == that.priority &&
                 Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), priority, editable, description);
+        return Objects.hash(super.hashCode(), priority, commentRequired, description);
     }
 }

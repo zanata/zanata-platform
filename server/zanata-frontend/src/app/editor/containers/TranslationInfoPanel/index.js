@@ -1,3 +1,4 @@
+// @ts-nocheck
 // TODO damason split this into separate components for each tab and panel
 import React from 'react'
 import * as PropTypes from 'prop-types'

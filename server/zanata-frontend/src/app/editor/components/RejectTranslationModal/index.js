@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -20,21 +21,21 @@ export class RejectTranslationModal extends Component {
     key: PropTypes.string,
     onHide: PropTypes.func,
     toggleDropdown: PropTypes.func,
-    isOpen: PropTypes.bool.isRequired,
+    isOpen: PropTypes.bool,
     priority: PropTypes.oneOf(
         [
           MINOR,
           MAJOR,
           CRITICAL
         ]
-    ).isRequired,
+    ),
     textState: PropTypes.oneOf (
         [
             'u-textWarning',
             'u-textDanger'
         ]
     ),
-    criteria: PropTypes.string.isRequired
+    criteria: PropTypes.string
   }
 
   constructor (props) {
@@ -96,16 +97,16 @@ export class RejectTranslationModal extends Component {
             <Dropdown.Content>
               <ul>
                 <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
-                  Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)</li>
+                  Translation Errors: terminology, mistranslated, addition, omission, un-localized, do not translate, etc</li>
                 <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
-                  Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring,
-                  readability, word choice, not natural, too literal, style and tone, etc)
+                  Language Quality: grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring,
+                  readability, word choice, not natural, too literal, style and tone, etc
                 </li>
                 <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
-                  Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)</li>
+                  Consistency: inconsistent style or vocabulary, brand inconsistency, etc</li>
                 <li className="EditorDropdown-item" onClick={this.toggleDropdown}>Style Guide & Glossary Violations</li>
                 <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
-                  Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)</li>
+                  Format: mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc</li>
                 <li className="EditorDropdown-item" onClick={this.toggleDropdown}>
                   Other (reason may be in comment section/history if necessary)</li>
               </ul>

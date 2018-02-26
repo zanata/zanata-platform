@@ -1,46 +1,6 @@
 {
-  "ActivityFeedItem.comment": {
-    "defaultMessage": "{name} has commented on a translation",
-    "description": "Title for a comment in the activity feed."
-  },
-  "ActivityFeedItem.approved.approvedTranslation": {
-    "defaultMessage": "approved a translation",
-    "description": "Highlighted section inserted into ActivityFeedItem.approved"
-  },
-  "ActivityFeedItem.approved": {
-    "defaultMessage": "{name} has {approvedTranslation}",
-    "description": "Title for an item in the activity feed showing a reviewer approved the translation. The inserted section is from ActivityFeedItem.approved.approvedTranslation"
-  },
-  "ActivityFeedItem.rejected.rejectedTranslation": {
-    "defaultMessage": "rejected a translation",
-    "description": "Highlighted section inserted into ActivityFeedItem.rejected"
-  },
-  "ActivityFeedItem.rejected": {
-    "defaultMessage": "{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}",
-    "description": "Title for an item in the activity feed showing a reviewer rejected the translation. The inserted section is from ActivityFeedItem.rejected.rejectedTranslation"
-  },
-  "ActivityFeedItem.translated.translatedRevision": {
-    "defaultMessage": "created a translation revision",
-    "description": "Highlighted section inserted into ActivityFeedItem.translated"
-  },
-  "ActivityFeedItem.translated": {
-    "defaultMessage": "{name} has {translatedRevision}",
-    "description": "Title for an item in the activity feed showing a translator added a translation. The inserted section is from ActivityFeedItem.translated.translatedRevision"
-  },
-  "ActivityFeedItem.fuzzy.fuzzyRevision": {
-    "defaultMessage": "created a fuzzy revision",
-    "description": "Highlighted section inserted into ActivityFeedItem.fuzzy"
-  },
-  "ActivityFeedItem.fuzzy": {
-    "defaultMessage": "{name} has {fuzzyRevision}",
-    "description": "Title for an item in the activity feed showing a translator saved a fuzzy translation (a translation that still needs to be edited). The inserted section is from ActivityFeedItem.fuzzy.fuzzyRevision"
-  },
-  "ActivityFeedItem.deleted.deletedTranslation": {
-    "defaultMessage": "deleted a translation",
-    "description": "Highlighted section inserted into ActivityFeedItem.deleted"
-  },
-  "ActivityFeedItem.deleted": {
-    "defaultMessage": "{name} has {deletedTranslation}",
-    "description": "Title for an item in the activity feed showing a translator has deleted the translation. The inserted section is from ActivityFeedItem.deleted.deletedTranslation"
+  "TranslatingIndicator.translating": {
+    "defaultMessage": "Translating",
+    "description": "Indicator of editor translating mode"
   }
 }

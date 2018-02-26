@@ -1,5 +1,5 @@
 /* eslint-disable spaced-comment */
-/* @flow */
+/* @flow */ // TODO convert to TS
 import { handleActions } from 'redux-actions'
 import { createSelector } from 'reselect'
 import {
@@ -13,20 +13,15 @@ import {
   TOGGLE_INFO_PANEL,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
-  UI_LOCALES_FETCHED
+  UI_LOCALES_FETCHED,
+  APP_LOCALE_FETCHED
 } from '../actions/header-action-types'
 import {
   SUGGESTION_PANEL_HEIGHT_CHANGE
 } from '../actions/suggestions-action-types'
 import { prepareLocales } from '../utils/Util'
 import update from 'immutability-helper'
-
-// TODO extract this to a common config
-export const DEFAULT_LOCALE = {
-  'localeId': 'en-US',
-  'name': 'English',
-  'isRTL': false
-}
+import { DEFAULT_LOCALE } from '../../config'
 
 export const GLOSSARY_TAB = 'GLOSSARY_TAB'
 export const identity = (key/*: any*/) => {
@@ -137,6 +132,12 @@ export default handleActions({
 
   [UI_LOCALES_FETCHED]: (state, { payload }) => update(state, {
     uiLocales: {$set: prepareLocales(payload)}
+  }),
+
+  [APP_LOCALE_FETCHED]: (state, { payload }) => update(state, {
+    appLocaleData: {
+      $set: payload
+    }
   }),
 
   [TOGGLE_KEY_SHORTCUTS]: state => update(state, {

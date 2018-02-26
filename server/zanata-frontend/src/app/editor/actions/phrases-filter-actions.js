@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createAction } from 'redux-actions'
 import {
   RESET_STATUS_FILTERS,

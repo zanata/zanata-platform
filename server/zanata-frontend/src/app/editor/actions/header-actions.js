@@ -1,6 +1,8 @@
+// @ts-nocheck
 import {
   fetchStatistics,
   fetchLocales,
+  fetchI18nLocale,
   fetchMyInfo,
   fetchProjectInfo,
   fetchDocuments,
@@ -13,6 +15,7 @@ import {
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
   UI_LOCALES_FETCHED,
+  APP_LOCALE_FETCHED,
   CHANGE_UI_LOCALE,
   DOCUMENT_SELECTED,
   LOCALE_SELECTED,
@@ -29,7 +32,7 @@ export const toggleInfoPanel = createAction(TOGGLE_INFO_PANEL)
 export const toggleHeader = createAction(TOGGLE_HEADER)
 export const toggleKeyboardShortcutsModal = createAction(TOGGLE_KEY_SHORTCUTS)
 
-const unwrapResponse = (dispatch, errorMsg, response) => {
+const unwrapResponse = (_dispatch, _errorMsg, response) => {
   if (response.status >= 400) {
     // FIXME replace with api middleware and use standard error handling
     // new Error(errorMsg))
@@ -38,6 +41,7 @@ const unwrapResponse = (dispatch, errorMsg, response) => {
 }
 
 export const uiLocaleFetched = createAction(UI_LOCALES_FETCHED)
+export const appLocaleFetched = createAction(APP_LOCALE_FETCHED)
 
 export function fetchUiLocales () {
   return (dispatch) => {
@@ -49,6 +53,13 @@ export function fetchUiLocales () {
           // FIXME replace with api middleware and use standard error handling
           // return {type: FETCH_FAILED, error: err}
         })
+  }
+}
+
+// fetches react-intl translation json files for app i18n
+export function fetchAppLocale (locale) {
+  return (dispatch) => {
+    dispatch(fetchI18nLocale(locale))
   }
 }
 
@@ -79,7 +90,7 @@ export const headerDataFetched = createAction(HEADER_DATA_FETCHED)
 
 // this is a get all action that will wait until all promises are resovled
 export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     const checkResponse = curry(unwrapResponse)(dispatch)
 
     // FIXME make the checkResponse just reject with the error code
