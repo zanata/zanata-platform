@@ -145,13 +145,9 @@ class TranslationInfoPanel extends React.Component {
     )
   }
 
-  /* Returns Activity Items list filtered by comments and updates */
-  filterActivityItems = (activityFilterType) => {
-    const { reviewComments, historyItems } = this.props
-    if (isEmpty(reviewComments) && isEmpty(historyItems)) {
-      return undefined
-    }
-    const reviewCommentsList = reviewComments.map((value) => {
+  // Format a reviewCommentsList from reviewComments
+  reviewCommentsList = () => {
+    return this.props.reviewComments.map((value) => {
       const lastModified = new Date(value.creationDate)
       return {
         type: 'comment',
@@ -164,7 +160,10 @@ class TranslationInfoPanel extends React.Component {
         }
       }
     })
-    const historyItemsList = historyItems.map((value) => {
+  }
+  // Format a historyItemsList from historyItems
+  historyItemsList = () => {
+    return this.props.historyItems.map((value) => {
       const lastModified = new Date(value.modifiedDate)
       return {
         type: 'revision',
@@ -178,14 +177,24 @@ class TranslationInfoPanel extends React.Component {
         }
       }
     })
+  }
+
+  /* Returns Activity Items list filtered by comments and updates */
+  filterActivityItems = (activityFilterType) => {
+    const { reviewComments, historyItems } = this.props
+    if (isEmpty(reviewComments) && isEmpty(historyItems)) {
+      return undefined
+    }
     switch (activityFilterType) {
       case ALL:
-        return orderBy(reviewCommentsList.concat(historyItemsList),
-          ['lastModifiedTime'], ['desc'])
+        return orderBy(this.reviewCommentsList()
+          .concat(this.historyItemsList()), ['lastModifiedTime'], ['desc'])
       case COMMENTS:
-        return orderBy(reviewCommentsList, ['lastModifiedTime'], ['desc'])
+        return orderBy(this.reviewCommentsList(),
+          ['lastModifiedTime'], ['desc'])
       case UPDATES:
-        return orderBy(historyItemsList, ['lastModifiedTime'], ['desc'])
+        return orderBy(this.historyItemsList(),
+          ['lastModifiedTime'], ['desc'])
       default:
         return undefined
     }
