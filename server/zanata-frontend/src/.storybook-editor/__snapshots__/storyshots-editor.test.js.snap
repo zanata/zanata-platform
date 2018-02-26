@@ -34,7 +34,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
       <a
         href="/profile/view/damason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -143,7 +143,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
       <a
         href="/profile/view/damason"
       >
-        David Mason
+        damason
       </a>
        has commented on a translation
     </span>
@@ -211,7 +211,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
+exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
 <div
   className="RevisionBox"
 >
@@ -245,7 +245,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
       <a
         href="/profile/view/damason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -258,7 +258,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     </span>
   </p>
   <div
-    className="well-fuzzy well"
+    className="well"
   >
     নাম
     <span
@@ -354,7 +354,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
       <a
         href="/profile/view/damason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -523,7 +523,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
       <a
         href="/profile/view/damason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -692,7 +692,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
       <a
         href="/profile/view/damason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -861,7 +861,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
       <a
         href="/profile/view/damason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span

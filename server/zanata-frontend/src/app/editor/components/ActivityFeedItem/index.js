@@ -240,7 +240,7 @@ class ActivityFeedItem extends Component {
       <div className='RevisionBox'>
         <p>
           <Icon name={isComment ? 'comment' : 'refresh'} className='s0' />
-          <Link useHref link={profileUrl(user.username)}>
+          <Link useHref link={profileUrl(user.name)}>
             {/* TODO use component for avatar image */}
             <img className='u-round ActivityAvatar' src={user.imageUrl} />
           </Link>
