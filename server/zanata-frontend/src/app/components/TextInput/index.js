@@ -157,6 +157,7 @@ class TextInput extends Component {
       autoFocus,
       editable = true,
       keyboardType = 'default',
+      maxLength,
       maxNumberOfLines,
       multiline = false,
       numberOfLines = 2,
@@ -207,6 +208,7 @@ class TextInput extends Component {
       onFocus: this._onFocus,
       onSelect: onSelectionChange && this._onSelectionChange,
       onKeyDown: (onKeyDown) && this._onKeyDown,
+      maxLength,
       placeholder,
       readOnly: !editable,
       value
