@@ -1,17 +1,20 @@
-
-export const filterActivityTypes = [
+export const ALL = 'all'
+export const COMMENTS = 'comments'
+export const UPDATES = 'updates'
+export const filterActivityTypes = [ALL, COMMENTS, UPDATES]
+export const activityItems = [
   {
-    id: 'all',
+    id: ALL,
     icon: 'clock',
     label: 'All'
   },
   {
-    id: 'comments',
+    id: COMMENTS,
     icon: 'comment',
     label: 'Comments'
   },
   {
-    id: 'updates',
+    id: UPDATES,
     icon: 'refresh',
     label: 'Updates'
   }

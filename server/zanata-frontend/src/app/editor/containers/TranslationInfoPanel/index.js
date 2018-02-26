@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { isEmpty, isUndefined, orderBy } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
+import { ALL, COMMENTS, UPDATES } from '../../utils/activity-util'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 
@@ -144,7 +145,8 @@ class TranslationInfoPanel extends React.Component {
     )
   }
 
-  filterActivityItems = () => {
+  /* Returns Activity Items list filtered by comments and updates */
+  filterActivityItems = (activityFilterType) => {
     const { reviewComments, historyItems } = this.props
     if (isEmpty(reviewComments) && isEmpty(historyItems)) {
       return undefined
@@ -176,8 +178,17 @@ class TranslationInfoPanel extends React.Component {
         }
       }
     })
-    const combinedHistory = reviewCommentsList.concat(historyItemsList)
-    return orderBy(combinedHistory, ['lastModifiedTime'], ['desc'])
+    switch (activityFilterType) {
+      case ALL:
+        return orderBy(reviewCommentsList.concat(historyItemsList),
+          ['lastModifiedTime'], ['desc'])
+      case COMMENTS:
+        return orderBy(reviewCommentsList, ['lastModifiedTime'], ['desc'])
+      case UPDATES:
+        return orderBy(historyItemsList, ['lastModifiedTime'], ['desc'])
+      default:
+        return undefined
+    }
   }
 
   render () {
@@ -201,7 +212,7 @@ class TranslationInfoPanel extends React.Component {
       </span>
     )
 
-    const activityItems = this.filterActivityItems()
+    const activityItems = this.filterActivityItems(this.state.selectedActivites)
 
     return (
       <div>
