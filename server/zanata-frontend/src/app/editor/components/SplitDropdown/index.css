@@ -53,7 +53,3 @@ ul.EditorDropdown-content li button.EditorButton {
 .ButtonGroup-item:first-child button.Button--neutral.is-disabled {
   padding-right: 1rem !important;
 }
-
-.u-rounded-sm {
-  border-radius: 0.375rem;
-}
