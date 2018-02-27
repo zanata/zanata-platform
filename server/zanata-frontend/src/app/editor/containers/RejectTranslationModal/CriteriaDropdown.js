@@ -3,7 +3,9 @@ import { Component } from 'react'
 import { Icon } from '../../../components'
 import * as PropTypes from 'prop-types'
 import Dropdown from '../../components/Dropdown'
-import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
+import {
+  MINOR, MAJOR, CRITICAL, UNSPECIFIED
+} from '../../utils/reject-trans-util'
 
 /**
  * A Local Editor Dropdown coponent that selects the Criteria
@@ -12,12 +14,13 @@ import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 class CriteriaDropdown extends Component {
   static propTypes = {
     criteriaList: PropTypes.arrayOf(PropTypes.shape({
-      editable: PropTypes.bool.isRequired,
+      commentRequired: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,
     onCriteriaChange: PropTypes.func.isRequired,
-    selectedCriteria: PropTypes.string.isRequired
+    onUnspecifiedCriteria: PropTypes.func.isRequired,
+    criteriaDescription: PropTypes.string.isRequired
   }
   constructor (props) {
     super(props)
@@ -31,11 +34,15 @@ class CriteriaDropdown extends Component {
     }))
   }
   onCriteriaChange = (event) => {
-    this.props.onCriteriaChange(event)
+    if (event.target.innerText === UNSPECIFIED.description) {
+      this.props.onUnspecifiedCriteria()
+    } else {
+      this.props.onCriteriaChange(event)
+    }
     this.toggleDropdown()
   }
   render () {
-    const { criteriaList, selectedCriteria } = this.props
+    const { criteriaList, criteriaDescription } = this.props
     const options = criteriaList.map((value, index) => {
       return (
         <li key={index}
@@ -50,9 +57,11 @@ class CriteriaDropdown extends Component {
         onToggle={this.toggleDropdown}
         className='dropdown-menu Criteria'>
         <Dropdown.Button>
-          <a className='EditorDropdown-item'>
-            {selectedCriteria}
-            <Icon className='n1 u-pullRight' name='chevron-down' />
+          <a className='EditorDropdown-item ellipsis'>
+            {criteriaDescription}
+            <span className='arrow'>
+              <Icon className='n1' name='chevron-down' />
+            </span>
           </a>
         </Dropdown.Button>
         <Dropdown.Content>

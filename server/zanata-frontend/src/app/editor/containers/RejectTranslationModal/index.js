@@ -12,9 +12,8 @@ import { rejectTranslation } from '../../actions/review-trans-actions'
 import update from 'immutability-helper'
 import { isUndefined, isEmpty } from 'lodash'
 import {
-  MINOR, MAJOR, CRITICAL, priorities, textState
+  MINOR, MAJOR, CRITICAL, UNSPECIFIED, priorities, textState
 } from '../../utils/reject-trans-util'
-
 const textLimit = 500
 
 /**
@@ -29,8 +28,8 @@ export class RejectTranslationModal extends Component {
     revision: PropTypes.number,
     localeId: PropTypes.string.isRequired,
     criteriaList: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      editable: PropTypes.bool.isRequired,
+      id: PropTypes.number,
+      commentRequired: PropTypes.bool.isRequired,
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,
@@ -41,11 +40,12 @@ export class RejectTranslationModal extends Component {
     review: {
       selectedPriority: MINOR,
       priorityId: 0,
-      selectedCriteria: '-- Select a predefined criteria --',
+      criteriaDescription: '',
       criteriaId: undefined,
       reviewComment: ''
     },
-    charsLeft: textLimit
+    charsLeft: textLimit,
+    selectedCriteria: UNSPECIFIED
   }
   constructor (props) {
     super(props)
@@ -62,14 +62,25 @@ export class RejectTranslationModal extends Component {
     }))
   }
   onCriteriaChange = (event) => {
-    const selectedCriteria = event.target.innerText
-    const criteriaId = this.props.criteriaList.find(
-      x => x.description === event.target.innerText).id
+    const selectedCriteria = this.props.criteriaList.find(
+      x => x.description === event.target.innerText)
     this.setState(prevState => ({
       review: update(prevState.review, {
-        selectedCriteria: {$set: selectedCriteria},
-        criteriaId: {$set: criteriaId}
-      })
+        criteriaDescription: {$set: selectedCriteria.description},
+        criteriaId: {$set: selectedCriteria.id},
+        selectedPriority: {$set: selectedCriteria.priority}
+      }),
+      selectedCriteria: selectedCriteria
+    }))
+  }
+  onUnspecifiedCriteria = () => {
+    this.setState(prevState => ({
+      review: update(prevState.review, {
+        criteriaDescription: {$set: UNSPECIFIED.description},
+        criteriaId: {$set: undefined},
+        selectedPriority: {$set: UNSPECIFIED.priority}
+      }),
+      selectedCriteria: UNSPECIFIED
     }))
   }
   setReviewComment = (event) => {
@@ -106,7 +117,7 @@ export class RejectTranslationModal extends Component {
   /* eslint-disable max-len */
   render () {
     const { show, criteriaList } = this.props
-    const { review } = this.state
+    const { review, selectedCriteria } = this.state
     const priorityTextState = textState(review.selectedPriority)
     const criteriaTile = (!isEmpty(criteriaList))
         ? <div className='flex'>
@@ -116,13 +127,20 @@ export class RejectTranslationModal extends Component {
           <CriteriaDropdown
             criteriaList={criteriaList}
             onCriteriaChange={this.onCriteriaChange}
-            selectedCriteria={review.selectedCriteria} />
+            onUnspecifiedCriteria={this.onUnspecifiedCriteria}
+            criteriaDescription={review.criteriaDescription} />
           <PriorityDropdown
             textState={priorityTextState}
             priority={review.selectedPriority}
             priorityChange={this.onPriorityChange} />
         </div>
         : undefined
+    const cantReject = (
+      (isEmpty(review.reviewComment)) &&
+      (selectedCriteria.commentRequired === true))
+    const commentPlaceholder = (selectedCriteria.commentRequired === true)
+      ? 'You must provide a comment for why this translation has been rejected'
+      : 'Provide a comment for why this translation has been rejected'
     return (
       <Modal show={show}
         onHide={this.onHideResetState}
@@ -136,7 +154,7 @@ export class RejectTranslationModal extends Component {
           <div className='EditorRejection-input'>
             <textarea ref='input'
               type='comment'
-              placeholder='Provide a comment for why this translation has been rejected'
+              placeholder={commentPlaceholder}
               cols='50'
               onChange={this.setReviewComment}
               rows='10'
@@ -157,7 +175,8 @@ export class RejectTranslationModal extends Component {
               </Button>
               <Button
                 className='EditorButton Button--large u-rounded Button--primary'
-                onClick={this.saveTransReview}>
+                onClick={this.saveTransReview}
+                disabled={cantReject}>
                 Reject translation
               </Button>
             </Row>

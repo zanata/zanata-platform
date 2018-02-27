@@ -7,15 +7,15 @@ import Dropdown from '../../components/Dropdown'
 
 const defaultClick = () => {}
 const criteriaList = [{
-  editable: false,
+  commentRequired: false,
   description: 'One',
   priority: MINOR
 }, {
-  editable: false,
+  commentRequired: false,
   description: 'Two',
   priority: MAJOR
 }, {
-  editable: false,
+  commentRequired: false,
   description: 'Three',
   priority: CRITICAL
 }]
@@ -35,7 +35,8 @@ describe('CriteriaDropdown', () => {
       <CriteriaDropdown
         criteriaList={criteriaList}
         onCriteriaChange={defaultClick}
-        selectedCriteria='One'
+        onUnspecifiedCriteria={defaultClick}
+        criteriaDescription='One'
       />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
@@ -43,9 +44,11 @@ describe('CriteriaDropdown', () => {
         onToggle={defaultClick}
         className='dropdown-menu Criteria'>
         <Dropdown.Button>
-          <a className='EditorDropdown-item'>
+          <a className='EditorDropdown-item ellipsis'>
             {'One'}
-            <Icon className='n1 u-pullRight' name='chevron-down' />
+            <span className='arrow'>
+              <Icon className='n1' name='chevron-down' />
+            </span>
           </a>
         </Dropdown.Button>
         <Dropdown.Content>

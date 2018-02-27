@@ -6,53 +6,19 @@ import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
 import Icon from '../../components/Icon'
-import {Button, Accordion, Panel, Alert} from 'react-bootstrap'
+import {Button, Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
 
 const DO_NOT_RENDER = undefined
-
-const exampleHeader = <span>Example criteria:
-  <span className="text-muted"> click to expand</span></span>
-/* eslint-disable max-len */
-const exampleCriteria = <Accordion expanded={false} defaultExpanded={false}>
-  <Panel header={exampleHeader} eventKey="1">
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)'
-      priority={CRITICAL} />
-    <RejectionsForm
-      editable
-      className='active'
-      criteriaPlaceholder='Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)'
-      priority={MAJOR} />
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)'
-      priority={MAJOR} />
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Style Guide & Glossary Violations'
-      priority={MINOR} />
-    <RejectionsForm
-      editable={false}
-      criteriaPlaceholder='Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)'
-      priority={MINOR} />
-    <RejectionsForm
-      editable
-      className='active'
-      criteriaPlaceholder='Other (reason may be in comment section/history if necessary)'
-      priority={CRITICAL} />
-  </Panel>
-</Accordion>
 /* eslint-enable max-len */
 
 class AdminReview extends Component {
   static propTypes = {
     criteria: PropType.arrayOf(PropType.shape({
-      editable: PropType.bool.isRequired,
+      commentRequired: PropType.bool.isRequired,
       description: PropType.string.isRequired,
       priority: PropType.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })).isRequired,
@@ -82,29 +48,53 @@ class AdminReview extends Component {
   render () {
     const {criteria, deleteEntry, editEntry, notification} = this.props
     const criteriaList = criteria.map((c, i) => <RejectionsForm key={i}
-      editable={c.editable} entityId={c.id} onDelete={deleteEntry}
+      commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
       criteriaPlaceholder={c.description} isAdminMode displayDelete
       onSave={editEntry} description={c.description}
       priority={c.priority} />)
     const newEntryForm = this.state.showNewEntryForm ? (
-      <Panel header="Add new entry">
+      <Panel header='Add new entry'>
         <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
-          criteriaPlaceholder="fill in criteria"
+          criteriaPlaceholder='fill in criteria'
           onSave={this.saveNewEntry} />
       </Panel>) : DO_NOT_RENDER
 
     const notificationBar = notification &&
-      <Alert bsStyle="danger">{notification}</Alert>
-    return <div className='container'>
+      <Alert bsStyle='danger'>{notification}</Alert>
+    return <div className='container wideView'>
+      <Breadcrumb>
+        <Breadcrumb.Item href='home'>
+          Administration
+        </Breadcrumb.Item>
+      </Breadcrumb>
       {notificationBar}
-      {exampleCriteria}
       <h1>Reject translations settings</h1>
+      <p className='lead'>Set the translation rejection criteria to be used
+        in the editor. Start by adding your first 'new rejection criteria
+      entry' and add as many criteria as you require.</p>
+      <Well bsSize='lg'><h2>Example criteria</h2>
+        <hr />
+        <ul>
+          <li><strong>Translation Errors</strong>: terminology, mistranslated,
+          addition, omission, un-localized, do not translate, etc</li>
+          <li><strong>Language Quality</strong>: grammar, spelling,
+            punctuation, typo, ambiguous wording, product name,
+            sentence structuring, readability, word choice, not natural,
+          too literal, style and tone, etc</li>
+          <li><strong>Style Guide and Glossary Violations</strong></li>
+          <li><strong>Consistency</strong>: inconsistent style or vocabulary,
+          brand inconsistency, etc.</li>
+          <li><strong>Format</strong>: mismatches, white-spaces, tag error
+            or missing, special character, numeric format, truncated,
+          etc.</li>
+        </ul>
+      </Well>
       {criteriaList}
       {newEntryForm}
       <div className='rejection-btns'>
         <Button bsStyle='primary' className='btn-left'
           onClick={this.showAddNewEntryForm}>
-          <Icon name='plus' className='s1' /> Add review criteria
+          <Icon name='plus' className='s1' /> New review criteria entry
         </Button>
       </div>
     </div>
