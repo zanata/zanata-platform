@@ -64,6 +64,16 @@ public class UserServiceTest {
     }
 
     @Test
+    public void getTranslationPermissionWillReturnForbiddenIfNotAuthenticated() {
+        String projectSlug = "projectSlug";
+        String localeId = "localeId";
+        service = new UserService(null, gravatarService, accountDAO, personDAO,
+                projectDAO, identity, applicationConfiguration, identityManager);
+        Response response = service.getTranslationPermission(projectSlug, localeId);
+        assertThat(response.getStatus()).isEqualTo(403);
+    }
+
+    @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
         service = new UserService(null, gravatarService, accountDAO, personDAO,
                 projectDAO, identity, applicationConfiguration, identityManager);
