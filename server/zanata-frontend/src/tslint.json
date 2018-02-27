@@ -9,6 +9,8 @@
         "arrow-parens": false,
         "semicolon": false,
         "max-classes-per-file": false,
+        // Allow long lines for import/export/TSX
+        "max-line-length": [true, {"limit": 120, "ignore-pattern": "^import |^export | implements |^\\s*<"}],
         "trailing-comma": [false],
         "quotemark": [false],
         "space-before-function-paren": false,
