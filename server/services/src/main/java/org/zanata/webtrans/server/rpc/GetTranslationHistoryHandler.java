@@ -35,9 +35,6 @@ import com.google.common.collect.Maps;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
-
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -178,7 +175,7 @@ public class GetTranslationHistoryHandler extends
         ));
     }
 
-    public static String usernameOrEmptyString(HPerson lastModifiedBy) {
+    private static String usernameOrEmptyString(HPerson lastModifiedBy) {
         return lastModifiedBy != null && lastModifiedBy.hasAccount()
                 ? lastModifiedBy.getAccount().getUsername() : "";
     }
@@ -189,7 +186,7 @@ public class GetTranslationHistoryHandler extends
             throws ActionException {
     }
 
-    public static class TargetHistoryToTransHistoryItemFunction
+    private static class TargetHistoryToTransHistoryItemFunction
             implements Function<HTextFlowTargetHistory, TransHistoryItem> {
 
         @Override

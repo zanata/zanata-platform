@@ -74,7 +74,6 @@ function mapDispatchToProps (_dispatch) {
   // FIXME dummy actions
   /* eslint-disable no-console */
   return {
-    postComment: (e) => console.log('postComment: ' + e),
     selectLanguageFilter:
       (e) => console.log('selectLanguageFilter: ' + e)
   }

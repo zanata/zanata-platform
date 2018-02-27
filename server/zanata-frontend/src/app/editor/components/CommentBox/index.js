@@ -30,14 +30,20 @@ class CommentBox extends React.Component {
     postComment: PropTypes.func.isRequired
   }
 
+  defaultState = {
+    commentText: ''
+  }
+
   constructor (props) {
     super(props)
-    this.state = {commentText: ''}
+    this.state = this.defaultState
   }
 
   postComment = () => {
     const text = this.state.commentText
     this.props.postComment(text)
+    // reset the input, avoid multiple posts
+    this.setState(this.defaultState)
   }
 
   setCommentText = (event) => {

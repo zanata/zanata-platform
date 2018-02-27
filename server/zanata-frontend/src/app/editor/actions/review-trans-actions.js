@@ -47,6 +47,28 @@ export function rejectTranslation (dispatch, review) {
   }
 }
 
+/**
+ * Perform a save of a review comment for a given TransUnit
+ */
+export function postReviewComment (review) {
+  const endpoint = `${apiUrl}/review/trans/${review.localeId}`
+  const apiTypes = [
+    ADD_REVIEW_REQUEST,
+    ADD_REVIEW_SUCCESS,
+    ADD_REVIEW_FAILURE]
+  const body = {
+    transUnitId: review.transUnitId,
+    revision: review.revision,
+    comment: review.reviewComment,
+    reviewCriteriaId: review.criteriaId,
+    status: review.status
+  }
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'PUT', getJsonHeaders(), apiTypes,
+     JSON.stringify(body))
+  }
+}
+
 export const toggleReviewModal = createAction(TOGGLE_REVIEW_MODAL)
 
 export function fetchAllCriteria () {

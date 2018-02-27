@@ -2,6 +2,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { setSidebarVisibility } from '../../actions'
+import { postReviewComment } from '../../actions/review-trans-actions'
 import { Tabs, FormGroup, InputGroup,
   FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
@@ -20,6 +21,9 @@ class TranslationInfoPanel extends React.Component {
     close: PropTypes.func.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
+    localeId: PropTypes.string.isRequired,
+    transUnitId: PropTypes.number.isRequired,
+    postReviewComment: PropTypes.func.isRequired,
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
       resId: PropTypes.string.isRequired,
@@ -27,7 +31,8 @@ class TranslationInfoPanel extends React.Component {
       sourceFlags: PropTypes.string,
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
-      lastModifiedTime: PropTypes.instanceOf(Date)
+      lastModifiedTime: PropTypes.instanceOf(Date),
+      revision: PropTypes.number
     }),
     historyItems: PropTypes.arrayOf(
       PropTypes.shape({
@@ -59,7 +64,6 @@ class TranslationInfoPanel extends React.Component {
     }),
     isRTL: PropTypes.bool.isRequired
   }
-
   constructor (props) {
     super(props)
     this.handleSelectTab = this.handleSelectTab.bind(this)
@@ -70,15 +74,23 @@ class TranslationInfoPanel extends React.Component {
       selectedActivites: 'all'
     }
   }
-
   handleSelectTab (key) {
     this.setState({ key })
   }
-
   selectActivityTypeFilter (activityFilterType) {
     this.setState(({ selectedActivites: activityFilterType }))
   }
-
+  postComment = (postComment) => {
+    const reviewData = {
+      localeId: this.props.localeId,
+      transUnitId: this.props.transUnitId,
+      revision: this.props.selectedPhrase.revision,
+      criteriaId: undefined,
+      reviewComment: postComment,
+      phrase: this.props.selectedPhrase
+    }
+    this.props.postReviewComment(reviewData)
+  }
   sidebarDetails = () => {
     if (!this.props.hasSelectedPhrase) {
       return <span>Select a phrase to see details.</span>
@@ -92,9 +104,7 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedBy,
       lastModifiedTime
     } = this.props.selectedPhrase
-
     const directionClass = this.props.isRTL ? 'rtl' : 'ltr'
-
     return (
       <ul className={directionClass + ' SidebarEditor-details'}>
         {this.detailItem('Resource ID', resId)}
@@ -117,12 +127,10 @@ class TranslationInfoPanel extends React.Component {
       </li>
     )
   }
-
   lastModifiedDisplay = (lastModifiedBy, lastModifiedTime) => {
     if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
       return undefined
     }
-
     const modifiedByIcon = isUndefined(lastModifiedBy) ? undefined
         : <Icon name="user" className="n1" />
     const modifiedTimeIcon = isUndefined(lastModifiedTime) ? undefined
@@ -138,7 +146,6 @@ class TranslationInfoPanel extends React.Component {
       </span>
     )
   }
-
   /* URL of the selected phrase, with copy button. */
   phraseLink = () => {
     // TODO need to set up phrase ID in the URL first
@@ -153,7 +160,6 @@ class TranslationInfoPanel extends React.Component {
       </FormGroup>
     )
   }
-
   // Format a reviewCommentsList from reviewComments
   reviewCommentsList = () => {
     return this.props.reviewComments.map((value) => {
@@ -201,7 +207,6 @@ class TranslationInfoPanel extends React.Component {
     }
     return historyActivityItems.concat(latestHistoryActivityItem)
   }
-
   /* Returns Activity Items list filtered by comments and updates */
   filterActivityItems = (activityFilterType) => {
     const { reviewComments, historyItems } = this.props
@@ -222,7 +227,6 @@ class TranslationInfoPanel extends React.Component {
         return undefined
     }
   }
-
   render () {
     const { glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
@@ -235,7 +239,6 @@ class TranslationInfoPanel extends React.Component {
         <span className="hide-md">Glossary</span>{glossaryCountDisplay}
       </span>
     )
-
     // Use this when activity tab is activated
     const activityTitle = (
       <span>
@@ -243,9 +246,7 @@ class TranslationInfoPanel extends React.Component {
         <span className="hide-md">Activity</span>
       </span>
     )
-
     const activityItems = this.filterActivityItems(this.state.selectedActivites)
-
     return (
       <div>
         <h1 className="SidebarEditor-heading">
@@ -268,7 +269,8 @@ class TranslationInfoPanel extends React.Component {
               activeKey={this.state.key}
               activityItems={activityItems}
               selectedActivites={this.state.selectedActivites}
-              selectActivityTypeFilter={this.selectActivityTypeFilter} />
+              selectActivityTypeFilter={this.selectActivityTypeFilter}
+              postComment={this.postComment} />
           </Tab>
           <Tab eventKey={2} title={glossaryTitle}>
             <GlossaryTab
@@ -279,45 +281,43 @@ class TranslationInfoPanel extends React.Component {
     )
   }
 }
-
 function mapStateToProps (state) {
   const { glossary, phrases, context, activity } = state
   const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
-
   const { results, searchText } = glossary
   const glossaryResults = results.get(searchText)
   const glossaryCount = glossaryResults ? glossaryResults.length : 0
   const historyItems = activity.transHistory.historyItems
   const reviewComments = activity.transHistory.reviewComments
   const latestHistoryItem = activity.transHistory.latest
-
+  const transUnitId = state.phrases.selectedPhraseId
+  const localeId = state.context.lang
   // Need to check whether phrase itself is undefined since the detail may not
   // yet have been fetched from the server.
   const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
       !isUndefined(selectedPhrase)
-
   const isRTL = context.sourceLocale.isRTL
-
   const newProps = {
     glossaryCount,
     hasSelectedPhrase,
     historyItems,
     reviewComments,
     latestHistoryItem,
+    transUnitId,
+    localeId,
     isRTL
   }
-
   if (hasSelectedPhrase) {
     newProps.selectedPhrase = selectedPhrase
   }
-
   return newProps
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    close: () => dispatch(setSidebarVisibility(false))
+    close: () => dispatch(setSidebarVisibility(false)),
+    postReviewComment: (reviewData) => dispatch(postReviewComment(reviewData))
   }
 }
 
