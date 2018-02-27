@@ -20,32 +20,19 @@
  */
 package org.zanata.rest.editor.service;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.dao.TextFlowDAO;
-import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
-import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.rest.editor.service.resource.TransUnitHistoryResource;
-import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.rpc.GetTranslationHistoryHandler;
-import org.zanata.webtrans.shared.model.ReviewComment;
-import org.zanata.webtrans.shared.model.ReviewCommentId;
-import org.zanata.webtrans.shared.model.TransHistoryItem;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Map;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * @author Earl Floden <a href="mailto:efloden@redhat.com">efloden@redhat.com</a>
@@ -55,48 +42,28 @@ import java.util.Map;
 @Path(TransUnitHistoryResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class TransUnitHistoryService implements TransUnitHistoryResource {
-    @Inject
-    private LocaleService localeServiceImpl;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TransUnitHistoryService.class);
 
-    @Inject
-    private TextFlowDAO textFlowDAO;
-
-    @Inject
-    private TransUnitUtils transUnitUtils;
-
-    @Inject
-    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
+    @Inject @Any
+    private GetTranslationHistoryHandler historyHandler;
 
     @Override
     public Response get(String localeId, Long transUnitId) {
-        HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-        TransUnitId tUnitId = new TransUnitId(transUnitId);
-        HTextFlow hTextFlow =
-                textFlowDAO.findById(transUnitId, false);
-        HTextFlowTarget hTextFlowTarget =
-                hTextFlow.getTargets().get(hLocale.getId());
-        Map<Integer, HTextFlowTargetHistory> history =
-                hTextFlowTarget.getHistory();
-        Iterable<TransHistoryItem> historyItems =
-            Iterables.transform(history.values(),
-                new GetTranslationHistoryHandler.TargetHistoryToTransHistoryItemFunction());
-        List<ReviewComment> reviewComments = getReviewComments(tUnitId, hLocale);
+        if (isNullOrEmpty(localeId)) {
+            String msg1 = String.format("Null or empty localeId supplied");
+            log.warn(msg1);
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg1)
+                    .build();
+        }
+        if (transUnitId == null) {
+            String msg2 = String.format("Null transUnitId supplied");
+            log.warn(msg2);
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg2)
+                    .build();
+        }
         GetTranslationHistoryResult result =
-            new GetTranslationHistoryResult(Lists.newArrayList(historyItems),
-            null, Lists.newArrayList(reviewComments));
+                historyHandler.getTranslationHistory(localeId, transUnitId);
         return Response.ok(result).build();
-    }
-
-    protected List<ReviewComment>
-        getReviewComments(TransUnitId transUnitId, HLocale hLocale) {
-        List<HTextFlowTargetReviewComment> hComments =
-            textFlowTargetReviewCommentsDAO.getReviewComments(
-                transUnitId,
-                hLocale.getLocaleId());
-        return Lists.transform(hComments, input -> new ReviewComment(
-                new ReviewCommentId(input.getId()),
-                input.getCommentText(), input.getCommenterName(),
-                input.getCreationDate()
-            ));
     }
 }

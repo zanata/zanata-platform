@@ -5,7 +5,7 @@ import update from 'immutability-helper'
 const defaultState = {
   transHistory: {
     historyItems: undefined,
-    latest: {},
+    latest: undefined,
     reviewComments: undefined
   }
 }

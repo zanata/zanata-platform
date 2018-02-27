@@ -48,6 +48,15 @@ class TranslationInfoPanel extends React.Component {
         id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
       })
     ),
+    latestHistoryItem: PropTypes.shape({
+      contents: PropTypes.arrayOf(PropTypes.string),
+      modifiedBy: PropTypes.string,
+      modifiedDate: PropTypes.number,
+      optionalTag: PropTypes.string,
+      revisionComment: PropTypes.string,
+      status: PropTypes.string,
+      versionNum: PropTypes.string
+    }),
     isRTL: PropTypes.bool.isRequired
   }
 
@@ -163,20 +172,34 @@ class TranslationInfoPanel extends React.Component {
   }
   // Format a historyItemsList from historyItems
   historyItemsList = () => {
-    return this.props.historyItems.map((value) => {
-      const lastModified = new Date(value.modifiedDate)
+    const { historyItems, latestHistoryItem } = this.props
+    const historyActivityItems = historyItems.map((historyItem) => {
+      const lastModified = new Date(historyItem.modifiedDate)
       return {
         type: 'revision',
-        content: value.contents[0],
+        content: historyItem.contents[0],
         lastModifiedTime: lastModified,
-        status: transUnitStatusToPhraseStatus(value.status),
+        status: transUnitStatusToPhraseStatus(historyItem.status),
         user: {
-          name: value.modifiedBy,
+          name: historyItem.modifiedBy,
           imageUrl:
             'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
         }
       }
     })
+    const latestLastModified = new Date(latestHistoryItem.modifiedDate)
+    const latestHistoryActivityItem = {
+      type: 'revision',
+      content: latestHistoryItem.contents[0],
+      lastModifiedTime: latestLastModified,
+      status: transUnitStatusToPhraseStatus(latestHistoryItem.status),
+      user: {
+        name: latestHistoryItem.modifiedBy,
+        imageUrl:
+          'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+      }
+    }
+    return historyActivityItems.concat(latestHistoryActivityItem)
   }
 
   /* Returns Activity Items list filtered by comments and updates */
@@ -267,6 +290,7 @@ function mapStateToProps (state) {
   const glossaryCount = glossaryResults ? glossaryResults.length : 0
   const historyItems = activity.transHistory.historyItems
   const reviewComments = activity.transHistory.reviewComments
+  const latestHistoryItem = activity.transHistory.latest
 
   // Need to check whether phrase itself is undefined since the detail may not
   // yet have been fetched from the server.
@@ -280,6 +304,7 @@ function mapStateToProps (state) {
     hasSelectedPhrase,
     historyItems,
     reviewComments,
+    latestHistoryItem,
     isRTL
   }
 

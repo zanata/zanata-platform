@@ -23,6 +23,7 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
@@ -34,6 +35,7 @@ import com.google.common.collect.Maps;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 
 /**
@@ -82,22 +84,8 @@ public class GetTranslationHistoryHandler extends
         HTextFlowTarget hTextFlowTarget =
                 hTextFlow.getTargets().get(hLocale.getId());
         Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
-        TransHistoryItem latest = null;
-        if (hTextFlowTarget != null) {
-            String lastModifiedBy =
-                    usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
-            int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
-                    hLocale);
-            latest = new TransHistoryItem(
-                    hTextFlowTarget.getVersionNum().toString(),
-                    GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
-                            hTextFlowTarget, nPlurals),
-                    hTextFlowTarget.getState(), lastModifiedBy,
-                    hTextFlowTarget.getLastChanged(),
-                    hTextFlowTarget.getRevisionComment());
-            // history translation
-            history = hTextFlowTarget.getHistory();
-        }
+        TransHistoryItem latest =
+                getLatest(hTextFlowTarget, hTextFlow, hLocale);
         Iterable<TransHistoryItem> historyItems =
                 Iterables.transform(history.values(),
                         new TargetHistoryToTransHistoryItemFunction());
@@ -112,9 +100,47 @@ public class GetTranslationHistoryHandler extends
                 latest, Lists.newArrayList(reviewComments));
     }
 
-    private static String usernameOrEmptyString(HPerson lastModifiedBy) {
-        return lastModifiedBy != null && lastModifiedBy.hasAccount()
-                ? lastModifiedBy.getAccount().getUsername() : "";
+    /*
+     * Gets the Translation History Result for the React Editor
+     */
+    public GetTranslationHistoryResult getTranslationHistory
+            (String localeId, Long transUnitId) {
+        HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+        TransUnitId tUnitId = new TransUnitId(transUnitId);
+        HTextFlow hTextFlow =
+                textFlowDAO.findById(transUnitId, false);
+        HTextFlowTarget hTextFlowTarget =
+                hTextFlow.getTargets().get(hLocale.getId());
+        Map<Integer, HTextFlowTargetHistory> history =
+                hTextFlowTarget.getHistory();
+        Iterable<TransHistoryItem> historyItems =
+                Iterables.transform(history.values(),
+                        new TargetHistoryToTransHistoryItemFunction());
+        List<ReviewComment> reviewComments =
+                getReviewComments(tUnitId, hLocale);
+        TransHistoryItem latest =
+                getLatest(hTextFlowTarget, hTextFlow, hLocale);
+        return new GetTranslationHistoryResult(Lists.newArrayList(historyItems),
+                latest, Lists.newArrayList(reviewComments));
+    }
+
+    private TransHistoryItem getLatest(HTextFlowTarget hTextFlowTarget,
+                    HTextFlow hTextFlow, HLocale hLocale) {
+        TransHistoryItem latest = null;
+        if (hTextFlowTarget != null) {
+            String lastModifiedBy = GetTranslationHistoryHandler
+                    .usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
+            int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
+                    hLocale);
+            latest = new TransHistoryItem(
+                    hTextFlowTarget.getVersionNum().toString(),
+                    GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
+                            hTextFlowTarget, nPlurals),
+                    hTextFlowTarget.getState(), lastModifiedBy,
+                    hTextFlowTarget.getLastChanged(),
+                    hTextFlowTarget.getRevisionComment());
+        }
+        return latest;
     }
 
     protected List<ReviewComment>
@@ -136,6 +162,25 @@ public class GetTranslationHistoryHandler extends
                         );
                     }
                 });
+    }
+
+    // Overload for React Editor rest endpoint params
+    protected List<ReviewComment>
+    getReviewComments(TransUnitId transUnitId, HLocale hLocale) {
+        List<HTextFlowTargetReviewComment> hComments =
+                textFlowTargetReviewCommentsDAO.getReviewComments(
+                        transUnitId,
+                        hLocale.getLocaleId());
+        return Lists.transform(hComments, input -> new ReviewComment(
+                new ReviewCommentId(input.getId()),
+                input.getCommentText(), input.getCommenterName(),
+                input.getCreationDate()
+        ));
+    }
+
+    public static String usernameOrEmptyString(HPerson lastModifiedBy) {
+        return lastModifiedBy != null && lastModifiedBy.hasAccount()
+                ? lastModifiedBy.getAccount().getUsername() : "";
     }
 
     @Override
