@@ -38,6 +38,7 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 import com.google.common.base.Strings;
+import org.zanata.webtrans.shared.model.Locale;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -162,6 +163,9 @@ public class UserService implements UserResource {
         HProject project = projectDAO.getBySlug(projectSlug);
         LocaleId localeID = new LocaleId(localeId);
         HLocale locale = localeDAO.findByLocaleId(localeID);
+        if (project == null || locale == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
         boolean canReview = identity.hasPermissionWithAnyTargets(
                 "translation-review", project, locale);
         boolean canTranslate = identity.hasPermissionWithAnyTargets(
@@ -243,7 +247,8 @@ public class UserService implements UserResource {
             final AccountDAO accountDAO, final PersonDAO personDAO,
             final ProjectDAO projectDAO, final ZanataIdentity identity,
             final ApplicationConfiguration applicationConfiguration,
-            final IdentityManager identityManager) {
+            final IdentityManager identityManager,
+            final LocaleDAO localeDAO) {
         this.authenticatedAccount = authenticatedAccount;
         this.gravatarServiceImpl = gravatarServiceImpl;
         this.accountDAO = accountDAO;
@@ -252,6 +257,7 @@ public class UserService implements UserResource {
         this.identity = identity;
         this.applicationConfiguration = applicationConfiguration;
         this.identityManager = identityManager;
+        this.localeDAO = localeDAO;
     }
 
     /**

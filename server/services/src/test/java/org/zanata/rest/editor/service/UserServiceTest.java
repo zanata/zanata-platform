@@ -16,6 +16,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.User;
@@ -43,6 +44,8 @@ public class UserServiceTest {
     @Mock
     private ApplicationConfiguration applicationConfiguration;
     private HPerson person;
+    @Mock
+    private LocaleDAO localeDAO;
 
     private String username = "a";
 
@@ -60,7 +63,7 @@ public class UserServiceTest {
         service =
                 new UserService(authenticatedAccount, gravatarService,
                         accountDAO, personDAO, projectDAO, identity,
-                        applicationConfiguration, identityManager);
+                        applicationConfiguration, identityManager, localeDAO);
     }
 
     @Test
@@ -68,15 +71,23 @@ public class UserServiceTest {
         String projectSlug = "projectSlug";
         String localeId = "localeId";
         service = new UserService(null, gravatarService, accountDAO, personDAO,
-                projectDAO, identity, applicationConfiguration, identityManager);
+                projectDAO, identity, applicationConfiguration, identityManager, localeDAO);
         Response response = service.getTranslationPermission(projectSlug, localeId);
         assertThat(response.getStatus()).isEqualTo(403);
     }
 
     @Test
+    public void getTranslationPermissionWillReturnNotFoundIfNotFound() {
+        String projectSlug = "projectSlug";
+        String localeId = "localeId";
+        Response response = service.getTranslationPermission(projectSlug, localeId);
+        assertThat(response.getStatus()).isEqualTo(404);
+    }
+
+    @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
         service = new UserService(null, gravatarService, accountDAO, personDAO,
-                projectDAO, identity, applicationConfiguration, identityManager);
+                projectDAO, identity, applicationConfiguration, identityManager, localeDAO);
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(404);
     }
