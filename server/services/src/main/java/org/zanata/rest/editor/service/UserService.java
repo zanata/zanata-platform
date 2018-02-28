@@ -8,6 +8,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -16,10 +18,12 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.rest.dto.Account;
@@ -59,6 +63,8 @@ public class UserService implements UserResource {
     private ZanataIdentity identity;
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+    @Inject
+    private LocaleDAO localeDAO;
 
     @Inject
     private IdentityManager identityManager;
@@ -145,6 +151,29 @@ public class UserService implements UserResource {
         return Response.ok(permission).build();
     }
 
+    @Override
+    public Response getTranslationPermission(
+            @PathParam("projectSlug") String projectSlug,
+            @QueryParam("localeId") String localeId) {
+        if (!currentUser.isLoggedIn()) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        Permission permission = new Permission();
+        HProject project = projectDAO.getBySlug(projectSlug);
+        LocaleId localeID = new LocaleId(localeId);
+        HLocale locale = localeDAO.findByLocaleId(localeID);
+        if (project == null || locale == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        boolean canReview = identity.hasPermissionWithAnyTargets(
+                "translation-review", project, locale);
+        boolean canTranslate = identity.hasPermissionWithAnyTargets(
+                "modify-translation", project, locale);
+        permission.put("reviewer", canReview);
+        permission.put("translator", canTranslate);
+        return Response.ok(permission).build();
+    }
+
     /**
      * Generate {@link org.zanata.rest.dto.User} object from username
      *
@@ -214,7 +243,8 @@ public class UserService implements UserResource {
             final AccountDAO accountDAO, final PersonDAO personDAO,
             final ProjectDAO projectDAO, final ZanataIdentity identity,
             final ApplicationConfiguration applicationConfiguration,
-            final IdentityManager identityManager) {
+            final IdentityManager identityManager,
+            final LocaleDAO localeDAO) {
         this.currentUser = currentUser;
         this.gravatarServiceImpl = gravatarServiceImpl;
         this.accountDAO = accountDAO;
@@ -223,6 +253,7 @@ public class UserService implements UserResource {
         this.identity = identity;
         this.applicationConfiguration = applicationConfiguration;
         this.identityManager = identityManager;
+        this.localeDAO = localeDAO;
     }
 
     /**

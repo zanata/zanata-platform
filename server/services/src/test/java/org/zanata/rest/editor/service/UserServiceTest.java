@@ -13,12 +13,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.rest.dto.User;
+import org.zanata.rest.editor.dto.Permission;
 import org.zanata.seam.security.AltCurrentUser;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
@@ -46,6 +51,12 @@ public class UserServiceTest {
     private IdentityManager identityManager;
     @Mock
     private ApplicationConfiguration applicationConfiguration;
+    @Mock
+    private LocaleDAO localeDAO;
+    @Mock
+    private HLocale locale;
+    @Mock
+    private HProject project;
 
     private String username = "a";
 
@@ -64,7 +75,41 @@ public class UserServiceTest {
         service =
                 new UserService(currentUser, gravatarService,
                         accountDAO, personDAO, projectDAO, identity,
-                        applicationConfiguration, identityManager);
+                        applicationConfiguration, identityManager,
+                        localeDAO);
+    }
+
+    @Test
+    public void getTranslationPermissionWillReturnForbiddenIfNotAuthenticated() {
+        String projectSlug = "projectSlug";
+        String localeId = "localeId";
+        currentUser.account = null;
+        Response response = service.getTranslationPermission(projectSlug, localeId);
+        assertThat(response.getStatus()).isEqualTo(403);
+    }
+
+    @Test
+    public void getTranslationPermissionWillReturnNotFoundIfNotFound() {
+        String projectSlug = "projectSlug";
+        String localeId = "localeId";
+        Response response = service.getTranslationPermission(projectSlug, localeId);
+        assertThat(response.getStatus()).isEqualTo(404);
+    }
+
+    @Test
+    public void getTranslationPermissionWillReturnPermissions() {
+        String projectSlug = "projectSlug";
+        String localeId = "localeId";
+        LocaleId localeID = new LocaleId(localeId);
+        when(projectDAO.getBySlug(projectSlug)).thenReturn(project);
+        when(localeDAO.findByLocaleId(localeID)).thenReturn(locale);
+
+        Response response = service.getTranslationPermission(projectSlug, localeId);
+        Permission noPermissions = new Permission();
+        noPermissions.put("reviewer", false);
+        noPermissions.put("translator", false);
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getEntity()).isEqualToComparingFieldByField(noPermissions);
     }
 
     @Test
