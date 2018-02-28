@@ -46,6 +46,7 @@ export function profileUrl (username) {
 export function getTranslationPermission (localeId, projectSlug) {
   const endpoint =
   `${apiUrl}/user/permission/roles/project/${projectSlug}?localeId=${localeId}`
+  /** @type {APITypes} */
   const apiTypes = [
     USER_PERMISSION_REQUEST,
     {
