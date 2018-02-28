@@ -9,6 +9,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.seam.security.AltCurrentUser;
 import org.zanata.util.CloseableIterator;
 import com.google.common.collect.Iterators;
 
@@ -43,7 +44,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
     public void setup() {
         dao = new TextFlowStreamingDAO(getEmf().getSessionFactory());
         Session session = getSession();
-        projectDao = new ProjectDAO(session);
+        projectDao = new ProjectDAO(session, new AltCurrentUser());
         projectIterDao = new ProjectIterationDAO(session);
     }
 

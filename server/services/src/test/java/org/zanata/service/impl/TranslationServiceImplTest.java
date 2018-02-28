@@ -41,6 +41,7 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LockManagerService;
@@ -67,7 +68,8 @@ import static org.zanata.service.TranslationService.TranslationResult;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({
         LocaleServiceImpl.class,
-        ValidationServiceImpl.class
+        ValidationServiceImpl.class,
+        CurrentUserImpl.class
 })
 public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
 

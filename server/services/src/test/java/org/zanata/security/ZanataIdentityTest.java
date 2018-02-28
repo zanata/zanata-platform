@@ -16,6 +16,7 @@ import org.zanata.exception.NotLoggedInException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HProjectIteration;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.servlet.annotations.ContextPath;
@@ -35,7 +36,7 @@ import static org.zanata.util.PasswordUtil.generateSaltedHash;
 
 @RunWith(CdiUnitRunner.class)
 @SupportDeltaspikeCore
-@AdditionalClasses({SecurityFunctions.class})
+@AdditionalClasses({SecurityFunctions.class, CurrentUserImpl.class})
 public class ZanataIdentityTest extends ZanataJpaTest {
     private static final String username = "translator";
     private static final String apiKey = "d83882201764f7d339e97c4b087f0806";

@@ -9,6 +9,11 @@ import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
 registerLanguage('xml', xml)
 
+const permissions = {
+  reviewer: true,
+  translator: true
+}
+
 /* global describe expect it */
 describe('TransUnitTranslationPanel', () => {
   it('renders Syntax Highlighting markup on selected && syntax enabled', () => {
@@ -27,7 +32,8 @@ describe('TransUnitTranslationPanel', () => {
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
         directionClass={''}
-        syntaxOn />
+        syntaxOn
+        permissions={permissions} />
     )
     const lineStyle = {
       padding: '0.5rem',
@@ -75,7 +81,8 @@ describe('TransUnitTranslationPanel', () => {
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
         directionClass={''}
-        syntaxOn />
+        syntaxOn
+        permissions={permissions} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="TransUnit-item">
@@ -109,7 +116,8 @@ describe('TransUnitTranslationPanel', () => {
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
         directionClass={''}
-        syntaxOn />
+        syntaxOn
+        permissions={permissions} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="TransUnit-item">

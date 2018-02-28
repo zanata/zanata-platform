@@ -78,6 +78,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
     private HAccount authenticatedAccount;
     private static final int BATCH_SIZE = 50;
     private static final int MAX_LENGTH_CHAR = 255;
+    private static final int MAX_DESCRIPTION_LENGTH = 500;
 
     @Override
     public Map<LocaleId, List<GlossaryEntry>> parseGlossaryFile(
@@ -157,7 +158,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
      *            not empty
      */
     private Optional<String> validateGlossaryEntry(GlossaryEntry entry) {
-        if (StringUtils.length(entry.getDescription()) > MAX_LENGTH_CHAR) {
+        if (StringUtils.length(entry.getDescription()) > MAX_DESCRIPTION_LENGTH) {
             return Optional.of("Glossary description too long, maximum "
                     + MAX_LENGTH_CHAR + " character");
         }

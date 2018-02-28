@@ -50,7 +50,6 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
-import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -60,8 +59,8 @@ import org.zanata.model.HProjectMember;
 import org.zanata.model.LocaleRole;
 import org.zanata.model.ProjectRole;
 import org.zanata.rest.service.GlossaryService;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ActivityService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionStateCache;
@@ -108,8 +107,7 @@ public class ProjectHomeAction extends AbstractSortAction
     @Inject
     private LocaleMemberDAO localeMemberDAO;
     @Inject
-    @Authenticated
-    private HAccount authenticatedAccount;
+    private CurrentUser currentUser;
     @Inject
     private ZanataIdentity identity;
     @Inject
@@ -231,7 +229,7 @@ public class ProjectHomeAction extends AbstractSortAction
                 getProjectVersions(),
                 input -> input != null ? input.getId(): null);
         return activityServiceImpl.findLatestVersionActivitiesByUser(
-                authenticatedAccount.getPerson().getId(),
+                currentUser.getPerson().getId(),
                 Lists.newArrayList(versionIds), 0, 1);
     }
 
@@ -366,11 +364,11 @@ public class ProjectHomeAction extends AbstractSortAction
     }
 
     public List<HLocale> getUserJoinedLocales(HProjectIteration version) {
-        if (authenticatedAccount == null) {
+        if (!currentUser.isLoggedIn()) {
             return Collections.emptyList();
         }
         List<HLocale> userJoinedLocales = Lists.newArrayList();
-        Long personId = authenticatedAccount.getPerson().getId();
+        Long personId = currentUser.getPerson().getId();
         for (HLocale supportedLocale : getSupportedLocale(version)) {
             if (localeMemberDAO.isLocaleMember(personId,
                     supportedLocale.getLocaleId())
