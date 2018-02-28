@@ -56,6 +56,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionLocaleKey;
@@ -105,7 +106,7 @@ import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 @AdditionalClasses({ ParamTestCdiExtension.class, LocaleServiceImpl.class,
         TranslationMemoryServiceImpl.class, VersionStateCacheImpl.class,
         TranslationStateCacheImpl.class, ValidationServiceImpl.class,
-        TransactionUtilImpl.class, UrlUtil.class })
+        TransactionUtilImpl.class, UrlUtil.class, CurrentUserImpl.class })
 public class CopyTransServiceImplParameterizedTest {
 
     @ClassRule

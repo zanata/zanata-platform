@@ -48,6 +48,7 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
@@ -66,7 +67,7 @@ import com.google.common.collect.Lists;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ ProjectIterationDAO.class, TextFlowDAO.class,
         TransMemoryUnitDAO.class, LocaleServiceImpl.class,
-        TranslationMemoryServiceImpl.class })
+        TranslationMemoryServiceImpl.class, CurrentUserImpl.class })
 public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
 
     @Inject
