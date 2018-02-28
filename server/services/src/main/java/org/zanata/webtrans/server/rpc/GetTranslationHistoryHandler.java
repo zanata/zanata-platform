@@ -58,6 +58,7 @@ public class GetTranslationHistoryHandler extends
     @Inject
     private ResourceUtils resourceUtils;
 
+    // TODO: Refactor duplicated code in getTranslationHistory
     @Override
     public GetTranslationHistoryResult execute(
             GetTranslationHistoryAction action, ExecutionContext context)
@@ -83,6 +84,9 @@ public class GetTranslationHistoryHandler extends
         Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
         TransHistoryItem latest =
                 getLatest(hTextFlowTarget, hTextFlow, hLocale);
+        if (hTextFlowTarget != null) {
+            history = hTextFlowTarget.getHistory();
+        }
         Iterable<TransHistoryItem> historyItems =
                 Iterables.transform(history.values(),
                         new TargetHistoryToTransHistoryItemFunction());
