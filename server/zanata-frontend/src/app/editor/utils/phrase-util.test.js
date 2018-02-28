@@ -1,4 +1,4 @@
-/* global jest describe expect it */
+/* global describe expect it */
 
 import {
   getSaveButtonStatus
@@ -8,6 +8,8 @@ import {
     STATUS_NEEDS_WORK,
     STATUS_TRANSLATED
 } from './status-util'
+// eslint-disable-next-line
+import { Phrase } from './phrase'
 
 describe('getSaveButtonStatusTest', () => {
   it('Returns UNTRANSLATED when nothing is translated', () => {
@@ -72,6 +74,7 @@ describe('getSaveButtonStatusTest', () => {
   })
 
   it('Returns the current status when nothing has changed', () => {
+    /** @type {Phrase} */
     const phrase1 = {
       status: STATUS_NEEDS_WORK,
       translations: [
@@ -83,6 +86,7 @@ describe('getSaveButtonStatusTest', () => {
         'Hello'
       ]
     }
+    /** @type {Phrase} */
     const phrase2 = {
       status: STATUS_TRANSLATED,
       translations: [

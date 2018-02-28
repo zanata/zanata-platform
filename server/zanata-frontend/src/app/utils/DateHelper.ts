@@ -1,21 +1,34 @@
-import { extendMoment } from 'moment-range'
+import { extendMoment, MomentRangeExtends } from 'moment-range'
 import { isEmpty, findKey } from 'lodash'
-/* tslint:disable */
-const M = require('moment')
-/* tslint:enable */
-const moment = extendMoment(M)
+import * as M from 'moment'
+import { tuple } from './tuple';
+const moment: MomentRangeExtends & Moment = extendMoment(M)
 
-const DateHelper = {
-  shortDateFormat: 'DD/MM/YYYY',
-  shortDateTimeFormat: 'DD/MM/YYYY HH:mm',
-  dateFormat: 'YYYY-MM-DD',
-  dateRangeDisplayFmt: 'DD MMM, YYYY',
-  dateSingleDisplayFmt: 'DD MMM, YYYY (dddd)',
-  getDateRangeFromOption (dateRange) {
+type Moment = M.Moment
+
+interface DateRangeDef {
+  startDate: Moment,
+  endDate: Moment
+}
+
+interface FormattedDateRange {
+  fromDate: string,
+  toDate: string,
+  dates: string[]
+}
+
+class DateHelper {
+  public static shortDateFormat: 'DD/MM/YYYY'
+  public static shortDateTimeFormat: 'DD/MM/YYYY HH:mm'
+  public static dateFormat: 'YYYY-MM-DD'
+  public static dateRangeDisplayFmt: 'DD MMM, YYYY'
+  public static dateSingleDisplayFmt: 'DD MMM, YYYY (dddd)'
+
+  public static getDateRangeFromOption (dateRange: DateRangeDef): FormattedDateRange {
     const dateFormat = this.dateFormat
     const fromDate = dateRange.startDate
     const toDate = dateRange.endDate
-    const dates = []
+    const dates: string[] = []
     const range = moment.range(fromDate, toDate)
 
     Array.from(range.by('days')).forEach(m => {
@@ -27,9 +40,9 @@ const DateHelper = {
       toDate: toDate.format(dateFormat),
       dates
     }
-  },
+  }
 
-  dayAsLabel (dateStr, numOfDays) {
+  public static dayAsLabel (dateStr: string, numOfDays: number) {
     const date = moment(dateStr)
     const dayOfWeekFmt = 'ddd'
     const dayOfMonthFmt = 'D/MM'
@@ -45,39 +58,39 @@ const DateHelper = {
         return ''
       }
     }
-  },
+  }
 
-  isInFuture (dateStr) {
+  public static isInFuture (dateStr: string) {
     return moment(dateStr).isAfter(moment())
-  },
+  }
 
-  getDate (milliseconds) {
+  public static getDate (milliseconds: string) {
     if (!isEmpty(milliseconds)) {
       return new Date(parseInt(milliseconds, 10))
     } else {
       return undefined
     }
-  },
+  }
 
-  formatDate (date, format) {
+  public static formatDate (date: Date|Moment, format?: string) {
     return moment(date).format(format)
-  },
+  }
 
-  shortDate (date) {
+  public static shortDate (date: Moment) {
     if (date) {
       return this.formatDate(date, this.shortDateFormat)
     } else {
       return undefined
     }
-  },
+  }
 
-  shortDateTime (date) {
+  public static shortDateTime (date: Date|Moment) {
     if (date) {
       return this.formatDate(date, this.shortDateTimeFormat)
     } else {
       return undefined
     }
-  },
+  }
 
   /**
    * Calculate days range between startDate and endDate,
@@ -86,7 +99,7 @@ const DateHelper = {
    * @days - days different to check. Must be 0 or more.
    * returns {startDate: startDate, endDate: adjustedEndDate}
    */
-  keepDateInRange (startDate, endDate, days) {
+  public static keepDateInRange (startDate: Moment, endDate: Moment, days: number): DateRangeDef {
     if (days < 0) {
       throw new Error(`days must be more 0 or more: ${days}`)
     }
@@ -98,62 +111,63 @@ const DateHelper = {
       startDate,
       endDate: adjustedEndDate
     }
-  },
+  }
 
-  getDefaultDateRange () {
+  public static getDefaultDateRange () {
     return {
       'This week': {
-        startDate: function startDate (_now) {
-          return moment().weekday(0)
+        startDate: function startDate (now: Moment) {
+          return now.weekday(0)
         },
-        endDate: function endDate (_now) {
-          return moment().weekday(6)
+        endDate: function endDate (now: Moment) {
+          return now.weekday(6)
         }
       },
       'Last week': {
-        startDate: function startDate (_now) {
-          return moment().weekday(-7)
+        startDate: function startDate (now: Moment) {
+          return now.weekday(-7)
         },
-        endDate: function endDate (_now) {
-          return moment().weekday(-1)
+        endDate: function endDate (now: Moment) {
+          return now.weekday(-1)
         }
       },
       'This month': {
-        startDate: function startDate (_now) {
-          return moment().date(1)
+        startDate: function startDate (now: Moment) {
+          return now.date(1)
         },
-        endDate: function endDate (now) {
-          return moment().month(now.month() + 1).date(0)
+        endDate: function endDate (now: Moment) {
+          return now.month(now.month() + 1).date(0)
         }
       },
       'Last month': {
-        startDate: function startDate (now) {
-          return moment().month(now.month() - 1).date(1)
+        startDate: function startDate (now: Moment) {
+          return now.month(now.month() - 1).date(1)
         },
-        endDate: function endDate (_now) {
-          return moment().date(0)
+        endDate: function endDate (now: Moment) {
+          return now.date(0)
         }
       },
       'This year': {
-        startDate: function startDate (now) {
-          return moment().year(now.year()).month(0).date(1)
+        startDate: function startDate (now: Moment) {
+          return now.year(now.year()).month(0).date(1)
         },
-        endDate: function endDate (now) {
-          return moment().year(now.year()).month(11).date(31)
+        endDate: function endDate (now: Moment) {
+          return now.year(now.year()).month(11).date(31)
         }
       }
     }
-  },
+  }
 
-  getDateRange (option) {
+  public static getDateRange (option: DateRangeName): DateRangeDef {
     const dateRange = this.getDefaultDateRange()[option]
+    const now = moment()
     return {
-      startDate: dateRange.startDate(),
-      endDate: dateRange.endDate()
+      startDate: dateRange.startDate(now),
+      endDate: dateRange.endDate(now)
     }
-  },
+  }
 
-  getDateRangeLabel (dateRange) {
+  public static getDateRangeLabel (dateRange: DateRangeDef) {
     const now = moment()
     return findKey(this.getDefaultDateRange(), function (range) {
       return moment(range.startDate(now)).isSame(dateRange.startDate, 'day') &&
@@ -161,5 +175,13 @@ const DateHelper = {
     })
   }
 }
+
+const dateRangeNames = tuple(
+  'Last week',
+  'This month',
+  'Last month',
+  'This year'
+)
+type DateRangeName = typeof dateRangeNames[number]
 
 export default DateHelper

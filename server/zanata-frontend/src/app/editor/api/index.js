@@ -19,7 +19,12 @@ import {
   LOCALE_MESSAGES_SUCCESS,
   LOCALE_MESSAGES_FAILURE
 } from '../actions/header-action-types'
-import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
+import {
+  buildAPIRequest,
+  getJsonHeaders,
+  // eslint-disable-next-line
+  APITypes
+} from '../../actions/common-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { includes } from 'lodash'
 import { apiUrl, serverUrl, appUrl } from '../../config'
@@ -62,6 +67,7 @@ export function fetchLocales () {
 
 export function fetchI18nLocale (locale) {
   const endpoint = `${appUrl}/messages/${locale}.json`
+  /** @type {APITypes} */
   const apiTypes = [
     LOCALE_MESSAGES_REQUEST,
     {

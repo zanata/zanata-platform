@@ -4,12 +4,13 @@ import {
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED
 } from './status-util'
+import {Phrase} from './phrase'
 
-const nullToEmpty = (value) => {
+const nullToEmpty = (value: string) => {
   return value || ''
 }
 
-export function getSaveButtonStatus (phrase) {
+export function getSaveButtonStatus (phrase: Phrase) {
   if (hasNoTranslation(phrase)) {
     return STATUS_UNTRANSLATED
   } else if (hasEmptyTranslation(phrase)) {
@@ -21,7 +22,7 @@ export function getSaveButtonStatus (phrase) {
   }
 }
 
-export function hasTranslationChanged (phrase) {
+export function hasTranslationChanged (phrase: Phrase) {
   // on Firefox with input method turned on,
   // when hitting tab it seems to turn undefined value into ''
 
@@ -36,11 +37,11 @@ export function hasTranslationChanged (phrase) {
   return !allSame
 }
 
-export function hasNoTranslation (phrase) {
+export function hasNoTranslation (phrase: Phrase) {
   return isEmpty(compact(phrase.newTranslations))
 }
 
-export function hasEmptyTranslation (phrase) {
+export function hasEmptyTranslation (phrase: Phrase) {
   return compact(phrase.newTranslations).length !==
       phrase.newTranslations.length
 }
@@ -51,16 +52,17 @@ export function hasEmptyTranslation (phrase) {
  * @param getState the getState function from redux thunk
  * @param phraseId id for the phrase to wait for
  * @param callback is invoked with the phrase detail
- * @param reps (optional) only try this many times, then invoke errorCallback
+ * @param maxReps (optional) only try this many times, then invoke errorCallback
  * @param errorCallback (optional) invoked if the detail was not available after
  *                                 reps tries
  */
-export function waitForPhraseDetail (getState, phraseId, callback, reps,
-                                     errorCallback) {
-  doWait(reps)
+export function waitForPhraseDetail (getState: () => any, phraseId: string, callback: (phrase: Phrase) => void,
+    maxReps: number, errorCallback: () => void) {
 
-  function doWait (reps) {
-    const phrase = getState().phrases.detail[phraseId]
+  doWait(maxReps)
+
+  function doWait (reps?: number) {
+    const phrase: Phrase|undefined = getState().phrases.detail[phraseId]
     if (phrase) {
       callback(phrase)
     } else if (isUndefined(reps)) {

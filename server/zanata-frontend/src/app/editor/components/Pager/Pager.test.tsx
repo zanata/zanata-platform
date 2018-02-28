@@ -7,6 +7,7 @@ import { Pager } from '.'
 import { Icon } from '../../../components'
 import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
 
+// tslint:disable-next-line:no-empty
 const callback = () => {}
 
 describe('PagerTest', () => {
