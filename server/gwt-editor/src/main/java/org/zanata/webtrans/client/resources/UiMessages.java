@@ -192,9 +192,6 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Glossary Details")
     String glossaryDetails();
 
-    @DefaultMessage("Dismiss")
-    String dismiss();
-
     @DefaultMessage("Last modified on {0}")
     String lastModifiedOn(String date);
 
