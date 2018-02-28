@@ -1,10 +1,14 @@
 import { extendMoment, MomentRangeExtends } from 'moment-range'
 import { isEmpty, findKey } from 'lodash'
-import * as M from 'moment'
+import { Moment } from 'moment'
 import { tuple } from './tuple';
-const moment: MomentRangeExtends & Moment = extendMoment(M)
 
-type Moment = M.Moment
+// 'require' seems to be the only solution (until we upgrade moment&range)
+// Note that these have been tried and don't work:
+//   import M from 'moment'; ... moment = extendMoment(M) - no 'default'
+//   import * as M from 'moment'; ... moment = extendMoment(M) - not a function
+// tslint:disable-next-line:no-var-requires
+const moment: MomentRangeExtends & Moment = extendMoment(require('moment'))
 
 interface DateRangeDef {
   startDate: Moment,
