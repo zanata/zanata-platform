@@ -38,7 +38,6 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 import com.google.common.base.Strings;
-import org.zanata.webtrans.shared.model.Locale;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
