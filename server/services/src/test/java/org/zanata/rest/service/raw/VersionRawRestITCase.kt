@@ -49,6 +49,7 @@ import org.zanata.rest.service.raw.ArquillianRest.beansXmlForRest
 import org.zanata.rest.service.raw.ArquillianRest.classesWithDependenciesForRest
 import org.zanata.rest.service.raw.ArquillianRest.libsForRest
 import org.zanata.rest.service.raw.ArquillianRest.jbossDeploymentStructureForRest
+import org.zanata.seam.security.CurrentUserImpl
 
 // TODO we don't want to add LifecycleArquillian to the deployment
 @RunWith(Arquillian::class)
@@ -61,7 +62,8 @@ class VersionRawRestITCase : RestTest() {
             val classes = listOf(
                     VersionRawRestITCase::class.java,
                     VersionService::class.java,
-                    HApplicationConfiguration::class.java
+                    HApplicationConfiguration::class.java,
+                    CurrentUserImpl::class.java
             )
             val war = ShrinkWrap
                     .create(WebArchive::class.java, "VersionService.war")

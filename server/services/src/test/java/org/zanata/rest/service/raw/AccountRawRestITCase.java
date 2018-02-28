@@ -45,6 +45,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Account;
 import org.zanata.rest.service.AccountService;
+import org.zanata.seam.security.CurrentUserImpl;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +73,8 @@ public class AccountRawRestITCase extends RestTest {
                 AccountService.class,
                 HLocaleMember.class,
                 AccessDeniedExceptionMapper.class,
-                AccessDeniedExceptionHandler.class
+                AccessDeniedExceptionHandler.class,
+                CurrentUserImpl.class
         ));
         classes.addAll(classesWithDependenciesForRest());
         return classes;

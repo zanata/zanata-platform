@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.Term;
@@ -53,8 +52,8 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 
 import static org.zanata.hibernate.search.IndexFieldLabels.FULL_SLUG_FIELD;
 
@@ -64,8 +63,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @FullText
     private FullTextEntityManager entityManager;
-    @Inject @Authenticated
-    private HAccount authenticatedAccount;
+    @Inject
+    private CurrentUser currentUser;
     @Inject
     private ZanataIdentity identity;
 
@@ -73,8 +72,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         super(HProject.class);
     }
 
-    public ProjectDAO(Session session) {
+    public ProjectDAO(Session session, CurrentUser currentUser) {
         super(HProject.class, session);
+        this.currentUser = currentUser;
     }
 
     public ProjectDAO(FullTextEntityManager entityManager, Session session,
@@ -97,8 +97,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                     boolean filterOutActive, boolean filterOutReadOnly,
                     boolean filterOutObsolete) {
 
-        HPerson person = authenticatedAccount != null ?
-                authenticatedAccount.getPerson() : null;
+        HPerson person = currentUser.isLoggedIn() ?
+                currentUser.getPerson() : null;
 
         String condition =
                 constructFilterCondition(filterOutActive, filterOutReadOnly,
@@ -131,8 +131,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     public int getFilterProjectSize(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete) {
-        HPerson person = authenticatedAccount != null ?
-                authenticatedAccount.getPerson() : null;
+        HPerson person = currentUser.isLoggedIn() ?
+                currentUser.getPerson() : null;
 
         String condition = constructFilterCondition(filterOutActive,
                 filterOutReadOnly, filterOutObsolete, person);
@@ -528,8 +528,4 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return ((Long) q.uniqueResult()).intValue();
     }
 
-    @VisibleForTesting
-    protected void setAuthenticatedAccount(HAccount authenticatedAccount) {
-        this.authenticatedAccount = authenticatedAccount;
-    }
 }

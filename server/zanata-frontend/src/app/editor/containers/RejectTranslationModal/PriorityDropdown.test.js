@@ -30,7 +30,9 @@ describe('PriorityDropdown', () => {
           <Dropdown.Button>
             <a className='EditorDropdown-item'>
               <span className={minorStyle}>{MINOR}</span>
-              <Icon className='n1' name='chevron-down' />
+              <span className='arrow'>
+                <Icon className='n1' name='chevron-down' />
+              </span>
             </a>
           </Dropdown.Button>
           <Dropdown.Content>
@@ -71,7 +73,9 @@ describe('PriorityDropdown', () => {
           <Dropdown.Button>
             <a className='EditorDropdown-item'>
               <span className={majorStyle}>{MAJOR}</span>
-              <Icon className='n1' name='chevron-down' />
+              <span className='arrow'>
+                <Icon className='n1' name='chevron-down' />
+              </span>
             </a>
           </Dropdown.Button>
           <Dropdown.Content>
@@ -112,7 +116,9 @@ describe('PriorityDropdown', () => {
           <Dropdown.Button>
             <a className='EditorDropdown-item'>
               <span className={criticalStyle}>{CRITICAL}</span>
-              <Icon className='n1' name='chevron-down' />
+              <span className='arrow'>
+                <Icon className='n1' name='chevron-down' />
+              </span>
             </a>
           </Dropdown.Button>
           <Dropdown.Content>

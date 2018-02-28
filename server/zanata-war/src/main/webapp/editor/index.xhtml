@@ -37,6 +37,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="cleartype" content="on"/>
 
+    <!-- Preconnect SourceSansPro via FontFace in the
+        following files:
+         1. app/editor/components/TransUnit/index.css
+         2. app/editor/css/theme/lib/theme.css
+         3. app/editor/css/base/lib/text.css
+    -->
+    <link rel="preconnect" href="https://fonts.gstatic.com/"
+          crossorigin="anonymous" />
+
     <link type="image/x-icon" rel="shortcut icon"
         href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
     <link type="text/css" rel="stylesheet" href="#{frontendAssets.editorCss}"/>

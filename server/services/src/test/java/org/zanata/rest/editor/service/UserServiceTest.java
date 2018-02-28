@@ -24,6 +24,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.dto.Permission;
+import org.zanata.seam.security.AltCurrentUser;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
@@ -39,6 +40,9 @@ public class UserServiceTest {
     @Mock
     private ProjectDAO projectDAO;
     private HAccount authenticatedAccount;
+    private HPerson authenticatedPerson;
+    private AltCurrentUser currentUser = new AltCurrentUser();
+
     @Mock
     private GravatarService gravatarService;
     @Mock
@@ -47,7 +51,6 @@ public class UserServiceTest {
     private IdentityManager identityManager;
     @Mock
     private ApplicationConfiguration applicationConfiguration;
-    private HPerson person;
     @Mock
     private LocaleDAO localeDAO;
     @Mock
@@ -62,14 +65,15 @@ public class UserServiceTest {
         MockitoAnnotations.initMocks(this);
         authenticatedAccount = new HAccount();
         authenticatedAccount.setUsername(username);
-        person = new HPerson();
-        setId(person, 1L);
-        person.setName("peter");
-        person.setEmail("pan@wonderland");
-        person.setAccount(authenticatedAccount);
-        authenticatedAccount.setPerson(person);
+        authenticatedPerson = new HPerson();
+        setId(authenticatedPerson, 1L);
+        authenticatedPerson.setName("peter");
+        authenticatedPerson.setEmail("pan@wonderland");
+        authenticatedPerson.setAccount(authenticatedAccount);
+        authenticatedAccount.setPerson(authenticatedPerson);
+        currentUser.account = authenticatedAccount;
         service =
-                new UserService(authenticatedAccount, gravatarService,
+                new UserService(currentUser, gravatarService,
                         accountDAO, personDAO, projectDAO, identity,
                         applicationConfiguration, identityManager,
                         localeDAO);
@@ -79,9 +83,7 @@ public class UserServiceTest {
     public void getTranslationPermissionWillReturnForbiddenIfNotAuthenticated() {
         String projectSlug = "projectSlug";
         String localeId = "localeId";
-        service = new UserService(null, gravatarService, accountDAO, personDAO,
-                projectDAO, identity, applicationConfiguration, identityManager,
-                localeDAO);
+        currentUser.account = null;
         Response response = service.getTranslationPermission(projectSlug, localeId);
         assertThat(response.getStatus()).isEqualTo(403);
     }
@@ -112,25 +114,25 @@ public class UserServiceTest {
 
     @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
-        service = new UserService(null, gravatarService, accountDAO, personDAO,
-                projectDAO, identity, applicationConfiguration, identityManager, localeDAO);
+        currentUser.account = null;
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(404);
     }
 
     @Test
     public void getMyInfoWillReturnInfoAboutAuthenticatedPerson() {
-        when(personDAO.findById(person.getId())).thenReturn(person);
+        when(personDAO.findById(authenticatedPerson.getId())).thenReturn(
+                authenticatedPerson);
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
-                person.getEmail())).thenReturn("imageurl");
+                authenticatedPerson.getEmail())).thenReturn("imageurl");
 
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getEntity()).isInstanceOf(User.class);
 
         User user = (User) response.getEntity();
-        assertThat(user.getEmail()).isEqualTo(person.getEmail());
-        assertThat(user.getName()).isEqualTo(person.getName());
+        assertThat(user.getEmail()).isEqualTo(authenticatedPerson.getEmail());
+        assertThat(user.getName()).isEqualTo(authenticatedPerson.getName());
     }
 
     @Test
@@ -142,20 +144,24 @@ public class UserServiceTest {
 
     @Test
     public void getUserInfoWillReturnInfoAboutThePerson() {
-        when(accountDAO.getEnabledByUsername(username)).thenReturn(person.getAccount());
-        when(personDAO.findById(person.getId())).thenReturn(person);
+        when(accountDAO.getEnabledByUsername(username)).thenReturn(
+                authenticatedPerson.getAccount());
+        when(personDAO.findById(authenticatedPerson.getId())).thenReturn(
+                authenticatedPerson);
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
-            person.getEmail())).thenReturn("imageurl");
+            authenticatedPerson.getEmail())).thenReturn("imageurl");
 
         testUser(false);
     }
 
     @Test
     public void getUserInfoWillReturnInfoAboutThePersonWithoutEmail() {
-        when(accountDAO.getEnabledByUsername(username)).thenReturn(person.getAccount());
-        when(personDAO.findById(person.getId())).thenReturn(person);
+        when(accountDAO.getEnabledByUsername(username)).thenReturn(
+                authenticatedPerson.getAccount());
+        when(personDAO.findById(authenticatedPerson.getId())).thenReturn(
+                authenticatedPerson);
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
-            person.getEmail())).thenReturn("imageurl");
+            authenticatedPerson.getEmail())).thenReturn("imageurl");
 
         testUser(true);
     }
@@ -171,11 +177,11 @@ public class UserServiceTest {
 
         User user = (User) response.getEntity();
         if(includeEmail) {
-            assertThat(user.getEmail()).isEqualTo(person.getEmail());
+            assertThat(user.getEmail()).isEqualTo(authenticatedPerson.getEmail());
         } else {
             assertThat(user.getEmail()).isEqualTo(null);
         }
-        assertThat(user.getName()).isEqualTo(person.getName());
+        assertThat(user.getName()).isEqualTo(authenticatedPerson.getName());
         assertThat(user.getUsername()).isEqualTo(username);
         assertThat(user.getRoles()).isEqualTo(roles);
     }

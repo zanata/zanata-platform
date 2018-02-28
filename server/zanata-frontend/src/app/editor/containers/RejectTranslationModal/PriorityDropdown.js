@@ -49,7 +49,9 @@ class ProirityDropdown extends Component {
           <Dropdown.Button>
             <a className='EditorDropdown-item'>
               <span className={textState}>{priority}</span>
-              <Icon className='n1' name='chevron-down' />
+              <span className='arrow'>
+                <Icon className='n1' name='chevron-down' />
+              </span>
             </a>
           </Dropdown.Button>
           <Dropdown.Content>

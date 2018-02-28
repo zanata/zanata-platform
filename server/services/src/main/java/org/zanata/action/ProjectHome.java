@@ -57,7 +57,6 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.exception.ProjectNotFoundException;
 import org.zanata.i18n.Messages;
-import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -66,8 +65,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
 import org.zanata.model.type.WebhookType;
 import org.zanata.model.validator.SlugValidator;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ProjectService;
 import org.zanata.service.SlugEntityService;
@@ -119,8 +118,7 @@ public class ProjectHome extends SlugHome<HProject>
     @Inject
     private ZanataIdentity identity;
     @Inject
-    @Authenticated
-    private HAccount authenticatedAccount;
+    private CurrentUser currentUser;
     @Inject
     private LocaleService localeServiceImpl;
     @Inject
@@ -817,11 +815,11 @@ public class ProjectHome extends SlugHome<HProject>
             return null;
         }
         updateProjectType();
-        if (authenticatedAccount != null) {
+        if (currentUser.isLoggedIn()) {
             // authenticatedAccount person is a detached entity, so fetch a copy
             // that is attached to the current session.
             HPerson creator = personDAO
-                    .findById(authenticatedAccount.getPerson().getId());
+                    .findById(currentUser.getPerson().getId());
             getInstance().addMaintainer(creator);
             getInstance().getCustomizedValidations().clear();
             for (ValidationAction validationAction : validationServiceImpl
@@ -873,7 +871,7 @@ public class ProjectHome extends SlugHome<HProject>
                     person.getAccount().getUsername(), Maintainer,
                     getInstance().getWebHooks(),
                     ProjectMaintainerChangedEvent.ChangeType.REMOVE);
-            if (person.equals(authenticatedAccount.getPerson())) {
+            if (person.equals(currentUser.getPerson())) {
                 urlUtil.redirectToInternal(urlUtil.projectUrl(getSlug()));
             }
         }

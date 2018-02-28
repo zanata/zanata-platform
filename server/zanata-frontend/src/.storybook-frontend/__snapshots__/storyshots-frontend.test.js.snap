@@ -18213,10 +18213,51 @@ exports[`Frontend Storyshots ProgressBar translation states 1`] = `
 </span>
 `;
 
-exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
+exports[`Frontend Storyshots RejectionsForm **Confirm delete criteria 1`] = `
+<div
+  className="pull-right"
+>
+  <button
+    className="btn-sm btn btn-danger"
+    disabled={false}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onMouseOut={[Function]}
+    onMouseOver={[Function]}
+    type="button"
+  >
+    <span
+      className=""
+    >
+      <svg
+        className="s0 iconEdit"
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-trash\\" />",
+          }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </span>
+  </button>
+</div>
+`;
+
+exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
 <div
   className="container"
 >
+  <div
+    className="alert alert-success"
+    role="alert"
+  >
+    Rejection criteria saved.
+  </div>
   <h1>
     Reject translations settings
   </h1>
@@ -18376,7 +18417,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18396,13 +18437,13 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -18900,7 +18941,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
         onKeyDown={undefined}
         onSelect={undefined}
         placeholder="Other (reason may be in comment section/history if necessary)"
-        readOnly={false}
+        readOnly={true}
         style={
           Object {
             "height": 0,
@@ -18920,13 +18961,13 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </label>
       <br />
       <div
-        className="dropdown btn-group btn-group-sm btn-group-default"
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
       >
         <button
           aria-expanded={false}
           aria-haspopup={true}
           className="dropdown-toggle btn btn-sm btn-default"
-          disabled={false}
+          disabled={true}
           id="review-criteriareview-criteria-dropdown-basic"
           onClick={[Function]}
           onKeyDown={[Function]}
@@ -19033,8 +19074,808 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
       </span>
        Add review criteria
     </button>
+  </div>
+</div>
+`;
+
+exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
+<div
+  className="container"
+>
+  <h1>
+    Reject translations settings
+  </h1>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textDanger"
+          >
+            Critical
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textWarning"
+          >
+            Major
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textWarning"
+          >
+            Major
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Style Guide & Glossary Violations"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textInfo"
+          >
+            Minor
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textInfo"
+          >
+            Minor
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <form
+    className="rejectionsForm form-inline"
+  >
+    <div
+      className="u-flexGrow1 form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlineCriteria"
+      >
+        Criteria
+      </label>
+      <br />
+      <textarea
+        aria-label={undefined}
+        autoComplete={undefined}
+        autoFocus={undefined}
+        className="textInput"
+        id={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={undefined}
+        onSelect={undefined}
+        placeholder="Other (reason may be in comment section/history if necessary)"
+        readOnly={true}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        className="control-label"
+        htmlFor="formInlinePriority"
+      >
+        Priority
+      </label>
+      <br />
+      <div
+        className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      >
+        <button
+          aria-expanded={false}
+          aria-haspopup={true}
+          className="dropdown-toggle btn btn-sm btn-default"
+          disabled={true}
+          id="review-criteriareview-criteria-dropdown-basic"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          type="button"
+        >
+          <span
+            className="u-textDanger"
+          >
+            Critical
+          </span>
+           
+          <span
+            className="caret"
+          />
+        </button>
+        <ul
+          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
+          className="dropdown-menu"
+          role="menu"
+        >
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textInfo"
+              >
+                Minor
+              </span>
+            </a>
+          </li>
+          <li
+            className=""
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textWarning"
+              >
+                Major
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            role="presentation"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <span
+                className="u-textDanger"
+              >
+                Critical
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <div
+    className="rejection-btns"
+  >
     <button
-      className="btn btn-info"
+      className="btn-left btn btn-primary"
       disabled={false}
       type="button"
     >
@@ -19045,7 +19886,7 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           className="s1"
           dangerouslySetInnerHTML={
             Object {
-              "__html": "<use xlink:href=\\"#Icon-tick\\" />",
+              "__html": "<use xlink:href=\\"#Icon-plus\\" />",
             }
           }
           style={
@@ -19055,13 +19896,13 @@ exports[`Frontend Storyshots RejectionsForm Admin screen 1`] = `
           }
         />
       </span>
-       Save changes
+       Add review criteria
     </button>
   </div>
 </div>
 `;
 
-exports[`Frontend Storyshots RejectionsForm commentRequired 1`] = `
+exports[`Frontend Storyshots RejectionsForm editable 1`] = `
 <form
   className="rejectionsForm form-inline"
 >
@@ -19087,7 +19928,7 @@ exports[`Frontend Storyshots RejectionsForm commentRequired 1`] = `
       onKeyDown={undefined}
       onSelect={undefined}
       placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-      readOnly={false}
+      readOnly={true}
       style={
         Object {
           "height": 0,
@@ -19107,13 +19948,13 @@ exports[`Frontend Storyshots RejectionsForm commentRequired 1`] = `
     </label>
     <br />
     <div
-      className="dropdown btn-group btn-group-sm btn-group-default"
+      className="dropdown disabled btn-group btn-group-sm btn-group-default"
     >
       <button
         aria-expanded={false}
         aria-haspopup={true}
         className="dropdown-toggle btn btn-sm btn-default"
-        disabled={false}
+        disabled={true}
         id="review-criteriareview-criteria-dropdown-basic"
         onClick={[Function]}
         onKeyDown={[Function]}

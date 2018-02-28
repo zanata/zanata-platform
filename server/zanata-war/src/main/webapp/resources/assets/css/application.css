@@ -48,7 +48,7 @@ Removes some of the styling on the page-level splitters
 
 .gwt-SplitLayoutPanel-VDragger {
   cursor: row-resize;
-  background: #E5E5E5;
+  background: #E0E0E0;
 }
 
 .gwt-Button, .gwt-PushButton {
@@ -203,15 +203,15 @@ Removes some of the styling on the page-level splitters
 }
 
 .transUnitTable > tbody > tr.selected > td {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03), 0 -4px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04), 0 -4px 6px rgba(0, 0, 0, 0.04);
 }
 
 tr > .transUnitCol:last-child {
-  background-color: rgba(250, 250, 250, 0.8);
+  background-color: rgba(250, 250, 250, 0.9);
 }
 
 tr.selected > .transUnitCol:last-child {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .transUnitTable > tbody > tr:hover, .transUnitTable > tbody > tr:hover .fadeElement {
@@ -224,7 +224,7 @@ tr.selected > .transUnitCol:last-child {
 
 .transUnitTable > tbody > tr {
   opacity: 0.95;
-  background-color: rgba(250, 250, 250, 0.8);
+  background-color: rgba(250, 250, 250, 0.9);
 }
 
 .transUnitTable > tbody > tr .fadeElement {
@@ -233,7 +233,7 @@ tr.selected > .transUnitCol:last-child {
 
 .transUnitTable > tbody > tr > td {
   border-bottom: 1px solid;
-  border-color: rgba(211, 211, 211, 0.4);
+  border-color: rgba(211, 211, 211, 0.6);
 }
 
 .transUnitTable td {
@@ -901,7 +901,7 @@ a.downloadLink {
 }
 
 .translatorEditorContainer > div:nth-of-type(4) {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   background-color: rgba(255, 255, 255, 0.7);
 }
 

@@ -50,6 +50,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
@@ -88,7 +89,8 @@ import static org.zanata.action.MergeTranslationsManager.MergeVersionKey.getKey;
         VersionStateCacheImpl.class,
         TranslationStateCacheImpl.class,
         // classes invoked via ServiceLocator (they won't get autowired by cdiunit
-        TransactionUtilImpl.class
+        TransactionUtilImpl.class,
+        CurrentUserImpl.class
 })
 public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
