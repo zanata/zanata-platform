@@ -44,6 +44,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionLocaleKey;
@@ -67,7 +68,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AdditionalClasses({
         VersionStateCacheImpl.class,
         LocaleServiceImpl.class,
-        VersionStatisticLoader.class
+        VersionStatisticLoader.class,
+        CurrentUserImpl.class
 })
 public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
 

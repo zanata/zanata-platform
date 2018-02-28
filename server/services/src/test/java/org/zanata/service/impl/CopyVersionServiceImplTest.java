@@ -65,6 +65,7 @@ import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;

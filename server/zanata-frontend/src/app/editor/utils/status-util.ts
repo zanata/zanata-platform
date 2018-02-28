@@ -17,11 +17,6 @@ export const STATUS_APPROVED = phrases.STATUS_APPROVED
 export const STATUS_REJECTED = phrases.STATUS_REJECTED
 
 /**
- * TODO: Implement Review Mode for Administrators to determine this variable
- */
-const REVIEW_MODE = true
-
-/**
  * Get a string representing the status that should be
  * the selected status on the save button dropdown.
  *
@@ -45,8 +40,8 @@ export function defaultSaveStatus (phrase: Phrase) {
   }
 }
 
-export function nonDefaultValidSaveStatuses (phrase: Phrase) {
-  const all = allValidSaveStatuses(phrase)
+export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
+  const all = allValidSaveStatuses(phrase, permissions)
   return without(all, defaultSaveStatus(phrase))
 }
 
@@ -55,7 +50,11 @@ export function nonDefaultValidSaveStatuses (phrase: Phrase) {
  * that would be valid to save the current new
  * translations of a phrase.
  */
-function allValidSaveStatuses (phrase: Phrase): Status[] {
+function allValidSaveStatuses (phrase: Phrase, permissions): Status[] {
+  if (!permissions.translator && !permissions.reviewer) {
+    // User does not have privileges for any operations.
+    return []
+  }
   if (hasNoTranslation(phrase)) {
     // only possible state is untranslated
     return [STATUS_UNTRANSLATED]
@@ -64,7 +63,7 @@ function allValidSaveStatuses (phrase: Phrase): Status[] {
   } else if
     (phrase.status === STATUS_REJECTED && !hasTranslationChanged(phrase)) {
     return [STATUS_REJECTED, STATUS_TRANSLATED, STATUS_NEEDS_WORK]
-  } else if (REVIEW_MODE && phrase.status === STATUS_TRANSLATED) {
+  } else if (permissions.reviewer && phrase.status === STATUS_TRANSLATED) {
     return [STATUS_APPROVED, STATUS_NEEDS_WORK, STATUS_REJECTED]
   } else {
     // TODO also need to handle 'approved' and 'rejected'

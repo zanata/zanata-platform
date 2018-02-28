@@ -22,4 +22,32 @@
         columnName="commentRequired" columnDataType="boolean" />
   </changeSet>
 
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>Alter HGlossaryEntry description to 500</comment>
+    <sql>UPDATE HGlossaryEntry SET description=SUBSTRING(description,1,500);</sql>
+    <modifyDataType tableName="HGlossaryEntry" columnName="description"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Alter HGlossaryEntry sourceRef to 500</comment>
+    <sql>UPDATE HGlossaryEntry SET sourceRef=SUBSTRING(sourceRef,1,500);</sql>
+    <modifyDataType tableName="HGlossaryEntry" columnName="sourceRef"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Alter HGlossaryTerm content to 500</comment>
+    <sql>UPDATE HGlossaryTerm SET content=SUBSTRING(content,1,500);</sql>
+    <modifyDataType tableName="HGlossaryTerm" columnName="content"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
+  <changeSet id="4" author="aeng@redhat.com">
+    <comment>Alter HGlossaryTerm comment to 500</comment>
+    <sql>UPDATE HGlossaryTerm SET comment=SUBSTRING(comment,1,500);</sql>
+    <modifyDataType tableName="HGlossaryTerm" columnName="comment"
+        newDataType="varchar(500)"/>
+  </changeSet>
+
 </databaseChangeLog>

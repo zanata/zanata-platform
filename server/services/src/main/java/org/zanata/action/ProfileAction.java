@@ -52,10 +52,10 @@ public class ProfileAction extends AbstractProfileAction
     public void onCreate() {
         username = identity.getCredentials().getUsername();
         HPerson person = personDAO
-                .findById(authenticatedAccount.getPerson().getId(), false);
+                .findById(currentUser.getPerson().getId(), false);
         name = person.getName();
         email = person.getEmail();
-        authenticatedAccount.getPerson().setName(this.name);
-        authenticatedAccount.getPerson().setEmail(this.email);
+        currentUser.getPerson().setName(this.name);
+        currentUser.getPerson().setEmail(this.email);
     }
 }

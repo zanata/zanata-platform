@@ -24,6 +24,11 @@ storiesOf('RejectTranslationModal', module)
           </div>
         </div>
     ))
+    .add('Initial state', () => (
+        <RejectTranslationModal show isOpen
+          criteria=""
+          priority={CRITICAL}  textState="u-textDanger" />
+    ))
     .add('Criteria chosen', () => (
         <RejectTranslationModal show isOpen
          criteria="Translation Errors: terminology, mistranslated addition, omission, un-localized, do not translate, etc"
