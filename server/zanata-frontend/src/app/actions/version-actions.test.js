@@ -1,4 +1,4 @@
-// @ts-nocheck
+/* global describe it expect */
 import { CALL_API } from 'redux-api-middleware'
 import {
   fetchVersionLocales,
@@ -52,6 +52,7 @@ describe('version-action test', () => {
         }
       ]
     }
+    // @ts-ignore
     const apiAction = mergeVersionFromTM('meikai', 'ver1', mergeOptions)
     expect(apiAction[CALL_API].endpoint).toEqual(
       '/rest/project/meikai/version/ver1/tm-merge'
