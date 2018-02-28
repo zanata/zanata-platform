@@ -66,4 +66,14 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
                 historyHandler.getTranslationHistory(localeId, transUnitId);
         return Response.ok(result).build();
     }
+
+    public TransUnitHistoryService() {
+    }
+
+    @java.beans.ConstructorProperties({"historyHandler"})
+    protected TransUnitHistoryService(
+            final GetTranslationHistoryHandler historyHandler
+    ) {
+        this.historyHandler = historyHandler;
+    }
 }
