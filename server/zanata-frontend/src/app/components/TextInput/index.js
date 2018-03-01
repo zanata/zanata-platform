@@ -209,7 +209,6 @@ class TextInput extends Component {
       onFocus: this._onFocus,
       onSelect: onSelectionChange && this._onSelectionChange,
       onKeyDown: (onKeyDown) && this._onKeyDown,
-      maxLength,
       placeholder,
       readOnly: !editable,
       value
