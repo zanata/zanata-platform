@@ -52,9 +52,10 @@ export const undoEdit = createAction(UNDO_EDIT)
  * Set the selected phrase to the given ID.
  * Only one phrase is selected at a time.
  */
-export function selectPhrase (phraseId, localeId) {
+export function selectPhrase (phraseId, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
-    dispatch(fetchTransUnitHistory(localeId, phraseId))
+    dispatch(
+      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(createAction(SELECT_PHRASE)(phraseId))
   }

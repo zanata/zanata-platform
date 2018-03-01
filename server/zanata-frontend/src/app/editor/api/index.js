@@ -86,8 +86,10 @@ export function fetchI18nLocale (locale) {
   }
 }
 
-export function fetchTransUnitHistory (localeId, transUnitId) {
-  const endpoint = `${apiUrl}/transhist/${localeId}?transUnitId=${transUnitId}`
+export function fetchTransUnitHistory (
+  localeId, transUnitId, projectSlug, versionSlug) {
+  // eslint-disable-next-line max-len
+  const endpoint = `${apiUrl}/transhist/${localeId}/${transUnitId}/${projectSlug}?versionSlug=${versionSlug}`
   const apiTypes = [
     TRANS_HISTORY_REQUEST,
     {

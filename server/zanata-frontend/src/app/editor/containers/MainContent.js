@@ -32,7 +32,9 @@ class MainContent extends React.Component {
     translationLocale: PropTypes.shape({
       id: PropTypes.string.isRequired
     }).isRequired,
-    selectedPhraseId: PropTypes.number
+    selectedPhraseId: PropTypes.number,
+    projectSlug: PropTypes.string.isRequired,
+    versionSlug: PropTypes.string.isRequired
   }
   componentDidMount () {
     this.props.fetchAllCriteria()
@@ -65,7 +67,9 @@ class MainContent extends React.Component {
             phrase={phrase}
             criteria={this.props.criteriaList}
             toggleRejectModal={this.props.toggleReviewModal}
-            translationLocale={this.props.translationLocale} />
+            translationLocale={this.props.translationLocale}
+            projectSlug={this.props.projectSlug}
+            versionSlug={this.props.versionSlug} />
         </li>
       )
     })
@@ -115,7 +119,9 @@ function mapStateToProps (state, _ownProps) {
     translationLocale: {
       id: state.context.lang
     },
-    selectedPhraseId: state.phrases.selectedPhraseId
+    selectedPhraseId: state.phrases.selectedPhraseId,
+    projectSlug: state.context.projectSlug,
+    versionSlug: state.context.versionSlug
   }
 }
 

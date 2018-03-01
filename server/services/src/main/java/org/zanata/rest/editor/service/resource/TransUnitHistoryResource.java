@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 @Consumes({ MediaType.APPLICATION_JSON })
 public interface TransUnitHistoryResource {
 
-    String SERVICE_PATH = "/transhist/{localeId}";
+    String SERVICE_PATH = "/transhist/{localeId}/{transUnitId}/{projectSlug}";
 
     /**
      * Retrieves a list TextFlowHistory in given textFlow id and localeId.
@@ -36,5 +36,7 @@ public interface TransUnitHistoryResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_TRANS_UNIT_JSON,
             MediaType.APPLICATION_JSON })
     Response get(@PathParam("localeId") String localeId,
-            @QueryParam("transUnitId") Long transUnitId);
+            @PathParam("transUnitId") Long transUnitId,
+            @PathParam("projectSlug") String projectSlug,
+            @QueryParam("versionSlug") String versionSlug);
 }

@@ -49,7 +49,9 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
     private GetTranslationHistoryHandler historyHandler;
 
     @Override
-    public Response get(String localeId, Long transUnitId) {
+    public Response get(String localeId, Long transUnitId, String projectSlug, String versionSlug) {
+        log.info(projectSlug);
+        log.info(versionSlug);
         if (isNullOrEmpty(localeId)) {
             String msg1 = String.format("Null or empty localeId supplied");
             log.warn(msg1);
