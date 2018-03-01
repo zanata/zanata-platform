@@ -7,6 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -58,27 +59,40 @@ public class GetTranslationHistoryHandler extends
     @Inject
     private ResourceUtils resourceUtils;
 
-    // TODO: Refactor duplicated code in getTranslationHistory
     @Override
     public GetTranslationHistoryResult execute(
             GetTranslationHistoryAction action, ExecutionContext context)
             throws ActionException {
         identity.checkLoggedIn();
-        log.debug("get translation history for text flow id {}",
-                action.getTransUnitId());
-        HLocale hLocale;
+        // Extract Strings and primitives for getTranslationHistory
+        String localeId = action.getWorkspaceId().getLocaleId().toString();
+        Long transUnitId = action.getTransUnitId().getId();
+        String projectSlug = action.getWorkspaceId().getProjectIterationId()
+                .getProjectSlug();
+        String versionSlug = action.getWorkspaceId().getProjectIterationId()
+                .getIterationSlug();
+        GetTranslationHistoryResult result;
         try {
-            hLocale = localeServiceImpl.validateLocaleByProjectIteration(
-                    action.getWorkspaceId().getLocaleId(),
-                    action.getWorkspaceId().getProjectIterationId()
-                            .getProjectSlug(),
-                    action.getWorkspaceId().getProjectIterationId()
-                            .getIterationSlug());
+            result = getTranslationHistory(
+                    localeId, transUnitId, projectSlug, versionSlug);
         } catch (ZanataServiceException e) {
             throw new ActionException(e);
         }
-        HTextFlow hTextFlow =
-                textFlowDAO.findById(action.getTransUnitId().getId(), false);
+        return result;
+    }
+
+    /*
+     * Gets the Translation History Result, shared by both GWT and React Editor
+     */
+    public GetTranslationHistoryResult getTranslationHistory
+    (String localeId, Long transUnitId, String projectSlug,
+            String versionSlug) throws ZanataServiceException {
+        LocaleId localeID = new LocaleId(localeId);
+        log.debug("get translation history for text flow id %n", transUnitId);
+        HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(
+                localeID, projectSlug, versionSlug);
+        TransUnitId tUnitId = new TransUnitId(transUnitId);
+        HTextFlow hTextFlow = textFlowDAO.findById(transUnitId, false);
         HTextFlowTarget hTextFlowTarget =
                 hTextFlow.getTargets().get(hLocale.getId());
         Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
@@ -90,37 +104,10 @@ public class GetTranslationHistoryHandler extends
         Iterable<TransHistoryItem> historyItems =
                 Iterables.transform(history.values(),
                         new TargetHistoryToTransHistoryItemFunction());
-        log.debug("found {} history for text flow id {}",
-                Iterables.size(historyItems), action.getTransUnitId());
-        List<ReviewComment> reviewComments = getReviewComments(action);
-        log.debug("found {} review comments for text flow id {}",
-                reviewComments.size(), action.getTransUnitId());
-        // we re-wrap the list because gwt rpc doesn't like other list
-        // implementation
-        return new GetTranslationHistoryResult(Lists.newArrayList(historyItems),
-                latest, Lists.newArrayList(reviewComments));
-    }
-
-    /*
-     * Gets the Translation History Result for the React Editor
-     */
-    public GetTranslationHistoryResult getTranslationHistory
-            (String localeId, Long transUnitId) {
-        HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-        TransUnitId tUnitId = new TransUnitId(transUnitId);
-        HTextFlow hTextFlow =
-                textFlowDAO.findById(transUnitId, false);
-        HTextFlowTarget hTextFlowTarget =
-                hTextFlow.getTargets().get(hLocale.getId());
-        Map<Integer, HTextFlowTargetHistory> history =
-                hTextFlowTarget.getHistory();
-        Iterable<TransHistoryItem> historyItems =
-                Iterables.transform(history.values(),
-                        new TargetHistoryToTransHistoryItemFunction());
         List<ReviewComment> reviewComments =
                 getReviewComments(tUnitId, hLocale);
-        TransHistoryItem latest =
-                getLatest(hTextFlowTarget, hTextFlow, hLocale);
+        // we re-wrap the list because gwt rpc doesn't like other list
+        // implementation
         return new GetTranslationHistoryResult(Lists.newArrayList(historyItems),
                 latest, Lists.newArrayList(reviewComments));
     }

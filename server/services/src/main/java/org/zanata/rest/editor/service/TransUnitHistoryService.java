@@ -50,22 +50,33 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
 
     @Override
     public Response get(String localeId, Long transUnitId, String projectSlug, String versionSlug) {
-        log.info(projectSlug);
-        log.info(versionSlug);
         if (isNullOrEmpty(localeId)) {
             String msg1 = String.format("Null or empty localeId supplied");
             log.warn(msg1);
             return Response.status(Response.Status.BAD_REQUEST).entity(msg1)
                     .build();
         }
-        if (transUnitId == null) {
-            String msg2 = String.format("Null transUnitId supplied");
+        if (isNullOrEmpty(projectSlug)) {
+            String msg2 = String.format("Null or empty projectSlug supplied");
             log.warn(msg2);
             return Response.status(Response.Status.BAD_REQUEST).entity(msg2)
                     .build();
         }
+        if (isNullOrEmpty(versionSlug)) {
+            String msg3 = String.format("Null or empty versionSlug supplied");
+            log.warn(msg3);
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg3)
+                    .build();
+        }
+        if (transUnitId == null) {
+            String msg4 = String.format("Null transUnitId supplied");
+            log.warn(msg4);
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg4)
+                    .build();
+        }
         GetTranslationHistoryResult result =
-                historyHandler.getTranslationHistory(localeId, transUnitId);
+                historyHandler.getTranslationHistory(
+                        localeId, transUnitId, projectSlug, versionSlug);
         return Response.ok(result).build();
     }
 

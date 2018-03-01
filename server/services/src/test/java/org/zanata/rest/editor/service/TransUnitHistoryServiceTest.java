@@ -16,6 +16,11 @@ public class TransUnitHistoryServiceTest {
     @Mock
     private GetTranslationHistoryHandler historyHandler;
 
+    private String localeId = "ja";
+    private Long transUnitId = 1L;
+    private String projectSlug = "project88";
+    private String versionSlug = "version99";
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -25,15 +30,30 @@ public class TransUnitHistoryServiceTest {
 
     @Test
     public void nullOrEmptyLocaleWillReturnBadRequest() {
-        Long transUnitID = 1L;
-        Response response = service.get(null, transUnitID);
+        Response response = service.get(
+                null, transUnitId, projectSlug, versionSlug);
         assertThat(response.getStatus()).isEqualTo(400);
     }
 
     @Test
     public void nullTransUnitIdWillReturnBadRequest() {
-        String localeId = "ja";
-        Response response = service.get(localeId, null);
+        Response response = service.get(
+                localeId, null, projectSlug, versionSlug);
         assertThat(response.getStatus()).isEqualTo(400);
     }
+
+    @Test
+    public void nullProjectSlugWillReturnBadRequest() {
+        Response response = service.get(
+                localeId, transUnitId, null, versionSlug);
+        assertThat(response.getStatus()).isEqualTo(400);
+    }
+
+    @Test
+    public void nullVersionSlugWillReturnBadRequest() {
+        Response response = service.get(
+                localeId, transUnitId, projectSlug, null);
+        assertThat(response.getStatus()).isEqualTo(400);
+    }
+
 }
