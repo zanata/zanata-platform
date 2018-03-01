@@ -84,11 +84,11 @@ public class GetTranslationHistoryHandler extends
     /*
      * Gets the Translation History Result, shared by both GWT and React Editor
      */
-    public GetTranslationHistoryResult getTranslationHistory
-    (String localeId, Long transUnitId, String projectSlug,
-            String versionSlug) throws ZanataServiceException {
+    public GetTranslationHistoryResult getTranslationHistory(String localeId,
+            Long transUnitId, String projectSlug, String versionSlug)
+            throws ZanataServiceException {
         LocaleId localeID = new LocaleId(localeId);
-        log.debug("get translation history for text flow id %n", transUnitId);
+        log.debug("get translation history for text flow id %d", transUnitId);
         HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(
                 localeID, projectSlug, versionSlug);
         TransUnitId tUnitId = new TransUnitId(transUnitId);
