@@ -284,13 +284,15 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
                 new GetTranslationHistoryAction(new TransUnitId(1L));
         action.setWorkspaceId(GWTTestData.workspaceId());
         LocaleId localeId = action.getWorkspaceId().getLocaleId();
+        HLocale hLocale = new HLocale(localeId);
         when(
                 reviewCommentsDAO.getReviewComments(action.getTransUnitId(),
                         localeId)).thenReturn(
                 Lists.newArrayList(makeCommentEntity(localeId, "a comment"),
                         makeCommentEntity(localeId, "another comment")));
 
-        List<ReviewComment> result = handler.getReviewComments(action);
+        List<ReviewComment> result =
+                handler.getReviewComments(action.getTransUnitId(), hLocale);
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getComment()).isEqualTo("a comment");

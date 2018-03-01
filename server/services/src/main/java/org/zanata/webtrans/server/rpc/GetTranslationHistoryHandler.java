@@ -132,28 +132,6 @@ public class GetTranslationHistoryHandler extends
     }
 
     protected List<ReviewComment>
-            getReviewComments(GetTranslationHistoryAction action) {
-        List<HTextFlowTargetReviewComment> hComments =
-                textFlowTargetReviewCommentsDAO.getReviewComments(
-                        action.getTransUnitId(),
-                        action.getWorkspaceId().getLocaleId());
-        return Lists.transform(hComments,
-                new Function<HTextFlowTargetReviewComment, ReviewComment>() {
-
-                    @Override
-                    public ReviewComment
-                            apply(HTextFlowTargetReviewComment input) {
-                        return new ReviewComment(
-                                new ReviewCommentId(input.getId()),
-                                input.getCommentText(), input.getCommenterName(),
-                                input.getCreationDate()
-                        );
-                    }
-                });
-    }
-
-    // Overload for React Editor rest endpoint params
-    protected List<ReviewComment>
     getReviewComments(TransUnitId transUnitId, HLocale hLocale) {
         List<HTextFlowTargetReviewComment> hComments =
                 textFlowTargetReviewCommentsDAO.getReviewComments(
