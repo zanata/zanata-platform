@@ -20,6 +20,8 @@
 
   <properties>
     <byteman.version>2.1.2</byteman.version>
+    <fabric8.mode>openshift</fabric8.mode>
+    <fabric8.build.strategy>docker</fabric8.build.strategy>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
     <kotlin.version>1.2.0</kotlin.version>
@@ -2170,6 +2172,13 @@
 
     <pluginManagement>
       <plugins>
+
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>fabric8-maven-plugin</artifactId>
+          <version>3.5.33</version>
+        </plugin>
+
         <!--
         This is how the Maven lifecycle phases install and configure the appserver:
 
@@ -2522,6 +2531,7 @@
     <module>zanata-liquibase</module>
     <module>zanata-model</module>
     <module>zanata-model-test</module>
+    <module>docker</module>
     <module>zanata-war</module>
     <module>zanata-test-war</module>
     <module>functional-test</module>

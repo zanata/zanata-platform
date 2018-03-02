@@ -180,6 +180,38 @@
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric8-maven-plugin</artifactId>
+
+        <configuration>
+          <images>
+            <!-- A single's image configuration -->
+            <!--<image>-->
+            <!--<build>-->
+            <!--</build>-->
+            <!--</image>-->
+          </images>
+          <buildStrategy>docker</buildStrategy>
+          <logStdout>true</logStdout>
+          <mode>openshift</mode>
+          <verbose>true</verbose>
+        </configuration>
+
+        <!-- Connect fabric8:resource, fabric8:build and fabric8:helm to lifecycle phases -->
+        <executions>
+          <execution>
+            <id>fabric8</id>
+            <goals>
+              <goal>resource</goal>
+              <goal>build</goal>
+              <goal>helm</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
