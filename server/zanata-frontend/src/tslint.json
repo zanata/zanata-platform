@@ -6,6 +6,7 @@
     "jsEnable": false,
     "jsRules": {},
     "rules": {
+        "align": false,
         "arrow-parens": false,
         "semicolon": false,
         "max-classes-per-file": false,

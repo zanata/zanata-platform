@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* global jest describe it expect */
 
 import React from 'react'
@@ -19,6 +18,7 @@ describe('DraggableVersionPanels', () => {
       }
     }
     const actual = ReactDOMServer.renderToStaticMarkup(
+      // @ts-ignore
       <Item key={'meikai1:ver1'} index={0}
         value={version} removeVersion={callback} />
     )
@@ -54,6 +54,7 @@ describe('DraggableVersionPanels', () => {
       }]
     const actual = ReactDOMServer.renderToStaticMarkup(
       <DraggableVersionPanels
+        // @ts-ignore
         selectedVersions={someVersions}
         onDraggableMoveEnd={callback}
         removeVersion={callback} />
@@ -69,9 +70,13 @@ describe('DraggableVersionPanels', () => {
             <Icon name='info' className='s0'
               parentClassName='iconInfoVersionMerge' />
           </OverlayTrigger>
-          <Item key={'meikai1:ver1'} index={0}
+          <Item
+            // @ts-ignore
+            key={'meikai1:ver1'} index={0}
             value={someVersions[0]} removeVersion={callback} />
-          <Item key={'meikai2:ver2'} index={1}
+          <Item
+            // @ts-ignore
+            key={'meikai2:ver2'} index={1}
             value={someVersions[1]} removeVersion={callback} />
         </div>
       </ListGroup>

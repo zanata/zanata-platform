@@ -3,8 +3,8 @@
  *
  * Replaces '/' with ','
  *
- * @param docId
- * @returns {*}
+ * @param docId {string}
+ * @return {string}
  */
 export function encode (docId) {
   return docId ? docId.replace(/\//g, ',') : docId
@@ -15,8 +15,8 @@ export function encode (docId) {
  *
  * Replaces ',' with '/'
  *
- * @param docId
- * @returns {*}
+ * @param docId {string}
+ * @return {string}
  */
 export function decode (docId) {
   return docId ? docId.replace(/,/g, '/') : docId

@@ -22,9 +22,12 @@ var cssNano = require('cssnano')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
-const { CheckerPlugin } = require('awesome-typescript-loader')
+const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin
 
-/* Helper so we can use ternary with undefined to not specify a key */
+/**
+ * Helper so we can use ternary with undefined to not specify a key
+ * @param {any} obj
+ */
 function dropUndef (obj) {
   return _(obj).omitBy(_.isNil).value()
 }
@@ -58,7 +61,7 @@ var postCssLoader = {
   }
 }
 
-/*
+/**
  * To set env on command line:
  *   webpack --env.buildtype=draft
  *
@@ -70,6 +73,9 @@ var postCssLoader = {
  *
  * More info:
  *   https://blog.flennik.com/the-fine-art-of-the-webpack-2-config-dc4d19d7f172
+ * @param {any} env
+ * @param {boolean=} isEditor
+ * @param {number=} devServerPort
  */
 module.exports = function (env, isEditor, devServerPort) {
   var buildtype = env && env.buildtype || 'prod'
@@ -232,11 +238,16 @@ module.exports = function (env, isEditor, devServerPort) {
       // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
       // There's probably a config option for this (stats?) but I can't find it.
       function () {
-        this.plugin('watch-run', function (_watching, callback) {
-          // eslint-disable-next-line no-console
-          console.log('Begin compile at ' + new Date())
-          callback()
-        })
+        this.plugin('watch-run',
+          /**
+           * @param {any} _watching
+           * @param {any} callback
+           */
+          function (_watching, callback) {
+            // eslint-disable-next-line no-console
+            console.log('Begin compile at ' + new Date())
+            callback()
+          })
       },
 
       new CheckerPlugin(),

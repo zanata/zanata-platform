@@ -2,17 +2,19 @@ import { without } from 'lodash'
 import {
   hasEmptyTranslation,
   hasNoTranslation,
-  hasTranslationChanged
+  hasTranslationChanged,
 } from './phrase-util'
+import * as phrases from './phrase'
+import {Phrase, Status} from './phrase'
 
-export const STATUS_NEW = 'new'
-export const STATUS_UNTRANSLATED = 'untranslated'
-export const STATUS_NEEDS_WORK = 'needswork'
-// the server provides this value instead of the one expected by this app
-export const STATUS_NEEDS_WORK_SERVER = 'needreview'
-export const STATUS_TRANSLATED = 'translated'
-export const STATUS_APPROVED = 'approved'
-export const STATUS_REJECTED = 'rejected'
+// deprecated:
+export const STATUS_NEW = phrases.STATUS_NEW
+export const STATUS_UNTRANSLATED = phrases.STATUS_UNTRANSLATED
+export const STATUS_NEEDS_WORK = phrases.STATUS_NEEDS_WORK
+export const STATUS_NEEDS_WORK_SERVER = phrases.STATUS_NEEDS_WORK_SERVER
+export const STATUS_TRANSLATED = phrases.STATUS_TRANSLATED
+export const STATUS_APPROVED = phrases.STATUS_APPROVED
+export const STATUS_REJECTED = phrases.STATUS_REJECTED
 
 /**
  * Get a string representing the status that should be
@@ -21,7 +23,7 @@ export const STATUS_REJECTED = 'rejected'
  * Restricts the status to only valid values, based on
  * which translations are currently entered.
  */
-export function defaultSaveStatus (phrase) {
+export function defaultSaveStatus (phrase: Phrase) {
   if (hasNoTranslation(phrase)) {
     // only possible state is untranslated
     return STATUS_UNTRANSLATED
@@ -38,7 +40,7 @@ export function defaultSaveStatus (phrase) {
   }
 }
 
-export function nonDefaultValidSaveStatuses (phrase, permissions) {
+export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
   const all = allValidSaveStatuses(phrase, permissions)
   return without(all, defaultSaveStatus(phrase))
 }
@@ -48,7 +50,7 @@ export function nonDefaultValidSaveStatuses (phrase, permissions) {
  * that would be valid to save the current new
  * translations of a phrase.
  */
-function allValidSaveStatuses (phrase, permissions) {
+function allValidSaveStatuses (phrase: Phrase, permissions): Status[] {
   if (!permissions.translator && !permissions.reviewer) {
     // User does not have privileges for any operations.
     return []
@@ -76,7 +78,7 @@ function allValidSaveStatuses (phrase, permissions) {
  *
  * Expect: untranslated/needswork/translated/approved
  */
-export function transUnitStatusToPhraseStatus (mixedCaseStatus) {
+export function transUnitStatusToPhraseStatus (mixedCaseStatus: string) {
   const status = mixedCaseStatus && mixedCaseStatus.toLowerCase()
   if (!status || status === STATUS_NEW) {
     return STATUS_UNTRANSLATED

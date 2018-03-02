@@ -4,7 +4,7 @@ import {Icon} from '../../components'
 import {EntityStatus, isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 import {entityStatusPropType} from '../../utils/prop-types-util'
 
-const DO_NOT_RENDER = null
+const DO_NOT_RENDER: null = null
 
 /**
  * Version Lock Icon with tooltip
