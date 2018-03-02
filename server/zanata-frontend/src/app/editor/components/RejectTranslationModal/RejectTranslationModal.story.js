@@ -21,6 +21,13 @@ const defaultState = {
   selectedCriteria: UNSPECIFIED
 }
 
+const flairCriteria = {
+  id: 1,
+  commentRequired: true,
+  description: 'Needs more flair',
+  priority: MINOR
+}
+
 /*
  * TODO add stories showing the range of states
  *      for RejectTranslationModal
@@ -44,14 +51,9 @@ storiesOf('RejectTranslationModal', module)
         show
         onHide={callback}
         onHideResetState={callback}
-        textLimit={1}
+        textLimit={500}
         charsLeft={500}
-        criteriaList={[{
-          id: 1,
-          commentRequired: true,
-          description: 'Needs more flair',
-          priority: MINOR
-        }]}
+        criteriaList={[flairCriteria]}
         onCriteriaChange={callback}
         onUnspecifiedCriteria={callback}
         onPriorityChange={callback}
@@ -62,15 +64,28 @@ storiesOf('RejectTranslationModal', module)
         />
     ))
 
-    // .add('Criteria chosen', () => (
-    //   <RejectTranslationModal
-    //     show
-    //     isOpen
-    //     criteria="Translation Errors: terminology, mistranslated addition,
-    //     omission, un-localized, do not translate, etc"
-    //     priority={CRITICAL}
-    //     textState="u-textDanger" />
-    // ))
+    .add('Criteria chosen', () => (
+      <RejectTranslationModal
+        show
+        onHide={callback}
+        onHideResetState={callback}
+        textLimit={500}
+        charsLeft={500}
+        criteriaList={[flairCriteria]}
+        onCriteriaChange={callback}
+        onUnspecifiedCriteria={callback}
+        onPriorityChange={callback}
+        saveTransReview={callback}
+        selectedCriteria={flairCriteria}
+        setReviewComment={callback}
+        review={defaultState.review}
+        />
+    ))
+
+    // id: undefined,
+    // commentRequired: true,
+    // description: UNSPECIFIEDTEXT,
+    // priority: MINOR
     // .add('Other - no criteria set', () => (
     //   <RejectTranslationModal
     //     show
