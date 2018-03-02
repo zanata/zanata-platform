@@ -88,8 +88,7 @@ public class GetTranslationHistoryHandler extends
             Long transUnitId, String projectSlug, String versionSlug)
             throws ZanataServiceException {
         LocaleId localeID = new LocaleId(localeId);
-        log.debug("get translation history for text flow id %d",
-                transUnitId.intValue());
+        log.debug("get translation history for text flow id: " + transUnitId);
         HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(
                 localeID, projectSlug, versionSlug);
         TransUnitId tUnitId = new TransUnitId(transUnitId);

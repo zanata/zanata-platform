@@ -122,6 +122,7 @@ public class TranslationService implements TranslationResource {
                 textFlow.getDocument().getProjectIteration().getProject(),
                 locale);
         // //Only support 1 translation update for the moment
+        // TODO: Support saves with reviewComment for activity panel
         TransUnitUpdateRequest request = new TransUnitUpdateRequest(
                 new TransUnitId(requestData.getId().longValue()),
                 requestData.getContents(), requestData.getStatus(),
