@@ -26,6 +26,10 @@ class EditableText extends Component {
      */
     editing: PropTypes.bool,
     /**
+     * Maximum length of text field. <input> 'maxlength' attribute
+     */
+    maxLength: PropTypes.number,
+    /**
      * Placeholder
      */
     placeholder: PropTypes.string,
@@ -67,6 +71,7 @@ class EditableText extends Component {
       emptyReadOnlyText = '',
       placeholder = '',
       title,
+      maxLength,
       ...props
     } = this.props
 
@@ -78,6 +83,7 @@ class EditableText extends Component {
           {...props}
           autoFocus={this.state.focus}
           onBlur={this.handleBlur}
+          maxLength={maxLength}
           placeholder={placeholder}
           value={children}
         />
