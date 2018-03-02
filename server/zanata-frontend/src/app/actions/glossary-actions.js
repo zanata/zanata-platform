@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { cloneDeep, includes, debounce, last } from 'lodash'
@@ -11,7 +10,9 @@ import {
   DEFAULT_LOCALE,
   getJsonHeaders,
   getHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  // eslint-disable-next-line
+  APITypes
 } from './common-actions'
 import { apiUrl } from '../config'
 
@@ -125,6 +126,7 @@ const getGlossaryTerms = (state) => {
   const endpoint = apiUrl + '/glossary/entries' + srcQuery +
     localeQuery + pageQuery + filterQuery + sortQuery + qualifiedNameQuery
 
+  /** @type {APITypes} */
   const apiTypes = [
     GLOSSARY_TERMS_REQUEST,
     {
@@ -151,6 +153,7 @@ const getGlossaryTerms = (state) => {
 
 const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
   const endpoint = apiUrl + '/glossary/info?qualifiedName=' + qualifiedName
+  /** @type {APITypes} */
   const apiTypes = [
     GLOSSARY_STATS_REQUEST,
     {
@@ -172,6 +175,7 @@ const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
 const getPermission = (dispatch, qualifiedName) => {
   const endpoint =
     apiUrl + '/user/permission/glossary?qualifiedName=' + qualifiedName
+  /** @type {APITypes} */
   const apiTypes = [
     GLOSSARY_PERMISSION_REQUEST,
     {
@@ -195,6 +199,7 @@ const getQualifiedName = (dispatch, projectSlug) => {
     (projectSlug ? '/projects/p/' + projectSlug + '/glossary/qualifiedName'
       : '/glossary/qualifiedName')
 
+  /** @type {APITypes} */
   const apiTypes = [
     GLOSSARY_GET_QUALIFIED_NAME_REQUEST,
     {
@@ -217,6 +222,7 @@ const getQualifiedName = (dispatch, projectSlug) => {
 const getProjectDetails = (projectSlug) => {
   const endpoint = apiUrl + '/projects/p/' + projectSlug
 
+  /** @type {APITypes} */
   const apiTypes = [
     PROJECT_GET_DETAILS_REQUEST,
     {
@@ -246,6 +252,7 @@ const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
     formData.append('transLocale', data.transLocale.value)
   }
 
+  /** @type {APITypes} */
   const apiTypes = [
     GLOSSARY_UPLOAD_REQUEST,
     {
@@ -270,6 +277,7 @@ const createGlossaryTerm = (dispatch, qualifiedName, term) => {
   const endpoint = apiUrl + '/glossary/entries?locale=' + term.srcTerm.locale +
     '&qualifiedName=' + qualifiedName
   const entryDTO = GlossaryHelper.convertToDTO(term, qualifiedName)
+  /** @type {APITypes} */
   const apiTypes = [
     {
       type: GLOSSARY_CREATE_REQUEST,
@@ -303,6 +311,7 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
     '&qualifiedName=' + qualifiedName
   const entryDTO = GlossaryHelper.convertToDTO(term, qualifiedName)
 
+  /** @type {APITypes} */
   const apiTypes = [
     {
       type: GLOSSARY_UPDATE_REQUEST,
@@ -331,6 +340,7 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
 const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
   const endpoint =
     apiUrl + '/glossary/entries/' + id + '?qualifiedName=' + qualifiedName
+  /** @type {APITypes} */
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_REQUEST,
@@ -357,6 +367,7 @@ const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
 
 const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
   const endpoint = apiUrl + '/glossary?qualifiedName=' + qualifiedName
+  /** @type {APITypes} */
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_ALL_REQUEST,
@@ -382,6 +393,7 @@ const glossaryExport = (type, qualifiedName) => {
     '&qualifiedName=' + qualifiedName
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/octet-stream'
+  /** @type {APITypes} */
   const apiTypes = [
     {
       type: GLOSSARY_EXPORT_REQUEST,
@@ -420,6 +432,7 @@ export const glossaryInitStateFromUrl =
 export const glossaryInitialLoad = (projectSlug) => {
   return (dispatch, getState) => {
     const query = getState().routing.locationBeforeTransitions.query
+    // @ts-ignore
     dispatch(glossaryInitStateFromUrl({ query, projectSlug })).then(
     dispatch(getQualifiedName(dispatch, projectSlug)))
     if (projectSlug) {
@@ -433,6 +446,7 @@ export const glossaryChangeLocale = (locale) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       locale: locale
     })
+    // @ts-ignore
     dispatch(glossaryUpdateLocale(locale))
     dispatch(getGlossaryTerms(getState()))
   }
@@ -445,6 +459,7 @@ export const glossaryFilterTextChanged = (newFilter) => {
         filter: newFilter,
         page: 1
       })
+      // @ts-ignore
       dispatch(glossaryUpdateFilter(newFilter))
       dispatch(getGlossaryTerms(getState()))
     }
@@ -498,6 +513,7 @@ export const glossarySelectTerm = (termId) => {
       if (status && (status.isSrcModified || status.isTransModified)) {
         dispatch(glossaryUpdateTerm(selectedTerm, status.isTransModified))
       }
+      // @ts-ignore
       dispatch(updateSelectedTerm(termId))
     }
   }
@@ -512,6 +528,7 @@ export const glossarySortColumn = (col) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       sort: GlossaryHelper.convertSortToParam(sort)
     })
+    // @ts-ignore
     dispatch(glossaryUpdateSort(sort)).then(
       dispatch(getGlossaryTerms(getState()))
     )
@@ -521,7 +538,7 @@ export const glossarySortColumn = (col) => {
 const delayGetGlossaryTerm = debounce((dispatch, state) =>
   dispatch(getGlossaryTerms(state)), 160)
 
-export const glossaryGoFirstPage = (currentPage, totalPage) => {
+export const glossaryGoFirstPage = (currentPage, _totalPage) => {
   return (dispatch, getState) => {
     if (currentPage !== 1) {
       replaceRouteQuery(getState().routing.locationBeforeTransitions, {page: 1})
@@ -530,7 +547,7 @@ export const glossaryGoFirstPage = (currentPage, totalPage) => {
   }
 }
 
-export const glossaryGoPreviousPage = (currentPage, totalPage) => {
+export const glossaryGoPreviousPage = (currentPage, _totalPage) => {
   return (dispatch, getState) => {
     const newPage = currentPage - 1
     if (newPage >= 1) {

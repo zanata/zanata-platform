@@ -27,6 +27,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Analyze;
@@ -62,13 +64,13 @@ public class HGlossaryTerm extends ModelEntityBase {
     }
 
     @NotNull
-    @javax.persistence.Lob
+    @Size(max = 500)
     @Field(analyzer = @Analyzer(impl = StandardAnalyzer.class))
     public String getContent() {
         return content;
     }
 
-    @Column(columnDefinition = "longtext")
+    @Size(max = 500)
     public String getComment() {
         return comment;
     }

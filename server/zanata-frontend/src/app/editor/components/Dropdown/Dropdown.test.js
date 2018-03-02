@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import * as TestUtils from 'react-dom/test-utils'
@@ -93,6 +92,7 @@ describe('DropdownTest', () => {
 
   it('Dropdown events', () => {
     let theDoor = 'closed'
+    // @ts-ignore
     const toggleTheDoor = (buttonDOMNode) => {
       theDoor = 'open'
     }
@@ -118,9 +118,11 @@ describe('DropdownTest', () => {
     )
 
     const list = TestUtils.scryRenderedDOMComponentsWithClass(
+      // @ts-ignore
       dinoWalkDropdown, 'EditorDropdown-toggle')
     TestUtils.Simulate.click(list[0])
 
+    // @ts-ignore
     expect(theDoor).toEqual('open',
       'click on dropdown button should trigger given toggle function')
   })
@@ -153,12 +155,14 @@ describe('DropdownTest', () => {
     // throws if onClick is not bound
     try {
       const list = TestUtils.scryRenderedDOMComponentsWithClass(
+        // @ts-ignore
         dinoWalkDropdown, 'EditorDropdown-toggle')
       TestUtils.Simulate.click(list[0])
       // dinoWalkDropdown.toggleDropdown()
     } catch (e) {
       // swallow on purpose, valid for code to not bind onClick
     }
+    // @ts-ignore
     expect(theDoor).toEqual('closed',
       'click on disabled dropdown button should not ' +
       'trigger given toggle function')

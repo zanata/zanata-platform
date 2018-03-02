@@ -1,6 +1,11 @@
 import { CALL_API } from 'redux-api-middleware'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
-import { getJsonHeaders, buildAPIRequest } from './common-actions'
+import {
+  getJsonHeaders,
+  buildAPIRequest,
+  // eslint-disable-next-line
+  APITypes
+} from './common-actions'
 import { isEmpty, includes, clamp } from 'lodash'
 import { apiUrl } from '../config'
 
@@ -40,6 +45,7 @@ const handleCallbacks = (callbacks, dispatch, searchText, pages) => {
 
 const getSearchProjectResults = (dispatch, searchText, pages, callbacks) => {
   const endpoint = getEndpoint('projects', pages.projectPage, searchText)
+  /** @type {APITypes} */
   const apiTypes = [
     SEARCH_PROJECT_REQUEST,
     {
@@ -69,6 +75,7 @@ const getSearchLanguageTeamResults = (dispatch, searchText,
                                       pages, callbacks) => {
   const endpoint =
     getEndpoint('teams/language', pages.languageTeamPage, searchText)
+  /** @type {APITypes} */
   const apiTypes = [
     SEARCH_LANG_TEAM_REQUEST,
     {
@@ -96,6 +103,7 @@ const getSearchLanguageTeamResults = (dispatch, searchText,
 
 const getSearchPeopleResults = (dispatch, searchText, pages, callbacks) => {
   const endpoint = getEndpoint('people', pages.personPage, searchText)
+  /** @type {APITypes} */
   const apiTypes = [
     SEARCH_PEOPLE_REQUEST,
     {
@@ -123,6 +131,7 @@ const getSearchPeopleResults = (dispatch, searchText, pages, callbacks) => {
 
 const getSearchGroupResults = (dispatch, searchText, pages, callbacks) => {
   const endpoint = getEndpoint('groups', pages.groupPage, searchText)
+  /** @type {APITypes} */
   const apiTypes = [
     SEARCH_GROUP_REQUEST,
     {

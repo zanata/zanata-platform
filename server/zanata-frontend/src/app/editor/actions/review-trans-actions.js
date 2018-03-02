@@ -2,7 +2,9 @@ import { CALL_API } from 'redux-api-middleware'
 import { apiUrl } from '../../config'
 import {
   getJsonHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  // eslint-disable-next-line
+  APITypes
 } from '../../actions/common-actions'
 import { savePhraseWithStatus } from './phrases-actions'
 import { STATUS_REJECTED } from '../utils/status-util'
@@ -22,6 +24,7 @@ export const TOGGLE_REVIEW_MODAL = 'TOGGLE_REVIEW_MODAL'
  */
 export function rejectTranslation (dispatch, review) {
   const endpoint = `${apiUrl}/review/trans/${review.localeId}`
+  /** @type {APITypes} */
   const apiTypes = [
     ADD_REVIEW_REQUEST,
     {
@@ -51,6 +54,7 @@ export const toggleReviewModal = createAction(TOGGLE_REVIEW_MODAL)
 
 export function fetchAllCriteria () {
   const endpoint = `${apiUrl}/review`
+  /** @type {APITypes} */
   const apiTypes = [
     GET_ALL_CRITERIA_REQUEST,
     GET_ALL_CRITERIA_SUCCESS,

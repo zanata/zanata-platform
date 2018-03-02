@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* global jest describe expect it */
 
 import React from 'react'
@@ -79,6 +78,7 @@ describe('UiLanguageDropdownTest', () => {
     let myRoar = 'puny'
     const workingOnMyRoar = (newLocale) => {
       myRoar = 'thunderous'
+      // @ts-ignore
       expect(newLocale).toEqual(
         {localeId: 'sw', name: 'Swahili'},
         'should call changeUiLocale callback with a well-formatted locale object')
@@ -113,8 +113,10 @@ describe('UiLanguageDropdownTest', () => {
         isOpen />
     )
     const list = TestUtils.scryRenderedDOMComponentsWithTag(
+      // @ts-ignore
       uiLangDropdown, 'a')
     TestUtils.Simulate.click(list[3])
+    // @ts-ignore
     expect(myRoar).toEqual('thunderous',
       'changeUiLocale callback should run when a language is clicked')
   })

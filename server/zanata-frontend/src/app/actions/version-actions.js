@@ -2,7 +2,9 @@ import { CALL_API, getJSON } from 'redux-api-middleware'
 import { createAction } from 'redux-actions'
 import {
   getJsonHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  // eslint-disable-next-line
+  APITypes
 } from './common-actions'
 import { apiUrl } from '../config'
 import {replace} from 'lodash'
@@ -40,6 +42,7 @@ export const toggleTMMergeModal =
  * */
 export const fetchVersionLocales = (project, version) => {
   const endpoint = `${apiUrl}/project/${project}/version/${version}/locales`
+  /** @type {APITypes} */
   const apiTypes = [
     VERSION_LOCALES_REQUEST,
     VERSION_LOCALES_SUCCESS,
@@ -69,6 +72,7 @@ export const fetchProjectPage = (projectSearchTerm) => {
   // making the call to server
   const endpoint =
       `${apiUrl}/search/projects?q=${projectSearchTerm}&includeVersion=true`
+  /** @type {APITypes} */
   const apiTypes = [
     PROJECT_PAGE_REQUEST,
     {
@@ -113,6 +117,7 @@ const toProjectVersionString = (projectVersion) => {
 export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const endpoint =
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/tm-merge`
+  /** @type {APITypes} */
   const types = [VERSION_TM_MERGE_REQUEST,
     {
       type: VERSION_TM_MERGE_SUCCESS,
@@ -159,6 +164,7 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
 }
 
 export function queryTMMergeProgress (url) {
+  /** @type {APITypes} */
   const types = [QUERY_TM_MERGE_PROGRESS_REQUEST,
     QUERY_TM_MERGE_PROGRESS_SUCCESS,
     QUERY_TM_MERGE_PROGRESS_FAILURE]
@@ -168,6 +174,7 @@ export function queryTMMergeProgress (url) {
 }
 
 export function cancelTMMergeRequest (url) {
+  /** @type {APITypes} */
   const types = [
     TM_MERGE_CANCEL_REQUEST,
     TM_MERGE_CANCEL_SUCCESS,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import review from './review-trans-reducer'
 
 import {
@@ -9,6 +8,7 @@ import {
 /* global describe it expect */
 describe('review-trans-reducer', () => {
   it('generates initial state', () => {
+    // @ts-ignore
     expect(review(undefined, {})).toEqual({
       notification: undefined,
       criteria: [],
@@ -16,6 +16,7 @@ describe('review-trans-reducer', () => {
     })
   })
   it('can recieve criteria', () => {
+    // @ts-ignore
     expect(review(undefined, {
       type: GET_ALL_CRITERIA_SUCCESS,
       payload: [{
@@ -40,6 +41,7 @@ describe('review-trans-reducer', () => {
     })
   })
   it('can handle get criteria failure', () => {
+    // @ts-ignore
     expect(review(undefined, {
       type: GET_ALL_CRITERIA_FAILURE,
       payload: 'text'

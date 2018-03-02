@@ -46,6 +46,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionLocaleKey;
@@ -74,7 +75,8 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ LocaleServiceImpl.class,
         TranslationMemoryServiceImpl.class, VersionStateCacheImpl.class,
-        TranslationStateCacheImpl.class, ValidationServiceImpl.class })
+        TranslationStateCacheImpl.class, ValidationServiceImpl.class,
+        CurrentUserImpl.class})
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
 
     @Inject

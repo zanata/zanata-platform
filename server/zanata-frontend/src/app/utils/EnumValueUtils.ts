@@ -2,8 +2,9 @@ import { tuple } from './tuple'
 
 export const processStatusCodes = [
   'NotAccepted', 'Waiting', 'Running', 'Finished', 'Cancelled', 'Failed']
+  export type ProcessStatusCode = typeof processStatusCodes[number]
 
-const isStatusCodeEnded = statusCode => {
+const isStatusCodeEnded = (statusCode: ProcessStatusCode) => {
   return statusCode === 'Finished' || statusCode === 'Cancelled' ||
     statusCode === 'Failed'
 }
@@ -17,7 +18,7 @@ export function isProcessEnded (processStatus: {statusCode: string}) {
 export const entityStatuses = tuple('READONLY', 'ACTIVE', 'OBSOLETE')
 export type EntityStatus = typeof entityStatuses[number]
 
-export function isEntityStatusReadOnly (status) {
+export function isEntityStatusReadOnly (status: EntityStatus) {
   return status === 'READONLY'
 }
 

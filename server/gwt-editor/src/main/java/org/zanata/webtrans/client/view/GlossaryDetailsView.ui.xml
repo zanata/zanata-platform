@@ -18,7 +18,7 @@
   </ui:style>
 
   <g:HTMLPanel styleName="new-zanata">
-    <fui:DialogBoxCloseButton ui:field="dismissButton" />
+    <fui:DialogBoxCloseButton ui:field="closeButton" />
     <div class="l__wrapper l--limit-medium {style.container} l--scroll-auto">
       <span class="epsilon">Entries</span>
       <g:ListBox ui:field='entryListBox' />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* global jest describe it expect */
 
 import React from 'react'
@@ -193,16 +192,22 @@ describe('PhraseStatusFilterTest', () => {
         }}
         gettextCatalog={mockGettextCatalog} />
     )
-    const [all, approved, translated, needsWork, untranslated] =
+    // @ts-ignore
+    const [all, _approved, _translated, needsWork, _untranslated] =
+      // @ts-ignore
       TestUtils.scryRenderedDOMComponentsWithTag(filterComponent, 'input')
 
+    // @ts-ignore
     TestUtils.Simulate.change(needsWork, {'target': {'checked': true}})
 
+    // @ts-ignore
     expect(filterChangeType).toEqual('needswork',
       'should call filter toggle action with correct type when specific ' +
       'status is changed')
 
+    // @ts-ignore
     TestUtils.Simulate.change(all, {'target': {'checked': true}})
+    // @ts-ignore
     expect(filterReset).toEqual(true,
       'should call given reset function when total/all is changed')
   })

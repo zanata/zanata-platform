@@ -10,8 +10,12 @@ import {
 /**
  * Bottom section of contribution statistic page.
  * See RecentContribution for main page.
+ * @type
+    { React.StatelessComponent<{dateRange, selectedContentState, selectedDay,
+      wordCountForEachDay, wordCountForSelectedDay, handleFilterChanged,
+      handleSelectedDayChanged}>
+    }
  */
-/** @type { React.StatelessComponent<{dateRange, selectedContentState, selectedDay, wordCountForEachDay, wordCountForSelectedDay, handleFilterChanged, handleSelectedDayChanged}> } */
 const FilterableMatrixTable = ({
   dateRange,
   selectedContentState,

@@ -49,6 +49,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.CopyTransService;
@@ -76,7 +77,7 @@ import static org.mockito.Mockito.when;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
-@AdditionalClasses({FileService.class})
+@AdditionalClasses({FileService.class, CurrentUserImpl.class})
 public class FileServiceTest extends ZanataTest {
     private static final String PROJ_SLUG = "project-slug";
     private static final String VER_SLUG = "version-slug";

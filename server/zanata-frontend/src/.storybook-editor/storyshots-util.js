@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* global jest expect */
 import * as renderer from 'react-test-renderer'
 
@@ -10,6 +9,7 @@ import * as renderer from 'react-test-renderer'
  */
 export function snapshotWithoutDecorators ({ story, context }) {
   const storyElement = story.render(context)
+  // @ts-ignore
   const tree = renderer.create(storyElement, {}).toJSON()
 
   // strip off the padding div and the <Icons />

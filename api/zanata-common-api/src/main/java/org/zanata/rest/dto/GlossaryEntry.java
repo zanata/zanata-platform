@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -59,14 +60,17 @@ public class GlossaryEntry implements Serializable, HasMediaType {
 
     private Long id;
 
+    @Size(max = 255)
     private String pos;
 
+    @Size(max = 500)
     private String description;
 
     private List<GlossaryTerm> glossaryTerms;
 
     private LocaleId srcLang;
 
+    @Size(max = 500)
     private String sourceReference;
 
     private QualifiedName qualifiedName;

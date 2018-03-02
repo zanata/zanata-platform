@@ -13,6 +13,7 @@
 #RejectTranslationModal .flex {
   flex-direction: row;
   align-items: center;
+  vertical-align: text-top;
 }
 
 #PriorityTitle, #CriteriaTitle {
@@ -25,6 +26,8 @@
 
 #RejectTranslationModal .PriorityDropdown {
   margin-left: 1.5rem;
+  display: inline-flex;
+  align-items: inherit;
 }
 
 #RejectTranslationModal .modal-body .EditorInputGroup--outlined {
@@ -34,10 +37,14 @@
 #RejectTranslationModal .modal-body .EditorDropdown {
   border-radius: var(--TM-input-border-radius);
   border: var(--TM-input-border) !important;
+  min-height: 2rem;
+  line-height: 2rem;
+  padding-right: 2rem;
 }
 
 #RejectTranslationModal .Criteria {
   flex-grow: 2;
+  max-width: 40rem;
 }
 
 #RejectTranslationModal a.EditorDropdown-item span.s0 {
@@ -74,6 +81,12 @@
 
 #RejectTranslationModal .Dropdown-toggle .EditorDropdown-item:hover {
   border-radius: 0.4rem;
+}
+
+#RejectTranslationModal .EditorDropdown-item span.arrow {
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 
 #RejectTranslationModal .EditorDropdown-item span.n1 {

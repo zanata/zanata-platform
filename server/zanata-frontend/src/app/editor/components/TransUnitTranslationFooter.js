@@ -1,4 +1,3 @@
-// @ts-nocheck
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
@@ -72,7 +71,11 @@ class TransUnitTranslationFooter extends React.Component {
     saveAsMode: PropTypes.bool.isRequired,
     showSuggestions: PropTypes.bool.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
-    showRejectModal: PropTypes.func.isRequired
+    showRejectModal: PropTypes.func.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired
   }
 
   componentWillMount () {
@@ -84,6 +87,7 @@ class TransUnitTranslationFooter extends React.Component {
     const { toggleDropdown, saveDropdownKey, saveAsMode } = nextProps
     this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
     if (saveAsMode === true) {
+      // @ts-ignore
       this.refs.saveTransDropdown.focus()
     }
   }
@@ -150,7 +154,8 @@ class TransUnitTranslationFooter extends React.Component {
       suggestionCount,
       suggestionSearchType,
       toggleGlossary,
-      toggleSuggestionPanel
+      toggleSuggestionPanel,
+      permissions
     } = this.props
 
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
@@ -200,7 +205,7 @@ class TransUnitTranslationFooter extends React.Component {
       </Button>
     )
 
-    const otherStatuses = nonDefaultValidSaveStatuses(phrase)
+    const otherStatuses = nonDefaultValidSaveStatuses(phrase, permissions)
     const otherActionButtons = otherStatuses.map((status, index) => {
       return (
         <li key={index}>
@@ -246,8 +251,7 @@ class TransUnitTranslationFooter extends React.Component {
             {glossaryIcon}
           </ul>
         </div>
-        <div className="u-floatRight"
-          ref='saveTransDropdown' tabIndex='0' >
+        <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
           {saveAsLabel}
           <SplitDropdown
             onToggle={this.toggleDropdown}

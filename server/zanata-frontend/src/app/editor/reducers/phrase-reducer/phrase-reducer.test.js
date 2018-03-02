@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* global jest describe it expect */
 
 // Testing the combined phrase reducers since filter states are used in several
