@@ -44,7 +44,7 @@ class App extends Component {
             titleTemplate='Zanata: %s'
           />
           <Nav active={activePath} links={links} loading={loading} />
-          <div className='containerSidebar'>{children}</div>
+          <div className='containerSidebar bstrapReact'>{children}</div>
         </div>
       </div>
     )

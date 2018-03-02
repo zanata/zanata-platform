@@ -4,6 +4,14 @@
 
 @import "./variables.less";
 .new-zanata {
+  body.bodyStyle {
+    margin: 0;
+    padding: 0;
+  }
+  .u-textMutedLeft {
+    color: @color-muted;
+    margin-left: @spacing-rq;
+  }
   //body class
   .bg--pop-highest {
     border: none;
@@ -77,10 +85,6 @@
     border-radius: @border-radius-img;
     height: 2.25rem;
     width: 2.25rem;
-  }
-  .u-textMutedLeft {
-    color: @color-muted;
-    margin-left: @spacing-rq;
   }
   .lineClamp {
     display: -webkit-box;
