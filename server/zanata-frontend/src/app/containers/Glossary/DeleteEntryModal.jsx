@@ -39,7 +39,7 @@ class DeleteEntryModal extends Component {
     ) : (<p>Are you sure you want to delete this term?</p>)
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='u-block'>
+      <div className='u-block bstrapReact'>
         <Overlay
           placement='top'
           target={() => ReactDOM.findDOMNode(this)}

@@ -27,7 +27,7 @@ class DeleteAllEntriesModal extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='u-block'>
+      <div className='u-block bstrapReact'>
         <Overlay
           placement='bottom'
           target={() => ReactDOM.findDOMNode(this)}

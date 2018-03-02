@@ -69,7 +69,7 @@ class RecentContributions extends React.Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='matrixHeading' id='userProfile-matrix'>
+      <div className='matrixHeading bstrapReact' id='userProfile-matrix'>
         <div className='u-flexCenter'>
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
