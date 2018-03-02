@@ -82,7 +82,7 @@ class RecentContributions extends React.Component {
             </Button>
 
             {this.state.showDateRange &&
-              <Modal id='profile' className='bstrapReact'
+              <Modal id='profile'
                 show={this.state.showDateRange}
                 onHide={() => this.onToggleShowDateRange()}>
                 <Modal.Header>
