@@ -184,6 +184,7 @@ class TranslationInfoPanel extends React.Component {
       return {
         type: 'revision',
         content: historyItem.contents[0],
+        commentText: historyItem.revisionComment,
         lastModifiedTime: lastModified,
         status: transUnitStatusToPhraseStatus(historyItem.status),
         user: {
@@ -197,6 +198,7 @@ class TranslationInfoPanel extends React.Component {
     const latestHistoryActivityItem = {
       type: 'revision',
       content: latestHistoryItem.contents[0],
+      commentText: latestHistoryItem.revisionComment,
       lastModifiedTime: latestLastModified,
       status: transUnitStatusToPhraseStatus(latestHistoryItem.status),
       user: {

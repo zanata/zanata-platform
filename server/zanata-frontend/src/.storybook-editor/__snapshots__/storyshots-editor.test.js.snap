@@ -41,7 +41,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
         className="u-textHighlight"
       >
         <span>
-          approved a translation
+          approved this translation
         </span>
       </span>
     </span>
@@ -145,7 +145,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
       >
         damason
       </a>
-       has commented on a translation
+       has commented on this translation
     </span>
   </p>
   <div
@@ -361,43 +361,10 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textDanger"
-        >
-          Critical
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -530,43 +497,10 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textWarning"
-        >
-          Major
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -699,43 +633,10 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textHighlight"
-        >
-          Minor
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >

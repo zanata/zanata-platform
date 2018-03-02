@@ -83,7 +83,9 @@ public class TranslationData implements Serializable {
         this.plural = plural;
     }
 
-    public String getRevisionComment() { return revisionComment; }
+    public String getRevisionComment() {
+        return revisionComment;
+    }
 
     @JsonIgnore
     public List<String> getContents() {

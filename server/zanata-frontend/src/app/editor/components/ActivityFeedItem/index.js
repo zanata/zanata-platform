@@ -97,7 +97,7 @@ class ActivityFeedItem extends Component {
       return (
         <FormattedMessage id='ActivityFeedItem.comment'
           description='Title for a comment in the activity feed.'
-          defaultMessage='{name} has commented on a translation'
+          defaultMessage='{name} has commented on this translation'
           values={{
             name
           }}
@@ -113,7 +113,7 @@ class ActivityFeedItem extends Component {
             <FormattedMessage id='ActivityFeedItem.approved.approvedTranslation'
               description={
                 'Highlighted section inserted into ActivityFeedItem.approved'}
-              defaultMessage='approved a translation' />
+              defaultMessage='approved this translation' />
           </span>
         )
         return (
@@ -129,6 +129,10 @@ class ActivityFeedItem extends Component {
             }} />
         )
 
+      /*
+       * TODO: Source and display the criteria and priority of a rejection:
+       * defaultMessage -> "for the reason: {criteria} - {priority} priority."
+       */
       case 'rejected':
         // Nested formatted messages are needed to highlight part of the message
         const rejectedTranslation = (
@@ -136,7 +140,7 @@ class ActivityFeedItem extends Component {
             <FormattedMessage id='ActivityFeedItem.rejected.rejectedTranslation'
               description={
                 'Highlighted section inserted into ActivityFeedItem.rejected'}
-              defaultMessage='rejected a translation' />
+              defaultMessage='rejected this translation' />
           </span>
         )
         return (
@@ -145,7 +149,7 @@ class ActivityFeedItem extends Component {
               'Title for an item in the activity feed showing a reviewer ' +
               'rejected the translation. The inserted section is from ' +
               'ActivityFeedItem.rejected.rejectedTranslation'}
-            defaultMessage='{name} has {rejectedTranslation} for the reason: {criteria} - {priority} priority. {comment}'
+            defaultMessage='{name} has {rejectedTranslation} {comment}'
             values={{
               comment,
               criteria,
@@ -210,7 +214,7 @@ class ActivityFeedItem extends Component {
             <FormattedMessage id='ActivityFeedItem.deleted.deletedTranslation'
               description={
                 'Highlighted section inserted into ActivityFeedItem.deleted'}
-              defaultMessage='deleted a translation' />
+              defaultMessage='deleted this translation' />
           </span>
         )
         return (
