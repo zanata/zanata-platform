@@ -9,8 +9,8 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.ui.faces.FacesMessages;
 
 /**
@@ -33,8 +33,7 @@ public abstract class AbstractProfileAction implements HasUserDetail {
     private FacesMessages facesMessages;
 
     @Inject
-    @Authenticated
-    HAccount authenticatedAccount;
+    CurrentUser currentUser;
 
     @Inject
     PersonDAO personDAO;
@@ -45,7 +44,7 @@ public abstract class AbstractProfileAction implements HasUserDetail {
     protected void validateEmail(String email) {
         HPerson person = personDAO.findByEmail(email);
 
-        if (person != null && !person.getAccount().equals(authenticatedAccount)) {
+        if (person != null && !person.getAccount().equals(currentUser.getAccount())) {
             valid = false;
             facesMessages.addToControl("email",
                     "This email address is already taken");
@@ -62,7 +61,7 @@ public abstract class AbstractProfileAction implements HasUserDetail {
 
     protected boolean isUsernameTaken(String username) {
         HAccount account = accountDAO.getByUsername(username);
-        return account != null && !account.equals(authenticatedAccount);
+        return account != null && !account.equals(currentUser.getAccount());
     }
 
     @NotEmpty

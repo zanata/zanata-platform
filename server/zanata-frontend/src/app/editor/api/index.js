@@ -15,6 +15,9 @@ import {
   STATUS_REJECTED
 } from '../utils/status-util'
 import {
+  USER_PERMISSION_REQUEST,
+  USER_PERMISSION_SUCCESS,
+  USER_PERMISSION_FAILURE,
   LOCALE_MESSAGES_REQUEST,
   LOCALE_MESSAGES_SUCCESS,
   LOCALE_MESSAGES_FAILURE
@@ -38,6 +41,29 @@ export function projectPageUrl (projectSlug, versionSlug) {
 
 export function profileUrl (username) {
   return `${serverUrl}/profile/view/${username}`
+}
+
+export function getTranslationPermission (localeId, projectSlug) {
+  const endpoint =
+  `${apiUrl}/user/permission/roles/project/${projectSlug}?localeId=${localeId}`
+  const apiTypes = [
+    USER_PERMISSION_REQUEST,
+    {
+      type: USER_PERMISSION_SUCCESS,
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    USER_PERMISSION_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
 }
 
 export function fetchStatistics (projectSlug, versionSlug, docId, localeId) {

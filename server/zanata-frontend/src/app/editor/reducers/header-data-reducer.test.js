@@ -40,6 +40,10 @@ const EXAMPLE_HEADER_DATA = {
   myInfo: {
     name: 'rick',
     gravatarHash: '12345'
+  },
+  permissions: {
+    reviewer: false,
+    translator: true
   }
 }
 
@@ -83,6 +87,10 @@ describe('header-data-reducer test', () => {
         },
         selectedLocale: '',
         localeMessages: {}
+      },
+      permissions: {
+        reviewer: false,
+        translator: false
       }
     })
   })
@@ -124,15 +132,19 @@ describe('header-data-reducer test', () => {
           locales: {
             'en-US': {
               id: 'en-US',
-              name: 'English (United States)'
+              isRTL: undefined,
+              name: 'English (United States)',
+              nplurals: undefined
             },
             de: {
               id: 'de',
+              isRTL: undefined,
               name: 'German',
               nplurals: 2
             },
             ja: {
               id: 'ja',
+              isRTL: undefined,
               name: 'Japanese',
               nplurals: 1
             }
@@ -151,6 +163,10 @@ describe('header-data-reducer test', () => {
         },
         selectedLocale: '',
         localeMessages: {}
+      },
+      permissions: {
+        reviewer: false,
+        translator: false
       }
     })
   })

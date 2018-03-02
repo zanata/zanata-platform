@@ -18,7 +18,11 @@ import {
 } from './phrases-action-types'
 import {
   defaultSaveStatus,
-  transUnitStatusToPhraseStatus
+  transUnitStatusToPhraseStatus,
+  STATUS_REJECTED,
+  STATUS_APPROVED,
+  STATUS_TRANSLATED,
+  STATUS_NEEDS_WORK
 } from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
 
@@ -131,7 +135,21 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
       localeId: stateBefore.context.lang,
       status,
       translations: phrase.newTranslations,
-      revisionComment: reviewComment
+      revisionComment: reviewComment,
+      reviewer: stateBefore.headerData.permissions.reviewer,
+      translator: stateBefore.headerData.permissions.translator
+    }
+    if (!saveInfo.translator && (
+        saveInfo.status === STATUS_TRANSLATED ||
+        saveInfo.status === STATUS_NEEDS_WORK)) {
+      // User does not have required permissions to translate
+      return
+    }
+    if (!saveInfo.reviewer && (
+        saveInfo.status === STATUS_APPROVED ||
+        saveInfo.status === STATUS_REJECTED)) {
+      // User does not have required permissions to review
+      return
     }
 
     const inProgressSave =

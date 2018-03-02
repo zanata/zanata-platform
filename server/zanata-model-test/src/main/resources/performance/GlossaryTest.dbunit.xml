@@ -174,11 +174,11 @@
     content="Fedora Infrastructure" creationDate="2012-09-19 08:49:36.0"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" />
   <HGlossaryTerm id="27" glossaryEntryId="14" localeId="2"
-    content="Fedora 基础设施项目是为了帮助所有 Fedora 贡献者以最少的代价和最高的效率完成自己的工作。信息技术这个保护伞包括构建系统 &lt;ulink url=&quot;http://fedoraproject.org/wiki/Infrastructure/AccountSystem&quot;&gt;Fedora用户系统&lt;/ulink&gt;、&lt;ulink url=&quot;http://cvs.fedoraproject.org/&quot;&gt;CVS仓库&lt;/ulink&gt;、&lt;ulink url=&quot;http://fedoraproject.org/wiki/Communicate&quot;&gt;邮件列表&lt;/ulink&gt;、&lt;ulink url=&quot;http://fedoraproject.org/wiki/Websites&quot;&gt;网站&lt;/ulink&gt; 基础设施。请访问我们位于 &lt;ulink url=&quot;http://fedoraproject.org/wiki/Infrastructure&quot; /&gt;的网页。"
+    content="Fedora 基础设施项目是为了帮助所有 Fedora 贡献者以最少的代价和最高的效率完成自己的工作。"
     creationDate="2012-09-19 08:49:36.0" lastChanged="2012-09-19 08:49:36.0"
     versionNum="0" />
   <HGlossaryTerm id="28" glossaryEntryId="14" localeId="5"
-    content="The Fedora Infrastructure Project is about helping all Fedora contributors get their work done with minimum hassle and maximum efficiency. Information technology this umbrella include the build system, the &lt;ulink url=&quot;http://fedoraproject.org/wiki/Infrastructure/AccountSystem&quot;&gt;Fedora Account System&lt;/ulink&gt;, the &lt;ulink url=&quot;http://cvs.fedoraproject.org/&quot;&gt;CVS repositories&lt;/ulink&gt;, the &lt;ulink url=&quot;http://fedoraproject.org/wiki/Communicate&quot;&gt;mailing lists&lt;/ulink&gt;, and the &lt;ulink url=&quot;http://fedoraproject.org/wiki/Websites&quot;&gt;Websites&lt;/ulink&gt; infrastructure. Visit our Web site at &lt;ulink url=&quot;http://fedoraproject.org/wiki/Infrastructure&quot; /&gt;."
+    content="The Fedora Infrastructure Project is about helping all Fedora contributors get their work done with minimum hassle and maximum efficiency."
     creationDate="2012-09-19 08:49:36.0" lastChanged="2012-09-19 08:49:36.0"
     versionNum="0" />
   <HGlossaryTerm id="29" glossaryEntryId="15" localeId="2" content="Fedora 网站"

@@ -74,9 +74,13 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
         log.info("log in as username: {}", username);
         BasePage basePage = new BasePage(driver);
         basePage.deleteCookiesAndRefresh();
-        basePage.clickSignInLink().enterUsername(username)
-                .enterPassword(password).clickSignIn().waitForAMoment()
-                .withMessage("login").until(driver1 -> {
+        basePage.clickSignInLink()
+                .enterUsername(username)
+                .enterPassword(password)
+                .clickSignIn()
+                .waitForAMoment()
+                .withMessage("waiting for login (logout button visible)")
+                .until(driver1 -> {
                     // only enable this if you temporarily disable implicit
                     // waits:
                     // fail-fast logic

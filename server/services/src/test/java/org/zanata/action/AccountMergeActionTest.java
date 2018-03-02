@@ -24,12 +24,14 @@ import java.io.Serializable;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
@@ -54,6 +56,7 @@ import static org.zanata.test.EntityTestData.setId;
 @InRequestScope
 @InSessionScope
 @RunWith(CdiUnitRunner.class)
+@AdditionalClasses(CurrentUserImpl.class)
 public class AccountMergeActionTest implements Serializable {
     private static final long serialVersionUID = 1L;
 

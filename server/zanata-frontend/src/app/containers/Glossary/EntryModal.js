@@ -117,7 +117,7 @@ class EntryModal extends Component {
             <EditableText
               editable={!transSelected}
               editing
-              maxLength={255}
+              maxLength={500}
               placeholder='Add a description…'
               emptyReadOnlyText='No description'
               onChange={(e) => handleTermFieldUpdate('description', e)}>
@@ -130,7 +130,7 @@ class EntryModal extends Component {
               <EditableText
                 editable
                 editing
-                maxLength={255}
+                maxLength={500}
                 placeholder='Add a translation…'
                 emptyReadOnlyText='No translation'
                 onChange={(e) => handleTermFieldUpdate('locale', e)}>
@@ -143,7 +143,7 @@ class EntryModal extends Component {
             <div className='modal-section'>
               <label className='text-bold'>Comment</label><br />
               <EditableText
-                maxLength={255}
+                maxLength={500}
                 editable={enableComment}
                 editing={enableComment}
                 placeholder='Add a comment…'

@@ -99,6 +99,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/{path}").to("/a/index.xhtml"))
                 .where("path").matches(anyOf(
                         "admin/review",
+                        "admin/home",
                         "explore",
                         "glossary",
                         "glossary/project/[^/]*",
@@ -130,7 +131,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 // open id return url
                 .addRule(Join.path("/openid").to("/account/openid.xhtml"))
                 .addRule(Join.path("/account/validate_email/{key}").to("/account/email_validation.xhtml"))
-                .addRule(Join.path("/admin/").to("/admin/home.xhtml"))
                 .addRule(Join.pathNonBinding("/admin/{page}").to("/admin/{page}.xhtml")).where("page").matches(".+")
                 .addRule(Join.path("/dashboard/").to("/dashboard/home.xhtml"))
 
