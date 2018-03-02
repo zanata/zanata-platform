@@ -234,11 +234,17 @@ class ActivityFeedItem extends Component {
         console.error('Unknown status type', status)
     }
   }
-
   render () {
     const {content, lastModifiedTime, status, type, user} = this.props
     const isComment = type === 'comment'
-
+    const copyToClipboard = () => {
+      var textField = document.createElement('textarea')
+      textField.innerText = content
+      document.body.appendChild(textField)
+      textField.select()
+      document.execCommand('copy')
+      textField.remove()
+    }
     return (
       /* eslint-disable max-len */
       <div className='RevisionBox'>
@@ -253,7 +259,8 @@ class ActivityFeedItem extends Component {
         <Well className={isComment ? '' : statusToWellClass[status]}>
           {content}
           <span className='u-pullRight'>
-            <button className='Link Link--neutral' title='Copy'>
+            <button onClick={copyToClipboard}
+              className='Link Link--neutral' title='Copy'>
               <Icon name='copy' className='s1' />
             </button>
           </span>
