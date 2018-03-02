@@ -121,7 +121,7 @@ const saveFinished = createAction(SAVE_FINISHED,
     revision
   }))
 
-export function savePhraseWithStatus (phrase, status) {
+export function savePhraseWithStatus (phrase, status, reviewComment) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
     dispatch(toggleDropdown(undefined))
@@ -130,7 +130,8 @@ export function savePhraseWithStatus (phrase, status) {
     const saveInfo = {
       localeId: stateBefore.context.lang,
       status,
-      translations: phrase.newTranslations
+      translations: phrase.newTranslations,
+      revisionComment: reviewComment
     }
 
     const inProgressSave =

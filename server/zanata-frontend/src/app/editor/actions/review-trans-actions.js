@@ -28,7 +28,8 @@ export function rejectTranslation (dispatch, review) {
       type: ADD_REVIEW_SUCCESS,
       payload: (_action, _state, res) => {
         return res.json().then((json) => {
-          dispatch(savePhraseWithStatus(review.phrase, STATUS_REJECTED))
+          dispatch(savePhraseWithStatus(
+            review.phrase, STATUS_REJECTED, review.reviewComment))
           return json
         })
       }

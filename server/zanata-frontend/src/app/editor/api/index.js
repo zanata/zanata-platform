@@ -166,7 +166,7 @@ export function fetchVersionLocales (projectSlug, versionSlug) {
 }
 
 export function savePhrase ({ id, revision, plural },
-                            { localeId, status, translations }) {
+  { localeId, status, translations, revisionComment }) {
   const translationUrl = `${apiUrl}/trans/${localeId}`
   return fetch(translationUrl, {
     credentials: 'include',
@@ -182,6 +182,7 @@ export function savePhrase ({ id, revision, plural },
       plural,
       content: translations[0],
       contents: translations,
+      revisionComment: revisionComment,
       status: phraseStatusToTransUnitStatus(status)
     })
   })

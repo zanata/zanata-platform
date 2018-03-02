@@ -28,12 +28,15 @@ import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.editor.dto.JsonObject;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.dto.TranslationData;
@@ -122,11 +125,14 @@ public class TranslationService implements TranslationResource {
                 textFlow.getDocument().getProjectIteration().getProject(),
                 locale);
         // //Only support 1 translation update for the moment
-        // TODO: Support saves with reviewComment for activity panel
+        String revisionComment = requestData.getRevisionComment();
         TransUnitUpdateRequest request = new TransUnitUpdateRequest(
                 new TransUnitId(requestData.getId().longValue()),
                 requestData.getContents(), requestData.getStatus(),
                 requestData.getRevision(), sourceType);
+        if (revisionComment != null) {
+            request.addRevisionComment(revisionComment);
+        }
         List<TranslationResult> translationResults = translationServiceImpl
                 .translate(new LocaleId(localeId), Lists.newArrayList(request));
         TranslationResult result = translationResults.get(0);

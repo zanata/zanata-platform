@@ -42,6 +42,9 @@ public class TranslationData implements Serializable {
     @NotNull
     private ContentState status = ContentState.New;
 
+    @JsonProperty("revisionComment")
+    private String revisionComment;
+
     public TranslationData() {
 
     }
@@ -79,6 +82,8 @@ public class TranslationData implements Serializable {
     public void setPlural(boolean plural) {
         this.plural = plural;
     }
+
+    public String getRevisionComment() { return revisionComment; }
 
     @JsonIgnore
     public List<String> getContents() {
@@ -124,6 +129,7 @@ public class TranslationData implements Serializable {
         TranslationData that = (TranslationData) o;
 
         if (plural != that.plural) return false;
+        if (revisionComment != that.revisionComment) return false;
         if (content != null ? !content.equals(that.content) :
             that.content != null)
             return false;
@@ -141,6 +147,8 @@ public class TranslationData implements Serializable {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (revision != null ? revision.hashCode() : 0);
+        result = 31 * result +
+                (revisionComment != null ? revisionComment.hashCode() : 0);
         result = 31 * result + (content != null ? content.hashCode() : 0);
         result = 31 * result + (contents != null ? contents.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
