@@ -74,8 +74,11 @@ const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
  * and gains it back again (unless it gains focus from a different plural form
  * being specifically targeted).
  */
-export function selectPhrasePluralIndex (phraseId, index) {
+export function selectPhrasePluralIndex (
+  phraseId, index, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
+    dispatch(
+      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(selectPhraseSpecificPlural(phraseId, index))
   }

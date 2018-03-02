@@ -16,7 +16,6 @@ import {
   STATUS_REJECTED,
   STATUS_APPROVED
 } from '../utils/status-util'
-import { fetchTransUnitHistory } from '../api'
 
 function shortcutInfo (keys, eventActionCreator, description, eventType) {
   keys = Array.isArray(keys) ? keys : [keys]
@@ -233,7 +232,6 @@ function makeRowNavigationActionCreator (operation) {
   return (event) => {
     return (dispatch, getState) => {
       const { detail, selectedPhraseId } = getState().phrases
-      const localeId = getState().context.lang
       if (selectedPhraseId) {
         event.preventDefault()
         event.stopPropagation()
@@ -241,7 +239,6 @@ function makeRowNavigationActionCreator (operation) {
         if (hasTranslationChanged(phrase)) {
           dispatch(saveAsCurrentActionCreator(event))
         }
-        dispatch(fetchTransUnitHistory(localeId, selectedPhraseId))
         dispatch(operation())
       }
     }

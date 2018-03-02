@@ -233,7 +233,12 @@ function mapDispatchToProps (dispatch, ownProps) {
         ownProps.versionSlug))
     },
     selectPhrasePluralIndex: (phraseId, index) => {
-      dispatch(selectPhrasePluralIndex(phraseId, index))
+      dispatch(selectPhrasePluralIndex(
+        phraseId,
+        index,
+        ownProps.translationLocale.id,
+        ownProps.projectSlug,
+        ownProps.versionSlug))
     },
     textChanged: (id, index, event) => {
       const text = event.target.value
