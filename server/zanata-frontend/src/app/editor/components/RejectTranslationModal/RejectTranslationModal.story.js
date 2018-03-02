@@ -3,7 +3,23 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import RejectTranslationModal from '.'
 import Lorem from 'react-lorem-component'
-import { CRITICAL } from './index.js'
+import {
+  MINOR, UNSPECIFIED
+} from '../../utils/reject-trans-util'
+
+const callback = () => {}
+
+const defaultState = {
+  review: {
+    selectedPriority: MINOR,
+    priorityId: 0,
+    criteriaDescription: '',
+    criteriaId: undefined,
+    reviewComment: ''
+  },
+  charsLeft: 500,
+  selectedCriteria: UNSPECIFIED
+}
 
 /*
  * TODO add stories showing the range of states
@@ -24,22 +40,39 @@ storiesOf('RejectTranslationModal', module)
       </div>
     ))
     .add('Initial state', () => (
-      <RejectTranslationModal show isOpen
-        criteria=""
-        priority={CRITICAL} textState="u-textDanger" />
-    ))
-    .add('Criteria chosen', () => (
       <RejectTranslationModal
         show
-        isOpen
-        criteria="Translation Errors: terminology, mistranslated addition,
-        omission, un-localized, do not translate, etc"
-        priority={CRITICAL}
-        textState="u-textDanger" />
+        onHide={callback}
+        onHideResetState={callback}
+        textLimit={1}
+        charsLeft={500}
+        criteriaList={[{
+          id: 1,
+          commentRequired: true,
+          description: 'Needs more flair',
+          priority: MINOR
+        }]}
+        onCriteriaChange={callback}
+        onUnspecifiedCriteria={callback}
+        onPriorityChange={callback}
+        saveTransReview={callback}
+        selectedCriteria={UNSPECIFIED}
+        setReviewComment={callback}
+        review={defaultState.review}
+        />
     ))
 
-    .add('Other - no criteria set', () => (
-      <RejectTranslationModal
-        show
-        isOpen />
-    ))
+    // .add('Criteria chosen', () => (
+    //   <RejectTranslationModal
+    //     show
+    //     isOpen
+    //     criteria="Translation Errors: terminology, mistranslated addition,
+    //     omission, un-localized, do not translate, etc"
+    //     priority={CRITICAL}
+    //     textState="u-textDanger" />
+    // ))
+    // .add('Other - no criteria set', () => (
+    //   <RejectTranslationModal
+    //     show
+    //     isOpen />
+    // ))
