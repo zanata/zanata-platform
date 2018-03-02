@@ -87,6 +87,10 @@ public class TranslationData implements Serializable {
         return revisionComment;
     }
 
+    public void setRevisionComment(String comment) {
+        this.revisionComment = comment;
+    }
+
     @JsonIgnore
     public List<String> getContents() {
         if(contents == null && content == null) {
@@ -131,7 +135,10 @@ public class TranslationData implements Serializable {
         TranslationData that = (TranslationData) o;
 
         if (plural != that.plural) return false;
-        if (revisionComment != that.revisionComment) return false;
+        if (revisionComment != null ?
+                !revisionComment.equals(that.revisionComment) :
+                that.revisionComment != null)
+            return false;
         if (content != null ? !content.equals(that.content) :
             that.content != null)
             return false;
