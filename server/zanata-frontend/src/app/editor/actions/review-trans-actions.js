@@ -56,6 +56,7 @@ export function rejectTranslation (dispatch, review) {
  */
 export function postReviewComment (review) {
   const endpoint = `${apiUrl}/review/trans/${review.localeId}`
+  /** @type {APITypes} */
   const apiTypes = [
     ADD_REVIEW_REQUEST,
     ADD_REVIEW_SUCCESS,
