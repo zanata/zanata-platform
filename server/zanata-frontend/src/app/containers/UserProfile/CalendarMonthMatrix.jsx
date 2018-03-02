@@ -17,7 +17,9 @@ const classes = {
     }
   }
 }
-/** @type { React.StatelessComponent<{matrixData, selectedDay, selectedContentState, dateRange, handleSelectedDayChanged}> } */
+/** @type
+    { React.StatelessComponent<{matrixData, selectedDay, selectedContentState,
+      dateRange, handleSelectedDayChanged}> } */
 const CalendarMonthMatrix = ({
   matrixData,
   selectedDay,

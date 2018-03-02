@@ -1,4 +1,3 @@
-// @ts-nocheck
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
@@ -88,6 +87,7 @@ class TransUnitTranslationFooter extends React.Component {
     const { toggleDropdown, saveDropdownKey, saveAsMode } = nextProps
     this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
     if (saveAsMode === true) {
+      // @ts-ignore
       this.refs.saveTransDropdown.focus()
     }
   }
@@ -251,8 +251,7 @@ class TransUnitTranslationFooter extends React.Component {
             {glossaryIcon}
           </ul>
         </div>
-        <div className="u-floatRight"
-          ref='saveTransDropdown' tabIndex='0' >
+        <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
           {saveAsLabel}
           <SplitDropdown
             onToggle={this.toggleDropdown}

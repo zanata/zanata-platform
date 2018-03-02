@@ -27,7 +27,12 @@ import {
   TRANS_HISTORY_SUCCESS,
   TRANS_HISTORY_FAILURE
 } from '../actions/activity-action-types'
-import { buildAPIRequest, getJsonHeaders } from '../../actions/common-actions'
+import {
+  buildAPIRequest,
+  getJsonHeaders,
+  // eslint-disable-next-line
+  APITypes
+} from '../../actions/common-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { includes } from 'lodash'
 import { apiUrl, serverUrl, appUrl } from '../../config'
@@ -46,6 +51,7 @@ export function profileUrl (username) {
 export function getTranslationPermission (localeId, projectSlug) {
   const endpoint =
   `${apiUrl}/user/permission/roles/project/${projectSlug}?localeId=${localeId}`
+  /** @type {APITypes} */
   const apiTypes = [
     USER_PERMISSION_REQUEST,
     {
@@ -93,6 +99,7 @@ export function fetchLocales () {
 
 export function fetchI18nLocale (locale) {
   const endpoint = `${appUrl}/messages/${locale}.json`
+  /** @type {APITypes} */
   const apiTypes = [
     LOCALE_MESSAGES_REQUEST,
     {
@@ -116,6 +123,7 @@ export function fetchTransUnitHistory (
   localeId, transUnitId, projectSlug, versionSlug) {
   // eslint-disable-next-line max-len
   const endpoint = `${apiUrl}/transhist/${localeId}/${transUnitId}/${projectSlug}?versionSlug=${versionSlug}`
+  /** @type {APITypes} */
   const apiTypes = [
     TRANS_HISTORY_REQUEST,
     {

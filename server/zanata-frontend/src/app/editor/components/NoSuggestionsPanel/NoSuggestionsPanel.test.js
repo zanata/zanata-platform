@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Icon } from '../../../components'
@@ -36,7 +35,9 @@ describe('NoSuggestionsPanelTest', () => {
         <div
             className="u-posCenterCenter u-textEmpty u-textCenter">
           <div className="u-sMB-1-4">
-            <LoaderText loading loadingText='You&apos;re on your own' />
+            <LoaderText
+              // @ts-ignore
+              loading loadingText='You&apos;re on your own' />
           </div>
         </div>
     )

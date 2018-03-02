@@ -5,7 +5,7 @@ import { Link as RouterLink } from 'react-router'
 /**
  * Common link component which generates <a href> or in-page navigation link
  * based on useHref.
- * @type { React.StatelessComponent<{id, children, link, useHref, props?}> } */
+ * @type { React.StatelessComponent<{id, children, link, useHref}> } */
 const Link = ({
   children,
   link,
