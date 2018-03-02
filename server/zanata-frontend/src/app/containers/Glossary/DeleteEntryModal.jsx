@@ -44,9 +44,11 @@ class DeleteEntryModal extends Component {
           placement='top'
           target={() => ReactDOM.findDOMNode(this)}
           rootClose
+          className='bstrapReact'
           show={show}
           onHide={() => handleDeleteEntryDisplay(false)}>
-          <Tooltip id='delete-glossary' title='Delete term and translations'>
+          <Tooltip id='delete-glossary' title='Delete term and translations'
+            className='bstrapReact'>
             {info}
             <span className='button-spacing'>
               <Button bsStyle='default' className='btn-sm'
