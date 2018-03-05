@@ -20,25 +20,23 @@
  */
 package org.zanata.rest.editor.service;
 
+import javaslang.collection.HashMap;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.rest.editor.service.resource.TransUnitHistoryResource;
 import org.zanata.webtrans.server.rpc.GetTranslationHistoryHandler;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
+import org.zanata.rest.service.RestUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * @author Earl Floden <a href="mailto:efloden@redhat.com">efloden@redhat.com</a>
  */
 @RequestScoped
-@Named("editor.transUnitHistoryService")
 @Path(TransUnitHistoryResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class TransUnitHistoryService implements TransUnitHistoryResource {
@@ -48,35 +46,7 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
     @Inject @Any
     private GetTranslationHistoryHandler historyHandler;
 
-    @Override
-    public Response get(String localeId, Long transUnitId, String projectSlug,
-            String versionSlug) {
-        if (isNullOrEmpty(localeId)) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Null or empty localeId supplied")
-                    .build();
-        }
-        if (isNullOrEmpty(projectSlug)) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Null or empty projectSlug supplied")
-                    .build();
-        }
-        if (isNullOrEmpty(versionSlug)) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Null or empty versionSlug supplied")
-                    .build();
-        }
-        if (transUnitId == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Null transUnitId supplied")
-                    .build();
-        }
-        GetTranslationHistoryResult result =
-                historyHandler.getTranslationHistory(
-                        localeId, transUnitId, projectSlug, versionSlug);
-        return Response.ok(result).build();
-    }
-
+    @SuppressWarnings("unused")
     public TransUnitHistoryService() {
     }
 
@@ -85,5 +55,20 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
             final GetTranslationHistoryHandler historyHandler
     ) {
         this.historyHandler = historyHandler;
+    }
+
+    @Override
+    public Response get(String localeId, Long transUnitId, String projectSlug,
+            String versionSlug) {
+
+        HashMap<Object, String> params =
+                HashMap.of(localeId, "localeId", projectSlug, "projectSlug",
+                        versionSlug, "versionSlug", transUnitId, "transUnitId");
+        Response error = RestUtils.checkParams(params);
+        if (error != null) return error;
+        GetTranslationHistoryResult result =
+                historyHandler.getTranslationHistory(
+                        localeId, transUnitId, projectSlug, versionSlug);
+        return Response.ok(result).build();
     }
 }

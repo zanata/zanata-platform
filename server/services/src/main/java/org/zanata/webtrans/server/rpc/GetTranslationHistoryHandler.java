@@ -7,6 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.collect.Maps;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
@@ -25,13 +26,13 @@ import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -48,16 +49,31 @@ public class GetTranslationHistoryHandler extends
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(GetTranslationHistoryHandler.class);
 
-    @Inject
     private ZanataIdentity identity;
-    @Inject
     private LocaleService localeServiceImpl;
-    @Inject
     private TextFlowDAO textFlowDAO;
-    @Inject
     private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
-    @Inject
     private ResourceUtils resourceUtils;
+
+    @SuppressWarnings("unused")
+    private GetTranslationHistoryHandler() {
+    }
+
+    @SuppressWarnings("unused")
+    @Inject
+    public GetTranslationHistoryHandler(
+            ZanataIdentity identity,
+            LocaleService localeServiceImpl,
+            TextFlowDAO textFlowDAO,
+            TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO,
+            ResourceUtils resourceUtils
+    ) {
+        this.identity = identity;
+        this.localeServiceImpl = localeServiceImpl;
+        this.textFlowDAO = textFlowDAO;
+        this.textFlowTargetReviewCommentsDAO = textFlowTargetReviewCommentsDAO;
+        this.resourceUtils = resourceUtils;
+    }
 
     @Override
     public GetTranslationHistoryResult execute(
@@ -65,11 +81,12 @@ public class GetTranslationHistoryHandler extends
             throws ActionException {
         identity.checkLoggedIn();
         // Extract Strings and primitives for getTranslationHistory
-        String localeId = action.getWorkspaceId().getLocaleId().toString();
+        WorkspaceId workspaceId = action.getWorkspaceId();
+        String localeId = workspaceId.getLocaleId().toString();
         Long transUnitId = action.getTransUnitId().getId();
-        String projectSlug = action.getWorkspaceId().getProjectIterationId()
+        String projectSlug = workspaceId.getProjectIterationId()
                 .getProjectSlug();
-        String versionSlug = action.getWorkspaceId().getProjectIterationId()
+        String versionSlug = workspaceId.getProjectIterationId()
                 .getIterationSlug();
         GetTranslationHistoryResult result;
         try {
@@ -92,13 +109,13 @@ public class GetTranslationHistoryHandler extends
                 localeID, projectSlug, versionSlug);
         TransUnitId tUnitId = new TransUnitId(transUnitId);
         HTextFlow hTextFlow = textFlowDAO.findById(transUnitId, false);
-        HTextFlowTarget hTextFlowTarget =
-                hTextFlow.getTargets().get(hLocale.getId());
+        if (hTextFlow == null) throw new RuntimeException();
         Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
-        TransHistoryItem latest =
-                getLatest(hTextFlowTarget, hTextFlow, hLocale);
+        TransHistoryItem latest = null;
+        HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
         if (hTextFlowTarget != null) {
             history = hTextFlowTarget.getHistory();
+            latest = getLatest(hTextFlowTarget, hTextFlow, hLocale);
         }
         Iterable<TransHistoryItem> historyItems =
                 Iterables.transform(history.values(),
@@ -112,21 +129,18 @@ public class GetTranslationHistoryHandler extends
     }
 
     private TransHistoryItem getLatest(HTextFlowTarget hTextFlowTarget,
-                    HTextFlow hTextFlow, HLocale hLocale) {
-        TransHistoryItem latest = null;
-        if (hTextFlowTarget != null) {
-            String lastModifiedBy = GetTranslationHistoryHandler
-                    .usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
-            int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
-                    hLocale);
-            latest = new TransHistoryItem(
-                    hTextFlowTarget.getVersionNum().toString(),
-                    GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
-                            hTextFlowTarget, nPlurals),
-                    hTextFlowTarget.getState(), lastModifiedBy,
-                    hTextFlowTarget.getLastChanged(),
-                    hTextFlowTarget.getRevisionComment());
-        }
+            HTextFlow hTextFlow, HLocale hLocale) {
+        String lastModifiedBy =
+                usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
+        int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
+                hLocale);
+        TransHistoryItem latest = new TransHistoryItem(
+                hTextFlowTarget.getVersionNum().toString(),
+                GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
+                        hTextFlowTarget, nPlurals),
+                hTextFlowTarget.getState(), lastModifiedBy,
+                hTextFlowTarget.getLastChanged(),
+                hTextFlowTarget.getRevisionComment());
         return latest;
     }
 
@@ -167,4 +181,5 @@ public class GetTranslationHistoryHandler extends
                     targetHistory.getRevisionComment());
         }
     }
+
 }

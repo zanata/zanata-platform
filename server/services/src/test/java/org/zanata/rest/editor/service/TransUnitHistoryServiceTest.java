@@ -10,6 +10,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 public class TransUnitHistoryServiceTest {
     private TransUnitHistoryService service;
@@ -24,7 +25,6 @@ public class TransUnitHistoryServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        historyHandler = new GetTranslationHistoryHandler();
         service = new TransUnitHistoryService(historyHandler);
     }
 
@@ -54,6 +54,18 @@ public class TransUnitHistoryServiceTest {
         Response response = service.get(
                 localeId, transUnitId, projectSlug, null);
         assertThat(response.getStatus()).isEqualTo(400);
+    }
+
+    @Test
+    public void validParamsReturnSuccess() {
+        GetTranslationHistoryResult historyResult =
+                new GetTranslationHistoryResult(null, null, null);
+        when(historyHandler
+                .getTranslationHistory(localeId, transUnitId, projectSlug,
+                        versionSlug)).thenReturn(historyResult);
+        Response response = service.get(
+                localeId, transUnitId, projectSlug, versionSlug);
+        assertThat(response.getStatus()).isEqualTo(200);
     }
 
 }
