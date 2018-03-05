@@ -58,6 +58,14 @@ h2.matrixHeading {
   width: 100%;
 }
 
+.dateRange-container {
+  width: 13rem;
+}
+
+.dateRange-container button {
+  width: 100%;
+}
+
 #userProfile-matrix canvas {
   width: 100% !important;
   max-width: 100% !important;
@@ -68,15 +76,19 @@ h2.matrixHeading {
 }
 
 #profileLanguages {
-  display: block;
+  display: inline-flex;
+}
+
+.rdr-MonthAndYear-innerWrapper .button {
+  padding: 0;
 }
 
 #profileLanguages a {
   display: block;
 }
 
-#profileLanguages svg {
-  vertical-align: middle;
+#profileLanguages .iconLanguage {
+  padding-right: @spacing-rq;
 }
 
 .dateRange-textField input.textInput {
