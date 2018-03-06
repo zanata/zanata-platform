@@ -2,7 +2,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
-import Button from '../../components/Button'
+import Button from '../Button'
 import { Row } from 'react-bootstrap'
 import { Modal } from '../../../components'
 import PriorityDropdown from './PriorityDropdown'
