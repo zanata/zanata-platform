@@ -19,6 +19,20 @@
    2. containers/App.js
  */
 .bstrapReact {
+  .container {
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: @spacing-base;
+    padding-left: @spacing-base;
+  }
+  .container:focus {
+    outline: 0;
+  }
+  .container:after {
+    display: block;
+    clear: both;
+    content: "";
+  }
   .containerEditor {
     margin-left: 6rem;
     width: 100%;
@@ -34,7 +48,6 @@
     margin-left: 4.5rem;
     background-color: #fff;
     height: 100vh;
-    margin-top: -10px;
   }
   .wideView {
     align-items: center;
