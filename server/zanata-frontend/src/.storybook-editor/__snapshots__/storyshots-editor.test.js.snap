@@ -24,12 +24,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
@@ -134,12 +129,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
@@ -237,12 +227,7 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
@@ -347,12 +332,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
@@ -484,12 +464,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
@@ -621,12 +596,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
@@ -758,12 +728,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"

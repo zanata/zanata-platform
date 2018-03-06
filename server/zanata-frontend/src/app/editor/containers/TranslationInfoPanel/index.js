@@ -169,9 +169,7 @@ class TranslationInfoPanel extends React.Component {
         content: value.comment,
         lastModifiedTime: lastModified,
         user: {
-          name: value.commenterName,
-          imageUrl:
-            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+          name: value.commenterName
         }
       }
     })
@@ -188,9 +186,7 @@ class TranslationInfoPanel extends React.Component {
         lastModifiedTime: lastModified,
         status: transUnitStatusToPhraseStatus(historyItem.status),
         user: {
-          name: historyItem.modifiedBy,
-          imageUrl:
-            'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+          name: historyItem.modifiedBy
         }
       }
     })
@@ -202,9 +198,7 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime: latestLastModified,
       status: transUnitStatusToPhraseStatus(latestHistoryItem.status),
       user: {
-        name: latestHistoryItem.modifiedBy,
-        imageUrl:
-          'https://gravatar.com/avatar/a0c33fb16389ac6c3d7034efb1f3f305'
+        name: latestHistoryItem.modifiedBy
       }
     }
     return historyActivityItems.concat(latestHistoryActivityItem)

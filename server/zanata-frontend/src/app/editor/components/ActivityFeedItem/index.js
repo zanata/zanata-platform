@@ -251,8 +251,8 @@ class ActivityFeedItem extends Component {
         <p>
           <Icon name={isComment ? 'comment' : 'refresh'} className='s0' />
           <Link useHref link={profileUrl(user.name)}>
-            {/* TODO use component for avatar image */}
-            <img className='u-round ActivityAvatar' src={user.imageUrl} />
+            {/* TODO use component for avatar image
+            <img className='u-round ActivityAvatar' src={user.imageUrl} />*/}
           </Link>
           {this.getMessage()}
         </p>

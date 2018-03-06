@@ -48,8 +48,7 @@ ActivityTab.propTypes = {
     status: PropTypes.oneOf(['translated', 'needswork', 'approved',
     'rejected', 'untranslated']),
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired
     }).isRequired
   })),
   postComment: PropTypes.func.isRequired,
