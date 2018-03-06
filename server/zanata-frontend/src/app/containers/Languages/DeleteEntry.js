@@ -26,7 +26,7 @@ class DeleteEntry extends Component {
     } = this.props
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='u-blockInline'>
+      <div className='u-blockInline bstrapReact'>
         <Button bsSize='small'
           onClick={() => handleDeleteEntryDisplay(true)}>
           <Icon name='cross' className='n2' parentClassName='iconCross'
