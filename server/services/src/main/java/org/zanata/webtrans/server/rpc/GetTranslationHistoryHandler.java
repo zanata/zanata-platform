@@ -49,31 +49,16 @@ public class GetTranslationHistoryHandler extends
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(GetTranslationHistoryHandler.class);
 
-    private ZanataIdentity identity;
-    private LocaleService localeServiceImpl;
-    private TextFlowDAO textFlowDAO;
-    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
-    private ResourceUtils resourceUtils;
-
-    @SuppressWarnings("unused")
-    private GetTranslationHistoryHandler() {
-    }
-
-    @SuppressWarnings("unused")
     @Inject
-    public GetTranslationHistoryHandler(
-            ZanataIdentity identity,
-            LocaleService localeServiceImpl,
-            TextFlowDAO textFlowDAO,
-            TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO,
-            ResourceUtils resourceUtils
-    ) {
-        this.identity = identity;
-        this.localeServiceImpl = localeServiceImpl;
-        this.textFlowDAO = textFlowDAO;
-        this.textFlowTargetReviewCommentsDAO = textFlowTargetReviewCommentsDAO;
-        this.resourceUtils = resourceUtils;
-    }
+    private ZanataIdentity identity;
+    @Inject
+    private LocaleService localeServiceImpl;
+    @Inject
+    private TextFlowDAO textFlowDAO;
+    @Inject
+    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
+    @Inject
+    private ResourceUtils resourceUtils;
 
     @Override
     public GetTranslationHistoryResult execute(
