@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2018, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -19,18 +19,21 @@
  * site: http://www.fsf.org.
  */
 
-import React from 'react'
 import { isEmpty } from 'lodash'
-import * as PropTypes from 'prop-types'
 import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
+import * as React from 'react'
 
-class CommentBox extends React.Component {
-  static propTypes = {
-    postComment: PropTypes.func.isRequired
-  }
+interface Props {
+  postComment: (text: string) => void
+}
 
-  defaultState = {
+interface State {
+  commentText: string
+}
+
+class CommentBox extends React.Component<Props, State> {
+  private defaultState = {
     commentText: ''
   }
 
@@ -39,18 +42,7 @@ class CommentBox extends React.Component {
     this.state = this.defaultState
   }
 
-  postComment = () => {
-    const text = this.state.commentText
-    this.props.postComment(text)
-    // reset the input, avoid multiple posts
-    this.setState(this.defaultState)
-  }
-
-  setCommentText = (event) => {
-    this.setState({commentText: event.target.value})
-  }
-  /* eslint-disable max-len */
-  render () {
+  public render () {
     return (
       <div className='TransUnit-commentBox'>
         <FormGroup controlId='formControlsTextarea'>
@@ -68,6 +60,17 @@ class CommentBox extends React.Component {
       </div>
     )
   }
+
+  private postComment = () => {
+    const text = this.state.commentText
+    this.props.postComment(text)
+    // reset the input, avoid multiple posts
+    this.setState(this.defaultState)
+  }
+
+  private setCommentText = (event) => {
+    this.setState({commentText: event.target.value})
+  }
 }
-/* eslint-enable max-len */
+
 export default CommentBox

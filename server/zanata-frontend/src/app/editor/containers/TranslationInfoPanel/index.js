@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { setSidebarVisibility } from '../../actions'
 import { postReviewComment } from '../../actions/review-trans-actions'
-import { Tabs, FormGroup, InputGroup,
+import { Tabs, FormGroup, InputGroup, InputGroupAddon,
   FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
@@ -148,13 +147,13 @@ class TranslationInfoPanel extends React.Component {
   }
   /* URL of the selected phrase, with copy button. */
   phraseLink = () => {
-    // TODO need to set up phrase ID in the URL first
     return (
       <FormGroup className="trans-link">
         <InputGroup>
-          <InputGroup.Addon><Icon name="copy"
-            className="s1" />
-          </InputGroup.Addon>
+          <InputGroupAddon>
+            <Icon name="copy"
+              className="s1" />
+          </InputGroupAddon>
           <FormControl type="text" />
         </InputGroup>
       </FormGroup>
@@ -262,6 +261,7 @@ class TranslationInfoPanel extends React.Component {
           id="SidebarEditor-tabsPane1">
           <Tab eventKey={1} title={activityTitle}>
             <ActivityTab
+              // @ts-ignore
               activeKey={this.state.key}
               activityItems={activityItems}
               selectedActivites={this.state.selectedActivites}
@@ -270,6 +270,7 @@ class TranslationInfoPanel extends React.Component {
           </Tab>
           <Tab eventKey={2} title={glossaryTitle}>
             <GlossaryTab
+              // @ts-ignore
               activeKey={this.state.key} />
           </Tab>
         </Tabs>
@@ -312,6 +313,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    // @ts-ignore
     close: () => dispatch(setSidebarVisibility(false)),
     postReviewComment: (reviewData) => dispatch(postReviewComment(reviewData))
   }
