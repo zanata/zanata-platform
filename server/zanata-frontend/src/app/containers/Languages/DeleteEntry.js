@@ -3,7 +3,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {
   Button,
-  Popover,
+  Tooltip,
   Overlay
 } from 'react-bootstrap'
 import * as ReactDOM from 'react-dom'
@@ -26,7 +26,7 @@ class DeleteEntry extends Component {
     } = this.props
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='u-blockInline bstrapReact'>
+      <div className='u-blockInline'>
         <Button bsSize='small'
           onClick={() => handleDeleteEntryDisplay(true)}>
           <Icon name='cross' className='n2' parentClassName='iconCross'
@@ -35,7 +35,8 @@ class DeleteEntry extends Component {
         </Button>
         <Overlay show={show} placement='top'
           target={() => ReactDOM.findDOMNode(this)}>
-          <Popover id='popover-contained' title='Delete language'>
+          <Tooltip id='tooltip' className='bstrapReact'
+            title='Delete language'>
             <p>Are you sure you want to delete&nbsp;
               <strong>{locale.displayName}</strong>?&nbsp;
             </p>
@@ -52,7 +53,7 @@ class DeleteEntry extends Component {
                 Delete
               </Button>
             </span>
-          </Popover>
+          </Tooltip>
         </Overlay>
       </div>
     )
