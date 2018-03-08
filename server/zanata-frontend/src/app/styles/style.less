@@ -33,11 +33,6 @@
     clear: both;
     content: "";
   }
-  .containerEditor {
-    margin-left: 6rem;
-    width: 100%;
-    overflow-x: scroll;
-  }
   .container--fluid {
     margin-right: auto;
     margin-left: auto;
@@ -125,11 +120,6 @@
     display: block;
   }
   .nav-link {
-    display: flex;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: -o-flex;
     background-color: "";
     color: rgb(237, 242, 248) !important;
     flex-direction: column;
@@ -3960,11 +3950,6 @@
       -webkit-flex-shrink: 0;
       height: inherit !important;
     }
-    .templateContainer {
-      flex-direction: column;
-      -webkit-flex-direction: column;
-      width: 100%;
-    }
     .wideView {
       margin-left: 0;
       flex: 1;
@@ -3989,36 +3974,20 @@
     main {
       margin-left: 0;
     }
-    .containerSidebar, .containerEditor {
+    .containerSidebar {
       margin-left: 0;
       margin-right: 0;
       width: 100%;
+    }
+    #root {
+      order: 1;
+      width: 100%;
+      height: 3.5rem;
     }
     .containerSidebar {
       position: absolute;
       top: 0;
       margin-bottom: 4.5rem;
-    }
-    #nav {
-      width: 100%;
-      position: fixed;
-      overflow: hidden;
-      bottom: 0;
-      z-index: 1000;
-    }
-    .nav-bar {
-      order: 1;
-      width: 100%;
-      height: 3.5rem;
-    }
-    .nav-link {
-      display: none;
-    }
-    .nav-link.small {
-      display: inline-flex;
-      flex-grow: 1;
-      -webkit-flex-grow: 1;
-      padding: @spacing-rh;
     }
   }
   @media (min-width: 29.376rem) {
@@ -4044,33 +4013,8 @@
       width: 100%;
       padding-bottom: 1rem;
     }
-    .containerEditor {
-      margin-left: 4.5rem;
-      width: 100%;
-    }
-    #nav {
-      min-height: 100%;
-      top: 0;
-      height: 100%;
-      overflow: auto;
-    }
-    .nav-bar {
-      flex-direction: column;
-      -webkit-flex-direction: column;
-      height: 100%;
-      order: 0;
-      width: 4.5rem;
-    }
-    .nav-link {
-      display: flex;
-      display: -webkit-flex;
-      display: -moz-flex;
-      display: -ms-flex;
-      display: -o-flex;
-      flex-grow: 0;
-      -webkit-flex-grow: 0;
-      padding-top: @spacing-rq;
-      padding-bottom: @spacing-rq;
+    #root {
+      height: 100vh;
     }
   }
   @media (min-width: @screen-sm-min) {
@@ -4402,7 +4346,7 @@
       width: 1px !important;
       overflow: hidden;
     }
-    .containerSidebar, .containerEditor {
+    .containerSidebar {
       margin-left: 0;
       margin-right: 0;
       width: 100%;
@@ -4432,10 +4376,6 @@
       margin-left: 4.5rem;
       width: 100%;
       padding-bottom: 1rem;
-    }
-    .containerEditor {
-      margin-left: 4.5rem;
-      width: 100%;
     }
   }
   @media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
@@ -4854,9 +4794,6 @@
     .hidden-lg {
       display: none !important;
     }
-    .containerEditor {
-      overflow-x: hidden;
-    }
   }
   @media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
     .headerClasses {
@@ -5007,72 +4944,5 @@
     .input-group-lg input[type=date], .input-group-lg input[type=datetime-local], .input-group-lg input[type=month], .input-group-lg input[type=time], input[type=date].input-lg, input[type=datetime-local].input-lg, input[type=month].input-lg, input[type=time].input-lg {
       line-height: 3rem;
     }
-  }
-}
-/* Media queries shared between jsf and bootstrap pages */
-
-// @screen-xs variable depreciated
-@media (max-width: 29.375rem) {
-  #root {
-    order: 1;
-    width: 100%;
-  }
-  .templateContainer {
-    flex-direction: column;
-    -webkit-flex-direction: column;
-    width: 100%;
-  }
-  main {
-    margin-left: 0;
-  }
-  #nav {
-    width: 100%;
-    position: fixed;
-    overflow: hidden;
-    bottom: 0;
-    z-index: 1000;
-  }
-  .nav-bar {
-    order: 1;
-    width: 100%;
-    height: 3.5rem;
-  }
-  .nav-link {
-    display: none;
-  }
-  .nav-link.small {
-    display: inline-flex;
-    flex-grow: 1;
-    -webkit-flex-grow: 1;
-    padding: @spacing-rh;
-  }
-}
-@media (min-width: 29.376rem) {
-  main {
-    margin-left: 4.5rem;
-  }
-  #nav {
-    min-height: 100%;
-    top: 0;
-    height: 100%;
-    overflow: auto;
-  }
-  .nav-bar {
-    flex-direction: column;
-    -webkit-flex-direction: column;
-    height: 100%;
-    order: 0;
-    width: 4.5rem;
-  }
-  .nav-link {
-    display: flex;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: -o-flex;
-    flex-grow: 0;
-    -webkit-flex-grow: 0;
-    padding-top: @spacing-rq;
-    padding-bottom: @spacing-rq;
   }
 }

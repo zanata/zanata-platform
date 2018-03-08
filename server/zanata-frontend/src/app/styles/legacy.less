@@ -25,9 +25,6 @@ body.bodyStyle {
     width: 100%;
     height: 100%;
   }
-  #root {
-    height: 100vh;
-  }
   html {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
@@ -375,3 +372,86 @@ body.bodyStyle {
     width: 100%;
   }
 }
+
+/* Media queries shared between jsf and bootstrap pages */
+
+// @screen-xs variable depreciated
+@media (max-width: 29.375rem) {
+  .templateContainer {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    width: 100%;
+  }
+  main {
+    margin-left: 0;
+  }
+  #nav {
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
+    bottom: 0;
+    z-index: 1000;
+  }
+  .nav-bar {
+    order: 1;
+    width: 100%;
+    height: 3.5rem;
+  }
+  .nav-link {
+    display: none;
+  }
+  .nav-link.small {
+    display: inline-flex;
+    flex-grow: 1;
+    -webkit-flex-grow: 1;
+    padding: @spacing-rh;
+  }
+  .containerEditor {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 4.5rem;
+  }
+}
+@media (min-width: 29.376rem) {
+  main {
+    margin-left: 4.5rem;
+  }
+  .containerEditor {
+    margin-left: 4.5rem;
+    width: 100%;
+    margin-bottom: 0;
+  }
+  #nav {
+    min-height: 100%;
+    top: 0;
+    height: 100%;
+    overflow: auto;
+  }
+  .nav-bar {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    height: 100%;
+    order: 0;
+    width: 4.5rem;
+  }
+  .nav-link {
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    flex-grow: 0;
+    -webkit-flex-grow: 0;
+    padding-top: @spacing-rq;
+    padding-bottom: @spacing-rq;
+  }
+}
+
+@media (min-width: @screen-lg) {
+  .containerEditor {
+    overflow-x: hidden;
+  }
+}
+
