@@ -3,23 +3,19 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import Button from '../../components/Button'
-import { Row } from 'react-bootstrap'
-import { Modal } from '../../../components'
-import PriorityDropdown from './PriorityDropdown'
-import CriteriaDropdown from './CriteriaDropdown'
+import RejectTranslationModal from '../../components/RejectTranslationModal'
 import { rejectTranslation } from '../../actions/review-trans-actions'
 import update from 'immutability-helper'
 import { isUndefined, isEmpty } from 'lodash'
 import {
-  MINOR, MAJOR, CRITICAL, UNSPECIFIED, priorities, textState
+  MINOR, MAJOR, CRITICAL, UNSPECIFIED, priorities
 } from '../../utils/reject-trans-util'
 const textLimit = 500
 
 /**
  * Modal to collect feedback on the reason for rejecting a translation.
  */
-export class RejectTranslationModal extends Component {
+export class RejectTranslation extends Component {
   static propTypes = {
     show: PropTypes.bool.isRequired,
     onHide: PropTypes.func.isRequired,
@@ -117,72 +113,22 @@ export class RejectTranslationModal extends Component {
   /* eslint-disable max-len */
   render () {
     const { show, criteriaList } = this.props
-    const { review, selectedCriteria } = this.state
-    const priorityTextState = textState(review.selectedPriority)
-    const criteriaTile = (!isEmpty(criteriaList))
-        ? <div className='flex'>
-          <span id='CriteriaTitle'>
-            Criteria
-          </span>
-          <CriteriaDropdown
-            criteriaList={criteriaList}
-            onCriteriaChange={this.onCriteriaChange}
-            onUnspecifiedCriteria={this.onUnspecifiedCriteria}
-            criteriaDescription={review.criteriaDescription} />
-          <PriorityDropdown
-            textState={priorityTextState}
-            priority={review.selectedPriority}
-            priorityChange={this.onPriorityChange} />
-        </div>
-        : undefined
-    const cantReject = (
-      (isEmpty(review.reviewComment)) &&
-      (selectedCriteria.commentRequired === true))
-    const commentPlaceholder = (selectedCriteria.commentRequired === true)
-      ? 'You must provide a comment for why this translation has been rejected'
-      : 'Provide a comment for why this translation has been rejected'
+    const { review, selectedCriteria, charsLeft } = this.state
     return (
-      <Modal show={show}
+      <RejectTranslationModal
+        show={show}
         onHide={this.onHideResetState}
-        key='reject-translation-modal'
-        id='RejectTranslationModal'>
-        <Modal.Header>
-          <Modal.Title>Reject translation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {criteriaTile}
-          <div className='EditorRejection-input'>
-            <textarea ref='input'
-              type='comment'
-              placeholder={commentPlaceholder}
-              cols='50'
-              onChange={this.setReviewComment}
-              rows='10'
-              maxLength={textLimit}
-              className='EditorInputGroup-input is-focused InputGroup--outlined
-               Commenting' />
-            <p>{this.state.charsLeft}</p>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <span>
-            <Row>
-              <Button
-                className='EditorButton Button--large u-rounded
-                Button--secondary'
-                onClick={this.onHideResetState}>
-                Cancel
-              </Button>
-              <Button
-                className='EditorButton Button--large u-rounded Button--primary'
-                onClick={this.saveTransReview}
-                disabled={cantReject}>
-                Reject translation
-              </Button>
-            </Row>
-          </span>
-        </Modal.Footer>
-      </Modal>
+        onHideResetState={this.onHideResetState}
+        onCriteriaChange={this.onCriteriaChange}
+        onUnspecifiedCriteria={this.onUnspecifiedCriteria}
+        onPriorityChange={this.onPriorityChange}
+        textLimit={textLimit}
+        charsLeft={charsLeft}
+        criteriaList={criteriaList}
+        saveTransReview={this.saveTransReview}
+        setReviewComment={this.setReviewComment}
+        selectedCriteria={selectedCriteria}
+        review={review} />
     )
   }
 }
@@ -194,4 +140,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(RejectTranslationModal)
+export default connect(null, mapDispatchToProps)(RejectTranslation)
