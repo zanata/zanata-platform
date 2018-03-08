@@ -8,7 +8,6 @@ import {
   STATUS_TRANSLATED,
   STATUS_APPROVED,
   STATUS_REJECTED,
-
   defaultSaveStatus,
   nonDefaultValidSaveStatuses,
   transUnitStatusToPhraseStatus
@@ -48,21 +47,24 @@ describe('status-util', () => {
     expect(nonDefaultValidSaveStatuses({
       translations: ['', ''],
       newTranslations: ['', '']
-    })).toEqual([])
+    }, { reviewer: true, translator: true }
+    )).toEqual([])
   })
 
   it('nonDefaultValidSaveStatuses with some empty', () => {
     expect(nonDefaultValidSaveStatuses({
       translations: ['', ''],
       newTranslations: ['foo', '']
-    })).toEqual([])
+    }, { reviewer: true, translator: true }
+    )).toEqual([])
   })
 
   it('nonDefaultValidSaveStatuses with changed translation', () => {
     expect(nonDefaultValidSaveStatuses({
       translations: ['foo', 'bar'],
       newTranslations: ['food', 'bart']
-    })).toEqual([STATUS_NEEDS_WORK])
+    }, { reviewer: true, translator: true }
+    )).toEqual([STATUS_NEEDS_WORK])
   })
 
   it('nonDefaultValidSaveStatuses rejected with no changes', () => {
@@ -70,7 +72,8 @@ describe('status-util', () => {
       status: STATUS_REJECTED,
       translations: ['foo', 'bar'],
       newTranslations: ['foo', 'bar']
-    })).toEqual([STATUS_TRANSLATED, STATUS_NEEDS_WORK])
+    }, { reviewer: true, translator: true }
+    )).toEqual([STATUS_TRANSLATED, STATUS_NEEDS_WORK])
   })
 
   it('nonDefaultValidSaveStatuses with no changes', () => {
@@ -78,7 +81,8 @@ describe('status-util', () => {
       status: STATUS_APPROVED,
       translations: ['foo', 'bar'],
       newTranslations: ['foo', 'bar']
-    })).toEqual([STATUS_TRANSLATED, STATUS_NEEDS_WORK])
+    }, { reviewer: true, translator: true }
+    )).toEqual([STATUS_TRANSLATED, STATUS_NEEDS_WORK])
   })
 
   it('transUnitStatusToPhraseStatus', () => {

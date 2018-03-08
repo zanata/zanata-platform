@@ -52,6 +52,7 @@ import com.google.common.collect.Lists;
 import org.zanata.rest.dto.QualifiedName;
 import org.zanata.rest.service.GlossaryResource;
 import org.zanata.rest.service.GlossaryService;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.test.CdiUnitRunner;
@@ -68,7 +69,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({
-        LocaleServiceImpl.class
+        LocaleServiceImpl.class,
+        CurrentUserImpl.class
 })
 public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
 

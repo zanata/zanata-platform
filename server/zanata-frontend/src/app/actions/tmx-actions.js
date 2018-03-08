@@ -1,11 +1,12 @@
-// @ts-nocheck
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { isUndefined, includes } from 'lodash'
 import {
   getJsonHeaders,
   getHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  // eslint-disable-next-line
+  APITypes
 } from './common-actions'
 import { apiUrl, isLoggedIn } from '../config'
 
@@ -29,6 +30,7 @@ export const showExportTMXModal =
 export const setInitialState = createAction(SET_INITIAL_STATE)
 
 const fetchSourceLanguages = (endpoint) => {
+  /** @type {APITypes} */
   const apiTypes = [
     GET_LOCALE_REQUEST,
     {
@@ -53,6 +55,7 @@ const fetchSourceLanguages = (endpoint) => {
 }
 
 const getTMX = (srcLocaleId, project, version, endpoint) => {
+  /** @type {APITypes} */
   const apiTypes = [
     {
       type: GET_TMX_REQUEST,
@@ -97,6 +100,7 @@ export const tmxInitialLoad = (project, version) => {
         type = TMX_ALL
         endpoint = apiUrl + '/locales/source'
       }
+      // @ts-ignore
       dispatch(setInitialState(type))
       dispatch(fetchSourceLanguages(endpoint))
     }

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* global jest describe it expect */
 
 import versionReducer from './version-reducer'
@@ -24,10 +23,12 @@ import {
 describe('version-reducer test', () => {
   it('can toggle the merge modal', () => {
     const initial = versionReducer(undefined, { type: 'any' })
+    // @ts-ignore
     const shown = versionReducer(initial, {
       type: TOGGLE_TM_MERGE_MODAL,
       payload: { show: true }
     })
+    // @ts-ignore
     const hidden = versionReducer(shown, {
       type: TOGGLE_TM_MERGE_MODAL,
       payload: { show: false }
@@ -78,6 +79,7 @@ describe('version-reducer test', () => {
     }
     const initial = versionReducer(undefined, {type: 'any'})
     const localesRequested = versionReducer(initial, requestAction)
+    // @ts-ignore
     const localesReceived = versionReducer(localesRequested, localeSuccessAction)
 
     expect(localesRequested.fetchingLocale).toEqual(true)
@@ -147,6 +149,7 @@ describe('version-reducer test', () => {
     const initial = versionReducer(undefined, {type: 'any'})
     const projectsRequested = versionReducer(initial, requestAction)
     const projectsReceived = versionReducer(projectsRequested,
+      // @ts-ignore
       projectSuccessAction)
     expect(projectsRequested.fetchingProject).toEqual(true)
     expect(projectsReceived.fetchingProject).toEqual(false)
@@ -224,8 +227,11 @@ describe('version-reducer test', () => {
       payload: freshPayload
     }
     // The project result with the most recent timestamp should be maintained
-    const newestResults = versionReducer(undefined, secondProjectSuccessAction)
+    const newestResults = versionReducer(undefined,
+      // @ts-ignore
+      secondProjectSuccessAction)
     const withStaleAction = versionReducer(newestResults,
+      // @ts-ignore
       firstProjectSuccessAction)
 
     expect(withStaleAction.projectResultsTimestamp).toEqual(highTea)
@@ -247,6 +253,7 @@ describe('version-reducer test', () => {
     }
     const initial = versionReducer(undefined, {type: 'any'})
     const mergeRequested = versionReducer(initial, requestAction)
+    // @ts-ignore
     const mergeReceived = versionReducer(mergeRequested, mergeSuccessAction)
     expect(mergeReceived).toEqual({
       TMMerge: {

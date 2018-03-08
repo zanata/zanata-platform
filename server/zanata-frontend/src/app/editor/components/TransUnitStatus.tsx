@@ -2,16 +2,18 @@ import * as PropTypes from 'prop-types'
 import React from 'react'
 import { Icon } from '../../components'
 import cx from 'classnames'
+import { Phrase } from '../utils/phrase';
 
 const statusNames = {
   untranslated: 'Untranslated',
   needswork: 'Needs Work',
   translated: 'Translated',
-  approved: 'Approved'
+  approved: 'Approved',
+  rejected: 'Rejected',
 }
 
 interface TransUnitStatusProps {
-  phrase: any
+  phrase: Phrase
 }
 
 /**

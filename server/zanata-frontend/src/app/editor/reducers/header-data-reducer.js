@@ -6,6 +6,7 @@ import {
   HEADER_DATA_FETCHED,
   LOCALE_SELECTED,
   STATS_FETCHED,
+  USER_PERMISSION_SUCCESS,
   LOCALE_MESSAGES_SUCCESS
 } from '../actions/header-action-types'
 import update from 'immutability-helper'
@@ -42,6 +43,10 @@ const defaultState = {
     },
     selectedLocale: '',
     localeMessages: {}
+  },
+  permissions: {
+    reviewer: false,
+    translator: false
   }
 }
 
@@ -85,7 +90,10 @@ const headerDataReducer = handleActions({
     update(state, { localeMessages: {$set: payload} }),
 
   [STATS_FETCHED]: (state, { payload }) => update(state, {
-    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } })
+    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } }),
+
+  [USER_PERMISSION_SUCCESS]: (state, { payload }) => update(state, {
+    permissions: {$set: payload} })
 }, defaultState)
 
 export default headerDataReducer

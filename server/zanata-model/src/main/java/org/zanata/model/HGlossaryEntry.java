@@ -37,6 +37,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -72,7 +74,7 @@ public class HGlossaryEntry extends ModelEntityBase {
         return glossaryTerms;
     }
 
-    @javax.persistence.Lob
+    @Size(max = 500)
     public String getSourceRef() {
         return sourceRef;
     }
@@ -99,10 +101,12 @@ public class HGlossaryEntry extends ModelEntityBase {
         return contentHash;
     }
 
+    @Size(max = 255)
     public String getPos() {
         return pos;
     }
 
+    @Size(max = 500)
     public String getDescription() {
         return description;
     }
