@@ -29,6 +29,7 @@ import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import { Well } from 'react-bootstrap'
 import { profileUrl } from '../../api'
 import { priorities } from '../../utils/reject-trans-util'
+import { statuses } from '../../utils/phrase'
 
 const statusToWellClass = {
   approved: 'well-approved',
@@ -47,8 +48,7 @@ class ActivityFeedItem extends Component {
     content: PropTypes.string,
     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
     priority: PropTypes.oneOf(priorities),
-    status: PropTypes.oneOf(['translated', 'needswork', 'approved', 'rejected',
-      'untranslated']),
+    status: PropTypes.oneOf(statuses),
     textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']),
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
