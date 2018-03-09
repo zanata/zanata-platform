@@ -2,9 +2,31 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import RejectTranslationModal from '.'
-import RejectTranslationModalNoCrit from './RejectTranslationModalNoCrit'
 import Lorem from 'react-lorem-component'
-import { CRITICAL } from './index.js'
+import {
+  MINOR, UNSPECIFIED
+} from '../../utils/reject-trans-util'
+
+const callback = () => {}
+
+const defaultState = {
+  review: {
+    selectedPriority: MINOR,
+    priorityId: 0,
+    criteriaDescription: '',
+    criteriaId: undefined,
+    reviewComment: ''
+  },
+  charsLeft: 500,
+  selectedCriteria: UNSPECIFIED
+}
+
+const flairCriteria = {
+  id: 1,
+  commentRequired: true,
+  description: 'Needs more flair',
+  priority: MINOR
+}
 
 /*
  * TODO add stories showing the range of states
@@ -12,29 +34,60 @@ import { CRITICAL } from './index.js'
  */
 storiesOf('RejectTranslationModal', module)
     .addDecorator((story) => (
-        <div>
-          <h1>Lorem Ipsum</h1>
-          <Lorem count={1} />
-          <Lorem mode="list" />
-          <h2>Dolor Sit Amet</h2>
-          <Lorem />
-          <Lorem mode="list" />
-          <div className="static-modal">
-            {story()}
-          </div>
+      <div>
+        <h1>Lorem Ipsum</h1>
+        <Lorem count={1} />
+        <Lorem mode="list" />
+        <h2>Dolor Sit Amet</h2>
+        <Lorem />
+        <Lorem mode="list" />
+        <div className="static-modal">
+          {story()}
         </div>
+      </div>
     ))
     .add('Initial state', () => (
-        <RejectTranslationModal show isOpen
-          criteria=""
-          priority={CRITICAL}  textState="u-textDanger" />
-    ))
-    .add('Criteria chosen', () => (
-        <RejectTranslationModal show isOpen
-         criteria="Translation Errors: terminology, mistranslated addition, omission, un-localized, do not translate, etc"
-         priority={CRITICAL}  textState="u-textDanger" />
+      <RejectTranslationModal
+        show
+        onHide={callback}
+        onHideResetState={callback}
+        textLimit={500}
+        charsLeft={500}
+        criteriaList={[flairCriteria]}
+        onCriteriaChange={callback}
+        onUnspecifiedCriteria={callback}
+        onPriorityChange={callback}
+        saveTransReview={callback}
+        selectedCriteria={UNSPECIFIED}
+        setReviewComment={callback}
+        review={defaultState.review}
+        />
     ))
 
-    .add('Other - no criteria set', () => (
-        <RejectTranslationModalNoCrit show isOpen/>
+    .add('Criteria chosen', () => (
+      <RejectTranslationModal
+        show
+        onHide={callback}
+        onHideResetState={callback}
+        textLimit={500}
+        charsLeft={500}
+        criteriaList={[flairCriteria]}
+        onCriteriaChange={callback}
+        onUnspecifiedCriteria={callback}
+        onPriorityChange={callback}
+        saveTransReview={callback}
+        selectedCriteria={flairCriteria}
+        setReviewComment={callback}
+        review={defaultState.review}
+        />
     ))
+
+    // id: undefined,
+    // commentRequired: true,
+    // description: UNSPECIFIEDTEXT,
+    // priority: MINOR
+    // .add('Other - no criteria set', () => (
+    //   <RejectTranslationModal
+    //     show
+    //     isOpen />
+    // ))
