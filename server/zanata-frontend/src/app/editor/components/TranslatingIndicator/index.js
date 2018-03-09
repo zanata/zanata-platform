@@ -32,23 +32,45 @@ import { FormattedMessage } from 'react-intl'
  */
 class TranslatingIndicator extends React.Component {
   static propTypes = {
-    // DO NOT RENAME, the translation string extractor looks specifically
-    // for gettextCatalog.getString when generating the translation template.
-    gettextCatalog: PropTypes.shape({
-      getString: PropTypes.func.isRequired
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
     }).isRequired
   }
 
   render () {
+    // These need to be translated individually for context
+    const reviewingMessage = (
+      <FormattedMessage id='TranslatingIndicator.reviewing'
+        description={'Indicator of editor reviewing mode'}
+        defaultMessage='Reviewing' />
+    )
+    const translatingMessage = (
+      <FormattedMessage id='TranslatingIndicator.translating'
+        description={'Indicator of editor translating mode'}
+        defaultMessage='Translating' />
+    )
+    const viewingMessage = (
+      <FormattedMessage id='TranslatingIndicator.viewing'
+        description={'Indicator of editor viewing mode'}
+        defaultMessage='Viewing' />
+    )
+    const modeMessage = () => {
+      if (this.props.permissions.reviewer === true) {
+        return reviewingMessage
+      } else if (this.props.permissions.translator === true) {
+        return translatingMessage
+      } else {
+        return viewingMessage
+      }
+    }
     return (
       /* eslint-disable max-len */
       <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4'>
         <Row>
           <Icon name='translate' className='s2' /> <span
             className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
-            <FormattedMessage id='TranslatingIndicator.translating'
-              description={'Indicator of editor translating mode'}
-              defaultMessage='Translating' />
+            {modeMessage()}
           </span>
         </Row>
       </button>

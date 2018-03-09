@@ -48,6 +48,12 @@ type props = {
 }
 */
 
+// TODO: Retrieve permissions object from redux store
+const permissions = {
+  reviewer: true,
+  translator: true
+}
+
 /**
  * Header row with editor controls (filtering, paging, etc.)
  */
@@ -71,7 +77,7 @@ export const ControlsHeader = ({
   return (
     /* eslint-disable max-len */
     <nav className="flex flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
-      <TranslatingIndicator gettextCatalog={gettextCatalog} />
+      <TranslatingIndicator permissions={permissions} />
       <div className="u-floatLeft"><PhraseStatusFilter /></div>
       {/* FIXME move InputEditorSearch into component. Layout component should
                 not have to know the internals of how the component is

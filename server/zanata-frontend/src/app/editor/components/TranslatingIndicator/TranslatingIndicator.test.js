@@ -8,14 +8,13 @@ import { IntlProvider } from 'react-intl'
 /* global describe expect it */
 describe('TranslatingIndicator', () => {
   it('renders default markup', () => {
-    const gettextCatalog = {
-      getString: (key) => {
-        return key
-      }
+    const permissions = {
+      reviewer: false,
+      translator: false
     }
     const actual = ReactDOMServer.renderToStaticMarkup(
       <IntlProvider locale='en'>
-        <TranslatingIndicator gettextCatalog={gettextCatalog} />
+        <TranslatingIndicator permissions={permissions} />
       </IntlProvider>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
@@ -24,7 +23,7 @@ describe('TranslatingIndicator', () => {
         <Row>
           <Icon name='translate' className='s2' /> <span
             className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
-            <span>Translating</span>
+            <span>Viewing</span>
           </span>
         </Row>
       </button>
