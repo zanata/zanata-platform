@@ -2,9 +2,13 @@ import ActivitySelectList from '../components/ActivitySelectList'
 // import LanguageSelectList from '../components/LanguageSelectList'
 import CommentBox from '../components/CommentBox'
 import ActivityFeedItem from '../components/ActivityFeedItem'
-import { ActivityFilter, ActivityItemList } from '../utils/activity-util'
+import {
+  ActivityFilter, ActivityItemList, activityTypes, filterActivityTypes
+} from '../utils/activity-util'
+import { statuses } from '../utils/phrase'
 import { isEmpty } from 'lodash'
 import React from 'react'
+import * as PropTypes from 'prop-types'
 
 const DO_NOT_RENDER = undefined
 
@@ -44,6 +48,21 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
       </div>
     </div>
   )
+}
+
+ActivityTab.propTypes = {
+  activityItems: PropTypes.arrayOf(PropTypes.shape({
+     type: PropTypes.oneOf(activityTypes).isRequired,
+     content: PropTypes.string.isRequired,
+     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
+     status: PropTypes.oneOf(statuses),
+     user: PropTypes.shape({
+       name: PropTypes.string.isRequired
+     }).isRequired
+   })).isRequired,
+   postComment: PropTypes.func.isRequired,
+   selectActivityTypeFilter: PropTypes.func.isRequired,
+   selectedActivites: PropTypes.oneOf(filterActivityTypes),
 }
 
 export default ActivityTab
