@@ -40,8 +40,6 @@ import javax.ws.rs.core.Response;
 @Path(TransUnitHistoryResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class TransUnitHistoryService implements TransUnitHistoryResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(TransUnitHistoryService.class);
 
     @Inject @Any
     private GetTranslationHistoryHandler historyHandler;

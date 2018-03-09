@@ -46,8 +46,6 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @ActionHandlerFor(GetTranslationHistoryAction.class)
 public class GetTranslationHistoryHandler extends
         AbstractActionHandler<GetTranslationHistoryAction, GetTranslationHistoryResult> {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(GetTranslationHistoryHandler.class);
 
     @Inject
     private ZanataIdentity identity;

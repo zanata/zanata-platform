@@ -23,7 +23,15 @@ export interface ActivityItem {
 
 export interface ActivityItemList extends Array<ActivityItem> {}
 
-export const activityItems = [
+// A SelectButtonList button item
+// TODO: convert SelectButtonList and SelectButton to typescript with this interface
+export interface SelectButtonData {
+  id: ActivityFilter,
+  icon: string,
+  label: string
+}
+
+export const filterButtons: SelectButtonData[] = [
   {
     id: ALL,
     icon: 'clock',
