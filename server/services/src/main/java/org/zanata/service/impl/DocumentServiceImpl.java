@@ -44,6 +44,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.DocumentUploadedEvent;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.type.WebhookType;
 import org.zanata.i18n.Messages;
 import org.zanata.lock.Lock;
@@ -175,6 +176,10 @@ public class DocumentServiceImpl implements DocumentService {
             // TODO check that entity name matches id parameter
             document = new HDocument(sourceDoc.getName(),
                     sourceDoc.getContentType(), hLocale);
+            if(document.getPath().length() + document.getName().length() > 255) {
+                throw new ZanataServiceException(
+                        msgs.get("jsf.upload.FilenameIsTooLarge"));
+            }
             document.setProjectIteration(hProjectIteration);
             hProjectIteration.getDocuments().put(docId, document);
             document = documentDAO.makePersistent(document);
