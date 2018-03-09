@@ -22,7 +22,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import ActivityFeedItem from '.'
-import { MINOR, MAJOR, CRITICAL } from './index'
+import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -30,9 +30,7 @@ import { MINOR, MAJOR, CRITICAL } from './index'
 
 const lastModifiedTime = new Date(2016, 11, 16, 2, 19)
 const user = {
-  name: 'damason',
-  imageUrl:
-      'https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
+  name: 'damason'
 }
 
 storiesOf('ActivityFeedItem', module)

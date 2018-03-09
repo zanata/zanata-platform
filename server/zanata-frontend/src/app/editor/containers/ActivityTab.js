@@ -1,19 +1,18 @@
-// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import ActivitySelectList from '../components/ActivitySelectList'
 // import LanguageSelectList from '../components/LanguageSelectList'
 import CommentBox from '../components/CommentBox'
 import ActivityFeedItem from '../components/ActivityFeedItem'
+import { statuses } from '../../utils/phrase'
 import { isEmpty } from 'lodash'
 
 const DO_NOT_RENDER = undefined
+
 /*
  * ActivityTab for Sidebar, displays TransUnit History, CommentBox
  * for entering new TransUnit comments.
- * TODO: Implement or remove LanguageSelectList:
- * <LanguageSelectList selectItem={selectLanguageFilter}
- * selected={selectedLanguages} />
+ * TODO: Implement or remove LanguageSelectList
  */
 const ActivityTab = ({
   activityItems,
@@ -30,6 +29,8 @@ const ActivityTab = ({
       <div className='SidebarEditor-wrapper' id='SidebarEditorTabs-pane2'>
         <ActivitySelectList selectItem={selectActivityTypeFilter}
           selected={selectedActivites} />
+        {/* <LanguageSelectList selectItem={selectLanguageFilter}
+          *  selected={selectedLanguages} /> */}
       </div>
       <div className='SidebarActivity'>
         <CommentBox postComment={postComment} />
@@ -44,9 +45,7 @@ ActivityTab.propTypes = {
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     content: PropTypes.string.isRequired,
     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
-    // TODO damason define type for status
-    status: PropTypes.oneOf(['translated', 'needswork', 'approved',
-    'rejected', 'untranslated']),
+    status: PropTypes.oneOf(statuses),
     user: PropTypes.shape({
       name: PropTypes.string.isRequired
     }).isRequired

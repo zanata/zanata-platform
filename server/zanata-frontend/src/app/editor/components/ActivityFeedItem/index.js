@@ -1,4 +1,3 @@
-// @ts-nocheck
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
@@ -29,10 +28,7 @@ import { Link } from '../../../components'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import { Well } from 'react-bootstrap'
 import { profileUrl } from '../../api'
-
-export const MINOR = 'Minor'
-export const MAJOR = 'Major'
-export const CRITICAL = 'Critical'
+import { priorities } from '../../utils/reject-trans-util'
 
 const statusToWellClass = {
   approved: 'well-approved',
@@ -50,19 +46,13 @@ class ActivityFeedItem extends Component {
     commentText: PropTypes.string,
     content: PropTypes.string,
     lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
-    // TODO damason define type for status
-    priority: PropTypes.oneOf([
-      MINOR,
-      MAJOR,
-      CRITICAL
-    ]),
+    priority: PropTypes.oneOf(priorities),
     status: PropTypes.oneOf(['translated', 'needswork', 'approved', 'rejected',
       'untranslated']),
     textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']),
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired
     }).isRequired
   }
 
