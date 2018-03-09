@@ -1,20 +1,26 @@
-import React from 'react'
-import * as PropTypes from 'prop-types'
 import ActivitySelectList from '../components/ActivitySelectList'
 // import LanguageSelectList from '../components/LanguageSelectList'
 import CommentBox from '../components/CommentBox'
 import ActivityFeedItem from '../components/ActivityFeedItem'
-import { statuses } from '../../utils/phrase'
+import { ActivityFilter, ActivityItemList } from '../utils/activity-util'
 import { isEmpty } from 'lodash'
+import React from 'react'
 
 const DO_NOT_RENDER = undefined
+
+interface ActivityTabProps {
+  activityItems: ActivityItemList,
+  postComment: (text: string) => void
+  selectActivityTypeFilter: (text: string) => void,
+  selectedActivites: ActivityFilter
+}
 
 /*
  * ActivityTab for Sidebar, displays TransUnit History, CommentBox
  * for entering new TransUnit comments.
  * TODO: Implement or remove LanguageSelectList
  */
-const ActivityTab = ({
+const ActivityTab: React.SFC<ActivityTabProps> = ({
   activityItems,
   postComment,
   selectActivityTypeFilter,
@@ -38,23 +44,6 @@ const ActivityTab = ({
       </div>
     </div>
   )
-}
-
-ActivityTab.propTypes = {
-  activityItems: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.oneOf(['comment', 'revision']).isRequired,
-    content: PropTypes.string.isRequired,
-    lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
-    status: PropTypes.oneOf(statuses),
-    user: PropTypes.shape({
-      name: PropTypes.string.isRequired
-    }).isRequired
-  })),
-  postComment: PropTypes.func.isRequired,
-  selectActivityTypeFilter: PropTypes.func.isRequired,
-  selectedActivites: ActivitySelectList.idType
-  // selectLanguageFilter: PropTypes.func.isRequired,
-  // selectedLanguages: LanguageSelectList.idType
 }
 
 export default ActivityTab
