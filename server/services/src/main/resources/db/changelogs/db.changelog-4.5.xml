@@ -50,4 +50,10 @@
         newDataType="varchar(500)"/>
   </changeSet>
 
+  <changeSet id="1" author="djansen@redhat.com">
+    <comment>Increase file path size to linux standard</comment>
+    <modifyDataType tableName="HDocument" columnName="path"
+                    newDataType="varchar(4095)"/>
+  </changeSet>
+
 </databaseChangeLog>

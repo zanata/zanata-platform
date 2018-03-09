@@ -144,7 +144,8 @@
                             substituteError('File is too large', options.i18n('jsf.upload.FileIsTooLarge', {filename: file.name})); // "{filename}" is too large.
                             substituteError('Maximum number of files exceeded',
                                 options.i18n('jsf.upload.TooManyFiles')); // Too many files. You can upload more files after the current files are uploaded.
-
+                            substituteError('Maximum file path size exceeded',
+                                options.i18n('jsf.upload.FilenameIsTooLarge')); // Maximum file path size exceeded
                             widget._showSingletonError(file.error);
                         } else {
                             successFiles.push(file);

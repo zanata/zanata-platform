@@ -70,7 +70,8 @@
                 maxNumberOfFiles: 'Maximum number of files exceeded',
                 acceptFileTypes: 'File type not allowed',
                 maxFileSize: 'File is too large',
-                minFileSize: 'File is too small'
+                minFileSize: 'File is too small',
+                maxFilePathSize: 'Maximum file path size exceeded'
             }
         },
 
@@ -100,6 +101,8 @@
                 } else if ($.type(fileSize) === 'number' &&
                         fileSize < options.minFileSize) {
                     file.error = settings.i18n('minFileSize');
+                } else if (file.path.length + file.name.length > 255) {
+                    file.error = settings.i18n('maxNumberOfFiles');
                 } else {
                     delete file.error;
                 }
