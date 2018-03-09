@@ -48,12 +48,6 @@ type props = {
 }
 */
 
-// TODO: Retrieve permissions object from redux store
-const permissions = {
-  reviewer: true,
-  translator: true
-}
-
 /**
  * Header row with editor controls (filtering, paging, etc.)
  */
@@ -71,7 +65,8 @@ export const ControlsHeader = ({
   toggleHeader,
   toggleShowSettings,
   toggleSuggestions,
-  gettextCatalog
+  gettextCatalog,
+  permissions
   /* eslint-enable react/prop-types */
  }/*: props*/) => {
   return (
@@ -167,7 +162,6 @@ export const ControlsHeader = ({
 
 function mapStateToProps (state) {
   const { ui: { gettextCatalog } } = state
-
   return {
     glossaryVisible: getGlossaryVisible(state),
     infoPanelVisible: getInfoPanelVisible(state),
@@ -175,7 +169,8 @@ function mapStateToProps (state) {
     navHeaderVisible: getNavHeaderVisible(state),
     suggestionsVisible: getSuggestionsPanelVisible(state),
     showSettings: getShowSettings(state),
-    gettextCatalog
+    gettextCatalog,
+    permissions: state.headerData.permissions
   }
 }
 
