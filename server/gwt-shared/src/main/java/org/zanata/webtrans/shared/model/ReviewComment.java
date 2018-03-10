@@ -3,6 +3,7 @@ package org.zanata.webtrans.shared.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -15,6 +16,7 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
     private ReviewCommentId id;
     private String comment;
     private String commenterName;
+    private String accountName;
     private Date creationDate;
 
     public ReviewComment() {
@@ -44,6 +46,15 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
     public Date getCreationDate() {
         return creationDate != null ?
                 new Date(creationDate.getTime()) : null;
+    }
+
+    public ReviewComment setAccountName(String accountName) {
+        this.accountName = accountName;
+        return this;
+    }
+
+    public String getAccountName() {
+        return Strings.nullToEmpty(accountName);
     }
 
     @Override

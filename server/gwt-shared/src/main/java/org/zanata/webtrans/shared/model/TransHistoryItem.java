@@ -20,6 +20,7 @@ public class TransHistoryItem extends ComparableByDate implements
     private List<String> contents;
     private ContentState status;
     private String modifiedBy;
+    private String modifiedByUser = "";
     private Date modifiedDate;
     private String optionalTag = "";
     private String revisionComment;
@@ -89,6 +90,15 @@ public class TransHistoryItem extends ComparableByDate implements
     public TransHistoryItem setOptionalTag(String optionalTag) {
         this.optionalTag = Strings.nullToEmpty(optionalTag);
         return this;
+    }
+
+    public TransHistoryItem setModifiedByUser(String username) {
+        this.modifiedByUser = username;
+        return this;
+    }
+
+    public String getModifiedByUser() {
+        return Strings.nullToEmpty(modifiedByUser);
     }
 
     public String getOptionalTag() {

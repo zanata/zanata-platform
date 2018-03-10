@@ -117,14 +117,15 @@ public class GetTranslationHistoryHandler extends
                 usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
         int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
                 hLocale);
-        TransHistoryItem latest = new TransHistoryItem(
+        return new TransHistoryItem(
                 hTextFlowTarget.getVersionNum().toString(),
                 GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
                         hTextFlowTarget, nPlurals),
                 hTextFlowTarget.getState(), lastModifiedBy,
                 hTextFlowTarget.getLastChanged(),
-                hTextFlowTarget.getRevisionComment());
-        return latest;
+                hTextFlowTarget.getRevisionComment()
+        ).setModifiedByUser(
+                nameOrEmptyString(hTextFlowTarget.getLastModifiedBy()));
     }
 
     protected List<ReviewComment>
@@ -137,12 +138,16 @@ public class GetTranslationHistoryHandler extends
                 new ReviewCommentId(input.getId()),
                 input.getCommentText(), input.getCommenterName(),
                 input.getCreationDate()
-        ));
+        ).setAccountName(usernameOrEmptyString(input.getCommenter())));
     }
 
     private static String usernameOrEmptyString(HPerson lastModifiedBy) {
         return lastModifiedBy != null && lastModifiedBy.hasAccount()
                 ? lastModifiedBy.getAccount().getUsername() : "";
+    }
+    private static String nameOrEmptyString(HPerson lastModifiedBy) {
+        return lastModifiedBy != null && lastModifiedBy.hasAccount()
+                ? lastModifiedBy.getName() : "";
     }
 
     @Override
@@ -161,7 +166,9 @@ public class GetTranslationHistoryHandler extends
                     targetHistory.getContents(), targetHistory.getState(),
                     usernameOrEmptyString(targetHistory.getLastModifiedBy()),
                     targetHistory.getLastChanged(),
-                    targetHistory.getRevisionComment());
+                    targetHistory.getRevisionComment())
+                    .setModifiedByUser(
+                    targetHistory.getLastModifiedBy().getName());
         }
     }
 
