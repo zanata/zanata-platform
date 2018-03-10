@@ -29,7 +29,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
       <a
         href="/profile/view/damason"
       >
-        damason
+        David Mason
       </a>
        has 
       <span
@@ -134,7 +134,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
       <a
         href="/profile/view/damason"
       >
-        damason
+        David Mason
       </a>
        has commented on this translation
     </span>
@@ -232,7 +232,7 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
       <a
         href="/profile/view/damason"
       >
-        damason
+        David Mason
       </a>
        has 
       <span
@@ -337,7 +337,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
       <a
         href="/profile/view/damason"
       >
-        damason
+        David Mason
       </a>
        has 
       <span
@@ -469,7 +469,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
       <a
         href="/profile/view/damason"
       >
-        damason
+        David Mason
       </a>
        has 
       <span
@@ -601,7 +601,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
       <a
         href="/profile/view/damason"
       >
-        damason
+        David Mason
       </a>
        has 
       <span
@@ -733,7 +733,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
       <a
         href="/profile/view/damason"
       >
-        damason
+        David Mason
       </a>
        has 
       <span

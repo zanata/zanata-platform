@@ -168,7 +168,8 @@ class TranslationInfoPanel extends React.Component {
         content: value.comment,
         lastModifiedTime: lastModified,
         user: {
-          name: value.commenterName
+          name: value.accountName,
+          username: value.commenterName
         }
       }
     })
@@ -185,7 +186,8 @@ class TranslationInfoPanel extends React.Component {
         lastModifiedTime: lastModified,
         status: transUnitStatusToPhraseStatus(historyItem.status),
         user: {
-          name: historyItem.modifiedBy
+          name: historyItem.modifiedBy,
+          username: historyItem.modifiedByUser
         }
       }
     })
@@ -197,7 +199,8 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime: latestLastModified,
       status: transUnitStatusToPhraseStatus(latestHistoryItem.status),
       user: {
-        name: latestHistoryItem.modifiedBy
+        name: latestHistoryItem.modifiedBy,
+        username: latestHistoryItem.modifiedByUser
       }
     }
     return historyActivityItems.concat(latestHistoryActivityItem)

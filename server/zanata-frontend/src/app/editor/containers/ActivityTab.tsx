@@ -57,7 +57,8 @@ ActivityTab.propTypes = {
      lastModifiedTime: PropTypes.instanceOf(Date).isRequired,
      status: PropTypes.oneOf(statuses),
      user: PropTypes.shape({
-       name: PropTypes.string.isRequired
+       name: PropTypes.string.isRequired,
+       username: PropTypes.string.isRequired
      }).isRequired
    })).isRequired,
    postComment: PropTypes.func.isRequired,

@@ -30,7 +30,8 @@ import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 const lastModifiedTime = new Date(2016, 11, 16, 2, 19)
 const user = {
-  name: 'damason'
+  name: 'damason',
+  username: 'David Mason'
 }
 
 storiesOf('ActivityFeedItem', module)

@@ -53,7 +53,8 @@ class ActivityFeedItem extends Component {
     textStatus: PropTypes.oneOf(['u-textWarning', 'u-textDanger', 'u-textHighlight']),
     type: PropTypes.oneOf(['comment', 'revision']).isRequired,
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired
     }).isRequired
   }
 
@@ -74,7 +75,7 @@ class ActivityFeedItem extends Component {
       </span>
     )
     const name = (
-      <Link useHref link={profileUrl(user.name)}>{user.name}</Link>
+      <Link useHref link={profileUrl(user.name)}>{user.username}</Link>
     )
     const priority = (
       <span className='CriteriaText'>
