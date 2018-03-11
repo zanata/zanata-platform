@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>Zanata REST API: Project locales</title>
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!--custom css for these pages-->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#apinav">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Zanata REST API: Project locales</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="data.html">Data Types</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar" id="apinav">
+        <ul class="nav nav-sidebar">
+          <li><a href="#resource_ProjectLocalesResource_get_GET"><abbr title="GET /projects/p/{projectSlug}/locales">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_ProjectLocalesResource_getSourceLocales_GET"><abbr title="GET /projects/p/{projectSlug}/locales/source">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li class="divider"></li>
+          <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <ol class="breadcrumb" id="top">
+          <li class="active dropdown"><a href="index.html">Home</a></li>
+          <li class="active dropdown"><a href="resources.html">Resources</a></li>
+          <li class="dropdown"><a href="resource_ProjectLocalesResource.html">Project locales</a></li>
+        </ol>
+
+      <h1 class="page-header">Project locales <small>Resource</small></h1>
+
+      <p>REST interface for configured project locales.</p>
+
+      <dl class="dl-horizontal">
+        <dt>See Also</dt>
+        <dd><a href="resource_ProjectIterationLocalesResource.html">Version Locales</a> Version locales</dd>
+      </dl>
+
+      <div id="resource_ProjectLocalesResource_get_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/locales <a href="../projects/p/{projectSlug}/locales" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Returns list of active locales for a single project.
+
+This may be the list of locales inherited from the server.</p>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">Content contains a list of locale details</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-warning response-code">404</span></td>
+            <td><span class="response-condition">The project is not found</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">array of <a href="json_LocaleDetails.html">Locale Details</a>
+ (JSON)</span></td>
+            <td rowspan="4" class="multi-row-description"><span class="response-description">OK 200 containing the list of LocaleDetails
+NOT FOUND 404 if the project does not exist</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/vnd.zanata.project.locales+json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/vnd.zanata.project.locales+json</span></abbr></td>
+            <td><span class="datatype-reference">array of <a href="json_LocaleDetails.html">Locale Details</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/vnd.zanata.project.locales+xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/vnd.zanata.project.locales+xml</span></abbr></td>
+            <td><span class="datatype-reference">list of <a href="xml_ns0_localeDetailsType.html">Locale Details</a>
+ (XML)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">list of <a href="xml_ns0_localeDetailsType.html">Locale Details</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/locales
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+[ {
+  &quot;localeId&quot; : &quot;es-ES&quot;,
+  &quot;displayName&quot; : &quot;Spanish (Spain)&quot;,
+  &quot;alias&quot; : &quot;es&quot;,
+  &quot;nativeName&quot; : &quot;Español&quot;,
+  &quot;enabled&quot; : true,
+  &quot;enabledByDefault&quot; : true,
+  &quot;pluralForms&quot; : &quot;nplurals=2; plural=(n != 1)&quot;,
+  &quot;rtl&quot; : true
+} ]
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <dl class="dl-horizontal">
+        <dt>See Also</dt>
+        <dd><a href="resource_ProjectIterationLocalesResource.html">Version Locales</a> Version locales</dd>
+      </dl>
+
+      <div id="resource_ProjectLocalesResource_getSourceLocales_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/locales/source <a href="../projects/p/{projectSlug}/locales/source" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Returns list of active source locales of all documents for a single project.</p>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">Content contains a list of source locale details</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-warning response-code">404</span></td>
+            <td><span class="response-condition">The project is not found</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">array of <a href="json_SourceLocaleDetails.html">SourceLocaleDetails</a>
+ (JSON)</span></td>
+            <td><span class="response-description">OK 200 containing the list of SourceLocaleDetails
+NOT FOUND 404 if the project does not exist</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/locales/source
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+[ {
+  &quot;docCount&quot; : 12345,
+  &quot;localeDetails&quot; : {
+    &quot;localeId&quot; : &quot;es-ES&quot;,
+    &quot;displayName&quot; : &quot;Spanish (Spain)&quot;,
+    &quot;alias&quot; : &quot;es&quot;,
+    &quot;nativeName&quot; : &quot;Español&quot;,
+    &quot;enabled&quot; : true,
+    &quot;enabledByDefault&quot; : true,
+    &quot;pluralForms&quot; : &quot;nplurals=2; plural=(n != 1)&quot;,
+    &quot;rtl&quot; : true
+  }
+} ]
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">Copyright &copy; <script type="text/javascript" language="javascript">d = new Date;document.write(d.getFullYear());</script> <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Red Hat, Inc and others</span>. Generated by <a href="http://enunciate.webcohesion.com">Enunciate</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JavaScript placed at the end of the document so the pages load faster. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- prettify code blocks. see http://code.google.com/p/google-code-prettify/ -->
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" type="text/javascript"></script>
+  <script>
+    $(function() {
+      $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+      });
+
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
+
+</body>
+</html>

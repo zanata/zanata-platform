@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>Zanata REST API: Files</title>
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!--custom css for these pages-->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#apinav">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Zanata REST API: Files</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="data.html">Data Types</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar" id="apinav">
+        <ul class="nav nav-sidebar">
+          <li><a href="#resource_FileResource_acceptedFileTypeList_GET"><abbr title="GET /file/accepted_document_types">GET /file/accepted_document_ty...</abbr></a></li>
+          <li><a href="#resource_FileResource_acceptedFileTypes_GET">GET /file/accepted_types</a></li>
+          <li><a href="#resource_FileResource_fileTypeInfoList_GET">GET /file/file_type_info</a></li>
+          <li><a href="#resource_FileResource_download_GET"><abbr title="GET /file/download/{downloadId}">GET /file/download/{downloadId...</abbr></a></li>
+          <li><a href="#resource_FileResource_uploadSourceFile_POST"><abbr title="POST /file/source/{projectSlug}/{iterationSlug}">POST /file/source/{projectSlug...</abbr></a></li>
+          <li><a href="#resource_FileResource_downloadSourceFile_GET"><abbr title="GET /file/source/{projectSlug}/{iterationSlug}/{fileType}">GET /file/source/{projectSlug}...</abbr></a></li>
+          <li><a href="#resource_FileResource_uploadTranslationFile_POST"><abbr title="POST /file/translation/{projectSlug}/{iterationSlug}/{locale}">POST /file/translation/{projec...</abbr></a></li>
+          <li><a href="#resource_FileResource_downloadTranslationFile_GET"><abbr title="GET /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}">GET /file/translation/{project...</abbr></a></li>
+          <li class="divider"></li>
+          <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <ol class="breadcrumb" id="top">
+          <li class="active dropdown"><a href="index.html">Home</a></li>
+          <li class="active dropdown"><a href="resources.html">Resources</a></li>
+          <li class="dropdown"><a href="resource_FileResource.html">Files</a></li>
+        </ol>
+
+      <h1 class="page-header">Files <small>Resource</small></h1>
+
+      <p>Represents various types of translatable files to be processed by the server
+instead of the REST client.
+This REST interface provides endpoints for uploading and downloading files in
+multiple formats.</p>
+
+      <dl class="dl-horizontal">
+        <dt>See Also</dt>
+        <dd>DocumentType</dd>
+        <dt>See Also</dt>
+        <dd>#fileTypeInfoList()</dd>
+      </dl>
+
+      <div id="resource_FileResource_acceptedFileTypeList_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/file/accepted_document_types <a href="../file/accepted_document_types" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Deprecated. A list of document types supported by the server. The result
+will not be deserializable if the server supports document types which
+the client does not know about (eg compiled against a newer version of
+zanata-api), also any changes to the list of supported file extensions
+for existing types will not be visible to the client.</p>
+
+        <dl class="dl-horizontal">
+          <dt>See Also</dt>
+          <dd>DocumentType</dd>
+          <dt>See Also</dt>
+          <dd>#fileTypeInfoList()</dd>
+        </dl>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">array of object
+ (JSON)</span></td>
+            <td><span class="response-description">a List of DocumentType</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /file/accepted_document_types
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <dl class="dl-horizontal">
+        <dt>See Also</dt>
+        <dd>DocumentType#getSourceExtensions()</dd>
+        <dt>See Also</dt>
+        <dd>#fileTypeInfoList()</dd>
+      </dl>
+
+      <div id="resource_FileResource_acceptedFileTypes_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/file/accepted_types <a href="../file/accepted_types" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Deprecated. Returns the source file extensions supported by the server.</p>
+
+        <dl class="dl-horizontal">
+          <dt>See Also</dt>
+          <dd>DocumentType#getSourceExtensions()</dd>
+          <dt>See Also</dt>
+          <dd>#fileTypeInfoList()</dd>
+        </dl>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: text/plain&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">text/plain</span></abbr></td>
+            <td><span class="datatype-reference">(custom)
+</span></td>
+            <td><span class="response-description">a semicolon-separated list of file extensions</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /file/accepted_types
+Accept: text/plain
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: text/plain
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <dl class="dl-horizontal">
+        <dt>See Also</dt>
+        <dd>FileTypeInfo</dd>
+      </dl>
+
+      <div id="resource_FileResource_fileTypeInfoList_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/file/file_type_info <a href="../file/file_type_info" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>A list of document types supported by the server, along with their
+default file extensions.</p>
+
+        <dl class="dl-horizontal">
+          <dt>See Also</dt>
+          <dd>FileTypeInfo</dd>
+        </dl>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">array of object
+ (JSON)</span></td>
+            <td><span class="response-description">a List of FileTypeInfo</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /file/file_type_info
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_FileResource_download_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/file/download/{downloadId} <a href="../file/download/{downloadId}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Downloads a previously generated file.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">downloadId</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The Zanata generated download id.</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/octet-stream&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/octet-stream</span></abbr></td>
+            <td><span class="datatype-reference">(custom)
+</span></td>
+            <td><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - A translation file in the requested format with
+translations for the requested document in a project, iteration
+and locale. <br>
+NOT FOUND(404) - If a downloadable file is not found for the
+given id, or is not yet ready for download (i.e. the system is
+still preparing it).<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /file/download/{downloadId}
+Accept: application/octet-stream
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/octet-stream
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_FileResource_uploadSourceFile_POST">
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/file/source/{projectSlug}/{iterationSlug} <a href="../file/source/{projectSlug}/{iterationSlug}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Upload a source file (or file chunk) to Zanata. Allows breaking up files
+into smaller chunks for very large files. In this case, the first invocation
+of this service will return an 'upload id' which needs to be used in
+subsequent calls to tie all the uploaded chunks together.
+The file will only be processed when all chunks have been fully uploaded.
+With each uploaded chunk, the multipart message's 'last' parameter will
+indicate if it is the last expected chunk.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The project version slug where to store the document.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The project slug where to store the document.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The full Document identifier</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: multipart/form-data&quot; HTTP header to specify this media type to the server."><span class="request-type">multipart/form-data</span></abbr></td>
+            <td><span class="datatype-reference">(custom)
+</span></td>
+            <td><span class="request-description">The multi-part form body for the file or chunk.</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_chunkUploadResponseType.html">chunkUploadResponseType</a>
+ (XML)</span></td>
+            <td><span class="response-description">A message with information about the upload operation.</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+POST /file/source/{projectSlug}/{iterationSlug}
+Content-Type: multipart/form-data
+Accept: application/xml
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 201 Created
+Content-Type: application/xml
+
+                <code class="prettyprint language-xml">
+&lt;chunkUploadResponse xmlns=&quot;http://zanata.org/namespace/api/&quot;&gt;
+  &lt;uploadId&gt;...&lt;/uploadId&gt;
+  &lt;acceptedChunks&gt;...&lt;/acceptedChunks&gt;
+  &lt;expectingMore&gt;...&lt;/expectingMore&gt;
+  &lt;successMessage&gt;...&lt;/successMessage&gt;
+  &lt;errorMessage&gt;...&lt;/errorMessage&gt;
+&lt;/chunkUploadResponse&gt;
+
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_FileResource_downloadSourceFile_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/file/source/{projectSlug}/{iterationSlug}/{fileType} <a href="../file/source/{projectSlug}/{iterationSlug}/{fileType}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Downloads a single source file.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">fileType</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">use 'raw' for original source if available, or 'pot' to
+generate pot from source strings</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description"></span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description"></span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description"></span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/octet-stream&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/octet-stream</span></abbr></td>
+            <td><span class="datatype-reference">(custom)
+</span></td>
+            <td><span class="response-description">response with status code 404 if the document is not found, 415
+if fileType is not valid for the document, otherwise 200 with
+attached document.</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /file/source/{projectSlug}/{iterationSlug}/{fileType}
+Accept: application/octet-stream
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/octet-stream
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_FileResource_uploadTranslationFile_POST">
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/file/translation/{projectSlug}/{iterationSlug}/{locale} <a href="../file/translation/{projectSlug}/{iterationSlug}/{locale}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Upload a translation file (or file chunk) to Zanata. Allows breaking up files
+into smaller chunks for very large files. In this case, the first invocation
+of this service will return an 'upload id' which needs to be used in
+subsequent calls to tie all the uploaded chunks together.
+The file will only be processed when all chunks have been fully uploaded.
+With each uploaded chunk, the multipart message's 'last' parameter will
+indicate if it is the last expected chunk.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The project version slug where to store the document.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">locale</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The locale (language) for the translation file.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The project slug where to store the document.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The full Document identifier.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">merge</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Indicates whether to merge translations or overwrite all
+translations with the contents of the uploaded file.</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: multipart/form-data&quot; HTTP header to specify this media type to the server."><span class="request-type">multipart/form-data</span></abbr></td>
+            <td><span class="datatype-reference">(custom)
+</span></td>
+            <td><span class="request-description">The multi-part form body for the file or chunk.</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_chunkUploadResponseType.html">chunkUploadResponseType</a>
+ (XML)</span></td>
+            <td><span class="response-description">A message with information about the upload operation.</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+POST /file/translation/{projectSlug}/{iterationSlug}/{locale}
+Content-Type: multipart/form-data
+Accept: application/xml
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 201 Created
+Content-Type: application/xml
+
+                <code class="prettyprint language-xml">
+&lt;chunkUploadResponse xmlns=&quot;http://zanata.org/namespace/api/&quot;&gt;
+  &lt;uploadId&gt;...&lt;/uploadId&gt;
+  &lt;acceptedChunks&gt;...&lt;/acceptedChunks&gt;
+  &lt;expectingMore&gt;...&lt;/expectingMore&gt;
+  &lt;successMessage&gt;...&lt;/successMessage&gt;
+  &lt;errorMessage&gt;...&lt;/errorMessage&gt;
+&lt;/chunkUploadResponse&gt;
+
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_FileResource_downloadTranslationFile_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType} <a href="../file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Downloads a single translation file.
+
+To download a preview-document or translated document where a raw source
+document is available, use fileType 'half_baked' and 'baked'
+respectively.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">fileType</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">File type to be downloaded. (Options: 'po', 'half_baked',
+'baked')</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project iteration identifier.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">locale</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Translations for this locale will be contained in the
+downloaded document.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project identifier.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Document identifier to fetch translations for.</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/octet-stream&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/octet-stream</span></abbr></td>
+            <td><span class="datatype-reference">(custom)
+</span></td>
+            <td><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - A translation file in the requested format with
+translations for the requested document in a project, iteration
+and locale. <br>
+NOT FOUND(404) - If a document is not found with the given
+parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}
+Accept: application/octet-stream
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/octet-stream
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">Copyright &copy; <script type="text/javascript" language="javascript">d = new Date;document.write(d.getFullYear());</script> <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Red Hat, Inc and others</span>. Generated by <a href="http://enunciate.webcohesion.com">Enunciate</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JavaScript placed at the end of the document so the pages load faster. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- prettify code blocks. see http://code.google.com/p/google-code-prettify/ -->
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" type="text/javascript"></script>
+  <script>
+    $(function() {
+      $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+      });
+
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
+
+</body>
+</html>

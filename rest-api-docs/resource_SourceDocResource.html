@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>Zanata REST API: Source Documents</title>
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!--custom css for these pages-->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#apinav">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Zanata REST API: Source Documents</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="data.html">Data Types</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar" id="apinav">
+        <ul class="nav nav-sidebar">
+          <li><a href="#resource_SourceDocResource_get_GET"><abbr title="GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_head_HEAD"><abbr title="HEAD /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r">HEAD /projects/p/{projectSlug}...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_post_POST"><abbr title="POST /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r">POST /projects/p/{projectSlug}...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_deleteResourceWithDocId_DELETE"><abbr title="DELETE /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource">DELETE /projects/p/{projectSlu...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_getResourceWithDocId_GET"><abbr title="GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_putResourceWithDocId_PUT"><abbr title="PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource">PUT /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_deleteResource_DELETE"><abbr title="DELETE /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}">DELETE /projects/p/{projectSlu...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_getResource_GET"><abbr title="GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_putResource_PUT"><abbr title="PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}">PUT /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_getResourceMetaWithDocId_GET"><abbr title="GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_putResourceMetaWithDocId_PUT"><abbr title="PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta">PUT /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_getResourceMeta_GET"><abbr title="GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_SourceDocResource_putResourceMeta_PUT"><abbr title="PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta">PUT /projects/p/{projectSlug}/...</abbr></a></li>
+          <li class="divider"></li>
+          <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <ol class="breadcrumb" id="top">
+          <li class="active dropdown"><a href="index.html">Home</a></li>
+          <li class="active dropdown"><a href="resources.html">Resources</a></li>
+          <li class="dropdown"><a href="resource_SourceDocResource.html">Source Documents</a></li>
+        </ol>
+
+      <h1 class="page-header">Source Documents <small>Resource</small></h1>
+
+      <p>Source document API. This API uses format-independent data structures. For
+format specific source document access see <a href="resource_FileResource.html">Files</a>
+
+<br>projectSlug: Project Identifier.
+<br>iterationSlug: Project Iteration identifier.</p>
+
+      <div id="resource_SourceDocResource_get_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Retrieve the List of Documents (Resources) belonging to a Project
+iteration.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to fetch along with the documents
+(e.g. "gettext", "comment"). This parameter allows multiple
+values e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">array of <a href="json_ResourceMeta.html">ResourceMeta</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - Response with a list of documents wrapped in a
+"resources" element. Each child element will be a
+"resource-meta". <br>
+NOT FOUND(404) - If a Project iteration could not be found with
+the given parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">list of <a href="xml_ns0_resourceMetaType.html">resourceMetaType</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+[ {
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;PAGE&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+} ]
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_head_HEAD">
+        <h3><span class="label label-default resource-method">HEAD</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Returns header information for a Project's iteration source strings.</p>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - Response containing an "Etag" header for the requested
+project iteration translations.<br>
+NOT FOUND(404) - If a project iteration could not be found for
+the given parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+HEAD /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_post_POST">
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Creates a new source Document.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">copyTrans</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Boolean value that indicates whether reasonably close
+translations from other projects should be found to initially
+populate this document's translations.</span></td>
+            <td><span class="parameter-default-value">true</span></td>
+            <td><span class="parameter-constraints">boolean</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the new document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document information.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+CREATED (201) - If the document was successfully created.<br>
+CONFLICT(409) - If another document already exists with the same
+name, on the same project iteration.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+POST /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;PAGE&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_deleteResourceWithDocId_DELETE">
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Delete a source Document. The system keeps the history of this document however.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document identifier.</span></td>
+            <td><span class="parameter-default-value"></span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - If The document was successfully deleted.<br>
+NOT FOUND(404) - If a project or project iteration could not be
+found with the given parameters.<br>
+FORBIDDEN(403) - If the user is not allowed to modify the
+project, project iteration or document. This might be due to the
+project or iteration being in Read-Only mode.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+DELETE /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 No Content
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_getResourceWithDocId_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Retrieves information for a source Document.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document identifier.</span></td>
+            <td><span class="parameter-default-value"></span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to fetch along with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - Response with the document's information.<br>
+NOT FOUND(404) - If a document could not be found with the given
+parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;FILE&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_putResourceWithDocId_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Creates or modifies a source Document.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">copyTrans</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Boolean value that indicates whether reasonably close
+translations from other projects should be found to initially
+populate this document's translations.</span></td>
+            <td><span class="parameter-default-value">true</span></td>
+            <td><span class="parameter-constraints">boolean</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document identifier.</span></td>
+            <td><span class="parameter-default-value"></span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document information.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+CREATED(201) - If a new document was successfully created.<br>
+OK(200) - If an already existing document was modified.<br>
+NOT FOUND(404) - If a project or project iteration could not be
+found with the given parameters.<br>
+FORBIDDEN(403) - If the user is not allowed to modify the
+project, project iteration or document. This might be due to the
+project or iteration being in Read-Only mode.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 No Content
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_deleteResource_DELETE">
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id} <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Delete a source Document. The system keeps the history of this document however.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>constraints</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-constraints">regex: [\-_a-zA-Z0-9]+([a-zA-Z0-9_\-,{.}]*[a-zA-Z0-9]+)?</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - If The document was successfully deleted.<br>
+NOT FOUND(404) - If a project or project iteration could not be
+found with the given parameters.<br>
+FORBIDDEN(403) - If the user is not allowed to modify the
+project, project iteration or document. This might be due to the
+project or iteration being in Read-Only mode.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.
+
+Deprecated. Use #deleteResourceWithDocId</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+DELETE /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 No Content
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_getResource_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id} <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Retrieves information for a source Document.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-constraints">regex: [\-_a-zA-Z0-9]+([a-zA-Z0-9_\-,{.}]*[a-zA-Z0-9]+)?</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to fetch along with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - Response with the document's information.<br>
+NOT FOUND(404) - If a document could not be found with the given
+parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.
+Deprecated. Use #getResourceWithDocId</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_putResource_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id} <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Creates or modifies a source Document.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">regex: [\-_a-zA-Z0-9]+([a-zA-Z0-9_\-,{.}]*[a-zA-Z0-9]+)?</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">copyTrans</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Boolean value that indicates whether reasonably close
+translations from other projects should be found to initially
+populate this document's translations.</span></td>
+            <td><span class="parameter-default-value">true</span></td>
+            <td><span class="parameter-constraints">boolean</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document information.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+CREATED(201) - If a new document was successfully created.<br>
+OK(200) - If an already existing document was modified.<br>
+NOT FOUND(404) - If a project or project iteration could not be
+found with the given parameters.<br>
+FORBIDDEN(403) - If the user is not allowed to modify the
+project, project iteration or document. This might be due to the
+project or iteration being in Read-Only mode.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.
+
+Deprecated. Use #putResourceWithDocId</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 No Content
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_getResourceMetaWithDocId_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Retrieves meta-data information for a source Document.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document identifier.</span></td>
+            <td><span class="parameter-default-value"></span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to retrieve with the document's
+meta-data (e.g. "gettext", "comment"). This parameter allows
+multiple values e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ResourceMeta.html">ResourceMeta</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - If the Document's meta-data was found. The data will be
+contained in the response.<br>
+NOT FOUND(404) - If a project, project iteration or document
+could not be found with the given parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceMetaType.html">resourceMetaType</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_putResourceMetaWithDocId_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Modifies an existing source document's meta-data.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document identifier.</span></td>
+            <td><span class="parameter-default-value"></span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ResourceMeta.html">ResourceMeta</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document's meta-data.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceMetaType.html">resourceMetaType</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - If the Document's meta-data was successfully modified.<br>
+NOT FOUND(404) - If a document was not found using the given
+parameters.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 No Content
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_getResourceMeta_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Retrieves meta-data information for a source Document.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-constraints">regex: [\-_a-zA-Z0-9]+([a-zA-Z0-9_\-,{.}]*[a-zA-Z0-9]+)?</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to retrieve with the document's
+meta-data (e.g. "gettext", "comment"). This parameter allows
+multiple values e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ResourceMeta.html">ResourceMeta</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - If the Document's meta-data was found. The data will be
+contained in the response.<br>
+NOT FOUND(404) - If a project, project iteration or document
+could not be found with the given parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.
+
+Deprecated. Use #getResourceMetaWithDocId</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceMetaType.html">resourceMetaType</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_SourceDocResource_putResourceMeta_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Modifies an existing source document's meta-data.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-constraints">regex: [\-_a-zA-Z0-9]+([a-zA-Z0-9_\-,{.}]*[a-zA-Z0-9]+)?</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ResourceMeta.html">ResourceMeta</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document's meta-data.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceMetaType.html">resourceMetaType</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - If the Document's meta-data was successfully modified.<br>
+NOT FOUND(404) - If a document was not found using the given
+parameters.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.
+Deprecated. Use #putResourceMetaWithDocId</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;PAGE&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 No Content
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">Copyright &copy; <script type="text/javascript" language="javascript">d = new Date;document.write(d.getFullYear());</script> <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Red Hat, Inc and others</span>. Generated by <a href="http://enunciate.webcohesion.com">Enunciate</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JavaScript placed at the end of the document so the pages load faster. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- prettify code blocks. see http://code.google.com/p/google-code-prettify/ -->
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" type="text/javascript"></script>
+  <script>
+    $(function() {
+      $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+      });
+
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
+
+</body>
+</html>

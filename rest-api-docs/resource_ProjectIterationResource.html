@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>Zanata REST API: ProjectIterationResource</title>
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!--custom css for these pages-->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#apinav">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Zanata REST API: ProjectIterationResource</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="data.html">Data Types</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar" id="apinav">
+        <ul class="nav nav-sidebar">
+          <li><a href="#resource_ProjectIterationResource_get_GET"><abbr title="GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_ProjectIterationResource_head_HEAD"><abbr title="HEAD /projects/p/{projectSlug}/iterations/i/{iterationSlug}">HEAD /projects/p/{projectSlug}...</abbr></a></li>
+          <li><a href="#resource_ProjectIterationResource_put_PUT"><abbr title="PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}">PUT /projects/p/{projectSlug}/...</abbr></a></li>
+          <li><a href="#resource_ProjectIterationResource_sampleConfiguration_GET"><abbr title="GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/config">GET /projects/p/{projectSlug}/...</abbr></a></li>
+          <li class="divider"></li>
+          <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <ol class="breadcrumb" id="top">
+          <li class="active dropdown"><a href="index.html">Home</a></li>
+          <li class="active dropdown"><a href="resources.html">Resources</a></li>
+          <li class="dropdown"><a href="resource_ProjectIterationResource.html">ProjectIterationResource</a></li>
+        </ol>
+
+      <h1 class="page-header">ProjectIterationResource <small>Resource</small></h1>
+
+      <p>Deprecated. See <a href="resource_ProjectVersionResource.html">Project Version</a>
+
+
+projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.</p>
+
+      <div id="resource_ProjectIterationResource_get_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug} <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Returns data for a single Project iteration.</p>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProjectIteration.html">Project Version</a>
+ (JSON)</span></td>
+            <td rowspan="4" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - Contains the Project iteration data. <br>
+NOT FOUND(404) - response, if a Project iteration could not be
+found for the given parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/vnd.zanata.project.iteration+json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/vnd.zanata.project.iteration+json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProjectIteration.html">Project Version</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/vnd.zanata.project.iteration+xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/vnd.zanata.project.iteration+xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_projectIterationType.html">Project Version</a>
+ (XML)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_projectIterationType.html">Project Version</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;id&quot; : &quot;my-iteration&quot;,
+  &quot;links&quot; : [ { }, { } ],
+  &quot;status&quot; : &quot;ACTIVE&quot;,
+  &quot;projectType&quot; : &quot;Podir&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_ProjectIterationResource_head_HEAD">
+        <h3><span class="label label-default resource-method">HEAD</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug} <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Returns header information for a project iteration.</p>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="4" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - Response with an "Etag" header for the requested
+project iteration.<br>
+NOT FOUND(404) - If a project iteration could not be found for
+the given parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/vnd.zanata.project.iteration+json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/vnd.zanata.project.iteration+json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/vnd.zanata.project.iteration+xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/vnd.zanata.project.iteration+xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+HEAD /projects/p/{projectSlug}/iterations/i/{iterationSlug}
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_ProjectIterationResource_put_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug} <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Creates or modifies a Project iteration.</p>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProjectIteration.html">Project Version</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/vnd.zanata.project.iteration+json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/vnd.zanata.project.iteration+json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProjectIteration.html">Project Version</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/vnd.zanata.project.iteration+xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/vnd.zanata.project.iteration+xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_projectIterationType.html">Project Version</a>
+ (XML)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_projectIterationType.html">Project Version</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">object
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - If an already existing project iteration was updated as
+a result of this operation.<br>
+CREATED(201) - If a new project iteration was added.<br>
+NOT FOUND(404) - If no project was found for the given project
+slug.<br>
+FORBIDDEN(403) - If the user was not allowed to create/modify the
+project iteration. In this case an error message is contained in
+the response.<br>
+UNAUTHORIZED(401) - If the user does not have the proper
+permissions to perform this operation.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /projects/p/{projectSlug}/iterations/i/{iterationSlug}
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;id&quot; : &quot;my-iteration&quot;,
+  &quot;links&quot; : [ { }, { } ],
+  &quot;status&quot; : &quot;READONLY&quot;,
+  &quot;projectType&quot; : &quot;Podir&quot;
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 No Content
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_ProjectIterationResource_sampleConfiguration_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/config <a href="../projects/p/{projectSlug}/iterations/i/{iterationSlug}/config" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Get a project iteration's sample general configuration file(zanata.xml).
+Note: this will only be a sample configuration which does not contain any
+customization done on the client side, such as, locale mapping and/or
+command hooks.</p>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">anyType
+ (XML)</span></td>
+            <td><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+OK(200) - Contains the Project iteration config xml. <br>
+NOT FOUND(404) - response, if a Project iteration could not be
+found for the given parameters.<br>
+INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+the server while performing this operation.</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /projects/p/{projectSlug}/iterations/i/{iterationSlug}/config
+Accept: application/xml
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/xml
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">Copyright &copy; <script type="text/javascript" language="javascript">d = new Date;document.write(d.getFullYear());</script> <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Red Hat, Inc and others</span>. Generated by <a href="http://enunciate.webcohesion.com">Enunciate</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JavaScript placed at the end of the document so the pages load faster. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- prettify code blocks. see http://code.google.com/p/google-code-prettify/ -->
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" type="text/javascript"></script>
+  <script>
+    $(function() {
+      $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+      });
+
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
+
+</body>
+</html>

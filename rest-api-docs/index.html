@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>Zanata REST API</title>
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!--custom css for these pages-->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#apinav">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Zanata REST API</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="data.html">Data Types</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar" id="apinav">
+        <ul class="nav nav-sidebar">
+          <li><a href="#resources">Resources</a></li>
+          <li><a href="#syntax_json">JSON</a></li>
+          <li><a href="#syntax_xml">XML</a></li>
+          <li class="divider"></li>
+          <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <ol class="breadcrumb" id="top">
+          <li class="dropdown"><a href="index.html">Home</a></li>
+        </ol>
+
+  <div class="page-header">
+    <h1>Introduction</h1>
+
+      <p>
+        This is the documentation for the Zanata REST API. It includes detailed
+        information about the resources, content, response codes, etc available
+        to external users.
+
+        <h3>Authentication</h3>
+
+        Some of the available resources require authentication and will respond with
+        an UNAUTHORIZED (401) code if not available. To prevent this, you must supply
+        credentials in the form of HTTP headers as indicated in the table below.
+        Additionally, the service might continue
+        to respond with the same code if the authenticated user does not have
+        the right permissions to access the resource.
+
+        <table class='table table-hover resources'>
+          <thead>
+            <tr>
+              <th align="center">Header</th>
+              <th align="center">Description</th>
+            </tr>
+          </thead>
+          <tbody class='rowlink'>
+            <tr>
+              <td>X-Auth-User</td>
+              <td>User name</td>
+            </tr>
+            <tr>
+              <td>X-Auth-Token</td>
+              <td>User's API key</td>
+            </tr>
+          </tbody>
+        </table>
+      </p>
+  </div>
+
+  <h1 class="page-header" id="resources">Resources</h1>
+
+  <table class="table table-hover resources">
+    <thead>
+    <tr>
+      <th align="center">name</th>
+      <th align="center">path</th>
+      <th align="center">methods</th>
+      <th align="center">description</th>
+    </tr>
+    </thead>
+    <tbody data-link="row" class="rowlink">
+    <tr class="clickable-row" data-href="resource_AsynchronousProcessResource.html">
+      <td>  <span class="resource-name">Asynchronous Process</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/async/{processId}</span>
+</samp></li><li><samp>  <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r</span>
+</samp></li><li><samp>  <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource</span>
+</samp></li><li><samp>  <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}</span>
+</samp></li><li><samp>  <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/translations/{locale}</span>
+</samp></li><li><samp>  <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">PUT</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Represents a resource for an asynchronous (i.e. background) process. Only
+certain types of processes are exposed as asynchronous resources.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_CopyTransResource.html">
+      <td>  <span class="resource-name">Copy Trans</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">POST</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Represents the state of a copy trans run. These are special processes which
+search for and reuse translations.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_FileResource.html">
+      <td>  <span class="resource-name">Files</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/file/accepted_document_types</span>
+</samp></li><li><samp>  <span class="resource-path">/file/accepted_types</span>
+</samp></li><li><samp>  <span class="resource-path">/file/file_type_info</span>
+</samp></li><li><samp>  <span class="resource-path">/file/download/{downloadId}</span>
+</samp></li><li><samp>  <span class="resource-path">/file/source/{projectSlug}/{iterationSlug}</span>
+</samp></li><li><samp>  <span class="resource-path">/file/source/{projectSlug}/{iterationSlug}/{fileType}</span>
+</samp></li><li><samp>  <span class="resource-path">/file/translation/{projectSlug}/{iterationSlug}/{locale}</span>
+</samp></li><li><samp>  <span class="resource-path">/file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Represents various types of translatable files to be processed by the server
+instead of the REST client.
+This REST interface provides endpoints for uploading and downloading files in
+multiple formats.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_GlossaryResource.html">
+      <td>  <span class="resource-name">Glossary</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/glossary</span>
+</samp></li><li><samp>  <span class="resource-path">/glossary/entries</span>
+</samp></li><li><samp>  <span class="resource-path">/glossary/file</span>
+</samp></li><li><samp>  <span class="resource-path">/glossary/info</span>
+</samp></li><li><samp>  <span class="resource-path">/glossary/qualifiedName</span>
+</samp></li><li><samp>  <span class="resource-path">/glossary/search</span>
+</samp></li><li><samp>  <span class="resource-path">/glossary/details/{locale}</span>
+</samp></li><li><samp>  <span class="resource-path">/glossary/entries/{id}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Glossary management</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_LocalesResource.html">
+      <td>  <span class="resource-name">Languages</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/locales</span>
+</samp></li><li><samp>  <span class="resource-path">/locales/locale</span>
+</samp></li><li><samp>  <span class="resource-path">/locales/new</span>
+</samp></li><li><samp>  <span class="resource-path">/locales/source</span>
+</samp></li><li><samp>  <span class="resource-path">/locales/ui</span>
+</samp></li><li><samp>  <span class="resource-path">/locales/locale/{localeId}</span>
+</samp></li><li><samp>  <span class="resource-path">/locales/locale/{localeId}/members</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_ProjectResource.html">
+      <td>  <span class="resource-name">Project</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/projects/p/{projectSlug}</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/glossary/qualifiedName</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">HEAD</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Manage projects
+<br>
+projectSlug: Project Identifier.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_ProjectsResource.html">
+      <td>  <span class="resource-name">Project List</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/projects</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">API endpoint to get a list of projects.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_ProjectVersionResource.html">
+      <td>  <span class="resource-name">Project Version</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/project/{projectSlug}/version/{versionSlug}</span>
+</samp></li><li><samp>  <span class="resource-path">/project/{projectSlug}/version/{versionSlug}/config</span>
+</samp></li><li><samp>  <span class="resource-path">/project/{projectSlug}/version/{versionSlug}/docs</span>
+</samp></li><li><samp>  <span class="resource-path">/project/{projectSlug}/version/{versionSlug}/locales</span>
+</samp></li><li><samp>  <span class="resource-path">/project/{projectSlug}/version/{versionSlug}/contributors/{dateRange}</span>
+</samp></li><li><samp>  <span class="resource-path">/project/{projectSlug}/version/{versionSlug}/doc/{docId}/status/{localeId}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">HEAD</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Project version resource API, replacing <a href="resource_ProjectIterationResource.html">ProjectIterationResource</a>.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_ProjectLocalesResource.html">
+      <td>  <span class="resource-name">Project locales</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/locales</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/locales/source</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">REST interface for configured project locales.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_ProjectIterationResource.html">
+      <td>  <s><span class="resource-name">ProjectIterationResource</span></s>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <s><span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}</span></s>
+</samp></li><li><samp>  <s><span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/config</span></s>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <s><span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">HEAD</span> <span class="label label-default resource-method">PUT</span> </s>
+</samp></li><li><samp>  <s><span class="label label-default resource-method">GET</span> </s>
+</samp></li></ul></td>
+      <td>  <s><span class="resource-description">Deprecated. See <a href="resource_ProjectVersionResource.html">Project Version</a>
+
+
+projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.</span></s>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_SourceDocResource.html">
+      <td>  <span class="resource-name">Source Documents</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/meta</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/meta</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">HEAD</span> <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Source document API. This API uses format-independent data structures. For
+format specific source document access see <a href="resource_FileResource.html">Files</a>
+
+<br>projectSlug: Project Identifier.
+<br>iterationSlug: Project Iteration identifier.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_StatisticsResource.html">
+      <td>  <span class="resource-name">Statistics</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/stats/proj/{projectSlug}/iter/{iterationSlug}</span>
+</samp></li><li><samp>  <span class="resource-path">/stats/proj/{projectSlug}/iter/{iterationSlug}/doc</span>
+</samp></li><li><samp>  <span class="resource-path">/stats/project/{projectSlug}/version/{versionSlug}/{dateRangeParam}</span>
+</samp></li><li><samp>  <span class="resource-path">/stats/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}</span>
+</samp></li><li><samp>  <span class="resource-path">/stats/project/{projectSlug}/version/{versionSlug}/contributor/{username}/{dateRange}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Fetch different translation statistics</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_VersionResource.html">
+      <td>  <span class="resource-name">System Version</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/version</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Retrieves the system's version.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_TranslatedDocResource.html">
+      <td>  <span class="resource-name">Translated Documents</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/translations/{locale}</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Translated document API. This API uses format-independent data structures. For
+format specific source document access see <a href="resource_FileResource.html">Files</a>
+
+<br>projectSlug: Project Identifier.
+<br>iterationSlug: Project Iteration identifier.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_TranslationMemoryResource.html">
+      <td>  <span class="resource-name">Translation Memory</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/tm/all</span>
+</samp></li><li><samp>  <span class="resource-path">/tm/{slug}</span>
+</samp></li><li><samp>  <span class="resource-path">/tm/projects/{projectSlug}</span>
+</samp></li><li><samp>  <span class="resource-path">/tm/{slug}/transunits</span>
+</samp></li><li><samp>  <span class="resource-path">/tm/projects/{projectSlug}/iterations/{iterationSlug}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Allows clients to [push and] pull translation memories.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_AccountResource.html">
+      <td>  <span class="resource-name">User Account</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/accounts/u/{username}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> <span class="label label-default resource-method">PUT</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">Represents user accounts in the system.
+username: User name that identifies an account</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_ProjectIterationLocalesResource.html">
+      <td>  <span class="resource-name">Version Locales</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/locales</span>
+</samp></li><li><samp>  <span class="resource-path">/projects/p/{projectSlug}/iterations/i/{iterationSlug}/locales/source</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">REST interface for configured version locales.</span>
+</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h1 class="page-header" id="data">Data Types</h1>
+
+  <h3 id="syntax_json"><span class="syntax-name">JSON</span></h3>
+
+  <table class="table table-hover datatypes">
+    <thead>
+      <tr>
+        <th align="center">type</th>
+        <th align="center">description</th>
+      </tr>
+    </thead>
+    <tbody data-link="row" class="rowlink">
+    <tr class="clickable-row" data-href="json_AbstractResourceMeta.html">
+      <td>  <span class="datatype-name">Abstract Resource</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_Account.html">
+      <td>  <span class="datatype-name">Account</span>
+</td>
+      <td>  <span class="datatype-description">System user account.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_BaseContributionStatistic.html">
+      <td>  <span class="datatype-name">Base Contribution Statistics</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ContainerTranslationStatistics.html">
+      <td>  <span class="datatype-name">Container Translation Statistics</span>
+</td>
+      <td>  <span class="datatype-description">Generic Container for translation statistics.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ContentState.html">
+      <td>  <span class="datatype-name">ContentState</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ContributionStatistics.html">
+      <td>  <span class="datatype-name">Contribution Statistics</span>
+</td>
+      <td>  <span class="datatype-description">Contains information about translations contributed by a single user.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_CopyTransStatus.html">
+      <td>  <span class="datatype-name">Copy Trans Status</span>
+</td>
+      <td>  <span class="datatype-description">Copy Trans process status.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_FilterFields.html">
+      <td>  <span class="datatype-name">Filter Constraints</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_GlossaryEntry.html">
+      <td>  <span class="datatype-name">Glossary Entry</span>
+</td>
+      <td>  <span class="datatype-description">A single glossary entry representing a single translated term in multiple
+locales.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_GlossaryInfo.html">
+      <td>  <span class="datatype-name">Glossary Info</span>
+</td>
+      <td>  <span class="datatype-description">Information about a specific Glossary.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_GlossaryLocaleInfo.html">
+      <td>  <span class="datatype-name">Glossary Locale Info</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_GlossaryResults.html">
+      <td>  <span class="datatype-name">Glossary Results</span>
+</td>
+      <td>  <span class="datatype-description">Wrapper for list of Glossary entries and a list of warning messages after
+saving/updating</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_GlossaryTerm.html">
+      <td>  <span class="datatype-name">Glossary Term</span>
+</td>
+      <td>  <span class="datatype-description">A single glossary term for a single locale</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_LocaleDetails.html">
+      <td>  <span class="datatype-name">Locale Details</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_LocaleStatistics.html">
+      <td>  <span class="datatype-name">Locale Statistics</span>
+</td>
+      <td>  <span class="datatype-description">Contains translation statistics for a single locale.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_LocaleMember.html">
+      <td>  <span class="datatype-name">LocaleMember</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_Person.html">
+      <td>  <span class="datatype-name">Person</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ProcessStatus.html">
+      <td>  <span class="datatype-name">Process Status</span>
+</td>
+      <td>  <span class="datatype-description">Generic type to represent the status of a process.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ProcessStatusCode.html">
+      <td>  <span class="datatype-name">Process Status Code</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_Project.html">
+      <td>  <span class="datatype-name">Project</span>
+</td>
+      <td>  <span class="datatype-description">Representation of the data within a Project resource</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ProjectIteration.html">
+      <td>  <span class="datatype-name">Project Version</span>
+</td>
+      <td>  <span class="datatype-description">Represents a Project version (or iteration).</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ProjectStatisticsMatrix.html">
+      <td>  <span class="datatype-name">ProjectStatisticsMatrix</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_QualifiedName.html">
+      <td>  <span class="datatype-name">Qualified Name</span>
+</td>
+      <td>  <span class="datatype-description">Describes a qualified system name. Usage:
+<a href="json_GlossaryEntry.html">Glossary Entry</a>
+<a href="resource_GlossaryResource.html">Glossary</a></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_Resource.html">
+      <td>  <span class="datatype-name">Resource</span>
+</td>
+      <td>  <span class="datatype-description">A series of text flows to be translated and sharing common metadata.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ResourceMeta.html">
+      <td>  <span class="datatype-name">ResourceMeta</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ResourceType.html">
+      <td>  <span class="datatype-name">ResourceType</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ResultList.html">
+      <td>  <span class="datatype-name">Result List</span>
+</td>
+      <td>  <span class="datatype-description">A list of results</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_SourceLocaleDetails.html">
+      <td>  <span class="datatype-name">SourceLocaleDetails</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_StatUnit.html">
+      <td>  <span class="datatype-name">Stats Unit</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_EntityStatus.html">
+      <td>  <span class="datatype-name">Status</span>
+</td>
+      <td>  <span class="datatype-description">The possible state of various entities in the system.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_TextContainer.html">
+      <td>  <span class="datatype-name">Text Container</span>
+</td>
+      <td>  <span class="datatype-description">This class contains string contents for a single translatable message. It
+maps between the JAXB/JSON representation of <code>content</code>/
+<code>contents</code> (in separate elements, for backwards-compatibility) and
+the server model (which represents <code>contents</code> as an
+<code>ArrayList</code> to support plural forms). This class is the superclass
+for <code>TextFlow</code> and <code>TextFlowTarget</code>.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_TextFlow.html">
+      <td>  <span class="datatype-name">Text Flow</span>
+</td>
+      <td>  <span class="datatype-description">A translatable string</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_TextFlowTarget.html">
+      <td>  <span class="datatype-name">TextFlowTarget</span>
+</td>
+      <td>  <span class="datatype-description">This class contains string contents for a single translatable message. It
+maps between the JAXB/JSON representation of <code>content</code>/
+<code>contents</code> (in separate elements, for backwards-compatibility) and
+the server model (which represents <code>contents</code> as an
+<code>ArrayList</code> to support plural forms). This class is the superclass
+for <code>TextFlow</code> and <code>TextFlowTarget</code>.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_TransUnitStatus.html">
+      <td>  <span class="datatype-name">TransUnitStatus</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_TranslationStatistics.html">
+      <td>  <span class="datatype-name">Translation Statistics</span>
+</td>
+      <td>  <span class="datatype-description">Translation statistics. Contains actual numbers and other information about
+the state of translation.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_TranslationsResource.html">
+      <td>  <span class="datatype-name">Translations</span>
+</td>
+      <td>  <span class="datatype-description">Represents the translation of a document into a single locale.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_User.html">
+      <td>  <span class="datatype-name">User</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_VersionInfo.html">
+      <td>  <span class="datatype-name">Version Info</span>
+</td>
+      <td>  <span class="datatype-description">Holds system version information</span>
+</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3 id="syntax_xml"><span class="syntax-name">XML</span></h3>
+
+  <table class="table table-hover datatypes">
+    <caption>Default Namespace </caption>
+    <thead>
+      <tr>
+        <th align="center">type</th>
+        <th align="center">description</th>
+      </tr>
+    </thead>
+    <tbody data-link="row" class="rowlink">
+    <tr class="clickable-row" data-href="xml_ns2_streamingOutput.html">
+      <td>  <span class="datatype-name">streamingOutput</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-hover datatypes">
+    <caption>Namespace <code>http://zanata.org/namespace/api/</code></caption>
+    <thead>
+      <tr>
+        <th align="center">type</th>
+        <th align="center">description</th>
+      </tr>
+    </thead>
+    <tbody data-link="row" class="rowlink">
+    <tr class="clickable-row" data-href="xml_ns0_contentStateType.html">
+      <td>  <span class="datatype-name">contentStateType</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_entityStatusType.html">
+      <td>  <span class="datatype-name">Status</span>
+</td>
+      <td>  <span class="datatype-description">The possible state of various entities in the system.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_resourceEnumType.html">
+      <td>  <span class="datatype-name">resourceEnumType</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_accountType.html">
+      <td>  <span class="datatype-name">Account</span>
+</td>
+      <td>  <span class="datatype-description">System user account.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_chunkUploadResponseType.html">
+      <td>  <span class="datatype-name">chunkUploadResponseType</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_copyTransStatusType.html">
+      <td>  <span class="datatype-name">Copy Trans Status</span>
+</td>
+      <td>  <span class="datatype-description">Copy Trans process status.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_glossaryEntryType.html">
+      <td>  <span class="datatype-name">Glossary Entry</span>
+</td>
+      <td>  <span class="datatype-description">A single glossary entry representing a single translated term in multiple
+locales.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_glossaryInfoType.html">
+      <td>  <span class="datatype-name">Glossary Info</span>
+</td>
+      <td>  <span class="datatype-description">Information about a specific Glossary.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_glossaryLocaleInfoType.html">
+      <td>  <span class="datatype-name">Glossary Locale Info</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_glossaryResults.html">
+      <td>  <span class="datatype-name">Glossary Results</span>
+</td>
+      <td>  <span class="datatype-description">Wrapper for list of Glossary entries and a list of warning messages after
+saving/updating</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_glossaryTermType.html">
+      <td>  <span class="datatype-name">Glossary Term</span>
+</td>
+      <td>  <span class="datatype-description">A single glossary term for a single locale</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_linkType.html">
+      <td>  <span class="datatype-name">Link</span>
+</td>
+      <td>  <span class="datatype-description">A single link to reference a URI</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_localeDetailsType.html">
+      <td>  <span class="datatype-name">Locale Details</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_personType.html">
+      <td>  <span class="datatype-name">personType</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_processStatusType.html">
+      <td>  <span class="datatype-name">Process Status</span>
+</td>
+      <td>  <span class="datatype-description">Generic type to represent the status of a process.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_processStatusCode.html">
+      <td>  <span class="datatype-name">Process Status Code</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_projectType.html">
+      <td>  <span class="datatype-name">Project</span>
+</td>
+      <td>  <span class="datatype-description">Representation of the data within a Project resource</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_projectIterationType.html">
+      <td>  <span class="datatype-name">Project Version</span>
+</td>
+      <td>  <span class="datatype-description">Represents a Project version (or iteration).</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_qualifiedName.html">
+      <td>  <span class="datatype-name">Qualified Name</span>
+</td>
+      <td>  <span class="datatype-description">Describes a qualified system name. Usage:
+<a href="json_GlossaryEntry.html">Glossary Entry</a>
+<a href="resource_GlossaryResource.html">Glossary</a></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_versionType.html">
+      <td>  <span class="datatype-name">Version Info</span>
+</td>
+      <td>  <span class="datatype-description">Holds system version information</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_abstractResourceMetaType.html">
+      <td>  <span class="datatype-name">Abstract Resource</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_resourceType.html">
+      <td>  <span class="datatype-name">Resource</span>
+</td>
+      <td>  <span class="datatype-description">A series of text flows to be translated and sharing common metadata.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_resourceMetaType.html">
+      <td>  <span class="datatype-name">resourceMetaType</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_textContainer.html">
+      <td>  <span class="datatype-name">Text Container</span>
+</td>
+      <td>  <span class="datatype-description">This class contains string contents for a single translatable message. It
+maps between the JAXB/JSON representation of <code>content</code>/
+<code>contents</code> (in separate elements, for backwards-compatibility) and
+the server model (which represents <code>contents</code> as an
+<code>ArrayList</code> to support plural forms). This class is the superclass
+for <code>TextFlow</code> and <code>TextFlowTarget</code>.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_textFlowType.html">
+      <td>  <span class="datatype-name">Text Flow</span>
+</td>
+      <td>  <span class="datatype-description">A translatable string</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_textFlowTargetType.html">
+      <td>  <span class="datatype-name">textFlowTargetType</span>
+</td>
+      <td>  <span class="datatype-description">This class contains string contents for a single translatable message. It
+maps between the JAXB/JSON representation of <code>content</code>/
+<code>contents</code> (in separate elements, for backwards-compatibility) and
+the server model (which represents <code>contents</code> as an
+<code>ArrayList</code> to support plural forms). This class is the superclass
+for <code>TextFlow</code> and <code>TextFlowTarget</code>.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_translationsResourceType.html">
+      <td>  <span class="datatype-name">Translations</span>
+</td>
+      <td>  <span class="datatype-description">Represents the translation of a document into a single locale.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_containerTranslationStatisticsType.html">
+      <td>  <span class="datatype-name">Container Translation Statistics</span>
+</td>
+      <td>  <span class="datatype-description">Generic Container for translation statistics.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_translationStatistics.html">
+      <td>  <span class="datatype-name">Translation Statistics</span>
+</td>
+      <td>  <span class="datatype-description">Translation statistics. Contains actual numbers and other information about
+the state of translation.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_statUnit.html">
+      <td>  <span class="datatype-name">Stats Unit</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    </tbody>
+  </table>
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">Copyright &copy; <script type="text/javascript" language="javascript">d = new Date;document.write(d.getFullYear());</script> <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Red Hat, Inc and others</span>. Generated by <a href="http://enunciate.webcohesion.com">Enunciate</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JavaScript placed at the end of the document so the pages load faster. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- prettify code blocks. see http://code.google.com/p/google-code-prettify/ -->
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" type="text/javascript"></script>
+  <script>
+    $(function() {
+      $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+      });
+
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
+
+</body>
+</html>

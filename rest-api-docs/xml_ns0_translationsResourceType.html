@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>Zanata REST API: Translations</title>
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!--custom css for these pages-->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#apinav">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Zanata REST API: Translations</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="data.html">Data Types</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar" id="apinav">
+        <ul class="nav nav-sidebar">
+          <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <ol class="breadcrumb" id="top">
+          <li class="active dropdown"><a href="index.html">Home</a></li>
+          <li class="active dropdown"><a href="syntax_xml.html">XML</a></li>
+          <li class="dropdown"><a href="xml_ns0_translationsResourceType.html">Translations</a></li>
+        </ol>
+
+      <h1 class="page-header">Translations <small>Data Type</small></h1>
+
+      <p>Represents the translation of a document into a single locale.</p>
+
+      <dl class="dl-horizontal">
+        <dt>Namespace</dt>
+        <dd><code>http://zanata.org/namespace/api/</code></dd>
+      </dl>
+
+      <table class="table datatype-properties">
+        <caption>Properties</caption>
+        <thead>
+        <tr>
+          <th>name</th>
+          <th>data type</th>
+          <th>type</th>
+          <th>namespace</th>
+          <th>min/max occurs</th>
+          <th>wrapped by</th>
+          <th>description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>  <span class="property-name">revision</span>
+</td>
+          <td>  <span class="datatype-reference">int
+</span>
+</td>
+          <td>  <span class="property-type">attribute
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/1
+</span>
+</td>
+          <td>  <span class="property-wrapper">&nbsp;
+</span>
+</td>
+          <td>  <span class="property-description">Revision number for the translations</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">links</span>
+</td>
+          <td>  <span class="datatype-reference"><a href="xml_ns0_linkType.html">Link</a>
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo"><abbr title=""></abbr>
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/unbounded
+</span>
+</td>
+          <td>  <span class="property-wrapper">&nbsp;
+</span>
+</td>
+          <td>  <span class="property-description">A collection of links provided with the translations.</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">extension</span>
+</td>
+          <td>  <span class="datatype-reference">anyType
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo"><abbr title=""></abbr>
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/unbounded
+</span>
+</td>
+          <td>  <span class="property-wrapper">extensions
+</span>
+</td>
+          <td>  <span class="property-description">Any provided extensions</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">text-flow-target</span>
+</td>
+          <td>  <span class="datatype-reference"><a href="xml_ns0_textFlowTargetType.html">textFlowTargetType</a>
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo"><abbr title="http://zanata.org/namespace/api/">ns0</abbr>
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/unbounded
+</span>
+</td>
+          <td>  <span class="property-wrapper">targets
+</span>
+</td>
+          <td>  <span class="property-description">The text flow targets (i.e. translated text)</span>
+</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <p class="lead">Example</p>
+      
+      <pre class="prettyprint language-xml example">&lt;translations revision=&quot;...&quot; xmlns=&quot;http://zanata.org/namespace/api/&quot;&gt;
+  &lt;links href=&quot;http://alink.com&quot; rel=&quot;...&quot; type=&quot;...&quot; xmlns=&quot;&quot;/&gt;
+  &lt;extensions xmlns=&quot;&quot;&gt;
+    &lt;extension&gt;...&lt;/extension&gt;
+  &lt;/extensions&gt;
+  &lt;targets xmlns=&quot;&quot;&gt;
+    &lt;text-flow-target res-id=&quot;...&quot; resourceRevision=&quot;...&quot; revision=&quot;...&quot; state=&quot;...&quot; xmlns=&quot;http://zanata.org/namespace/api/&quot;&gt;
+      &lt;description xmlns=&quot;&quot;&gt;...&lt;/description&gt;
+      &lt;contents xmlns=&quot;&quot;&gt;
+        &lt;content&gt;An english string to translate&lt;/content&gt;
+      &lt;/contents&gt;
+      &lt;sourceHash&gt;...&lt;/sourceHash&gt;
+      &lt;extensions xmlns=&quot;&quot;&gt;
+        &lt;extension&gt;...&lt;/extension&gt;
+      &lt;/extensions&gt;
+    &lt;/text-flow-target&gt;
+  &lt;/targets&gt;
+&lt;/translations&gt;
+</pre>
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">Copyright &copy; <script type="text/javascript" language="javascript">d = new Date;document.write(d.getFullYear());</script> <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Red Hat, Inc and others</span>. Generated by <a href="http://enunciate.webcohesion.com">Enunciate</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JavaScript placed at the end of the document so the pages load faster. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- prettify code blocks. see http://code.google.com/p/google-code-prettify/ -->
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" type="text/javascript"></script>
+  <script>
+    $(function() {
+      $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+      });
+
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
+
+</body>
+</html>

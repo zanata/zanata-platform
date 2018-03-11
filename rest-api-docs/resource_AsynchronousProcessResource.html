@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>Zanata REST API: Asynchronous Process</title>
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!--custom css for these pages-->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#apinav">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Zanata REST API: Asynchronous Process</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="data.html">Data Types</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar" id="apinav">
+        <ul class="nav nav-sidebar">
+          <li><a href="#resource_AsynchronousProcessResource_getProcessStatus_GET">GET /async/{processId}</a></li>
+          <li><a href="#resource_AsynchronousProcessResource_startSourceDocCreation_POST"><abbr title="POST /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r">POST /async/projects/p/{projec...</abbr></a></li>
+          <li><a href="#resource_AsynchronousProcessResource_startSourceDocCreationOrUpdateWithDocId_PUT"><abbr title="PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource">PUT /async/projects/p/{project...</abbr></a></li>
+          <li><a href="#resource_AsynchronousProcessResource_startSourceDocCreationOrUpdate_PUT"><abbr title="PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}">PUT /async/projects/p/{project...</abbr></a></li>
+          <li><a href="#resource_AsynchronousProcessResource_startTranslatedDocCreationOrUpdateWithDocId_PUT"><abbr title="PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/translations/{locale}">PUT /async/projects/p/{project...</abbr></a></li>
+          <li><a href="#resource_AsynchronousProcessResource_startTranslatedDocCreationOrUpdate_PUT"><abbr title="PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}">PUT /async/projects/p/{project...</abbr></a></li>
+          <li class="divider"></li>
+          <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <ol class="breadcrumb" id="top">
+          <li class="active dropdown"><a href="index.html">Home</a></li>
+          <li class="active dropdown"><a href="resources.html">Resources</a></li>
+          <li class="dropdown"><a href="resource_AsynchronousProcessResource.html">Asynchronous Process</a></li>
+        </ol>
+
+      <h1 class="page-header">Asynchronous Process <small>Resource</small></h1>
+
+      <p>Represents a resource for an asynchronous (i.e. background) process. Only
+certain types of processes are exposed as asynchronous resources.</p>
+
+      <div id="resource_AsynchronousProcessResource_getProcessStatus_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/async/{processId} <a href="../async/{processId}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Obtains the status of a previously started process.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">processId</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The process Id (as returned by one of the endpoints that
+starts an async process).</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">On normal circumstances. The response data will have all information about the status of the running process</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-warning response-code">404</span></td>
+            <td><span class="response-condition">If such a process Id is not found on the server.</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-danger response-code">500</span></td>
+            <td><span class="response-condition">If there is an unexpected error in the server while performing this operation</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProcessStatus.html">Process Status</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The following response status codes will be returned from this
+operation:<br>
+NOT FOUND(404) - If such a process Id is not found on the server. <br>
+OK(200) - On normal circumstances. The response data will have
+all information about the status of the running process. INTERNAL
+SERVER ERROR(500) - If there is an unexpected error in the server
+while performing this operation.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_processStatusType.html">Process Status</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /async/{processId}
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;url&quot; : &quot;http://zanata.example.com&quot;,
+  &quot;percentageComplete&quot; : 55,
+  &quot;messages&quot; : [ &quot;A warning message&quot;, &quot;A second warning message&quot; ],
+  &quot;statusCode&quot; : &quot;NotAccepted&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_AsynchronousProcessResource_startSourceDocCreation_POST">
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r <a href="../async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Attempts to start the creation of a source document. NOTE: Still
+experimental.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project Iteration identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">copyTrans</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Boolean value that indicates whether reasonably close
+translations from other projects should be found to initially
+populate this document's translations.</span></td>
+            <td><span class="parameter-default-value">true</span></td>
+            <td><span class="parameter-constraints">boolean</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document information.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">The contents of the response will indicate the process identifier which may be used to query for its status or a message indicating what happened.</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-danger response-code">500</span></td>
+            <td><span class="response-condition">If there is an unexpected error in the server while performing this operation</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProcessStatus.html">Process Status</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_processStatusType.html">Process Status</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+POST /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;url&quot; : &quot;http://zanata.example.com&quot;,
+  &quot;percentageComplete&quot; : 55,
+  &quot;messages&quot; : [ &quot;A warning message&quot;, &quot;A second warning message&quot; ],
+  &quot;statusCode&quot; : &quot;Cancelled&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_AsynchronousProcessResource_startSourceDocCreationOrUpdateWithDocId_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource <a href="../async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Attempts to starts the creation or update of a source document. NOTE:
+Still experimental.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project Iteration identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document identifier.</span></td>
+            <td><span class="parameter-default-value"></span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document information.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">The contents of the response will indicate the process identifier which may be used to query for its status or a message indicating what happened.</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-danger response-code">500</span></td>
+            <td><span class="response-condition">If there is an unexpected error in the server while performing this operation</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProcessStatus.html">Process Status</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_processStatusType.html">Process Status</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;PAGE&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;url&quot; : &quot;http://zanata.example.com&quot;,
+  &quot;percentageComplete&quot; : 55,
+  &quot;messages&quot; : [ &quot;A warning message&quot;, &quot;A second warning message&quot; ],
+  &quot;statusCode&quot; : &quot;Waiting&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_AsynchronousProcessResource_startSourceDocCreationOrUpdate_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id} <a href="../async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Attempts to starts the creation or update of a source document. NOTE:
+Still experimental.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">regex: [\-_a-zA-Z0-9]+([a-zA-Z0-9_\-,{.}]*[a-zA-Z0-9]+)?</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project Iteration identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">copyTrans</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Boolean value that indicates whether reasonably close
+translations from other projects should be found to initially
+populate this document's translations.
+
+Deprecated. Use #startSourceDocCreationOrUpdateWithDocId</span></td>
+            <td><span class="parameter-default-value">true</span></td>
+            <td><span class="parameter-constraints">boolean</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_Resource.html">Resource</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The document information.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_resourceType.html">Resource</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">The contents of the response will indicate the process identifier which may be used to query for its status or a message indicating what happened.</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-danger response-code">500</span></td>
+            <td><span class="response-condition">If there is an unexpected error in the server while performing this operation</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProcessStatus.html">Process Status</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_processStatusType.html">Process Status</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;textFlows&quot; : [ {
+    &quot;id&quot; : &quot;abc123&quot;,
+    &quot;lang&quot; : &quot;es-ES&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;id&quot; : &quot;...&quot;,
+    &quot;lang&quot; : &quot;...&quot;,
+    &quot;plural&quot; : true,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;type&quot; : &quot;DOCUMENT&quot;,
+  &quot;lang&quot; : &quot;...&quot;,
+  &quot;contentType&quot; : &quot;...&quot;,
+  &quot;name&quot; : &quot;...&quot;,
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;url&quot; : &quot;http://zanata.example.com&quot;,
+  &quot;percentageComplete&quot; : 55,
+  &quot;messages&quot; : [ &quot;A warning message&quot;, &quot;A second warning message&quot; ],
+  &quot;statusCode&quot; : &quot;NotAccepted&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_AsynchronousProcessResource_startTranslatedDocCreationOrUpdateWithDocId_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/translations/{locale} <a href="../async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/translations/{locale}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Attempts to start the translation of a document. NOTE: Still
+experimental.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project Iteration identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">locale</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The locale for which to get translations.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">assignCreditToUploader</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The translator field for all uploaded translations will
+be set to the user who performs the upload.</span></td>
+            <td><span class="parameter-default-value">false</span></td>
+            <td><span class="parameter-constraints">boolean</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">docId</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document identifier.</span></td>
+            <td><span class="parameter-default-value"></span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">merge</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Indicates how to deal with existing translations (valid
+options: 'auto', 'import'). Import will overwrite all current
+values with the values being pushed (even empty ones), while
+Auto will check the history of your translations and will not
+overwrite any translations for which it detects a previous
+value is being pushed.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_TranslationsResource.html">Translations</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The translations to modify.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_translationsResourceType.html">Translations</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">The contents of the response will indicate the process identifier which may be used to query for its status or a message indicating what happened.</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-danger response-code">500</span></td>
+            <td><span class="response-condition">If there is an unexpected error in the server while performing this operation</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProcessStatus.html">Process Status</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_processStatusType.html">Process Status</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource/translations/{locale}
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;links&quot; : [ { }, { } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;textFlowTargets&quot; : [ {
+    &quot;resId&quot; : &quot;...&quot;,
+    &quot;state&quot; : &quot;New&quot;,
+    &quot;sourceHash&quot; : &quot;...&quot;,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;textFlowRevision&quot; : 12345,
+    &quot;description&quot; : &quot;...&quot;,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;resId&quot; : &quot;...&quot;,
+    &quot;state&quot; : &quot;New&quot;,
+    &quot;sourceHash&quot; : &quot;...&quot;,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;textFlowRevision&quot; : 12345,
+    &quot;description&quot; : &quot;...&quot;,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;url&quot; : &quot;http://zanata.example.com&quot;,
+  &quot;percentageComplete&quot; : 55,
+  &quot;messages&quot; : [ &quot;A warning message&quot;, &quot;A second warning message&quot; ],
+  &quot;statusCode&quot; : &quot;Failed&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_AsynchronousProcessResource_startTranslatedDocCreationOrUpdate_PUT">
+        <h3><span class="label label-default resource-method">PUT</span> <span class="resource-path">/async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale} <a href="../async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <div class="alert alert-danger">This method has been deprecated.  </div>
+
+        <p>Attempts to start the translation of a document. NOTE: Still
+experimental.</p>
+
+        <table class="table resource-parameters">
+          <caption>Request Parameters</caption>
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>type</th>
+            <th>description</th>
+            <th>default</th>
+            <th>constraints</th>
+            <th>multivalued</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="parameter-name">id</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The document identifier. Some document ids could have forward
+slashes ('/') in them which would cause conflicts with the
+browser's own url interpreter. For this reason, the supplied
+id must have all its '/' characters replaced with commas
+(',').</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">iterationSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project Iteration identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">locale</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">The locale for which to get translations.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">projectSlug</span></td>
+            <td>path</td>
+            <td><span class="parameter-description">Project identifier.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">assignCreditToUploader</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The translator field for all uploaded translations will
+be set to the user who performs the upload.
+
+Deprecated. Use #startTranslatedDocCreationOrUpdateWithDocId</span></td>
+            <td><span class="parameter-default-value">false</span></td>
+            <td><span class="parameter-constraints">boolean</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">ext</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">The document extensions to save with the document (e.g.
+"gettext", "comment"). This parameter allows multiple values
+e.g. "ext=gettext&ext=comment".</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">yes</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">merge</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">Indicates how to deal with existing translations (valid
+options: 'auto', 'import'). Import will overwrite all current
+values with the values being pushed (even empty ones), while
+Auto will check the history of your translations and will not
+overwrite any translations for which it detects a previous
+value is being pushed.</span></td>
+            <td><span class="parameter-default-value">&nbsp;</span></td>
+            <td><span class="parameter-constraints">&nbsp;</span></td>
+            <td><span class="parameter-multivalued">no</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_TranslationsResource.html">Translations</a>
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="request-description">The translations to modify.</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_translationsResourceType.html">Translations</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-codes">
+          <caption>Response Codes</caption>
+          <thead>
+          <tr>
+            <th>code</th>
+            <th>condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="label label-success response-code">200</span></td>
+            <td><span class="response-condition">The contents of the response will indicate the process identifier which may be used to query for its status or a message indicating what happened.</span></td>
+          </tr>
+          <tr>
+            <td><span class="label label-danger response-code">500</span></td>
+            <td><span class="response-condition">If there is an unexpected error in the server while performing this operation</span></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProcessStatus.html">Process Status</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_processStatusType.html">Process Status</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+PUT /async/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}
+Content-Type: application/json
+Accept: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;links&quot; : [ { }, { } ],
+  &quot;extensions&quot; : [ { }, { } ],
+  &quot;textFlowTargets&quot; : [ {
+    &quot;resId&quot; : &quot;...&quot;,
+    &quot;state&quot; : &quot;NeedReview&quot;,
+    &quot;sourceHash&quot; : &quot;...&quot;,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;textFlowRevision&quot; : 12345,
+    &quot;description&quot; : &quot;...&quot;,
+    &quot;contents&quot; : [ &quot;An english string to translate&quot;, &quot;A plural english string to translate&quot; ]
+  }, {
+    &quot;resId&quot; : &quot;...&quot;,
+    &quot;state&quot; : &quot;New&quot;,
+    &quot;sourceHash&quot; : &quot;...&quot;,
+    &quot;extensions&quot; : [ { }, { } ],
+    &quot;revision&quot; : 12345,
+    &quot;textFlowRevision&quot; : 12345,
+    &quot;description&quot; : &quot;...&quot;,
+    &quot;contents&quot; : [ &quot;A plural english string to translate&quot;, &quot;An english string to translate&quot; ]
+  } ],
+  &quot;revision&quot; : 12345
+}
+                </code>
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;url&quot; : &quot;http://zanata.example.com&quot;,
+  &quot;percentageComplete&quot; : 55,
+  &quot;messages&quot; : [ &quot;A warning message&quot;, &quot;A second warning message&quot; ],
+  &quot;statusCode&quot; : &quot;NotAccepted&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">Copyright &copy; <script type="text/javascript" language="javascript">d = new Date;document.write(d.getFullYear());</script> <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Red Hat, Inc and others</span>. Generated by <a href="http://enunciate.webcohesion.com">Enunciate</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JavaScript placed at the end of the document so the pages load faster. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- prettify code blocks. see http://code.google.com/p/google-code-prettify/ -->
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" type="text/javascript"></script>
+  <script>
+    $(function() {
+      $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+      });
+
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
+
+</body>
+</html>

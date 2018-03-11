@@ -1,5 +1,3 @@
-
-hudson
 org.zanata.common
 org.zanata.rest.dto
 org.zanata.rest.dto.resource
