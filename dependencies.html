@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Zanata Platform &#x2013; Project Dependencies</title>
+    <title>Zanata Common API &#x2013; Project Dependencies</title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -17,7 +17,7 @@
   <body class="composite">
     <div id="banner">
                     <div id="bannerLeft">
-                Zanata Platform
+                Zanata Common API
                 </div>
                     <div class="clear">
         <hr/>
@@ -30,7 +30,7 @@
         <span id="publishDate">Last Published: 2018-03-11</span>
                   &nbsp;| <span id="projectVersion">Version: 4.5.0-SNAPSHOT</span>
                       </div>
-            <div class="xright">                    <a href="./" title="Zanata Platform">Zanata Platform</a>
+            <div class="xright">                    <a href="./" title="Zanata Common API">Zanata Common API</a>
               
                     
       </div>
@@ -45,33 +45,12 @@
                                 <h5>Parent Project</h5>
                   <ul>
                   <li class="none">
-                          <a href="parent/index.html" title="Zanata Parent POM">Zanata Parent POM</a>
-            </li>
-          </ul>
-                       <h5>Modules</h5>
-                  <ul>
-                  <li class="none">
-                          <a href="build-tools/index.html" title="Build Tools">Build Tools</a>
-            </li>
-                  <li class="none">
-                          <a href="parent/index.html" title="Zanata Parent POM">Zanata Parent POM</a>
-            </li>
-                  <li class="none">
-                          <a href="api/index.html" title="Zanata API modules">Zanata API modules</a>
-            </li>
-                  <li class="none">
-                          <a href="common/index.html" title="Zanata common modules">Zanata common modules</a>
-            </li>
-                  <li class="none">
-                          <a href="client/index.html" title="Zanata client modules">Zanata client modules</a>
-            </li>
-                  <li class="none">
-                          <a href="server/index.html" title="Zanata server modules">Zanata server modules</a>
+                          <a href="../index.html" title="Zanata API modules">Zanata API modules</a>
             </li>
           </ul>
                        <h5>Project Documentation</h5>
                   <ul>
-                                                                                                                                                                                                                                                                                                                        <li class="expanded">
+                                                                                                                                                                                                                                                                                    <li class="expanded">
                           <a href="project-info.html" title="Project Information">Project Information</a>
                     <ul>
                       <li class="none">
@@ -93,9 +72,6 @@
                           <a href="plugins.html" title="Project Plugins">Project Plugins</a>
             </li>
                       <li class="none">
-                          <a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
-            </li>
-                      <li class="none">
                           <a href="project-summary.html" title="Project Summary">Project Summary</a>
             </li>
                       <li class="none">
@@ -108,9 +84,6 @@
                           <a href="license.html" title="Project License">Project License</a>
             </li>
                       <li class="none">
-                          <a href="modules.html" title="Project Modules">Project Modules</a>
-            </li>
-                      <li class="none">
                           <a href="team-list.html" title="Project Team">Project Team</a>
             </li>
                       <li class="none">
@@ -118,7 +91,7 @@
             </li>
               </ul>
         </li>
-                                                                                      <li class="collapsed">
+                                                                                                        <li class="collapsed">
                           <a href="project-reports.html" title="Project Reports">Project Reports</a>
                   </li>
           </ul>
@@ -144,8 +117,63 @@
 <th>Version</th>
 <th>Type</th></tr>
 <tr class="b">
+<td>com.google.guava</td>
+<td><a class="externalLink" href="http://code.google.com/p/guava-libraries/guava">guava</a></td>
+<td>18.0</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>com.webcohesion.enunciate</td>
+<td><a class="externalLink" href="http://enunciate.webcohesion.com/enunciate-core-annotations">enunciate-core-annotations</a></td>
+<td>2.9.1</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>javax.validation</td>
+<td><a class="externalLink" href="http://beanvalidation.org">validation-api</a></td>
+<td>1.1.0.Final</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>javax.xml.bind</td>
+<td><a class="externalLink" href="http://jaxb.java.net/">jaxb-api</a></td>
+<td>2.2.12</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>javax.xml.stream</td>
+<td>stax-api</td>
+<td>1.0</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.codehaus.jackson</td>
+<td><a class="externalLink" href="http://jackson.codehaus.org">jackson-core-asl</a></td>
+<td>1.9.13</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.codehaus.jackson</td>
+<td><a class="externalLink" href="http://jackson.codehaus.org">jackson-mapper-asl</a></td>
+<td>1.9.13</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.hibernate</td>
+<td><a class="externalLink" href="http://hibernate.org/validator/hibernate-validator">hibernate-validator</a></td>
+<td>5.2.3.Final</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.jboss.resteasy</td>
+<td><a class="externalLink" href="http://rest-easy.org/resteasy-multipart-provider">resteasy-multipart-provider</a></td>
+<td>3.0.13.Final</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.jboss.spec.javax.ws.rs</td>
+<td><a class="externalLink" href="http://www.jboss.org/jboss-jaxrs-api_2.0_spec">jboss-jaxrs-api_2.0_spec</a></td>
+<td>1.0.0.Final</td>
+<td>jar</td></tr>
+<tr class="b">
 <td>org.slf4j</td>
 <td><a class="externalLink" href="http://www.slf4j.org">jcl-over-slf4j</a></td>
+<td>1.7.22</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.slf4j</td>
+<td><a class="externalLink" href="http://www.slf4j.org">slf4j-api</a></td>
 <td>1.7.22</td>
 <td>jar</td></tr></table></div><a name="Project_Dependencies_test"></a>
 <div class="section">
@@ -158,9 +186,63 @@
 <th>Version</th>
 <th>Type</th></tr>
 <tr class="b">
+<td>junit</td>
+<td><a class="externalLink" href="http://junit.org">junit</a></td>
+<td>4.12</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.codehaus.groovy</td>
+<td><a class="externalLink" href="http://groovy-lang.org">groovy-all</a></td>
+<td>2.4.4</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.codehaus.jackson</td>
+<td><a class="externalLink" href="http://jackson.codehaus.org">jackson-xc</a></td>
+<td>1.9.13</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.hamcrest</td>
+<td><a class="externalLink" href="https://github.com/hamcrest/JavaHamcrest/hamcrest-core">hamcrest-core</a></td>
+<td>1.3</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.hamcrest</td>
+<td><a class="externalLink" href="https://github.com/hamcrest/JavaHamcrest/hamcrest-library">hamcrest-library</a></td>
+<td>1.3</td>
+<td>jar</td></tr>
+<tr class="a">
 <td>org.slf4j</td>
 <td><a class="externalLink" href="http://www.slf4j.org">slf4j-log4j12</a></td>
 <td>1.7.22</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.spockframework</td>
+<td><a class="externalLink" href="http://spockframework.org">spock-core</a></td>
+<td>1.0-groovy-2.4</td>
+<td>jar</td></tr></table></div><a name="Project_Dependencies_provided"></a>
+<div class="section">
+<h3><a name="provided"></a>provided</h3>
+<p>The following is a list of provided dependencies for this project. These dependencies are required to compile the application, but should be provided by default when using the library:</p>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th></tr>
+<tr class="b">
+<td>com.google.code.findbugs</td>
+<td><a class="externalLink" href="http://findbugs.sourceforge.net/">findbugs-annotations</a></td>
+<td>3.0.1</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>com.google.code.findbugs</td>
+<td><a class="externalLink" href="http://findbugs.sourceforge.net/">jsr305</a></td>
+<td>3.0.2</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>net.jcip</td>
+<td><a class="externalLink" href="http://jcip.net/">jcip-annotations</a></td>
+<td>1.0</td>
 <td>jar</td></tr></table></div></div><a name="Project_Transitive_Dependencies"></a>
 <div class="section">
 <h2><a name="Project_Transitive_Dependencies"></a>Project Transitive Dependencies</h2>
@@ -175,9 +257,64 @@
 <th>Version</th>
 <th>Type</th></tr>
 <tr class="b">
-<td>org.slf4j</td>
-<td><a class="externalLink" href="http://www.slf4j.org">slf4j-api</a></td>
-<td>1.7.22</td>
+<td>com.fasterxml</td>
+<td><a class="externalLink" href="http://github.com/cowtowncoder/java-classmate">classmate</a></td>
+<td>1.1.0</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>commons-codec</td>
+<td><a class="externalLink" href="http://commons.apache.org/proper/commons-codec/">commons-codec</a></td>
+<td>1.10</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>commons-io</td>
+<td><a class="externalLink" href="http://commons.apache.org/io/">commons-io</a></td>
+<td>2.4</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>javax.activation</td>
+<td><a class="externalLink" href="http://java.sun.com/javase/technologies/desktop/javabeans/jaf/index.jsp">activation</a></td>
+<td>1.1.1</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>javax.mail</td>
+<td><a class="externalLink" href="http://kenai.com/projects/javamail/mail">mail</a></td>
+<td>1.5.0-b01</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.apache.httpcomponents</td>
+<td><a class="externalLink" href="http://hc.apache.org/httpcomponents-client">httpclient</a></td>
+<td>4.3.6</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.apache.httpcomponents</td>
+<td><a class="externalLink" href="http://hc.apache.org/httpcomponents-core-ga">httpcore</a></td>
+<td>4.3.3</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.apache.james</td>
+<td><a class="externalLink" href="http://james.apache.org/mime4j">apache-mime4j</a></td>
+<td>0.6</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.jboss.logging</td>
+<td><a class="externalLink" href="http://www.jboss.org">jboss-logging</a></td>
+<td>3.3.0.Final</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.jboss.resteasy</td>
+<td><a class="externalLink" href="http://rest-easy.org/resteasy-client">resteasy-client</a></td>
+<td>3.0.13.Final</td>
+<td>jar</td></tr>
+<tr class="b">
+<td>org.jboss.resteasy</td>
+<td><a class="externalLink" href="http://rest-easy.org/resteasy-jaxb-provider">resteasy-jaxb-provider</a></td>
+<td>3.0.13.Final</td>
+<td>jar</td></tr>
+<tr class="a">
+<td>org.jboss.resteasy</td>
+<td><a class="externalLink" href="http://rest-easy.org/resteasy-jaxrs">resteasy-jaxrs</a></td>
+<td>3.0.13.Final</td>
 <td>jar</td></tr></table></div><a name="Project_Transitive_Dependencies_test"></a>
 <div class="section">
 <h3><a name="test"></a>test</h3>
@@ -192,6 +329,20 @@
 <td>log4j</td>
 <td><a class="externalLink" href="http://logging.apache.org/log4j/1.2/">log4j</a></td>
 <td>1.2.17</td>
+<td>jar</td></tr></table></div><a name="Project_Transitive_Dependencies_provided"></a>
+<div class="section">
+<h3><a name="provided"></a>provided</h3>
+<p>The following is a list of provided dependencies for this project. These dependencies are required to compile the application, but should be provided by default when using the library:</p>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th></tr>
+<tr class="b">
+<td>org.jboss.spec.javax.annotation</td>
+<td><a class="externalLink" href="http://www.jboss.org/jboss-annotations-api_1.2_spec">jboss-annotations-api_1.2_spec</a></td>
+<td>1.0.0.Final</td>
 <td>jar</td></tr></table></div></div><a name="Project_Dependency_Graph"></a>
 <div class="section">
 <h2><a name="Project_Dependency_Graph"></a>Project Dependency Graph</h2><script language="javascript" type="text/javascript">
@@ -215,17 +366,482 @@
 <div class="section">
 <h3><a name="Dependency_Tree"></a>Dependency Tree</h3>
 <ul>
-<li>org.zanata:zanata-platform:pom:4.5.0-SNAPSHOT <img id="_828657163" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_991452968', '_828657163' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_991452968" style="display:none">
+<li>org.zanata:zanata-common-api:jar:4.5.0-SNAPSHOT <img id="_1688211351" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1732345688', '_1688211351' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1732345688" style="display:none">
 <table border="0" class="bodyTable">
 <tr class="a">
-<th>Zanata Platform</th></tr>
+<th>Zanata Common API</th></tr>
 <tr class="b">
 <td>
-<p><b>Description: </b>Parent pom for Zanata modules</p>
-<p><b>URL: </b><a class="externalLink" href="http://zanata.org/">http://zanata.org/</a></p>
+<p><b>Description: </b>Zanata API definitions</p>
+<p><b>URL: </b><a class="externalLink" href="http://zanata.org/api/zanata-common-api/">http://zanata.org/api/zanata-common-api/</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.gnu.org/licenses/lgpl-2.1.html">GNU Lesser General Public License v2.1</a></p></td></tr></table></div>
 <ul>
-<li>org.slf4j:jcl-over-slf4j:jar:1.7.22 (compile) <img id="_974507748" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1255616466', '_974507748' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1255616466" style="display:none">
+<li>junit:junit:jar:4.12 (test) <img id="_1731944512" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_2109433937', '_1731944512' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_2109433937" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JUnit</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck.</p>
+<p><b>URL: </b><a class="externalLink" href="http://junit.org">http://junit.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a></p></td></tr></table></div>
+<ul>
+<li>org.hamcrest:hamcrest-core:jar:1.3 (test) <img id="_1142035840" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_869232521', '_1142035840' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_869232521" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Hamcrest Core</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>This is the core API of hamcrest matcher framework to be used by third-party framework providers. This includes the a foundation set of matcher implementations for common operations.</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/hamcrest/JavaHamcrest/hamcrest-core">https://github.com/hamcrest/JavaHamcrest/hamcrest-core</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">New BSD License</a></p></td></tr></table></div></li></ul></li>
+<li>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec:jar:1.0.0.Final (compile) <img id="_2098696140" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_925524099', '_2098696140' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_925524099" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JAX-RS 2.0: The Java(TM) API for RESTful Web Services</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JSR 339: JAX-RS 2.0: The Java(TM) API for RESTful Web Services</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org/jboss-jaxrs-api_2.0_spec">http://www.jboss.org/jboss-jaxrs-api_2.0_spec</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://repository.jboss.org/licenses/cddl.txt">Common Development and Distribution License</a><a class="externalLink" href="http://repository.jboss.org/licenses/gpl-2.0-ce.txt">GNU General Public License, Version 2 with the Classpath Exception</a></p></td></tr></table></div></li>
+<li>com.webcohesion.enunciate:enunciate-core-annotations:jar:2.9.1 (compile) <img id="_1017996467" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1058341894', '_1017996467' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1058341894" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Enunciate - Core Annotations</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Enunciate core annotations.</p>
+<p><b>URL: </b><a class="externalLink" href="http://enunciate.webcohesion.com/enunciate-core-annotations">http://enunciate.webcohesion.com/enunciate-core-annotations</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2</a></p></td></tr></table></div></li>
+<li>org.codehaus.groovy:groovy-all:jar:2.4.4 (test) <img id="_1896677666" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_325614743', '_1896677666' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_325614743" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Groovy</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Groovy: A powerful, dynamic language for the JVM</p>
+<p><b>URL: </b><a class="externalLink" href="http://groovy-lang.org">http://groovy-lang.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>com.google.code.findbugs:findbugs-annotations:jar:3.0.1 (provided) <img id="_1460670624" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_198991029', '_1460670624' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_198991029" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>FindBugs-Native-Annotations</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Annotation defined by the FindBugs tool</p>
+<p><b>URL: </b><a class="externalLink" href="http://findbugs.sourceforge.net/">http://findbugs.sourceforge.net/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser Public License</a></p></td></tr></table></div></li>
+<li>com.google.code.findbugs:jsr305:jar:3.0.2 (provided) <img id="_249589005" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_755540325', '_249589005' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_755540325" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>FindBugs-jsr305</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JSR305 Annotations for Findbugs</p>
+<p><b>URL: </b><a class="externalLink" href="http://findbugs.sourceforge.net/">http://findbugs.sourceforge.net/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>net.jcip:jcip-annotations:jar:1.0 (provided) <img id="_714273302" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_2043018472', '_714273302' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_2043018472" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>&quot;Java Concurrency in Practice&quot; book annotations</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://jcip.net/">http://jcip.net/</a></p>
+<p><b>Project License: </b>No project license is defined for this project.</p></td></tr></table></div></li>
+<li>org.hibernate:hibernate-validator:jar:5.2.3.Final (compile) <img id="_550080502" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1747766063', '_550080502' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1747766063" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Hibernate Validator Engine</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Hibernate's Bean Validation (JSR-303) reference implementation.</p>
+<p><b>URL: </b><a class="externalLink" href="http://hibernate.org/validator/hibernate-validator">http://hibernate.org/validator/hibernate-validator</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>javax.validation:validation-api:jar:1.1.0.Final (compile) <img id="_1742778450" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_88984360', '_1742778450' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_88984360" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Bean Validation API</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Bean Validation API</p>
+<p><b>URL: </b><a class="externalLink" href="http://beanvalidation.org">http://beanvalidation.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.jboss.logging:jboss-logging:jar:3.3.0.Final (compile) <img id="_861888249" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1700789817', '_861888249' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1700789817" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JBoss Logging 3</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The JBoss Logging Framework</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org">http://www.jboss.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, version 2.0</a></p></td></tr></table></div></li>
+<li>com.fasterxml:classmate:jar:1.1.0 (compile) <img id="_806130049" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_759027489', '_806130049' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_759027489" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>ClassMate</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Library for introspecting types with full generic information
+        including resolving of field and method types.</p>
+<p><b>URL: </b><a class="externalLink" href="http://github.com/cowtowncoder/java-classmate">http://github.com/cowtowncoder/java-classmate</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>javax.validation:validation-api:jar:1.1.0.Final (compile) <img id="_216260014" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1430405569', '_216260014' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1430405569" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Bean Validation API</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Bean Validation API</p>
+<p><b>URL: </b><a class="externalLink" href="http://beanvalidation.org">http://beanvalidation.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.jboss.resteasy:resteasy-multipart-provider:jar:3.0.13.Final (compile) <img id="_1334588019" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_437147676', '_1334588019' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_437147676" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Resteasy Multipart Provider</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://rest-easy.org/resteasy-multipart-provider">http://rest-easy.org/resteasy-multipart-provider</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.jboss.resteasy:resteasy-jaxrs:jar:3.0.13.Final (compile) <img id="_348150651" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_559757813', '_348150651' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_559757813" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>RESTEasy JAX-RS Implementation</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://rest-easy.org/resteasy-jaxrs">http://rest-easy.org/resteasy-jaxrs</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec:jar:1.0.0.Final (compile) <img id="_1283620178" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1594687448', '_1283620178' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1594687448" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JAX-RS 2.0: The Java(TM) API for RESTful Web Services</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JSR 339: JAX-RS 2.0: The Java(TM) API for RESTful Web Services</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org/jboss-jaxrs-api_2.0_spec">http://www.jboss.org/jboss-jaxrs-api_2.0_spec</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://repository.jboss.org/licenses/cddl.txt">Common Development and Distribution License</a><a class="externalLink" href="http://repository.jboss.org/licenses/gpl-2.0-ce.txt">GNU General Public License, Version 2 with the Classpath Exception</a></p></td></tr></table></div></li>
+<li>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:jar:1.0.0.Final (provided) <img id="_1814063744" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_61474594', '_1814063744' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_61474594" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Common Annotations 1.2 API</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JSR 250: Common Annotations for the Java(TM) Platform</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org/jboss-annotations-api_1.2_spec">http://www.jboss.org/jboss-annotations-api_1.2_spec</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html">CDDL or GPLv2 with exceptions</a></p></td></tr></table></div></li>
+<li>javax.activation:activation:jar:1.1.1 (compile) <img id="_1281930540" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_416803522', '_1281930540' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_416803522" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JavaBeans(TM) Activation Framework</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The JavaBeans(TM) Activation Framework is used by the JavaMail(TM) API to manage MIME data</p>
+<p><b>URL: </b><a class="externalLink" href="http://java.sun.com/javase/technologies/desktop/javabeans/jaf/index.jsp">http://java.sun.com/javase/technologies/desktop/javabeans/jaf/index.jsp</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDLv1.0.html">COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</a></p></td></tr></table></div></li>
+<li>org.apache.httpcomponents:httpclient:jar:4.3.6 (compile) <img id="_1346186061" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1489499206', '_1346186061' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1489499206" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache HttpClient</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>HttpComponents Client</p>
+<p><b>URL: </b><a class="externalLink" href="http://hc.apache.org/httpcomponents-client">http://hc.apache.org/httpcomponents-client</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.apache.httpcomponents:httpcore:jar:4.3.3 (compile) <img id="_1816561528" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1826361222', '_1816561528' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1826361222" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache HttpCore</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>HttpComponents Core (blocking I/O)</p>
+<p><b>URL: </b><a class="externalLink" href="http://hc.apache.org/httpcomponents-core-ga">http://hc.apache.org/httpcomponents-core-ga</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>commons-codec:commons-codec:jar:1.10 (compile) <img id="_378873965" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1003565705', '_378873965' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1003565705" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons Codec</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The Apache Commons Codec package contains simple encoder and decoders for
+     various formats such as Base64 and Hexadecimal.  In addition to these
+     widely used encoders and decoders, the codec package also maintains a
+     collection of phonetic encoding utilities.</p>
+<p><b>URL: </b><a class="externalLink" href="http://commons.apache.org/proper/commons-codec/">http://commons.apache.org/proper/commons-codec/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>commons-io:commons-io:jar:2.4 (compile) <img id="_1896548648" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1860467224', '_1896548648' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1860467224" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Commons IO</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The Commons IO library contains utility classes, stream implementations, file filters, 
+file comparators, endian transformation classes, and much more.</p>
+<p><b>URL: </b><a class="externalLink" href="http://commons.apache.org/io/">http://commons.apache.org/io/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>net.jcip:jcip-annotations:jar:1.0 (provided) <img id="_782383172" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_454114343', '_782383172' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_454114343" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>&quot;Java Concurrency in Practice&quot; book annotations</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://jcip.net/">http://jcip.net/</a></p>
+<p><b>Project License: </b>No project license is defined for this project.</p></td></tr></table></div></li>
+<li>org.jboss.logging:jboss-logging:jar:3.3.0.Final (compile) <img id="_1794773446" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_971542776', '_1794773446' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_971542776" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JBoss Logging 3</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The JBoss Logging Framework</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org">http://www.jboss.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.jboss.resteasy:resteasy-client:jar:3.0.13.Final (compile) <img id="_149610609" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1900456083', '_149610609' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1900456083" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>RESTEasy JAX-RS Client</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Resteasy</p>
+<p><b>URL: </b><a class="externalLink" href="http://rest-easy.org/resteasy-client">http://rest-easy.org/resteasy-client</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.jboss.resteasy:resteasy-jaxrs:jar:3.0.13.Final (compile) <img id="_1085679015" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1960517194', '_1085679015' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1960517194" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>RESTEasy JAX-RS Implementation</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://rest-easy.org/resteasy-jaxrs">http://rest-easy.org/resteasy-jaxrs</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.jboss.logging:jboss-logging:jar:3.3.0.Final (compile) <img id="_1019366571" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1281888429', '_1019366571' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1281888429" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JBoss Logging 3</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The JBoss Logging Framework</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org">http://www.jboss.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.jboss.resteasy:resteasy-jaxb-provider:jar:3.0.13.Final (compile) <img id="_80848703" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_2068602485', '_80848703' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_2068602485" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Resteasy JAXB Provider</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://rest-easy.org/resteasy-jaxb-provider">http://rest-easy.org/resteasy-jaxb-provider</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.jboss.logging:jboss-logging:jar:3.3.0.Final (compile) <img id="_875645859" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_482506894', '_875645859' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_482506894" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JBoss Logging 3</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The JBoss Logging Framework</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org">http://www.jboss.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>javax.mail:mail:jar:1.5.0-b01 (compile) <img id="_529467058" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1518377713', '_529467058' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1518377713" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JavaMail API (compat)</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JavaMail API (compat)</p>
+<p><b>URL: </b><a class="externalLink" href="http://kenai.com/projects/javamail/mail">http://kenai.com/projects/javamail/mail</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.sun.com/cddl">CDDL</a><a class="externalLink" href="https://glassfish.java.net/public/CDDL+GPL_1_1.html">GPLv2+CE</a></p></td></tr></table></div>
+<ul>
+<li>javax.activation:activation:jar:1.1.1 (compile) <img id="_820011987" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1173473247', '_820011987' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1173473247" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JavaBeans(TM) Activation Framework</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The JavaBeans(TM) Activation Framework is used by the JavaMail(TM) API to manage MIME data</p>
+<p><b>URL: </b><a class="externalLink" href="http://java.sun.com/javase/technologies/desktop/javabeans/jaf/index.jsp">http://java.sun.com/javase/technologies/desktop/javabeans/jaf/index.jsp</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDLv1.0.html">COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.apache.james:apache-mime4j:jar:0.6 (compile) <img id="_206565974" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_166266247', '_206565974' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_166266247" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache JAMES Mime4j</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Java stream based MIME message parser</p>
+<p><b>URL: </b><a class="externalLink" href="http://james.apache.org/mime4j">http://james.apache.org/mime4j</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.jboss.logging:jboss-logging:jar:3.3.0.Final (compile) <img id="_330189622" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1735403285', '_330189622' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1735403285" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JBoss Logging 3</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The JBoss Logging Framework</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.jboss.org">http://www.jboss.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.codehaus.jackson:jackson-core-asl:jar:1.9.13 (compile) <img id="_1384618631" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1268639154', '_1384618631' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1268639154" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Jackson</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Jackson is a high-performance JSON processor (parser, generator)</p>
+<p><b>URL: </b><a class="externalLink" href="http://jackson.codehaus.org">http://jackson.codehaus.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.codehaus.jackson:jackson-mapper-asl:jar:1.9.13 (compile) <img id="_443434282" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_336561708', '_443434282' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_336561708" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Data Mapper for Jackson</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Data Mapper package is a high-performance data binding package
+built on Jackson JSON processor</p>
+<p><b>URL: </b><a class="externalLink" href="http://jackson.codehaus.org">http://jackson.codehaus.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.codehaus.jackson:jackson-core-asl:jar:1.9.13 (compile) <img id="_1312982174" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_2068628877', '_1312982174' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_2068628877" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Jackson</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Jackson is a high-performance JSON processor (parser, generator)</p>
+<p><b>URL: </b><a class="externalLink" href="http://jackson.codehaus.org">http://jackson.codehaus.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.codehaus.jackson:jackson-xc:jar:1.9.13 (test) <img id="_1632438000" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_71094780', '_1632438000' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_71094780" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Xml Compatibility extensions for Jackson</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Extensions that provide interoperability support for
+Jackson JSON processor's data binding functionality.</p>
+<p><b>URL: </b><a class="externalLink" href="http://jackson.codehaus.org">http://jackson.codehaus.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a><a class="externalLink" href="http://www.fsf.org/licensing/licenses/lgpl.txt">GNU Lesser General Public License (LGPL), Version 2.1</a></p></td></tr></table></div>
+<ul>
+<li>org.codehaus.jackson:jackson-core-asl:jar:1.9.13 (test) <img id="_348837963" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_639441328', '_348837963' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_639441328" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Jackson</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Jackson is a high-performance JSON processor (parser, generator)</p>
+<p><b>URL: </b><a class="externalLink" href="http://jackson.codehaus.org">http://jackson.codehaus.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.codehaus.jackson:jackson-mapper-asl:jar:1.9.13 (test) <img id="_1743512856" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1335162434', '_1743512856' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1335162434" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Data Mapper for Jackson</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Data Mapper package is a high-performance data binding package
+built on Jackson JSON processor</p>
+<p><b>URL: </b><a class="externalLink" href="http://jackson.codehaus.org">http://jackson.codehaus.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.slf4j:slf4j-api:jar:1.7.22 (compile) <img id="_1039328010" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_2112778710', '_1039328010' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_2112778710" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>SLF4J API Module</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The slf4j API</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></p></td></tr></table></div></li>
+<li>org.spockframework:spock-core:jar:1.0-groovy-2.4 (test) <img id="_634869087" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1274844109', '_634869087' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1274844109" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Spock Framework - Core Module</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Spock is a testing and specification framework for Java and Groovy applications. What makes it stand out from the crowd is its beautiful and highly expressive specification language. Thanks to its JUnit runner, Spock is compatible with most IDEs, build tools, and continuous integration servers. Spock is inspired from JUnit, jMock, RSpec, Groovy, Scala, Vulcans, and other fascinating life forms.</p>
+<p><b>URL: </b><a class="externalLink" href="http://spockframework.org">http://spockframework.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.codehaus.groovy:groovy-all:jar:2.4.4 (test) <img id="_916356159" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1615862076', '_916356159' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1615862076" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Groovy</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Groovy: A powerful, dynamic language for the JVM</p>
+<p><b>URL: </b><a class="externalLink" href="http://groovy-lang.org">http://groovy-lang.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>junit:junit:jar:4.12 (test) <img id="_724857261" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_46689896', '_724857261' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_46689896" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JUnit</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck.</p>
+<p><b>URL: </b><a class="externalLink" href="http://junit.org">http://junit.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a></p></td></tr></table></div></li></ul></li>
+<li>com.google.guava:guava:jar:18.0 (compile) <img id="_288476688" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_613418257', '_288476688' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_613418257" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Guava: Google Core Libraries for Java</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Guava is a suite of core and expanded libraries that include
+    utility classes, google's collections, io classes, and much
+    much more.
+
+    Guava has only one code dependency - javax.annotation,
+    per the JSR-305 spec.</p>
+<p><b>URL: </b><a class="externalLink" href="http://code.google.com/p/guava-libraries/guava">http://code.google.com/p/guava-libraries/guava</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.hamcrest:hamcrest-core:jar:1.3 (test) <img id="_1245292290" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_725539153', '_1245292290' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_725539153" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Hamcrest Core</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>This is the core API of hamcrest matcher framework to be used by third-party framework providers. This includes the a foundation set of matcher implementations for common operations.</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/hamcrest/JavaHamcrest/hamcrest-core">https://github.com/hamcrest/JavaHamcrest/hamcrest-core</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">New BSD License</a></p></td></tr></table></div></li>
+<li>org.hamcrest:hamcrest-library:jar:1.3 (test) <img id="_1690885411" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1463540489', '_1690885411' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1463540489" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Hamcrest library</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Hamcrest library of matcher implementations.</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/hamcrest/JavaHamcrest/hamcrest-library">https://github.com/hamcrest/JavaHamcrest/hamcrest-library</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">New BSD License</a></p></td></tr></table></div>
+<ul>
+<li>org.hamcrest:hamcrest-core:jar:1.3 (test) <img id="_1042220311" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_619287270', '_1042220311' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_619287270" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Hamcrest Core</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>This is the core API of hamcrest matcher framework to be used by third-party framework providers. This includes the a foundation set of matcher implementations for common operations.</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/hamcrest/JavaHamcrest/hamcrest-core">https://github.com/hamcrest/JavaHamcrest/hamcrest-core</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">New BSD License</a></p></td></tr></table></div></li></ul></li>
+<li>javax.xml.stream:stax-api:jar:1.0 (compile) <img id="_1432362465" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_65983178', '_1432362465' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_65983178" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Streaming API for XML</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>StAX is a standard XML processing API that allows you to stream XML data from and to your application.</p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.gnu.org/licenses/gpl.txt">GNU General Public Library</a><a class="externalLink" href="http://www.sun.com/cddl/cddl.html">COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</a></p></td></tr></table></div></li>
+<li>javax.xml.bind:jaxb-api:jar:2.2.12 (compile) <img id="_1465554637" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_51705951', '_1465554637' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_51705951" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Java Architecture for XML Binding</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JAXB (JSR 222) API</p>
+<p><b>URL: </b><a class="externalLink" href="http://jaxb.java.net/">http://jaxb.java.net/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.java.net/public/CDDL+GPL_1_1.html">CDDL 1.1</a><a class="externalLink" href="https://glassfish.java.net/public/CDDL+GPL_1_1.html">GPL2 w/ CPE</a></p></td></tr></table></div></li>
+<li>org.slf4j:jcl-over-slf4j:jar:1.7.22 (compile) <img id="_2016421332" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_618881357', '_2016421332' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_618881357" style="display:none">
 <table border="0" class="bodyTable">
 <tr class="a">
 <th>JCL 1.1.1 implemented over SLF4J</th></tr>
@@ -235,7 +851,7 @@
 <p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></p></td></tr></table></div>
 <ul>
-<li>org.slf4j:slf4j-api:jar:1.7.22 (compile) <img id="_1003935679" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_425412510', '_1003935679' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_425412510" style="display:none">
+<li>org.slf4j:slf4j-api:jar:1.7.22 (compile) <img id="_853673525" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_306501927', '_853673525' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_306501927" style="display:none">
 <table border="0" class="bodyTable">
 <tr class="a">
 <th>SLF4J API Module</th></tr>
@@ -244,7 +860,7 @@
 <p><b>Description: </b>The slf4j API</p>
 <p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></p></td></tr></table></div></li></ul></li>
-<li>org.slf4j:slf4j-log4j12:jar:1.7.22 (test) <img id="_596852383" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_511609696', '_596852383' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_511609696" style="display:none">
+<li>org.slf4j:slf4j-log4j12:jar:1.7.22 (test) <img id="_665333558" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_239966019', '_665333558' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_239966019" style="display:none">
 <table border="0" class="bodyTable">
 <tr class="a">
 <th>SLF4J LOG4J-12 Binding</th></tr>
@@ -254,7 +870,7 @@
 <p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></p></td></tr></table></div>
 <ul>
-<li>org.slf4j:slf4j-api:jar:1.7.22 (test) <img id="_1278085214" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1895344255', '_1278085214' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1895344255" style="display:none">
+<li>org.slf4j:slf4j-api:jar:1.7.22 (test) <img id="_2058520881" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1501125180', '_2058520881' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1501125180" style="display:none">
 <table border="0" class="bodyTable">
 <tr class="a">
 <th>SLF4J API Module</th></tr>
@@ -263,7 +879,7 @@
 <p><b>Description: </b>The slf4j API</p>
 <p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></p></td></tr></table></div></li>
-<li>log4j:log4j:jar:1.2.17 (test) <img id="_1550562072" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1904794778', '_1550562072' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1904794778" style="display:none">
+<li>log4j:log4j:jar:1.2.17 (test) <img id="_1886593028" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_552629882', '_1886593028' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_552629882" style="display:none">
 <table border="0" class="bodyTable">
 <tr class="a">
 <th>Apache Log4j</th></tr>
@@ -274,9 +890,26 @@
 <p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li></ul></li></ul></div></div><a name="Licenses"></a>
 <div class="section">
 <h2><a name="Licenses"></a>Licenses</h2>
+<p><b>Apache License, version 2.0: </b>JBoss Logging 3</p>
+<p><b>GPLv2+CE: </b>JavaMail API (compat)</p>
+<p><b>GNU Lesser General Public License (LGPL), Version 2.1: </b>Xml Compatibility extensions for Jackson</p>
+<p><b>CDDL 1.1: </b>Java Architecture for XML Binding</p>
+<p><b>Common Development and Distribution License: </b>JAX-RS 2.0: The Java(TM) API for RESTful Web Services</p>
+<p><b>Eclipse Public License 1.0: </b>JUnit</p>
 <p><b>MIT License: </b>JCL 1.1.1 implemented over SLF4J, SLF4J API Module, SLF4J LOG4J-12 Binding</p>
-<p><b>GNU Lesser General Public License v2.1: </b>Zanata Platform</p>
-<p><b>The Apache Software License, Version 2.0: </b>Apache Log4j</p></div>
+<p><b>CDDL or GPLv2 with exceptions: </b>Common Annotations 1.2 API</p>
+<p><b>GPL2 w/ CPE: </b>Java Architecture for XML Binding</p>
+<p><b>New BSD License: </b>Hamcrest Core, Hamcrest library</p>
+<p><b>GNU Lesser Public License: </b>FindBugs-Native-Annotations</p>
+<p><b>Apache 2: </b>Enunciate - Core Annotations</p>
+<p><b>GNU General Public Library: </b>Streaming API for XML</p>
+<p><b>Unknown: </b>&quot;Java Concurrency in Practice&quot; book annotations</p>
+<p><b>CDDL: </b>JavaMail API (compat)</p>
+<p><b>GNU Lesser General Public License v2.1: </b>Zanata Common API</p>
+<p><b>Apache License, Version 2.0: </b>Apache Commons Codec, Apache HttpClient, Apache HttpCore, Apache JAMES Mime4j, Hibernate Validator Engine, RESTEasy JAX-RS Client, RESTEasy JAX-RS Implementation, Resteasy JAXB Provider, Resteasy Multipart Provider</p>
+<p><b>COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0: </b>JavaBeans(TM) Activation Framework, Streaming API for XML</p>
+<p><b>GNU General Public License, Version 2 with the Classpath Exception: </b>JAX-RS 2.0: The Java(TM) API for RESTful Web Services</p>
+<p><b>The Apache Software License, Version 2.0: </b>Apache Groovy, Apache Log4j, Bean Validation API, ClassMate, Commons IO, Data Mapper for Jackson, FindBugs-jsr305, Guava: Google Core Libraries for Java, Jackson, Spock Framework - Core Module, Xml Compatibility extensions for Jackson</p></div>
       </div>
     </div>
     <div class="clear">
