@@ -1,0 +1,10 @@
+org.zanata.common
+org.zanata.rest
+org.zanata.rest.dto
+org.zanata.rest.dto.extensions
+org.zanata.rest.dto.extensions.comment
+org.zanata.rest.dto.extensions.gettext
+org.zanata.rest.dto.resource
+org.zanata.rest.dto.stats
+org.zanata.rest.dto.stats.contribution
+org.zanata.rest.service
