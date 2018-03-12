@@ -1,0 +1,20 @@
+$brand-font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+$brand-color: #546677;
+$brand-color-lighter: desaturate(lighten($brand-color, 50%), 20%);
+$brand-neutral-colors: (#646569, #004876, #004876);
+$brand-accent-colors: (#03A6D7, #20718A);
+$brand-status-colors: (
+    critical: #dd3000,
+    error: #ff3b3d,
+    warning: #ffa800,
+    ok: #62c876,
+    unknown: $brand-color,
+    disabled: #A2B3BE,
+);
+$brand-link-color: #03A6D7;
+$brand-grey-colors: (#000001, #555, #ddd, #f7f7f7);
+$brand-graph-colors: (#03A6D7, #20718A, #546677, #BDD4DC);
+$focus-border-color: #20718A;
+
+$border-radius: 3px;

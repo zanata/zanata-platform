@@ -488,9 +488,16 @@ exports[`Frontend Storyshots Button block 1`] = `
   </h2>
   <p>
     <button
-      className="btn btn-default btn-block"
+      aria-label={undefined}
+      block={true}
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Button block
@@ -511,9 +518,16 @@ exports[`Frontend Storyshots Button danger 1`] = `
   </h2>
   <p>
     <button
-      className="btn btn-danger"
+      aria-label={undefined}
+      bsStyle="danger"
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Danger button
@@ -538,9 +552,15 @@ exports[`Frontend Storyshots Button default 1`] = `
   </h2>
   <p>
     <button
-      className="btn btn-default"
+      aria-label={undefined}
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Unstyled button
@@ -782,25 +802,43 @@ exports[`Frontend Storyshots Button group 1`] = `
     className="btn-group"
   >
     <button
-      className="btn btn-default"
+      aria-label={undefined}
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Left
     </button>
     <button
-      className="btn btn-default"
+      aria-label={undefined}
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Middle
     </button>
     <button
-      className="btn btn-default"
+      aria-label={undefined}
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Right
@@ -892,9 +930,16 @@ exports[`Frontend Storyshots Button info 1`] = `
   </h2>
   <p>
     <button
-      className="btn btn-info"
+      aria-label={undefined}
+      bsStyle="info"
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Info button
@@ -930,17 +975,29 @@ exports[`Frontend Storyshots Button nested 1`] = `
     className="btn-group"
   >
     <button
-      className="btn btn-default"
+      aria-label={undefined}
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       1
     </button>
     <button
-      className="btn btn-default"
+      aria-label={undefined}
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       2
@@ -1013,9 +1070,16 @@ exports[`Frontend Storyshots Button primary 1`] = `
   </h2>
   <p>
     <button
-      className="btn btn-primary"
+      aria-label={undefined}
+      bsStyle="primary"
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Primary button
@@ -1039,17 +1103,32 @@ exports[`Frontend Storyshots Button sizes 1`] = `
       className="btn-group"
     >
       <button
-        className="btn btn-lg btn-primary"
+        aria-label={undefined}
+        bsSize="large"
+        bsStyle="primary"
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Large button
       </button>
       <button
-        className="btn btn-lg btn-default"
+        aria-label={undefined}
+        bsSize="large"
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Large button
@@ -1059,17 +1138,30 @@ exports[`Frontend Storyshots Button sizes 1`] = `
       className="btn-group"
     >
       <button
-        className="btn btn-primary"
+        aria-label={undefined}
+        bsStyle="primary"
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Default button
       </button>
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Default button
@@ -1079,17 +1171,32 @@ exports[`Frontend Storyshots Button sizes 1`] = `
       className="btn-group"
     >
       <button
-        className="btn btn-sm btn-primary"
+        aria-label={undefined}
+        bsSize="small"
+        bsStyle="primary"
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Small button
       </button>
       <button
-        className="btn btn-sm btn-default"
+        aria-label={undefined}
+        bsSize="small"
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Small button
@@ -1099,17 +1206,32 @@ exports[`Frontend Storyshots Button sizes 1`] = `
       className="btn-group"
     >
       <button
-        className="btn btn-xs btn-primary"
+        aria-label={undefined}
+        bsSize="xsmall"
+        bsStyle="primary"
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Extra small button
       </button>
       <button
-        className="btn btn-xs btn-default"
+        aria-label={undefined}
+        bsSize="xsmall"
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         Extra small button
@@ -1131,9 +1253,16 @@ exports[`Frontend Storyshots Button success 1`] = `
   </h2>
   <p>
     <button
-      className="btn btn-success"
+      aria-label={undefined}
+      bsStyle="success"
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Success button
@@ -1173,33 +1302,57 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
       className="btn-group"
     >
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         1
       </button>
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         2
       </button>
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         3
       </button>
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         4
@@ -1209,25 +1362,43 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
       className="btn-group"
     >
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         5
       </button>
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         6
       </button>
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         7
@@ -1237,9 +1408,15 @@ exports[`Frontend Storyshots Button toolbar 1`] = `
       className="btn-group"
     >
       <button
-        className="btn btn-default"
+        aria-label={undefined}
+        className="grommetux-button grommetux-button--plain"
         disabled={false}
+        href={undefined}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseUp={[Function]}
         type="button"
       >
         8
@@ -1296,9 +1473,16 @@ exports[`Frontend Storyshots Button warning 1`] = `
   </h2>
   <p>
     <button
-      className="btn btn-warning"
+      aria-label={undefined}
+      bsStyle="warning"
+      className="grommetux-button grommetux-button--plain"
       disabled={false}
+      href={undefined}
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseUp={[Function]}
       type="button"
     >
       Warning button

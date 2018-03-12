@@ -1,9 +1,9 @@
 // @ts-nocheck
 import React from 'react'
-import { action } from '@storybook/addon-actions'
-import { storiesOf } from '@storybook/react'
-import { Button, ButtonToolbar, ButtonGroup,
+import { storiesOf, action } from '@storybook/react'
+import { ButtonToolbar, ButtonGroup,
   DropdownButton, MenuItem, Table, Well } from 'react-bootstrap'
+import Button from 'grommet/components/Button'
 
 storiesOf('Button', module)
     .add('default', () => (

@@ -229,7 +229,23 @@ module.exports = function (env, isEditor, devServerPort) {
               'less-loader'
             ]
           })
-        }
+        },
+        {
+          test: /\.scss$/,
+          use: [
+            {
+              loader: 'style-loader'
+            },
+            {
+              loader: 'css-loader'
+            },
+            {
+              loader: 'sass-loader', options: {
+                includePaths: ['./node_modules']
+              }
+            }
+          ]
+        },
       ])
     },
 
