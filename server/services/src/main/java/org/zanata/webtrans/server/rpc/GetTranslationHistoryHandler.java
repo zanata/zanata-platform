@@ -136,8 +136,8 @@ public class GetTranslationHistoryHandler extends
                         hLocale.getLocaleId());
         return Lists.transform(hComments, input -> new ReviewComment(
                 new ReviewCommentId(input.getId()),
-                input.getCommentText(), input.getCommenterName(),
-                input.getCommenterUsername(),
+                input.getCommentText(), input.getCommenterUsername(),
+                input.getCommenterName(),
                 input.getCreationDate()
         ));
     }

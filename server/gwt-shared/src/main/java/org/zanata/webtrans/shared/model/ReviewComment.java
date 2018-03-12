@@ -15,19 +15,19 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
     private static final long serialVersionUID = -739227847010028336L;
     private ReviewCommentId id;
     private String comment;
-    private String commenterName;
     private String username;
+    private String commenterName;
     private Date creationDate;
 
     public ReviewComment() {
     }
 
     public ReviewComment(ReviewCommentId id, String comment,
-            String commenterName, String username, Date creationDate) {
+            String username, String commenterName, Date creationDate) {
         this.id = id;
         this.comment = comment;
-        this.commenterName = commenterName;
         this.username = username;
+        this.commenterName = commenterName;
         this.creationDate = creationDate != null ?
                 new Date(creationDate.getTime()) : null;
     }
