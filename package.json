@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "grommet": "^1.10.1",
+    "node-sass": "^4.8.1",
+    "sass-loader": "^6.0.7"
+  }
+}

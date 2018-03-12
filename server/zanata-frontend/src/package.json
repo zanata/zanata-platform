@@ -14,6 +14,7 @@
     "build": "yarn run check && node scripts/build",
     "draft": "yarn run check && node scripts/build --draft",
     "extract-messages": "yarn run check && node scripts/extract-messages",
+    "postinstall" : "npm --ignore-scripts=false rebuild node-sass",
     "watch": "yarn run check && node scripts/dev-server",
     "watch:editor": "yarn run check && node scripts/dev-server --editor",
     "styleguide-server": "yarn run check && styleguidist server",

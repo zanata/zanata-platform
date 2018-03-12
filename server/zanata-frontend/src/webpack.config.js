@@ -198,7 +198,7 @@ module.exports = function (env) {
             ])
           })
         },
-          
+
         /* Bundles bootstrap css into the same bundle as the other css.
          */
         {
@@ -220,7 +220,23 @@ module.exports = function (env) {
               'less-loader'
             ]
           })
-        }
+        },
+        {
+          test: /\.scss$/,
+          use: [
+            {
+              loader: 'style-loader'
+            },
+            {
+              loader: 'css-loader'
+            },
+            {
+              loader: 'sass-loader', options: {
+                includePaths: ['./node_modules']
+              }
+            }
+          ]
+        },
       ])
     },
 
