@@ -39,6 +39,7 @@ class TranslatingIndicator extends React.Component {
   }
 
   render () {
+    const { permissions } = this.props
     // These need to be translated individually for context
     const reviewingMessage = (
       <FormattedMessage id='TranslatingIndicator.reviewing'
@@ -55,22 +56,30 @@ class TranslatingIndicator extends React.Component {
         description={'Indicator of editor viewing mode'}
         defaultMessage='Viewing' />
     )
-    const modeMessage = () => {
-      if (this.props.permissions.reviewer === true) {
-        return reviewingMessage
-      } else if (this.props.permissions.translator === true) {
-        return translatingMessage
-      } else {
-        return viewingMessage
-      }
-    }
+    const modeMessage = (
+        permissions.reviewer
+        ? reviewingMessage : permissions.translator
+        ? translatingMessage
+        : viewingMessage
+    )
+    const iconName = (
+        permissions.reviewer
+          ? 'review' : permissions.translator
+          ? 'translate'
+          : 'locked'
+    )
+    const iconStyle = (
+      permissions.reviewer || permissions.translator
+          ? 's2'
+          : 's2 u-textDanger'
+    )
     return (
       /* eslint-disable max-len */
       <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4'>
         <Row>
-          <Icon name='translate' className='s2' /> <span
+          <Icon name={iconName} className={iconStyle} /> <span
             className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
-            {modeMessage()}
+            {modeMessage}
           </span>
         </Row>
       </button>
