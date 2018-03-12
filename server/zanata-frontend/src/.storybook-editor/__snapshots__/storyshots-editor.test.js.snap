@@ -7651,16 +7651,25 @@ exports[`Editor Storyshots TextDiff default 1`] = `
     changed
   </ins>
   <span>
-     text, what
+     text, 
   </span>
   <del>
-    ever it wa
+    whatever
   </del>
   <ins>
-     it now i
+    what
   </ins>
   <span>
-    s.
+     it 
+  </span>
+  <del>
+    was
+  </del>
+  <ins>
+    now is
+  </ins>
+  <span>
+    .
   </span>
 </div>
 `;
