@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { handleActions } from 'redux-actions'
 import { keyBy } from 'lodash'
 import {
@@ -45,7 +46,7 @@ export default handleActions({
   [CLEAR_MESSAGE]: (state, action) => {
     return {
       ...state,
-      notification: null
+      notification: undefined
     }
   },
   [LOAD_USER_REQUEST]: (state, action) => {

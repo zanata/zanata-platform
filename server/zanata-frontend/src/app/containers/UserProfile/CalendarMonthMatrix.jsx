@@ -1,4 +1,3 @@
-// @ts-check
 import * as PropTypes from 'prop-types'
 import React from 'react'
 import moment from 'moment'
@@ -18,7 +17,9 @@ const classes = {
     }
   }
 }
-/** @type { React.StatelessComponent<{matrixData, selectedDay, selectedContentState, dateRange, handleSelectedDayChanged}> } */
+/** @type
+    { React.StatelessComponent<{matrixData, selectedDay, selectedContentState,
+      dateRange, handleSelectedDayChanged}> } */
 const CalendarMonthMatrix = ({
   matrixData,
   selectedDay,

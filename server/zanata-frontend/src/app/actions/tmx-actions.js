@@ -4,7 +4,9 @@ import { isUndefined, includes } from 'lodash'
 import {
   getJsonHeaders,
   getHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  // eslint-disable-next-line
+  APITypes
 } from './common-actions'
 import { apiUrl, isLoggedIn } from '../config'
 
@@ -28,11 +30,12 @@ export const showExportTMXModal =
 export const setInitialState = createAction(SET_INITIAL_STATE)
 
 const fetchSourceLanguages = (endpoint) => {
+  /** @type {APITypes} */
   const apiTypes = [
     GET_LOCALE_REQUEST,
     {
       type: GET_LOCALE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -52,14 +55,15 @@ const fetchSourceLanguages = (endpoint) => {
 }
 
 const getTMX = (srcLocaleId, project, version, endpoint) => {
+  /** @type {APITypes} */
   const apiTypes = [
     {
       type: GET_TMX_REQUEST,
-      payload: (action, state) => ({srcLocaleId: srcLocaleId})
+      payload: (_action, _state) => ({srcLocaleId: srcLocaleId})
     },
     {
       type: GET_TMX_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         return res.blob().then((blob) => {
           return {blob, srcLocaleId, project, version}
         })
@@ -70,7 +74,7 @@ const getTMX = (srcLocaleId, project, version, endpoint) => {
     },
     {
       type: GET_TMX_FAILURE,
-      payload: (action, state) => ({srcLocaleId: srcLocaleId})
+      payload: (_action, _state) => ({srcLocaleId: srcLocaleId})
     }
   ]
   return {
@@ -79,7 +83,7 @@ const getTMX = (srcLocaleId, project, version, endpoint) => {
 }
 
 export const tmxInitialLoad = (project, version) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     if (isLoggedIn) {
       let type
       let endpoint
@@ -96,6 +100,7 @@ export const tmxInitialLoad = (project, version) => {
         type = TMX_ALL
         endpoint = apiUrl + '/locales/source'
       }
+      // @ts-ignore
       dispatch(setInitialState(type))
       dispatch(fetchSourceLanguages(endpoint))
     }

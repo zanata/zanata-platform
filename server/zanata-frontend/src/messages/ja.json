@@ -1,0 +1,6 @@
+{
+  "TranslatingIndicator.translating": {
+    "defaultMessage": "翻訳中",
+    "description": "翻訳モードを示す"
+  }
+}

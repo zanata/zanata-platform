@@ -11,10 +11,27 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
-  STATUS_APPROVED
+  STATUS_APPROVED,
+  STATUS_REJECTED
 } from '../utils/status-util'
-import { apiUrl, serverUrl } from '../../config'
-import { stableStringify } from 'faster-stable-stringify'
+import {
+  USER_PERMISSION_REQUEST,
+  USER_PERMISSION_SUCCESS,
+  USER_PERMISSION_FAILURE,
+  LOCALE_MESSAGES_REQUEST,
+  LOCALE_MESSAGES_SUCCESS,
+  LOCALE_MESSAGES_FAILURE
+} from '../actions/header-action-types'
+import {
+  buildAPIRequest,
+  getJsonHeaders,
+  // eslint-disable-next-line
+  APITypes
+} from '../../actions/common-actions'
+import { CALL_API } from 'redux-api-middleware'
+import { includes } from 'lodash'
+import { apiUrl, serverUrl, appUrl } from '../../config'
+import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
 
@@ -24,6 +41,30 @@ export function projectPageUrl (projectSlug, versionSlug) {
 
 export function profileUrl (username) {
   return `${serverUrl}/profile/view/${username}`
+}
+
+export function getTranslationPermission (localeId, projectSlug) {
+  const endpoint =
+  `${apiUrl}/user/permission/roles/project/${projectSlug}?localeId=${localeId}`
+  /** @type {APITypes} */
+  const apiTypes = [
+    USER_PERMISSION_REQUEST,
+    {
+      type: USER_PERMISSION_SUCCESS,
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    USER_PERMISSION_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
 }
 
 export function fetchStatistics (projectSlug, versionSlug, docId, localeId) {
@@ -49,6 +90,28 @@ export function fetchLocales () {
     credentials: 'include',
     method: 'GET'
   })
+}
+
+export function fetchI18nLocale (locale) {
+  const endpoint = `${appUrl}/messages/${locale}.json`
+  /** @type {APITypes} */
+  const apiTypes = [
+    LOCALE_MESSAGES_REQUEST,
+    {
+      type: LOCALE_MESSAGES_SUCCESS,
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    LOCALE_MESSAGES_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
 }
 
 export function fetchMyInfo () {
@@ -143,6 +206,8 @@ function phraseStatusToTransUnitStatus (status) {
       return 'Translated'
     case STATUS_APPROVED:
       return 'Approved'
+    case STATUS_REJECTED:
+      return 'Rejected'
     default:
       console.error('Save attempt with invalid status', status)
   }

@@ -11,15 +11,15 @@
   width: 100%;
   height: 10px;
   margin: -5px 0;
-  border-top: 5px solid rgba(255, 255, 255, 0);
-  border-bottom: 5px solid rgba(255, 255, 255, 0);
+  border-top: 3px solid rgba(0, 0, 0, 0.6);
+  border-bottom: none;
   cursor: row-resize;
 }
 
 
 .Resizer.horizontal:hover {
-    border-top: 5px solid rgba(0, 0, 0, 0.5);
-    border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+    border-top: 5px solid rgba(0, 0, 0, 0.8);
+    border-bottom: 5px solid rgba(0, 0, 0, 0.8);
 }
 
 /*

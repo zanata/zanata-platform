@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -14,7 +15,7 @@ class DeleteEntryModal extends Component {
     handleDeleteEntry: PropTypes.func.isRequired
   }
 
-  handleDeleteEntry = (entryId) => {
+  handleDeleteEntry = (_entryId) => {
     this.props.handleDeleteEntry(this.props.entry.id)
     setTimeout(() => {
       this.props.handleDeleteEntryDisplay(false)

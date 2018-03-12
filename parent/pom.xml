@@ -223,6 +223,7 @@
     <resteasy.version>3.0.13.Final</resteasy.version>
     <surefire.version>2.18.1</surefire.version>
     <maven.source.version>2.2.1</maven.source.version>
+    <site-maven-plugin.version>0.12</site-maven-plugin.version>
 
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
     <checkstyle.version>7.2</checkstyle.version>
@@ -596,7 +597,17 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.2</version>
+        <version>2.5</version>
+        <configuration>
+          <rulesUri>classpath:///zanata-build-tools/versions-rules.xml</rulesUri>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
@@ -679,7 +690,6 @@
           <goals>deploy</goals>
         </configuration>
       </plugin>
-
     </plugins>
 
     <pluginManagement>
@@ -841,6 +851,19 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.1</version>
+            <extensions>true</extensions>
+            <configuration>
+              <!-- The Base URL of Nexus instance where we want to stage -->
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <!-- The server "id" element from settings to use authentication from -->
+              <serverId>sonatype-staging</serverId>
+            </configuration>
           </plugin>
 
           <!-- Deploy javadocs to OSSRH -->

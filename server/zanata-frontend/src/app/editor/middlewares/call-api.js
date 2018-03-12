@@ -1,4 +1,5 @@
-/* Enahanced CALL_API that sets some defaults and gives a better API */
+// @ts-nocheck
+/* Enhanced CALL_API that sets some defaults and gives a better API */
 
 import { CALL_API } from 'redux-api-middleware'
 

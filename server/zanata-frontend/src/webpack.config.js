@@ -7,7 +7,6 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
-var stylelint = require('stylelint')
 var postcssDiscardDuplicates = require('postcss-discard-duplicates')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var postcssImport = require('postcss-import')
@@ -23,9 +22,12 @@ var cssNano = require('cssnano')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
-const { CheckerPlugin } = require('awesome-typescript-loader')
+const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin
 
-/* Helper so we can use ternary with undefined to not specify a key */
+/**
+ * Helper so we can use ternary with undefined to not specify a key
+ * @param {any} obj
+ */
 function dropUndef (obj) {
   return _(obj).omitBy(_.isNil).value()
 }
@@ -59,7 +61,7 @@ var postCssLoader = {
   }
 }
 
-/*
+/**
  * To set env on command line:
  *   webpack --env.buildtype=draft
  *
@@ -71,9 +73,13 @@ var postCssLoader = {
  *
  * More info:
  *   https://blog.flennik.com/the-fine-art-of-the-webpack-2-config-dc4d19d7f172
+ * @param {any} env
+ * @param {boolean=} isEditor
+ * @param {number=} devServerPort
  */
-module.exports = function (env) {
+module.exports = function (env, isEditor, devServerPort) {
   var buildtype = env && env.buildtype || 'prod'
+  const distDir = isEditor ? 'dist.editor' : 'dist'
 
   /**
    * Development build.
@@ -116,24 +122,27 @@ module.exports = function (env) {
   var fullBuild = draft || prod
 
   require.extensions['.css'] = () => {
-    return;
-  };
+    return
+  }
 
   return dropUndef({
     entry: storybook ? undefined : dropUndef({
-      'frontend': './app/index',
-      'editor': './app/editor/index.js',
-      'frontend.legacy': fullBuild ? './app/legacy' : undefined
+      'frontend': './app/entrypoint/index',
+      'editor': './app/editor/entrypoint/index.js',
+      'frontend.legacy': fullBuild ? './app/entrypoint/legacy' : undefined
     }),
 
     output: storybook ? undefined : dropUndef({
-      path: join(__dirname, 'dist'),
+      path: join(__dirname, distDir),
       filename: fullBuild ? '[name].[chunkhash:8].cache.js' : '[name].js',
       chunkFilename: fullBuild ? '[name].[chunkhash:8].cache.js' : '[name].js',
       // includes comments in the generated code about where the code came from
       pathinfo: dev,
       // required for hot module replacement
-      publicPath: dev ? 'http://localhost:8000/' : undefined
+      // or is it https://github.com/webpack-contrib/style-loader/issues/55 ?
+      publicPath: dev
+      ? `http://localhost:${devServerPort}/`
+      : undefined
     }),
     module: {
       rules: _.compact([
@@ -161,7 +170,7 @@ module.exports = function (env) {
           loader: 'tslint-loader',
           options: {
             failOnHint: !dev,
-            formatter: 'verbose',
+            formatter: 'verbose'
           }
         },
 
@@ -171,7 +180,7 @@ module.exports = function (env) {
           test: /\.(j|t)sx?$/,
           exclude: /node_modules/,
           include: join(__dirname, 'app'),
-          loader: 'awesome-typescript-loader',
+          loader: 'awesome-typescript-loader'
         },
 
         /* TODO:
@@ -244,11 +253,17 @@ module.exports = function (env) {
       // This makes it easier to see if watch has picked up changes yet.
       // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
       // There's probably a config option for this (stats?) but I can't find it.
-      function() {
-        this.plugin('watch-run', function(watching, callback) {
-            console.log('Begin compile at ' + new Date());
-            callback();
-        })
+      function () {
+        this.plugin('watch-run',
+          /**
+           * @param {any} _watching
+           * @param {any} callback
+           */
+          function (_watching, callback) {
+            // eslint-disable-next-line no-console
+            console.log('Begin compile at ' + new Date())
+            callback()
+          })
       },
 
       new CheckerPlugin(),

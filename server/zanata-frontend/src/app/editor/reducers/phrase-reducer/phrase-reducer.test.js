@@ -68,7 +68,7 @@ describe('phrase-reducer test', () => {
 
     const initialState = phraseReducer(undefined, {})
     // Make stub phrases with id p1 to p50
-    const phraseList = Array.from(Array(50), (v, i) => ({ id: `p${i}` }))
+    const phraseList = Array.from(Array(50), (_v, i) => ({ id: `p${i}` }))
 
     const withPhrases = phraseReducer(initialState, {
       type: PHRASE_LIST_SUCCESS,

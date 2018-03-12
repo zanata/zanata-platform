@@ -1,14 +1,12 @@
-// @ts-check
 import * as PropTypes from 'prop-types'
 import React from 'react'
 import dateUtils from '../../utils/DateHelper'
 
-/** @type { React.StatelessComponent<{selectedDay, dateRange, props?}> } */
+/** @type
+    { React.StatelessComponent<{selectedDay, dateRange}> } */
 const CalendarPeriodHeading = ({
   selectedDay,
-  dateRange,
-  // @ts-ignore: unused?
-  ...props
+  dateRange
 }) => {
   const period = selectedDay
     ? dateUtils.formatDate(selectedDay, dateUtils.dateSingleDisplayFmt)

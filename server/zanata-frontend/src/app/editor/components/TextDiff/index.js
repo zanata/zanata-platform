@@ -8,7 +8,7 @@ function compare (text1, text2) {
   return diff.main(text1, text2)
 }
 
-module.exports = class extends React.Component {
+export default class extends React.Component {
   static displayName = 'TextDiff';
 
   static propTypes = {
@@ -28,9 +28,10 @@ module.exports = class extends React.Component {
    * a check whether the text has changed before recalculating
    * the diff.
    */
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate (nextProps, _nextState) {
     return nextProps.text1 !== this.props.text1 ||
       nextProps.text2 !== this.props.text2 ||
+      // @ts-ignore
       nextProps.className !== this.className
   }
 

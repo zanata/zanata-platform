@@ -1,4 +1,3 @@
-// @ts-check
 import { combineReducers } from 'redux'
 import { createSelector } from 'reselect'
 import { routerReducer as routing } from 'react-router-redux'
@@ -10,6 +9,7 @@ import ui, * as uiSelectors from './ui-reducer'
 import headerData from './header-data-reducer'
 import settings, * as settingsSelectors from './settings-reducer'
 import suggestions from './suggestions-reducer'
+import review from './review-trans-reducer'
 
 const rootReducer = combineReducers({
   context,
@@ -20,6 +20,7 @@ const rootReducer = combineReducers({
   routing,
   settings,
   suggestions,
+  review,
   ui
 })
 
@@ -55,3 +56,4 @@ export const getInfoPanelVisible = createSelector(
   getUi, uiSelectors.getInfoPanelVisible)
 export const getKeyShortcutsVisible = createSelector(
   getUi, uiSelectors.getKeyShortcutsVisible)
+export const getAppLocale = state => state.headerData.localeMessages

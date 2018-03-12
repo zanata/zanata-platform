@@ -5,7 +5,9 @@ import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
   LOCALE_SELECTED,
-  STATS_FETCHED
+  STATS_FETCHED,
+  USER_PERMISSION_SUCCESS,
+  LOCALE_MESSAGES_SUCCESS
 } from '../actions/header-action-types'
 import update from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
@@ -39,12 +41,17 @@ const defaultState = {
       },
       id: ''
     },
-    selectedLocale: ''
+    selectedLocale: '',
+    localeMessages: {}
+  },
+  permissions: {
+    reviewer: false,
+    translator: false
   }
 }
 
 const gravatarUrl = (hash, size) => {
-  return `http://www.gravatar.com/avatar/${hash}?d=mm&ampr=g&amps=${size}`
+  return `https://www.gravatar.com/avatar/${hash}?d=mm&r=g&s=${size}`
 }
 
 const headerDataReducer = handleActions({
@@ -79,8 +86,14 @@ const headerDataReducer = handleActions({
   [LOCALE_SELECTED]: (state, { payload }) =>
     update(state, { context: { selectedLocale: {$set: payload} } }),
 
+  [LOCALE_MESSAGES_SUCCESS]: (state, { payload }) =>
+    update(state, { localeMessages: {$set: payload} }),
+
   [STATS_FETCHED]: (state, { payload }) => update(state, {
-    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } })
+    context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } }),
+
+  [USER_PERMISSION_SUCCESS]: (state, { payload }) => update(state, {
+    permissions: {$set: payload} })
 }, defaultState)
 
 export default headerDataReducer

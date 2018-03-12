@@ -8,7 +8,9 @@ import {
   buildAPIRequest,
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
-  LOAD_USER_FAILURE
+  LOAD_USER_FAILURE,
+  // eslint-disable-next-line
+  APITypes
 } from './common-actions'
 import { apiUrl, isLoggedIn, links, serverUrl } from '../config'
 
@@ -34,11 +36,12 @@ const getStatsEndPoint = (username, fromDate, toDate) => {
 
 const getUserStatistics = (username, fromDate, toDate) => {
   const endpoint = getStatsEndPoint(username, fromDate, toDate)
+  /** @type {APITypes} */
   const apiTypes = [
     USER_STATS_REQUEST,
     {
       type: USER_STATS_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -58,7 +61,7 @@ const getUserStatistics = (username, fromDate, toDate) => {
 }
 
 const loadUserStats = (username, dateRangeOption) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     const dateRange = utilsDate.getDateRangeFromOption(dateRangeOption)
     dispatch(getUserStatistics(username, dateRange.fromDate, dateRange.toDate))
   }
@@ -67,11 +70,12 @@ const loadUserStats = (username, dateRangeOption) => {
 const getLocaleDetail = (localeId) => {
   const endpoint = apiUrl + '/locales/locale/' + localeId
 
+  /** @type {APITypes} */
   const apiTypes = [
     GET_LOCALE_REQUEST,
     {
       type: GET_LOCALE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -93,11 +97,12 @@ const getLocaleDetail = (localeId) => {
 const getUserInfo = (dispatch, username, dateRangeOption) => {
   const endpoint = apiUrl + '/user' + (isEmpty(username) ? '' : '/' + username)
 
+  /** @type {APITypes} */
   const apiTypes = [
     LOAD_USER_REQUEST,
     {
       type: LOAD_USER_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -125,7 +130,7 @@ export const profileInitialLoad = (username) => {
     if (isEmpty(username) && !isLoggedIn) {
       // redirect to login screen if no username is found url
       // and user is not logged in
-      window.location = serverUrl + links.loginUrl
+      window.location.href = serverUrl + links.loginUrl
     } else {
       dispatch(getUserInfo(dispatch, username,
         getState().profile.dateRange))
@@ -136,6 +141,7 @@ export const profileInitialLoad = (username) => {
 export const dateRangeChanged = (dataRangeOption) => {
   return (dispatch, getState) => {
     const username = getState().profile.user.username
+    // @ts-ignore
     dispatch(updateDateRange(dataRangeOption))
     dispatch(loadUserStats(username, dataRangeOption))
   }
@@ -144,6 +150,7 @@ export const dateRangeChanged = (dataRangeOption) => {
 export const filterUpdate = (contentState) => {
   return (dispatch, getState) => {
     if (getState().profile.contentStateOption !== contentState) {
+      // @ts-ignore
       dispatch(updateFilter(contentState))
     }
   }
@@ -153,6 +160,7 @@ export const selectDayChanged = (day) => {
   return (dispatch, getState) => {
     // click the same day again will cancel selection
     const selectedDay = getState().profile.selectedDay !== day ? day : null
+    // @ts-ignore
     dispatch(updateSelectDay(selectedDay))
   }
 }

@@ -1,4 +1,3 @@
-
 import GlossaryHelper from './GlossaryHelper'
 
 describe('GlossaryHelperTest', function () {
@@ -151,6 +150,7 @@ describe('GlossaryHelperTest', function () {
   //   expectStatus(status, true, true, true, true, false)
   // })
 
+  // @ts-ignore
   function expectStatus (status, isSrcModified, isTransModified, isSrcValid,
     canUpdateTransComment, isSaving) {
     expect(status.isSrcModified).toEqual(isSrcModified)
@@ -160,6 +160,7 @@ describe('GlossaryHelperTest', function () {
     expect(status.isSaving).toEqual(isSaving)
   }
 
+  // @ts-ignore
   function generateEntry (srcLocale, transLocale) {
     return {
       id: '', pos: '', description: '',

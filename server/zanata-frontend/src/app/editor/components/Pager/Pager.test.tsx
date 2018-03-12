@@ -2,12 +2,12 @@
 
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
-import * as TestUtils from 'react-dom/test-utils'
 import { mount } from 'enzyme'
 import { Pager } from '.'
 import { Icon } from '../../../components'
 import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
 
+// tslint:disable-next-line:no-empty
 const callback = () => {}
 
 describe('PagerTest', () => {

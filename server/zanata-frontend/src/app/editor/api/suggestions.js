@@ -1,3 +1,4 @@
+// @ts-nocheck
 import fetch from 'isomorphic-fetch'
 import { apiUrl } from '../../config'
 import { chain, sortBy } from 'lodash'
@@ -120,7 +121,7 @@ function addBestMatchScores (suggestion) {
  * imported TM details, approved state above translated state, and older
  * modification dates first, in that priority order.
  *
- * @param {MatchDetail} detail
+ * @param {any} detail (MatchDetail)
  * @return {string} representation of order that will sort appropriately.
  */
 function typeAndDateSort (detail) {

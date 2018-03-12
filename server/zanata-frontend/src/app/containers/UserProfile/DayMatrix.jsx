@@ -1,4 +1,3 @@
-// @ts-check
 import * as PropTypes from 'prop-types'
 import React from 'react'
 import { ContentStates } from '../../constants/Options'
@@ -15,7 +14,10 @@ const cssClass = {
   needswork: 'warning'
 }
 
-/** @type { React.StatelessComponent<{key?, dateLabel?, date?, wordCount?, selectedDay?, selectedContentState?, handleSelectedDayChanged?, props?}> } */
+/** @type
+    { React.StatelessComponent<{key?, dateLabel?, date?, wordCount?,
+      selectedDay?, selectedContentState?, handleSelectedDayChanged?}>
+    } */
 const DayMatrix = ({
   dateLabel,
   date,

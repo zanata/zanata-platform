@@ -80,7 +80,7 @@ public class ReviewService {
 
     public static TransReviewCriteria fromModel(ReviewCriteria criteria) {
         return new TransReviewCriteria(criteria.getId(), criteria.getPriority(),
-                criteria.getDescription(), criteria.isEditable());
+                criteria.getDescription(), criteria.isCommentRequired());
     }
 
     @POST
@@ -94,7 +94,7 @@ public class ReviewService {
         }
         ReviewCriteria reviewCriteria =
                 new ReviewCriteria(criteria.getPriority(),
-                        criteria.isEditable(), criteria.getDescription());
+                        criteria.isCommentRequired(), criteria.getDescription());
         reviewCriteriaDAO.makePersistent(reviewCriteria);
         return Response.created(UriBuilder.fromUri(urlUtil.restPath(
                 uriInfo.getPath())).path(reviewCriteria.getId().toString()).build())
@@ -117,7 +117,7 @@ public class ReviewService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         reviewCriteria.setDescription(criteria.getDescription());
-        reviewCriteria.setEditable(criteria.isEditable());
+        reviewCriteria.setCommentRequired(criteria.isCommentRequired());
         reviewCriteria.setPriority(criteria.getPriority());
         return Response.ok(fromModel(reviewCriteria)).build();
     }

@@ -7,11 +7,13 @@
   --TM-text-color: rgb(84, 102, 119);
   --TM-icon-vert-alignment: middle;
   --TM-dropdown-text-color: #03a6d7;
+  --Button-color-neutral: color(#416988 tint(50%));
 }
 
 #RejectTranslationModal .flex {
   flex-direction: row;
   align-items: center;
+  vertical-align: text-top;
 }
 
 #PriorityTitle, #CriteriaTitle {
@@ -24,6 +26,8 @@
 
 #RejectTranslationModal .PriorityDropdown {
   margin-left: 1.5rem;
+  display: inline-flex;
+  align-items: inherit;
 }
 
 #RejectTranslationModal .modal-body .EditorInputGroup--outlined {
@@ -33,10 +37,14 @@
 #RejectTranslationModal .modal-body .EditorDropdown {
   border-radius: var(--TM-input-border-radius);
   border: var(--TM-input-border) !important;
+  min-height: 2rem;
+  line-height: 2rem;
+  padding-right: 2rem;
 }
 
 #RejectTranslationModal .Criteria {
   flex-grow: 2;
+  max-width: 40rem;
 }
 
 #RejectTranslationModal a.EditorDropdown-item span.s0 {
@@ -75,6 +83,12 @@
   border-radius: 0.4rem;
 }
 
+#RejectTranslationModal .EditorDropdown-item span.arrow {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
 #RejectTranslationModal .EditorDropdown-item span.n1 {
   margin-left: var(--TM-small-margin);
   vertical-align: var(--TM-icon-vert-alignment);
@@ -85,6 +99,11 @@
   visibility: hidden;
 }
 
+#RejectTranslationModal .EditorButton:disabled {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-neutral);
+}
+
 .EditorRejection-input {
   margin-top: 1rem;
   padding: 0.75rem;
@@ -92,4 +111,11 @@
   border: var(--TM-input-border) !important;
   max-width: 98%;
   resize: vertical;
+}
+
+.EditorRejection-input p {
+  position: relative;
+  float: left;
+  bottom: -15px;
+  left: -5px;
 }

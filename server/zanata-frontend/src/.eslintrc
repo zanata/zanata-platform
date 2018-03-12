@@ -22,4 +22,6 @@ rules:
     - 80 // line length (characters)
     - 2   // count tabs as 2 characters (required, but we don't allow tabs)
     // allow JSX to exceed 80 characters (https://twitter.com/timtyrrell/status/689912501165658112)
-    - { ignorePattern: "\\s*<" }
+    - { ignorePattern: "^\\s*<" }
+
+  quotes: [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}]

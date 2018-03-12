@@ -67,6 +67,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ValidationService;
@@ -87,7 +88,8 @@ import com.google.common.collect.Lists;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ TranslationStateCacheImpl.class,
         DocumentStatisticLoader.class, HTextFlowTargetIdLoader.class,
-        HTextFlowTargetValidationLoader.class, VersionStatisticLoader.class })
+        HTextFlowTargetValidationLoader.class, VersionStatisticLoader.class,
+        CurrentUserImpl.class})
 @SupportDeltaspikeCore
 public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 

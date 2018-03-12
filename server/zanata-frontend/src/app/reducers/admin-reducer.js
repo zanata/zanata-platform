@@ -1,4 +1,3 @@
-// @ts-check
 import {handleActions} from 'redux-actions'
 import update from 'immutability-helper'
 import {
@@ -13,7 +12,7 @@ import {
 } from '../actions/review-actions'
 
 const defaultState = {
-  notification: null,
+  notification: undefined,
   review: {
     criteria: []
   }
@@ -91,4 +90,3 @@ const admin = handleActions({
 }, defaultState)
 
 export default admin
-

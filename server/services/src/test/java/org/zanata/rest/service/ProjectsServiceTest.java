@@ -12,6 +12,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.rest.dto.Project;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.test.CdiUnitRunner;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
-@AdditionalClasses({ ProjectsService.class })
+@AdditionalClasses({ ProjectsService.class, CurrentUserImpl.class})
 public class ProjectsServiceTest extends ZanataDbunitJpaTest {
     @Inject
     private ProjectsService projectsService;

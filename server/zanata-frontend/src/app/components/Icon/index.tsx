@@ -2,11 +2,13 @@ import { isUndefined } from 'lodash'
 import * as PropTypes from 'prop-types'
 import React from 'react'
 
-interface IconProps {
+interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   className?: string,
   name: string,
   parentClassName?: string,
   title?: string,
+  // TODO use this to hold attributes for the span element instead of extending HTMLAttributes:
+  // spanAttrs: React.HTMLAttributes<HTMLSpanElement>
 }
 
 const Icon: React.StatelessComponent<IconProps> = ({

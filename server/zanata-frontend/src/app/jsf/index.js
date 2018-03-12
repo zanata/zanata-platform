@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * This is to add React components to existing jsf page besides sidebar/legacy.
  * Created by pahuang on 6/23/17.
@@ -19,18 +20,22 @@ import {
   showExportTMXModal
 } from '../actions/tmx-actions'
 
+const DEV = process.env && process.env.NODE_ENV === 'development'
+
 const logger = createLogger({
-  predicate: (getState, action) =>
-  process.env && (process.env.NODE_ENV === 'development')
+  // options
 })
 
+const middleware = [
+  DEV && require('redux-immutable-state-invariant').default(),
+  thunk,
+  apiMiddleware,
+  // routerMiddleware,
+  DEV && logger // must be last to avoid logging thunk/promise
+].filter(Boolean)
+
 const finalCreateStore = compose(
-    applyMiddleware(
-        thunk,
-        apiMiddleware,
-        // routerMiddleware,
-        logger
-    )
+  applyMiddleware(...middleware)
 )(createStore)
 
 // Call and assign the store with no initial state

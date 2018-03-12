@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -48,7 +49,11 @@ class TransUnitTranslationPanel extends React.Component {
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
     isRTL: PropTypes.bool.isRequired,
-    syntaxOn: PropTypes.bool.isRequired
+    syntaxOn: PropTypes.bool.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired
   }
 
   componentWillMount () {
@@ -135,7 +140,9 @@ class TransUnitTranslationPanel extends React.Component {
         'suggestionSearchType',
         'toggleDropdown',
         'toggleGlossary',
-        'toggleSuggestionPanel'
+        'toggleSuggestionPanel',
+        'showRejectModal',
+        'permissions'
       ])
       footer = <TransUnitTranslationFooter {...footerProps} />
     }
@@ -144,7 +151,8 @@ class TransUnitTranslationPanel extends React.Component {
       openDropdown,
       saveAsMode,
       saveDropdownKey,
-      textChanged } = this.props
+      textChanged,
+      permissions } = this.props
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
 
     // TODO use dedicated phrase.isLoading variable when available
@@ -178,7 +186,8 @@ class TransUnitTranslationPanel extends React.Component {
               textChanged={textChanged}
               translation={translation}
               directionClass={directionClass}
-              syntaxOn={syntaxOn} />
+              syntaxOn={syntaxOn}
+              permissions={permissions} />
           )
         })
     }
@@ -212,7 +221,11 @@ export class TranslationItem extends React.Component {
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string,
     directionClass: PropTypes.string,
-    syntaxOn: PropTypes.bool.isRequired
+    syntaxOn: PropTypes.bool.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired
   }
 
   setTextArea = (ref) => {
@@ -238,7 +251,8 @@ export class TranslationItem extends React.Component {
       selected,
       selectedPluralIndex,
       translation,
-      directionClass
+      directionClass,
+      permissions
     } = this.props
 
     // TODO make this translatable
@@ -272,6 +286,7 @@ export class TranslationItem extends React.Component {
         {translation}
       </SyntaxHighlighter>
       : ''
+    const cantEditTranslation = !permissions.translator || dropdownIsOpen
     return (
       <div className="TransUnit-item" key={index}>
         {itemHeader}
@@ -280,7 +295,7 @@ export class TranslationItem extends React.Component {
         <Textarea
           ref={this.setTextArea}
           className={directionClass + ' TransUnit-text'}
-          disabled={dropdownIsOpen}
+          disabled={cantEditTranslation}
           rows={1}
           value={translation}
           placeholder="Enter a translation…"
@@ -294,16 +309,17 @@ export class TranslationItem extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const {ui, context} = state
+  const {ui, context, headerData} = state
   const targetLocaleDetails = ui.uiLocales[context.lang]
   return {
     syntaxOn: getSyntaxHighlighting(state),
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
-        : false
+        : false,
+    permissions: headerData.permissions
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch, _ownProps) {
   // TODO put all the branch-specific stuff here for a start
   return {
     onSelectionChange: (event) => {

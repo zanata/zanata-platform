@@ -50,7 +50,7 @@ public class GlossaryDetailsView extends DialogBox
     ListBox entryListBox;
 
     @UiField(provided = true)
-    DialogBoxCloseButton dismissButton;
+    DialogBoxCloseButton closeButton;
 
     @UiField
     Anchor link;
@@ -65,12 +65,11 @@ public class GlossaryDetailsView extends DialogBox
         setGlassEnabled(true);
         this.messages = messages;
 
-        dismissButton = new DialogBoxCloseButton(this);
+        closeButton = new DialogBoxCloseButton(this);
 
         HTMLPanel container = uiBinder.createAndBindUi(this);
         getCaption().setText(messages.glossaryDetails());
         setWidget(container);
-        dismissButton.setText(messages.dismiss());
     }
 
     public void hide() {

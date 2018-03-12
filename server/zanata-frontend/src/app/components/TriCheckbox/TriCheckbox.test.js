@@ -14,6 +14,7 @@ const utilRender = function (checked, indeterminate, onChange) {
     indeterminate={indeterminate}
     onChange={onChange}
     />)
+  // @ts-ignore
   return TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
 }
 
@@ -75,7 +76,9 @@ describe('TriCheckbox', () => {
         onClick={livingItUp} />
     )
     try {
+      // @ts-ignore
       TestUtils.Simulate.click(ReactDOM.findDOMNode(slothCheckbox),
+        // @ts-ignore
         {value: 'sleep'})
     } catch (e) {
       // swallow on purpose, valid for code to not bind onClick

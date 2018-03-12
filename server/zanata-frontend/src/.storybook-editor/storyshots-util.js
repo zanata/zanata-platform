@@ -9,6 +9,7 @@ import * as renderer from 'react-test-renderer'
  */
 export function snapshotWithoutDecorators ({ story, context }) {
   const storyElement = story.render(context)
+  // @ts-ignore
   const tree = renderer.create(storyElement, {}).toJSON()
 
   // strip off the padding div and the <Icons />
@@ -25,11 +26,11 @@ export function snapshotWithoutDecorators ({ story, context }) {
 export function mockAddons () {
   jest.mock('storybook-host', () => ({
     // ignore host options, just render the inner story
-    host: (options) => (story) => story()
+    host: (_options) => (story) => story()
   }))
   jest.mock('@storybook/addon-info', () => ({
     // without info, muahahahaha! 😈
-    withInfo: (info) => (story) => story
+    withInfo: (_info) => (story) => story
   }))
 }
 

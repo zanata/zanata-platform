@@ -7,7 +7,9 @@ import {
   buildAPIRequest,
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
-  LOAD_USER_FAILURE
+  LOAD_USER_FAILURE,
+  // eslint-disable-next-line
+  APITypes
 } from './common-actions'
 import { apiUrl, isLoggedIn } from '../config'
 
@@ -60,11 +62,12 @@ const getLocalesList = (state) => {
   const endpoint = apiUrl + '/locales' +
     (!isEmpty(queries) ? '?' + queries.join('&') : '')
 
+  /** @type {APITypes} */
   const apiTypes = [
     LOAD_LANGUAGES_REQUEST,
     {
       type: LOAD_LANGUAGES_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -86,11 +89,12 @@ const getLocalesList = (state) => {
 const searchLocales = (query) => {
   const endpoint = apiUrl + '/locales/new?filter=' + encodeURIComponent(query)
 
+  /** @type {APITypes} */
   const apiTypes = [
     LOAD_LANGUAGES_SUGGESTION_REQUEST,
     {
       type: LOAD_LANGUAGES_SUGGESTION_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -112,11 +116,12 @@ const searchLocales = (query) => {
 const getLocalesPermission = (dispatch) => {
   const endpoint = apiUrl + '/user/permission/locales'
 
+  /** @type {APITypes} */
   const apiTypes = [
     LANGUAGE_PERMISSION_REQUEST,
     {
       type: LANGUAGE_PERMISSION_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -139,11 +144,12 @@ const getLocalesPermission = (dispatch) => {
 const getUserInfo = (dispatch) => {
   const endpoint = apiUrl + '/user'
 
+  /** @type {APITypes} */
   const apiTypes = [
     LOAD_USER_REQUEST,
     {
       type: LOAD_USER_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -165,11 +171,12 @@ const getUserInfo = (dispatch) => {
 
 const deleteLanguage = (dispatch, localeId) => {
   const endpoint = apiUrl + '/locales/locale/' + localeId
+  /** @type {APITypes} */
   const apiTypes = [
     LANGUAGE_DELETE_REQUEST,
     {
       type: LANGUAGE_DELETE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         dispatch(getLocalesList(state))
         return res
       },
@@ -189,11 +196,12 @@ const createNewLanguage = (details, dispatch) => {
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'
 
+  /** @type {APITypes} */
   const apiTypes = [
     CREATE_LANGUAGE_REQUEST,
     {
       type: CREATE_LANGUAGE_SUCCESS,
-      payload: (action, state, res) => {
+      payload: (_action, state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
@@ -270,7 +278,7 @@ export const handleUpdateSearch = (search) => {
 }
 
 export const handleDelete = (localeId) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     dispatch(deleteLanguage(dispatch, localeId))
   }
 }
@@ -289,7 +297,7 @@ export const handleNewLanguageDisplay =
   createAction(TOGGLE_NEW_LANGUAGE_DISPLAY)
 
 export const handleLoadSuggestion = (query) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     if (!isEmpty(query)) {
       dispatch(searchLocales(query))
     }
@@ -297,7 +305,7 @@ export const handleLoadSuggestion = (query) => {
 }
 
 export const handleSaveNewLanguage = (details) => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     dispatch(createNewLanguage(details, dispatch))
   }
 }

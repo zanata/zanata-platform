@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -156,6 +157,7 @@ class TextInput extends Component {
       autoFocus,
       editable = true,
       keyboardType = 'default',
+      maxLength,
       maxNumberOfLines,
       multiline = false,
       numberOfLines = 2,
@@ -201,6 +203,7 @@ class TextInput extends Component {
       autoComplete: autoComplete && 'on',
       autoFocus,
       className: 'textInput',
+      maxLength,
       onBlur: onBlur && this._onBlur,
       onChange: (onChange || onChangeText) && this._onChange,
       onFocus: this._onFocus,

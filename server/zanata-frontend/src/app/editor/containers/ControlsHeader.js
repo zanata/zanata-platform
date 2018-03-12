@@ -1,5 +1,6 @@
+// @ts-nocheck
 /* eslint-disable spaced-comment */
-/* @flow */
+/* @flow */ // TODO convert to TS
 import cx from 'classnames'
 import EditorSearchInput from '../components/EditorSearchInput'
 import IconButtonToggle from '../components/IconButtonToggle'
@@ -64,13 +65,14 @@ export const ControlsHeader = ({
   toggleHeader,
   toggleShowSettings,
   toggleSuggestions,
-  gettextCatalog
+  gettextCatalog,
+  permissions
   /* eslint-enable react/prop-types */
  }/*: props*/) => {
   return (
     /* eslint-disable max-len */
     <nav className="flex flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
-      <TranslatingIndicator gettextCatalog={gettextCatalog} />
+      <TranslatingIndicator permissions={permissions} />
       <div className="u-floatLeft"><PhraseStatusFilter /></div>
       {/* FIXME move InputEditorSearch into component. Layout component should
                 not have to know the internals of how the component is
@@ -160,7 +162,6 @@ export const ControlsHeader = ({
 
 function mapStateToProps (state) {
   const { ui: { gettextCatalog } } = state
-
   return {
     glossaryVisible: getGlossaryVisible(state),
     infoPanelVisible: getInfoPanelVisible(state),
@@ -168,7 +169,8 @@ function mapStateToProps (state) {
     navHeaderVisible: getNavHeaderVisible(state),
     suggestionsVisible: getSuggestionsPanelVisible(state),
     showSettings: getShowSettings(state),
-    gettextCatalog
+    gettextCatalog,
+    permissions: state.headerData.permissions
   }
 }
 

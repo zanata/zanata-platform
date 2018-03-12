@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
@@ -24,6 +25,10 @@ class EditableText extends Component {
      * Default is 'false'
      */
     editing: PropTypes.bool,
+    /**
+     * Maximum length of text field. <input> 'maxlength' attribute
+     */
+    maxLength: PropTypes.number,
     /**
      * Placeholder
      */
@@ -66,6 +71,7 @@ class EditableText extends Component {
       emptyReadOnlyText = '',
       placeholder = '',
       title,
+      maxLength,
       ...props
     } = this.props
 
@@ -77,6 +83,7 @@ class EditableText extends Component {
           {...props}
           autoFocus={this.state.focus}
           onBlur={this.handleBlur}
+          maxLength={maxLength}
           placeholder={placeholder}
           value={children}
         />

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import cx from 'classnames'
@@ -20,6 +21,7 @@ import {
   undoEdit
 } from '../../actions/phrases-actions'
 import { togglePhraseSuggestions } from '../../actions/suggestions-actions'
+import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 const transUnitClassByStatus = {
   untranslated: 'TransUnit--neutral',
@@ -53,7 +55,13 @@ class TransUnit extends React.Component {
     //   'translated',
     //   'approved'
     // ])
-    selected: PropTypes.bool.isRequired
+    selected: PropTypes.bool.isRequired,
+    criteria: PropTypes.arrayOf(PropTypes.shape({
+      commentRequired: PropTypes.bool.isRequired,
+      description: PropTypes.string.isRequired,
+      priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
+    })),
+    toggleRejectModal: PropTypes.func.isRequired
   }
 
   constructor (props) {
@@ -110,14 +118,16 @@ class TransUnit extends React.Component {
       'translationLocale',
       'undoEdit'
     ])
-
     return (
-      <div className={className}
-        onClick={this.selectPhrase}>
-        <TransUnitStatus phrase={this.props.phrase} />
-        <TransUnitSourcePanel {...phraseSourcePanelProps} />
-        <TransUnitTranslationPanel {...phraseTranslationPanelProps}
-          saveDropdownKey={this.props.phrase.id} />
+      <div>
+        <div className={className}
+          onClick={this.selectPhrase}>
+          <TransUnitStatus phrase={this.props.phrase} />
+          <TransUnitSourcePanel {...phraseSourcePanelProps} />
+          <TransUnitTranslationPanel {...phraseTranslationPanelProps}
+            saveDropdownKey={this.props.phrase.id}
+            showRejectModal={this.props.toggleRejectModal} />
+        </div>
       </div>
     )
   }
@@ -166,11 +176,13 @@ function mapStateToProps (state, ownProps) {
   ])
 
   const saveAsMode = state.phrases.saveAsMode
+  const criteria = state.review.criteria
 
   return {
     ...passThroughProps,
     // TODO add something for looking up locale name instead, or check
     //      whether it comes with the response.
+    criteria: criteria,
     translationLocale: {
       id: state.context.lang,
       name: getLocaleName(state)

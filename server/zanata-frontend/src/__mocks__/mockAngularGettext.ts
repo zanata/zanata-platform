@@ -4,7 +4,7 @@ import { reduce, isUndefined } from 'lodash'
 // be replaced with a more React-friendly library anyway
 const mockGettextCatalog = {
   // getString substitutes values
-  getString: (str, replacements) => {
+  getString: (str: string, replacements: {[k: string]: string}) => {
     return isUndefined(replacements)
       ? str
       : reduce(replacements, (acc, value, placeholder) => {

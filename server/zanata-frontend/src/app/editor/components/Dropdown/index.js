@@ -1,3 +1,4 @@
+// @ts-nocheck
 import cx from 'classnames'
 import React from 'react'
 import * as PropTypes from 'prop-types'
@@ -64,12 +65,14 @@ class Dropdown extends React.Component {
     })
 
     if (buttonCount !== 1) {
-      throw new Error('<Dropdown> must contain exactly one <Dropdown.Button>, ' +
-        ' but found ' + buttonCount)
+      throw new Error(
+        '<Dropdown> must contain exactly one <Dropdown.Button>, but found ' +
+        buttonCount)
     }
     if (contentCount !== 1) {
-      throw new Error('<Dropdown> must contain exactly one <Dropdown.Content>, ' +
-        'but found ' + contentCount)
+      throw new Error(
+        '<Dropdown> must contain exactly one <Dropdown.Content>, but found ' +
+        contentCount)
     }
 
     return (

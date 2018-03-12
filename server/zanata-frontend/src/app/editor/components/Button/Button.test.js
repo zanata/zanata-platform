@@ -1,4 +1,3 @@
-
 import React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as ReactDOMServer from 'react-dom/server'
@@ -7,7 +6,7 @@ import Button from '.'
 
 describe('ButtonTest', () => {
   it('Button markup', () => {
-    const clickFun = function (e) {}
+    const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
         title="Come on! Do it! Do it!"
@@ -29,7 +28,7 @@ describe('ButtonTest', () => {
   })
 
   it('Button markup (disabled)', () => {
-    const clickFun = function (e) {}
+    const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
         disabled={true}
@@ -65,7 +64,9 @@ describe('ButtonTest', () => {
       </Button>
     )
     TestUtils.Simulate.click(
+      // @ts-ignore
       ReactDOM.findDOMNode(escapeButton), {value: 'the chopper'})
+    // @ts-ignore
     expect(clickEvent).toEqual('the chopper',
       'Button click event should fire with correct event payload')
   })
@@ -87,10 +88,12 @@ describe('ButtonTest', () => {
     try {
       // simulate click event
       TestUtils.Simulate.click(
+        // @ts-ignore
         ReactDOM.findDOMNode(escapeButton), {value: 'the chopper'})
     } catch (e) {
       // swallow on purpose, valid for code to not bind onClick
     }
+    // @ts-ignore
     expect(clickEvent).toEqual('nowhere',
       'Button click event should not fire when props.disabled is true')
   })

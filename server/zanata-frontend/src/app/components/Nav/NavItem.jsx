@@ -1,9 +1,11 @@
+// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import NavIcon from './NavIcon'
 import { LogoLoader, Link } from '../../components'
 /**
  * Item of side menu. See Nav.jsx for usage.
+ * @type React.SFC
  */
 const NavItem = ({
   id,
@@ -34,6 +36,7 @@ const NavItem = ({
 
   const child = isLogo
     ? <LogoLoader inverted={inverted} loading={loading} />
+    // FIXME?? <NavIcon icon={icon} size='s1' />
     : <NavIcon name={icon} className='s1' />
 
   return (

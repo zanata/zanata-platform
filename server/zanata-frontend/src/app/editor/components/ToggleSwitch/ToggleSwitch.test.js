@@ -1,4 +1,3 @@
-
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import * as TestUtils from 'react-dom/test-utils'
@@ -68,7 +67,9 @@ describe('ToggleSwitchTest', () => {
                     onChange={switchTheBlade}
                     label="Switchington"/>
     )
+    // @ts-ignore
     switchComponent.props.onChange()
+    // @ts-ignore
     expect(blade).toEqual('extended',
       'should call onChange action when input is changed')
   })

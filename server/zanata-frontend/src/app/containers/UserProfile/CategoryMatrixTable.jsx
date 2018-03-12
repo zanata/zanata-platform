@@ -1,17 +1,23 @@
-// @ts-check
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { forOwn } from 'lodash'
 import CategoryItemMatrix from './CategoryItemMatrix'
 
-/** @type { React.StatelessComponent<{key, matrixData, category, categoryTitle, categoryName, props?}> } */
+/** @type
+    { React.StatelessComponent<{
+        key: 'locales'|'projects',
+        matrixData: any[],
+        category: string,
+        categoryTitle: string,
+        categoryName: string}>
+    } */
 const CategoryMatrixTable = ({
   matrixData,
   category,
   categoryTitle,
   categoryName,
   // @ts-ignore: unused?
-  ...props
+  key // TODO what's this for?
 }) => {
   let categoryMatrix = {}
   let rows = []
@@ -52,7 +58,8 @@ CategoryMatrixTable.propTypes = {
   matrixData: PropTypes.array,
   category: PropTypes.string,
   categoryTitle: PropTypes.string,
-  categoryName: PropTypes.string
+  categoryName: PropTypes.string,
+  key: PropTypes.string
 }
 
 export default CategoryMatrixTable

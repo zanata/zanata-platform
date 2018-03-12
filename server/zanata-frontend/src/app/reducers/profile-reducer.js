@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { handleActions } from 'redux-actions'
 import {ContentStates} from '../constants/Options'
 import utilsDate from '../utils/DateHelper'
@@ -161,7 +162,7 @@ export default handleActions({
   [CLEAR_MESSAGE]: (state, action) => {
     return {
       ...state,
-      notification: null
+      notification: undefined
     }
   },
   [LOAD_USER_REQUEST]: (state, action) => {

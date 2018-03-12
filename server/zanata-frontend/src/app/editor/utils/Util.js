@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { chain, isNaN, map } from 'lodash'
 
 const npluralRegex = /^nplurals\s*=\s*(\d*)\s*;/

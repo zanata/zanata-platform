@@ -1,10 +1,12 @@
-/* global jest describe it expect */
+// @ts-nocheck
+/* global describe it expect */
 
 import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,
   LOCALE_SELECTED,
-  STATS_FETCHED
+  STATS_FETCHED,
+  LOCALE_MESSAGES_SUCCESS
 } from '../actions/header-action-types'
 import headerDataReducer from './header-data-reducer'
 
@@ -38,6 +40,17 @@ const EXAMPLE_HEADER_DATA = {
   myInfo: {
     name: 'rick',
     gravatarHash: '12345'
+  },
+  permissions: {
+    reviewer: false,
+    translator: true
+  }
+}
+
+const EXAMPLE_LOCALE_MESSAGES = {
+  'ActivityFeedItem.comment': {
+    'defaultMessage': '{name} has commented on a translation',
+    'description': 'Title for a comment in the activity feed.'
   }
 }
 
@@ -72,7 +85,12 @@ describe('header-data-reducer test', () => {
           },
           id: ''
         },
-        selectedLocale: ''
+        selectedLocale: '',
+        localeMessages: {}
+      },
+      permissions: {
+        reviewer: false,
+        translator: false
       }
     })
   })
@@ -99,7 +117,7 @@ describe('header-data-reducer test', () => {
     expect(withData).toEqual({
       user: {
         name: 'rick',
-        gravatarUrl: 'http://www.gravatar.com/avatar/12345?d=mm&ampr=g&amps=72',
+        gravatarUrl: 'https://www.gravatar.com/avatar/12345?d=mm&r=g&s=72',
         dashboardUrl: '/dashboard'
       },
       context: {
@@ -114,15 +132,19 @@ describe('header-data-reducer test', () => {
           locales: {
             'en-US': {
               id: 'en-US',
-              name: 'English (United States)'
+              isRTL: undefined,
+              name: 'English (United States)',
+              nplurals: undefined
             },
             de: {
               id: 'de',
+              isRTL: undefined,
               name: 'German',
               nplurals: 2
             },
             ja: {
               id: 'ja',
+              isRTL: undefined,
               name: 'Japanese',
               nplurals: 1
             }
@@ -139,7 +161,12 @@ describe('header-data-reducer test', () => {
           },
           id: ''
         },
-        selectedLocale: ''
+        selectedLocale: '',
+        localeMessages: {}
+      },
+      permissions: {
+        reviewer: false,
+        translator: false
       }
     })
   })
@@ -155,7 +182,13 @@ describe('header-data-reducer test', () => {
     })
     expect(selected.context.selectedLocale).toEqual('de')
   })
-
+  it('can recieve locale messages', () => {
+    const withMessages = headerDataReducer(undefined, {
+      type: LOCALE_MESSAGES_SUCCESS,
+      payload: EXAMPLE_LOCALE_MESSAGES
+    })
+    expect(withMessages.localeMessages).toEqual(EXAMPLE_LOCALE_MESSAGES)
+  })
   it('can receive stats', () => {
     const withStats = headerDataReducer(undefined, {
       type: STATS_FETCHED,

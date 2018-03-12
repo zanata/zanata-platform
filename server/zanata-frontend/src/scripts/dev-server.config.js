@@ -1,6 +1,6 @@
-module.exports = {
+module.exports = (port) => ({
   contentBase: 'dist/',
-  port: 8000,
+  port,
   historyApiFallback: {
     // serve the index file instead of 404, needed to load the app using
     // paths other than /
@@ -29,4 +29,4 @@ module.exports = {
     chunks: false,
     modules: false
   }
-}
+})

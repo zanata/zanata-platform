@@ -23,7 +23,7 @@ batch
 
 ## Allows the editor development server to use the docker server as a backend.
 ## The editor development server is run with `make watch` in zanata-frontend/src/editor
-/system-property="zanata.origin.whitelist":add(value="http://localhost:8000")
+/system-property="zanata.origin.whitelist":add(value="http://localhost:8000 http://localhost:8001")
 /system-property="virusScanner":add(value="DISABLED")
 
 # ==== cached connection manager ====

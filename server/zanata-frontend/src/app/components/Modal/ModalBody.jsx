@@ -1,9 +1,8 @@
-// @ts-check
 import React from 'react'
 import * as PropTypes from 'prop-types'
 
 /**
- * @type { React.StatelessComponent<{children, props?}> }
+ * @type { React.StatelessComponent<{children}> }
  */
 const ModalBody = ({
   children,

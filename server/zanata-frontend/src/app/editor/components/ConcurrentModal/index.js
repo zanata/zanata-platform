@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Alert, Button, Panel, Label } from 'react-bootstrap'
 import { Modal } from '../../../components'
@@ -80,5 +81,3 @@ class ConcurrentModal extends React.Component {
     }
 
 export default ConcurrentModal
-
-

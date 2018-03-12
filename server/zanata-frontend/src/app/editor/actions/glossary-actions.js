@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Actions related to the glossary.
  */
