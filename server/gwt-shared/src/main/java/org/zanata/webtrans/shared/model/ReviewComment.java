@@ -23,10 +23,11 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
     }
 
     public ReviewComment(ReviewCommentId id, String comment,
-            String commenterName, Date creationDate) {
+            String commenterName, String username, Date creationDate) {
         this.id = id;
         this.comment = comment;
         this.commenterName = commenterName;
+        this.username = username;
         this.creationDate = creationDate != null ?
                 new Date(creationDate.getTime()) : null;
     }
@@ -46,11 +47,6 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
     public Date getCreationDate() {
         return creationDate != null ?
                 new Date(creationDate.getTime()) : null;
-    }
-
-    public ReviewComment setUsername(String username) {
-        this.username = username;
-        return this;
     }
 
     public String getUsername() {

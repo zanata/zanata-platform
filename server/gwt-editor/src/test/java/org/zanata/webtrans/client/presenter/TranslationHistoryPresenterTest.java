@@ -232,7 +232,7 @@ public class TranslationHistoryPresenterTest {
                         ContentState.Approved, "admin", new Date(now - 2000), "comment");
         ReviewComment comment =
                 new ReviewComment(new ReviewCommentId(1L), "comment", "admin",
-                        new Date(now));
+                        "Administrator", new Date(now));
 
         presenter.displayEntries(latest, Lists.newArrayList(item),
                 Lists.newArrayList(comment));

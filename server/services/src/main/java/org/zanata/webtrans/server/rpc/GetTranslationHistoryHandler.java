@@ -137,8 +137,9 @@ public class GetTranslationHistoryHandler extends
         return Lists.transform(hComments, input -> new ReviewComment(
                 new ReviewCommentId(input.getId()),
                 input.getCommentText(), input.getCommenterName(),
+                input.getCommenterUsername(),
                 input.getCreationDate()
-        ).setUsername(usernameOrEmptyString(input.getCommenter())));
+        ));
     }
 
     private static String usernameOrEmptyString(HPerson lastModifiedBy) {
@@ -146,8 +147,7 @@ public class GetTranslationHistoryHandler extends
                 ? lastModifiedBy.getAccount().getUsername() : "";
     }
     private static String nameOrEmptyString(HPerson lastModifiedBy) {
-        return lastModifiedBy != null && lastModifiedBy.hasAccount()
-                ? lastModifiedBy.getName() : "";
+        return lastModifiedBy != null ? lastModifiedBy.getName() : "";
     }
 
     @Override
