@@ -124,7 +124,7 @@ public class GetTranslationHistoryHandler extends
                 hTextFlowTarget.getState(), lastModifiedBy,
                 hTextFlowTarget.getLastChanged(),
                 hTextFlowTarget.getRevisionComment()
-        ).setModifiedByUser(
+        ).setModifiedByPersonName(
                 nameOrEmptyString(hTextFlowTarget.getLastModifiedBy()));
     }
 
@@ -138,7 +138,7 @@ public class GetTranslationHistoryHandler extends
                 new ReviewCommentId(input.getId()),
                 input.getCommentText(), input.getCommenterName(),
                 input.getCreationDate()
-        ).setAccountName(usernameOrEmptyString(input.getCommenter())));
+        ).setUsername(usernameOrEmptyString(input.getCommenter())));
     }
 
     private static String usernameOrEmptyString(HPerson lastModifiedBy) {
@@ -167,7 +167,7 @@ public class GetTranslationHistoryHandler extends
                     usernameOrEmptyString(targetHistory.getLastModifiedBy()),
                     targetHistory.getLastChanged(),
                     targetHistory.getRevisionComment())
-                    .setModifiedByUser(
+                    .setModifiedByPersonName(
                     targetHistory.getLastModifiedBy().getName());
         }
     }

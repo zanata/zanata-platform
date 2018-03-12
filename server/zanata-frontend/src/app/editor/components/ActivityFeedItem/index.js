@@ -75,7 +75,9 @@ class ActivityFeedItem extends Component {
       </span>
     )
     const name = (
-      <Link useHref link={profileUrl(user.name)}>{user.username}</Link>
+      <Link useHref title={user.name} link={profileUrl(user.username)}>
+        {user.username}
+      </Link>
     )
     const priority = (
       <span className='CriteriaText'>
@@ -242,7 +244,7 @@ class ActivityFeedItem extends Component {
       <div className='RevisionBox'>
         <p>
           <Icon name={isComment ? 'comment' : 'refresh'} className='s0' />
-          <Link useHref link={profileUrl(user.name)}>
+          <Link useHref link={profileUrl(user.username)}>
             {/* TODO use component for avatar image
             <img className='u-round ActivityAvatar' src={user.imageUrl} />*/}
           </Link>

@@ -16,7 +16,7 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
     private ReviewCommentId id;
     private String comment;
     private String commenterName;
-    private String accountName;
+    private String username;
     private Date creationDate;
 
     public ReviewComment() {
@@ -48,13 +48,13 @@ public class ReviewComment extends ComparableByDate implements IsSerializable,
                 new Date(creationDate.getTime()) : null;
     }
 
-    public ReviewComment setAccountName(String accountName) {
-        this.accountName = accountName;
+    public ReviewComment setUsername(String username) {
+        this.username = username;
         return this;
     }
 
-    public String getAccountName() {
-        return Strings.nullToEmpty(accountName);
+    public String getUsername() {
+        return Strings.nullToEmpty(username);
     }
 
     @Override
