@@ -37,6 +37,13 @@ function parseKnownSettings (settings) {
         case SYNTAX_HIGHLIGTING:
         case SUGGESTIONS_DIFF:
         case KEY_SUGGESTIONS_VISIBLE:
+        case HTML_XML:
+        case NEW_LINE:
+        case TAB:
+        case JAVA_VARIABLES:
+        case XML_ENTITY:
+        case PRINTF_VARIABLES:
+        case PRINTF_XSI_EXTENSION:
           return JSON.parse(value)
         default:
           return value
@@ -63,9 +70,15 @@ export const defaultState = {
     [ENTER_SAVES_IMMEDIATELY]: newSetting(false),
     [SYNTAX_HIGHLIGTING]: newSetting(false),
     [SUGGESTIONS_DIFF]: newSetting(true),
-    [KEY_SUGGESTIONS_VISIBLE]: newSetting(true)
-  // 'suggestions-heightpercent': { value: 0.3, saving: false, error:undefined }
-  // 'setting-key': { value: defaultValue, saving: false, error: undefined }
+    [KEY_SUGGESTIONS_VISIBLE]: newSetting(true),
+    // Validator options disabled by default
+    [HTML_XML]: newSetting(false),
+    [NEW_LINE]: newSetting(false),
+    [TAB]: newSetting(false),
+    [JAVA_VARIABLES]: newSetting(false),
+    [XML_ENTITY]: newSetting(false),
+    [PRINTF_VARIABLES]: newSetting(false),
+    [PRINTF_XSI_EXTENSION]: newSetting(false)
   }
 }
 
@@ -77,7 +90,21 @@ export const getEnterSavesImmediately = settings =>
 export const getSyntaxHighlighting = settings =>
   settings.settings[SYNTAX_HIGHLIGTING].value
 export const getSuggestionsDiff = settings =>
-    settings.settings[SUGGESTIONS_DIFF].value
+  settings.settings[SUGGESTIONS_DIFF].value
+export const getValidateHtmlXml = settings =>
+  settings.settings[HTML_XML].value
+export const getValidateNewLine = settings =>
+  settings.settings[NEW_LINE].value
+export const getValidateTab = settings =>
+  settings.settings[TAB].value
+export const getValidateJavaVariables = settings =>
+  settings.settings[JAVA_VARIABLES].value
+export const getValidateXmlEntity = settings =>
+  settings.settings[XML_ENTITY].value
+export const getValidatePrintfVariables = settings =>
+  settings.settings[PRINTF_VARIABLES].value
+export const getValidatePrintfXsi = settings =>
+  settings.settings[PRINTF_XSI_EXTENSION].value
 export const getShortcuts = createSelector(getEnterSavesImmediately,
   enterSaves => enterSaves ? update(SHORTCUTS, {
     // Both shortcuts are at index 0, but replacing by value in case they move

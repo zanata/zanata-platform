@@ -9,7 +9,14 @@ import Icon from '../../components/Icon'
 import SettingsOptions from '../components/SettingsOptions'
 import {
   getEnterSavesImmediately,
-  getSyntaxHighlighting
+  getSyntaxHighlighting,
+  getValidateHtmlXml,
+  getValidateNewLine,
+  getValidateTab,
+  getValidateJavaVariables,
+  getValidateXmlEntity,
+  getValidatePrintfVariables,
+  getValidatePrintfXsi
  } from '../reducers'
 import {
   ENTER_SAVES_IMMEDIATELY,
@@ -27,6 +34,13 @@ import {
 export const SettingsPanel = ({
   enterSavesImmediately,
   syntaxHighligting,
+  validateHtmlXml,
+  validateNewLine,
+  validateTab,
+  validateJavaVariables,
+  validateXmlEntity,
+  validatePrintfVariables,
+  validatePrintfXsi,
   hideSettings,
   updateSetting,
   isRTL
@@ -65,37 +79,37 @@ export const SettingsPanel = ({
               {
                 id: HTML_XML,
                 label: 'HTML/XML tags',
-                active: true
+                active: validateHtmlXml
               },
               {
                 id: JAVA_VARIABLES,
                 label: 'Java variables',
-                active: true
+                active: validateJavaVariables
               },
               {
                 id: NEW_LINE,
                 label: 'Leading/trailing newline (\\n)',
-                active: true
+                active: validateNewLine
               },
               {
                 id: PRINTF_XSI_EXTENSION,
                 label: 'Positional printf (XSI extention)',
-                active: true
+                active: validatePrintfXsi
               },
               {
                 id: PRINTF_VARIABLES,
                 label: 'Printf variables',
-                active: true
+                active: validatePrintfVariables
               },
               {
                 id: TAB,
                 label: 'Tab characters (\\t)',
-                active: true
+                active: validateTab
               },
               {
                 id: XML_ENTITY,
                 label: 'XML entity reference',
-                active: true
+                active: validateXmlEntity
               }
             ]}
             updateSetting={updateSetting} />
@@ -108,6 +122,13 @@ export const SettingsPanel = ({
 SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
   syntaxHighligting: PropTypes.bool.isRequired,
+  validateHtmlXml: PropTypes.bool.isRequired,
+  validateNewLine: PropTypes.bool.isRequired,
+  validateTab: PropTypes.bool.isRequired,
+  validateJavaVariables: PropTypes.bool.isRequired,
+  validateXmlEntity: PropTypes.bool.isRequired,
+  validatePrintfVariables: PropTypes.bool.isRequired,
+  validatePrintfXsi: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired,
   isRTL: PropTypes.bool.isRequired
@@ -120,6 +141,13 @@ const mapStateToProps = (state) => {
   return {
     enterSavesImmediately: getEnterSavesImmediately(state),
     syntaxHighligting: getSyntaxHighlighting(state),
+    validateHtmlXml: getValidateHtmlXml(state),
+    validateNewLine: getValidateNewLine(state),
+    validateTab: getValidateTab(state),
+    validateJavaVariables: getValidateJavaVariables(state),
+    validateXmlEntity: getValidateXmlEntity(state),
+    validatePrintfVariables: getValidatePrintfVariables(state),
+    validatePrintfXsi: getValidatePrintfXsi(state),
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false
   }
