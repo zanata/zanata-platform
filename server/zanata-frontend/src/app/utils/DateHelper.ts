@@ -22,8 +22,8 @@ interface FormattedDateRange {
 }
 
 class DateHelper {
-  public static readonly shortDateFormat = 'DD/MM/YYYY'
-  public static readonly shortDateTimeFormat = 'DD/MM/YYYY HH:mm'
+  public static readonly shortDateFormat = 'YYYY-MM-DD'
+  public static readonly shortDateTimeFormat = 'YYYY-MM-DD HH:mm'
   public static readonly dateFormat = 'YYYY-MM-DD'
   public static readonly dateRangeDisplayFmt = 'DD MMM, YYYY'
   public static readonly dateSingleDisplayFmt = 'DD MMM, YYYY (dddd)'
