@@ -27,6 +27,7 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
+import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
@@ -76,12 +77,15 @@ public class ServerSettingsTest extends ZanataTestCase {
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAdministratorEmailTest() {
-        new LoginWorkFlow().signIn("admin", "admin")
+        AdministrationPage administrationPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
                 .goToAdministration()
                 .goToServerConfigPage()
                 .inputAdminEmail("lara@example.com")
-                .save()
-                .gotoMorePage()
+                .save();
+        // Intermittent test error
+        administrationPage.reload();
+        administrationPage.gotoMorePage()
                 .clickContactAdmin()
                 .inputMessage("Test pattern")
                 .send(HomePage.class);

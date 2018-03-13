@@ -78,13 +78,14 @@ class UserProfile extends Component {
 
     let content
     if (user.loading || loading) {
-      content = (<div className='userProfile'>
+      content = (<div className='userProfile bstrapReact'>
         <LoaderText className='loaderText s8' loading />
       </div>)
     } else if (isEmpty(username)) {
-      content = <div className='u-flexColumn userProfile-wrapper'></div>
+      content = <div className='u-flexColumn userProfile-wrapper bstrapReact'>
+      </div>
     } else {
-      content = (<div className='u-flexColumn userProfile-wrapper'>
+      content = (<div className='u-flexColumn userProfile-wrapper bstrapReact'>
         <div className='userProfile-details' id='userProfile-overview'>
           <img className='userProfile-details-avatar'
             src={user.imageUrl ? user.imageUrl : ''} alt={username} />
