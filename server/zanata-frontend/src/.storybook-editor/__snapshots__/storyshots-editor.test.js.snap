@@ -5619,9 +5619,11 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     <textarea
       className="form-control"
       id="formControlsTextarea"
+      maxLength={undefined}
       onChange={[Function]}
       placeholder="..."
       type={undefined}
+      value=""
     />
   </div>
   <button

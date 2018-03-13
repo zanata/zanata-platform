@@ -25,7 +25,8 @@ import Icon from '../../../components/Icon'
 import * as React from 'react'
 
 interface Props {
-  postComment: (text: string) => void
+  postComment: (text: string) => void,
+  maxLength?: number
 }
 
 interface State {
@@ -49,8 +50,13 @@ class CommentBox extends React.Component<Props, State> {
           <ControlLabel>
             <Icon name='comment' className='s0' /> Post a comment
           </ControlLabel><br />
-          <FormControl componentClass='textarea'
-            placeholder='...' onChange={this.setCommentText} />
+          <FormControl
+            componentClass='textarea'
+            value={this.state.commentText}
+            placeholder='...'
+            onChange={this.setCommentText}
+            maxLength={this.props.maxLength}
+          />
         </FormGroup>
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
