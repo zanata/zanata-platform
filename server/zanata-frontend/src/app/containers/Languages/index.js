@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {
-  Button, InputGroup, FormGroup, FormControl,
+  InputGroup, FormGroup, FormControl,
   Badge, Pagination
 } from 'react-bootstrap'
 import Helmet from 'react-helmet'
@@ -12,6 +12,8 @@ import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
 import {Icon, Notification, LoaderText} from '../../components'
+import Button from 'grommet/components/Button'
+import Add from 'grommet/components/icons/base/Add'
 
 import {
   initialLoad,
@@ -123,13 +125,11 @@ class Languages extends Component {
             </h1>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary'
+                <Button icon={<Add size='xsmall' />}
+                  label='Add a new language'
                   id='btn-language-add-new'
-                  onClick={handleOnDisplayNewLanguage}>
-                  <Icon name='plus' className='n1' parentClassName='plusicon'
-                    title='plus' />&nbsp;
-                  Add new language
-                </Button>
+                  primary
+                  onClick={handleOnDisplayNewLanguage} />
                 <NewLanguageModal />
               </div>
             }

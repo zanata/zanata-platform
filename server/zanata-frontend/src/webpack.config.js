@@ -241,7 +241,8 @@ module.exports = function (env, isEditor, devServerPort) {
             },
             {
               loader: 'sass-loader', options: {
-                includePaths: ['./node_modules']
+                includePaths: ['./node_modules',
+                './app/styles']
               }
             }
           ]
