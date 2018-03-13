@@ -2192,20 +2192,20 @@
           </configuration>
         </plugin>
 
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>animal-sniffer-maven-plugin</artifactId>
-          <version>1.15</version>
-          <executions>
-            <execution>
-              <id>animal-sniffer</id>
-              <phase>test</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.15</version>
+        <executions>
+          <execution>
+            <id>animal-sniffer</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
