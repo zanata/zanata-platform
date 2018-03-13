@@ -20,10 +20,9 @@ $brand-graph-colors: (#03A6D7, #20718A, #546677, #BDD4DC);
 $focus-border-color: #20718A;
 
 $border-radius: 4px;
-$focus-border-color: $brand-color-lighter;
 
 // use namespace
-@import '../../node_modules/grommet/scss/grommet-core/settings';
+@import "../../node_modules/grommet/scss/grommet-core/settings";
 
 #btn-language-add-new .#{$grommet-namespace}button__icon .#{$grommet-namespace}control-icon {
   vertical-align: middle;
