@@ -6,6 +6,13 @@ import reducer, {
   KEY_SUGGESTIONS_VISIBLE,
   SYNTAX_HIGHLIGTING,
   SUGGESTIONS_DIFF,
+  HTML_XML,
+  NEW_LINE,
+  TAB,
+  JAVA_VARIABLES,
+  XML_ENTITY,
+  PRINTF_VARIABLES,
+  PRINTF_XSI_EXTENSION,
   getSuggestionsPanelVisible
 } from './settings-reducer'
 import { createAction } from 'redux-actions'
@@ -45,6 +52,41 @@ describe('settings-reducer test', () => {
           value: true,
           saving: false,
           error: undefined
+        },
+        [HTML_XML]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [JAVA_VARIABLES]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [NEW_LINE]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [PRINTF_XSI_EXTENSION]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [PRINTF_VARIABLES]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [TAB]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [XML_ENTITY]: {
+          value: false,
+          saving: false,
+          error: undefined
         }
       }
     })
@@ -79,6 +121,41 @@ describe('settings-reducer test', () => {
         },
         [SUGGESTIONS_DIFF]: {
           value: true,
+          saving: false,
+          error: undefined
+        },
+        [HTML_XML]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [JAVA_VARIABLES]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [NEW_LINE]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [PRINTF_XSI_EXTENSION]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [PRINTF_VARIABLES]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [TAB]: {
+          value: false,
+          saving: false,
+          error: undefined
+        },
+        [XML_ENTITY]: {
+          value: false,
           saving: false,
           error: undefined
         },
