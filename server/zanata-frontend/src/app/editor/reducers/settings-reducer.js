@@ -19,6 +19,15 @@ export const SYNTAX_HIGHLIGTING = 'syntax-highlighting'
 export const SUGGESTIONS_DIFF = 'suggestions-diff'
 export const KEY_SUGGESTIONS_VISIBLE = 'suggestions-visible'
 
+/* Validation Options */
+export const HTML_XML = 'html-xml-tags'
+export const NEW_LINE = 'leading-trailing-newline'
+export const TAB = 'tab-characters'
+export const JAVA_VARIABLES = 'java-variables'
+export const XML_ENTITY = 'xml-entity-reference'
+export const PRINTF_VARIABLES = 'printf-variables'
+export const PRINTF_XSI_EXTENSION = 'positional-printf-xsi'
+
 /* Parse values of known settings to appropriate types */
 function parseKnownSettings (settings) {
   return mapValues(settings, (value, key) => {

@@ -13,7 +13,15 @@ import {
  } from '../reducers'
 import {
   ENTER_SAVES_IMMEDIATELY,
-  SYNTAX_HIGHLIGTING
+  SYNTAX_HIGHLIGTING,
+  // Validation options
+  HTML_XML,
+  NEW_LINE,
+  TAB,
+  JAVA_VARIABLES,
+  XML_ENTITY,
+  PRINTF_VARIABLES,
+  PRINTF_XSI_EXTENSION
 } from '../reducers/settings-reducer'
 
 export const SettingsPanel = ({
@@ -48,6 +56,46 @@ export const SettingsPanel = ({
                 id: SYNTAX_HIGHLIGTING,
                 label: 'Syntax Highlighting',
                 active: syntaxHighligting
+              }
+            ]}
+            updateSetting={updateSetting} />
+          <h2 className='SettingsHeading'>Validation options</h2>
+          <SettingsOptions
+            settings={[
+              {
+                id: HTML_XML,
+                label: 'HTML/XML tags',
+                active: true
+              },
+              {
+                id: JAVA_VARIABLES,
+                label: 'Java variables',
+                active: true
+              },
+              {
+                id: NEW_LINE,
+                label: 'Leading/trailing newline (\\n)',
+                active: true
+              },
+              {
+                id: PRINTF_XSI_EXTENSION,
+                label: 'Positional printf (XSI extention)',
+                active: true
+              },
+              {
+                id: PRINTF_VARIABLES,
+                label: 'Printf variables',
+                active: true
+              },
+              {
+                id: TAB,
+                label: 'Tab characters (\\t)',
+                active: true
+              },
+              {
+                id: XML_ENTITY,
+                label: 'XML entity reference',
+                active: true
               }
             ]}
             updateSetting={updateSetting} />
