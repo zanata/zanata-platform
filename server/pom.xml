@@ -2193,37 +2193,18 @@
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.15</version>
           <executions>
             <execution>
-              <id>exec-npm-install</id>
-              <phase>generate-sources</phase>
-              <configuration>
-                <executable>npm</executable>
-                <arguments>
-                  <argument>install</argument>
-                </arguments>
-              </configuration>
+              <id>animal-sniffer</id>
+              <phase>test</phase>
               <goals>
-                <goal>exec</goal>
+                <goal>check</goal>
               </goals>
             </execution>
           </executions>
         </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.15</version>
-        <executions>
-          <execution>
-            <id>animal-sniffer</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
