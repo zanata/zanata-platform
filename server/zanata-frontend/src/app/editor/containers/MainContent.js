@@ -11,7 +11,7 @@ import {
 } from '../actions/review-trans-actions'
 import { getCriteria } from '../reducers/review-trans-reducer'
 import { MINOR, MAJOR, CRITICAL } from '../utils/reject-trans-util'
-import RejectTranslationModal from '../containers/RejectTranslationModal'
+import RejectTranslation from '../containers/RejectTranslation'
 import { isUndefined } from 'lodash'
 /**
  * The main content section showing the current page of TransUnit source,
@@ -94,7 +94,7 @@ class MainContent extends React.Component {
             {transUnits}
           </ul>
         </div>
-        <RejectTranslationModal
+        <RejectTranslation
           show={this.props.showReviewModal}
           onHide={this.props.toggleReviewModal}
           transUnitID={this.props.selectedPhraseId}

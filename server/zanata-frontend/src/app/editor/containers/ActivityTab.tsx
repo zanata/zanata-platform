@@ -9,7 +9,7 @@ import { statuses } from '../utils/phrase'
 import { isEmpty } from 'lodash'
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { commentTextLimit } from './RejectTranslationModal'
+import { commentTextLimit } from './RejectTranslation'
 
 const DO_NOT_RENDER = undefined
 

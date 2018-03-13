@@ -12,6 +12,7 @@ Getting started
 - [Translator guide](user-guide/translator-guide.md)
 - [System admin guide](user-guide/system-admin/configuration/installation.md)
 - [Zanata client guide](client/index.md)
+- [API Documentation](http://zanata.org/zanata-platform/rest-api-docs/)
 
 Contribute
 ----------

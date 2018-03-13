@@ -8918,6 +8918,13 @@ redux-api-middleware@1.0.2:
     isomorphic-fetch "^2.1.1"
     lodash.isplainobject "^3.2.0"
 
+redux-immutable-state-invariant@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/redux-immutable-state-invariant/-/redux-immutable-state-invariant-2.1.0.tgz#308fd3cc7415a0e7f11f51ec997b6379c7055ce1"
+  dependencies:
+    invariant "^2.1.0"
+    json-stringify-safe "^5.0.1"
+
 redux-logger@2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/redux-logger/-/redux-logger-2.6.1.tgz#f558a40e3abd03feaf4e69ace4d71fec09803c74"

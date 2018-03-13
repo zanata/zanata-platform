@@ -174,10 +174,21 @@ public class TranslationsTMXExportStrategy <T extends ITextFlow>
             tuv.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI,
                     locId.getId()));
             Element seg = new Element("seg");
-            seg.appendChild(trgContent);
+            seg.appendChild(sanitizeForXML(trgContent));
             tuv.appendChild(seg);
             return Optional.of(tuv);
         }
         return Optional.absent();
+    }
+
+    private String sanitizeForXML(String input) {
+        char deviceControlChar = 0x12;
+        String xml11pattern = "[^"
+                    + "\u0001-\uD7FF"
+                    + "\uE000-\uFFFD"
+                    + "\ud800\udc00-\udbff\udfff"
+                    + "]+";
+        return input.replaceAll(String.valueOf(deviceControlChar), "")
+                .replaceAll(xml11pattern, "");
     }
 }

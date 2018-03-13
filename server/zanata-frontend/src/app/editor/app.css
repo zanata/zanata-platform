@@ -44,7 +44,7 @@
 @import './containers/Root/index.css';
 @import './containers/SuggestionDetailsModal/index.css';
 @import './containers/Sidebar/index.css';
-@import './containers/RejectTranslationModal/index.css';
+@import './containers/RejectTranslation/index.css';
 
 /**
  * Theme
