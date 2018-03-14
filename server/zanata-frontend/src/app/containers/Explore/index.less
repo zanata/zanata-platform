@@ -1,18 +1,5 @@
 @import "../../styles/variables.less";
 
-:root {
-  --ExploreSearch-width: 80%;
-  --ExploreSearchTextInput-width: 70%;
-}
-
-.containerContentView {
-  max-width: 48rem;
-  width: 100%;
-  margin-top: @spacing-base;
-  margin-left: @spacing-base;
-  margin-right: @spacing-base;
-}
-
 .scrollView {
   align-items: center;
   -webkit-align-items: center;
@@ -33,159 +20,172 @@
   margin-top: 0;
 }
 
-.searchView {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  color: @color-dark;
-  position: relative;
-  width: var(--ExploreSearch-width);
-  padding-top: @spacing-xlarge;
-  margin-bottom: @spacing-base;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-}
+#explore {
+  .containerContentView {
+    max-width: 48rem;
+    width: 100%;
+    margin-top: @spacing-base;
+    margin-left: @spacing-base;
+    margin-right: @spacing-base;
+  }
+  
+  .searchView {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    color: @color-dark;
+    position: relative;
+    width: 80%;
+    padding-top: @spacing-xlarge;
+    margin-bottom: @spacing-base;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+  }
 
-.searchView .textInput {
-  background-color: "";
-  border: @color-neutral solid 2px !important;
-  border-radius: @border-radius-text-input;
-  font-family: inherit;
-  font-weight: inherit;
-  color: inherit;
-  font-size: 1.1rem;
-  font-style: inherit;
-  outline: 0;
-  width: 80%;
-  padding-right: 0;
-  margin-left: -1.75rem;
-  padding-left: 2rem !important;
-}
+  .searchView .textInput {
+    background-color: "";
+    border: @color-neutral solid 2px !important;
+    border-radius: @border-radius-text-input;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+    font-size: 1.1rem;
+    font-style: inherit;
+    outline: 0;
+    width: 80%;
+    padding-right: 0;
+    margin-left: -1.75rem;
+    padding-left: 2rem !important;
+  }
 
-.searchView .listInline {
-  vertical-align: text-bottom;
-}
+  .searchView .listInline {
+    vertical-align: text-bottom;
+  }
 
-.searchView button.btn-link {
-  margin-left: @spacing-half-base;
-}
+  .searchView button.btn-link {
+    margin-left: @spacing-half-base;
+  }
 
-.teaserList {
-  margin-bottom: 2.25rem;
-}
+  .teaserList {
+    margin-bottom: 2.25rem;
+  }
 
-.teaserList .listTheme {
-  margin-top: @spacing-base-and-a-half;
-}
+  .teaserList .listTheme {
+    margin-top: @spacing-base-and-a-half;
+  }
 
-.teaserView {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  margin-bottom: @spacing-rh;
-}
+  .teaserView {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    margin-bottom: @spacing-rh;
+  }
 
-.teaserHeader {
-  align-items: baseline;
-  -webkit-align-items: baseline;
-  /* Safari 7.0+ */
-  display: inline-flex;
-  vertical-align: sub;
-  padding-bottom: @spacing-base;
-}
+  .teaserHeader {
+    align-items: baseline;
+    -webkit-align-items: baseline;
+    /* Safari 7.0+ */
+    display: inline-flex;
+    vertical-align: sub;
+    padding-bottom: @spacing-base;
+  }
 
-.teaser-inner {
-  flex-direction: column;
-  -webkit-flex-direction: column;
-  flex: 1;
-  -webkit-box-flex: 1;
-  -moz-flex: 1;
-  -webkit-flex: 1;
-}
-
-.userTeaser-inner {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  flex-direction: row;
-  -webkit-flex-direction: row;
-}
-
-.teaserHeader-inner {
-  margin-left: @spacing-rh;
-  color: @color-light;
-  display: flex;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-}
-
-.teamTeaser {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  margin-bottom: @spacing-rq;
-  margin-right: 1.75rem;
-}
-
-.languageTeamTeaser-id {
-  margin-left: @spacing-rq;
-}
-
-.languageTeamTeaser-members {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  margin-left: auto;
-  float: right;
-  padding-right: @spacing-xlarge;
-}
-
-.metaInfo {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  font-size: 0.833rem;
-}
-
-.wordsTranslatedView {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  margin-left: auto;
-}
-
-.searchView svg {
-  vertical-align: sub;
-}
-
-#explore h1 {
-  font-size: 1.2em !important;
-  margin-bottom: 0;
-}
-
-// @screen-xs variable depreciated
-@media (max-width: 29.375rem) {
   .teaser-inner {
-    flex-direction: row;
-    -webkit-flex-direction: row;
+    flex-direction: column;
+    -webkit-flex-direction: column;
     flex: 1;
     -webkit-box-flex: 1;
     -moz-flex: 1;
     -webkit-flex: 1;
   }
+
+  .userTeaser-inner {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    flex-direction: row;
+    -webkit-flex-direction: row;
+  }
+
+  .teaserHeader-inner {
+    margin-left: @spacing-rh;
+    color: @color-light;
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+  }
+
+  .teamTeaser {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    margin-bottom: @spacing-rq;
+    margin-right: 1.75rem;
+  }
+
+  .languageTeamTeaser-id {
+    margin-left: @spacing-rq;
+  }
+
+  .languageTeamTeaser-members {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    margin-left: auto;
+    float: right;
+    padding-right: @spacing-xlarge;
+  }
+
   .metaInfo {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    font-size: 0.833rem;
+  }
+
+  .wordsTranslatedView {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
     margin-left: auto;
   }
-  .searchView span svg {
-    font-size: 1.4rem;
+
+  .searchView svg {
+    vertical-align: sub;
   }
-  .searchView .textInput {
-    width: var(--ExploreSearchTextInput-width);
+
+  #explore h1 {
+    font-size: 1.2em !important;
+    margin-bottom: 0;
+  }
+
+  // @screen-xs variable depreciated
+  @media (max-width: 29.375rem) {
+    .teaser-inner {
+      flex-direction: row;
+      -webkit-flex-direction: row;
+      flex: 1;
+      -webkit-box-flex: 1;
+      -moz-flex: 1;
+      -webkit-flex: 1;
+    }
+
+    .metaInfo {
+      margin-left: auto;
+    }
+
+    .searchView span svg {
+      font-size: 1.4rem;
+    }
+
+    .searchView .textInput {
+      width: 70%;
+    }
   }
 }
