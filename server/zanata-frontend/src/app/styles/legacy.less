@@ -143,6 +143,9 @@ body.bodyStyle {
   .affix {
     position: fixed;
   }
+  .panel__header a#new-version-link i.i.i--add:not(.i--large) {
+    color: @color-light;
+  }
   //fix for admin panel icons
   .panel__header i.i--add:not(.i--large) {
     color: inherit !important;
@@ -318,8 +321,8 @@ body.bodyStyle {
     width: 48rem;
     font-size: 0.875rem;
   }
-  .panel__results--bottom .panel__results__type {
-    top: 0.2rem;
+  .panel__results__type {
+    top: 0.2rem !important;
   }
   select {
     width: inherit !important;
