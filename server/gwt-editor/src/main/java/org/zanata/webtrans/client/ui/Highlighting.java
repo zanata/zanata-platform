@@ -136,11 +136,11 @@ public class Highlighting {
               '<span class="newline"></span><br>');
 
       if (part.added) {
-        html[x] = '<span class="CodeMirror-searching">' + text + '</span>';
+        html[x] = text;
       } else if (part.removed) {
         html[x] = '';
       } else {
-        html[x] = text;
+        html[x] = '<span class="CodeMirror-searching">' + text + '</span>';
       }
     }
     return html.join('');

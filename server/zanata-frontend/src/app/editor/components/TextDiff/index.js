@@ -35,37 +35,16 @@ export default class extends React.Component {
 
   render () {
     var differences = compare(this.props.text1, this.props.text2)
-    // modifies in-place
-    // diff.cleanupSemantic(differences)
     const simpleMatch = this.props.simpleMatch
-    // const result = differences.map(([type, text], index) => {
-    //   switch (type) {
-    //     case -1:
-    //       return (simpleMatch
-    //         ? <span className="line-through" key={index}>{text}</span>
-    //         : <del key={index}>{text}</del>)
-    //     case 0:
-    //       return (simpleMatch
-    //         ? <span className="highlight" key={index}>{text}</span>
-    //         : <span key={index}>{text}</span>)
-    //     case 1:
-    //       return (simpleMatch
-    //         ? ''
-    //         : <ins key={index}>{text}</ins>)
-    //     default:
-    //       console.error('invalid diff match type "' + type +
-    //                     '". Expecting one of: -1, 0, 1')
-    //   }
-    // })
     const result = differences.map((part, index) => {
       if (part.added) {
         return (simpleMatch
-                ? ''
+                ? <span key={index}>{part.value}</span>
                 : <ins key={index}>{part.value}</ins>)
       }
       if (part.removed) {
         return (simpleMatch
-                ? <span className="line-through" key={index}>{part.value}</span>
+                ? ''
                 : <del key={index}>{part.value}</del>)
       }
       return (simpleMatch
