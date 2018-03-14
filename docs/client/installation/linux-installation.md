@@ -14,7 +14,7 @@ and other dependencies:
 
       mkdir -p ~/bin
       0install destroy zanata-cli
-      yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+      0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
       0install -c update zanata-cli
 
  2. It should be done now. Run `zanata-cli --help` for the usage of the client.
@@ -78,7 +78,7 @@ and other dependencies:
 
         mkdir -p ~/bin
         0install destroy zanata-cli
-        yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+        0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
         0install -c update zanata-cli
 
  2. It should be done now. Run `zanata-cli --help` for the usage of the client.
@@ -121,7 +121,7 @@ and other dependencies:
 
       mkdir -p ~/bin
       0install destroy zanata-cli
-      yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+      0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
       0install -c update zanata-cli
 
  2. It should be done now. Run `zanata-cli --help` for the usage of the client.
@@ -158,7 +158,7 @@ and other dependencies:
 
       mkdir -p ~/bin
       0install destroy zanata-cli
-      yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+      0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
       0install -c update zanata-cli
 
  2. It should be done now. Run `zanata-cli --help` for the usage of the client.
@@ -177,7 +177,7 @@ and other dependencies:
 
       mkdir -p ~/bin
       0install destroy zanata-cli
-      yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+      0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
       0install -c update zanata-cli
 
  3. It should be done now. Run `zanata-cli --help` for the usage of the client.
@@ -231,6 +231,6 @@ Your feed may be broken, to fix it, run:
 
       mkdir -p ~/bin
       0install destroy zanata-cli
-      yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+      0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
       0install -c update zanata-cli
 
