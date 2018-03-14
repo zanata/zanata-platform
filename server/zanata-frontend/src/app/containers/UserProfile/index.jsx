@@ -143,7 +143,7 @@ class UserProfile extends Component {
             show={!!notification} />
         )}
         <Helmet title='User Profile' />
-        <div className='wideView profile' >
+        <div className='wideView' id='profile' >
           {content}
         </div>
       </div>
