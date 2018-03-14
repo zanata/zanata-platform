@@ -242,7 +242,7 @@ public class TransMemoryView extends Composite implements
             tmOnly.addStyleName("is-hidden");
             searchOnly.addStyleName("is-hidden");
             notMatching.addStyleName("CodeMirror-searching");
-            notMatching.setText(messages.notMatching());
+            notMatching.setText(messages.matching());
             diffLegendLabel.setText(messages.tmHighlighting());
         }
     }
@@ -268,12 +268,12 @@ public class TransMemoryView extends Composite implements
         }
         if (determineDiffMode() == DiffMode.NORMAL) {
             SafeHtml safeHtml =
-                    TextContentsDisplay.asDiff(sourceContents, queriesPadded)
+                    TextContentsDisplay.asDiff(queriesPadded, sourceContents)
                             .toSafeHtml();
             panel.setWidget(new InlineHTML(safeHtml));
         } else {
             SafeHtml safeHtmlHighlight =
-                    TextContentsDisplay.asDiffHighlight(sourceContents, queriesPadded).toSafeHtml();
+                    TextContentsDisplay.asDiffHighlight(queriesPadded, sourceContents).toSafeHtml();
             panel.setWidget(new InlineHTML(safeHtmlHighlight));
         }
         return panel;

@@ -83,19 +83,8 @@ public class Highlighting {
 
     @CoverageIgnore("JSNI")
     private static native JavaScriptObject diff(String oldText, String newText,
-            boolean cleanupSemantic)
-        /*-{
-    if (!$wnd.diffMatchPatch) {
-      $wnd.diffMatchPatch = new $wnd.diff_match_patch();
-      $wnd.diffMatchPatch.Diff_Timeout = 0.2;
-    }
-
-    var dmp = $wnd.diffMatchPatch;
-    var diffs = dmp.diff_main(oldText, newText);
-    if (cleanupSemantic) {
-      dmp.diff_cleanupSemantic(diffs);
-    }
-    return diffs;
+            boolean cleanupSemantic) /*-{
+      return $wnd.JsDiff.diffWords(oldText, newText, {ignoreCase: true});
     }-*/;
 
     // modified diff_prettyHtml() from diff_match_patch.js
@@ -108,20 +97,17 @@ public class Highlighting {
     var pattern_gt = />/g;
     var pattern_para = /\n/g;
     for ( var x = 0; x < diffs.length; x++) {
-      var op = diffs[x][0]; // Operation (insert, delete, equal)
-      var data = diffs[x][1]; // Text of change.
+      var part = diffs[x];
+      var data = diffs[x].value; // Text of change.
       var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
           .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
-      switch (op) {
-      case $wnd['DIFF_INSERT']:
+
+      if (part.added) {
         html[x] = '<ins class="diff-insert">' + text + '</ins>';
-        break;
-      case $wnd['DIFF_DELETE']:
+      } else if (part.removed) {
         html[x] = '<del class="diff-delete">' + text + '</del>';
-        break;
-      case $wnd['DIFF_EQUAL']:
+      } else {
         html[x] = '<span class="diff-equal">' + text + '</span>';
-        break;
       }
     }
     return html.join('');
@@ -143,20 +129,18 @@ public class Highlighting {
     var pattern_gt = />/g;
     var pattern_para = /\n/g;
     for ( var x = 0; x < diffs.length; x++) {
-      var op = diffs[x][0]; // Operation (insert, delete, equal)
-      var data = diffs[x][1]; // Text of change.
+      var part = diffs[x];
+      var data = diffs[x].value; // Text of change.
       var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
           .replace(pattern_gt, '&gt;').replace(pattern_para,
               '<span class="newline"></span><br>');
-      switch (op) {
-      case $wnd['DIFF_INSERT']:
+
+      if (part.added) {
         html[x] = '<span class="CodeMirror-searching">' + text + '</span>';
-        break;
-      case $wnd['DIFF_DELETE']:
-        break;
-      case $wnd['DIFF_EQUAL']:
+      } else if (part.removed) {
+        html[x] = '';
+      } else {
         html[x] = text;
-        break;
       }
     }
     return html.join('');
