@@ -34,6 +34,8 @@ batch
 ## Allow stdout handler to handle INFO logging
 #/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=INFO)
 
+/subsystem=logging/root-logger=ROOT:write-attribute(name="level", value="ERROR")
+
 ## Disable some startup warnings triggered by third-party jars
 /subsystem=logging/logger=org.jboss.as.server.deployment:add
 /subsystem=logging/logger=org.jboss.as.server.deployment:write-attribute(name=level,value=INFO)
@@ -52,9 +54,9 @@ batch
 /subsystem=logging/logger=org.richfaces.log.Components:add
 /subsystem=logging/logger=org.richfaces.log.Components:write-attribute(name=level,value=ERROR)
 ## Enable more CDI weld error log
-/subsystem=logging/logger=org.jboss.weld:add
-/subsystem=logging/logger=org.jboss.weld:write-attribute(name=level,value=DEBUG)
-/subsystem=logging/logger=org.jboss.weld:write-attribute(name=filter-spec, value="any(match(\".*Catching.*\"), levelRange[INFO, FATAL])")
+#/subsystem=logging/logger=org.jboss.weld:add
+#/subsystem=logging/logger=org.jboss.weld:write-attribute(name=level,value=DEBUG)
+#/subsystem=logging/logger=org.jboss.weld:write-attribute(name=filter-spec, value="any(match(\".*Catching.*\"), levelRange[INFO, FATAL])")
 ## Log Hibernate SQL statements to server.log
 # /subsystem=logging/logger=org.hibernate.SQL:add
 # /subsystem=logging/logger=org.hibernate.SQL:write-attribute(name=level,value=DEBUG)
