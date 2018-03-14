@@ -107,7 +107,7 @@ class Languages extends Component {
 
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
-      <div className='wideView languages'>
+      <div className='wideView bstrapReact languages'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}

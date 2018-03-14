@@ -39,14 +39,16 @@ class DeleteEntryModal extends Component {
     ) : (<p>Are you sure you want to delete this term?</p>)
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='u-block'>
+      <div className='u-block bstrapReact'>
         <Overlay
           placement='top'
           target={() => ReactDOM.findDOMNode(this)}
           rootClose
+          className='bstrapReact'
           show={show}
           onHide={() => handleDeleteEntryDisplay(false)}>
-          <Tooltip id='delete-glossary' title='Delete term and translations'>
+          <Tooltip id='delete-glossary' title='Delete term and translations'
+            className='bstrapReact'>
             {info}
             <span className='button-spacing'>
               <Button bsStyle='default' className='btn-sm'

@@ -32,9 +32,11 @@ class DeleteAllEntriesModal extends Component {
           placement='bottom'
           target={() => ReactDOM.findDOMNode(this)}
           rootClose
+          className='bstrapReact'
           show={show}
           onHide={() => handleDeleteAllEntriesDisplay(false)}>
-          <Tooltip id='delete-entries' title='Delete all glossary entries'>
+          <Tooltip id='delete-entries' title='Delete all glossary entries'
+            className='bstrapReact'>
             <p>
               Are you sure you want to delete&nbsp;
               <strong>all entries</strong>&nbsp;?
