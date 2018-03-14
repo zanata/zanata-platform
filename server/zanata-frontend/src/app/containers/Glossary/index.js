@@ -208,7 +208,7 @@ class Glossary extends Component {
           )
         }
         <Helmet title={headerTitle} />
-        <div className='wideView glossary'>
+        <div className='wideView' id='glossary'>
           <ViewHeader title={headerTitle} />
           <div className='glossaryHeader'>
             <Row>
