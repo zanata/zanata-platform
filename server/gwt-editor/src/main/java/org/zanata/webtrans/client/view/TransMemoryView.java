@@ -91,7 +91,7 @@ public class TransMemoryView extends Composite implements
     UiMessages messages;
 
     @UiField
-    InlineLabel searchOnly, tmOnly, diffLegendLabel, notMatching;
+    InlineLabel searchOnly, tmOnly, diffLegendLabel, matching;
 
     @UiField
     FocusPanel diffLegend;
@@ -235,14 +235,12 @@ public class TransMemoryView extends Composite implements
         if (determineDiffMode() == DiffMode.NORMAL) {
             tmOnly.removeStyleName("is-hidden");
             searchOnly.removeStyleName("is-hidden");
-            notMatching.removeStyleName("CodeMirror-searching");
-            notMatching.setText(messages.matching());
+            matching.removeStyleName("CodeMirror-searching");
             diffLegendLabel.setText(messages.tmDiffHighlighting());
         } else {
             tmOnly.addStyleName("is-hidden");
             searchOnly.addStyleName("is-hidden");
-            notMatching.addStyleName("CodeMirror-searching");
-            notMatching.setText(messages.matching());
+            matching.addStyleName("CodeMirror-searching");
             diffLegendLabel.setText(messages.tmHighlighting());
         }
     }
