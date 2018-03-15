@@ -23,6 +23,7 @@
 // NB this script uses Nashorn scripting extensions (not vanilla ES5)
 // Requires org.jboss.as.cli on the module-path or
 // wildfly-cli-4.0.0.Final-client.jar on the classpath.
+// Ref: https://github.com/wildfly/wildfly-core/blob/4.0.0.Final/cli/src/main/java/org/jboss/as/cli/scriptsupport/CLI.java
 
 function padRight(str, paddingValue) {
   return String(str + paddingValue).slice(0, paddingValue.length)
@@ -98,7 +99,7 @@ function exec(command) {
   echo("exec: ${command}")
   if (!options.dryRun) {
     var res = jbossCli.cmd(command)
-    if (!res.isSuccess) throw new Error(res.response.toString())
+    if (!res.success) throw new Error(res.response.toString())
     //return res.response
   }
 }
@@ -125,14 +126,10 @@ function tryExec(command) {
 function cmdIgnoreError(command) {
   try {
     var res = jbossCli.cmd(command)
-    if (res.isSuccess) {
+    if (res.success) {
       return //res.response
-    } else if (options.verbose) {
-      if (res.isLocalCommand) {
-        echo('Ignoring error')
-      } else {
-        echo("Ignoring error: ${res.response}")
-      }
+    } else {
+      ignoreResponse(res)
     }
   } catch (e if e instanceof java.lang.IllegalArgumentException) {
     if (options.verbose) {
@@ -141,10 +138,26 @@ function cmdIgnoreError(command) {
   }
 }
 
+/**
+ * @param {org.jboss.as.cli.scriptsupport.CLI.Result} res
+ * @return {void}
+ */
+function ignoreResponse(res) {
+  if (options.verbose) {
+    if (res.localCommand) {
+      echo('Ignoring error')
+    } else {
+      echo("Ignoring error: ${res.response}")
+    }
+  }
+}
+
 // jboss cli specification for an operation request
 // [/node-type=node-name (/node-type=node-name)*] : operation-name [( [parameter-name=parameter-value (,parameter-name=parameter-value)*] )]
 
 /**
+ * Converts 'value' to a string and uses it as the value for the specified
+ * system property.
  * @param {string} name
  * @param {object} value
  * @return void
