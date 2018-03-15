@@ -124,6 +124,7 @@ class Languages extends Component {
             {permission.canAddLocale &&
               <div>
                 <Button bsStyle='primary'
+                  id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1' parentClassName='plusicon'
                     title='plus' />&nbsp;
