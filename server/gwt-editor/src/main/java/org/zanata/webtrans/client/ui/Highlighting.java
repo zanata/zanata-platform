@@ -83,7 +83,8 @@ public class Highlighting {
 
     @CoverageIgnore("JSNI")
     private static native JavaScriptObject diff(String oldText, String newText,
-            boolean cleanupSemantic) /*-{
+            boolean cleanupSemantic)
+    /*-{
       return $wnd.JsDiff.diffWords(oldText, newText, {ignoreCase: true});
     }-*/;
 
