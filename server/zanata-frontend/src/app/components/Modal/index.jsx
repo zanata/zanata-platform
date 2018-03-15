@@ -41,7 +41,7 @@ const Modal = ({
       className='modal bstrapReact'
       onClick={backdrop && handleClickOutside}
     >
-      <div className='container bstrapReact'>
+      <div className='container'>
         <div className='modal-content' tabIndex="0">
           {closeButton && (
             <Button aria-label={closeLabel}

@@ -35,7 +35,7 @@ const SelectableDropdown = (props) => {
   const selection = selectedValue && valueToDisplay(selectedValue)
   const titleValue = title || selection || ''
   return (
-    <DropdownButton id={id} bsStyle={bsStyle}
+    <DropdownButton className='bstrapReact' id={id} bsStyle={bsStyle}
       bsSize={bsSize} title={titleValue} disabled={disabled}>
       {items}
     </DropdownButton>
@@ -80,11 +80,9 @@ class DropdownMenuItem extends Component {
     const {value, isSelected, valueToDisplay} = this.props
     const display = valueToDisplay(value)
     return (
-      <span className='bstrapReact'>
-        <MenuItem onClick={this.onClick} active={isSelected}>
-          {display}
-        </MenuItem>
-      </span>
+      <MenuItem onClick={this.onClick} active={isSelected}>
+        {display}
+      </MenuItem>
     )
   }
 }
