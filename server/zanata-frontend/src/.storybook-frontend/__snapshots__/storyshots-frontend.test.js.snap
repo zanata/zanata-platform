@@ -25430,7 +25430,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         onChange={[Function]}
         type="checkbox"
       />
@@ -25443,7 +25443,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         name="リンゴ"
         onChange={[Function]}
         type="checkbox"
@@ -25455,7 +25455,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         name="apple"
         onChange={[Function]}
         type="checkbox"
@@ -25467,7 +25467,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         name="梨"
         onChange={[Function]}
         type="checkbox"
@@ -25479,7 +25479,7 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
     >
       <input
         checked={false}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         name="pear"
         onChange={[Function]}
         type="checkbox"
@@ -25680,7 +25680,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={true}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         onChange={[Function]}
         type="checkbox"
       />
@@ -25688,7 +25688,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         onChange={[Function]}
         type="checkbox"
       />
@@ -25696,7 +25696,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="triCheckbox"
+        className="triCheckbox bstrapReact"
         onChange={[Function]}
         type="checkbox"
       />
@@ -25711,7 +25711,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={true}
-        className="triCheckbox s1"
+        className="triCheckbox bstrapReact s1"
         onChange={[Function]}
         type="checkbox"
       />
@@ -25719,7 +25719,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="triCheckbox s1"
+        className="triCheckbox bstrapReact s1"
         onChange={[Function]}
         type="checkbox"
       />
@@ -25727,7 +25727,7 @@ exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
     <div>
       <input
         checked={false}
-        className="triCheckbox s1"
+        className="triCheckbox bstrapReact s1"
         onChange={[Function]}
         type="checkbox"
       />
