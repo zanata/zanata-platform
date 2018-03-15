@@ -22,11 +22,11 @@ interface FormattedDateRange {
 }
 
 class DateHelper {
-  public static shortDateFormat: 'DD/MM/YYYY'
-  public static shortDateTimeFormat: 'DD/MM/YYYY HH:mm'
-  public static dateFormat: 'YYYY-MM-DD'
-  public static dateRangeDisplayFmt: 'DD MMM, YYYY'
-  public static dateSingleDisplayFmt: 'DD MMM, YYYY (dddd)'
+  public static readonly shortDateFormat = 'YYYY-MM-DD'
+  public static readonly shortDateTimeFormat = 'YYYY-MM-DD HH:mm'
+  public static readonly dateFormat = 'YYYY-MM-DD'
+  public static readonly dateRangeDisplayFmt = 'DD MMM, YYYY'
+  public static readonly dateSingleDisplayFmt = 'DD MMM, YYYY (dddd)'
 
   public static getDateRangeFromOption (dateRange: DateRangeDef): FormattedDateRange {
     const dateFormat = this.dateFormat
