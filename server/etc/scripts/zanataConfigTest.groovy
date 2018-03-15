@@ -174,11 +174,15 @@ try {
 
   // ==== infinispan ====
   tryExec '/subsystem=infinispan/cache-container=zanata:remove'
-  exec '/subsystem=infinispan/cache-container=zanata:add(module="org.jboss.as.clustering.web.infinispan",default-cache="default",jndi-name="java:jboss/infinispan/container/zanata",statistics-enabled="true")'
+  exec '/subsystem=infinispan/cache-container=zanata:add(module="org.jboss.as.clustering.web.infinispan",jndi-name="java:jboss/infinispan/container/zanata",statistics-enabled="true")'
+
+  // NB for HA, we should probably use replicated-cache, not local-cache
   exec '/subsystem=infinispan/cache-container=zanata/local-cache=default:add(statistics-enabled="true")'
   exec '/subsystem=infinispan/cache-container=zanata/local-cache=default/transaction=TRANSACTION:add(mode="NON_XA")'
   exec '/subsystem=infinispan/cache-container=zanata/local-cache=default/eviction=EVICTION:add(max-entries="10000",strategy="LRU")'
   exec '/subsystem=infinispan/cache-container=zanata/local-cache=default/expiration=EXPIRATION:add(max-idle="100000")'
+
+  exec '/subsystem=infinispan/cache-container=zanata:write-attribute(name="default-cache",value="default")'
 
   // ==== message queue ====
   tryExec 'jms-queue remove --queue-address=MailsQueue'
