@@ -210,6 +210,7 @@ timestamps {
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
+            --batch-mode -Dstyle.color=never \
             com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
             -pl :zanata-war -am -DexcludeFrontend \
           """
@@ -226,7 +227,7 @@ timestamps {
           sh """./run-clean.sh ./mvnw -e -V -T 1 \
             -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             clean install jxr:aggregate \
-            --batch-mode \
+            --batch-mode -Dstyle.color=never \
             --update-snapshots \
             -DstaticAnalysisCI \
             $gwtOpts \
@@ -435,7 +436,7 @@ void integrationTests(String appserver) {
             ./run-clean.sh ./mvnw -e -V -T 1 \
             -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             install \
-            --batch-mode \
+            --batch-mode -Dstyle.color=never \
             --update-snapshots \
             -Dappserver=$appserver \
             -Dwebdriver.display=${env.DISPLAY} \
