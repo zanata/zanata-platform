@@ -80,9 +80,11 @@ class DropdownMenuItem extends Component {
     const {value, isSelected, valueToDisplay} = this.props
     const display = valueToDisplay(value)
     return (
-      <MenuItem onClick={this.onClick} active={isSelected}>
-        {display}
-      </MenuItem>
+      <span className='bstrapReact'>
+        <MenuItem onClick={this.onClick} active={isSelected}>
+          {display}
+        </MenuItem>
+      </span>
     )
   }
 }

@@ -143,7 +143,7 @@ class RejectionsForm extends Component {
       </FormGroup>
     ) : DO_NOT_RENDER
     return (
-      <Form className='rejectionsForm' inline>
+      <Form id='rejectionsForm' inline>
         <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
           <ControlLabel>Criteria</ControlLabel><br />
           <TextInput multiline editable={isAdminMode || commentRequired}

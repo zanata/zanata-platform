@@ -58,7 +58,7 @@ class CancellableProgressBar extends Component {
       heading, onCancelOperation, processStatus, buttonLabel
     } = this.props
     return (
-      <div>
+      <div className='bstrapReact'>
         <ProgressBar now={processStatus.percentageComplete}
           label={`${heading} ${processStatus.percentageComplete}%`}
         />
