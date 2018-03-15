@@ -87,8 +87,8 @@ for each (var arg in $ARG) {
 var jbossCli = org.jboss.as.cli.scriptsupport.CLI.newInstance()
 
 /**
- * @param command string
- * @return void
+ * @param {string} command
+ * @return {void}
  */
 function exec(command) {
   if (options.listCommands) {
@@ -104,26 +104,34 @@ function exec(command) {
 }
 
 /**
- * @param command string
- * @return void
+ * @param {string} command
+ * @return {void}
  */
 function tryExec(command) {
   if (options.listCommands) {
     echo(command)
     return
   }
+  echo("tryExec: ${command}")
+  if (!options.dryRun) {
+    cmdIgnoreError(command)
+  }
+}
+
+/**
+ * @param {string} command
+ * @return {void}
+ */
+function cmdIgnoreError(command) {
   try {
-    echo("tryExec: ${command}")
-    if (!options.dryRun) {
-      var res = jbossCli.cmd(command)
-      if (res.isSuccess) {
-        return //res.response
-      } else if (options.verbose) {
-        if (res.isLocalCommand) {
-          echo('Ignoring error')
-        } else {
-          echo("Ignoring error: ${res.response}")
-        }
+    var res = jbossCli.cmd(command)
+    if (res.isSuccess) {
+      return //res.response
+    } else if (options.verbose) {
+      if (res.isLocalCommand) {
+        echo('Ignoring error')
+      } else {
+        echo("Ignoring error: ${res.response}")
       }
     }
   } catch (e if e instanceof java.lang.IllegalArgumentException) {
@@ -137,8 +145,8 @@ function tryExec(command) {
 // [/node-type=node-name (/node-type=node-name)*] : operation-name [( [parameter-name=parameter-value (,parameter-name=parameter-value)*] )]
 
 /**
- * @param name string
- * @param value object
+ * @param {string} name
+ * @param {object} value
  * @return void
  */
 function systemProperty(name, value) {
@@ -147,9 +155,9 @@ function systemProperty(name, value) {
 }
 
 /**
- * @param logger string
- * @param level string
- * @return void
+ * @param {string} logger
+ * @param {string} level
+ * @return {void}
  */
 function logger(logger, level) {
   tryExec('/subsystem=logging/logger=' + logger + ':remove')
