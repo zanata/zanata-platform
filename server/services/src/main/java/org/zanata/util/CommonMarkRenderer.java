@@ -46,7 +46,6 @@ public class CommonMarkRenderer {
 
     // Share ScriptEngine and CompiledScript across threads, but not Bindings
     // See http://stackoverflow.com/a/30159424/14379
-    private ScriptEngine engine;
     private CompiledScript compiledFunctions;
     private ThreadLocal<Bindings> threadBindings;
     private final WebJars webjars;
@@ -62,7 +61,7 @@ public class CommonMarkRenderer {
 
     @PostConstruct
     public void postConstruct() {
-        engine =
+        ScriptEngine engine =
             new ScriptEngineManager().getEngineByName("js");
         compiledFunctions = compileFunctions((Compilable) engine,
                 engine.getBindings(ScriptContext.GLOBAL_SCOPE));

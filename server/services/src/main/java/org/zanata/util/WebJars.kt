@@ -47,16 +47,22 @@ class WebJars {
     // then change webjars.diff to webjars.diffJS in Application.xhtml and enable this:
 //    val diffJS = scriptName(NPM, "diff", "diff.min.js")
 
-    // jquery-file-upload includes multiple js files, so we accept the name of the resource
+    /** jquery-file-upload includes multiple js files, so we accept the name of the resource */
     fun jQueryFileUpload(resourceName: String) =
             scriptName(BOWER, "jquery-file-upload", resourceName)
 
+    /** Gets the script name for jQueryTyping's JS file */
     // Normally this would be a Kotlin property, but we have to name the
     // method getjQueryTyping (lower case 'j') if we want to use it in EL
     // as webjars.jQueryTyping (javabean rules)
     // Ref: http://futuretask.blogspot.com/2005/01/java-tip-6-dont-capitalize-first-two.html
-    fun getjQueryTypingJS() = scriptName(BOWER, jqTypingLib, jqTypingJS)
+    fun getjQueryTypingJS() = scriptName(BOWER, JQ_TYPING_LIB, jqTypingJS)
 
+    /**
+     * Returns the URL for the specified webjar resource (whose name has been
+     * returned by one of the other WebJars functions). If the resource is not
+     * found, an exception is thrown.
+     */
     fun getResource(nameInsideJar: String): URL {
         val name = "/META-INF/resources/webjars/$nameInsideJar"
         return javaClass.getResource(name) ?: throw RuntimeException("resource not found: $name")
@@ -70,8 +76,8 @@ private const val NPM = "org.webjars.npm"
 
 // jquery-typing uses the version number in the paths inside the package,
 // so we have to handle it specially:
-private const val jqTypingLib = "github-com-ccakes-jquery-typing"
-private val jqTypingVer: String = getJarVersion(BOWER, jqTypingLib)
+private const val JQ_TYPING_LIB = "github-com-ccakes-jquery-typing"
+private val jqTypingVer: String = getJarVersion(BOWER, JQ_TYPING_LIB)
 private val jqTypingJS = "plugin/jquery.typing-$jqTypingVer.min.js"
 
 /*
@@ -82,7 +88,8 @@ private fun getJarVersion(groupId: String, libName: String): String {
     try {
         return Dependencies.getVersion("$groupId:$libName:jar")
     } catch (e: IllegalStateException) {
-        throw IllegalStateException("no entry for $groupId:$libName:jar. Check that dependencies.properties is up to date", e)
+        throw IllegalStateException("no entry for $groupId:$libName:jar. " +
+                "Check that dependencies.properties is up to date", e)
     }
 }
 

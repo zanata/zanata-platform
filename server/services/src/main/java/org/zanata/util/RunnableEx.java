@@ -23,6 +23,7 @@ package org.zanata.util;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@SuppressWarnings({ "PMD.AvoidThrowingRawExceptionTypes" })
 public interface RunnableEx {
 
     void run() throws Exception;
