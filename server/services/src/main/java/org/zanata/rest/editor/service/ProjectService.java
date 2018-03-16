@@ -51,6 +51,12 @@ public class ProjectService implements ProjectResource {
         }
     }
 
+    @Override
+    public Response getValidationSettings(@PathParam("projectSlug") String projectSlug) {
+        // TODO: return validators
+        return Response.status(Response.Status.OK).build();
+    }
+
     public ProjectService() {
     }
 

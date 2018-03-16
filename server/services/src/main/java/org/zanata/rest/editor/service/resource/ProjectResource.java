@@ -42,4 +42,24 @@ public interface ProjectResource {
             MediaType.APPLICATION_JSON })
     @Path(PROJECT_SLUG_TEMPLATE)
     public Response getProject(@PathParam("projectSlug") String projectSlug);
+
+    /**
+     * Returns Validation settings for a Project.
+     *
+     * @param projectSlug project identifier
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Containing the Project data.<br>
+     *         NOT FOUND(404) - If a Project could not be found for the given
+     *         parameters.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Path("/validators/{projectSlug}")
+    public Response getValidationSettings(
+            @PathParam("projectSlug") String projectSlug);
 }
