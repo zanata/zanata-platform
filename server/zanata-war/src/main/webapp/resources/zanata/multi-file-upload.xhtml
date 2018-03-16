@@ -393,6 +393,8 @@ site: http://www.fsf.org.
 
   </script>
 
+  <!-- NB The jQueryFileUpload scripts listed below should be listed in WebJarsTest too -->
+
   <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
   <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/vendor/jquery.ui.widget.js')}"/>
 
@@ -414,8 +416,8 @@ site: http://www.fsf.org.
   <!-- The File Upload user interface plugin -->
   <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/jquery.fileupload-ui.js')}"/>
 
-  <!-- The main application script -->
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/main.js')}"/>
+  <!-- The jQuery-File-Upload example script -->
+  <h:outputScript target="body" library="script" name="file-upload.js"/>
 
   <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
   <!-- FIXME this might not work as expected -->

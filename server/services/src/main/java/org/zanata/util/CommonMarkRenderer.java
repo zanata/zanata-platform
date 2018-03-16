@@ -70,10 +70,6 @@ public class CommonMarkRenderer {
         threadBindings = ThreadLocal.withInitial(SimpleBindings::new);
     }
 
-    private String getOutputScriptName() {
-        return webjars.getCommonmarkJS();
-    }
-
     /**
      * Render CommonMark text to HTML and sanitise it.
      */
@@ -118,13 +114,6 @@ public class CommonMarkRenderer {
     }
 
     private URL getScriptResource() {
-        String resourceName = "/META-INF/resources/webjars/" + getOutputScriptName();
-        URL url = CommonMarkRenderer.class.getResource(resourceName);
-        if (url == null) {
-            throw new IllegalArgumentException(
-                    "resource " + resourceName + " relative to " +
-                            CommonMarkRenderer.class.getName() + " not found.");
-        }
-        return url;
+        return webjars.getResource(webjars.getCommonmarkJS());
     }
 }
