@@ -75,3 +75,11 @@ export const updateSetting = (key, value) => dispatch => {
   dispatch(createAction(SETTING_UPDATE)(setting))
   return saveSettings(setting)(dispatch)
 }
+
+/*
+ * Update a setting locally for the current editor session.
+ */
+export const updateValidationSetting = (key, value) => dispatch => {
+  const setting = { [key]: value }
+  dispatch(createAction(SETTING_UPDATE)(setting))
+}

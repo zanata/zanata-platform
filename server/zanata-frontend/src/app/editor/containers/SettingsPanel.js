@@ -3,7 +3,10 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { hideSettings } from '../actions'
-import { updateSetting } from '../actions/settings-actions'
+import {
+  updateSetting,
+  updateValidationSetting
+} from '../actions/settings-actions'
 import { Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import SettingsOptions from '../components/SettingsOptions'
@@ -43,6 +46,7 @@ export const SettingsPanel = ({
   validatePrintfXsi,
   hideSettings,
   updateSetting,
+  updateValidationSetting,
   isRTL
 }) => {
   const directionClass = isRTL ? 'rtl' : 'ltr'
@@ -112,7 +116,7 @@ export const SettingsPanel = ({
                 active: validateXmlEntity
               }
             ]}
-            updateSetting={updateSetting} />
+            updateSetting={updateValidationSetting} />
         </div>
       </div>
     </div>
@@ -131,6 +135,7 @@ SettingsPanel.propTypes = {
   validatePrintfXsi: PropTypes.bool.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired,
+  updateValidationSetting: PropTypes.func.isRequired,
   isRTL: PropTypes.bool.isRequired
 }
 
@@ -154,4 +159,4 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps,
-  { hideSettings, updateSetting })(SettingsPanel)
+  { hideSettings, updateSetting, updateValidationSetting })(SettingsPanel)
