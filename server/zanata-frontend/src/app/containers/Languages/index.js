@@ -105,7 +105,7 @@ class Languages extends Component {
 
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
-      <div className='wideView bstrapReact languages'>
+      <div className='wideView bstrapReact' id='languages'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -114,7 +114,7 @@ class Languages extends Component {
         )
         }
         <Helmet title='Languages' />
-        <div className='u-centerBlock' id='languages'>
+        <div className='u-centerBlock'>
           <div className='clearfix'>
             <h1>
               Languages {!loading &&

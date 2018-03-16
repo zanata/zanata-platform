@@ -663,6 +663,13 @@ h4.modal-title {
   vertical-align: middle;
 }
 
+.controlHeader-right {
+  padding-top: 0.15rem;
+}
+
+.controlHeader-left {
+  line-height: 1.75rem;
+}
 .icon-history svg, .icon-comment svg {
   vertical-align: sub;
 }
@@ -755,7 +762,7 @@ ul.Source-infoList {
 }
 
 nav.flex.flex-wrapper {
-  align-items: flex-start;
+  align-items: stretch;
   flex-wrap: wrap;
 }
 

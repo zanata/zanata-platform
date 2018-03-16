@@ -71,16 +71,17 @@ export const ControlsHeader = ({
  }/*: props*/) => {
   return (
     /* eslint-disable max-len */
-    <nav className="flex flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
+    <nav className="flex flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of">
       <TranslatingIndicator permissions={permissions} />
-      <div className="u-floatLeft"><PhraseStatusFilter /></div>
+      <div className="u-floatLeft controlHeader-left Input">
+        <PhraseStatusFilter /></div>
       {/* FIXME move InputEditorSearch into component. Layout component should
                 not have to know the internals of how the component is
                 styled. */}
       <div className="u-floatLeft InputEditorSearch">
         <EditorSearchInput />
       </div>
-      <div className="u-floatRight">
+      <div className="u-floatRight controlHeader-right">
         <ul className="u-listHorizontal u-textCenter">
           <li className="u-sMV-1-4">
             <Pager />
