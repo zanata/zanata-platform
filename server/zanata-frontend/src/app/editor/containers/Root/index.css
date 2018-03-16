@@ -668,7 +668,11 @@ h4.modal-title {
 }
 
 .controlHeader-left {
-  line-height: 1.75rem;
+  line-height: 1.95rem;
+}
+
+.Editor-mainNav .Dropdown-toggleIcon {
+  vertical-align: sub;
 }
 .icon-history svg, .icon-comment svg {
   vertical-align: sub;
