@@ -23,7 +23,7 @@ package org.zanata.liquibase.custom
 import antlr.ANTLRException
 import antlr.RecognitionException
 import liquibase.logging.core.DefaultLogger
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document.OutputSettings
 import org.jsoup.nodes.Element

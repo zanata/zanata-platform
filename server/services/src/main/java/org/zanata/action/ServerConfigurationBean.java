@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -30,13 +31,13 @@ import javax.faces.bean.ViewScoped;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.beanutils.BeanUtils;
-import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.Pattern;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.validator.DomainList;
+import org.zanata.model.validator.ZanataEmail;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
@@ -60,7 +61,7 @@ public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
     @Inject
     private FacesMessages facesMessages;
-    public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
+    public static final String DEFAULT_HELP_URL = "http://docs.zanata.org/en/release/";
     public static final String DEFAULT_TERM_OF_USE_URL =
             "http://zanata.org/terms";
     @Inject
@@ -77,7 +78,7 @@ public class ServerConfigurationBean implements Serializable {
     private String emailDomain;
     @EmailList
     private String adminEmail;
-    @Email
+    @ZanataEmail
     private String fromEmailAddr;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<String> fromEmailAddrProperty =
@@ -193,8 +194,8 @@ public class ServerConfigurationBean implements Serializable {
             try {
                 property.set(valueHolder.getValue());
             } catch (InvocationTargetException | IllegalAccessException e) {
-                log.error("error setting property value:" + property.getKey()
-                        + " -> " + valueHolder.getValue(), e);
+                log.error("error setting property: {} -> {}",
+                        property.getKey(), valueHolder.getValue(), e);
             }
         }
     }
@@ -207,8 +208,8 @@ public class ServerConfigurationBean implements Serializable {
             try {
                 property.set(Boolean.parseBoolean(valueHolder.getValue()));
             } catch (InvocationTargetException | IllegalAccessException e) {
-                log.error("error setting property value:" + property.getKey()
-                        + " -> " + valueHolder.getValue(), e);
+                log.error("error setting boolean property: {} -> {}",
+                        property.getKey(), valueHolder.getValue(), e);
             }
         }
     }
@@ -264,16 +265,16 @@ public class ServerConfigurationBean implements Serializable {
     }
 
     private void persistPropertyToDatabase(PropertyWithKey<String> property) {
-        HApplicationConfiguration value =
+        HApplicationConfiguration configItem =
                 applicationConfigurationDAO.findByKey(property.getKey());
         try {
             ServerConfigurationService.persistApplicationConfig(
-                    property.getKey(), value, property.get(),
+                    property.getKey(), configItem, property.getAsString(),
                     applicationConfigurationDAO);
         } catch (IllegalAccessException | NoSuchMethodException
                 | InvocationTargetException e) {
-            log.error("error persisting property value:" + property.getKey()
-                    + " -> " + value, e);
+            log.error("error persisting property: {} -> {}",
+                    property.getKey(), configItem, e);
         }
     }
 
@@ -291,13 +292,13 @@ public class ServerConfigurationBean implements Serializable {
                     value);
         }
 
-        public T get() throws IllegalAccessException, NoSuchMethodException,
+        public String getAsString() throws IllegalAccessException, NoSuchMethodException,
                 InvocationTargetException {
-            return (T) BeanUtils.getProperty(ServerConfigurationBean.this,
+            return BeanUtils.getProperty(ServerConfigurationBean.this,
                     propertyName);
         }
 
-        @java.beans.ConstructorProperties({ "propertyName", "key" })
+        @ConstructorProperties({ "propertyName", "key" })
         public PropertyWithKey(final String propertyName, final String key) {
             this.propertyName = propertyName;
             this.key = key;

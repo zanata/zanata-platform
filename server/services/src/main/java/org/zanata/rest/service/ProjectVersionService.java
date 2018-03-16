@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.AsyncTaskHandle;
@@ -60,6 +60,8 @@ import org.zanata.rest.editor.service.UserService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.HttpUtil;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.search.FilterConstraints;
@@ -77,7 +79,6 @@ import com.google.common.collect.Lists;
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Transactional
 public class ProjectVersionService implements ProjectVersionResource {
-    private static final long serialVersionUID = -6323736463512112239L;
     @Inject
     private TextFlowDAO textFlowDAO;
     @Inject
@@ -108,6 +109,8 @@ public class ProjectVersionService implements ProjectVersionResource {
     private UriInfo uri;
     @Inject
     private TransMemoryMergeManager transMemoryMergeManager;
+    @Inject
+    private UrlUtil urlUtil;
 
     @Override
     public Response head(@PathParam("projectSlug") String projectSlug,
@@ -156,7 +159,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             // pre-emptive entity permission check
             // identity.checkWorkspaceAction(hProject, "add-iteration");
             identity.checkPermission(hProjectVersion, "insert");
-            response = Response.created(uri.getAbsolutePath());
+            response = Response.created(urlUtil.restPathURI(uri.getPath()));
             changed = true;
         } else if (Objects.equal(hProjectVersion.getStatus(), OBSOLETE)) {
             // Iteration is Obsolete
@@ -450,9 +453,10 @@ public class ProjectVersionService implements ProjectVersionResource {
         AsyncTaskHandle<Void> handle = transMemoryMergeManager
                 .start(version.getId(), mergeRequest);
 
+        String url = uri.getBaseUri() + "process/key/" + handle.getKeyId();
         ProcessStatus processStatus = AsyncProcessService
                 .handleToProcessStatus(handle,
-                        uri.getBaseUri() + "process/key/" + handle.getKeyId());
+                        HttpUtil.stripProtocol(url));
         return Response.accepted(processStatus).build();
     }
 
@@ -566,7 +570,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             final ConfigurationService configurationServiceImpl,
             final ZanataIdentity identity, final UserService userService,
             final ApplicationConfiguration applicationConfiguration,
-            final UriInfo uri) {
+            final UriInfo uri, final UrlUtil urlUtil) {
         this.textFlowDAO = textFlowDAO;
         this.documentDAO = documentDAO;
         this.projectDAO = projectDAO;
@@ -580,5 +584,6 @@ public class ProjectVersionService implements ProjectVersionResource {
         this.userService = userService;
         this.applicationConfiguration = applicationConfiguration;
         this.uri = uri;
+        this.urlUtil = urlUtil;
     }
 }

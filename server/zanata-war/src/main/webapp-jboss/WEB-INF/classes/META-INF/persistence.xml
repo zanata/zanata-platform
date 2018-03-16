@@ -65,6 +65,8 @@
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
     <class>org.zanata.model.AllowedApp</class>
+    <class>org.zanata.model.security.HSaml2Credentials</class>
+    <class>org.zanata.model.ReviewCriteria</class>
 
     <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 
@@ -106,7 +108,7 @@
       <property name="hibernate.search.default.directory_provider"
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
       <property name="hibernate.search.default.locking_strategy"
-        value="simple" />
+        value="native" />
 
       <!-- to use an existing cache manager (Good for external configuration) -->
       <!--<property name="hibernate.search.infinispan.cachemanager_jndiname"

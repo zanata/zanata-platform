@@ -20,13 +20,14 @@
  */
 package org.zanata.action;
 
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.Set;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.zanata.ApplicationConfiguration;
@@ -41,7 +42,7 @@ import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
-import org.zanata.util.FacesNavigationUtil;
+import org.zanata.util.UrlUtil;
 
 /**
  * This action takes care of logging a user into the system. It contains logic
@@ -74,6 +75,8 @@ public class LoginAction implements Serializable {
     private UserRedirectBean userRedirect;
     @Inject
     private AuthenticationType authenticationType;
+    @Inject
+    private UrlUtil urlUtil;
 
     public String login() {
         credentials.setUsername(username);
@@ -105,7 +108,7 @@ public class LoginAction implements Serializable {
                     "login() only supports internal, jaas, or kerberos authentication");
 
         }
-        if ("loggedIn".equals(loginResult)) {
+        if (StringUtils.equals(loginResult, "loggedIn")) {
             if (authenticationManager.isAuthenticated()
                     && authenticationManager.isNewUser()) {
                 return "createUser";
@@ -120,9 +123,10 @@ public class LoginAction implements Serializable {
                     && userRedirect.isRedirect()) {
                 // TODO [CDI] seam will create a conversation when you return
                 // view id directly or redirect to external url
-                return continueToPreviousUrl();
+                continueToPreviousUrl();
+                return "";
             }
-        } else if ("inactive".equals(loginResult)) {
+        } else if (StringUtils.equals(loginResult, "inactive")) {
             // TODO [CDI] commented out programmatically ending conversation
             // Conversation.instance().end();
             return "inactive";
@@ -130,14 +134,12 @@ public class LoginAction implements Serializable {
         return loginResult;
     }
 
-    private String continueToPreviousUrl() {
-        try {
-            FacesNavigationUtil.redirect(FacesContext.getCurrentInstance(),
-                    userRedirect.getUrl());
-        } catch (IOException e) {
-            return "dashboard";
+    private void continueToPreviousUrl() {
+        if (StringUtils.isNotBlank(userRedirect.getUrl())) {
+            urlUtil.redirectToInternalWithoutContextPath(userRedirect.getUrl());
+        } else {
+            urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
-        return "continue";
     }
 
     /**
@@ -193,9 +195,9 @@ public class LoginAction implements Serializable {
      * @return A string indicating where the user should be redirected when
      *         trying to access the login page.
      */
-    public String getLoginPageRedirect() {
+    public String init() {
         if (identity.isLoggedIn()) {
-            return "dashboard";
+            urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
         if (applicationConfiguration.isOpenIdAuth()
                 && applicationConfiguration.isSingleOpenIdProvider()) {
@@ -204,6 +206,18 @@ public class LoginAction implements Serializable {
                     applicationConfiguration.getOpenIdProviderUrl());
         }
         return "login";
+    }
+
+    private boolean onlySaml2Enabled() {
+        Set<AuthenticationType> authTypes =
+                applicationConfiguration.getAuthTypes();
+        return authTypes.size() == 1 && authTypes.contains(AuthenticationType.SAML2);
+    }
+
+    public void redirectIfOnlySSOEnabled() {
+        if (onlySaml2Enabled()) {
+            urlUtil.redirectToInternal(urlUtil.singleSignOnPage());
+        }
     }
 
     public String getUsername() {

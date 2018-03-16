@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -66,7 +66,7 @@ public class WebHooksPublisher {
             log.debug("firing async webhook: {}:{}", callbackURL, data);
             postBuilder.async().post(Entity.entity(data, mediaType));
         } catch (Exception e) {
-            log.error("Error on webhooks post {}, {}", callbackURL, e);
+            log.error("Error on webhooks post {}", callbackURL, e);
         }
     }
 

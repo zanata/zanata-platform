@@ -31,7 +31,7 @@ import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -291,6 +291,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         clearSlugs();
     }
 
+    public boolean canViewProject(HProjectIteration version) {
+        return identity.hasPermission(version, "read");
+    }
+
     @ViewScoped
     public static class GroupMaintainerAutocomplete
             extends MaintainerAutocomplete {
@@ -364,7 +368,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
                         public boolean
                                 apply(@Nullable HProjectIteration input) {
                             return input != null && !input.getGroups()
-                                    .contains(getInstance());
+                                    .contains(getInstance()) &&
+                                    identity.hasPermission(input, "read");
                         }
                     });
             return Lists.newArrayList(filtered);

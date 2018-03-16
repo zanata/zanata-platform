@@ -6,11 +6,11 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>org.zanata</groupId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.5.0-SNAPSHOT</version>
   </parent>
   <artifactId>gwt-test</artifactId>
 
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
 
   <!-- Should be the same as zanata-server/pom.xml -->
   <scm>

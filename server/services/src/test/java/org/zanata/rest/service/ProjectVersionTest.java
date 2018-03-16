@@ -17,6 +17,7 @@ import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
@@ -52,6 +54,7 @@ import org.zanata.webtrans.shared.rpc.MergeRule;
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
+@AdditionalClasses(CurrentUserImpl.class)
 public class ProjectVersionTest extends ZanataDbunitJpaTest {
 
     @Inject
@@ -138,13 +141,13 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String projectSlug = "sample-project";
         String versionSlug = "2.0";
         VersionTMMerge request1 = new VersionTMMerge(LocaleId.FR, 79,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
         assertThat(service.prefillWithTM(projectSlug, versionSlug, request1)
                 .getStatus()).isEqualTo(BAD_REQUEST.getStatusCode());
 
         VersionTMMerge request2 = new VersionTMMerge(LocaleId.FR, 101,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
         assertThat(service.prefillWithTM(projectSlug, versionSlug, request2)
                 .getStatus()).isEqualTo(BAD_REQUEST.getStatusCode());
@@ -156,7 +159,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String projectSlug = "non-existing-project";
         String versionSlug = "2.0";
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
 
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)
@@ -169,7 +172,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String projectSlug = "sample-project";
 
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
 
         assertThat(service.prefillWithTM(projectSlug, "non-exist", mergeRequest)
@@ -186,7 +189,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         when(localeService.getByLocaleId(LocaleId.FR)).thenReturn(fr);
 
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
 
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)
@@ -200,7 +203,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String versionSlug = "2.0";
 
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
         when(localeService.getByLocaleId(LocaleId.FR)).thenReturn(null);
 
@@ -215,7 +218,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String versionSlug = "2.0";
 
         VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
 
         when(transMemoryMergeManager.start(2L, mergeRequest)).thenReturn(new AsyncTaskHandle<>());

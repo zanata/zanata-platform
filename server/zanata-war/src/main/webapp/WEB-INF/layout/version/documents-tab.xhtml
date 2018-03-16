@@ -105,8 +105,8 @@
           var="document">
           <ui:param name="hasActions"
             value="#{versionHomeAction.isPoDocument(document.docId) or !versionHomeAction.isPoDocument(document.docId) or versionHomeAction.hasOriginal(document.path, document.name) or versionHomeAction.documentUploadAllowed or versionHomeAction.documentRemovalAllowed}"/>
-          <li id="#{versionHomeAction.encodeDocId(document.docId)}"
-            class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}" >
+          <li id="document-#{versionHomeAction.encodeDocId(document.docId)}"
+            class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''} #{versionHomeAction.selectedDocument.docId eq document.docId ? 'is-active' : ''}" >
             <h:panelGroup layout="block"  styleClass="list__item__action" rendered="#{hasActions}">
               <div
                 class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
@@ -190,7 +190,7 @@
               </div>
             </h:panelGroup>
             <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents?docId=#{versionHomeAction.encodeDocId(document.docId)}"
-              onclick="changeBrowserUrl(this.href, true);return false;">
+              onclick="changeBrowserUrl(this.href, true);return false;" class="#{versionHomeAction.selectedDocument.docId eq document.docId ? 'is-active' : ''}">
               <div class="list__item__content">
                 <div class="list__item__info">
                   <h3 class="list__title">#{document.name}</h3>
@@ -263,7 +263,7 @@
     <a href="#" class="panel__header__back"
       onclick="removeActiveRows('documents-document_list');toggleColumn('documents')"
       title="#{msgs['jsf.Documents']}">
-      <i class="i--huge i--arrow-left" aria-hidden="true"></i>
+      <i class="i--huge i--arrow-left" ></i>
     </a>
 
     <h2 class="panel__heading">
@@ -327,11 +327,11 @@
             <ui:repeat
               value="#{versionHomeAction.documentsTabLanguageFilter.currentPage}"
               var="hLocale">
-              <li class="progress-bar__expander">
+              <li class="progress-bar__expander panels__panel__item">
 
                 <ui:fragment rendered="#{hLocale.active}">
                   <a
-                    href="#{request.contextPath}/webtrans/Application.xhtml?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{hLocale.localeId}&amp;locale=#{facesContext.externalContext.requestLocale}#{dswidParam}#view:doc;doc:#{versionHomeAction.selectedDocument.docId}">
+                    href="#{request.contextPath}/webtrans/translate?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{hLocale.localeId}&amp;locale=#{facesContext.externalContext.requestLocale}#{dswidParam}#view:doc;doc:#{versionHomeAction.encodeDocId(versionHomeAction.selectedDocument.docId)}">
                     <div class="list__item">
                       <div class="list__item__info">
                         <h3 class="list__title">

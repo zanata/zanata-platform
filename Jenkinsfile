@@ -4,11 +4,21 @@
  * Jenkinsfile for zanata-platform
  */
 
+@Field
+public static final String PROJ_URL = 'https://github.com/zanata/zanata-platform'
+
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
-@Library('zanata-pipeline-library@master')
+@Field
+public static final String PIPELINE_LIBRARY_BRANCH = 'v0.3.1'
+
+// GROOVY-3278:
+//   Using referenced String constant as value of Annotation causes compile error
+@Library('zanata-pipeline-library@v0.3.1')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
+import org.zanata.jenkins.ScmGit
+import static org.zanata.jenkins.Reporting.codecov
 import static org.zanata.jenkins.StackTraces.getStackTrace
 
 import groovy.transform.Field
@@ -18,10 +28,15 @@ milestone()
 
 PullRequests.ensureJobDescription(env, manager, steps)
 
+// initialiser must be run separately (bindings not available during compilation phase)
+@Field
+def pipelineLibraryScmGit
+
+@Field
+def mainScmGit
+
 @Field
 def notify
-// initialiser must be run separately (bindings not available during compilation phase)
-notify = new Notifier(env, steps, currentBuild, 'https://github.com/zanata/zanata-platform.git', 'Jenkinsfile')
 
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -37,6 +52,13 @@ def jobName
 // we need a node to access env.DEFAULT_NODE.
 node {
   echo "running on node ${env.NODE_NAME}"
+  pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
+  pipelineLibraryScmGit.init(PIPELINE_LIBRARY_BRANCH)
+  mainScmGit = new ScmGit(env, steps, PROJ_URL)
+  mainScmGit.init(env.BRANCH_NAME)
+  notify = new Notifier(env, steps, currentBuild,
+    pipelineLibraryScmGit, mainScmGit, (env.GITHUB_COMMIT_CONTEXT) ?: 'Jenkinsfile',
+  )
   defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
   // eg github-zanata-org/zanata-platform/update-Jenkinsfile
   jobName = env.JOB_NAME
@@ -51,7 +73,7 @@ node {
     ],
     [
       $class: 'GithubProjectProperty',
-      projectUrlStr: 'https://github.com/zanata/zanata-platform'
+      projectUrlStr: PROJ_URL
     ],
     [
       $class: 'ParametersDefinitionProperty',
@@ -164,6 +186,7 @@ timestamps {
   // allocate a node for build+unit tests
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
     // generate logs in colour
     ansicolor {
       try {
@@ -176,16 +199,18 @@ timestamps {
           checkout scm
 
           // Clean the workspace
-          sh "git clean -fdx"
+          sh "git clean -dfqx"
         }
 
         // Build and Unit Tests
         // The built files are stashed for integration tests in other nodes.
         stage('Build') {
+          // Now SCM commit info is available (after checkout scm)
+          notify.startBuilding()
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
-            -Dbuildtime.output.log \
+            --batch-mode -Dstyle.color=never \
             com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
             -pl :zanata-war -am -DexcludeFrontend \
           """
@@ -200,12 +225,13 @@ timestamps {
           // -Dmaven.test.failure.ignore: Continue building other modules
           // even after test failures.
           sh """./run-clean.sh ./mvnw -e -V -T 1 \
-            -Dbuildtime.output.log \
+            -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             clean install jxr:aggregate \
-            --batch-mode \
+            --batch-mode -Dstyle.color=never \
             --update-snapshots \
-            -DstaticAnalysis \
+            -DstaticAnalysisCI \
             $gwtOpts \
+            -Dkotlin.compiler.incremental=false \
             -DskipFuncTests \
             -DskipArqTests \
             -Dmaven.test.failure.ignore \
@@ -221,21 +247,7 @@ timestamps {
           // TODO try https://github.com/jenkinsci/github-pr-coverage-status-plugin
 
           // send test coverage data to codecov.io
-          try {
-            withCredentials(
-                    [[$class: 'StringBinding',
-                      credentialsId: 'codecov_zanata-platform',
-                      variable: 'CODECOV_TOKEN']]) {
-              // NB the codecov script uses CODECOV_TOKEN
-              sh "curl -s https://codecov.io/bash | bash -s - -K"
-            }
-          } catch (InterruptedException e) {
-            throw e
-          } catch (hudson.AbortException e) {
-            throw e
-          } catch (e) {
-            echo "[WARNING] Ignoring codecov error: $e"
-          }
+          codecov(env, steps, mainScmGit)
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
@@ -255,7 +267,7 @@ timestamps {
           // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
-          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
@@ -275,7 +287,6 @@ timestamps {
           //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
           //step([$class: 'DryPublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/cpd/cpdCheck.xml', unHealthy: ''])
 
-          // TODO reduce unstableTotal thresholds as bugs are eliminated
           step([$class: 'FindBugsPublisher',
                 pattern: '**/findbugsXml.xml',
                 unstableTotalAll: '0'])
@@ -290,7 +301,7 @@ timestamps {
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '350',
+                unstableTotalAll: '0',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
@@ -313,7 +324,7 @@ timestamps {
                   includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
         // Reduce workspace size
-        sh "git clean -fdx"
+        sh "git clean -dfqx"
       } catch (e) {
         echo("Caught exception: " + e)
         notify.error(e.toString())
@@ -373,40 +384,45 @@ void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
+    currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
+
     echo "WORKSPACE=${env.WORKSPACE}"
-    checkout scm
-    // Clean the workspace
-    sh "git clean -fdx"
+    // we want parallel builds to use different directories so we can distinguish the archived files
+    dir(appserver) {
+      checkout scm
+      // Clean the workspace
+      sh "git clean -dfqx"
 
-    unstash 'generated-files'
+      unstash 'generated-files'
 
-    /* touch all target */
-    //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
+      /* touch all target */
+      //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
 
-    xvfb {
-      withPorts {
-        echo "Running maven build for integration tests"
+      xvfb {
+        withPorts {
+          echo "Running maven build for integration tests"
 
-        // Run the maven build
-        echo "env.DISPLAY=${env.DISPLAY}"
-        echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
-        echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
+          // Run the maven build
+          echo "env.DISPLAY=${env.DISPLAY}"
+          echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
+          echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
 
-        // Build up Maven options for running functional tests:
+          // Build up Maven options for running functional tests:
 
-        // avoid port conflict for debugger:
-        def ftOpts = '-Dcargo.debug.jvm.args= '
+          // disable debugging:
+          def ftOpts = '-Dcargo.debug.jvm.args= '
 
-        // run *all* functional tests in these branches only:
-        if (env.BRANCH_NAME in mainlineBranches || resolveAllFuncTests()) {
-          ftOpts += '-DallFuncTests '
-        }
+          // run *all* functional tests in these branches only:
+          if (env.BRANCH_NAME in mainlineBranches || resolveAllFuncTests()) {
+            ftOpts += '-DallFuncTests '
+          }
 
-        // skip recompilation, unit tests, static analysis
-        // (done in Build stage):
-        ftOpts += """\
+          // skip recompilation, unit tests, static analysis
+          // (done in Build stage):
+          ftOpts += """\
               -Dgwt.compiler.skip \
               -Dmaven.main.skip \
+              -Dkotlin.compiler.incremental=false \
               -Dskip.npminstall \
               -DskipUnitTests \
               -Danimal.sniffer.skip \
@@ -416,11 +432,11 @@ void integrationTests(String appserver) {
               $gwtOpts \
         """
 
-        def mvnResult = sh returnStatus: true, script: """\
+          def mvnResult = sh returnStatus: true, script: """\
             ./run-clean.sh ./mvnw -e -V -T 1 \
-            -Dbuildtime.output.log \
+            -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             install \
-            --batch-mode \
+            --batch-mode -Dstyle.color=never \
             --update-snapshots \
             -Dappserver=$appserver \
             -Dwebdriver.display=${env.DISPLAY} \
@@ -428,41 +444,49 @@ void integrationTests(String appserver) {
             -Dwebdriver.chrome.driver=/opt/chromedriver \
             ${ftOpts}
         """
-        /* TODO
+          /* TODO
         -Dassembly.skipAssembly \
         -DskipAppassembler \
         -DskipShade \
          */
 
-        // retain traceability report
-        archive(includes: "server/functional-test/target/**/traceability.json")
+          // retain traceability report and build time info
+          // work from parent directory so that $appserver will appear at the beginning of the archive paths
+          dir('..') {
+            archive('*/server/functional-test/target/**/traceability.json,*/target/buildtime.csv')
+          }
+          if (mvnResult != 0) {
+            notify.testResults(appserver, 'UNSTABLE',
+                    'Failed maven build for integration tests')
+            currentBuild.result = 'UNSTABLE'
 
-        if (mvnResult != 0) {
-          notify.testResults(appserver, 'UNSTABLE', 'Failed maven build for integration tests')
-          currentBuild.result = 'UNSTABLE'
+            // gather db/app/gc logs, heap dumps and screenshots to help debugging
+            // work from parent directory so that $appserver will appear at the beginning of the archive paths
+            dir('..') {
+              archive(
+                      includes: '*/server/functional-test/target/**/*.log,*/server/functional-test/target/screenshots/**,*/server/*/target/**/gc.log*,*/server/*/target/**/*.hprof',
+                      excludes: '**/BACKUP-*.log')
+            }
+          } else {
+            notify.testResults(appserver, 'SUCCESS')
+          }
 
-          // gather db/app logs and screenshots to help debugging
-          archive(
-                  includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
-                  excludes: '**/BACKUP-*.log')
-        } else {
-          notify.testResults(appserver, 'SUCCESS')
-        }
-
-        echo "Capturing JUnit results"
-        if (setJUnitPrefix(appserver, failsafeTestReports)) {
-          junit(testResults: "**/${failsafeTestReports}",
-                  // NB: if this is enabled, make sure (a) max history in Jenkins
-                  // Configuration is small (eg 3) or
-                  // (b) https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed.
-                  testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-          )
-          // Reduce workspace size
-          sh "git clean -fdx"
-        } else {
-          notify.error("No integration test result for $appserver")
-          currentBuild.result = 'FAILURE'
-          error "no integration test results for $appserver"
+          echo "Capturing JUnit results"
+          if (setJUnitPrefix(appserver, failsafeTestReports)) {
+            junit(testResults: "**/${failsafeTestReports}"
+                    // NB: if this is enabled, make sure (a) max history in Jenkins
+                    // Configuration is small (eg 3) or
+                    // (b) https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed.
+                    // Update: even with max=3 it can take many hours. Disabling for now.
+                    // ,testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+            )
+            // Reduce workspace size
+            sh "git clean -dfqx"
+          } else {
+            notify.error("No integration test result for $appserver")
+            currentBuild.result = 'FAILURE'
+            error "no integration test results for $appserver"
+          }
         }
       }
     }
@@ -488,9 +512,10 @@ void withPorts(Closure wrapped) {
 // from https://issues.jenkins-ci.org/browse/JENKINS-27395?focusedCommentId=256459&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-256459
 boolean setJUnitPrefix(prefix, files) {
   // add prefix to qualified classname
-  def reportFiles = findFiles glob: "**/${files}"
+  def fileGlob = "**/${files}"
+  def reportFiles = findFiles glob: fileGlob
   if (reportFiles.size() > 0) {
-    sh "sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
+    sh "set +x; echo 'Using sed to edit classnames in ${fileGlob}'; sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
     return true
   } else {
     echo "[WARNING] Failed to find JUnit report files **/${files}"

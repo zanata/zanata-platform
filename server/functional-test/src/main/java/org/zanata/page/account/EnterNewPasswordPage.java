@@ -43,18 +43,32 @@ public class EnterNewPasswordPage extends BasePage {
     private By resetPasswordButton =
             By.id("passwordResetActivationForm:resetPasswordButton");
 
+    /**
+     * Enter a new password
+     * @param password string to enter
+     * @return new EnterNewPasswordPage
+     */
     public EnterNewPasswordPage enterNewPassword(String password) {
         log.info("Enter new password {}", password);
         enterText(readyElement(newPassworField), password);
         return new EnterNewPasswordPage(getDriver());
     }
 
+    /**
+     * Enter a confirmation password
+     * @param password string to enter
+     * @return new EnterNewPasswordPage
+     */
     public EnterNewPasswordPage enterConfirmPassword(String password) {
         log.info("Enter confirm password {}", password);
         enterText(readyElement(confirmPassworField), password);
         return new EnterNewPasswordPage(getDriver());
     }
 
+    /**
+     * Press the Change Password button
+     * @return new SignInPage
+     */
     public SignInPage pressChangePasswordButton() {
         log.info("Press Change Password button");
         clickElement(resetPasswordButton);

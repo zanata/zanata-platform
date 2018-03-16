@@ -59,7 +59,7 @@ public class VersionDocumentsPage extends VersionBasePage {
     public List<String> getSourceDocumentNames() {
         log.info("Query source documents list");
         // getText often falls into a UI change
-        return waitForAMoment()
+        return waitForAMoment().withMessage("get source document names")
                 .until(webDriver -> {
                     List<String> fileNames = new ArrayList<>();
                     for (WebElement element : getDocumentsTabDocumentList()) {
@@ -79,7 +79,7 @@ public class VersionDocumentsPage extends VersionBasePage {
 
     public VersionDocumentsPage clickDownloadPotOnDocument(String documentName) {
         WebElement listItem = readyElement(DOCSLIST)
-                .findElement(By.id(documentName));
+                .findElement(By.id("document-" + documentName));
         listItem.findElement(By.className("dropdown__toggle")).click();
         slightPause();
         clickLinkAfterAnimation(

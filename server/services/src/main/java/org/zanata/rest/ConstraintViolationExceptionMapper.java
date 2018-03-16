@@ -18,8 +18,8 @@ public class ConstraintViolationExceptionMapper
     public Response toResponse(ConstraintViolationException e) {
         Set<ConstraintViolation<?>> invalidValues = e.getConstraintViolations();
         for (ConstraintViolation<?> invalidValue : invalidValues) {
-            log.error("Invalid state for leaf bean {}: {}", e,
-                    invalidValue.getLeafBean(), invalidValue);
+            log.error("Invalid state for leaf bean {}: {}",
+                    invalidValue.getLeafBean(), invalidValue, e);
         }
         return Response.status(Status.BAD_REQUEST).build();
     }

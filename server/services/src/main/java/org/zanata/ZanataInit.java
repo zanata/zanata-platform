@@ -65,6 +65,7 @@ import javax.enterprise.event.Event;
 
 import org.zanata.util.VersionUtility;
 import org.zanata.util.WithRequestScope;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * This class handles various tasks at startup. It disables warnings for a
@@ -141,6 +142,8 @@ public class ZanataInit {
             log.info("SPNEGO/Kerberos authentication: enabled");
             authlogged = true;
         }
+        log.info("Configured authentications: {}", applicationConfiguration.getAuthTypes());
+
         if (!authlogged) {
             log.info("Using JAAS authentication");
         }
@@ -148,10 +151,10 @@ public class ZanataInit {
                 this.applicationConfiguration.isCopyTransEnabled());
         String javamelodyDir =
                 System.getProperty("javamelody.storage-directory");
-        log.info("JavaMelody stats directory: " + javamelodyDir);
+        log.info("JavaMelody stats directory: {}", javamelodyDir);
         String indexBase =
                 applicationConfiguration.getHibernateSearchIndexBase();
-        log.info("Lucene index directory: " + indexBase);
+        log.info("Lucene index directory: {}", indexBase);
         if (indexBase != null) {
             checkLuceneLocks(new File(indexBase));
         }
@@ -235,23 +238,22 @@ public class ZanataInit {
                 log.warn("Could not create lucene index directory");
             }
         }
-        // TODO switch between native and simple locks based on this check?
-        if (mightUseNFS(indexDir)) {
+        boolean mightUseNFS = mightUseNFS(indexDir);
+        if (mightUseNFS) {
             // we don't trust Lucene's NativeFSLockFactory for NFS locks
             String docURL =
                     "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
-            log.info("The Hibernate Search index dir \'{}\' might be NFS. ",
-                    "Using NativeFSLockFactory would not be safe: See {}",
+            log.info("The Hibernate Search index dir \"{}\" might be NFS. " +
+                    "Native locks may not be reliable. See {}",
                     indexDir, docURL);
-        }
-        Collection<File> lockFiles =
-                FileUtils.listFiles(indexDir, new String[] { "lock" }, true);
-        if (!lockFiles.isEmpty()) {
-            String msg =
-                    "Lucene lock files found. Check if Zanata is already running. Otherwise, Zanata was not shut down cleanly: delete the lock files: "
-                            + lockFiles;
-            // TODO just log a warning if using native locks
-            throw new ZanataInitializationException(msg);
+            Collection<File> lockFiles =
+                    FileUtils.listFiles(indexDir, new String[] { "lock" }, true);
+            if (!lockFiles.isEmpty()) {
+                log.warn("Lucene lock files found. Lucene will attempt to " +
+                        "determine if the locks are stale, but this is not " +
+                        "fully reliable on NFS, so please make sure only one " +
+                        "copy of Zanata is running.");
+            }
         }
     }
 
@@ -259,6 +261,7 @@ public class ZanataInit {
      * Returns true if any of the files appear to be stored in NFS (or we can't
      * tell).
      */
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     private boolean mightUseNFS(File... files) {
         try {
             FileSystem fileSystem = FileSystems.getDefault();
@@ -423,8 +426,8 @@ public class ZanataInit {
         log.info("         &(((((((%   %((((((((((       ");
         log.info("             #(((((((((((#     ((#     ");
         log.info("");
-        log.info("  Zanata version: " + ver.getVersionNo());
-        log.info("  SCM: " + ver.getScmDescribe());
+        log.info("  Zanata version: {}", ver.getVersionNo());
+        log.info("  SCM: {}", ver.getScmDescribe());
         log.info("  Red Hat Inc 2008-{}",
                 Calendar.getInstance().get(Calendar.YEAR));
         log.info("============================================");

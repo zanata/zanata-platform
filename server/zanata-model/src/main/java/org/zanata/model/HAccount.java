@@ -28,6 +28,7 @@ import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -42,8 +43,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.zanata.model.security.HCredentials;
 import org.zanata.rest.dto.Account;
 
@@ -52,8 +51,8 @@ import org.zanata.rest.dto.Account;
  */
 @Entity
 @Cacheable
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-@Indexed
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"),
+        indexes = @Index(name = "Idx_enabled_username", columnList = "enabled, username"))
 public class HAccount extends ModelEntityBase
         implements Serializable, HasUserFriendlyToString {
 
@@ -96,7 +95,6 @@ public class HAccount extends ModelEntityBase
     // @UserPrincipal
 
     @NaturalId
-    @Field
     public String getUsername() {
         return username;
     }

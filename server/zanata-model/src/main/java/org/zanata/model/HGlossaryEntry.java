@@ -37,10 +37,11 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.util.GlossaryUtil;
@@ -51,7 +52,6 @@ import org.zanata.util.GlossaryUtil;
 @Entity
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
 @Cacheable
-@Indexed
 @Table(uniqueConstraints = @UniqueConstraint(name = "UK_glossaryEntry", columnNames = {"contentHash", "glossaryId"}))
 public class HGlossaryEntry extends ModelEntityBase {
 
@@ -74,7 +74,7 @@ public class HGlossaryEntry extends ModelEntityBase {
         return glossaryTerms;
     }
 
-    @javax.persistence.Lob
+    @Size(max = 500)
     public String getSourceRef() {
         return sourceRef;
     }
@@ -101,10 +101,12 @@ public class HGlossaryEntry extends ModelEntityBase {
         return contentHash;
     }
 
+    @Size(max = 255)
     public String getPos() {
         return pos;
     }
 
+    @Size(max = 500)
     public String getDescription() {
         return description;
     }

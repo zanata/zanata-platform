@@ -8,13 +8,16 @@ import java.util.Set;
 
 import javax.ws.rs.core.EntityTag;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
@@ -32,45 +35,34 @@ public class ETagUtils implements Serializable {
     @Inject
     private DocumentDAO documentDAO;
 
+    @Inject
+    private RestSlugValidator restSlugValidator;
+
     /**
      * Retrieves the ETag for the Project
-     *
+     * <p>
      * This algorithm takes into account changes in Project Iterations as well.
      *
-     * @param slug
-     *            Project slug
+     * @param slug Project slug
      * @return calculated EntityTag
-     * @throws NoSuchEntityException
-     *             if project is obsolete or does not exist
+     * @throws NoSuchEntityException if project is obsolete or does not exist
      */
     public EntityTag generateTagForProject(String slug) {
-        Integer projectVersion =
-                (Integer) session
-                        .createQuery(
-                                "select p.versionNum from HProject p where slug =:slug "
-                                        + "and status not in (:statusList)")
-                        .setParameter("slug", slug)
-                        .setParameterList("statusList",
-                                new Object[] { OBSOLETE })
-                        .setComment("ETagUtils.generateTagForProject-project")
-                        .uniqueResult();
-
-        if (projectVersion == null)
-            throw new NoSuchEntityException("Project '" + slug + "' not found.");
-
+        HProject project =
+                restSlugValidator.retrieveAndCheckProject(slug, false);
+        String query =
+                "select i.versionNum from HProjectIteration i where i.project.slug =:slug and status not in (:statusList)";
         @SuppressWarnings("unchecked")
         List<Integer> iterationVersions =
-                session.createQuery(
-                        "select i.versionNum from HProjectIteration i "
-                                + "where i.project.slug =:slug and status not in (:statusList)")
+                session.createQuery(query)
                         .setParameter("slug", slug)
                         .setParameterList("statusList",
-                                new Object[] { OBSOLETE })
+                                new Object[]{ OBSOLETE })
                         .setComment("ETagUtils.generateTagForProject-iteration")
                         .list();
 
         String hash =
-                HashUtil.generateHash(projectVersion + ':'
+                HashUtil.generateHash(project.getVersionNum() + ':'
                         + StringUtils.join(iterationVersions, ':'));
 
         return EntityTag.valueOf(hash);
@@ -79,32 +71,17 @@ public class ETagUtils implements Serializable {
     /**
      * Retrieves the ETag for the ProjectIteration
      *
-     * @param projectSlug
-     *            project slug
-     * @param iterationSlug
-     *            iteration slug
+     * @param projectSlug   project slug
+     * @param iterationSlug iteration slug
      * @return calculated EntityTag
      * @throw NoSuchEntityException if iteration is obsolete or does not exist
      */
     public EntityTag generateETagForIteration(String projectSlug,
             String iterationSlug) {
-        Integer iterationVersion =
-                (Integer) session
-                        .createQuery(
-                                "select i.versionNum from HProjectIteration i where i.slug =:islug and i.project.slug =:pslug "
-                                        + "and status not in (:statusList) and i.project.status not in (:statusList)")
-                        .setParameter("islug", iterationSlug)
-                        .setParameter("pslug", projectSlug)
-                        .setParameterList("statusList",
-                                new Object[] { OBSOLETE })
-                        .setComment("ETagUtils.generateETagForIteration")
-                        .uniqueResult();
+        HProjectIteration version = restSlugValidator
+                .retrieveAndCheckIteration(projectSlug, iterationSlug, false);
 
-        if (iterationVersion == null)
-            throw new NoSuchEntityException("Project Iteration '"
-                    + iterationSlug + "' not found.");
-
-        String hash = HashUtil.generateHash(String.valueOf(iterationVersion));
+        String hash = HashUtil.generateHash(String.valueOf(version.getVersionNum()));
 
         return EntityTag.valueOf(hash);
     }
@@ -134,7 +111,7 @@ public class ETagUtils implements Serializable {
             HProjectIteration iteration, String docId, HLocale locale) {
         String stateHash =
                 documentDAO.getTranslatedDocumentStateHash(iteration
-                        .getProject().getSlug(), iteration.getSlug(), docId,
+                                .getProject().getSlug(), iteration.getSlug(), docId,
                         locale);
         return EntityTag.valueOf(stateHash);
     }

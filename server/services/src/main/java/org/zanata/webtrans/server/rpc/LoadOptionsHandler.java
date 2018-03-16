@@ -20,7 +20,9 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -70,16 +72,13 @@ public class LoadOptionsHandler extends
         HashMap<String, HAccountOption> filteredOptions =
                 new HashMap<String, HAccountOption>();
 
+        List<String> prefixes = asGwtPrefixes(action.getPrefixes());
         for (Entry<String, HAccountOption> entry : options.entrySet()) {
             // filter config according to prefix
-            if (action.getPrefixes() != null && !action.getPrefixes().isEmpty()) {
-                for (String prefix : action.getPrefixes()) {
-                    if (entry.getKey().startsWith(prefix)) {
-                        filteredOptions.put(entry.getKey(), entry.getValue());
-                    }
+            for (String prefix : prefixes) {
+                if (entry.getKey().startsWith(prefix)) {
+                    filteredOptions.put(entry.getKey(), entry.getValue());
                 }
-            } else {
-                filteredOptions.put(entry.getKey(), entry.getValue());
             }
         }
 
@@ -201,6 +200,19 @@ public class LoadOptionsHandler extends
         }
 
         return new LoadOptionsResult(configHolder.getState());
+    }
+
+    private List<String> asGwtPrefixes(List<String> prefixes) {
+        List<String> gwtPrefixes = new ArrayList<String>();
+        if (prefixes == null || prefixes.isEmpty()) {
+            // at least need to filter for .gwt
+            gwtPrefixes.add("gwt.");
+        } else {
+            for (String prefix : prefixes) {
+                gwtPrefixes.add("gwt." + prefix);
+            }
+        }
+        return gwtPrefixes;
     }
 
     @Override

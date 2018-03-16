@@ -32,6 +32,7 @@ import org.zanata.page.utility.HomePage;
 public class ResetPasswordPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ResetPasswordPage.class);
+
     private By usernameEmailField =
             By.id("passwordResetRequestForm:usernameEmail:input:usernameEmail");
     private By submitButton = By.id("passwordResetRequestForm:submitRequest");
@@ -40,33 +41,45 @@ public class ResetPasswordPage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Enter a string into the username / email field
+     * @param usernameEmail string to enter
+     * @return new ResetPasswordPage
+     */
     public ResetPasswordPage enterUserNameEmail(String usernameEmail) {
         log.info("Enter username or email {}", usernameEmail);
         enterText(readyElement(usernameEmailField), usernameEmail);
+        defocus(usernameEmailField);
         return new ResetPasswordPage(getDriver());
     }
 
-    public ResetPasswordPage clearFields() {
-        log.info("Clear fields");
-        log.info("Clear fields");
+    /**
+     * Clear the username field of text
+     * @return new ResetPasswordPage
+     */
+    public ResetPasswordPage clearUsernameField() {
+        log.info("Clear username field");
         readyElement(usernameEmailField).clear();
         defocus(usernameEmailField);
-        waitForPageSilence();
         return new ResetPasswordPage(getDriver());
     }
 
+    /**
+     * Press the submit button
+     * @return new HomePage
+     */
     public HomePage resetPassword() {
         log.info("Click Submit");
-        defocus(usernameEmailField);
-        waitForPageSilence();
         clickElement(submitButton);
         return new HomePage(getDriver());
     }
 
+    /**
+     * Press the submit button, expecting failure
+     * @return new HomePage
+     */
     public ResetPasswordPage resetFailure() {
         log.info("Click Submit");
-        defocus(usernameEmailField);
-        waitForPageSilence();
         clickElement(submitButton);
         return new ResetPasswordPage(getDriver());
     }

@@ -51,7 +51,8 @@
       function (pre, projectSlug, versionSlug, query) {
         zanata.tabs.activate(jQuery('#documents_tab'));
         var docId = encodeURIComponent(query.docId);
-        var clickEle = jQuery('#' + jqSelector(docId)).children().eq(1);
+        var idSelector = '[id="document-' + docId + '"]';
+        var clickEle = jQuery(idSelector).children().eq(1);
         if (docId && clickEle.length != 0) {
           updateActiveRow(clickEle);
           toggleColumn('documents');
@@ -75,7 +76,6 @@
         section = validateTab('#' + section + "_tab", section, "languages");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
-
     updateStateFromUrl();
     renderStatistics();
   });
@@ -239,7 +239,7 @@
   </h:form>
 
 
-<div class="g" id="version-page">
+<div class="g" id="versionPage">
 <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
   <p class="txt--meta l--push-all-0">
     <a href="#{request.contextPath}/dashboard/projects">
@@ -403,7 +403,7 @@
                           data-toggle="modal"
                           data-target="#copy-trans-modal">
                         #{msgs['jsf.CopyTrans']}
-                        <i class="i i--translate i__item__icon"></i>
+                        <i class="i i--add i__item__icon"></i>
                       </a>
                     </li>
                     <li>
@@ -482,7 +482,7 @@
       </ui:fragment>
     </ul>
 
-    <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
+    <ul class="tabsContent panels__container js-tabs-content l--push-top-1">
       <li id="languages">
         <ui:include
           src="../WEB-INF/layout/version/languages-tab.xhtml"/>

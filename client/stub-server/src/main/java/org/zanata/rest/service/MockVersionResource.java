@@ -34,8 +34,6 @@ import org.zanata.rest.dto.VersionInfo;
 @Path(VersionResource.SERVICE_PATH)
 public class MockVersionResource implements VersionResource {
 
-    private static final long serialVersionUID = -1183443103187547416L;
-
     @Override
     public Response get() {
         return Response.ok(

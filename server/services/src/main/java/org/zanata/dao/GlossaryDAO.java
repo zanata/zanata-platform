@@ -27,7 +27,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -88,7 +88,9 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
         Query query = getSession().createQuery(queryString.toString());
         query.setParameter("qualifiedName", qualifiedName)
                 .setComment("GlossaryDAO.getEntries");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HGlossaryEntry> result = query.list();
+        return result;
     }
 
     public int getEntriesCount(LocaleId srcLocale, String filter,
@@ -151,17 +153,18 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
             query.setParameter("filter", "%" + escapeFilter + "%");
         }
         query.setFirstResult(offset).setMaxResults(maxResults);
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HGlossaryEntry> result = query.list();
+        return result;
     }
 
     public int getEntryCountBySourceLocales(LocaleId localeId,
             String qualifiedName) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("select count(*) from HGlossaryEntry e ")
-                .append("where e.srcLocale.localeId = :localeId ")
-                .append("and e.glossary.qualifiedName = :qualifiedName ");
+        String queryBuilder = "select count(*) from HGlossaryEntry e " +
+                "where e.srcLocale.localeId = :localeId " +
+                "and e.glossary.qualifiedName = :qualifiedName ";
         Query query = getSession()
-                .createQuery(queryBuilder.toString())
+                .createQuery(queryBuilder)
                 .setCacheable(true)
                 .setParameter("localeId", localeId)
                 .setParameter("qualifiedName", qualifiedName)
@@ -175,14 +178,14 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
 
     public Map<LocaleId, Integer> getTranslationLocales(LocaleId srcLocale,
             String qualifiedName) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("select t.locale, count(*) from HGlossaryTerm t ")
-                .append("where t.locale.localeId <> t.glossaryEntry.srcLocale.localeId ")
-                .append("and t.glossaryEntry.srcLocale.localeId =:srcLocale ")
-                .append("and t.glossaryEntry.glossary.qualifiedName =:qualifiedName ")
-                .append("group by t.locale");
+        String queryBuilder =
+                "select t.locale, count(*) from HGlossaryTerm t " +
+                        "where t.locale.localeId <> t.glossaryEntry.srcLocale.localeId " +
+                        "and t.glossaryEntry.srcLocale.localeId =:srcLocale " +
+                        "and t.glossaryEntry.glossary.qualifiedName =:qualifiedName " +
+                        "group by t.locale";
 
-        Query query = getSession().createQuery(queryBuilder.toString())
+        Query query = getSession().createQuery(queryBuilder)
                 .setParameter("srcLocale", srcLocale)
                 .setParameter("qualifiedName", qualifiedName)
                 .setComment("GlossaryDAO.getTranslationLocales");
@@ -210,13 +213,12 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
 
     public HGlossaryTerm getTermByEntryAndLocale(Long glossaryEntryId,
             LocaleId locale, String qualifiedName) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("from HGlossaryTerm as t ")
-                .append("WHERE t.locale.localeId =:locale ")
-                .append("AND t.glossaryEntry.id= :glossaryEntryId ")
-                .append("AND t.glossaryEntry.glossary.qualifiedName =:qualifiedName");
+        String queryBuilder = "from HGlossaryTerm as t " +
+                "WHERE t.locale.localeId =:locale " +
+                "AND t.glossaryEntry.id= :glossaryEntryId " +
+                "AND t.glossaryEntry.glossary.qualifiedName =:qualifiedName";
 
-        Query query = getSession().createQuery(queryBuilder.toString())
+        Query query = getSession().createQuery(queryBuilder)
                 .setParameter("locale", locale)
                 .setParameter("qualifiedName", qualifiedName)
                 .setParameter("glossaryEntryId", glossaryEntryId)
@@ -225,24 +227,24 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
     }
 
     public List<HGlossaryTerm> getTermByEntryId(Long entryId) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("from HGlossaryTerm as t ")
-                .append("WHERE t.glossaryEntry.id= :entryId ");
+        String queryBuilder = "from HGlossaryTerm as t " +
+                "WHERE t.glossaryEntry.id= :entryId ";
 
-        Query query = getSession().createQuery(queryBuilder.toString())
+        Query query = getSession().createQuery(queryBuilder)
                 .setParameter("entryId", entryId)
                 .setComment("GlossaryDAO.getTermByEntryId");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HGlossaryTerm> result = query.list();
+        return result;
     }
 
     public HGlossaryEntry getEntryByContentHash(String contentHash,
             String qualifiedName) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("from HGlossaryEntry as e ")
-                .append("WHERE e.contentHash =:contentHash ")
-                .append("AND e.glossary.qualifiedName =:qualifiedName");
+        String queryBuilder = "from HGlossaryEntry as e " +
+                "WHERE e.contentHash =:contentHash " +
+                "AND e.glossary.qualifiedName =:qualifiedName";
 
-        Query query = getSession().createQuery(queryBuilder.toString())
+        Query query = getSession().createQuery(queryBuilder)
                 .setParameter("contentHash", contentHash)
                 .setParameter("qualifiedName", qualifiedName);
         query.setComment("GlossaryDAO.getEntryByContentHash");
@@ -259,7 +261,9 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
         query.setParameterList("idList", idList)
                 .setCacheable(false)
                 .setComment("GlossaryDAO.findTermByIdList");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HGlossaryTerm> result = query.list();
+        return result;
     }
 
     /**
@@ -321,7 +325,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
     @NativeQuery
     public int deleteAllEntries(String qualifiedName) {
 
-        /**
+        /*
          * DELETE FROM HGlossaryTerm where glossaryEntryId in (select e.id from HGlossaryEntry e INNER JOIN Glossary g on e.glossaryId = g.id where g.qualifiedName =: qualifiedName)
          */
 
@@ -350,8 +354,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
         return (Glossary) query.uniqueResult();
     }
 
-    public Glossary persistGlossary(Glossary glossary) {
+    public void persistGlossary(Glossary glossary) {
         getSession().saveOrUpdate(glossary);
-        return glossary;
     }
 }

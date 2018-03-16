@@ -47,12 +47,12 @@ import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.editor.service.SuggestionsService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckRole;
+import org.zanata.util.HttpUtil;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -71,7 +71,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Path("/process")
 @Produces(MediaType.APPLICATION_JSON)
 public class AsyncProcessService {
-    private static final long serialVersionUID = 1L;
 
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
@@ -79,6 +78,9 @@ public class AsyncProcessService {
     @Inject
     private ZanataIdentity identity;
 
+    // NOTE: uriInfo usage in this class is limited to return relative path.
+    // The zanata client will be responsible to construct the full url.
+    // therefore this class do not suffer from proxy rewrite url problem (ZNTA-2273)
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Context
     private UriInfo uriInfo;
@@ -123,7 +125,7 @@ public class AsyncProcessService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         ProcessStatus status = handleToProcessStatus(handle,
-                uriInfo.getRequestUri().toString());
+                HttpUtil.stripProtocol(uriInfo.getRequestUri().toString()));
         return Response.ok(status).build();
     }
 
@@ -176,7 +178,7 @@ public class AsyncProcessService {
     @POST
     @Path("cancel/key/{keyId}")
     public Response cancelAsyncProcess(@PathParam("keyId") String keyId) {
-        AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
+        AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

@@ -31,6 +31,7 @@ import org.zanata.page.BasePage;
 public class TranslationMemoryEditPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationMemoryEditPage.class);
+
     private By idField = By.id("tmForm:slug:input:slug");
     private By descriptionField = By.id("tmForm:description:input:description");
     private By saveButton = By.id("tmForm:save");
@@ -40,31 +41,52 @@ public class TranslationMemoryEditPage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Enter an ID for the translation memory
+     * @param id to enter
+     * @return new TranslationMemoryEditPage
+     */
     public TranslationMemoryEditPage enterMemoryID(String id) {
         log.info("Enter TM ID {}", id);
-        enterText(readyElement(idField), id);
+        enterText(idField, id);
         return new TranslationMemoryEditPage(getDriver());
     }
 
-    public TranslationMemoryEditPage
-            enterMemoryDescription(String description) {
+    /**
+     * Enter a description for the translation memory
+     * @param description to enter
+     * @return new TranslationMemoryEditPage
+     */
+    public TranslationMemoryEditPage enterTMDescription(String description) {
         log.info("Enter TM description {}", description);
-        enterText(readyElement(descriptionField), description);
+        enterText(descriptionField, description);
         return new TranslationMemoryEditPage(getDriver());
     }
 
+    /**
+     * Press the Save button
+     * @return new TranslationMemoryPage
+     */
     public TranslationMemoryPage saveTM() {
         log.info("Click Save");
         clickElement(saveButton);
         return new TranslationMemoryPage(getDriver());
     }
 
+    /**
+     * Press the Save button, expecting a failure condition
+     * @return new TranslationMemoryEditPage
+     */
     public TranslationMemoryEditPage clickSaveAndExpectFailure() {
         log.info("Click Save");
         clickElement(saveButton);
         return new TranslationMemoryEditPage(getDriver());
     }
 
+    /**
+     * Press the Cancel button
+     * @return new TranslationMemoryPage
+     */
     public TranslationMemoryPage cancelTM() {
         log.info("Click Cancel");
         clickElement(cancelButton);

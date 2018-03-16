@@ -37,7 +37,6 @@ import org.zanata.rest.service.CopyTransResource;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class CopyTransClient implements CopyTransResource {
-    private static final long serialVersionUID = 2847642217391205247L;
     private final RestClientFactory factory;
     private final URI baseUri;
 

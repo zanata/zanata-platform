@@ -66,6 +66,8 @@
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
     <class>org.zanata.model.AllowedApp</class>
+    <class>org.zanata.model.security.HSaml2Credentials</class>
+    <class>org.zanata.model.ReviewCriteria</class>
 
     <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
      Otherwise, hibernate will scan the whole war file and dependency jars -->
@@ -115,7 +117,7 @@
       <property name="hibernate.search.default.directory_provider"
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
       <property name="hibernate.search.default.locking_strategy"
-        value="simple" />
+        value="native" />
       <property name="hibernate.search.default.indexBase"
         value="./target/zanatasearchindex" />
       <property name="hibernate.search.lucene_version" value="LUCENE_5_3_1" />

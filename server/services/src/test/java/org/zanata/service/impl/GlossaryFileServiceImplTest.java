@@ -52,6 +52,8 @@ import com.google.common.collect.Lists;
 import org.zanata.rest.dto.QualifiedName;
 import org.zanata.rest.service.GlossaryResource;
 import org.zanata.rest.service.GlossaryService;
+import org.zanata.seam.security.CurrentUserImpl;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.UrlUtil;
@@ -67,7 +69,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({
-        LocaleServiceImpl.class
+        LocaleServiceImpl.class,
+        CurrentUserImpl.class
 })
 public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
 
@@ -78,6 +81,7 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
     @Produces @Mock UrlUtil urlUtil;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
     @Produces @Mock @Authenticated HAccount authenticatedAccount;
+    @Produces @Mock ZanataIdentity identity;
 
     @Override
     @Produces

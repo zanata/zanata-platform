@@ -10,8 +10,8 @@ See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissi
 ##### header row
 
 1. locale columns: The locale header column must contain a valid locale code. At least one locale code is required for the glossary. First locale column will be used as source.
-1. part-of-speech column (optional): The part-of-speech header column, when included, should contain only one value: pos.
-1. description column (optional): The description header column, when included, should contain only one value: description.
+1. part-of-speech column (optional): The part-of-speech header column, when included, should be only one of: `pos`, `partofspeech` or `part of speech`.
+1. description column (optional): The description header column, when included, should be only one of: `desc`, `description` or `definition` .
 
 
 ##### data rows
@@ -27,7 +27,7 @@ See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissi
 ### Upload via Web UI
 
 1. Login into Zanata
-1. To upload to the **system glossary**, click `Glossary` menu. 
+1. To upload to the **system glossary**, click `Glossary` menu.
 1. To upload to a **project glossary**, navigate to the project page, click on "Glossary" in the project page.
 1. Click on `Import Glossary` on top right corner of the page.
 <figure>

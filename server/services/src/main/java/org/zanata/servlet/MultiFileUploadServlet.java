@@ -40,7 +40,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.json.JSONArray;
@@ -234,7 +234,7 @@ public class MultiFileUploadServlet extends HttpServlet {
             log.error("error adding files list to JSON", e);
         }
         String responseString = responseObject.toString();
-        log.info("response string: " + responseString);
+        log.info("response string: {}", responseString);
         response.setContentType("application/json");
         PrintWriter writer = response.getWriter();
         writer.write(responseString);

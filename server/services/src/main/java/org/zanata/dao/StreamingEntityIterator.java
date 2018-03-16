@@ -54,9 +54,10 @@ class StreamingEntityIterator<E> implements CloseableIterator<E> {
     public E next() {
         if (++rowNum % 1000 == 0)
             session.clear();
-        E tf = (E) iter.next()[0];
-        session.evict(tf);
-        return tf;
+        @SuppressWarnings("unchecked")
+        E entity = (E) iter.next()[0];
+        session.evict(entity);
+        return entity;
     }
 
     @Override

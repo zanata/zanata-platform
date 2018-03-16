@@ -43,6 +43,8 @@ import javax.inject.Named;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -62,6 +64,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.UrlUtil;
 
 /**
  * @author Carlos Munoz
@@ -72,9 +75,8 @@ import org.zanata.service.LocaleService;
 @Path(SourceDocResource.SERVICE_PATH)
 @Transactional
 public class SourceDocResourceService implements SourceDocResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(SourceDocResourceService.class);
-    private static final long serialVersionUID = 7787405987851272827L;
+    private static final Logger log =
+            LoggerFactory.getLogger(SourceDocResourceService.class);
 
     @Context
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
@@ -108,6 +110,9 @@ public class SourceDocResourceService implements SourceDocResource {
     private ETagUtils eTagUtils;
     @Inject
     private ZanataIdentity identity;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     @Override
     public Response head() {
@@ -182,6 +187,7 @@ public class SourceDocResourceService implements SourceDocResource {
                 .tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -230,6 +236,7 @@ public class SourceDocResourceService implements SourceDocResource {
                 .lastModified(doc.getLastChanged()).build();
     }
 
+    @Deprecated
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, boolean copytrans) {
@@ -254,7 +261,7 @@ public class SourceDocResourceService implements SourceDocResource {
                         docId);
         if (document == null || document.isObsolete()) {
             response = Response.created(
-                    UriBuilder.fromUri(uri.getAbsolutePath())
+                    UriBuilder.fromUri(urlUtil.restPath(uri.getPath()))
                             .queryParam("docId", docId).build());
         } else {
             response = Response.ok();
@@ -268,6 +275,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return response.tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response deleteResource(String idNoSlash) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -294,6 +302,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return Response.ok().build();
     }
 
+    @Deprecated
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
@@ -330,6 +339,7 @@ public class SourceDocResourceService implements SourceDocResource {
         return Response.ok().entity(entity).tag(etag).build();
     }
 
+    @Deprecated
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta messageBody,
             Set<String> extensions) {
@@ -387,10 +397,12 @@ public class SourceDocResourceService implements SourceDocResource {
         if (hProjectIteration == null) {
             throw new NoSuchEntityException("Project Iteration \'" + projectSlug
                     + ":" + iterationSlug + "\' not found.");
-        } else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)
+        } else if (!haveReadAccess(hProjectIteration) ||
+                hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)
                 || hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
-            throw new NoSuchEntityException("Project Iteration \'" + projectSlug
-                    + ":" + iterationSlug + "\' not found.");
+            throw new NoSuchEntityException(
+                    "Project Iteration \'" + projectSlug
+                            + ":" + iterationSlug + "\' not found.");
         } else if (writeOperation) {
             if (hProjectIteration.getStatus().equals(EntityStatus.READONLY)
                     || hProject.getStatus().equals(EntityStatus.READONLY)) {
@@ -423,5 +435,13 @@ public class SourceDocResourceService implements SourceDocResource {
 
     public HProjectIteration getSecuredIteration() {
         return retrieveAndCheckIteration(false);
+    }
+
+    /**
+     * Check if current user have read access to the project
+     * (checking for private project)
+     */
+    public boolean haveReadAccess(HProjectIteration version) {
+        return identity.hasPermission(version, "read");
     }
 }

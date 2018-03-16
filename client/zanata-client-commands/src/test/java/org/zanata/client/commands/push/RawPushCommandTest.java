@@ -10,11 +10,7 @@ import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.common.FileTypeName;
 import org.zanata.rest.client.RestClientFactory;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,21 +40,21 @@ public class RawPushCommandTest {
     public void extractDocTypeWithExtensionTest() {
         String fileNameAndExtension = "properties[xml]";
         String type = command.extractFileTypeName(fileNameAndExtension).getName();
-        assertThat(type, equalTo("PROPERTIES"));
+        assertThat(type).isEqualTo("PROPERTIES");
     }
 
     @Test
     public void extractDocTypeWithoutExtensionTest() {
         String fileNameAndExtension = "properties";
         String type = command.extractFileTypeName(fileNameAndExtension).getName();
-        assertThat(type, equalTo("PROPERTIES"));
+        assertThat(type).isEqualTo("PROPERTIES");
     }
 
     @Test
     public void extractDocTypeOnlyExtensionTest() {
         String fileNameAndExtension = "[xml]";
         FileTypeName type = command.extractFileTypeName(fileNameAndExtension);
-        assertThat(type, nullValue());
+        assertThat(type).isNull();
     }
 
     @Test
@@ -66,7 +62,7 @@ public class RawPushCommandTest {
         String fileNameAndExtension = "properties[xml]";
         Set<String> extensions =
                 command.extractExtensions(fileNameAndExtension).keySet();
-        assertThat(extensions, contains("xml"));
+        assertThat(extensions).contains("xml");
     }
 
     @Test
@@ -74,7 +70,7 @@ public class RawPushCommandTest {
         String fileNameAndExtension = "properties[xml;html]";
         Set<String> extensions =
                 command.extractExtensions(fileNameAndExtension).keySet();
-        assertThat(extensions, containsInAnyOrder("xml", "html"));
+        assertThat(extensions).containsExactlyInAnyOrder("xml", "html");
     }
 
     @Test
@@ -82,7 +78,7 @@ public class RawPushCommandTest {
         String fileNameAndExtension = "[xml]";
         Set<String> extensions =
                 command.extractExtensions(fileNameAndExtension).keySet();
-        assertThat(extensions, contains("xml"));
+        assertThat(extensions).contains("xml");
     }
 
     @Test
@@ -90,7 +86,7 @@ public class RawPushCommandTest {
         String fileNameAndExtension = "[xml;html]";
         Set<String> extensions =
                 command.extractExtensions(fileNameAndExtension).keySet();
-        assertThat(extensions, containsInAnyOrder("xml", "html"));
+        assertThat(extensions).containsExactlyInAnyOrder("xml", "html");
     }
 
     @Test
@@ -98,6 +94,6 @@ public class RawPushCommandTest {
         String fileNameAndExtension = "properties";
         Set<String> extensions =
                 command.extractExtensions(fileNameAndExtension).keySet();
-        assertThat(extensions.size(), equalTo(0));
+        assertThat(extensions).isEmpty();
     }
 }

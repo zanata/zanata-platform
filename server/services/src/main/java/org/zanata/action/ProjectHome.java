@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -39,10 +38,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -60,7 +57,6 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.exception.ProjectNotFoundException;
 import org.zanata.i18n.Messages;
-import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -69,8 +65,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
 import org.zanata.model.type.WebhookType;
 import org.zanata.model.validator.SlugValidator;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ProjectService;
 import org.zanata.service.SlugEntityService;
@@ -122,8 +118,7 @@ public class ProjectHome extends SlugHome<HProject>
     @Inject
     private ZanataIdentity identity;
     @Inject
-    @Authenticated
-    private HAccount authenticatedAccount;
+    private CurrentUser currentUser;
     @Inject
     private LocaleService localeServiceImpl;
     @Inject
@@ -621,13 +616,13 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     @Transactional
-    public void setInviteOnly(boolean inviteOnly) {
+    public void setPrivateProject(boolean privateProject) {
         identity.checkPermission(getInstance(), "update");
-        getInstance().setAllowGlobalTranslation(!inviteOnly);
+        getInstance().setPrivateProject(privateProject);
         update();
-        String message = inviteOnly
-                ? msgs.get("jsf.translation.permission.inviteOnly.Active")
-                : msgs.get("jsf.translation.permission.inviteOnly.Inactive");
+        String message = privateProject
+                ? msgs.get("jsf.permission.private.Active")
+                : msgs.get("jsf.permission.private.Inactive");
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO, message);
     }
 
@@ -683,6 +678,9 @@ public class ProjectHome extends SlugHome<HProject>
     // Verify it still works properly */
 
     public void initialize() {
+        if (!identity.hasPermission(getInstance(), "read")) {
+            throw new EntityNotFoundException();
+        }
         validateSuppliedId();
         if (getInstance().getDefaultCopyTransOpts() != null) {
             copyTransOptionsModel
@@ -718,6 +716,9 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     public boolean validateSlug(String slug, String componentId) {
+        if (StringUtils.equals(getInstance().getSlug(), slug)) {
+            return true;
+        }
         if (!isSlugAvailable(slug)) {
             facesMessages.addToControl(componentId,
                     "This Project ID is not available");
@@ -815,11 +816,11 @@ public class ProjectHome extends SlugHome<HProject>
             return null;
         }
         updateProjectType();
-        if (authenticatedAccount != null) {
+        if (currentUser.isLoggedIn()) {
             // authenticatedAccount person is a detached entity, so fetch a copy
             // that is attached to the current session.
             HPerson creator = personDAO
-                    .findById(authenticatedAccount.getPerson().getId());
+                    .findById(currentUser.getPerson().getId());
             getInstance().addMaintainer(creator);
             getInstance().getCustomizedValidations().clear();
             for (ValidationAction validationAction : validationServiceImpl
@@ -871,7 +872,7 @@ public class ProjectHome extends SlugHome<HProject>
                     person.getAccount().getUsername(), Maintainer,
                     getInstance().getWebHooks(),
                     ProjectMaintainerChangedEvent.ChangeType.REMOVE);
-            if (person.equals(authenticatedAccount.getPerson())) {
+            if (person.equals(currentUser.getPerson())) {
                 urlUtil.redirectToInternal(urlUtil.projectUrl(getSlug()));
             }
         }
@@ -953,46 +954,34 @@ public class ProjectHome extends SlugHome<HProject>
 
     public List<HAccountRole> getAvailableRoles() {
         List<HAccountRole> allRoles = accountRoleDAO.findAll();
-        Collections.sort(allRoles, ComparatorUtil.ACCOUNT_ROLE_COMPARATOR);
+        allRoles.sort(ComparatorUtil.ACCOUNT_ROLE_COMPARATOR);
         return allRoles;
     }
 
     private @NotNull List<HProjectIteration> fetchVersions() {
-        List<HProjectIteration> results = Lists.newArrayList(Iterables
-                .filter(getInstance().getProjectIterations(), IS_NOT_OBSOLETE));
-        Collections.sort(results, new Comparator<HProjectIteration>() {
-
-            @Override
-            public int compare(HProjectIteration o1, HProjectIteration o2) {
-                EntityStatus fromStatus = o1.getStatus();
-                EntityStatus toStatus = o2.getStatus();
-                if (fromStatus.equals(toStatus)) {
-                    return 0;
-                }
-                if (fromStatus.equals(EntityStatus.ACTIVE)) {
-                    return -1;
-                }
-                if (fromStatus.equals(EntityStatus.READONLY)) {
-                    if (toStatus.equals(EntityStatus.ACTIVE)) {
-                        return 1;
+        return getInstance()
+                .getProjectIterations()
+                .stream()
+                .filter(it -> it.getStatus() != EntityStatus.OBSOLETE)
+                .sorted((o1, o2) -> {
+                    EntityStatus fromStatus = o1.getStatus();
+                    EntityStatus toStatus = o2.getStatus();
+                    if (fromStatus.equals(toStatus)) {
+                        return 0;
                     }
-                    return -1;
-                }
-                return 0;
-            }
-        });
-        return results;
+                    if (fromStatus.equals(EntityStatus.ACTIVE)) {
+                        return -1;
+                    }
+                    if (fromStatus.equals(EntityStatus.READONLY)) {
+                        if (toStatus.equals(EntityStatus.ACTIVE)) {
+                            return 1;
+                        }
+                        return -1;
+                    }
+                    return 0;
+                })
+                .collect(Collectors.toList());
     }
-
-    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
-    private final Predicate IS_NOT_OBSOLETE =
-            new Predicate<HProjectIteration>() {
-
-                @Override
-                public boolean apply(HProjectIteration input) {
-                    return input.getStatus() != EntityStatus.OBSOLETE;
-                }
-            };
 
     @Override
     public boolean isIdDefined() {

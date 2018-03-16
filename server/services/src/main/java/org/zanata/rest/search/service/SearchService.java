@@ -36,7 +36,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.zanata.common.EntityStatus;
@@ -45,7 +45,6 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
-import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -56,7 +55,6 @@ import org.zanata.rest.search.dto.ProjectSearchResult;
 import org.zanata.rest.search.dto.ProjectVersionSearchResult;
 import org.zanata.rest.search.dto.SearchResults;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 
@@ -72,7 +70,6 @@ import com.google.common.collect.Maps;
 @Transactional(readOnly = true)
 public class SearchService {
 
-    private static final long serialVersionUID = 8924030399679653241L;
     @Inject
     private ProjectDAO projectDAO;
 
@@ -93,9 +90,6 @@ public class SearchService {
 
     @Inject
     private ZanataIdentity identity;
-
-    @Inject @Authenticated
-    private HAccount authenticatedAccount;
 
     private static final int MAX_RESULT = 20;
 

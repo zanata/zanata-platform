@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.base.Joiner;
 
 import static java.util.Collections.emptyList;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * This Interceptor is a filter for Zanata REST API requests.
@@ -49,7 +49,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
  * <p>
  * By default, cross origin support is disabled, but the server administrator
  * can enable it by setting the system property zanata.origin.whitelist. For
- * instance, in standalone.xml:
+ * instance, in standalone*.xml:
  * <pre>
  *   {@code <property name="zanata.origin.whitelist" value="http://localhost:8000" />}
  * </pre>

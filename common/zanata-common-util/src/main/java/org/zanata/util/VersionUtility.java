@@ -39,7 +39,7 @@ public class VersionUtility {
         try {
             atts = getJarAttributesForClass(clazz);
         } catch (IOException e) {
-            log.debug(e.getMessage(), e);
+            log.debug("Couldn't find attributes", e);
         }
         return getVersionInfo(atts, clazz);
     }

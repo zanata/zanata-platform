@@ -50,9 +50,7 @@ public class ReviewCommentInputWidget extends Composite implements HasText {
 
     @UiHandler("addCommentButton")
     public void onAddCommentButtonClick(ClickEvent event) {
-        if (!commentTextArea.getValue().trim().isEmpty()) {
-            listener.addComment(commentTextArea.getText());
-        }
+        listener.addComment(commentTextArea.getText());
     }
 
     public void setListener(ForceReviewCommentDisplay.Listener listener) {

@@ -22,6 +22,7 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -36,7 +37,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -136,14 +136,14 @@ public class ModelEntityBase implements Serializable {
         assert overridesEquals(this);
         assert overridesEquals(obj);
         ModelEntityBase other = (ModelEntityBase) obj;
-        if (!ObjectUtils.equals(getCreationDate(), other.getCreationDate()))
+        if (!Objects.equals(getCreationDate(), other.getCreationDate()))
             return false;
         if (getId() == null) {
             if (other.getId() != null)
                 return false;
         } else if (!getId().equals(other.getId()))
             return false;
-        if (!ObjectUtils.equals(getLastChanged(), other.getLastChanged()))
+        if (!Objects.equals(getLastChanged(), other.getLastChanged()))
             return false;
         return true;
     }
@@ -153,7 +153,7 @@ public class ModelEntityBase implements Serializable {
             obj.getClass().getDeclaredMethod("equals", Object.class);
             return true;
         } catch (NoSuchMethodException e) {
-            log.error("class does not override equals: " + obj.getClass(), e);
+            log.error("class does not override equals: {}", obj.getClass(), e);
             return false;
         }
     }

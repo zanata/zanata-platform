@@ -13,12 +13,11 @@
  */
 package org.zanata.dao;
 
-import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -84,49 +83,14 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     }
 
     public void createApiKey(HAccount account) {
-        String username = account.getUsername();
-        String apikey = createSaltedApiKey(username);
+        String apikey = generateAPIKey();
         account.setApiKey(apikey);
     }
 
-    public static String createSaltedApiKey(String username) {
-        try {
-            byte[] salt = new byte[16];
-            SecureRandom.getInstance("SHA1PRNG").nextBytes(salt);
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] name = username.getBytes("UTF-8");
-
-            // add salt
-            byte[] salted = new byte[name.length + salt.length];
-            System.arraycopy(name, 0, salted, 0, name.length);
-            System.arraycopy(salt, 0, salted, name.length, salt.length);
-
-            // generate md5 digest
-            md5.reset();
-            byte[] digest = md5.digest(salted);
-
-            return new String(PasswordUtil.encodeHex(digest));
-
-        } catch (Exception exc) {
-            throw new RuntimeException(exc);
-        }
-
-    }
-
-    public HAccount create(String username, String password, boolean enabled) {
-        HAccount account = new HAccount();
-        account.setUsername(username);
-        // TODO add a @PasswordSalt field to HAccount
-        // otherwise, Seam uses the @UserPrincipal field as salt
-        String saltPhrase = username;
-        @SuppressWarnings("deprecation")
-        String passwordHash =
-                PasswordUtil.generateSaltedHash(password,
-                        saltPhrase);
-        account.setPasswordHash(passwordHash);
-        account.setEnabled(enabled);
-        makePersistent(account);
-        return account;
+    protected static String generateAPIKey() {
+        byte[] bytes = new byte[16];
+        new SecureRandom().nextBytes(bytes);
+        return new String(PasswordUtil.encodeHex(bytes));
     }
 
     // @SuppressWarnings("unchecked")
@@ -142,10 +106,9 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     // return fullTextQuery.getResultList();
     // }
 
-    @SuppressWarnings("unchecked")
     // TODO: use hibernate search
-            public
-            List<HAccount> searchQuery(String searchQuery, int maxResults, int firstResult) {
+    public List<HAccount> searchQuery(String searchQuery, int maxResults,
+            int firstResult) {
         String userName = "%" + searchQuery + "%";
         Query query =
                 getSession().createQuery(
@@ -156,7 +119,9 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         }
         query.setFirstResult(firstResult);
         query.setComment("AccountDAO.searchQuery/username");
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<HAccount> list = query.list();
+        return list;
     }
 
     public List<String> getUserNames(String filter, int offset, int maxResults) {
@@ -173,7 +138,9 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         query.setFirstResult(offset);
         query.setCacheable(true);
         query.setComment("accountDAO.getUserNames");
-        return (List<String>) query.list();
+        @SuppressWarnings("unchecked")
+        List<String> list = query.list();
+        return list;
     }
 
     public int getUserCount(String filter) {
@@ -218,6 +185,8 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
                         "from HAccount as a where a.mergedInto = :mergedInto");
         query.setParameter("mergedInto", mergedInto);
         query.setComment("AccountDAO.getAllMergedAccounts");
-        return (List<HAccount>) query.list();
+        @SuppressWarnings("unchecked")
+        List<HAccount> list = query.list();
+        return list;
     }
 }

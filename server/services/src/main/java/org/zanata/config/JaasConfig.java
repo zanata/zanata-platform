@@ -42,11 +42,11 @@ public class JaasConfig implements Serializable {
 
     /**
      * Retrieves all App configuration entries under a given name. In Jboss's
-     * standalone.xml, these are all the {@code <login-module></login-module>}
+     * standalone*.xml, these are all the {@code <login-module></login-module>}
      * entries under @{code <security-domain>}
      *
      * @param loginModuleName
-     *            The login module name as configured. In Jboss' standalone.xml
+     *            The login module name as configured. In Jboss' standalone*.xml
      *            this the name attribute at
      *            {@code <security-domain name="NAME">}
      * @return A collection of configuration entries. May be null if there are
@@ -60,13 +60,13 @@ public class JaasConfig implements Serializable {
 
     /**
      * Retrieves a single configuration entry under a given name and using a
-     * specific class. In JBoss' standalone.xml this type is specified under
+     * specific class. In JBoss' standalone*.xml this type is specified under
      * {@code <login-module code="TYPE"></login-module>}. Since there may be
      * more than one configuration entry using the same code, this method
      * returns the first one found.
      *
      * @param loginModuleName
-     *            The login module name as configured. In Jboss' standalone.xml
+     *            The login module name as configured. In Jboss' standalone*.xml
      *            this the name attribute at
      *            {@code <security-domain name="NAME">}
      * @param loginModuleType
@@ -93,7 +93,7 @@ public class JaasConfig implements Serializable {
     }
 
     /**
-     * Retrieves a configuration property. In Jboss's standalone.xml, these are
+     * Retrieves a configuration property. In Jboss's standalone*.xml, these are
      * configured at {@code
      * <login-module ...>
      *     <module-option name="KEY" value="VALUE"/>
@@ -102,7 +102,7 @@ public class JaasConfig implements Serializable {
      * }
      *
      * @param loginModuleName
-     *            The login module name as configured. In Jboss' standalone.xml
+     *            The login module name as configured. In Jboss' standalone*.xml
      *            this the name attribute at
      *            {@code <security-domain name="NAME">}
      * @param loginModuleType

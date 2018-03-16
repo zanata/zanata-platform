@@ -36,6 +36,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Named("getTransUnitsNavigationService")
 @RequestScoped
@@ -97,6 +98,7 @@ public class GetTransUnitsNavigationService {
         }
 
         @Override
+        @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT"})
         public SimpleHTextFlow transformTuple(Object[] tuple,
                 String[] aliases) {
             Long id = null;
@@ -117,12 +119,12 @@ public class GetTransUnitsNavigationService {
                     resId = (String) tuple[i];
                 }
             }
-            GetTransUnitsNavigationService.log.debug(" {} - {}", id, state);
+            log.debug(" {} - {}", id, state);
             return new SimpleHTextFlow(id, resId, state, hLocale);
         }
 
         @Override
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         public List<HTextFlow> transformList(List collection) {
             return collection;
         }

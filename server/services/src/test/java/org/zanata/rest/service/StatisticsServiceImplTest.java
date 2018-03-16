@@ -21,8 +21,12 @@
 package org.zanata.rest.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.matches;
+import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -43,6 +47,7 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
@@ -53,6 +58,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.InvalidDateParamException;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
@@ -61,6 +67,9 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
+import org.zanata.seam.security.CurrentUserImpl;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationStateCacheImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl.DocumentStatisticLoader;
@@ -79,7 +88,8 @@ import com.google.common.collect.Lists;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ TranslationStateCacheImpl.class,
         DocumentStatisticLoader.class, HTextFlowTargetIdLoader.class,
-        HTextFlowTargetValidationLoader.class, VersionStatisticLoader.class })
+        HTextFlowTargetValidationLoader.class, VersionStatisticLoader.class,
+        CurrentUserImpl.class})
 @SupportDeltaspikeCore
 public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 
@@ -97,6 +107,14 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock ValidationService validationService;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
+
+    @Produces @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ZanataIdentity identity;
+
+    @Produces
+    @Authenticated
+    @Mock
+    protected HAccount authenticatedAccount;
 
     @Override
     @Produces
@@ -146,6 +164,16 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     public void initializeRequestScope() {
         // NB: This is easier than adding @InRequestScope to all test methods
         contextController.openRequest();
+        when(identity.hasPermission(any(), matches("read"))).thenReturn(true);
+    }
+
+    @Test
+    public void getPrivateIterationStatisticsNoAccess() {
+        when(identity.hasPermission(any(), matches("read"))).thenReturn(false);
+        assertThatThrownBy(
+                () -> statisticsService.getStatistics("sample-project", "1.0", false,
+                        false, new String[] {}))
+                .isInstanceOf(NoSuchEntityException.class);
     }
 
     @Test
@@ -245,9 +273,19 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    public void getPrivateIterationDocStatisticsNoAccess() {
+        when(identity.hasPermission(any(), matches("read"))).thenReturn(false);
+        assertThatThrownBy(
+                () -> statisticsService
+                        .getStatisticsWithDocId("sample-project", "1.0",
+                                "my/path/document.txt", false, new String[]{}))
+                .isInstanceOf(NoSuchEntityException.class);
+    }
+
+    @Test
     public void getSimpleDocumentStatisticsForAllLocales() {
         ContainerTranslationStatistics stats =
-                statisticsService.getStatistics("sample-project", "1.0",
+                statisticsService.getStatisticsWithDocId("sample-project", "1.0",
                         "my/path/document.txt", false, new String[] {});
 
         // Make sure the id matches
@@ -280,7 +318,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
         String[] locales = new String[] { "en-US", "es", "as" };
 
         ContainerTranslationStatistics stats =
-                statisticsService.getStatistics("sample-project", "1.0",
+                statisticsService.getStatisticsWithDocId("sample-project", "1.0",
                         "my/path/document.txt", true, locales);
 
         // Make sure the id matches
@@ -303,44 +341,65 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
         }
     }
 
-    @Test(expected = NoSuchEntityException.class)
+    @Test
     public void contributionStatsInvalidVersion() {
-        statisticsService.getContributionStatistics("non-exist-project",
-                "non-exist-version", "admin", "2013-01-01..2014-01-01", false);
+        assertThatThrownBy(
+                () -> statisticsService.getContributionStatistics("non-exist-project",
+                        "non-exist-version", "admin", "2013-01-01..2014-01-01", false))
+                .isInstanceOf(NoSuchEntityException.class);
     }
 
-    @Test(expected = NoSuchEntityException.class)
+    @Test
+    public void contributionStatsPrivateVersion() {
+        when(identity.hasPermission(any(), matches("read"))).thenReturn(false);
+        assertThatThrownBy(
+                () -> statisticsService.getContributionStatistics("sample-project",
+                        "1.0", "admin", "2013-01-01..2014-01-01", false))
+                .isInstanceOf(NoSuchEntityException.class);
+    }
+
+    @Test
     public void contributionStatsInvalidPerson() {
-        statisticsService.getContributionStatistics("sample-project",
-                "1.0", "non-exist-user", "2013-01-01..2014-01-01", false);
+        assertThatThrownBy(
+                () -> statisticsService.getContributionStatistics("sample-project",
+                        "1.0", "non-exist-user", "2013-01-01..2014-01-01", false))
+                .isInstanceOf(NoSuchEntityException.class);
     }
 
-    @Test(expected = InvalidDateParamException.class)
-//            description = "invalid date range separator")
+    @Test
+    // description = "invalid date range separator")
     public void contributionStatsInvalidDateRange1() {
-        statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "2013-01-012014-01-01", false);
+        assertThatThrownBy(
+                () -> statisticsService.getContributionStatistics("sample-project",
+                        "1.0", "admin", "2013-01-012014-01-01", false))
+                .isInstanceOf(InvalidDateParamException.class);
     }
 
-    @Test(expected = InvalidDateParamException.class)
-//            description = "invalid date format")
+    @Test
+    // description = "invalid date format")
     public void contributionStatsInvalidDateRange2() {
-        statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "203-01-01..201-01-01", false);
+        assertThatThrownBy(
+                () -> statisticsService.getContributionStatistics("sample-project",
+                        "1.0", "admin", "203-01-01..201-01-01", false))
+                .isInstanceOf(InvalidDateParamException.class);
     }
 
-    @Test(expected = InvalidDateParamException.class)
-//            description = "toDate is before fromDate")
+    @Test
+    // description = "toDate is before fromDate")
     public void contributionStatsInvalidDateRange3() {
-        statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "2014-01-01..2013-01-01", false);
+        assertThatThrownBy(
+                () -> statisticsService.getContributionStatistics("sample-project",
+                        "1.0", "admin", "2014-01-01..2013-01-01", false))
+                .isInstanceOf(InvalidDateParamException.class);
     }
 
-    @Test(expected = InvalidDateParamException.class)
-//            description = "date range is more than max-range(365 days)")
+    @Test
+    // description = "date range is more than max-range(365 days)")
     public void contributionStatsInvalidDateRange4() {
-        statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "2013-01-01..2014-06-01", false);
+        assertThatThrownBy(
+                () -> statisticsService.getContributionStatistics("sample-project",
+                        "1.0", "admin", "2013-01-01..2014-06-01", false))
+                .isInstanceOf(InvalidDateParamException.class);
     }
 
     @Test

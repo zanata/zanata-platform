@@ -1,3 +1,165 @@
+## 4.4.3
+##### Bug Fixes
+ * [ZNTA-2371](https://zanata.atlassian.net/browse/ZNTA-2371) - Few version setting options are getting hide if we have more than 2 versions
+
+-----------------------
+
+## 4.4.2
+##### Bug Fixes
+ * [ZNTA-2375](https://zanata.atlassian.net/browse/ZNTA-2375) - Single project is shown multiple times on explore page.
+ * [ZNTA-2372](https://zanata.atlassian.net/browse/ZNTA-2372) - 400 bad request on TM merge Translations for poject version without document.
+
+-----------------------
+
+## 4.4.1
+##### Bug Fixes
+ * [ZNTA-2374](https://zanata.atlassian.net/browse/ZNTA-2374) - SSO login with existing account only works on the second time
+
+-----------------------
+
+## 4.4.0
+##### Infrastructure Changes
+Zanata now requires a system property 'zanata.home' as the root for all its file system storage needs.
+The property 'zanata.file.directory' is still supported, but if it is missing, a sub-directory of 'zanata.home' will be used.
+
+##### Changes
+ * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+ * [ZNTA-2326](https://zanata.atlassian.net/browse/ZNTA-2326) - Remove overlay
+ * [ZNTA-2308](https://zanata.atlassian.net/browse/ZNTA-2308) - Expand contents of frontend-storybook
+ * [ZNTA-2293](https://zanata.atlassian.net/browse/ZNTA-2293) - Changes to project version sidebar design
+ * [ZNTA-2280](https://zanata.atlassian.net/browse/ZNTA-2280) - Add descriptions to all waitFor instances in FT
+ * [ZNTA-2252](https://zanata.atlassian.net/browse/ZNTA-2252) - Prep for frontend/editor css merge
+ * [ZNTA-2233](https://zanata.atlassian.net/browse/ZNTA-2233) - Add more linting rules to stylelintrc
+ * [ZNTA-2231](https://zanata.atlassian.net/browse/ZNTA-2231) - Add a css linter to frontend
+ * [ZNTA-2230](https://zanata.atlassian.net/browse/ZNTA-2230) - Improve frontend caching
+ * [ZNTA-2225](https://zanata.atlassian.net/browse/ZNTA-2225) - Define zanata.home system property and derive other properties from it
+ * [ZNTA-2224](https://zanata.atlassian.net/browse/ZNTA-2224) - Tidy up editor css
+ * [ZNTA-2219](https://zanata.atlassian.net/browse/ZNTA-2219) - Nice-ify the glossary count in alpha editor
+ * [ZNTA-2216](https://zanata.atlassian.net/browse/ZNTA-2216) - Admin page to define review criteria
+ * [ZNTA-2215](https://zanata.atlassian.net/browse/ZNTA-2215) - Reject criteria in gwt editor
+ * [ZNTA-2197](https://zanata.atlassian.net/browse/ZNTA-2197) - Unmaintained Hibernate Search config for some entities
+ * [ZNTA-2176](https://zanata.atlassian.net/browse/ZNTA-2176) - Update project "invite only" to "private"
+ * [ZNTA-2174](https://zanata.atlassian.net/browse/ZNTA-2174) - Limit push/pull/download resources in private project
+ * [ZNTA-2173](https://zanata.atlassian.net/browse/ZNTA-2173) - Hide 'private' project
+ * [ZNTA-1952](https://zanata.atlassian.net/browse/ZNTA-1952) - More focused PR template
+ * [ZNTA-1694](https://zanata.atlassian.net/browse/ZNTA-1694) - Implement People frontend
+ * [ZNTA-1668](https://zanata.atlassian.net/browse/ZNTA-1668) - Translator should be able to see untranslated glossary entries
+ * [ZNTA-1227](https://zanata.atlassian.net/browse/ZNTA-1227) - Switch client/common code from hamcrest assert to assertj
+
+##### Bug Fixes
+ * [ZNTA-2367](https://zanata.atlassian.net/browse/ZNTA-2367) - Lucene error
+ * [ZNTA-2363](https://zanata.atlassian.net/browse/ZNTA-2363) - Fix width of project version language list items
+ * [ZNTA-2362](https://zanata.atlassian.net/browse/ZNTA-2362) - TM creation date is not aligned properly.
+ * [ZNTA-2361](https://zanata.atlassian.net/browse/ZNTA-2361) - Review Criteria description field is a text area and not limited
+ * [ZNTA-2360](https://zanata.atlassian.net/browse/ZNTA-2360) - Review Criteria can be created without defined criteria, is unusable
+ * [ZNTA-2353](https://zanata.atlassian.net/browse/ZNTA-2353) - Cannot add a Yahoo/Fedora account to an existing account
+ * [ZNTA-2345](https://zanata.atlassian.net/browse/ZNTA-2345) - Request add version to group Send button permanently disabled
+ * [ZNTA-2344](https://zanata.atlassian.net/browse/ZNTA-2344) - GWT editor text size in target does not change with option
+ * [ZNTA-2342](https://zanata.atlassian.net/browse/ZNTA-2342) - React editor: filtering by state breaks keyboard navigation
+ * [ZNTA-2327](https://zanata.atlassian.net/browse/ZNTA-2327) - Yellowish glossary page.
+ * [ZNTA-2320](https://zanata.atlassian.net/browse/ZNTA-2320) - Frontend watch tasks failing
+ * [ZNTA-2317](https://zanata.atlassian.net/browse/ZNTA-2317) - [ERROR] "parseQuery() will be replaced with getOptions()" while zanata build.
+ * [ZNTA-2307](https://zanata.atlassian.net/browse/ZNTA-2307) - Fix translation count in alpha editor
+ * [ZNTA-2273](https://zanata.atlassian.net/browse/ZNTA-2273) - Zanata behind proxy may return incorrect url in REST response
+ * [ZNTA-2247](https://zanata.atlassian.net/browse/ZNTA-2247) - Glossary csv upload assumes column positions
+ * [ZNTA-2241](https://zanata.atlassian.net/browse/ZNTA-2241) - Translation Status Dropdown Button in Alpha Editor not working
+ * [ZNTA-2240](https://zanata.atlassian.net/browse/ZNTA-2240) - Alpha editor sidebar closes when any area is clicked
+ * [ZNTA-2214](https://zanata.atlassian.net/browse/ZNTA-2214) - Fix help redirects
+ * [ZNTA-2212](https://zanata.atlassian.net/browse/ZNTA-2212) - Consistency of headings, buttons and text in frontend
+ * [ZNTA-1375](https://zanata.atlassian.net/browse/ZNTA-1375) - Zanata allows invalid email address, fails to send verification email
+ * [ZNTA-1117](https://zanata.atlassian.net/browse/ZNTA-1117) - Zanata client help needs to be specific about command argument order
+ * [ZNTA-747](https://zanata.atlassian.net/browse/ZNTA-747) - RTL Support
+ * [ZNTA-166](https://zanata.atlassian.net/browse/ZNTA-166) - Client reports 405 error when pushing files with no basename
+ * [ZNTA-110](https://zanata.atlassian.net/browse/ZNTA-110) - Suggestion view should highlight matching text of results when diff view is turned off.
+ * [ZNTA-68](https://zanata.atlassian.net/browse/ZNTA-68) - Highlight words in text flows that match filter text.
+ * [ZNTA-53](https://zanata.atlassian.net/browse/ZNTA-53) - Add text flow history to activity panel.
+
+-----------------------
+
+## 4.3.3
+##### Bug Fixes
+ * [ZNTA-2303](https://zanata.atlassian.net/browse/ZNTA-2303) - Single open id provider sign in shows 404 after sign in
+
+-----------------------
+
+## 4.3.2
+##### Bug Fixes
+ * [ZNTA-2272](https://zanata.atlassian.net/browse/ZNTA-2272) - Remove Unused serialVersionUID
+ * [ZNTA-2266](https://zanata.atlassian.net/browse/ZNTA-2266) - Failing JS unit tests should fail the build
+ * [ZNTA-2256](https://zanata.atlassian.net/browse/ZNTA-2256) - Eslint error in frontend must fail the build
+
+-----------------------
+
+## 4.3.1
+##### Bug Fixes
+ * [ZNTA-2238](https://zanata.atlassian.net/browse/ZNTA-2238) - Positional printf syntax issue
+ * [ZNTA-2234](https://zanata.atlassian.net/browse/ZNTA-2234) - Codecov Report URLs link incorrect page
+ * [ZNTA-2100](https://zanata.atlassian.net/browse/ZNTA-2100) - Gettext "Language" header should separate language and country with underscore
+ * [ZNTA-2055](https://zanata.atlassian.net/browse/ZNTA-2055) - vendors - stuck on login page
+
+-----------------------
+
+## 4.3.0
+##### Changes
+ * [ZNTA-2184](https://zanata.atlassian.net/browse/ZNTA-2184) - A better icon for role Requests in language
+ * [ZNTA-2172](https://zanata.atlassian.net/browse/ZNTA-2172) - Profile page should not render anything with inactive/non-existing account
+ * [ZNTA-2171](https://zanata.atlassian.net/browse/ZNTA-2171) - Storybook: reject with reason HISTORY UI
+ * [ZNTA-2161](https://zanata.atlassian.net/browse/ZNTA-2161) - Tooling to help developers use the correct yarn version
+ * [ZNTA-2156](https://zanata.atlassian.net/browse/ZNTA-2156) - Storybook: reject with reason MODAL UI
+ * [ZNTA-2147](https://zanata.atlassian.net/browse/ZNTA-2147) - Editor heading -> flex
+ * [ZNTA-2134](https://zanata.atlassian.net/browse/ZNTA-2134) - Help pages required for Version TM Merge
+ * [ZNTA-2119](https://zanata.atlassian.net/browse/ZNTA-2119) - Turn on storybook addons
+ * [ZNTA-2118](https://zanata.atlassian.net/browse/ZNTA-2118) - Upgrade webpack to 2.x or 3.x (if 3.x looks stable enough)
+ * [ZNTA-2116](https://zanata.atlassian.net/browse/ZNTA-2116) - Create tri-state checkbox component
+ * [ZNTA-2093](https://zanata.atlassian.net/browse/ZNTA-2093) - TM Merge no longer has "Next Condition"
+ * [ZNTA-2091](https://zanata.atlassian.net/browse/ZNTA-2091) - Please widen the vertical scroll bar on the right hand side of the editor
+ * [ZNTA-2015](https://zanata.atlassian.net/browse/ZNTA-2015) - Allow admin to change a user's name
+ * [ZNTA-1969](https://zanata.atlassian.net/browse/ZNTA-1969) - Add Project Name to Version Sort in Version Merge Modal Story
+ * [ZNTA-1865](https://zanata.atlassian.net/browse/ZNTA-1865) - Feature: Enhance Version Merge feature
+ * [ZNTA-1684](https://zanata.atlassian.net/browse/ZNTA-1684) - Replace 'tribes' with 'languages/locales'
+ * [ZNTA-975](https://zanata.atlassian.net/browse/ZNTA-975) - Add advanced search dropdown to React editor
+ * [ZNTA-709](https://zanata.atlassian.net/browse/ZNTA-709) - Set up consistent node versioning in projects
+
+##### Bug Fixes
+ * [ZNTA-2220](https://zanata.atlassian.net/browse/ZNTA-2220) - Dialogs have a "scroll line" on the right
+ * [ZNTA-2218](https://zanata.atlassian.net/browse/ZNTA-2218) - Translation Memory broken in GWT editor
+ * [ZNTA-2208](https://zanata.atlassian.net/browse/ZNTA-2208) - NotSupportedException on po/csv glossary import
+ * [ZNTA-2206](https://zanata.atlassian.net/browse/ZNTA-2206) - 404 page not found on help from more options
+ * [ZNTA-2201](https://zanata.atlassian.net/browse/ZNTA-2201) - updateGitHubCommitStatus should use the correct SHA in correct repo
+ * [ZNTA-2191](https://zanata.atlassian.net/browse/ZNTA-2191) - Need HAccount index to find enabled users efficiently
+ * [ZNTA-2187](https://zanata.atlassian.net/browse/ZNTA-2187) - Version "Settings" tab does not show up
+ * [ZNTA-2186](https://zanata.atlassian.net/browse/ZNTA-2186) - CSS conflict in editor inputs
+ * [ZNTA-2178](https://zanata.atlassian.net/browse/ZNTA-2178) - Zanata Client API (old endpoints support)
+ * [ZNTA-2168](https://zanata.atlassian.net/browse/ZNTA-2168) - Editor background for active translation needs fixing
+ * [ZNTA-2152](https://zanata.atlassian.net/browse/ZNTA-2152) - Remove css that overrides frontend dropdown + icons
+ * [ZNTA-2149](https://zanata.atlassian.net/browse/ZNTA-2149) - TM Merge pop-up closes on second mouse click.
+ * [ZNTA-2148](https://zanata.atlassian.net/browse/ZNTA-2148) - Fix alignment of notification modal icons
+ * [ZNTA-2131](https://zanata.atlassian.net/browse/ZNTA-2131) - #, %, & are not treated as search chars on glossary search.
+ * [ZNTA-1970](https://zanata.atlassian.net/browse/ZNTA-1970) - Side nav doesn't align correctly on some devices
+ * [ZNTA-1786](https://zanata.atlassian.net/browse/ZNTA-1786) - write lock when shutting down application server
+ * [ZNTA-234](https://zanata.atlassian.net/browse/ZNTA-234) - [REST] /stats/proj/gcc2/iter/4.9.0/doc/{docId} failed to handle the file with directory
+
+-----------------------
+
+## 4.2.4
+##### Changes
+ * [ZNTA-2158](https://zanata.atlassian.net/browse/ZNTA-2158) - Fix text wrapping in GWT TM panel
+ * [ZNTA-2153](https://zanata.atlassian.net/browse/ZNTA-2153) - Tidy UX for TM Merge modal
+ * [ZNTA-2035](https://zanata.atlassian.net/browse/ZNTA-2035) - Fix Jenkin's CI reporting to Github
+
+##### Bug Fixes
+ * [ZNTA-2159](https://zanata.atlassian.net/browse/ZNTA-2159) - When adding a project to a group, the suggestion list is too short and cropped
+ * [ZNTA-2114](https://zanata.atlassian.net/browse/ZNTA-2114) - Online help broken
+ * [ZNTA-128](https://zanata.atlassian.net/browse/ZNTA-128) - Chunk split failed when pushing big files (more than 1MiB)
+
+-----------------------
+
+## 4.2.1
+##### Bug Fixes
+ * [ZNTA-2012](https://zanata.atlassian.net/browse/ZNTA-2012) - zanata-cli is missing
+
+-----------------------
+
 ## 4.2.0
 ##### Changes
  * [ZNTA-1973](https://zanata.atlassian.net/browse/ZNTA-1973) - If source have plural, but target does not, translation cannot save as translated
@@ -45,7 +207,7 @@
  * [ZNTA-1735](https://zanata.atlassian.net/browse/ZNTA-1735) - Add Glossary Tab to Editor Sidebar
  * [ZNTA-1733](https://zanata.atlassian.net/browse/ZNTA-1733) - Add Details to Editor Sidebar
  * [ZNTA-1732](https://zanata.atlassian.net/browse/ZNTA-1732) - Add Editor sidebar
- * [ZNTA-1726](https://zanata.atlassian.net/browse/ZNTA-1726) - Doc: Missing manual webhook documentation 
+ * [ZNTA-1726](https://zanata.atlassian.net/browse/ZNTA-1726) - Doc: Missing manual webhook documentation
  * [ZNTA-1705](https://zanata.atlassian.net/browse/ZNTA-1705) - Allow TM Merge for a whole document (in a single language)
  * [ZNTA-1661](https://zanata.atlassian.net/browse/ZNTA-1661) - Enable Kotlin as additional language for production/test code
  * [ZNTA-1582](https://zanata.atlassian.net/browse/ZNTA-1582) - http://zanata-client.readthedocs.io/en/latest/ is not available
@@ -69,7 +231,7 @@
  * [ZNTA-1868](https://zanata.atlassian.net/browse/ZNTA-1868) - Make hibernate schema validation pass
  * [ZNTA-1863](https://zanata.atlassian.net/browse/ZNTA-1863) - TM details modal source text incorrectly aligned on small screens
  * [ZNTA-1860](https://zanata.atlassian.net/browse/ZNTA-1860) - Projects should be clickable for going back to the projects list from create project page
- * [ZNTA-1853](https://zanata.atlassian.net/browse/ZNTA-1853) - Langauge and dashboard should be clickable on lnaguages page and settings page. 
+ * [ZNTA-1853](https://zanata.atlassian.net/browse/ZNTA-1853) - Langauge and dashboard should be clickable on lnaguages page and settings page.
  * [ZNTA-1840](https://zanata.atlassian.net/browse/ZNTA-1840) - Unnecessary 'introduce yourself' field when auto join enabled
  * [ZNTA-1834](https://zanata.atlassian.net/browse/ZNTA-1834) - Reword TM merge pop up and messages
  * [ZNTA-1826](https://zanata.atlassian.net/browse/ZNTA-1826) - Eliminate log warning "encountered non-rewritten url /404.xhtml"
@@ -82,7 +244,7 @@
  * [ZNTA-1774](https://zanata.atlassian.net/browse/ZNTA-1774) - Only first page of document visible in Alpha Editor
  * [ZNTA-1767](https://zanata.atlassian.net/browse/ZNTA-1767) - Cannot add translation if field is empty in Alpha Editor
  * [ZNTA-1760](https://zanata.atlassian.net/browse/ZNTA-1760) - Missing constraints on Project locale table
- * [ZNTA-1729](https://zanata.atlassian.net/browse/ZNTA-1729) - Source locale is not excluded in target file mappings 
+ * [ZNTA-1729](https://zanata.atlassian.net/browse/ZNTA-1729) - Source locale is not excluded in target file mappings
  * [ZNTA-1710](https://zanata.atlassian.net/browse/ZNTA-1710) - Delete all button css changed on glossary delete.
  * [ZNTA-1706](https://zanata.atlassian.net/browse/ZNTA-1706) - Filter error on Languages page
  * [ZNTA-1686](https://zanata.atlassian.net/browse/ZNTA-1686) - After search and delete language search field should have to clear/reset automatically.
@@ -102,6 +264,8 @@ re-indexing is required.
  * [ZNTA-1660](https://zanata.atlassian.net/browse/ZNTA-1660) - Update docker script to avoid 'chcon' error
 
 ##### Bug Fixes
+ * [ZNTA-1948](https://zanata.atlassian.net/browse/ZNTA-1948) - After project deletion, project tab is not accessible without logout & login
+ * [ZNTA-1907](https://zanata.atlassian.net/browse/ZNTA-1907) - Exception when trying to delete the en_US language
  * [ZNTA-1748](https://zanata.atlassian.net/browse/ZNTA-1748) - Export TMX per language does not work
  * [ZNTA-1738](https://zanata.atlassian.net/browse/ZNTA-1738) - Link boxes in GWT editor huge
 

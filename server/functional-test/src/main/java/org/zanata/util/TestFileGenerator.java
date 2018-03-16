@@ -234,6 +234,7 @@ public class TestFileGenerator {
         @XmlElements(@XmlElement(name = "locale", namespace = ZanataXml.NS))
         private List<String> locales;
 
+        @SuppressWarnings("unused")
         public void setUrl(final String url) {
             this.url = url;
         }

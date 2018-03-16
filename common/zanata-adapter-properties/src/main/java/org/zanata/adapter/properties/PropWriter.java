@@ -54,7 +54,7 @@ public class PropWriter {
         File baseFile = new File(baseDir, doc.getName() + ".properties");
         PathUtil.makeDirs(baseFile.getParentFile());
 
-        log.debug("Creating base file " + baseFile);
+        log.debug("Creating base file {}", baseFile);
         Properties props = new Properties();
         for (TextFlow textFlow : doc.getTextFlows()) {
             List<String> contents = textFlow.getContents();
@@ -132,7 +132,7 @@ public class PropWriter {
         File langFile =
             new File(baseDir, bundleName + "_" + locale + ".properties");
         PathUtil.makeDirs(langFile.getParentFile());
-        log.debug("Creating target file " + langFile);
+        log.debug("Creating target file {}", langFile);
 
         writeTranslationsFile(srcDoc, doc, langFile, charset, createSkeletons);
     }

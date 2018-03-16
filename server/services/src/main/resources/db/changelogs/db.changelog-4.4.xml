@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>Rename allowGlobalTranslation to privateProject</comment>
+    <renameColumn tableName="HProject" oldColumnName="allowGlobalTranslation"
+        newColumnName="privateProject" columnDataType="boolean" />
+  </changeSet>
+
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Migrate allowGlobalTranslation data to privateProject</comment>
+    <sql>UPDATE HProject SET privateProject= !privateProject</sql>
+  </changeSet>
+
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Update default value for HProject.privateProject column</comment>
+    <dropDefaultValue columnName="privateProject" tableName="HProject"/>
+    <addDefaultValue columnName="privateProject" defaultValueBoolean="false"
+        tableName="HProject"/>
+  </changeSet>
+
+  <changeSet id="4" author="pahuang@redhat.com">
+    <comment>Add review criteria column to HTextFlowTargetReviewComment</comment>
+    <addColumn tableName="HTextFlowTargetReviewComment">
+      <column name="review_criteria_id" type="bigint">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addForeignKeyConstraint baseTableName="HTextFlowTargetReviewComment"
+      baseColumnNames="review_criteria_id"
+      constraintName="fk_tftrc_review_criteria"
+      referencedTableName="ReviewCriteria"
+      referencedColumnNames="id" />
+  </changeSet>
+  <changeSet id="5" author="pahuang@redhat.com">
+    <dropNotNullConstraint tableName="HTextFlowTargetReviewComment"
+      columnName="comment" columnDataType="longtext" />
+  </changeSet>
+  <changeSet id="4" author="aeng@redhat.com">
+    <addNotNullConstraint tableName="ReviewCriteria"
+        columnName="description" columnDataType="varchar(255)" />
+  </changeSet>
+
+
+</databaseChangeLog>

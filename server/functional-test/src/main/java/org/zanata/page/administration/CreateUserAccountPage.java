@@ -34,6 +34,7 @@ import java.util.Map;
 public class CreateUserAccountPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CreateUserAccountPage.class);
+
     private By usernameField = By.id("newUserForm:username:input:username");
     private By emailField = By.id("newUserForm:email:input:email");
     private By saveButton = By.id("newUserForm:newUserSave");
@@ -52,40 +53,73 @@ public class CreateUserAccountPage extends BasePage {
         roleMap.put("user", "4");
     }
 
+    /**
+     * Enter text into the username field
+     * @param username string to enter
+     * @return new CreateUserAccountPage
+     */
     public CreateUserAccountPage enterUsername(String username) {
-        enterText(readyElement(usernameField), username);
+        log.info("Enter username {}", username);
+        enterText(usernameField, username);
         return new CreateUserAccountPage(getDriver());
     }
 
+    /**
+     * Enter text into the email address field
+     * @param email string to enter
+     * @return new CreateUserAccountPage
+     */
     public CreateUserAccountPage enterEmail(String email) {
-        enterText(readyElement(emailField), email);
+        enterText(emailField, email);
         return new CreateUserAccountPage(getDriver());
     }
 
+    /**
+     * Select a role for the user
+     * @param role entry to select
+     * @return new CreateUserAccountPage
+     */
     public CreateUserAccountPage clickRole(String role) {
         log.info("Click role {}", role);
-        clickElement(readyElement(By.id(roleIdPrefix.concat(roleMap.get(role)))));
+        clickElement(By.id(roleIdPrefix.concat(roleMap.get(role))));
         return new CreateUserAccountPage(getDriver());
     }
 
+    /**
+     * Query if a role is checked
+     * @param role entry to query
+     * @return new CreateUserAccountPage
+     */
     public boolean isRoleChecked(String role) {
         log.info("Query is role {} checked", role);
         return readyElement(By.id(roleIdPrefix.concat(roleMap.get(role))))
                         .isSelected();
     }
 
+    /**
+     * Press the Save button
+     * @return new ManageUserPage
+     */
     public ManageUserPage saveUser() {
         log.info("Click Save");
         clickElement(saveButton);
         return new ManageUserPage(getDriver());
     }
 
+    /**
+     * Press the Save button, expecting a failure condition
+     * @return new CreateUserAccountPage
+     */
     public CreateUserAccountPage saveUserExpectFailure() {
-        log.info("Click Save");
+        log.info("Click Save, expecting failure");
         clickElement(saveButton);
         return new CreateUserAccountPage(getDriver());
     }
 
+    /**
+     * Press the Cancel button
+     * @return new ManageUserPage
+     */
     public ManageUserPage cancelEditUser() {
         log.info("Click Cancel");
         clickElement(cancelButton);

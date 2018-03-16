@@ -190,6 +190,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                 targetLocale,
                                 UNTRANSLATED_FILTER, index, BATCH_SIZE);
                 int processedSize = textFlowsBatch.size();
+                if (processedSize == 0) {
+                    break;
+                }
                 index = index + processedSize;
                 asyncTaskHandle.increaseProgress(processedSize);
 

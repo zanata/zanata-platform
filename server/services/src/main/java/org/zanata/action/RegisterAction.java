@@ -188,7 +188,7 @@ public class RegisterAction implements HasUserDetail, Serializable {
         final String email = getEmail();
         String key = registerServiceImpl.register(user, pass,
                 getPerson().getName(), email);
-        log.info("get register key:" + key);
+        log.info("get register key: {}", key);
         String message = emailServiceImpl.sendActivationEmail(user, email, key);
         facesMessages.addGlobal(message);
         conversation.close();

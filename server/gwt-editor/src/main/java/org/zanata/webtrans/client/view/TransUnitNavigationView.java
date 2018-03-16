@@ -71,35 +71,40 @@ public class TransUnitNavigationView extends Composite implements
     }
 
     private void setFuzzyModeTooltip() {
-        prevState.setStylePrimaryName(style.fuzzy());
+        setStyle(prevState, style.fuzzy());
         prevState.setTitle(messages.actionToolTip(messages.prevFuzzy(),
                 messages.prevFuzzyOrUntranslatedShortcut()));
 
-        nextState.setStylePrimaryName(style.fuzzy());
+        setStyle(nextState, style.fuzzy());
         nextState.setTitle(messages.actionToolTip(messages.nextFuzzy(),
                 messages.nextFuzzyOrUntranslatedShortcut()));
     }
 
     private void setUntranslatedModeTooltip() {
-        prevState.setStylePrimaryName(style.untranslated());
+        setStyle(prevState, style.untranslated());
         prevState.setTitle(messages.actionToolTip(messages.prevUntranslated(),
                 messages.prevFuzzyOrUntranslatedShortcut()));
 
-        nextState.setStylePrimaryName(style.untranslated());
+        setStyle(nextState, style.untranslated());
         nextState.setTitle(messages.actionToolTip(messages.nextUntranslated(),
                 messages.nextFuzzyOrUntranslatedShortcut()));
     }
 
     private void setFuzzyUntranslatedModeTooltip() {
-        prevState.setStylePrimaryName(style.fuzzyUntranslated());
+        setStyle(prevState, style.fuzzyUntranslated());
         prevState.setTitle(messages.actionToolTip(
                 messages.prevFuzzyOrUntranslated(),
                 messages.prevFuzzyOrUntranslatedShortcut()));
 
-        nextState.setStylePrimaryName(style.fuzzyUntranslated());
+        setStyle(nextState, style.fuzzyUntranslated());
         nextState.setTitle(messages.actionToolTip(
                 messages.nextFuzzyOrUntranslated(),
                 messages.nextFuzzyOrUntranslatedShortcut()));
+    }
+
+    private void setStyle(InlineLabel button, String styleName) {
+        button.setStylePrimaryName(styleName);
+        button.addStyleName(style.navButton());
     }
 
     @UiHandler("firstEntry")

@@ -22,7 +22,7 @@ package org.zanata.service.impl;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.WebHookDAO;

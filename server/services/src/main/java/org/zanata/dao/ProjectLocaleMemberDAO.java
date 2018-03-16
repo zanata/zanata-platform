@@ -31,9 +31,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectLocaleMember;
 import org.zanata.model.LocaleRole;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Provides methods to access data related to membership in a locale for a project.
  */
@@ -50,21 +47,6 @@ public class ProjectLocaleMemberDAO
 
     public ProjectLocaleMemberDAO(Session session) {
         super(HProjectLocaleMember.class, session);
-    }
-
-    /**
-     * Retrieve all of a person's roles in a locale for a project.
-     */
-    public Set<LocaleRole> getRolesInProjectLocale(HPerson person, HProject project, HLocale locale) {
-        Query query = getSession().createQuery(
-                "from HProjectLocaleMember as m where m.person = :person " +
-                        "and m.project = :project " +
-                        "and m.locale = :locale")
-                .setParameter("person", person)
-                .setParameter("project", project)
-                .setParameter("locale", locale)
-                .setComment("ProjectLocaleMemberDAO.getRolesInProjectLocale");
-        return new HashSet<>(query.list());
     }
 
     /**
@@ -85,6 +67,18 @@ public class ProjectLocaleMemberDAO
                 .setParameter("locale", locale)
                 .setParameter("role", role)
                 .setComment("ProjectLocaleMemberDAO.hasProjectLocaleRole");
+        return ((Long) query.uniqueResult()) > 0;
+    }
+
+    public boolean isProjectLocaleMember(HPerson person, HProject project) {
+        Query query = getSession().createQuery(
+                "select count(m) from HProjectLocaleMember as m " +
+                        "where m.person = :person " +
+                        "and m.project = :project ")
+                .setParameter("person", person)
+                .setParameter("project", project)
+                .setComment("ProjectLocaleMemberDAO.isProjectLocaleMember")
+                .setCacheable(true);
         return ((Long) query.uniqueResult()) > 0;
     }
 }

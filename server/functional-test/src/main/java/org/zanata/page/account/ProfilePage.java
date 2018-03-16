@@ -34,32 +34,49 @@ public class ProfilePage extends BasePage {
             org.slf4j.LoggerFactory.getLogger(ProfilePage.class);
     private By displayNameBy = By.id("profile-displayname");
     private By userNameBy = By.id("profile-username");
-    private By languagesBy = By.id("profile-languages");
-    private By contributionsBy = By.id("profile-matrix");
+    private By languagesBy = By.id("profileLanguages");
+    private By contributionsBy = By.id("userProfile-matrix");
 
     public ProfilePage(WebDriver driver) {
         super(driver);
     }
 
+    /**
+     * Get the display name of the user
+     * @return name string
+     */
     public String getDisplayName() {
         log.info("Query user\'s display name");
-        return readyElement(displayNameBy).getText();
+        return getText(displayNameBy);
     }
 
+    /**
+     * Get the username of the user
+     * @return username string
+     */
     public String getUsername() {
         log.info("Query user\'s username");
-        return readyElement(userNameBy).getText();
+        return getText(userNameBy);
     }
 
+    /**
+     * Get the languages of the user
+     * @return languages string
+     */
     public String getLanguages() {
         log.info("Query user\'s languages list");
-        return readyElement(languagesBy).getText();
+        return getText(languagesBy);
     }
 
+    /**
+     * Wait for the contributions matrix to be displayed
+     * @return successful display of the matrix
+     */
     public boolean expectContributionsMatrixVisible() {
         log.info("Wait for contributions matrix to be visible");
         try {
-            waitForAMoment().until(driver -> driver
+            waitForAMoment().withMessage("displayed contributions matrix")
+                    .until(driver -> driver
                     .findElements(contributionsBy).size() > 0);
         } catch (TimeoutException te) {
             log.info("Contributions matrix was not discovered");

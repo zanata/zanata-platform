@@ -36,7 +36,6 @@ import org.zanata.rest.dto.ProjectIteration;
 @Path(ProjectIterationResource.SERVICE_PATH)
 @Transactional
 public class ProjectIterationService implements ProjectIterationResource {
-    private static final long serialVersionUID = 6876026336472721574L;
     /** Project Identifier. */
     @PathParam("projectSlug")
     private String projectSlug;

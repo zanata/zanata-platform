@@ -826,7 +826,6 @@ a:hover,
   font-weight: 400;
   border: 1px solid #bcd4dc;
   background-color: #fcfcfc;
-  color: #333333;
   margin: 0 0 0.75em;
   -webkit-appearance: none;
 }
@@ -2674,12 +2673,12 @@ Centered grids align grid items centrally without needing to use push or pull cl
 .new-zanata .tabs--accent .tabs__nav a.is-active:hover,
 .new-zanata .tabs--accent .tabs__nav a.is-active:hover:after,
 .new-zanata .bg--higher--hover:hover, .new-zanata .bg--highest, .new-zanata .bg--pop-highest, .new-zanata .tabs--vertical .tabs__nav > li.is-active a,
-.new-zanata .tabs--vertical .tabs__nav > li > a.is-active, .new-zanata .tabs--vertical .tabs__content > li, .new-zanata .dropdown.is-active .dropdown__toggle, .new-zanata .panel__header, .new-zanata .panels__panel.is-active, .new-zanata .autocomplete__results, .new-zanata .rf-au-lst-dcrtn, .new-zanata .tabs--accent .tabs__nav,
+.new-zanata .tabs--vertical .tabs__nav > li > a.is-active, .new-zanata .tabs--vertical .tabsContent > li, .new-zanata .dropdown.is-active .dropdown__toggle, .new-zanata .panel__header, .new-zanata .panels__panel.is-active, .new-zanata .autocomplete__results, .new-zanata .rf-au-lst-dcrtn, .new-zanata .tabs--accent .tabs__nav,
 .new-zanata .bg--highest:hover,
 .new-zanata .bg--pop-highest:hover,
 .new-zanata .tabs--vertical .tabs__nav > li.is-active a:hover,
 .new-zanata .tabs--vertical .tabs__nav > li > a.is-active:hover,
-.new-zanata .tabs--vertical .tabs__content > li:hover,
+.new-zanata .tabs--vertical .tabsContent > li:hover,
 .new-zanata .dropdown.is-active .dropdown__toggle:hover,
 .new-zanata .panel__header:hover,
 .new-zanata .panels__panel.is-active:hover,
@@ -2896,7 +2895,7 @@ Centered grids align grid items centrally without needing to use push or pull cl
 ```
 
 */
-.new-zanata .txt--meta {
+.new-zanata .textMeta {
   font-size: 0.875em;
   line-height: 1.28571em;
   color: #639cad;
@@ -2913,7 +2912,7 @@ Centered grids align grid items centrally without needing to use push or pull cl
 ```
 
 */
-.new-zanata .txt--understated, .new-zanata .i--understated:before {
+.new-zanata .u-textUnderstated, .new-zanata .i--understated:before {
   color: #639cad;
 }
 
@@ -2983,7 +2982,7 @@ Centered grids align grid items centrally without needing to use push or pull cl
 .new-zanata .txt--required {
   color: #FF3B3D !important;
 }
-.new-zanata .txt--neutral, .new-zanata .message--neutral,
+.new-zanata .u-textNeutral, .new-zanata .message--neutral,
 .new-zanata .txt--state-neutral {
   color: #bcd4dc !important;
 }
@@ -3083,12 +3082,12 @@ Centered grids align grid items centrally without needing to use push or pull cl
   background-color: #fcfcfc;
 }
 .new-zanata .bg--highest, .new-zanata .bg--pop-highest, .new-zanata .tabs--vertical .tabs__nav > li.is-active a,
-.new-zanata .tabs--vertical .tabs__nav > li > a.is-active, .new-zanata .tabs--vertical .tabs__content > li, .new-zanata .dropdown.is-active .dropdown__toggle, .new-zanata .panel__header, .new-zanata .panels__panel.is-active, .new-zanata .autocomplete__results, .new-zanata .rf-au-lst-dcrtn, .new-zanata .tabs--accent .tabs__nav,
+.new-zanata .tabs--vertical .tabs__nav > li > a.is-active, .new-zanata .tabs--vertical .tabsContent > li, .new-zanata .dropdown.is-active .dropdown__toggle, .new-zanata .panel__header, .new-zanata .panels__panel.is-active, .new-zanata .autocomplete__results, .new-zanata .rf-au-lst-dcrtn, .new-zanata .tabs--accent .tabs__nav,
 .new-zanata .bg--highest:hover,
 .new-zanata .bg--pop-highest:hover,
 .new-zanata .tabs--vertical .tabs__nav > li.is-active a:hover,
 .new-zanata .tabs--vertical .tabs__nav > li > a.is-active:hover,
-.new-zanata .tabs--vertical .tabs__content > li:hover,
+.new-zanata .tabs--vertical .tabsContent > li:hover,
 .new-zanata .dropdown.is-active .dropdown__toggle:hover,
 .new-zanata .panel__header:hover,
 .new-zanata .panels__panel.is-active:hover,
@@ -3121,7 +3120,7 @@ Centered grids align grid items centrally without needing to use push or pull cl
   border-bottom-width: 2px;
 }
 .new-zanata .bg--pop-highest, .new-zanata .tabs--vertical .tabs__nav > li.is-active a,
-.new-zanata .tabs--vertical .tabs__nav > li > a.is-active, .new-zanata .tabs--vertical .tabs__content > li, .new-zanata .dropdown.is-active .dropdown__toggle, .new-zanata .panel__header, .new-zanata .panels__panel.is-active, .new-zanata .autocomplete__results, .new-zanata .rf-au-lst-dcrtn {
+.new-zanata .tabs--vertical .tabs__nav > li > a.is-active, .new-zanata .tabs--vertical .tabsContent > li, .new-zanata .dropdown.is-active .dropdown__toggle, .new-zanata .panel__header, .new-zanata .panels__panel.is-active, .new-zanata .autocomplete__results, .new-zanata .rf-au-lst-dcrtn {
   border: 1px solid rgba(32, 113, 138, 0.15);
   border-bottom-width: 2px;
 }
@@ -3335,6 +3334,12 @@ Also adds a hyphen to these words, except in Chrome, Opera and Android.
 ### Icons
 
 All icons also need the class `.i` added to them.
+
+
+Zanata icon webfont is preloaded in the following pages:
+   1. gwt-editor/../webtrans/Application.xhtml
+   2. zanata-war/../WEB-INF/template/template.xhtml
+   3. zanata-war/../WEB-INF/template/template_nobanner.xhtml
 
 */
 @font-face {
@@ -3866,9 +3871,12 @@ Sub-headings can be used when placing a heading under another heading.
   table-layout: fixed;
   padding: 0.375em 0.75em;
 }
+.new-zanata .list--stats .list__item__content {
+  width: 100%;
+}
 .new-zanata .list--panel .list__item__info, .new-zanata .list--stats .list__item__info {
   display: table-cell;
-  width: 100%;
+  min-width: 100%;
   vertical-align: middle;
   line-height: 1em;
 }
@@ -4969,18 +4977,18 @@ Keep focus while showing and hiding a password field
     padding: 0.75em;
   }
 }
-.new-zanata .tabs__content {
+.new-zanata .tabsContent {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.new-zanata .tabs__content > li {
+.new-zanata .tabsContent > li {
   display: none;
   list-style-image: none;
   list-style-type: none;
   margin-left: 0;
 }
-.new-zanata .tabs__content > li.is-active {
+.new-zanata .tabsContent > li.is-active {
   display: block;
 }
 .new-zanata .tabs--lined > .tabs__nav {
@@ -5068,7 +5076,7 @@ Keep focus while showing and hiding a password field
 .new-zanata .tabs--accent .tabs__nav .tab__end a.is-active {
   border-right: none;
 }
-.new-zanata .tabs--accent .tabs__content {
+.new-zanata .tabs--accent .tabsContent {
   z-index: 0;
 }
 
@@ -5129,16 +5137,16 @@ Keep focus while showing and hiding a password field
 .new-zanata .tabs--vertical .tabs__nav > li > a.is-active:after {
   background-color: #fff;
 }
-.new-zanata .tabs--vertical .tabs__content {
+.new-zanata .tabs--vertical .tabsContent {
   float: left;
   width: 84%;
 }
-.new-zanata .tabs--vertical .tabs__content > li {
+.new-zanata .tabs--vertical .tabsContent > li {
   padding: 0.75em;
   min-height: 16.5em;
 }
 @media (min-width: 46.25em) {
-  .new-zanata .tabs--vertical .tabs__content > li {
+  .new-zanata .tabs--vertical .tabsContent > li {
     padding: 1.5em;
   }
 }
@@ -5146,7 +5154,7 @@ Keep focus while showing and hiding a password field
   .new-zanata .tabs--vertical .tabs__nav {
     width: 20% !important;
   }
-  .new-zanata .tabs--vertical .tabs__content {
+  .new-zanata .tabs--vertical .tabsContent {
     width: 80% !important;
   }
 }
@@ -7593,22 +7601,22 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
         <nav class="tabs__nav panel__header">
           <ul>
             <li>
-              <a href="#" class="is-active"><i aria-hidden="true" class="i i--infinity"></i><span class="is-invisible">All</span></a>
+              <a href="#" class="is-active"><i  class="i i--infinity"></i><span class="is-invisible">All</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></a>
+              <a href="#"><i  class="i i--pencil"></i><span class="is-invisible">Maintainer</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></a>
+              <a href="#"><i  class="i i--network"></i><span class="is-invisible">Translator</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--eye"></i><span class="is-invisible">Reviewer</span></a>
+              <a href="#"><i  class="i i--eye"></i><span class="is-invisible">Reviewer</span></a>
             </li>
             <li>
-              <a href="#"><i aria-hidden="true" class="i i--star"></i><span class="is-invisible">Starred</span></a>
+              <a href="#"><i  class="i i--star"></i><span class="is-invisible">Starred</span></a>
             </li>
             <li class="tab__end">
-              <a href="#"><i aria-hidden="true" class="i i--plus i i--large"></i><span class="is-invisible">New Project</span></a>
+              <a href="#"><i  class="i i--plus i i--large"></i><span class="is-invisible">New Project</span></a>
             </li>
           </ul>
         </nav>
@@ -7619,16 +7627,16 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                 <h2 class="delta heading--secondary">All Projects</h2>
               </div>
               <div class="g__item w--4-10 w--4-10-s txt--align-right txt--s-align-right">
-                <span class="txt--meta">5 of 12 <i aria-hidden="true" class="i i--clipboard"></i></span>
+                <span class="txt--meta">5 of 12 <i  class="i i--clipboard"></i></span>
                 <div class="dropdown dropdown--inline dropdown--right">
                   <div class="dropdown__toggle" href="#">
-                    <i aria-hidden="true" class="i i--clock"></i><span class="is-invisible">Recent</span>
+                    <i  class="i i--clock"></i><span class="is-invisible">Recent</span>
                     <i class="i i--arrow-down dropdown__toggle__icon"></i>
                   </div>
                   <ul class="dropdown__content">
                     <li class="dropdown__header">Sort by:</li>
-                    <li><a href="#">Recent <i aria-hidden="true" class="i i--clock"></i></a></li>
-                    <li><a href="#">Alphabetically <i aria-hidden="true" class="i i--clock"></i></a></li>
+                    <li><a href="#">Recent <i  class="i i--clock"></i></a></li>
+                    <li><a href="#">Alphabetically <i  class="i i--clock"></i></a></li>
                   </ul>
                 </div>
               </div>
@@ -7643,10 +7651,10 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                 <div class="g__item w--1-4 w--1-4-s txt--align-right txt--s-align-right">
                   <ul class=" list--horizontal">
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></span>
+                      <span class="txt--meta"><i  class="i i--network"></i><span class="is-invisible">Translator</span></span>
                     </li>
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
+                      <span class="txt--meta"><i  class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
                     </li>
                   </ul>
                 </div>
@@ -7657,13 +7665,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <i class="i i--arrow-down dropdown__toggle__icon"></i>
                     <ul class="dropdown__toggle__content list--horizontal ">
                       <li>
-                        <a href="new-page.html" title="Version 3.0"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
+                        <a href="new-page.html" title="Version 3.0"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
                       </li>
                       <li>
-                        <a href="#" title="43 Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
+                        <a href="#" title="43 Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
                       </li>
                       <li>
-                        <a href="#" title="16 Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
+                        <a href="#" title="16 Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
                       </li>
                       <li>
                         <a href="#" title="Go to Japanese translation">JP</a>
@@ -7677,13 +7685,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <li>
                       <ul class="list--horizontal">
                         <li>
-                          <a href="#" title="Version"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
+                          <a href="#" title="Version"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
                         </li>
                         <li>
-                          <a href="#" title="Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
+                          <a href="#" title="Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
                         </li>
                         <li>
-                          <a href="#" title="Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
+                          <a href="#" title="Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
                         </li>
                       </ul>
                     </li>
@@ -7717,10 +7725,10 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                 <div class="g__item w--1-4 w--1-4-s txt--align-right txt--s-align-right">
                   <ul class=" list--horizontal">
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></span>
+                      <span class="txt--meta"><i  class="i i--network"></i><span class="is-invisible">Translator</span></span>
                     </li>
                     <li>
-                      <span class="txt--meta"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
+                      <span class="txt--meta"><i  class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
                     </li>
                   </ul>
                 </div>
@@ -7731,13 +7739,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <i class="i i--arrow-down dropdown__toggle__icon"></i>
                     <ul class="dropdown__toggle__content list--horizontal ">
                       <li>
-                        <a href="new-page.html" title="Version 3.0"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
+                        <a href="new-page.html" title="Version 3.0"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 3.0</a>
                       </li>
                       <li>
-                        <a href="#" title="43 Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
+                        <a href="#" title="43 Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 43</a>
                       </li>
                       <li>
-                        <a href="#" title="16 Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
+                        <a href="#" title="16 Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 16</a>
                       </li>
                       <li>
                         <a href="#" title="Go to Japanese translation">JP</a>
@@ -7751,13 +7759,13 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
                     <li>
                       <ul class="list--horizontal">
                         <li>
-                          <a href="#" title="Version"><i aria-hidden="true" class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
+                          <a href="#" title="Version"><i  class="i i--star-2"></i><span class="is-invisible">Version</span> 2.6</a>
                         </li>
                         <li>
-                          <a href="#" title="Documents"><i aria-hidden="true" class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
+                          <a href="#" title="Documents"><i  class="i i--document-alt-fill"></i><span class="is-invisible">Documents</span> 35</a>
                         </li>
                         <li>
-                          <a href="#" title="Languages"><i aria-hidden="true" class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
+                          <a href="#" title="Languages"><i  class="i i--globe"></i><span class="is-invisible">Languages</span> 13</a>
                         </li>
                       </ul>
                     </li>
@@ -7917,7 +7925,7 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
   position: relative;
   padding: 0 0.375em 0 2.0625em;
 }
-.new-zanata .panel__results .txt--meta {
+.new-zanata .panel__results .textMeta {
   line-height: inherit;
 }
 .new-zanata .panel__results--bottom {
@@ -8114,7 +8122,7 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
 .new-zanata .autocomplete__result.is-selected a {
   color: #fff;
 }
-.new-zanata .autocomplete__result.is-selected .txt--understated, .new-zanata .autocomplete__result.is-selected .i--understated:before {
+.new-zanata .autocomplete__result.is-selected .u-textUnderstated, .new-zanata .autocomplete__result.is-selected .i--understated:before {
   color: #d2e3e8;
 }
 
@@ -8524,8 +8532,8 @@ a.loader.is-active, a.is-active.loader--mini, a.is-active.loader--small, a.is-ac
 .new-zanata .rf-au-itm-sel a {
   color: #f2f2f2;
 }
-.new-zanata .rf-au-itm-sel .txt--meta,
-.new-zanata .rf-au-itm-sel .txt--understated,
+.new-zanata .rf-au-itm-sel .textMeta,
+.new-zanata .rf-au-itm-sel .u-textUnderstated,
 .new-zanata .rf-au-itm-sel .i--understated:before {
   color: #bcd4dc;
 }

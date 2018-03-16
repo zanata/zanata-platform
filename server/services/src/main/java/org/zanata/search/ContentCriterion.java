@@ -2,7 +2,7 @@ package org.zanata.search;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.common.HasContents;
 import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;

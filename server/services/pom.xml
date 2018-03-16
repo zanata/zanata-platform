@@ -6,10 +6,10 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>org.zanata</groupId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.5.0-SNAPSHOT</version>
   </parent>
   <artifactId>services</artifactId>
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
   <name>Zanata Services</name>
   <description>Zanata Services</description>
 
@@ -74,7 +74,7 @@
             </goals>
             <configuration>
               <scripts>
-                <script>file:///${project.basedir}/src/etc/dependencyVersions.groovy</script>
+                <script>${project.basedir}/src/etc/dependencyVersions.groovy</script>
               </scripts>
             </configuration>
           </execution>
@@ -185,18 +185,6 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <extensions>true</extensions>
-
-        <configuration>
-          <sourceJar>true</sourceJar>
-          <testJar>true</testJar>
-        </configuration>
-      </plugin>
-
     </plugins>
 
     <pluginManagement>
@@ -355,6 +343,27 @@
     </dependency>
 
     <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-federation</artifactId>
+      <version>${picketlink.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.picketlink.distribution</groupId>
+      <artifactId>picketlink-wildfly8</artifactId>
+      <version>${picketlink.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
       <groupId>net.jodah</groupId>
       <artifactId>concurrentunit</artifactId>
       <version>0.4.1</version>
@@ -370,7 +379,7 @@
 
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib</artifactId>
+      <artifactId>kotlin-stdlib-jre8</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -766,8 +775,13 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
     </dependency>
 
     <dependency>
@@ -1573,7 +1587,7 @@
                 <configuration>
                   <target unless="skipArqTests">
                     <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)" unless="appserver" />
-                    <fail message="'cargo.installation' property is null (set env var EAP7_URL or else use -DskipArqTests)" unless="cargo.installation" />
+                    <fail message="'cargo.installation' property is null (set env var EAP71_URL or else use -DskipArqTests)" unless="cargo.installation" />
                   </target>
                 </configuration>
               </execution>

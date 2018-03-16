@@ -17,6 +17,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class ExportTranslationsTest extends TMXStreamingOutputTest {
+
+    private final char deviceControlCharacter = 0x12;
+
     @Test
     public void exportAllLocales() throws Exception {
         StreamingOutput output = streamSourceContents(null, null);
@@ -48,7 +51,7 @@ public class ExportTranslationsTest extends TMXStreamingOutputTest {
     private TMXStreamingOutput<ITextFlow> streamSourceContents(
             LocaleId srcLocale, LocaleId targetLocale) {
         return TMXStreamingOutput.testInstance(createTestData(),
-                new TranslationsTMXExportStrategy(srcLocale, targetLocale));
+                new TranslationsTMXExportStrategy<>(srcLocale, targetLocale));
     }
 
     private @Nonnull
@@ -74,7 +77,10 @@ public class ExportTranslationsTest extends TMXStreamingOutputTest {
                         "source1"),
                 new SimpleTextFlow("doc1:resId1",
                         toMap(new SimpleTextFlowTarget(de, Approved,
-                                "TARGETde0", "TARGETde1")), sourceLocale,
+                                // Control characters are discarded
+                                "TARGETde0".concat(String
+                                        .valueOf(deviceControlCharacter)),
+                                "TARGETde1")), sourceLocale,
                         "SOURCE0", "SOURCE1"),
                 new SimpleTextFlow("doc1:resId2",
                         toMap(new SimpleTextFlowTarget(de, Approved,

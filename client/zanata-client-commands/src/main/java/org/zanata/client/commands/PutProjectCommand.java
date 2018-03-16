@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.zanata.common.EntityStatus;
 import org.zanata.rest.client.ProjectClient;
 import org.zanata.rest.dto.Project;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
@@ -20,6 +22,7 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions> {
         super(opts);
     }
 
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST", "SLF4J_SIGN_ONLY_FORMAT"})
     @Override
     public void run() throws Exception {
         String projectId = getOpts().getProjectSlug();

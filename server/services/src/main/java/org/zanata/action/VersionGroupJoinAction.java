@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -176,7 +176,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
                         .append(subject).append("\' , message \'")
                         .append(message).append("\'");
                 log.error(
-                        "Failed to send email: fromName \'{}\', fromLoginName \'{}\', replyEmail \'{}\', subject \'{}\', message \'{}\'. {}",
+                        "Failed to send email: fromName \"{}\", fromLoginName \"{}\", replyEmail \"{}\", subject \"{}\", message \"{}\".",
                         fromName, fromLoginName, replyEmail, subject, message,
                         e);
                 facesMessages.addGlobal(sb.toString());

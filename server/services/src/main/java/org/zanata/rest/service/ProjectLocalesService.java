@@ -48,7 +48,6 @@ import org.zanata.service.LocaleService;
 @Path(ProjectLocalesResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class ProjectLocalesService implements ProjectLocalesResource {
-    private static final long serialVersionUID = -5589347586645490049L;
     @PathParam("projectSlug")
     String projectSlug;
 

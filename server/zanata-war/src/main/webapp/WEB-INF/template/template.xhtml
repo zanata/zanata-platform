@@ -28,7 +28,20 @@
     <meta name="author" content=""/>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
     <meta http-equiv="cleartype" content="on"/>
-    <link rel="stylesheet" href="#{request.contextPath}/frontend.css" type="text/css"/>
+
+    <!-- Preconnect SourceSansPro (Google Fonts) via FontFace in legacyJS
+    -->
+    <link rel="preconnect" href="https://fonts.gstatic.com/"
+      crossorigin="anonymous" />
+
+    <!-- Preloader for zanata (icon) webfont.
+         zanata-war/src/main/webapp/resources/assets/css/style.css
+         Lines 3339-3342
+    -->
+    <link rel="preload" as="font" crossorigin="anonymous" type="font/woff"
+      href="#{request.contextPath}/resources/assets/fonts/zanata-v6/zanata.woff" />
+
+    <link rel="stylesheet" href="#{frontendAssets.frontendCss}" type="text/css"/>
     <link type="image/x-icon" rel="shortcut icon"
         href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
     <link type="image/x-icon" rel="icon"
@@ -69,7 +82,7 @@
     </script>
   </h:head>
 
-  <h:body class="templatestyle">
+  <h:body class="templateStyle">
     <ds:windowId/>
 
     <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
@@ -94,16 +107,17 @@
       data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
                    "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'
       data-allow-register="#{allowPublicRegistration}"
+      data-app-locale="#{localeSelectorAction.getLocale()}"
     >
     </div>
     <script type="application/javascript">
       window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
     </script>
-    <div class="template-wrapper">
-      <div class="template-container">
+    <div class="templateWrapper">
+      <div class="templateContainer">
         <div id="root" />
-        <main role="main" class="root-main">
-          <div class="l__wrapper root-main-content l--pad-top-half">
+        <main role="main" class="rootMain">
+          <div class="l__wrapper rootMain-content l--pad-top-half">
             <ui:insert name="center_content"/>
           </div>
         </main>
@@ -112,7 +126,9 @@
     </div>
 
     <script type="text/javascript"
-      src="#{request.contextPath}/frontend.legacy.min.js"></script>
+      src="#{frontendAssets.runtime}"></script>
+    <script type="text/javascript"
+      src="#{frontendAssets.legacyJs}"></script>
 
     <ui:include src="scripts.xhtml"/>
   </h:body>

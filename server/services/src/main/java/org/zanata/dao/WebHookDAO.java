@@ -49,15 +49,15 @@ public class WebHookDAO extends AbstractDAOImpl<WebHook, Long> {
      * @param projectSlug project slug
      * @param type webhoot type
      */
+    @SuppressWarnings("unchecked")
     public List<WebHook> getWebHooksForType(String projectSlug,
             WebhookType type) {
         // This generates a warning in log but as per https://hibernate.atlassian.net/browse/HHH-10621
         // the warning message is a hibernate issue
-        List list = getSession().createQuery(
+        return getSession().createQuery(
                 "from WebHook w where w.project.slug = :projectSlug and :webhookType in elements(w.types) ")
                 .setParameter("projectSlug", projectSlug)
                 .setParameter("webhookType", type)
                 .setCacheable(true).setComment("getWebHooksForType").list();
-        return list;
     }
 }

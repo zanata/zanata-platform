@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -171,7 +171,7 @@ public class ValidationServiceImpl implements ValidationService {
         HDocument hDoc = documentDAO.findById(hDocId, false);
         boolean hasError =
                 documentHasWarningOrError(hDoc, validationIds, localeId);
-        log.debug("Finished runDocValidations in " + stopwatch);
+        log.debug("Finished runDocValidations in {}", stopwatch);
         return hasError;
     }
 
@@ -184,7 +184,7 @@ public class ValidationServiceImpl implements ValidationService {
                 hDoc.getProjectIteration(), State.Warning, State.Error);
         boolean hasError =
                 documentHasWarningOrError(hDoc, validationIds, localeId);
-        log.debug("Finished runDocValidationsWithServerRules in " + stopwatch);
+        log.debug("Finished runDocValidationsWithServerRules in {}", stopwatch);
         return hasError;
     }
 
@@ -215,7 +215,7 @@ public class ValidationServiceImpl implements ValidationService {
                 result.add(textFlow);
             }
         }
-        log.debug("Finished filter textFlows in " + stopwatch);
+        log.debug("Finished filter textFlows in {}", stopwatch);
         if (result.size() <= maxSize) {
             return result;
         }

@@ -36,6 +36,8 @@ import org.zanata.client.commands.OptionsUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.*;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl.*;
 import static org.zanata.client.commands.Messages.get;
@@ -61,6 +63,7 @@ class UserConfigHandler {
      * @throws Exception
      */
     @VisibleForTesting
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     protected void verifyUserConfig() throws Exception {
         File userConfig = opts.getUserConfig();
         if (!userConfig.exists()) {

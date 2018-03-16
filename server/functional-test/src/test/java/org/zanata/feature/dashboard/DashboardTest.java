@@ -102,7 +102,7 @@ public class DashboardTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void passwordChange() throws Exception {
         dashboard.goToSettingsTab().gotoSettingsAccountTab()
-                .typeOldPassword("admin").typeNewPassword("admin2")
+                .enterOldPassword("admin").enterNewPassword("admin2")
                 .clickUpdatePasswordButton();
         assertThat(dashboard
                 .expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS));

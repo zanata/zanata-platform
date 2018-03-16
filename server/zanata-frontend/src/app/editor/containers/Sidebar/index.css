@@ -1,0 +1,610 @@
+/* Editor Sidebar Styling */
+
+:root {
+  --Sidebar-color-muted: #bcd4dc;
+  --Sidebar-color-text: #20718a;
+  --Sidebar-color-highlight: #03a6d7;
+  --Sidebar-panel-dark: #546677;
+  --Sidebar-panel-grey: #333;
+  --Sidebar-well: #fefefe;
+  --Sidebar-panel-background: #fdfdfd;
+  --Sidebar-border: #ddd;
+  --Sidebar-textarea-border: #639cad;
+  --Sidebar-no-results: #a9bfc6;
+  --Sidebar-no-content: #b3b3b3;
+  --Sidebar-tabpane: #f5f6f7;
+  --Sidebar-bold-text: 600;
+  --Sidebar-spacing-small: 0.375rem;
+  --Sidebar-spacing-large: 0.75rem;
+  --Sidebar-small-text: 0.875rem;
+  --Editor-color-translated: #5cca7b;
+  --Editor-color-fuzzy: #E9DF1B;
+  --Editor-color-approved: #03A6D7;
+  --Editor-color-rejected: #FFA800;
+}
+
+.sidebar-editor {
+  border-left: solid 1px var(--Sidebar-border);
+  float: right !important;
+  height: 99.5% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding-top: 90px !important;
+  position: static !important;
+  width: 35%;
+}
+
+.sidebar-editor :focus {
+  outline: 0;
+}
+
+.sidebar-editor .nav-tabs li {
+  width: 50%;
+}
+
+.SidebarEditor-wrapper {
+  background-color: #fff;
+  padding: var(--Sidebar-spacing-large);
+}
+
+.SidebarEditor-heading {
+  background-color: var(--Sidebar-color-muted);
+  color: var(--Sidebar-color-text);
+  font-weight: var(--Sidebar-bold-text);
+  padding: var(--Sidebar-spacing-large);
+}
+
+.SidebarEditor-heading svg {
+  vertical-align: sub;
+}
+
+ul.SidebarEditor-details {
+  color: var(--Sidebar-color-text);
+  font-size: var(--Sidebar-small-text);
+  word-wrap: break-word;
+}
+
+#SidebarEditor-tabsPane1-pane-1 {
+  padding-bottom: 1.5rem;
+}
+
+#SidebarEditor-tabsPane1.tab-pane.active {
+  height: inherit;
+}
+
+#SidebarEditor-tabsPane1.tab-pane.active table thead th {
+  color: var(--Sidebar-color-text);
+  padding-bottom: var(--Sidebar-spacing-large);
+}
+
+#SidebarEditor-tabsPane1.tab-pane.active table tbody tr {
+  height: inherit;
+}
+
+#SidebarEditor-tabsPane1 td .Button--primary {
+  margin-right: var(--Sidebar-spacing-large);
+}
+
+.tab-content > .active {
+  display: block;
+  height: initial !important;
+}
+
+.tab-content {
+  clear: both;
+}
+
+td.icon-infoVersionMerge {
+  text-align: right;
+}
+
+ul.SidebarEditor-details span {
+  font-weight: var(--Sidebar-bold-text);
+}
+
+span.SidebarEditor-details--nocontent {
+  color: var(--Sidebar-no-content);
+  font-weight: 500 !important;
+}
+
+.SidebarEditor-details--content *, span.SidebarEditor-details--content {
+  color: var(--Sidebar-color-text);
+  font-weight: 500 !important;
+}
+
+.SidebarEditor-details--content .n1 {
+  vertical-align: middle;
+}
+
+span.s1.GlossaryTab-svg, span.s1.ActivityTab-svg {
+  margin-right: var(--Sidebar-spacing-small);
+  vertical-align: sub;
+}
+
+span.s1.Details-svg {
+  margin-right: var(--Sidebar-spacing-small);
+}
+
+a#SidebarTabs-tab1 {
+  border-left-color: transparent;
+}
+
+a#SidebarTabs-tab1, a#SidebarTabs-tab2 {
+  font-weight: var(--Sidebar-bold-text);
+}
+
+ul.nav-tabs li.active {
+  color: var(--Sidebar-color-text);
+}
+
+table {
+  color: var(--Sidebar-color-text);
+  font-size: var(--Sidebar-small-text);
+  margin: var(--Sidebar-spacing-large);
+  text-align: left;
+  width: 95%;
+}
+
+.table.GlossaryDetails-table {
+  margin-bottom: 1.429rem;
+  max-width: 100%;
+  width: 100%;
+}
+
+.table.GlossaryDetails-table>thead>tr>th {
+  border-bottom: 1px inset var(--Sidebar-border);
+  vertical-align: bottom;
+}
+
+.table.GlossaryDetails-table>tbody>tr>td {
+  vertical-align: middle;
+}
+
+.table.GlossaryDetails-table>tbody>tr>td, .table.GlossaryDetails-table>tbody>tr>th, .table.GlossaryDetails-table>tfoot>tr>td, .table.GlossaryDetails-table>tfoot>tr>th, .table.GlossaryDetails-table>thead>tr>td, .table.GlossaryDetails-table>thead>tr>th {
+  line-height: 1.42857143;
+  padding: 0.5rem;
+}
+
+td.info-icon svg {
+  fill: var(--Sidebar-color-highlight) !important;
+}
+
+.table td {
+  position: relative;
+  vertical-align: top;
+  color: var(--Sidebar-panel-dark) !important;
+}
+
+table td {
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: inherit;
+}
+
+table th {
+  color: var(--Sidebar-panel-dark);
+}
+
+table tbody tr {
+  height: 2em;
+}
+
+table.GlossaryDetails-table {
+  margin: 0;
+}
+
+table.GlossaryDetails-table tbody td {
+  font-size: 1em;
+  white-space: inherit;
+}
+
+table.GlossaryDetails-table thead th {
+  color: var(--Sidebar-color-highlight);
+  font-weight: 500;
+}
+
+.split-panel {
+  float: left;
+  width: 50%;
+}
+
+.GlossaryDetails-panel.panel {
+  clear: both;
+}
+
+.GlossaryDetails-panel.panel .panel-body {
+  height: inherit;
+  max-height: 10em;
+  overflow: auto;
+}
+
+.split-panel .panel-body, .GlossaryDetails-panel .panel-body {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.GlossaryText * {
+  color: var(--Sidebar-panel-dark);
+  font-size: var(--Sidebar-small-text);
+}
+
+.Glossary-noResults, .Search-enterText, .GlossarySearch {
+  color: var(--Sidebar-color-text);
+  margin-top: var(--Sidebar-spacing-large);
+  text-align: center;
+  text-align: -moz-center;
+  text-align: -webkit-center;
+}
+
+.icon-comment svg {
+  margin-right: 0.1375em;
+}
+
+.Glossary-noResults svg, .Search-enterText svg {
+  fill: var(--Sidebar-no-results);
+}
+
+.align-right {
+  text-align: right;
+}
+
+.align-center {
+  text-align: center;
+}
+
+table td button.gButton--link {
+  color: var(--Sidebar-color-highlight);
+  vertical-align: bottom;
+}
+
+.StringLong span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: normal;
+}
+
+.StringLong span:after {
+  content: attr(data-filetype);
+  left: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.tooltip {
+  border-color: var(--Sidebar-panel-dark);
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.857rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.333em;
+  position: absolute;
+  text-align: left;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+  z-index: 1070;
+  line-break: auto;
+}
+
+.tooltip-arrow {
+  border-color: transparent;
+  border-style: solid;
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+
+.tooltip.top {
+  margin-top: -.75em;
+  padding: var(--Sidebar-spacing-small) 0;
+}
+
+.tooltip-inner {
+  background-color: var(--Sidebar-panel-dark);
+  border: solid 2px var(--Sidebar-panel-dark);
+  border-radius: 3px;
+  color: #fff;
+  max-width: 15rem;
+  padding: 0.5em;
+  text-align: center;
+}
+
+.tooltip.top .tooltip-arrow {
+  border-top-color: var(--Sidebar-panel-dark);
+  border-width: 5px 5px 0;
+  bottom: 0;
+  left: 50%;
+}
+
+span.loader span div {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.panel {
+  background-color: var(--Sidebar-panel-background);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  margin-bottom: 1.3em;
+}
+
+.panel-default, .well blockquote {
+  border-color: var(--Sidebar-border);
+}
+
+.panel-body {
+  color: var(--Sidebar-panel-dark);
+  padding: 0.85em;
+}
+
+.panel-title {
+  color: inherit;
+  font-size: 1.143rem;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.panel.panel-side {
+  background-color: #fff !important;
+  border: solid 1px var(--Sidebar-border) !important;
+  padding: 0.5em;
+}
+
+.panel-heading {
+  background-color: #fff;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  color: var(--Sidebar-color-highlight);
+  font-size: 1.1em !important;
+  font-weight: 600;
+}
+
+.panel-body h3 {
+  color: var(--Sidebar-color-highlight);
+  margin-bottom: 0.714rem;
+  margin-top: 0.5em;
+}
+
+.InlineSearch {
+  display: inline-table;
+  padding-left: 1rem;
+  width: 100%;
+}
+
+.InlineSearch .form-group {
+  vertical-align: sub;
+}
+
+.sidebar-editor select {
+  color: var(--Sidebar-color-text);
+}
+
+.SidebarActivity .btn-toolbar {
+  margin-left: 1.5rem;
+}
+
+.SidebarToggle-hide span {
+  vertical-align: sub;
+}
+
+.InlineSearch .EditorInputGroup--outlined {
+  min-width: 8rem;
+}
+
+.InlineSearch .EditorInputGroup--outlined input {
+  font-size: var(--Sidebar-small-text);
+}
+
+h2.validation {
+  color: var(--Sidebar-color-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+li .checkbox {
+  font-size: var(--Sidebar-small-text);
+}
+
+li .checkbox input {
+  margin-right: var(--Sidebar-spacing-small) !important;
+}
+
+.btn-toolbar .Button--primary {
+  margin-right: 0.75rem;
+}
+
+.btn-toolbar .Button--secondary {
+  margin-left: 0.75rem;
+}
+
+.btn-toolbar .Button--secondary .n1, .btn-toolbar .Button--primary .n1  {
+  vertical-align: middle;
+}
+
+.Button--spacing {
+  margin-bottom: var(--Sidebar-spacing-small);
+  margin-right: var(--Sidebar-spacing-small);
+}
+
+.SettingsTransRef {
+  font-size: var(--Sidebar-small-text);
+}
+
+select.SettingsSelect {
+  color: var(--Sidebar-color-text);
+  margin-bottom: 1em;
+}
+
+#SidebarEditorTabs-pane2 {
+  background-color: var(--Sidebar-tabpane);
+}
+
+.SidebarActivity {
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+h1.SidebarEditor-heading button svg {
+  fill: var(--Sidebar-panel-dark) !important;
+}
+
+.RevisionBox {
+  margin-bottom: 1rem;
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+  margin-top: 3rem;
+}
+
+.RevisionBox p {
+  color: var(--Sidebar-color-text);
+  margin-top: 1rem;
+  padding-bottom: 0.375rem;
+
+}
+
+.RevisionBox {
+  font-size: var(--Sidebar-small-text);
+  margin-bottom: 1.5rem;
+  margin-left: 1rem;
+  margin-top: 3rem;
+}
+
+.RevisionBox img {
+  height: 1rem;
+  margin-right: 0.375rem;
+  vertical-align: sub;
+  width: 1rem;
+}
+
+.RevisionBox p.small .n1 {
+  vertical-align: sub;
+}
+
+.RevisionBox p.small.u-textMuted {
+  font-size: 0.75rem;
+  margin-left: 0.75rem;
+  margin-top: 0.375rem !important;
+}
+
+.RevisionBox p .s0 {
+  padding-right: 0.375rem;
+  vertical-align: sub;
+}
+
+img.ActivityAvatar {
+  display: inline-block;
+  height: 1.2rem;
+  vertical-align: sub;
+  width: 1.2rem;
+}
+
+.RevisionBox .well {
+  background-color: var(--Sidebar-well);
+  margin-left: 0.75rem;
+  padding: 0.75rem;
+}
+
+.well-fuzzy {
+  border-left: solid 5px var(--Editor-color-fuzzy);
+}
+
+.well-rejected {
+  border-left: solid 5px var(--Editor-color-rejected);
+}
+
+.well-translated {
+  border-left: solid 5px var(--Editor-color-translated);
+}
+
+.well-approved {
+  border-left: solid 5px var(--Editor-color-approved);
+}
+
+.RevisionBox .well-sm {
+  background-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.CriteriaText {
+  font-weight: 600;
+}
+
+.TransUnit-commentBox {
+  margin-top: 1rem;
+  padding: 0.75rem;
+}
+
+.TransUnit-commentBox label {
+  color: var(--Sidebar-color-muted);
+  vertical-align: top;
+}
+
+.TransUnit-commentBox textarea {
+  border: solid 1px var(--Sidebar-textarea-border);
+  border-radius: 0.25rem;
+  height: 5rem;
+  max-width: 100%;
+  padding: 0.5625rem;
+  width: 100%;
+}
+
+.SettingsHeading {
+  font-weight: 500;
+}
+
+h2.SettingsHeading {
+  padding-bottom:1rem;
+}
+
+h3.SettingsHeading {
+  font-size: var(--Sidebar-small-text);
+  padding-bottom: 0.375rem;
+  padding-top: 0.75rem;
+}
+
+.SettingsOptions p {
+  color: var(--Sidebar-color-text);
+  font-size: var(--Sidebar-small-text);
+  font-weight: 500;
+}
+
+.TransUnit-commentBox .s0 {
+  vertical-align: sub;
+}
+
+/* Media queries */
+
+@media (max-width: 740px) {
+  table td button.Button--link {
+    margin-right: 1em;
+    vertical-align: middle;
+  }
+}
+
+@media (min-width: 741px) {
+  table td button.Button--link {
+    position: fixed;
+    right: 10px;
+    vertical-align: baseline;
+  }
+}
+
+@media (min-width:1100px) {
+  .InlineSearch .form-group {
+    margin-left: var(--Sidebar-spacing-small);
+  }
+  .InlineSearch .form-group select.form-control {
+    vertical-align: sub;
+  }
+}

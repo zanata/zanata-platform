@@ -24,7 +24,6 @@ import org.hibernate.Session;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectLocaleMemberDAO;
 import org.zanata.dao.ProjectMemberDAO;
-import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
@@ -35,13 +34,13 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.LocaleRole;
 import org.zanata.model.ProjectRole;
 import org.zanata.rest.service.LocalesResource;
-import org.zanata.security.annotations.Authenticated;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.security.permission.GrantsPermission;
 import org.zanata.security.permission.PermissionProvider;
 import org.zanata.util.ServiceLocator;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import java.util.Optional;
+
 import static org.zanata.model.ProjectRole.Maintainer;
 import static org.zanata.model.ProjectRole.TranslationMaintainer;
 
@@ -66,8 +65,7 @@ public class SecurityFunctions extends PermissionProvider {
     @Inject
     private ZanataIdentity identity;
     @Inject
-    @Authenticated
-    private Optional<HAccount> authenticatedAccount;
+    private CurrentUser currentUser;
     @Inject
     private PersonDAO personDAO;
     /* admin can do anything */
@@ -78,7 +76,7 @@ public class SecurityFunctions extends PermissionProvider {
     }
 
     public boolean isLoggedIn() {
-        return authenticatedAccount.isPresent();
+        return currentUser.isLoggedIn();
     }
 
     public boolean isProjectMaintainer(HProject project) {
@@ -88,6 +86,25 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean isProjectTranslationMaintainer(HProject project) {
         return isProjectRole(project, TranslationMaintainer);
     }
+
+    public boolean isProjectMember(HProject project) {
+        if (isLoggedIn()) {
+            HPerson person = currentUser.getPerson();
+            // see class level javadoc for why we need a new session here
+            try (AutoCloseSession autoCloseSession = newSession()) {
+                ProjectMemberDAO projectMemberDAO =
+                        new ProjectMemberDAO(autoCloseSession.session);
+                if (projectMemberDAO.isProjectMember(person, project)) {
+                    return true;
+                }
+                ProjectLocaleMemberDAO projectLocaleMemberDAO =
+                        new ProjectLocaleMemberDAO(autoCloseSession.session);
+                return projectLocaleMemberDAO.isProjectLocaleMember(person, project);
+            }
+        }
+        // No authenticated user
+        return false;
+    }
     /*
      * Check whether the authenticated person has the given role in the given
      * project.
@@ -95,7 +112,7 @@ public class SecurityFunctions extends PermissionProvider {
 
     private boolean isProjectRole(HProject project, ProjectRole role) {
         if (isLoggedIn()) {
-            HPerson person = authenticatedAccount.get().getPerson();
+            HPerson person = currentUser.getPerson();
             // see class level javadoc for why we need a new session here
             try (AutoCloseSession autoCloseSession = newSession()) {
                 ProjectMemberDAO projectMemberDAO =
@@ -119,7 +136,7 @@ public class SecurityFunctions extends PermissionProvider {
     private boolean userHasProjectLanguageRole(HProject project, HLocale lang,
             LocaleRole role) {
         if (isLoggedIn()) {
-            HPerson person = authenticatedAccount.get().getPerson();
+            HPerson person = currentUser.getPerson();
             return ServiceLocator.instance()
                     .getInstance(ProjectLocaleMemberDAO.class)
                     .hasProjectLocaleRole(person, project, lang, role);
@@ -158,17 +175,24 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean canCreateProject(HProject target) {
         return identity.hasRole("project-creator");
     }
-    /* anyone can read a project */
 
+    /**
+     * Anyone can read a non-private project
+     * Only project members can read private project
+     */
     @GrantsPermission(actions = "read")
-    public static boolean canReadProject(HProject target) {
-        return true;
+    public boolean canReadProject(HProject target) {
+        return !target.isPrivateProject() || isProjectMember(target);
     }
-    /* anyone can read a project iteration */
 
+    /**
+     * Anyone can read a non-private project
+     * Only project members can read private project
+     */
     @GrantsPermission(actions = "read")
-    public static boolean canReadProjectIteration(HProjectIteration target) {
-        return true;
+    public boolean canReadProjectIteration(HProjectIteration target) {
+        return !target.getProject().isPrivateProject() ||
+                isProjectMember(target.getProject());
     }
     /*
      * Project maintainers may edit (but not delete) a project, or add an
@@ -234,7 +258,7 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = { "add-translation", "modify-translation" })
     public boolean canTranslate(HProject project, HLocale lang) {
-        return project.isAllowGlobalTranslation()
+        return !project.isPrivateProject()
                 && isUserAllowedAccess(project)
                 && isUserTranslatorOfLanguage(lang);
     }
@@ -242,7 +266,7 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean isUserTranslatorOfLanguage(HLocale lang) {
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.get().getPerson(), lang, true, null,
+                    currentUser.getPerson(), lang, true, null,
                     null);
         }
         return false; // No authenticated user
@@ -307,7 +331,7 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = { "review-translation", "translation-review" })
     public boolean canReviewTranslation(HProject project, HLocale locale) {
-        return project.isAllowGlobalTranslation()
+        return !project.isPrivateProject()
                 && isUserAllowedAccess(project)
                 && isUserReviewerOfLanguage(locale);
     }
@@ -315,7 +339,7 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean isUserReviewerOfLanguage(HLocale lang) {
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.get().getPerson(), lang, null, true,
+                    currentUser.getPerson(), lang, null, true,
                     null);
         } else {
             return false;
@@ -377,7 +401,7 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean isLanguageTeamMember(HLocale lang) {
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.get().getPerson(), lang, null, null,
+                    currentUser.getPerson(), lang, null, null,
                     null);
         } else {
             return false;
@@ -424,7 +448,7 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean isUserCoordinatorOfLanguage(HLocale lang) {
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.get().getPerson(), lang, null, null,
+                    currentUser.getPerson(), lang, null, null,
                     true);
         } else {
             return false;
@@ -507,7 +531,7 @@ public class SecurityFunctions extends PermissionProvider {
     @GrantsPermission(actions = "update")
     public boolean canUpdateVersionGroup(HIterationGroup group) {
         if (isLoggedIn()) {
-            HPerson person = authenticatedAccount.get().getPerson();
+            HPerson person = currentUser.getPerson();
             return group.getMaintainers().contains(person);
         }
         return false;
@@ -542,7 +566,7 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "review-comment")
     public boolean canCommentOnReview(HLocale locale, HProject project) {
-        return project.isAllowGlobalTranslation()
+        return !project.isPrivateProject()
                 && isUserAllowedAccess(project) && isLanguageTeamMember(locale);
     }
 

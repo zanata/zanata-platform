@@ -202,11 +202,19 @@ public class ZanataClient extends BasicOptionsImpl {
      * @param options
      */
     private void copyGlobalOptionsTo(BasicOptions options) {
-        options.setDebug(getDebug());
-        options.setErrors(getErrors());
+        if (!options.isDebugSet()) {
+            options.setDebug(getDebug());
+        }
+        if (!options.isErrorsSet()) {
+            options.setErrors(getErrors());
+        }
         options.setHelp(getHelp());
-        options.setInteractiveMode(isInteractiveMode());
-        options.setQuiet(getQuiet());
+        if (!options.isInteractiveModeSet()) {
+            options.setInteractiveMode(isInteractiveMode());
+        }
+        if (!options.isQuietSet()) {
+            options.setQuiet(getQuiet());
+        }
     }
 
     private void printHelp(PrintWriter out) {

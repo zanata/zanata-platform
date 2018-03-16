@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.5.0-SNAPSHOT</version>
     <relativePath>parent</relativePath>
   </parent>
 
@@ -19,6 +19,37 @@
     <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+
+  <build>
+    <plugins>
+      <!--
+        Uses maven-site-plugin to generate all modules' doc in root directory
+        before uploading to Github
+      -->
+      <plugin>
+        <groupId>com.github.github</groupId>
+        <artifactId>site-maven-plugin</artifactId>
+        <version>${site-maven-plugin.version}</version>
+        <configuration>
+          <message>Creating site for ${project.artifactId}, ${project.version}</message>
+          <merge>true</merge>
+          <!--
+            Authentication for github repository, settings.xml -> server with id=github
+            Alternately can be overrides with -Dgithub.global.oauth2Token={token}
+          -->
+          <server>github</server>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>site</goal>
+            </goals>
+            <phase>site</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <modules>
     <module>build-tools</module>

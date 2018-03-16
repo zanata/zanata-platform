@@ -5,6 +5,8 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1">
 
+  <distributable/>
+
   <absolute-ordering>
     <name>com_ocpsoft_rewrite</name>
     <name>deltaspike_servlet_module</name>
@@ -17,6 +19,15 @@
   </session-config>
 
   <!-- sso security -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>sso sign in</web-resource-name>
+      <url-pattern>/account/ssologin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>*</role-name>
+    </auth-constraint>
+  </security-constraint>
 
   <!-- Kerberos ticket based authentication settings -->
 
@@ -57,6 +68,11 @@
   <context-param>
     <param-name>org.richfaces.builtin.filter.enabled</param-name>
     <param-value>false</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>org.picketlink.federation.saml.CONFIG_PROVIDER</param-name>
+    <param-value>org.zanata.security.ExternalSAMLConfigurationProvider</param-value>
   </context-param>
 
   <!-- Suppress spurious stylesheets -->
@@ -239,6 +255,12 @@
     <filter-name>javamelody</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>ssoFilter</filter-name>
+    <url-pattern>/account/ssologin</url-pattern>
+  </filter-mapping>
+
 
   <!-- Facelets development mode (disable in production)
   To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :-->

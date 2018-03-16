@@ -62,6 +62,7 @@ import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -102,7 +103,7 @@ public class TransMemoryMergePresenterTest {
                 new WorkspaceRestrictions(true, false, true, false, false);
         UserWorkspaceContext userWorkspaceContext =
                 new UserWorkspaceContext(workspaceContext,
-                        workspaceRestrictions);
+                        workspaceRestrictions, Lists.newArrayList());
         documentId = new DocumentId(1L, "path/book");
         userWorkspaceContext
                 .setSelectedDoc(new DocumentInfo(

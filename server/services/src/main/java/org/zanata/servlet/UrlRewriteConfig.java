@@ -1,6 +1,6 @@
 package org.zanata.servlet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.ocpsoft.rewrite.config.Configuration;
@@ -98,6 +98,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
                 .addRule(Join.path("/{path}").to("/a/index.xhtml"))
                 .where("path").matches(anyOf(
+                        "admin/review",
+                        "admin/home",
                         "explore",
                         "glossary",
                         "glossary/project/[^/]*",
@@ -124,17 +126,18 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/account/sign_in").to("/account/login.xhtml"))
                 .addRule(Join.path("/account/register").to("/account/register.xhtml"))
                 .addRule(Join.path("/account/sign_out").to("/account/logout.xhtml"))
+                .addRule(Join.path("/account/ssologin").to("/account/ssologin.xhtml"))
+                .addRule(Join.path("/account/singleopenidlogin").to("/account/singleopenidlogin.xhtml"))
                 // open id return url
                 .addRule(Join.path("/openid").to("/account/openid.xhtml"))
                 .addRule(Join.path("/account/validate_email/{key}").to("/account/email_validation.xhtml"))
-                .addRule(Join.path("/admin/").to("/admin/home.xhtml"))
                 .addRule(Join.pathNonBinding("/admin/{page}").to("/admin/{page}.xhtml")).where("page").matches(".+")
                 .addRule(Join.path("/dashboard/").to("/dashboard/home.xhtml"))
 
                 .addRule(Join.path("/dashboard/{section}").to("/dashboard/home.xhtml"))
                 .where("section").matches(".*")
 
-                .addRule(Join.path("/error/").to("/error.xhtml"))
+                .addRule(Join.path("/error/").to("/error/home.xhtml"))
                 .addRule(Join.pathNonBinding("/error/{path}").to("/error/{path}.xhtml"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.xhtml"))
 
@@ -179,7 +182,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/webtrans/Application.html").to("/webtrans/Application.xhtml")).when(Direction.isInbound())
                 .addRule(Join.path("/webtrans/translate").to("/webtrans/Application.xhtml"))
 
-                .addRule(Join.path("/404").to("/404.xhtml"))
+                .addRule(Join.path("/404").to("/error/404.xhtml"))
                 // OAuth authorization
                 .addRule(Join.path("/oauth/").to("/oauth/home.xhtml"))
                 ;

@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.ConfigUtil;
@@ -99,6 +100,13 @@ public class OptionsUtil {
     public static boolean shouldFetchLocalesFromServer(
             Optional<ZanataConfig> projectConfig, ConfigurableOptions opts) {
         if (!projectConfig.isPresent()) {
+            if (opts instanceof ConfigurableProjectOptions) {
+                ConfigurableProjectOptions projectOptions =
+                        (ConfigurableProjectOptions) opts;
+                return StringUtils.isNotEmpty(projectOptions.getProj()) &&
+                        StringUtils
+                                .isNotEmpty(projectOptions.getProjectVersion());
+            }
             return false;
         }
         ZanataConfig zanataConfig = projectConfig.get();
@@ -354,17 +362,25 @@ public class OptionsUtil {
             if (quiet != null)
                 opts.setQuiet(quiet);
         }
+
+        if (!opts.isInteractiveModeSet()) {
+            Boolean batchMode = config.getBoolean("defaults.batchMode", null);
+            if (batchMode != null)
+                opts.setInteractiveMode(!batchMode);
+        }
         if ((opts.getUsername() == null || opts.getKey() == null)
                 && opts.getUrl() != null) {
             SubnodeConfiguration servers = config.getSection("servers");
-            String prefix = ConfigUtil.findPrefix(servers, opts.getUrl());
-            if (prefix != null) {
-                if (opts.getUsername() == null) {
-                    opts.setUsername(servers.getString(prefix + ".username",
-                            null));
-                }
-                if (opts.getKey() == null) {
-                    opts.setKey(servers.getString(prefix + ".key", null));
+            if (servers != null) {
+                String prefix = ConfigUtil.findPrefix(servers, opts.getUrl());
+                if (prefix != null) {
+                    if (opts.getUsername() == null) {
+                        opts.setUsername(servers.getString(prefix + ".username",
+                                null));
+                    }
+                    if (opts.getKey() == null) {
+                        opts.setKey(servers.getString(prefix + ".key", null));
+                    }
                 }
             }
         }

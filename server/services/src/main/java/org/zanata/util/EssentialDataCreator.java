@@ -70,7 +70,7 @@ public class EssentialDataCreator {
     @WithRequestScope
     @Transactional
     public void onCreate(@Observes @Initialized ServletContext context) {
-        log.debug(getClass().getName() + ".onCreate()");
+        log.debug("{}.onCreate()", getClass().getName());
         // since our EntityManager is RequestScoped, we need to have it before
         // any Transactional thing to happen
         prepare();
@@ -102,8 +102,7 @@ public class EssentialDataCreator {
                 HAccountRole adminRole = accountRoleDAO.findByName("admin");
                 if (adminAccount != null
                         && !adminAccount.getRoles().contains(adminRole)) {
-                    log.info("Making user " + adminAccount.getUsername()
-                            + " a system admin.");
+                    log.info("Making user {} a system admin.", adminAccount.getUsername());
                     adminAccount.getRoles().add(adminRole);
                     accountDAO.makePersistent(adminAccount);
                     accountDAO.flush();
@@ -124,7 +123,7 @@ public class EssentialDataCreator {
                     throw new RuntimeException(
                             "Could not create \'en-US\' locale");
                 }
-                log.info("Created default locale " + enUSLocale);
+                log.info("Created default locale {}", enUSLocale);
             } else {
                 if (!enUSLocale.isActive()) {
                     log.warn("Setting default locale {} to be active", enUSLocale);
@@ -147,12 +146,12 @@ public class EssentialDataCreator {
             String... includesRoles) {
         if (!accountRoleDAO.roleExists(role)) {
             createRole(role, includesRoles);
-            log.info("Created default role " + role);
+            log.info("Created default role {}", role);
         }
     }
 
     private void createRole(@Nonnull String role, String... includesRoles) {
-        log.info("Creating \'{}\' role", role);
+        log.info("Creating \"{}\" role", role);
         try {
             accountRoleDAO.create(role, MANUAL, includesRoles);
         } catch (Exception e) {

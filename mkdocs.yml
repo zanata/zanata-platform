@@ -44,6 +44,7 @@ pages:
   - Version settings: 'user-guide/versions/version-settings.md'
   - Join a group: 'user-guide/versions/request-to-join-group.md'
   - Merge translations: 'user-guide/versions/merge-translations.md'
+  - Prefill translation from TM: 'user-guide/versions/version-tm-merge.md'
 # Documents
 - Documents:
   - Upload documents: 'user-guide/documents/upload-documents.md'

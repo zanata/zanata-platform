@@ -22,7 +22,7 @@ package org.zanata.dao
 
 import com.google.common.base.Joiner
 import com.google.common.collect.Lists
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.hibernate.Query
 import org.hibernate.Session
 import org.hibernate.criterion.Restrictions

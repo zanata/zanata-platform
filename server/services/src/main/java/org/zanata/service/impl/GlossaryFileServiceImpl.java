@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -78,6 +78,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
     private HAccount authenticatedAccount;
     private static final int BATCH_SIZE = 50;
     private static final int MAX_LENGTH_CHAR = 255;
+    private static final int MAX_DESCRIPTION_LENGTH = 500;
 
     @Override
     public Map<LocaleId, List<GlossaryEntry>> parseGlossaryFile(
@@ -157,7 +158,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
      *            not empty
      */
     private Optional<String> validateGlossaryEntry(GlossaryEntry entry) {
-        if (StringUtils.length(entry.getDescription()) > MAX_LENGTH_CHAR) {
+        if (StringUtils.length(entry.getDescription()) > MAX_DESCRIPTION_LENGTH) {
             return Optional.of("Glossary description too long, maximum "
                     + MAX_LENGTH_CHAR + " character");
         }

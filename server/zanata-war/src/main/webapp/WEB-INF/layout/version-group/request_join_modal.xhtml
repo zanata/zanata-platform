@@ -6,7 +6,7 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:f="http://java.sun.com/jsf/core"
   class="modal" id="joinGroupDialog" tabindex="-1" role="dialog"
-  aria-labelledby="myModalLabel" aria-hidden="true">
+  aria-labelledby="myModalLabel" >
 
   <script>
     function getJoinGroupForm() {
@@ -22,14 +22,14 @@
       jQuery(getJoinGroupVersionList()).empty();
       jQuery(getJoinGroupForm()).find('#versionGroupAutocomplete-autocomplete__input').val('');
       jQuery(getJoinGroupForm()).find('#request-join-group-send-button').removeClass('is-active');
-      toggleButtons();
+      toggleRequestJoinGroupButton();
     }
 
     function getRequestJoinSendButton() {
       return getJoinGroupForm().find('#request-join-group-send-button');
     }
 
-    function toggleButtons() {
+    function toggleRequestJoinGroupButton() {
       var sendButton = getRequestJoinSendButton();
       var hasSelection = jQuery(getJoinGroupVersionList()).find('.js-form__checkbox.is-checked').length > 0;
       sendButton.prop('disabled', !hasSelection);
@@ -76,7 +76,7 @@
         execute="@form" oncomplete="cancelJoinGroup()"/>
 
       <a4j:jsFunction name="bindSelectedVersion" action="#{versionGroupJoinAction.bindSelectedVersion(key, checked)}"
-        oncomplete="toggleButtons()">
+        oncomplete="toggleRequestJoinGroupButton()">
         <a4j:param name="val1" assignTo="#{key}"/>
         <a4j:param name="val2" assignTo="#{checked}"/>
       </a4j:jsFunction>

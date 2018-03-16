@@ -48,7 +48,7 @@ Removes some of the styling on the page-level splitters
 
 .gwt-SplitLayoutPanel-VDragger {
   cursor: row-resize;
-  background: #E5E5E5;
+  background: #E0E0E0;
 }
 
 .gwt-Button, .gwt-PushButton {
@@ -73,16 +73,16 @@ Removes some of the styling on the page-level splitters
   font-size: 16px;
 }
 
-.THEMES_DEFAULT {
-  font-size: 16px;
+.THEMES_DEFAULT, .THEMES_DEFAULT .TableEditorCell-Target pre, .THEMES_DEFAULT .TableEditorCell-Target textarea {
+  font-size: 16px !important;
 }
 
-.THEMES_COMPACT {
-  font-size: 14px;
+.THEMES_COMPACT, .THEMES_COMPACT .TableEditorCell-Target pre, .THEMES_COMPACT .TableEditorCell-Target textarea {
+  font-size: 14px !important;
 }
 
-.THEMES_LOOSE {
-  font-size: 20px;
+.THEMES_LOOSE, .THEMES_LOOSE .TableEditorCell-Target pre, .THEMES_LOOSE .TableEditorCell-Target textarea {
+  font-size: 20px !important;
 }
 
 .sourceContentsContainer .g--tight {
@@ -111,16 +111,19 @@ Removes some of the styling on the page-level splitters
   top: .5em;
 }
 
-.TableEditorCell-Target .g--tight {
-  position: relative !important;
-  margin: 0 !important;
-  padding: 0 !important;
+.TableEditorCell-Target table .w--11-12.g__item {
+  font-size: 16px;
+  padding-left: 0 !important;
+  width: 88% !important;
+  margin-top: -0.5rem;
+  padding-bottom: 1em;
+}
+
+.TableEditorCell-Target table .w--11-12.g__item textarea {
+  line-height: 1.71429em;
 }
 
 .TableEditorCell-Target .w--1-12 {
-  width: 1.5em !important;
-  position: absolute;
-  padding: 0 !important;
   left: -1.1em;
   top: -0.85em;
 }
@@ -155,7 +158,6 @@ Removes some of the styling on the page-level splitters
 .TableEditorCell-Target tbody,
 .TableEditorCell-Target tr,
 .TableEditorCell-Target td {
-  display: block !important;
   overflow: visible !important;
 }
 
@@ -183,7 +185,7 @@ Removes some of the styling on the page-level splitters
 
 .selected .TableEditorCell-Target > table > tbody {
   content: "";
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .transUnitCol {
@@ -201,15 +203,15 @@ Removes some of the styling on the page-level splitters
 }
 
 .transUnitTable > tbody > tr.selected > td {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03), 0 -4px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04), 0 -4px 6px rgba(0, 0, 0, 0.04);
 }
 
 tr > .transUnitCol:last-child {
-  background-color: rgba(250, 250, 250, 0.8);
+  background-color: rgba(250, 250, 250, 0.9);
 }
 
 tr.selected > .transUnitCol:last-child {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .transUnitTable > tbody > tr:hover, .transUnitTable > tbody > tr:hover .fadeElement {
@@ -222,7 +224,7 @@ tr.selected > .transUnitCol:last-child {
 
 .transUnitTable > tbody > tr {
   opacity: 0.95;
-  background-color: rgba(250, 250, 250, 0.8);
+  background-color: rgba(250, 250, 250, 0.9);
 }
 
 .transUnitTable > tbody > tr .fadeElement {
@@ -231,7 +233,7 @@ tr.selected > .transUnitCol:last-child {
 
 .transUnitTable > tbody > tr > td {
   border-bottom: 1px solid;
-  border-color: rgba(211, 211, 211, 0.4);
+  border-color: rgba(211, 211, 211, 0.6);
 }
 
 .transUnitTable td {
@@ -899,13 +901,33 @@ a.downloadLink {
 }
 
 .translatorEditorContainer > div:nth-of-type(4) {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   background-color: rgba(255, 255, 255, 0.7);
 }
 
 .translatorEditorContainer > div:nth-of-type(4) input {
   top: 1px;
   position: relative;
+}
+
+.gwt-SplitLayoutPanel *::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+
+.gwt-SplitLayoutPanel *::-webkit-scrollbar
+{
+  width: 14px;
+  background-color: #F5F5F5;
+}
+
+.gwt-SplitLayoutPanel *::-webkit-scrollbar-thumb
+{
+  background-color: #03A6D7;
+  border-radius: 10px;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%,color-stop(.5,rgba(255, 255, 255, .2)),color-stop(.5, transparent), to(transparent));
 }
 
 .translationContainer > div:nth-of-type(2) > div > div:nth-of-type(2) {
@@ -973,7 +995,7 @@ a.downloadLink {
 
 .gwt-DialogBox-CloseButton {
   position: absolute;
-  top: 8px;
+  bottom: 8px;
   right: 5px;
   float: right;
   margin: 0;

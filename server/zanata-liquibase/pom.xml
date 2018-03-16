@@ -3,12 +3,12 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>org.zanata</groupId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.5.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>zanata-liquibase</artifactId>
-  <packaging>takari-jar</packaging>
+  <packaging>jar</packaging>
 
   <build>
     <plugins>

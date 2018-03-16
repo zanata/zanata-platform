@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
@@ -48,20 +48,33 @@ public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
     private static final int LINK_ACTIVE_DAYS = 1;
-    @Inject
+
     private GroupedConversation conversation;
-    @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
-    @Inject
     private IdentityManager identityManager;
-    @Inject
     private UrlUtil urlUtil;
-    @Inject
+
     private FacesMessages facesMessages;
     private String activationKey;
     private HAccountActivationKey key;
     private String resetPasswordKey;
     // @Begin(join = true)
+
+    @Inject
+    public ActivateAction(GroupedConversation conversation,
+                          AccountActivationKeyDAO accountActivationKeyDAO,
+                          IdentityManager identityManager,
+                          UrlUtil urlUtil, FacesMessages facesMessages) {
+        this.conversation = conversation;
+        this.accountActivationKeyDAO = accountActivationKeyDAO;
+        this.identityManager = identityManager;
+        this.urlUtil = urlUtil;
+        this.facesMessages = facesMessages;
+    }
+
+    @SuppressWarnings("unused")
+    public ActivateAction() {
+    }
 
     public void validateActivationKey() {
         if (getActivationKey() == null) {

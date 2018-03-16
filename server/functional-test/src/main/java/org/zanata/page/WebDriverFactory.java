@@ -216,7 +216,7 @@ public enum WebDriverFactory {
                     level = toLogLevel(levelString);
                     text = message.path("text").asText();
                 } catch (Exception e) {
-                    log.warn("unable to parse as json: " + json, e);
+                    log.warn("unable to parse as json: {}", e);
                     level = logEntry.getLevel();
                     text = msg;
                     json = null;

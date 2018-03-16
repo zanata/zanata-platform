@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 
 import com.google.common.base.Charsets;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Performs logging of Requests on the client side. This interceptor
@@ -50,10 +51,18 @@ import com.google.common.base.Charsets;
 public class TraceDebugFilter implements ClientRequestFilter,
         ClientResponseFilter {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(TraceDebugFilter.class);
+    private final Logger log;
 
     private boolean logHttp;
+
+    TraceDebugFilter(boolean logHttp, Logger log) {
+        this.logHttp = logHttp;
+        this.log = log;
+    }
+
+    public TraceDebugFilter(boolean logHttp) {
+        this(logHttp, LoggerFactory.getLogger(TraceDebugFilter.class));
+    }
 
     private String getPayloadAsString(ClientResponseContext response) {
         ByteArrayInputStream entityInputStream = null;
@@ -75,15 +84,12 @@ public class TraceDebugFilter implements ClientRequestFilter,
 
     }
 
-    public TraceDebugFilter(boolean logHttp) {
-        this.logHttp = logHttp;
-    }
-
-    private void log(String msg) {
+    @SuppressFBWarnings(value = "SLF4J_FORMAT_SHOULD_BE_CONST")
+    void log(String formattedMessage) {
         if (logHttp) {
-            log.info(msg);
+            log.info(formattedMessage);
         } else {
-            log.trace(msg);
+            log.trace(formattedMessage);
         }
     }
 
@@ -96,6 +102,7 @@ public class TraceDebugFilter implements ClientRequestFilter,
 
         for (Object actualValue : headerValues) {
             // mask all characters with stars
+            //noinspection ReplaceAllDot
             maskedList.add(actualValue.toString().replaceAll(".", "*"));
         }
 

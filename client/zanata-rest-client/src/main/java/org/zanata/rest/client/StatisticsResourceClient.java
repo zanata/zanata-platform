@@ -38,7 +38,6 @@ import org.zanata.rest.service.StatisticsResource;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class StatisticsResourceClient implements StatisticsResource {
-    private static final long serialVersionUID = 477496423207257099L;
     private final RestClientFactory factory;
     private final URI baseUri;
 
@@ -65,6 +64,7 @@ public class StatisticsResourceClient implements StatisticsResource {
                 .get(ContainerTranslationStatistics.class);
     }
 
+    @Deprecated
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,

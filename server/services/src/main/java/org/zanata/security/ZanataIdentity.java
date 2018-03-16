@@ -43,7 +43,6 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpSession;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.core.api.literal.DeltaSpikeLiteral;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
@@ -372,11 +371,11 @@ public class ZanataIdentity implements Identity, Serializable {
         }
     }
 
+    // based on org.jboss.seam.security.Identity
+
     public void checkPermission(Object target, String action) {
         internalCheckPermission(target, action);
     }
-
-    // based on org.jboss.seam.security.Identity
     private void internalCheckPermission(Object target, String action) {
         if (systemOp != null && Boolean.TRUE.equals(systemOp.get())) return;
 
@@ -596,7 +595,7 @@ public class ZanataIdentity implements Identity, Serializable {
         } catch (FailedLoginException | CredentialException | AccountException e) {
             if (log.isDebugEnabled()) {
                 log.debug(
-                        "Login failed for: " + getCredentials().getUsername(),
+                        "Login failed for: {}", getCredentials().getUsername(),
                         e);
             }
             handleLoginException(e);
@@ -604,7 +603,7 @@ public class ZanataIdentity implements Identity, Serializable {
             // if it's not one of the above subclasses, a LoginException may indicate
             // a configuration problem
             log.error(
-                    "Login failed for: " + getCredentials().getUsername(),
+                    "Login failed for: {}", getCredentials().getUsername(),
                     e);
             handleLoginException(e);
         }

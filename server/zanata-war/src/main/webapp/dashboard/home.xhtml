@@ -50,7 +50,8 @@
                     alt="#{dashboardAction.getUsername()}"/>
                 </div>
                 <div class="media__body">
-                  <h1 class="l--push-all-0">#{dashboardAction.getUserFullName()}</h1>
+                  <h1
+                      class="ellipsis l--push-all-0">#{dashboardAction.getUserFullName()}</h1>
                   <ul class="list--no-bullets txt--meta">
                     <li><i class="i i--user list__icon" title="Username"></i> #{dashboardAction.getUsername()}
                     </li>
@@ -77,7 +78,7 @@
                   <li><a href="javascript:void(0);" id="activity-week_tab" data-content="#activity-week">#{msgs['jsf.activity.week.label']}</a></li>
                   <li><a href="javascript:void(0);" id="activity-month_tab" data-content="#activity-month">#{msgs['jsf.activity.month.label']}</a></li>
                 </ul>
-                <ul class="tabs__content js-tabs-content l--pad-h-half l--pad-top-1">
+                <ul class="tabsContent js-tabs-content l--pad-h-half l--pad-top-1">
                   <li id="activity-today" class="is-active">
                     <ui:include src="../WEB-INF/layout/dashboard/stats.xhtml">
                       <ui:param name="userStats" value="#{dashboardAction.getTodayStats()}"/>
@@ -102,7 +103,7 @@
                 <a href="#" jsfc="h:link" class="button button--primary l--push-right-quarter"
                   outcome="/project/create_project.xhtml"
                   title="#{msgs['jsf.dashboard.projects.createNewProject.label']}">
-                  <i aria-hidden="true" class="i i--add i--large"></i>
+                  <i  class="i i--add i--large"></i>
                   <span>#{msgs['jsf.dashboard.projects.newProject.label']}</span>
                 </a>
               </ui:fragment>
@@ -110,7 +111,7 @@
                 <a href="#" jsfc="h:link" class="button button--primary"
                   outcome="/version-group/create_version_group.xhtml"
                   title="#{msgs['jsf.dashboard.groups.createNewGroup.label']}">
-                  <i aria-hidden="true" class="i i--add i i--large"></i>
+                  <i  class="i i--add i i--large"></i>
                   <span>#{msgs['jsf.NewGroup.Label']}</span>
                 </a>
               </ui:fragment>
@@ -150,11 +151,11 @@
                   data-content="#settings">
                 <span
                   class="is-hidden--s i__text--left">#{msgs['jsf.dashboard.settings.tab.title']}</span><i class="i i--settings"
-                  aria-hidden="true"></i>
+                  ></i>
                 </a>
               </li>
             </ul>
-            <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
+            <ul class="tabsContent panels__container js-tabs-content l--push-top-1">
               <li id="activity">
                 <ui:include src="/WEB-INF/layout/dashboard/activity.xhtml"/>
               </li>

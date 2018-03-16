@@ -45,6 +45,11 @@ public class CorePage extends AbstractPage {
     private By homeLink = By.id("nav_home");
     private By moreLink = By.id("nav_more");
 
+    protected static final By h3Header = By.tagName("h3");
+    protected static final By paragraph = By.tagName("p");
+    protected static final By inputElement = By.tagName("input");
+    protected static final By tableElement = By.tagName("table");
+
     public CorePage(WebDriver driver) {
         super(driver);
         assertNoCriticalErrors();
@@ -122,6 +127,7 @@ public class CorePage extends AbstractPage {
         waitForAMoment().withMessage(msg)
                 .until(webDriver -> getErrors()
                         .contains(expected));
+        logFinished(msg);
         return getErrors();
     }
 
@@ -139,7 +145,7 @@ public class CorePage extends AbstractPage {
     public boolean expectNotification(final String notification) {
         String msg = "notification " + notification;
         logWaiting(msg);
-        return waitForAMoment().withMessage(msg)
+        boolean result = waitForAMoment().withMessage(msg)
                 .until(driver -> {
                     List<WebElement> messages =
                             getDriver().findElement(By.id("messages"))
@@ -154,6 +160,8 @@ public class CorePage extends AbstractPage {
                     }
                     return notifications.contains(notification);
                 });
+        logFinished(msg);
+        return result;
     }
 
     public void assertNoCriticalErrors() {

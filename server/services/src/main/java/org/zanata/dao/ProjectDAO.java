@@ -22,18 +22,20 @@ package org.zanata.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -50,6 +52,8 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
+import org.zanata.seam.security.CurrentUser;
+import org.zanata.security.ZanataIdentity;
 
 import static org.zanata.hibernate.search.IndexFieldLabels.FULL_SLUG_FIELD;
 
@@ -59,18 +63,25 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @FullText
     private FullTextEntityManager entityManager;
+    @Inject
+    private CurrentUser currentUser;
+    @Inject
+    private ZanataIdentity identity;
 
     public ProjectDAO() {
         super(HProject.class);
     }
 
-    public ProjectDAO(Session session) {
+    public ProjectDAO(Session session, CurrentUser currentUser) {
         super(HProject.class, session);
+        this.currentUser = currentUser;
     }
 
-    public ProjectDAO(FullTextEntityManager entityManager, Session session) {
+    public ProjectDAO(FullTextEntityManager entityManager, Session session,
+            ZanataIdentity identity) {
         super(HProject.class, session);
         this.entityManager = entityManager;
+        this.identity = identity;
     }
 
     public @Nullable
@@ -82,17 +93,19 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     public List<HProject> getOffsetList(int offset, int count,
                     boolean filterOutActive, boolean filterOutReadOnly,
                     boolean filterOutObsolete) {
 
+        HPerson person = currentUser.isLoggedIn() ?
+                currentUser.getPerson() : null;
+
         String condition =
                 constructFilterCondition(filterOutActive, filterOutReadOnly,
-                    filterOutObsolete);
+                    filterOutObsolete, person);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("from HProject p ")
+        sb.append("select distinct p, UPPER(p.name) from HProject p ")
             .append(condition)
             .append("order by UPPER(p.name) asc");
         Query q = getSession().createQuery(sb.toString());
@@ -103,18 +116,33 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         if (offset > 0) {
             q.setFirstResult(offset);
         }
+
+        if (person != null) {
+            q.setParameter("person", person);
+        }
+
         q.setCacheable(true)
                 .setComment("ProjectDAO.getOffsetList");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = q.list();
+        return list.stream().map(obj -> (HProject) obj[0])
+                .collect(Collectors.toList());
     }
 
     public int getFilterProjectSize(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete) {
+        HPerson person = currentUser.isLoggedIn() ?
+                currentUser.getPerson() : null;
+
         String condition = constructFilterCondition(filterOutActive,
-                filterOutReadOnly, filterOutObsolete);
-        String query = "select count(*) from HProject p " + condition;
+                filterOutReadOnly, filterOutObsolete, person);
+        String query = "select count(distinct p) from HProject p " + condition;
         Query q = getSession().createQuery(query);
-        q.setCacheable(true).setComment("ProjectDAO.getFilterProjectSize");
+        if (person != null) {
+            q.setParameter("person", person);
+        }
+        q.setCacheable(true)
+                .setComment("ProjectDAO.getFilterProjectSize");
         Long totalCount = (Long) q.uniqueResult();
 
         if (totalCount == null)
@@ -122,11 +150,25 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return totalCount.intValue();
     }
 
+    /**
+     * IMPORTANT: This method will potentially returns duplicate results.
+     * Caller are required to use 'distinct' to filter out duplication
+     */
     private String constructFilterCondition(boolean filterOutActive,
-            boolean filterOutReadOnly, boolean filterOutObsolete) {
+            boolean filterOutReadOnly, boolean filterOutObsolete,
+            @Nullable HPerson person) {
         StringBuilder condition = new StringBuilder();
+
+        if (person != null) {
+            condition.append("left join p.localeMembers lm left join p.members m ")
+                    .append("where ((p.privateProject is TRUE and (m.person =:person or lm.person =:person)) ")
+                    .append("or (p.privateProject is FALSE)) ");
+        } else {
+            condition.append("where p.privateProject is FALSE ");
+        }
+
         if (filterOutActive || filterOutReadOnly || filterOutObsolete) {
-            condition.append("where ");
+            condition.append("and ");
         }
 
         if (filterOutActive) {
@@ -157,7 +199,6 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return condition.toString();
     }
 
-    @SuppressWarnings("unchecked")
     public List<HProjectIteration> getAllIterations(String slug) {
         Query q =
                 getSession()
@@ -165,10 +206,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                                 "from HProjectIteration t where t.project.slug = :projectSlug order by t.creationDate");
         q.setParameter("projectSlug", slug);
         q.setCacheable(true).setComment("ProjectDAO.getAllIterations");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> list = q.list();
+        return list;
     }
 
-    @SuppressWarnings("unchecked")
     public List<HProjectIteration> getActiveIterations(String slug) {
         Query q =
                 getSession()
@@ -177,7 +219,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         q.setParameter("projectSlug", slug).setParameter("status",
                 EntityStatus.ACTIVE);
         q.setCacheable(true).setComment("ProjectDAO.getActiveIterations");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> list = q.list();
+        return list;
     }
 
     /**
@@ -195,7 +239,6 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return ((Long) q.uniqueResult()).intValue();
     }
 
-    @SuppressWarnings("unchecked")
     public List<HProjectIteration> getReadOnlyIterations(String slug) {
         Query q =
                 getSession()
@@ -204,10 +247,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         q.setParameter("projectSlug", slug).setParameter("status",
                 EntityStatus.READONLY);
         q.setCacheable(true).setComment("ProjectDAO.getReadOnlyIterations");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> list = q.list();
+        return list;
     }
 
-    @SuppressWarnings("unchecked")
     public List<HProjectIteration> getObsoleteIterations(String slug) {
         Query q =
                 getSession()
@@ -216,7 +260,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         q.setParameter("projectSlug", slug).setParameter("status",
                 EntityStatus.OBSOLETE);
         q.setCacheable(true).setComment("ProjectDAO.getObsoleteIterations");
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> list = q.list();
+        return list;
     }
 
     public int getTotalProjectCount() {
@@ -279,8 +325,12 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         if(maxResult > 0) {
             query.setMaxResults(maxResult);
         }
-        return query.setFirstResult(firstResult)
+        @SuppressWarnings("unchecked")
+        List<HProject> projects = query.setFirstResult(firstResult)
                 .getResultList();
+        return projects.stream()
+                .filter(project -> identity.hasPermission(project, "read"))
+                .collect(Collectors.toList());
     }
 
     public int getQueryProjectSize(@Nonnull String searchQuery,
@@ -345,7 +395,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                                 "where tft.translator = :translator")
                         .setParameter("translator", account)
                         .setMaxResults(maxResults);
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProject> list = q.list();
+        return list;
     }
 
     public int getTranslatedProjectCount(HAccount account) {
@@ -416,11 +468,12 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                         .setParameter("project", project)
                         .setMaxResults(1)
                         .setCacheable(true);
-        List results = q.list();
+        @SuppressWarnings("unchecked")
+        List<HPerson> results = q.list();
         if (results.isEmpty()) {
             return null;
         } else {
-            return (HPerson) results.get(0);
+            return results.get(0);
         }
     }
 
@@ -441,7 +494,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                 .setParameter("filter", "%" + sqlFilter + "%")
                 .setFirstResult(firstResult)
                 .setMaxResults(maxResults);
-        return q.list();
+        @SuppressWarnings("unchecked")
+        List<HProject> list = q.list();
+        return list;
     }
 
     public int getMaintainedProjectCount(HPerson maintainer, String filter) {
@@ -472,4 +527,5 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                 .setParameter("obsolete", EntityStatus.OBSOLETE);
         return ((Long) q.uniqueResult()).intValue();
     }
+
 }

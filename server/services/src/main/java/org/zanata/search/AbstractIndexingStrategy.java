@@ -28,7 +28,7 @@ public abstract class AbstractIndexingStrategy<T> {
     /**
      * Performs the indexing.
      */
-    public void invoke(AsyncTaskHandle handle, FullTextSession session) {
+    public void invoke(AsyncTaskHandle<?> handle, FullTextSession session) {
         int rowNum = 0;
         scrollableResults = queryResults(rowNum, session);
         try {
@@ -37,6 +37,7 @@ public abstract class AbstractIndexingStrategy<T> {
                     break;
                 }
                 rowNum++;
+                @SuppressWarnings("unchecked")
                 T entity = (T) scrollableResults.get(0);
                 session.index(entity);
                 if (handle != null) {
@@ -66,7 +67,7 @@ public abstract class AbstractIndexingStrategy<T> {
     protected abstract void onEntityIndexed(int n, FullTextSession session);
 
     /**
-     * Returns the Scrollable results for instances of clazz
+     * Returns the Scrollable results for instances of clazz (of type T)
      *
      * @param offset
      * @return

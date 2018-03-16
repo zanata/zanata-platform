@@ -46,6 +46,11 @@ public class MergeOptions {
                 MergeRule.REJECT, MergeRule.REJECT);
     }
 
+    public static MergeOptions allIgnore() {
+        return new MergeOptions(MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK,
+                MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK);
+    }
+
     public static MergeOptions allFuzzy() {
         return new MergeOptions(MergeRule.FUZZY, MergeRule.FUZZY,
                 MergeRule.FUZZY, MergeRule.FUZZY);

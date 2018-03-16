@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright 2017, Red Hat, Inc. and individual contributors as indicated by the
+  ~ @author tags. See the copyright.txt file in the distribution for a full
+  ~ listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it under the
+  ~ terms of the GNU Lesser General Public License as published by the Free
+  ~ Software Foundation; either version 2.1 of the License, or (at your option)
+  ~ any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  ~ FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+  ~ details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this software; if not, write to the Free Software Foundation,
+  ~ Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+  ~ site: http://www.fsf.org.
+  -->
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>add enabled/username index to HAccount table</comment>
+    <createIndex tableName="HAccount" indexName="Idx_enabled_username">
+      <column name="enabled"/>
+      <column name="username"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet author="damason@redhat.com" id="1">
+    <comment>Migrate gwt app settings to use distinct key.</comment>
+    <!-- All existing keys are for GWT, so no conditions are needed. -->
+    <sql>
+      UPDATE HAccountOption SET name = CONCAT('gwt.', name)
+    </sql>
+  </changeSet>
+
+  <changeSet id="2" author="pahuang@redhat.com">
+    <comment>create review criteria table ReviewCriteria</comment>
+    <createTable tableName="ReviewCriteria">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false"/>
+      </column>
+      <column name="priority" type="varchar(32)">
+        <constraints nullable="false" />
+      </column>
+      <column name="description" type="varchar(255)">
+      </column>
+      <column name="editable" type="boolean" defaultValue="false"/>
+
+    </createTable>
+  </changeSet>
+</databaseChangeLog>

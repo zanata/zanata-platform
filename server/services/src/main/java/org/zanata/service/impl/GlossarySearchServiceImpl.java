@@ -30,22 +30,26 @@ import java.util.Map;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.queryparser.classic.ParseException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
 import org.apache.lucene.search.BooleanQuery;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.rest.service.ProjectService;
 import org.zanata.search.LevenshteinUtil;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
 import org.zanata.servlet.annotations.ContextPath;
@@ -67,15 +71,18 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
 
     private GlossaryDAO glossaryDAO;
     private LocaleService localeServiceImpl;
-    private UrlUtil urlUtil;
     private String contextPath;
+    private ProjectDAO projectDAO;
+    private ZanataIdentity identity;
 
     @Inject
     public GlossarySearchServiceImpl(GlossaryDAO glossaryDAO,
-            LocaleService localeServiceImpl, UrlUtil urlUtil, @ContextPath String contextPath) {
+            LocaleService localeServiceImpl, ProjectDAO projectDAO,
+            ZanataIdentity identity, @ContextPath String contextPath) {
         this.glossaryDAO = glossaryDAO;
         this.localeServiceImpl = localeServiceImpl;
-        this.urlUtil = urlUtil;
+        this.projectDAO = projectDAO;
+        this.identity = identity;
         this.contextPath = contextPath;
     }
 
@@ -96,7 +103,11 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
             Map<GlossaryKey, GlossaryResultItem> matchesMap =
                     Maps.newLinkedHashMap();
 
-            if (projectSlug != null) {
+            if (StringUtils.isNotBlank(projectSlug)) {
+                HProject project = projectDAO.getBySlug(projectSlug);
+                if (!identity.hasPermission(project, "read")) {
+                    throw new ZanataServiceException("Project:" + projectSlug + " not found");
+                }
                 String projQualifiedName = ProjectService.getGlossaryQualifiedName(
                         projectSlug);
                 List<Object[]> projMatches = glossaryDAO.getSearchResult(searchText,
@@ -146,17 +157,14 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
                                String qualifiedName) {
         for (Object[] match : matches) {
             HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
-            HGlossaryTerm targetTerm = null;
-            if (sourceTerm != null) {
-                targetTerm = glossaryDAO.getTermByEntryAndLocale(
-                        sourceTerm.getGlossaryEntry().getId(), localeId,
-                        qualifiedName);
-            }
-            if (targetTerm == null) {
+            if (sourceTerm == null) {
                 continue;
             }
+            HGlossaryTerm targetTerm = glossaryDAO.getTermByEntryAndLocale(
+                    sourceTerm.getGlossaryEntry().getId(), localeId,
+                    qualifiedName);
             String srcTermContent = sourceTerm.getContent();
-            String targetTermContent = targetTerm.getContent();
+            String targetTermContent = targetTerm == null ? "" : targetTerm.getContent();
             GlossaryResultItem item = getOrCreateGlossaryResultItem(matchesMap,
                     qualifiedName, srcTermContent, targetTermContent,
                     (Float) match[0], searchText);
@@ -196,7 +204,7 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
         }
         boolean hasFilter = StringUtils.isNotBlank(filter);
         if (hasFilter) {
-            url += "?filter=" + urlUtil.encodeString(filter);
+            url += "?filter=" + UrlUtil.encodeString(filter);
         }
         if (localeId != null) {
             String prefix = hasFilter ? "&" : "?";
@@ -222,12 +230,16 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
             String qualifiedName = entry.getGlossary().getQualifiedName();
             String url = glossaryUrl(qualifiedName, srcContent,
                     hLocale.getLocaleId());
+            boolean isTargetNull = hGlossaryTerm == null;
             items.add(new GlossaryDetails(entry.getId(), srcContent,
-                    hGlossaryTerm.getContent(), entry.getDescription(),
-                    entry.getPos(), hGlossaryTerm.getComment(),
+                    isTargetNull ? null : hGlossaryTerm.getContent(),
+                    entry.getDescription(),
+                    entry.getPos(),
+                    isTargetNull ? null : hGlossaryTerm.getComment(),
                     entry.getSourceRef(), entry.getSrcLocale().getLocaleId(),
-                    hLocale.getLocaleId(), url, hGlossaryTerm.getVersionNum(),
-                    hGlossaryTerm.getLastChanged()));
+                    hLocale.getLocaleId(), url,
+                    isTargetNull ? null : hGlossaryTerm.getVersionNum(),
+                    isTargetNull ? null : hGlossaryTerm.getLastChanged()));
         }
         return items;
     }

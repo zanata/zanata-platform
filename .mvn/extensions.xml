@@ -30,7 +30,7 @@
     <version>0.16.0</version>
   </extension>
   <!-- Uncomment to enable build profiling.
-       Run mvn with -Dbuildtime.output.log to see timings.
+       Run mvn with -Dbuildtime.output.log to see timings in the Maven log.
        NB: may give odd timings when running multi-threaded
        builds with mvn's -T option, eg smart builder.
   <extension>

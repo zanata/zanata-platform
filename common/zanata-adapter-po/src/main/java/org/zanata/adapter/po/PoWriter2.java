@@ -255,7 +255,7 @@ public class PoWriter2 {
         // we don't expect a pot header for mapped non-pot documents
         if (poHeader == null) {
             if (!mapIdToMsgctxt) {
-                log.warn("No PO header in document named " + document.getName());
+                log.warn("No PO header in document named {}", document.getName());
             }
         } else {
             copyToHeaderFields(hf, poHeader.getEntries());
@@ -317,8 +317,8 @@ public class PoWriter2 {
             } else {
                 // we don't expect a pot header for mapped non-pot documents
                 if (!mapIdToMsgctxt) {
-                    log.warn("Missing POT entry for text-flow ID "
-                            + textFlow.getId());
+                    log.warn("Missing POT entry for text-flow ID {}",
+                            textFlow.getId());
                 }
             }
 

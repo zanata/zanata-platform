@@ -23,13 +23,50 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:a4j="http://richfaces.org/a4j"
         xmlns:rich="http://richfaces.org/rich"
-        xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-        >
+        xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <script type="text/javascript">
+    //<![CDATA[
+
+    // Checkbox refresh does not appear to work as expected when given a function
+    // defined as an a4j:jsFunction. It works properly with this wrapper.
+    function privateValueChangedWrapper(key, checked) {
+      privateValueChanged(checked);
+    }
+
+    function getPrivateSettingId() {
+      return "[id='#{rich:clientId('private-setting')}']";
+    }
+    //]]>
+  </script>
 
 <h2 class="l--push-all-0 gamma d--bottom">#{msgs['jsf.General']}</h2>
 
 <h:form id="settings-general-form" styleClass="l--constrain-large">
   <ui:include src="edit_form.xhtml"/>
+
+  <a4j:jsFunction name="privateValueChanged" render="invite-only-setting"
+      oncomplete="zanata.form.appendCheckboxes(getPrivateSettingId())"
+      action="#{projectHome.setPrivateProject(checked)}">
+    <a4j:param name="val1" assignTo="#{checked}"/>
+  </a4j:jsFunction>
+
+  <h3 class="heading--secondary">#{msgs['jsf.project.Access']}</h3>
+
+  <div class="g--tight l--push-top-half">
+    <div class="g__item w--1">
+      <div class="form__item">
+        <h:panelGroup layout="block" styleClass="l--push-bottom-half" id="private-setting">
+          <zanata:checkbox label="#{msgs['jsf.project.Private']}"
+            onValueChanged="privateValueChangedWrapper"
+            labelStyle="js-reveal__toggle l--push-bottom-0"
+            checked="#{projectHome.instance.isPrivateProject()}"
+            value="allow-global-translation"/>
+        </h:panelGroup>
+        <p>#{msgs['jsf.project.private.detail']}</p>
+      </div>
+    </div>
+  </div>
 
   <h3 class="heading--secondary">#{msgs['jsf.project.SourceCode']}</h3>
 

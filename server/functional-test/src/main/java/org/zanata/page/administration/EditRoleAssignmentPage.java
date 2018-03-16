@@ -32,6 +32,7 @@ import org.zanata.page.BasePage;
 public class EditRoleAssignmentPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(EditRoleAssignmentPage.class);
+
     private By policySelect =
             By.id("role-rule-form:policyName:input:policyName");
     private By patternField =
@@ -44,31 +45,54 @@ public class EditRoleAssignmentPage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Select a role assignment policy
+     * @param policy string to select
+     * @return new EditRoleAssignmentPage
+     */
     public EditRoleAssignmentPage selectPolicy(String policy) {
         log.info("Select policy {}", policy);
         new Select(readyElement(policySelect)).selectByValue(policy);
         return new EditRoleAssignmentPage(getDriver());
     }
 
+    /**
+     * Enter an identity pattern for matching a username
+     * @param pattern string to enter
+     * @return new EditRoleAssignmentPage
+     */
     public EditRoleAssignmentPage enterIdentityPattern(String pattern) {
         log.info("Enter identity pattern {}", pattern);
         readyElement(patternField).clear();
-        enterText(readyElement(patternField), pattern);
+        enterText(patternField, pattern);
         return new EditRoleAssignmentPage(getDriver());
     }
 
+    /**
+     * Select a role to assign
+     * @param role string to select
+     * @return new EditRoleAssignmentPage
+     */
     public EditRoleAssignmentPage selectRole(String role) {
         log.info("Select role {}", role);
         new Select(readyElement(roleSelect)).selectByValue(role);
         return new EditRoleAssignmentPage(getDriver());
     }
 
+    /**
+     * Press the Save button
+     * @return new RoleAssignmentsPage
+     */
     public RoleAssignmentsPage saveRoleAssignment() {
         log.info("Click Save");
         clickElement(saveButton);
         return new RoleAssignmentsPage(getDriver());
     }
 
+    /**
+     * Press the Cancel button
+     * @return new RoleAssignmentsPage
+     */
     public RoleAssignmentsPage cancelEditRoleAssignment() {
         log.info("Click Cancel");
         clickElement(cancelButton);

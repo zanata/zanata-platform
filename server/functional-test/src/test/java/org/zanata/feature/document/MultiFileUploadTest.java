@@ -93,6 +93,10 @@ public class MultiFileUploadTest extends ZanataTestCase {
     public void removeFileFromUploadList() {
         File keptUploadFile = testFileGenerator.generateTestFileWithContent(
                 "removeFileFromUploadList", ".txt", "Remove File Upload Test");
+
+        File tempfile = testFileGenerator
+                .generateTestFileWithContent("fakefile", ".txt", "");
+
         VersionDocumentsTab versionDocumentsTab =
                 new ProjectWorkFlow().goToProjectByName("multi-upload")
                         .gotoVersion("multi-upload")
@@ -100,24 +104,24 @@ public class MultiFileUploadTest extends ZanataTestCase {
                         .gotoSettingsDocumentsTab()
                         .pressUploadFileButton()
                         .enterFilePath(keptUploadFile.getAbsolutePath())
-                        .enterFilePath("/tmp/fakefile.txt");
+                        .enterFilePath(tempfile.getAbsolutePath());
         versionDocumentsTab.waitForPageSilence();
         // TODO try to eliminate this:
         versionDocumentsTab.expectSomeUploadItems();
         assertThat(versionDocumentsTab.getUploadList())
-                .contains(keptUploadFile.getName()).contains("fakefile.txt")
+                .contains(keptUploadFile.getName()).contains(tempfile.getName())
                 .as("The intended files are listed");
-        versionDocumentsTab = versionDocumentsTab.clickRemoveOn("fakefile.txt");
+        versionDocumentsTab = versionDocumentsTab.clickRemoveOn(tempfile.getName());
         versionDocumentsTab.waitForPageSilence();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
-                .doesNotContain("fakefile.txt")
+                .doesNotContain(tempfile.getName())
                 .as("The fakefile has been removed");
         VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
                 .submitUpload().clickUploadDone().gotoDocumentTab();
         assertThat(versionDocumentsPage.getSourceDocumentNames())
                 .contains(keptUploadFile.getName())
-                .doesNotContain("fakefile.txt")
+                .doesNotContain(tempfile.getName())
                 .as("Only the intended file was uploaded");
     }
 

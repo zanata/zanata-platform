@@ -22,7 +22,9 @@ import org.zanata.model.Request;
 import org.zanata.model.type.RequestType;
 import org.zanata.rest.dto.LocaleMember;
 import org.zanata.rest.dto.LocalesResults;
+import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.RequestService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.SessionId;
@@ -47,11 +49,14 @@ import static org.mockito.Mockito.when;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
-@AdditionalClasses({ LocaleServiceImpl.class })
+@AdditionalClasses({ LocaleServiceImpl.class, CurrentUserImpl.class })
 public class LocalesServiceTest extends ZanataDbunitJpaTest implements
         StaticProducer {
 
     private Response response;
+
+    @Produces @Authenticated
+    @Mock HAccount authenticatedAccount;
 
     @Inject
     private LocalesService localesService;

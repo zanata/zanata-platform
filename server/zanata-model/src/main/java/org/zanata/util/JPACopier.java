@@ -13,8 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.hibernate.proxy.HibernateProxyHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -282,7 +282,7 @@ public class JPACopier {
                     continue;
                 }
             } catch (NoSuchMethodException e) {
-                log.debug("Read method inaccessible for {0} in class-{1}",
+                log.debug("Read method inaccessible for {} in class-{}",
                         property, noProxyBean.getName());
             }
             Field field = FieldUtils.getField(bean.getClass(), property, true);

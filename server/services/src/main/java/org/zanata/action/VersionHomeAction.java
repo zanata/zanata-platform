@@ -41,7 +41,7 @@ import javax.validation.ConstraintViolationException;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -835,15 +835,15 @@ public class VersionHomeAction extends AbstractSortAction
                     translationFileServiceImpl.persistToTempFile(fileContents);
             md5hash = md.digest();
         } catch (ZanataServiceException e) {
-            VersionHomeAction.log.error(
-                    "Failed writing temp file for document {}", e,
-                    sourceFileUpload.getDocId());
+            log.error(
+                    "Failed writing temp file for document {}",
+                    sourceFileUpload.getDocId(), e);
             setMessage(FacesMessage.SEVERITY_ERROR,
                     "Error saving uploaded document " + fileName
                             + " to server.");
             return;
         } catch (NoSuchAlgorithmException e) {
-            VersionHomeAction.log.error("MD5 hash algorithm not available", e);
+            log.error("MD5 hash algorithm not available", e);
             setMessage(FacesMessage.SEVERITY_ERROR,
                     "Error generating hash for uploaded document " + fileName
                             + ".");
@@ -928,14 +928,26 @@ public class VersionHomeAction extends AbstractSortAction
         translationFileUpload.setDocumentType(null);
     }
 
+    /**
+     *
+     * @param sourceLocale
+     * @param docId - not encoded docId
+     * @return
+     */
     public String getEditorUrl(String sourceLocale, String docId) {
+        // encode into editor supported docId
+        String editorEncodedDocId = TokenUtil.encode(docId);
+
+        // encode into into {@code application/x-www-form-urlencoded} format
+        String encodedDocId = UrlUtil.encodeString(editorEncodedDocId);
+
         return urlUtil.editorDocumentUrl(projectSlug, versionSlug,
                 selectedLocale.getLocaleId(),
-                LocaleId.fromJavaName(sourceLocale), TokenUtil.encode(docId));
+                LocaleId.fromJavaName(sourceLocale), encodedDocId);
     }
 
     public String encodeDocId(String docId) {
-        return urlUtil.encodeString(docId);
+        return UrlUtil.encodeString(docId);
     }
 
     public String uploadTranslationFile(HLocale hLocale) {

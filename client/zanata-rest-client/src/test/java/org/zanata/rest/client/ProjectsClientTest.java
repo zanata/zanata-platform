@@ -21,14 +21,13 @@
 
 package org.zanata.rest.client;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.StubbingServerRule;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProjectsClientTest {
     @ClassRule
@@ -46,8 +45,8 @@ public class ProjectsClientTest {
     public void canGetProjects() {
         Project[] projects = client.getProjects();
 
-        assertThat(projects, Matchers.arrayWithSize(1));
-        assertThat(projects[0].getId(), Matchers.equalTo("about-fedora"));
+        assertThat(projects).hasSize(1);
+        assertThat(projects[0].getId()).isEqualTo("about-fedora");
     }
 
 }

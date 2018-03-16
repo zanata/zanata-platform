@@ -57,7 +57,7 @@ public class AutoRoleAssignmentTest extends ZanataTestCase {
 
         roleAssignmentsPage.logout();
         {
-            // TODO: Bug? Remove me
+            // TODO: ZNTA-440
             new LoginWorkFlow()
                     .signIn("translator", "translator")
                     .logout();

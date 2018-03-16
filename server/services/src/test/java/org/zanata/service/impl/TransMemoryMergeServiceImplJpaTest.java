@@ -48,6 +48,8 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.seam.security.CurrentUserImpl;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationService;
@@ -65,7 +67,7 @@ import com.google.common.collect.Lists;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ ProjectIterationDAO.class, TextFlowDAO.class,
         TransMemoryUnitDAO.class, LocaleServiceImpl.class,
-        TranslationMemoryServiceImpl.class })
+        TranslationMemoryServiceImpl.class, CurrentUserImpl.class })
 public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
 
     @Inject
@@ -74,6 +76,9 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     @Produces
     @Mock
     private UrlUtil urlUtil;
+    @Produces
+    @Mock
+    private ZanataIdentity identity;
     private HLocale targetLocale;
     private HLocale sourceLocale;
     private TransMemory tmx;
@@ -171,7 +176,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
         Future<Void> future = service.startMergeTranslations(
                 targetVersion.getId(),
                 new VersionTMMerge(targetLocale.getLocaleId(), 100,
-                        MergeRule.REJECT, MergeRule.REJECT, MergeRule.FUZZY,
+                        MergeRule.FUZZY, MergeRule.REJECT, MergeRule.REJECT, MergeRule.FUZZY,
                         InternalTMSource.SELECT_NONE),
                 new MergeTranslationsTaskHandle(
                         new GenericAsyncTaskKey("textKeyId")));

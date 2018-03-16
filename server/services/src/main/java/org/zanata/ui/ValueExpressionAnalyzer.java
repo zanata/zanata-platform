@@ -86,6 +86,7 @@ class ValueExpressionAnalyzer {
 
             // The rest of the methods simply delegate to the existing context
             @Override
+            @SuppressWarnings("rawtypes")
             public Object getContext(Class key) {
                 return context.getContext(key);
             }
@@ -101,6 +102,7 @@ class ValueExpressionAnalyzer {
             }
 
             @Override
+            @SuppressWarnings("rawtypes")
             public void putContext(Class key, Object contextObject) {
                 context.putContext(key, contextObject);
             }

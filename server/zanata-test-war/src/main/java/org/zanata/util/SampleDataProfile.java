@@ -18,7 +18,6 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.HDocument;
-import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
@@ -84,11 +83,8 @@ public class SampleDataProfile implements Serializable {
                 Search.getFullTextEntityManager(
                         entityManagerFactory.createEntityManager());
         try {
-            em.purgeAll(HAccount.class);
-            em.purgeAll(HGlossaryEntry.class);
             em.purgeAll(HGlossaryTerm.class);
             em.purgeAll(HProject.class);
-            em.purgeAll(HProjectIteration.class);
             em.purgeAll(TransMemoryUnit.class);
             em.purgeAll(HTextFlowTarget.class);
         } finally {

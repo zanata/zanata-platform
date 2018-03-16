@@ -7,7 +7,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ds="http://deltaspike.apache.org/jsf">
 
-  <html class="no-js htmlstyle">
+  <html class="no-js htmlStyle">
   <h:head>
     <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -20,13 +20,18 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
     <meta http-equiv="cleartype" content="on"/>
 
+    <!-- Preconnect SourceSansPro via FontFace for frontend
+    -->
+    <link rel="preconnect" href="https://fonts.gstatic.com/"
+          crossorigin="anonymous" />
+
     <link type="image/x-icon" rel="shortcut icon"
         href="#{request.contextPath}/resources/assets/img/logo/logo.ico" />
-    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/frontend.css"/>
+    <link type="text/css" rel="stylesheet" href="#{frontendAssets.frontendCss}"/>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
   </h:head>
 
-  <h:body class="bodystyle">
+  <h:body class="bodyStyle">
     <ds:windowId/>
     <div id="config"
       data-app-url="#{request.contextPath}"
@@ -37,14 +42,15 @@
       data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
                      "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'
       data-allow-register="#{allowPublicRegistration}"
+      data-app-locale="#{localeSelectorAction.getLocale()}"
     >
     </div>
     <script type="application/javascript">
       window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
     </script>
     <div id="root" />
-    <script type="text/javascript"
-      src="#{request.contextPath}/frontend.min.js"></script>
+    <script type="text/javascript" src="#{frontendAssets.runtime}"></script>
+    <script type="text/javascript" src="#{frontendAssets.frontendJs}"></script>
     <ui:include src="/WEB-INF/template/scripts.xhtml"/>
   </h:body>
   </html>

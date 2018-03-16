@@ -136,7 +136,11 @@ public class TranslationDocumentUpload implements Serializable {
             }
             if (tempFile.isPresent()) {
                 boolean deleted = tempFile.get().delete();
-                log.debug(deleted ? "Temporary file deleted" : "Unable to delete temporary file");
+                if (deleted) {
+                    log.debug("Temporary file deleted");
+                } else {
+                    log.debug("Unable to delete temporary file");
+                }
             }
             Set<String> extensions =
                     newExtensions(uploadForm.getFileType().equals(".po"));

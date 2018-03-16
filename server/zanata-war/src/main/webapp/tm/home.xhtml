@@ -161,7 +161,7 @@
   <div class="g--centered g--padded">
     <div class="g__item w--1-m w--1-2-l w--1-2 l--push-bottom-half">
       <p class="txt--meta l--push-all-0">
-        <h:link outcome="/admin/home.xhtml"
+        <h:link outcome="/admin/home"
           value="#{msgs['jsf.Administration']}"/>
       </p>
 
@@ -215,14 +215,14 @@
             </p>
           </h:panelGroup>
 
-          <h:panelGroup layout="block"  rendered="#{not empty translationMemoryAction.allTranslationMemories}">
+          <h:panelGroup layout="block"  rendered="#{not empty translationMemoryAction.allTranslationMemories}" id="allMemories">
             <h:panelGroup layout="block"  id="processResult">
               <h:panelGroup layout="span" styleClass="message--warning" rendered="#{not empty translationMemoryAction.processError}">
                 #{translationMemoryAction.processError}
               </h:panelGroup>
             </h:panelGroup>
 
-            <ul class="list--stats">
+            <ul class="list--stats" id="tmEntryList">
               <ui:repeat value="#{translationMemoryAction.allTranslationMemories}"
                 var="tm">
                 <li class="list__item--actionable" id="tm-#{tm.slug}">
@@ -335,7 +335,7 @@
   </div>
 
   <div class="modal" id="uploadFileDialog" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" aria-hidden="true">
+    aria-labelledby="myModalLabel">
 
     <script type="application/javascript">
       jQuery(document).ready(function() {

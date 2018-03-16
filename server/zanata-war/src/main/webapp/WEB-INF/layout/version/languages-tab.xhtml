@@ -127,9 +127,9 @@
           <ui:repeat
             value="#{versionHomeAction.languageTabLanguageFilter.currentPage}"
             var="hLocale">
-            <li class="progress-bar__expander panels__panel__item">
+            <li class="progress-bar__expander panels__panel__item #{versionHomeAction.selectedLocale.localeId eq hLocale.localeId ? 'is-active' : ''}">
               <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/languages/#{hLocale.localeId}"
-                onclick="changeBrowserUrl(this.href, true);return false" class="#{hLocale.localeId}">
+                onclick="changeBrowserUrl(this.href, true);return false" class="#{hLocale.localeId} #{versionHomeAction.selectedLocale.localeId eq hLocale.localeId ? 'is-active' : ''}">
                 <div class="list__item">
                   <div class="list__item__info">
                     <h3 class="list__title">
@@ -248,7 +248,7 @@
     <a href="#" class="panel__header__back"
       onclick="removeActiveRows('languages-language_list');toggleColumn('languages')"
       title="#{msgs['Languages']}">
-      <i class="i--huge i--arrow-left" aria-hidden="true"></i>
+      <i class="i--huge i--arrow-left" ></i>
     </a>
 
     <h2 class="panel__heading">

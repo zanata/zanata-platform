@@ -1,7 +1,5 @@
 package org.zanata.arquillian;
 
-import java.util.concurrent.Callable;
-
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.container.spi.Container;
 import org.jboss.arquillian.container.spi.ContainerRegistry;

@@ -21,6 +21,7 @@
 
 package org.zanata.util;
 
+import org.jetbrains.annotations.Nullable;
 import org.zanata.common.ContentState;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -28,6 +29,7 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
 import org.zanata.webtrans.shared.rpc.MergeRule;
+
 import com.google.common.base.Objects;
 
 /**
@@ -49,6 +51,8 @@ public class TransMemoryMergeStatusResolver {
     private boolean needSkip = false;
 
     /**
+     * Use this method to decide the content state for a target where the
+     * translation is from an internal TM.
      *
      * @param action
      *            TM merge action
@@ -76,6 +80,11 @@ public class TransMemoryMergeStatusResolver {
         compareDocId(action, tfToBeFilled, tmDetail);
         compareProjectName(action, tfToBeFilled, tmDetail);
 
+        return contentStateBasedOnFlag(oldTarget);
+    }
+
+    @Nullable
+    private ContentState contentStateBasedOnFlag(HTextFlowTarget oldTarget) {
         if (needSkip) {
             return null;
         } else if (needReview) {
@@ -90,6 +99,8 @@ public class TransMemoryMergeStatusResolver {
     }
 
     /**
+     * Use this method to decide the content state when translation is from
+     * imported TMX.
      *
      * @param action
      *            TM merge action
@@ -110,40 +121,34 @@ public class TransMemoryMergeStatusResolver {
 
         setFlagsBasedOnOption(action.getImportedMatchRule());
 
-        if (needSkip) {
-            return null;
-        } else if (needReview) {
-            // if there is an old translation and we only find TM needs review,
-            // we don't overwrite previous translation
-            if (oldTarget != null && oldTarget.getState() != ContentState.New) {
-                return null;
-            }
-            return ContentState.NeedReview;
-        }
-        return ContentState.Translated;
+        return contentStateBasedOnFlag(oldTarget);
     }
 
     private void compareTextFlowResId(HasTMMergeCriteria action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
-        if (notEqual(tfToBeFilled.getResId(), tmDetail.getResId())) {
+        if (action.getDifferentContextRule() != MergeRule.IGNORE_CHECK
+                && notEqual(tfToBeFilled.getResId(), tmDetail.getResId())) {
             setFlagsBasedOnOption(action.getDifferentContextRule());
         }
     }
 
     private void compareTextFlowMsgContext(HasTMMergeCriteria action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
-        String msgCtx = null;
-        if (tfToBeFilled.getPotEntryData() != null) {
-            msgCtx = tfToBeFilled.getPotEntryData().getContext();
-        }
-        if (notEqual(msgCtx, tmDetail.getMsgContext())) {
-            setFlagsBasedOnOption(action.getDifferentContextRule());
+        if (action.getDifferentContextRule() != MergeRule.IGNORE_CHECK) {
+            String msgCtx = null;
+            if (tfToBeFilled.getPotEntryData() != null) {
+                msgCtx = tfToBeFilled.getPotEntryData().getContext();
+            }
+            if (notEqual(msgCtx, tmDetail.getMsgContext())) {
+                setFlagsBasedOnOption(action.getDifferentContextRule());
+            }
         }
     }
 
     private void compareDocId(HasTMMergeCriteria action, HTextFlow tfToBeFilled,
             TransMemoryDetails tmDetail) {
-        if (notEqual(tfToBeFilled.getDocument().getDocId(),
+        if (action.getDifferentDocumentRule() != MergeRule.IGNORE_CHECK
+                && notEqual(tfToBeFilled.getDocument().getDocId(),
                         tmDetail.getDocId())) {
             setFlagsBasedOnOption(action.getDifferentDocumentRule());
         }
@@ -151,7 +156,8 @@ public class TransMemoryMergeStatusResolver {
 
     private void compareProjectName(HasTMMergeCriteria action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
-        if (notEqual(tfToBeFilled.getDocument().getProjectIteration()
+        if (action.getDifferentProjectRule() != MergeRule.IGNORE_CHECK
+                && notEqual(tfToBeFilled.getDocument().getProjectIteration()
                         .getProject().getName(), tmDetail.getProjectName())) {
             setFlagsBasedOnOption(action.getDifferentProjectRule());
         }
@@ -160,7 +166,7 @@ public class TransMemoryMergeStatusResolver {
     private void setFlagsBasedOnOption(MergeRule mergeOption) {
         if (mergeOption == MergeRule.REJECT) {
             needSkip = true;
-        } else {
+        } else if (mergeOption == MergeRule.FUZZY) {
             needReview = true;
         }
     }

@@ -1,0 +1,43 @@
+{
+    "awesomeTypescriptLoaderOptions": {
+        "reportFiles": [
+            "app/**/*.{js,jsx,ts,tsx}"
+        ],
+        "useCache": true
+    },
+    // https://www.typescriptlang.org/docs/handbook/compiler-options.html
+    "compilerOptions": {
+        // scan any JS files for type information
+        "allowJs": true,
+        // also check JS files unless they have // @ts-ignore
+        "checkJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        // import 'tslib' instead of duplicating generated code
+        "importHelpers": true,
+        "jsx": "react",
+        "lib": [
+            // We transpile to ES5 syntax, but we use babel-polyfill
+            "dom", "es6", "dom.iterable", "scripthost"
+        ],
+        "module": "commonjs",
+        // webpack/jest deal with the output themselves.
+        // This helps to avoid confusing jest with extra copies of mocks.
+        "noEmit": true,
+        // "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        // NB not used if noEmit is true
+        "outDir": "./build/",
+        "sourceMap": true,
+        "target": "ES5"
+    },
+    "include": [
+        "app/**/*",
+        ".storybook-editor/**/*",
+        ".storybook-frontend/**/*"
+    ],
+    "exclude": [
+        "node_modules/**"
+    ]
+}

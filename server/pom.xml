@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.5.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -22,24 +22,30 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.1.4-2</kotlin.version>
+    <kotlin.version>1.2.30</kotlin.version>
+    <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+    <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+<!-- We can use these if we don't want the lang/API version set by the compiler version:
+    <kotlin.compiler.languageVersion>1.2</kotlin.compiler.languageVersion>
+    <kotlin.compiler.apiVersion>1.2</kotlin.compiler.apiVersion>
+-->
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
-    <picketlink.version>2.5.5.SP1</picketlink.version>
+    <picketlink.version>2.5.5.SP2</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <weld.spi.version>2.3.Final </weld.spi.version>
-    <groovy.version>2.4.7</groovy.version>
+    <groovy.version>2.4.12</groovy.version>
     <icu4j.version>56.1</icu4j.version>
-    <guava.version>21.0</guava.version>
+    <guava.version>23.5-jre</guava.version>
     <gwt.version>2.8.0</gwt.version>
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
-    <rewrite.version>3.4.1.Final</rewrite.version>
+    <rewrite.version>3.4.2.Final</rewrite.version>
 
     <!--
     Not used yet.
@@ -51,7 +57,7 @@
 
     <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
-    <slf4j.version>1.7.22</slf4j.version>
+    <slf4j.version>1.7.25</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.29</okapi.version>
 
@@ -105,7 +111,29 @@
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
-    <jackson2.version>2.7.2</jackson2.version>
+    <jackson2.version>2.8.9</jackson2.version>
+
+    <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
+    <server.jvmargs>
+      <!-- NB: JDom parser doesn't like comments starting with '-' -->
+      -server
+      -showversion
+      -XX:+PrintCommandLineFlags
+      -Xmx1536m
+      -XX:MaxMetaspaceSize=1g
+      -XX:-OmitStackTraceInFastThrow
+      -XX:+PrintGCDateStamps
+      -verbose:gc
+      -XX:+PrintGCDetails
+      -Xloggc:gc.log
+      -XX:+UseGCLogFileRotation
+      -XX:NumberOfGCLogFiles=10
+      -XX:GCLogFileSize=100M
+      -XX:+HeapDumpOnOutOfMemoryError
+      -XX:HeapDumpPath=.
+      -Djava.net.preferIPv4Stack=true
+      -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0
+    </server.jvmargs>
   </properties>
 
   <dependencyManagement>
@@ -119,7 +147,25 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.4</version>
+        <version>3.6</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>1.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-validator</groupId>
+        <artifactId>commons-validator</artifactId>
+        <version>1.6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- See https://issues.jboss.org/browse/WFK2-674
@@ -283,7 +329,12 @@
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-runtime</artifactId>
+        <artifactId>kotlin-stdlib-jre7</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib-jre8</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
@@ -608,7 +659,7 @@
       <dependency>
         <groupId>org.jglue.cdi-unit</groupId>
         <artifactId>cdi-unit</artifactId>
-        <version>3.1.4</version>
+        <version>4.0.0</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
@@ -976,7 +1027,7 @@
       <dependency>
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
-        <version>2.0.15</version>
+        <version>2.0.18</version>
         <scope>provided</scope>
       </dependency>
 
@@ -1680,7 +1731,7 @@
       <dependency>
         <groupId>org.fedorahosted.tennera</groupId>
         <artifactId>jgettext</artifactId>
-        <version>0.14</version>
+        <version>0.15</version>
       </dependency>
       <dependency>
         <groupId>org.functionaljava</groupId>
@@ -1766,7 +1817,7 @@
   <repositories>
     <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
     <repository>
-      <id>sonatype-nexus-snapshots</id>
+      <id>sonatype-snapshots</id>
       <name>Sonatype Nexus Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <releases>
@@ -1828,20 +1879,6 @@
       </snapshots>
     </pluginRepository>
     <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
       <id>arturbosch-code-analysis</id>
       <name>arturbosch-code-analysis (for detekt, also available in jcenter)</name>
       <url>https://dl.bintray.com/arturbosch/code-analysis/</url>
@@ -1861,7 +1898,7 @@
   <build>
     <plugins>
 
-      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java/Takari.
+      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java.
            Java code can depend on either Groovy or Kotlin (because they are compiled first).
            Groovy code can depend on Kotlin because it is compiled first, and on Java because of "joint compilation"
            http://groovy-lang.org/groovyc.html#section-jointcompilation https://github.com/groovy/GMavenPlus/wiki/Examples#joint-compilation
@@ -1908,8 +1945,9 @@
             <!-- JUnit tests (CDI-Unit or Mockito) -->
             <option>all-open:annotation=org.junit.runner.RunWith</option>
 
-            <!-- Create synthetic no-arg constructors for JPA entities: -->
+            <!-- Create synthetic no-arg constructors for JPA entities and CDI beans: -->
             <option>no-arg:annotation=javax.persistence.Entity</option>
+            <option>no-arg:annotation=javax.enterprise.context.NormalScope</option>
           </pluginOptions>
         </configuration>
         <dependencies>
@@ -1930,20 +1968,6 @@
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
         <executions>
-          <execution>
-            <id>default</id>
-            <goals>
-              <!-- src/main/groovy disabled, because such code would be invisible to Kotlin classes -->
-              <!--<goal>addSources</goal>-->
-              <goal>addTestSources</goal>
-              <!--<goal>generateStubs</goal>-->
-              <!--<goal>compile</goal>-->
-              <goal>testGenerateStubs</goal>
-              <goal>testCompile</goal>
-              <!--<goal>removeStubs</goal>-->
-              <goal>removeTestStubs</goal>
-            </goals>
-          </execution>
           <!-- NB: This execution needs to be before antrun, because it
                creates the wildfly directory for the unzip tasks. -->
           <execution>
@@ -1955,11 +1979,13 @@
               <scripts>
                 <!-- Extracts app server and sets the Maven property
                 appserver.home (where the appserver is installed) -->
-                <script>file:///${project.basedir}/../etc/scripts/extractAppserver.groovy</script>
+                <script>${project.basedir}/../etc/scripts/extractAppserver.groovy</script>
               </scripts>
             </configuration>
           </execution>
           <execution>
+            <!-- You can test with a command like this:
+                 mvn -Dappserver.home=$HOME/apps/wildfly-10.1.0.Final org.codehaus.gmavenplus:gmavenplus-plugin:execute@run-jboss-cli -->
             <id>run-jboss-cli</id>
             <!-- submodules should use 'package' to activate this -->
             <phase>none</phase>
@@ -1967,7 +1993,7 @@
             <configuration>
               <scripts>
                 <!-- run jboss cli script -->
-                <script>file:///${project.basedir}/../etc/scripts/runJbossCli.groovy</script>
+                <script>${project.basedir}/../etc/scripts/runJbossCli.groovy</script>
               </scripts>
             </configuration>
           </execution>
@@ -1990,45 +2016,21 @@
             <id>default-testCompile</id>
             <phase>none</phase>
           </execution>
-        </executions>
-        <configuration>
-          <!-- Ignore maven.compiler.compilerId=jdt -->
-          <compilerId>javac</compilerId>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <extensions>true</extensions>
-
-        <executions>
-          <!-- Replacing default-compile as it is treated specially by Maven.
-               We need kotlin-maven-plugin to compile first. -->
-          <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
           <execution>
             <id>java-compile</id>
             <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
-          </execution>
-          <!-- Replacing default-testCompile as it is treated specially by Maven.
-               We need kotlin-maven-plugin to compile first. -->
-          <execution>
-            <id>default-testCompile</id>
-            <phase>none</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
           </execution>
           <execution>
             <id>java-test-compile</id>
             <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
           </execution>
         </executions>
-        <configuration>
-          <compilerId>jdt</compilerId>
-        </configuration>
       </plugin>
 
       <plugin>
@@ -2051,6 +2053,8 @@
                 <exclude>javax.el:javax.el-api</exclude>
                 <exclude>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</exclude>
 
+                <!-- Use kotlin-stdlib -->
+                <exclude>org.jetbrains.kotlin:kotlin-runtime</exclude>
 
                 <!-- Use com.sun.mail:javax.mail -->
                 <exclude>javax.mail:mail</exclude>
@@ -2121,11 +2125,48 @@
                 <echo message="appserver.home=${appserver.home}" />
                 <echo message="DISPLAY=${env.DISPLAY}" />
                 <echo message="WARNING: 'appserver' property must be set unless skipping integration tests" unless:set="appserver" />
-                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP7_URL" unless:set="cargo.installation" />
+                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP71_URL" unless:set="cargo.installation" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- This can be run separately with mvn antrun:run@detekt -->
+            <id>detekt</id>
+            <!-- Profiles should use 'test' to activate this -->
+            <phase>none</phase>
+            <goals><goal>run</goal></goals>
+            <configuration>
+              <target name="detekt">
+                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
+                    classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                  <arg value="--config-resource"/>
+                  <arg value="zanata-build-tools/detekt.yml"/>
+                  <arg value="--project"/>
+                  <arg value="${basedir}/src"/>
+                  <arg value="--filters"/>
+                  <arg value=".*test.*"/>
+                </java>
               </target>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-cli</artifactId>
+            <version>1.0.0.M11</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-formatting</artifactId>
+            <version>1.0.0.M11</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
 
@@ -2145,7 +2186,7 @@
         <plugin>
           <groupId>org.codehaus.cargo</groupId>
           <artifactId>cargo-maven2-plugin</artifactId>
-          <version>1.5.0</version>
+          <version>1.6.5</version>
           <configuration combine.self="append">
             <container>
               <containerId>${cargo.container}</containerId>
@@ -2166,12 +2207,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <ignores>
-            <!-- not part of java18 sig, but seems to be public API -->
-            <ignore>jdk.nashorn.api.*</ignore>
-          </ignores>
-        </configuration>
       </plugin>
 
         <plugin>
@@ -2183,6 +2218,12 @@
               <goals>
                 <goal>integration-test</goal>
               </goals>
+              <configuration>
+                <systemPropertyVariables combine.children="append">
+                  <!-- Override gc.log and heapdump dir for Arquillian tests -->
+                  <server.jvmargs>${server.jvmargs} -Xloggc:target/gc.log -XX:HeapDumpPath=target</server.jvmargs>
+                </systemPropertyVariables>
+              </configuration>
             </execution>
             <execution>
               <id>verify</id>
@@ -2255,7 +2296,7 @@
         <plugin>
           <groupId>org.codehaus.gmavenplus</groupId>
           <artifactId>gmavenplus-plugin</artifactId>
-          <version>1.5</version>
+          <version>1.6</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -2303,7 +2344,7 @@
       </activation>
       <properties>
         <cargo.container>wildfly10x</cargo.container>
-        <cargo.installation>${env.EAP7_URL}</cargo.installation>
+        <cargo.installation>${env.EAP71_URL}</cargo.installation>
       </properties>
     </profile>
 
@@ -2352,49 +2393,40 @@
           <value>true</value>
         </property>
       </activation>
+      <!-- With kotlin-maven-plugin 1.2, we should be able to use <args>-Werror</args> -->
       <build>
         <plugins>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--<version>1.8</version>-->
             <executions>
               <execution>
-                <!-- This can be run separately with mvn antrun:run@detekt -DstaticAnalysis -->
                 <id>detekt</id>
-                <phase>verify</phase>
-                <configuration>
-                  <target name="detekt">
-                    <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
-                        classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
-                      <arg value="--config-resource"/>
-                      <arg value="zanata-build-tools/detekt.yml"/>
-                      <arg value="--project"/>
-                      <arg value="${basedir}/src"/>
-                      <arg value="--filters"/>
-                      <arg value=".*test.*"/>
-                    </java>
-                  </target>
-                </configuration>
-                <goals><goal>run</goal></goals>
+                <phase>test</phase>
               </execution>
             </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.zanata</groupId>
-                <artifactId>build-tools</artifactId>
-                <version>${project.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>io.gitlab.arturbosch.detekt</groupId>
-                <artifactId>detekt-cli</artifactId>
-                <version>1.0.0.M11</version>
-              </dependency>
-              <dependency>
-                <groupId>io.gitlab.arturbosch.detekt</groupId>
-                <artifactId>detekt-formatting</artifactId>
-                <version>1.0.0.M11</version>
-              </dependency>
-            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>staticAnalysisCI</id>
+      <activation>
+        <property>
+          <name>staticAnalysisCI</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>detekt</id>
+                <phase>test</phase>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

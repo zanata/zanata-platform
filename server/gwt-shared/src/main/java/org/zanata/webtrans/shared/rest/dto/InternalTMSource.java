@@ -35,15 +35,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class InternalTMSource implements Serializable, IsSerializable {
 
-    public static final InternalTMSource SELECT_ALL = new InternalTMSource(InternalTMChoice.SelectAny, null) {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public String toString() {
-            return "Select internal TM from any project version";
-        }
-    };
-
+    public static final InternalTMSource SELECT_ALL = new InternalTMSource(InternalTMChoice.SelectAny, null);
     public static final InternalTMSource SELECT_NONE = new InternalTMSource(InternalTMChoice.SelectNone, null);
     private static final long serialVersionUID = 1L;
     private InternalTMChoice choice;
@@ -70,6 +62,10 @@ public class InternalTMSource implements Serializable, IsSerializable {
 
     @Override
     public String toString() {
+        // SELECT_ALL
+        if (choice.equals(InternalTMChoice.SelectAny) && projectIterationIds == null) {
+            return "Select internal TM from any project version";
+        }
         return MoreObjects.toStringHelper(this)
                 .add("choice", choice)
                 .add("projectIterationIds", projectIterationIds)

@@ -35,6 +35,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 
 import java.io.Serializable;
@@ -56,13 +57,16 @@ public class RestSlugValidator implements Serializable {
     private ProjectDAO projectDAO;
     @Inject
     private ProjectIterationDAO projectIterationDAO;
+    @Inject
+    private ZanataIdentity identity;
 
     @Nonnull
     public HProject retrieveAndCheckProject(@Nonnull String projectSlug,
             boolean requiresWriteAccess) {
         HProject hProject = projectDAO.getBySlug(projectSlug);
         if (hProject == null
-                || hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
+                || !haveReadAccess(hProject) ||
+                hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
             throw new NoSuchEntityException(
                     "Project \'" + projectSlug + "\' not found.");
         }
@@ -76,8 +80,6 @@ public class RestSlugValidator implements Serializable {
 
     /**
      * @param requiresWriteAccess
-     * @return
-     * @see ProjectService#retrieveAndCheckProject
      */
     @Nonnull
     public HProjectIteration retrieveAndCheckIteration(
@@ -87,8 +89,8 @@ public class RestSlugValidator implements Serializable {
                 retrieveAndCheckProject(projectSlug, requiresWriteAccess);
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(hProject, iterationSlug);
-        if (hProjectIteration == null || hProjectIteration.getStatus()
-                .equals(EntityStatus.OBSOLETE)) {
+        if (hProjectIteration == null || !haveReadAccess(hProjectIteration) ||
+                hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)) {
             throw new NoSuchEntityException("Project Iteration \'" + projectSlug
                     + ":" + iterationSlug + "\' not found.");
         }
@@ -117,8 +119,8 @@ public class RestSlugValidator implements Serializable {
             return localeServiceImpl.validateLocaleByProject(locale,
                     projectSlug);
         } catch (ZanataServiceException e) {
-            log.warn("Exception validating target locale {} in proj {}", e,
-                    locale, projectSlug);
+            log.warn("Exception validating target locale {} in proj {}",
+                    locale, projectSlug, e);
             throw e;
         }
     }
@@ -142,8 +144,25 @@ public class RestSlugValidator implements Serializable {
                     projectSlug, iterationSlug);
         } catch (ZanataServiceException e) {
             log.warn("Exception validating target locale {} in proj {} iter {}",
-                    e, locale, projectSlug, iterationSlug);
+                    locale, projectSlug, iterationSlug, e);
             throw e;
         }
     }
+
+    /**
+     * Check if current user have read access to the project version
+     * (checking for private project)
+     */
+    public boolean haveReadAccess(HProjectIteration version) {
+        return identity.hasPermission(version, "read");
+    }
+
+    /**
+     * Check if current user have read access to the project
+     * (checking for private project)
+     */
+    public boolean haveReadAccess(HProject project) {
+        return identity.hasPermission(project, "read");
+    }
+
 }

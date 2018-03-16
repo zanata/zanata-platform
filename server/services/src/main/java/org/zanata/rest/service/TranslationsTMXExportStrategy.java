@@ -25,6 +25,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.XMLConstants;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import org.zanata.common.LocaleId;
@@ -42,8 +44,8 @@ import com.google.common.collect.Sets;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ParametersAreNonnullByDefault
-public class TranslationsTMXExportStrategy
-        implements TMXExportStrategy<ITextFlow> {
+public class TranslationsTMXExportStrategy <T extends ITextFlow>
+        implements TMXExportStrategy<T> {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslationsTMXExportStrategy.class);
 
@@ -92,6 +94,7 @@ public class TranslationsTMXExportStrategy
         return header;
     }
 
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Optional<Element> buildTU(ITextFlow tf) throws IOException {
         try {
             Element tu = new Element("tu");
@@ -162,20 +165,30 @@ public class TranslationsTMXExportStrategy
             LocaleId locId = target.getLocaleId();
             String trgContent = target.getContents().get(0);
             if (trgContent.contains("\000")) {
-                String msg =
-                        "illegal null character; discarding TargetContents with locale="
-                                + locId + ", contents=" + trgContent;
-                log.warn(msg);
+                log.warn(
+                        "illegal null character; discarding TargetContents with locale={}, contents={}",
+                        locId, trgContent);
                 return Optional.absent();
             }
             Element tuv = new Element("tuv");
             tuv.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI,
                     locId.getId()));
             Element seg = new Element("seg");
-            seg.appendChild(trgContent);
+            seg.appendChild(sanitizeForXML(trgContent));
             tuv.appendChild(seg);
             return Optional.of(tuv);
         }
         return Optional.absent();
+    }
+
+    private String sanitizeForXML(String input) {
+        char deviceControlChar = 0x12;
+        String xml11pattern = "[^"
+                    + "\u0001-\uD7FF"
+                    + "\uE000-\uFFFD"
+                    + "\ud800\udc00-\udbff\udfff"
+                    + "]+";
+        return input.replaceAll(String.valueOf(deviceControlChar), "")
+                .replaceAll(xml11pattern, "");
     }
 }

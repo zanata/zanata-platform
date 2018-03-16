@@ -70,8 +70,12 @@ abstract class AbstractPage(val driver: WebDriver) {
         driver.navigate().refresh()
     }
 
-    val executor: JavascriptExecutor
+    protected val executor: JavascriptExecutor
         get() = driver as JavascriptExecutor
+
+    @Suppress("UNCHECKED_CAST")
+    private fun JavascriptExecutor.executeScriptToElements(script: String): List<WebElement> =
+            executeScript(script) as List<WebElement>
 
     val url: String
         get() = driver.currentUrl
@@ -211,8 +215,7 @@ abstract class AbstractPage(val driver: WebDriver) {
                 .until({ _ ->
                     // Find all elements with class name js-loader, or return []
                     val script = "return (typeof $ == \'undefined\') ?  [] : $(\'.js-loader\').toArray()"
-                    val loaders = executor
-                            .executeScript(script) as List<WebElement>
+                    val loaders = executor.executeScriptToElements(script)
                     for (loader in loaders) {
                         if (loader.getAttribute("class")
                                 .contains("is-active")) {
@@ -393,6 +396,56 @@ abstract class AbstractPage(val driver: WebDriver) {
     }
 
     /**
+     * Enter text into an element, using a locator
+     * @param findBy locator of element
+     * @param text text to enter
+     */
+    fun enterText(findBy: By, text: String) {
+        enterText(readyElement(findBy), text);
+    }
+
+    /**
+     * Retrieve the text from an element, using a locator
+     *
+     * @param findBy locator of target element
+     */
+    fun getText(findBy: By): String {
+        return getText(existingElement(findBy));
+    }
+
+    /**
+     * Retrieve the text from an element
+     *
+     * @param webElement target element
+     */
+    fun getText(webElement: WebElement): String {
+        scrollIntoView(webElement);
+        waitForElementReady(webElement);
+        return webElement.getText();
+    }
+
+    /**
+     * Retrieve an attribute value from an element, by locator
+     *
+     * @param findBy locator of target element
+     * @param attribute name of attribute to query
+     */
+    fun getAttribute(findBy: By, attribute: String): String {
+        return getAttribute(existingElement(findBy), attribute)
+    }
+
+    /**
+     * Retrieve an attribute value from an element
+     *
+     * @param webElement target element
+     * @param attribute name of attribute to query
+     */
+    fun getAttribute(webElement: WebElement, attribute: String): String {
+        return webElement.getAttribute(attribute) ?: ""
+    }
+
+
+    /**
      * 'Touch' a text field to see if it's writable. For cases where fields are
      * available but briefly won't accept text for some reason
 
@@ -421,11 +474,8 @@ abstract class AbstractPage(val driver: WebDriver) {
      * Remove any visible notifications
      */
     fun removeNotifications() {
-        val notifications = executor.executeScript(
-                "return (typeof $ == \'undefined\') ?  [] : $(\'a.message__remove\').toArray()") as List<WebElement>
-        if (notifications.isEmpty()) {
-            return
-        }
+        val notifications = executor.executeScriptToElements(
+                "return (typeof $ == \'undefined\') ?  [] : $(\'a.message__remove\').toArray()")
         log.info("Closing {} notifications", notifications.size)
         for (notification in notifications) {
             try {
@@ -433,11 +483,10 @@ abstract class AbstractPage(val driver: WebDriver) {
             } catch (exc: WebDriverException) {
                 log.info("Missed a notification X click")
             }
-
         }
         // Finally, forcibly un-is-active the message container - for speed
         val script = "return (typeof $ == \'undefined\') ?  [] : $(\'ul.message--global\').toArray()"
-        val messageBoxes = executor.executeScript(script) as List<WebElement>
+        val messageBoxes = executor.executeScriptToElements(script)
         for (messageBox in messageBoxes) {
             executor.executeScript(
                     "arguments[0].setAttribute(\'class\', arguments[1]);",
@@ -455,8 +504,7 @@ abstract class AbstractPage(val driver: WebDriver) {
         val message = "Waiting for notifications box to go"
         waitForAMoment().withMessage(message)
                 .until({ _ ->
-                    val boxes = executor
-                            .executeScript(script) as List<WebElement>
+                    val boxes = executor.executeScriptToElements(script)
                     for (box in boxes) {
                         if (box.isDisplayed) {
                             log.info(message)

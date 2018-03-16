@@ -24,7 +24,7 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -44,6 +44,7 @@ import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -55,7 +56,6 @@ import com.google.common.collect.Lists;
 public class TranslationService implements TranslationResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationService.class);
-    private static final long serialVersionUID = 8277023760710788030L;
 
     @Inject
     private ZanataIdentity identity;
@@ -76,6 +76,7 @@ public class TranslationService implements TranslationResource {
     private final String sourceType = "JS";
 
     @Override
+    @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Response get(String localeId, String ids) {
         TransUnits transUnits = new TransUnits();
         if (StringUtils.isEmpty(ids)) {

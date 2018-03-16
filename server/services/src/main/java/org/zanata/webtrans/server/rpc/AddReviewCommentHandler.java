@@ -20,10 +20,13 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.dao.ReviewCriteriaDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.model.HAccount;
@@ -31,6 +34,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.model.ReviewCriteria;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
@@ -40,6 +44,7 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
+import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AddReviewComment;
@@ -55,6 +60,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Named("webtrans.gwt.AddReviewCommentHandler")
 @ActionHandlerFor(AddReviewCommentAction.class)
 @RequestScoped
+@Transactional
 public class AddReviewCommentHandler extends
         AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult> {
     @Inject
@@ -63,6 +69,8 @@ public class AddReviewCommentHandler extends
     private TextFlowTargetDAO textFlowTargetDAO;
     @Inject
     private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
+    @Inject
+    private ReviewCriteriaDAO reviewCriteriaDAO;
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
@@ -92,9 +100,18 @@ public class AddReviewCommentHandler extends
         identity.checkPermission("review-comment", locale, project);
         TranslationWorkspace workspace =
                 translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-        HTextFlowTargetReviewComment hComment =
-                hTextFlowTarget.addReviewComment(action.getContent(),
-                        authenticatedAccount.getPerson());
+        HTextFlowTargetReviewComment hComment;
+        if (action.hasReviewCriterion()) {
+            ReviewCriterionId reviewId = action.getReviewId();
+            ReviewCriteria reviewCriteria = reviewCriteriaDAO.findById(reviewId.getId());
+            if (reviewCriteria == null) {
+                throw new ActionException("can not find review criteria with id:" + reviewId);
+            }
+            hComment = hTextFlowTarget.addReview(authenticatedAccount.getPerson(), reviewCriteria, action.getContent());
+        } else {
+            hComment = hTextFlowTarget.addReviewComment(action.getContent(),
+                    authenticatedAccount.getPerson());
+        }
         textFlowTargetReviewCommentsDAO.makePersistent(hComment);
         textFlowTargetReviewCommentsDAO.flush();
         AddReviewComment commentEvent = new AddReviewComment(
@@ -106,7 +123,7 @@ public class AddReviewCommentHandler extends
 
     private void throwExceptionIfCommentIsInvalid(AddReviewCommentAction action)
             throws ActionException {
-        if (StringUtils.isBlank(action.getContent())) {
+        if (!action.hasReviewCriterion() && StringUtils.isBlank(action.getContent())) {
             throw new ActionException("comment can not be blank");
         }
     }
@@ -114,7 +131,7 @@ public class AddReviewCommentHandler extends
     private static ReviewComment toDTO(HTextFlowTargetReviewComment hComment) {
         return new ReviewComment(new ReviewCommentId(hComment.getId()),
                 hComment.getComment(), hComment.getCommenterName(),
-                hComment.getCreationDate(), hComment.getTargetVersion());
+                hComment.getCreationDate());
     }
 
     @Override

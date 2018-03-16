@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.spi.HttpRequest;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -135,5 +135,11 @@ public final class HttpUtil {
             }
         }
         return false;
+    }
+
+    // in some instances we redirect https traffic to http and then here the url will become http protocol.
+    // We need to script off the protocol and let browser do the right thing.
+    public static String stripProtocol(String url) {
+        return url.replaceFirst("^https?:", "");
     }
 }

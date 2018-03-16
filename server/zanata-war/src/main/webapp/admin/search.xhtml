@@ -25,7 +25,7 @@
     <div class="g">
       <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
         <p class="txt--meta l--push-all-0">
-          <h:link outcome="/admin/home.xhtml"
+          <h:link outcome="/admin/home"
             value="#{msgs['jsf.Administration']}"/>
         </p>
 
@@ -36,7 +36,7 @@
           </h1>
         </div>
 
-        <h:panelGroup layout="block"  styleClass="panel l--push-top-1" id="progress">
+        <h:panelGroup layout="block"  styleClass="panel l--push-top-2" id="progress">
           <div class="panel__header">
             <h:panelGroup layout="block"  styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
               rendered="#{reindexAction.inProgress and !reindexAction.canceled}">
@@ -118,11 +118,11 @@
       <div class="g__item w--1-m w--5-8-l w--2-3">
         <h:form id="form">
             <h:panelGroup layout="block"  id="actions">
-                <table class="bg--pop-highest search-table l--push-bottom-1">
+                <table class="bg--pop-highest tableSearch l--push-bottom-1">
                   <thead>
                     <tr>
                       <th class="l--pad-v-half">
-                        <h:selectBooleanCheckbox value="#{reindexAction.selectAll}"
+                        <h:selectBooleanCheckbox value="#{reindexAction.selectAll}" id="selectAllCheck"
                           disabled="#{not reindexAction.canceled and reindexAction.inProgress}">
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>

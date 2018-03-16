@@ -33,7 +33,7 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.annotations.Authenticated;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.exception.RequestExistsException;
 import org.zanata.model.LanguageRequest;
 import org.zanata.model.type.RequestState;
@@ -184,7 +184,7 @@ public class LanguageJoinAction implements Serializable {
                     .append(strategy.getSubject(msgs)).append("\' , message \'")
                     .append(message).append("\'");
             log.error(
-                    "Failed to send email: fromName \'{}\', fromLoginName \'{}\', replyEmail \'{}\', subject \'{}\', message \'{}\'. {}",
+                    "Failed to send email: fromName \"{}\", fromLoginName \"{}\", replyEmail \"{}\", subject \"{}\", message \"{}\".",
                     fromName, fromLoginName, replyEmail, subject, message, e);
             facesMessages.addGlobal(sb.toString());
         }

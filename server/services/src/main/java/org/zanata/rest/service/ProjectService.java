@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,6 +44,7 @@ import org.zanata.rest.dto.QualifiedName;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.util.GlossaryUtil;
+import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 
 import com.google.common.base.Objects;
@@ -53,7 +54,6 @@ import com.google.common.base.Objects;
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
 public class ProjectService implements ProjectResource {
-    private static final long serialVersionUID = -3670404109711592923L;
     /** Project Identifier. */
     @PathParam("projectSlug")
     String projectSlug;
@@ -85,6 +85,9 @@ public class ProjectService implements ProjectResource {
 
     @Inject
     ETagUtils eTagUtils;
+
+    @Inject
+    UrlUtil urlUtil;
 
     @Nonnull
     public String getProjectSlug() {
@@ -136,7 +139,7 @@ public class ProjectService implements ProjectResource {
             // pre-emptive entity permission check
             identity.checkPermission(hProject, "insert");
 
-            response = Response.created(uri.getAbsolutePath());
+            response = Response.created(urlUtil.restPathURI(uri.getPath()));
         } else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
             // Project is obsolete
             return Response.status(Status.FORBIDDEN)

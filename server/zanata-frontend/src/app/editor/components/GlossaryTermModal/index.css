@@ -1,0 +1,24 @@
+.Editor-suggestionsBody .TransUnit--suggestion .TransUnit-text--tight {
+    padding-top: 0 !important;
+    font-size:1em;
+}
+
+.TransUnit--suggestion .TransUnit-text--tight {
+    padding-top:40px !important;
+    font-size:1.2em;
+}
+/* Based on bootstrap styles. */
+
+:root {
+    --brand-secondary: #03A6D7;
+    --brand-primary:   #546677;
+    --brand-info:      #00A5D9;
+    --brand-success:   #62c876;
+
+    --border-radius-base:       4px;
+    --border-radius-small:      3px;
+
+    --padding-base-vertical:    8px;
+    --padding-small-horizontal: 10px;
+    --padding-large-vertical:   14px;
+}

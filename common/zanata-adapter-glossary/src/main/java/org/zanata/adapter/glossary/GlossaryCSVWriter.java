@@ -73,7 +73,7 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
                 CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR));
         try {
             List<String> header = generateHeader(srcLocale, transLocales);
-            log.debug("Writing header-" + header);
+            log.debug("Writing header-{}", header);
             csvPrinter.printRecord(header);
 
             for (GlossaryEntry entry : entries) {
@@ -93,7 +93,7 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
                 row.add(getPosColumn(totalSize), entry.getPos());
                 row.add(getDescColumn(totalSize), entry.getDescription());
 
-                log.debug("Writing row-" + row);
+                log.debug("Writing row-{}", row);
                 csvPrinter.printRecord(row);
             }
         } finally {

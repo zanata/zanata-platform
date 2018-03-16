@@ -34,9 +34,9 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
+import org.zanata.seam.security.CurrentUser;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -65,8 +65,7 @@ public class AccountMergeAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
-    @Authenticated
-    private HAccount authenticatedAccount;
+    private CurrentUser currentUser;
     @Inject
     private FacesMessages facesMessages;
     @Inject
@@ -136,7 +135,7 @@ public class AccountMergeAction implements Serializable {
                 facesMessages.addGlobal(SEVERITY_ERROR,
                         "Could not find an account for that user.");
                 valid = false;
-            } else if (authenticatedAccount.getId()
+            } else if (currentUser.getAccount().getId()
                     .equals(obsoleteAccount.getId())) {
                 facesMessages.addGlobal(SEVERITY_ERROR,
                         "You are attempting to merge the same account.");
@@ -147,7 +146,7 @@ public class AccountMergeAction implements Serializable {
     }
 
     public void mergeAccounts() {
-        registerServiceImpl.mergeAccounts(authenticatedAccount,
+        registerServiceImpl.mergeAccounts(currentUser.getAccount(),
                 getObsoleteAccount());
         setObsoleteAccount(null); // reset the obsolete account
         facesMessages.addGlobal("Your accounts have been merged.");

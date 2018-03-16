@@ -25,6 +25,10 @@ import javax.enterprise.util.AnnotationLiteral;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+// Suppress useless warning "The annotation type Authenticated should not be
+// used as a superinterface for AuthenticatedLiteral" since this is just
+// following the example in the AnnotationLiteral javadocs:
+@SuppressWarnings("all")
 public class AuthenticatedLiteral extends AnnotationLiteral<Authenticated>
         implements Authenticated {
     private static final long serialVersionUID = -4788334782510322034L;

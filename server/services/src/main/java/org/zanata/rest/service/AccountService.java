@@ -18,6 +18,8 @@ import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.common.LocaleId;
@@ -29,6 +31,7 @@ import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.Account;
+import org.zanata.util.UrlUtil;
 
 @RequestScoped
 @Named("accountService")
@@ -36,9 +39,8 @@ import org.zanata.rest.dto.Account;
 @Transactional
 @CheckRole("admin")
 public class AccountService implements AccountResource {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(AccountService.class);
-    private static final long serialVersionUID = 6561405744815887237L;
+    private static final Logger log =
+            LoggerFactory.getLogger(AccountService.class);
 
     /**
      * User name that identifies an account.
@@ -61,6 +63,8 @@ public class AccountService implements AccountResource {
     private ZanataIdentity identity;
     @Inject
     private Session session;
+    @Inject
+    private UrlUtil urlUtil;
 
     @Override
     public Response get() {
@@ -72,7 +76,7 @@ public class AccountService implements AccountResource {
         }
         Account result = new Account();
         getAccountDetails(hAccount, result);
-        log.debug("HTTP GET result :\n" + result);
+        log.debug("HTTP GET result :\n{}", result);
         return Response.ok(result).build();
     }
 
@@ -86,7 +90,7 @@ public class AccountService implements AccountResource {
         if (hAccount == null) {
             // creating
             operation = "insert";
-            response = Response.created(uri.getAbsolutePath());
+            response = Response.created(urlUtil.restPathURI(uri.getPath()));
             hAccount = new HAccount();
             HPerson person = new HPerson();
             person.setAccount(hAccount);

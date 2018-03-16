@@ -1,10 +1,7 @@
 package org.zanata.adapter.xliff;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,8 +34,8 @@ public class XliffReaderTest {
     public void extractTemplateSizeTest() throws FileNotFoundException {
         Resource doc = getTemplateDoc();
 
-        assertThat(doc.getName(), equalTo(DOC_NAME));
-        assertThat(doc.getTextFlows().size(), is(7));
+        assertThat(doc.getName()).isEqualTo(DOC_NAME);
+        assertThat(doc.getTextFlows()).hasSize(7);
     }
 
     @Test
@@ -50,10 +47,10 @@ public class XliffReaderTest {
         TextFlow lastTextFlow =
                 doc.getTextFlows().get(doc.getTextFlows().size() - 2);
 
-        assertThat(firstTextFlow.getContents(),
-                equalTo(asList("Translation Unit 1")));
-        assertThat(lastTextFlow.getContents(),
-                equalTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)")));
+        assertThat(firstTextFlow.getContents())
+                .isEqualTo(asList("Translation Unit 1"));
+        assertThat(lastTextFlow.getContents())
+                .isEqualTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)"));
     }
 
     @Test
@@ -61,7 +58,7 @@ public class XliffReaderTest {
         File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
         TranslationsResource tr = reader.extractTarget(fileTarget);
         // the file contains 4 trans-units, but one has no target element
-        assertThat(tr.getTextFlowTargets().size(), is(4));
+        assertThat(tr.getTextFlowTargets()).hasSize(4);
     }
 
     @Test
@@ -73,10 +70,10 @@ public class XliffReaderTest {
         TextFlowTarget lastTextFlow =
                 tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 2);
 
-        assertThat(firstTextFlow.getContents(),
-                equalTo(asList("Translation 1")));
-        assertThat(lastTextFlow.getContents(),
-                equalTo(asList("Translation 4 (4 < 5 & 4 > 3)")));
+        assertThat(firstTextFlow.getContents())
+                .isEqualTo(asList("Translation 1"));
+        assertThat(lastTextFlow.getContents())
+                .isEqualTo(asList("Translation 4 (4 < 5 & 4 > 3)"));
     }
 
     @Test
@@ -87,14 +84,14 @@ public class XliffReaderTest {
 
         TextFlowTarget lastTextFlow =
                 tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 1);
-        assertThat(lastTextFlow.getContents(),
-                equalTo(asList(" Leading and trailing white space ")));
-        assertThat(lastTextFlow.getContents(),
-                not(equalTo(asList("Leading and trailing white space"))));
-        assertThat(lastTextFlow.getContents(),
-                not(equalTo(asList(" Leading and trailing white space"))));
-        assertThat(lastTextFlow.getContents(),
-                not(equalTo(asList("Leading and trailing white space "))));
+        assertThat(lastTextFlow.getContents())
+                .isEqualTo(asList(" Leading and trailing white space "));
+        assertThat(lastTextFlow.getContents())
+                .isNotEqualTo(asList("Leading and trailing white space"));
+        assertThat(lastTextFlow.getContents())
+                .isNotEqualTo(asList(" Leading and trailing white space"));
+        assertThat(lastTextFlow.getContents())
+                .isNotEqualTo(asList("Leading and trailing white space "));
     }
 
     @Test
@@ -107,14 +104,14 @@ public class XliffReaderTest {
 
         TextFlow tf =
                 resource.getTextFlows().get(resource.getTextFlows().size() - 1);
-        assertThat(tf.getContents(),
-                equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) ")));
-        assertThat(tf.getContents(),
-                not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3)"))));
-        assertThat(tf.getContents(),
-                not(equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3)"))));
-        assertThat(tf.getContents(),
-                not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3) "))));
+        assertThat(tf.getContents())
+                .isEqualTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) "));
+        assertThat(tf.getContents())
+                .isNotEqualTo(asList("Translation Unit 5 (4 < 5 & 4 > 3)"));
+        assertThat(tf.getContents())
+                .isNotEqualTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3)"));
+        assertThat(tf.getContents())
+                .isNotEqualTo(asList("Translation Unit 5 (4 < 5 & 4 > 3) "));
     }
 
     @Test

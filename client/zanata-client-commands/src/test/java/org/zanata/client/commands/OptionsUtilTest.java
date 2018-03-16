@@ -1,28 +1,30 @@
 package org.zanata.client.commands;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isA;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
 import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders.allHolders;
 import static org.zanata.client.commands.Messages.get;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
 import javax.xml.bind.JAXBException;
 
-import org.hamcrest.Matchers;
+import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
@@ -76,18 +78,18 @@ public class OptionsUtilTest {
         OptionsUtil.applyIncludesAndExcludesFromProjectConfig(opts, config);
 
         // Then:
-        assertThat(opts.getSrcDir(), equalTo(new File("a")));
-        assertThat(opts.getTransDir(), equalTo(new File("b")));
-        assertThat(opts.getIncludes(), Matchers.contains("*.properties"));
-        assertThat(opts.getExcludes(), Matchers.contains("a.properties"));
+        assertThat(opts.getSrcDir()).isEqualTo(new File("a"));
+        assertThat(opts.getTransDir()).isEqualTo(new File("b"));
+        assertThat(opts.getIncludes()).contains("*.properties");
+        assertThat(opts.getExcludes()).contains("a.properties");
     }
 
     @Test
     public void willSetToDefaultValueIfNeitherHasValue() {
         OptionsUtil.applySrcDirAndTransDirFromProjectConfig(opts, config);
 
-        assertThat(opts.getSrcDir(), equalTo(new File(".")));
-        assertThat(opts.getTransDir(), equalTo(new File(".")));
+        assertThat(opts.getSrcDir()).isEqualTo(new File("."));
+        assertThat(opts.getTransDir()).isEqualTo(new File("."));
     }
 
     @Test
@@ -107,11 +109,40 @@ public class OptionsUtilTest {
         OptionsUtil.applyIncludesAndExcludesFromProjectConfig(opts, config);
 
         // Then:
-        assertThat(opts.getSrcDir(), equalTo(new File("pot")));
-        assertThat(opts.getTransDir(), equalTo(new File(".")));
-        assertThat(opts.getIncludes(), Matchers.contains("*.properties"));
-        assertThat(opts.getExcludes(),
-                Matchers.contains("a.properties", "b.properties"));
+        assertThat(opts.getSrcDir()).isEqualTo(new File("pot"));
+        assertThat(opts.getTransDir()).isEqualTo(new File("."));
+        assertThat(opts.getIncludes()).contains("*.properties");
+        assertThat(opts.getExcludes()).contains("a.properties", "b.properties");
+    }
+
+    @Test
+    public void applyUserConfigTestDefault() throws MalformedURLException {
+        opts.setUsername("username");
+        opts.setUrl(new URL("http://localhost"));
+
+        HierarchicalINIConfiguration config =
+                Mockito.mock(HierarchicalINIConfiguration.class);
+        OptionsUtil.applyUserConfig(opts, config);
+
+        verify(config).getSection("servers");
+        verify(config).getBoolean("defaults.debug", null);
+        verify(config).getBoolean("defaults.errors", null);
+        verify(config).getBoolean("defaults.quiet", null);
+        verify(config).getBoolean("defaults.batchMode", null);
+    }
+
+    @Test
+    public void applyUserConfigTest() {
+        opts.setDebug(false);
+        opts.setErrors(false);
+        opts.setQuiet(false);
+        opts.setInteractiveMode(false);
+
+        HierarchicalINIConfiguration config =
+                Mockito.mock(HierarchicalINIConfiguration.class);
+        OptionsUtil.applyUserConfig(opts, config);
+
+        verifyZeroInteractions(config);
     }
 
     @Test
@@ -153,7 +184,7 @@ public class OptionsUtilTest {
         boolean result = OptionsUtil
                 .shouldFetchLocalesFromServer(Optional.empty(),
                         opts);
-        assertThat(result, equalTo(false));
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -161,7 +192,7 @@ public class OptionsUtilTest {
         boolean result = OptionsUtil.shouldFetchLocalesFromServer(
                 Optional.of(new ZanataConfig()),
                 opts);
-        assertThat(result, equalTo(true));
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -173,20 +204,20 @@ public class OptionsUtilTest {
         opts.setInteractiveMode(false);
         boolean result = OptionsUtil.shouldFetchLocalesFromServer(
                 Optional.of(config), opts);
-        assertThat(result, equalTo(false));
+        assertThat(result).isFalse();
     }
 
     @Test
     public void readProjectConfigWillReturnEmptyIfNoProjectConfigDefinedInOptions()
             throws JAXBException {
-        assertThat(OptionsUtil.readProjectConfigFile(opts).isPresent(), equalTo(false));
+        assertThat(OptionsUtil.readProjectConfigFile(opts).isPresent()).isFalse();
     }
 
     @Test
     public void readProjectConfigWillReturnEmptyIfProjectConfigDefinedInOptionsDoesNotExist()
             throws JAXBException {
         opts.setProjectConfig(new File("does not exist"));
-        assertThat(OptionsUtil.readProjectConfigFile(opts).isPresent(), equalTo(false));
+        assertThat(OptionsUtil.readProjectConfigFile(opts).isPresent()).isFalse();
     }
 
     @Test
@@ -202,8 +233,8 @@ public class OptionsUtilTest {
         Files.write(configFile.toPath(), configLines, Charsets.UTF_8);
         opts.setProjectConfig(configFile);
 
-        assertThat(OptionsUtil.readProjectConfigFile(opts).isPresent(), equalTo(true));
-        assertThat(OptionsUtil.readProjectConfigFile(opts).get(), isA(ZanataConfig.class));
-
+        assertThat(OptionsUtil.readProjectConfigFile(opts).isPresent()).isTrue();
+        assertThat(OptionsUtil.readProjectConfigFile(opts).get())
+                .isInstanceOfAny(ZanataConfig.class);
     }
 }
