@@ -318,7 +318,8 @@ function mapDispatchToProps (dispatch) {
   return {
     // @ts-ignore
     close: () => dispatch(setSidebarVisibility(false)),
-    postReviewComment: (reviewData) => dispatch(postReviewComment(reviewData))
+    postReviewComment: (reviewData) =>
+      dispatch(postReviewComment(dispatch, reviewData))
   }
 }
 

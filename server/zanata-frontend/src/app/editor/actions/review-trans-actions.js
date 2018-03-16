@@ -6,6 +6,7 @@ import {
   // eslint-disable-next-line
   APITypes
 } from '../../actions/common-actions'
+import { fetchTransUnitHistory } from '../api'
 import { savePhraseWithStatus } from './phrases-actions'
 import { STATUS_REJECTED } from '../utils/status-util'
 import { createAction } from 'redux-actions'
@@ -54,12 +55,25 @@ export function rejectTranslation (dispatch, review) {
 /**
  * Perform a save of a review comment for a given TransUnit
  */
-export function postReviewComment (review) {
+export function postReviewComment (dispatch, review) {
   const endpoint = `${apiUrl}/review/trans/${review.localeId}`
   /** @type {APITypes} */
   const apiTypes = [
     ADD_REVIEW_REQUEST,
-    ADD_REVIEW_SUCCESS,
+    {
+      type: ADD_REVIEW_SUCCESS,
+      payload: (_action, _state, res) => {
+        return res.json().then((json) => {
+          dispatch(fetchTransUnitHistory(
+            review.localeId,
+            review.transUnitId,
+            review.phrase.projectSlug,
+            review.phrase.versionSlug
+          ))
+          return json
+        })
+      }
+    },
     ADD_REVIEW_FAILURE]
   const body = {
     transUnitId: review.transUnitId,
