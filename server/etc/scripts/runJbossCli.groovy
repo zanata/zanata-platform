@@ -31,28 +31,33 @@ String getPropertyValue(String name) {
 
 String appServerHome = getPropertyValue('appserver.home')
 if (appServerHome == null) {
-  throw new Exception('Missing appserver properties.  Please invoke mvn with -Dappserver=jbosseap6/wildfly8 or -Dappserver.home=jboss_home_dir')
+    throw new Exception('Missing appserver properties.  Please invoke mvn with -Dappserver=jbosseap6/wildfly8 or -Dappserver.home=jboss_home_dir')
 }
 
-// NB: project is a MavenProject
-// http://maven.apache.org/ref/3-LATEST/maven-core/apidocs/org/apache/maven/project/MavenProject.html
-
-def groovyAll = project.artifactMap.get('org.codehaus.groovy:groovy-all')
-if (!groovyAll) throw new Exception("Please add groovy-all as a dependency")
-
-String scriptName = 'zanataConfigTest.groovy'
+String scriptName = 'configureAppServer.js'
 String zanataConfigScript = new File("${project.basedir}/../etc/scripts/$scriptName").canonicalPath
+String javaHome = System.getProperty('java.home')
+String nashornJar = "$javaHome/lib/ext/nashorn.jar"
 
 def args = [
         'java',
         '-Djava.util.logging.manager=org.jboss.logmanager.LogManager',
         '-jar', "$appServerHome/jboss-modules.jar",
         '-modulepath', "$appServerHome/modules",
-        '-dependencies', 'org.jboss.as.cli,org.apache.commons.cli,org.jboss.logmanager',
-        '-classpath', groovyAll.file,
-        'groovy.ui.GroovyMain',
+
+        // TODO add sun.scripting to -dependencies and use -class instead of -classpath
+        // Depends on https://issues.jboss.org/browse/WFCORE-3686
+        // and https://issues.jboss.org/browse/MODULES-271
+        '-dependencies', 'org.jboss.as.cli,org.jboss.logmanager',
+        '-classpath', nashornJar,
+        // '-dependencies', 'org.jboss.as.cli,org.jboss.logmanager,sun.scripting',
+        // '-class',
+
+        'jdk.nashorn.tools.Shell',
+        '-scripting',
+        '-strict',
         zanataConfigScript
-//        ,'-v'
+        // ,'--verbose'
 ]
 
 boolean runningArquillian = project.artifactId != 'functional-test'
@@ -66,7 +71,7 @@ def processBuilder = new ProcessBuilder(args as String[])
 processBuilder.environment().put('JBOSS_HOME', appServerHome)
 def resultCode = processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start().waitFor()
 if (resultCode) {
-  throw new Exception("$scriptName failed with exit code $resultCode")
+    throw new Exception("$scriptName failed with exit code $resultCode")
 } else {
-  println "$scriptName completed successfully"
+    println "$scriptName completed successfully"
 }
