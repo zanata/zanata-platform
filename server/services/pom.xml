@@ -1373,25 +1373,12 @@
       <version>3.21.0</version>
     </dependency>
 
-    <!-- TODO upgrade from diff-match-patch 20111117 to one of the webjars -->
-    <!--<dependency>-->
-      <!--<groupId>org.webjars|org.webjars.bower|org.webjars.npm</groupId>-->
-      <!--<artifactId>diff-match-patch|google-diff-match-patch</artifactId>-->
-      <!--<version>20121119-1|1.0.0|1.1.0</version>-->
-    <!--</dependency>-->
-
     <dependency>
       <groupId>org.webjars.bower</groupId>
       <!-- AKA JavaScript-Templates -->
       <artifactId>blueimp-tmpl</artifactId>
       <!-- If we upgrade to v3.11.0, github-com-blueimp-JavaScript-Templates is smaller -->
       <version>2.5.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.webjars.bower</groupId>
-      <artifactId>jquery-file-upload</artifactId>
-      <version>9.5.6</version>
     </dependency>
 
     <dependency>

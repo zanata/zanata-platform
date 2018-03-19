@@ -10,7 +10,7 @@ class WebJarsTest {
     @Test
     fun `can resolve all resources`() {
         WebJars().apply {
-            getResource(blueimpJavaScriptTemplates)
+            getResource(blueimpJavaScriptTemplatesJS)
             getResource(codemirrorCSS)
             getResource(codemirrorJS)
             getResource(commonmarkJS)
@@ -19,20 +19,6 @@ class WebJarsTest {
             getResource(getjQueryTypingJS())
             getResource(googleCajaHtmlSanitizerJS)
             getResource(signalsJS)
-
-            arrayOf(
-                    // NB These should match the webjars.jQueryFileUpload refs in multi-file-upload.xhtml
-                    "js/cors/jquery.xdr-transport.js",
-                    "js/jquery.iframe-transport.js",
-                    "js/jquery.fileupload.js",
-                    "js/jquery.fileupload-process.js",
-                    "js/jquery.fileupload-validate.js",
-                    "js/jquery.fileupload-ui.js",
-                    "js/vendor/jquery.ui.widget.js"
-            ).forEach {
-                getResource(jQueryFileUpload(it))
-            }
-
         }
     }
 

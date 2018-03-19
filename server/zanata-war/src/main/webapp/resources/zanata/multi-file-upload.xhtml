@@ -393,36 +393,34 @@ site: http://www.fsf.org.
 
   </script>
 
-  <!-- NB The jQueryFileUpload scripts listed below should be listed in WebJarsTest too -->
-
   <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/vendor/jquery.ui.widget.js')}"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/vendor/jquery.ui.widget.js"/>
 
   <!-- The Templates plugin is included to render the upload/download listings -->
-  <h:outputScript target="body" library="webjars" name="${webjars.blueimpJavaScriptTemplates}"/>
+  <h:outputScript target="body" library="webjars" name="${webjars.blueimpJavaScriptTemplatesJS}"/>
 
   <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/jquery.iframe-transport.js')}"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.iframe-transport.js"/>
 
   <!-- The basic File Upload plugin -->
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/jquery.fileupload.js')}"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload.js"/>
 
   <!-- The File Upload processing plugin -->
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/jquery.fileupload-process.js')}"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload-process.js"/>
 
   <!-- The File Upload validation plugin -->
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/jquery.fileupload-validate.js')}"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload-validate.js"/>
 
   <!-- The File Upload user interface plugin -->
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/jquery.fileupload-ui.js')}"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload-ui.js"/>
 
-  <!-- The jQuery-File-Upload example script -->
-  <h:outputScript target="body" library="script" name="file-upload.js"/>
+  <!-- The File Upload main script -->
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/main.js"/>
 
   <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
   <!-- FIXME this might not work as expected -->
   <!--[if (gte IE 8)&(lt IE 10)]>
-  <h:outputScript target="body" library="webjars" name="${webjars.jQueryFileUpload('js/cors/jquery.xdr-transport.js')}"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/cors/jquery.xdr-transport.js"/>
   <![endif]-->
 
 </composite:implementation>

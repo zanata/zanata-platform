@@ -40,16 +40,12 @@ class WebJars {
     // TODO find a minified version of codemirror 3.2.1 or upgrade to 5.x
     val codemirrorJS = scriptName(BOWER, "codemirror", "lib/codemirror.js")
     val codemirrorCSS = scriptName(BOWER, "codemirror", "lib/codemirror.css")
-    val blueimpJavaScriptTemplates = scriptName(BOWER, "blueimp-tmpl", "js/tmpl.min.js")
+    val blueimpJavaScriptTemplatesJS = scriptName(BOWER, "blueimp-tmpl", "js/tmpl.min.js")
     val crossroadsJS = scriptName(CLASSIC, "crossroads.js", "crossroads.min.js")
     val signalsJS = scriptName(CLASSIC, "js-signals", "signals.min.js")
     // TODO wait for https://github.com/zanata/zanata-platform/pull/747
     // then change webjars.diff to webjars.diffJS in Application.xhtml and enable this:
 //    val diffJS = scriptName(NPM, "diff", "dist/diff.min.js")
-
-    /** jquery-file-upload includes multiple js files, so we accept the name of the resource */
-    fun jQueryFileUpload(resourceName: String) =
-            scriptName(BOWER, "jquery-file-upload", resourceName)
 
     /** Gets the script name for jQueryTyping's JS file */
     // Normally this would be a Kotlin property, but we have to name the
