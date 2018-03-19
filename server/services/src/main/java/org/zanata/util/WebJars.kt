@@ -45,7 +45,7 @@ class WebJars {
     val signalsJS = scriptName(CLASSIC, "js-signals", "signals.min.js")
     // TODO wait for https://github.com/zanata/zanata-platform/pull/747
     // then change webjars.diff to webjars.diffJS in Application.xhtml and enable this:
-//    val diffJS = scriptName(NPM, "diff", "diff.min.js")
+//    val diffJS = scriptName(NPM, "diff", "dist/diff.min.js")
 
     /** jquery-file-upload includes multiple js files, so we accept the name of the resource */
     fun jQueryFileUpload(resourceName: String) =
