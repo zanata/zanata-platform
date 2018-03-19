@@ -13,7 +13,7 @@ class WebJarsTest {
             getResource(blueimpJavaScriptTemplatesJS)
             getResource(commonmarkJS)
             getResource(crossroadsJS)
-            // TODO getResource(diffJS)
+            getResource(diffJS)
             getResource(getjQueryTypingJS())
             getResource(googleCajaHtmlSanitizerJS)
             getResource(signalsJS)

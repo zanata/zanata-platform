@@ -40,9 +40,7 @@ class WebJars {
     val blueimpJavaScriptTemplatesJS = scriptName(BOWER, "blueimp-tmpl", "js/tmpl.min.js")
     val crossroadsJS = scriptName(CLASSIC, "crossroads.js", "crossroads.min.js")
     val signalsJS = scriptName(CLASSIC, "js-signals", "signals.min.js")
-    // TODO wait for https://github.com/zanata/zanata-platform/pull/747
-    // then change webjars.diff to webjars.diffJS in Application.xhtml and enable this:
-//    val diffJS = scriptName(NPM, "diff", "dist/diff.min.js")
+    val diffJS = scriptName(NPM, "diff", "dist/diff.min.js")
 
     /** Gets the script name for jQueryTyping's JS file */
     // Normally this would be a Kotlin property, but we have to name the
