@@ -1368,13 +1368,6 @@
 
     <dependency>
       <groupId>org.webjars.bower</groupId>
-      <artifactId>codemirror</artifactId>
-      <!-- If we upgrade to 5.x, try codemirror-minified instead -->
-      <version>3.21.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.webjars.bower</groupId>
       <!-- AKA JavaScript-Templates -->
       <artifactId>blueimp-tmpl</artifactId>
       <!-- If we upgrade to v3.11.0, github-com-blueimp-JavaScript-Templates is smaller -->

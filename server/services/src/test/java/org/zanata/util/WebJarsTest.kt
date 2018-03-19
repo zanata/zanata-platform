@@ -11,8 +11,6 @@ class WebJarsTest {
     fun `can resolve all resources`() {
         WebJars().apply {
             getResource(blueimpJavaScriptTemplatesJS)
-            getResource(codemirrorCSS)
-            getResource(codemirrorJS)
             getResource(commonmarkJS)
             getResource(crossroadsJS)
             // TODO getResource(diffJS)

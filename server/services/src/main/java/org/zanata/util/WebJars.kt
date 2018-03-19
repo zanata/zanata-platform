@@ -37,9 +37,6 @@ class WebJars {
     // these strings are all used in xhtml pages with h:outputScript, either in zanata-war or gwt-editor
     val commonmarkJS = scriptName(BOWER, "commonmark", "dist/commonmark.min.js")
     val googleCajaHtmlSanitizerJS = scriptName(BOWER, "google-caja", "html-sanitizer-minified.js")
-    // TODO find a minified version of codemirror 3.2.1 or upgrade to 5.x
-    val codemirrorJS = scriptName(BOWER, "codemirror", "lib/codemirror.js")
-    val codemirrorCSS = scriptName(BOWER, "codemirror", "lib/codemirror.css")
     val blueimpJavaScriptTemplatesJS = scriptName(BOWER, "blueimp-tmpl", "js/tmpl.min.js")
     val crossroadsJS = scriptName(CLASSIC, "crossroads.js", "crossroads.min.js")
     val signalsJS = scriptName(CLASSIC, "js-signals", "signals.min.js")
