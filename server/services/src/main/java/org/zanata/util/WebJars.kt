@@ -35,24 +35,39 @@ import javax.inject.Named
 class WebJars {
 
     // these strings are all used in xhtml pages with h:outputScript, either in zanata-war or gwt-editor
-    val commonmarkJS = scriptName(BOWER, "commonmark", "dist/commonmark.min.js")
-    val googleCajaHtmlSanitizerJS = scriptName(BOWER, "google-caja", "html-sanitizer-minified.js")
-    val blueimpJavaScriptTemplatesJS = scriptName(BOWER, "blueimp-tmpl", "js/tmpl.min.js")
-    val crossroadsJS = scriptName(CLASSIC, "crossroads.js", "crossroads.min.js")
-    val signalsJS = scriptName(CLASSIC, "js-signals", "signals.min.js")
-    val diffJS = scriptName(NPM, "diff", "dist/diff.min.js")
+    val commonmarkJS by lazy {
+        scriptName(BOWER, "commonmark", "dist/commonmark.min.js")
+    }
+    val googleCajaHtmlSanitizerJS by lazy {
+        scriptName(BOWER, "google-caja", "html-sanitizer-minified.js")
+    }
+    val blueimpJavaScriptTemplatesJS by lazy {
+        scriptName(BOWER, "blueimp-tmpl", "js/tmpl.min.js")
+    }
+    val crossroadsJS by lazy {
+        scriptName(CLASSIC, "crossroads.js", "crossroads.min.js")
+    }
+    val signalsJS by lazy {
+        scriptName(CLASSIC, "js-signals", "signals.min.js")
+    }
+    val diffJS by lazy {
+        scriptName(NPM, "diff", "dist/diff.min.js")
+    }
 
-    /** Gets the script name for jQueryTyping's JS file */
-    // Normally this would be a Kotlin property, but we have to name the
-    // method getjQueryTyping (lower case 'j') if we want to use it in EL
-    // as webjars.jQueryTyping (javabean rules)
+    // Note that the JavaBean property name (for JSF) is JQueryTypingJS, not jQueryTypingJS
     // Ref: http://futuretask.blogspot.com/2005/01/java-tip-6-dont-capitalize-first-two.html
-    fun getjQueryTypingJS() = scriptName(BOWER, JQ_TYPING_LIB, jqTypingJS)
+    val jQueryTypingJS by lazy {
+        // jquery-typing uses the version number in the paths inside the
+        // package, so we have to handle it specially.
+        val jqTypingLib = "github-com-ccakes-jquery-typing"
+        val jqTypingVer: String = getJarVersion(BOWER, jqTypingLib)
+        scriptName(BOWER, jqTypingLib, "plugin/jquery.typing-$jqTypingVer.min.js")
+    }
 
     /**
      * Returns the URL for the specified webjar resource (whose name has been
-     * returned by one of the other WebJars functions). If the resource is not
-     * found, an exception is thrown.
+     * returned by one of the other WebJars functions/properties). If the
+     * resource is not found, an exception is thrown.
      */
     fun getResource(nameInsideJar: String): URL {
         val name = "/META-INF/resources/webjars/$nameInsideJar"
@@ -64,12 +79,6 @@ class WebJars {
 private const val BOWER = "org.webjars.bower"
 private const val CLASSIC = "org.webjars"
 private const val NPM = "org.webjars.npm"
-
-// jquery-typing uses the version number in the paths inside the package,
-// so we have to handle it specially:
-private const val JQ_TYPING_LIB = "github-com-ccakes-jquery-typing"
-private val jqTypingVer: String = getJarVersion(BOWER, JQ_TYPING_LIB)
-private val jqTypingJS = "plugin/jquery.typing-$jqTypingVer.min.js"
 
 /*
  * Gets the Maven version of a webjar artifact.

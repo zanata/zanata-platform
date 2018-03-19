@@ -14,8 +14,8 @@ class WebJarsTest {
             getResource(commonmarkJS)
             getResource(crossroadsJS)
             getResource(diffJS)
-            getResource(getjQueryTypingJS())
             getResource(googleCajaHtmlSanitizerJS)
+            getResource(jQueryTypingJS)
             getResource(signalsJS)
         }
     }
