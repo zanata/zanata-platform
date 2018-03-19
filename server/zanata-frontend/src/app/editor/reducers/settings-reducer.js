@@ -10,7 +10,8 @@ import {
   SETTING_UPDATE,
   SETTINGS_SAVE_REQUEST,
   SETTINGS_SAVE_SUCCESS,
-  SETTINGS_SAVE_FAILURE
+  SETTINGS_SAVE_FAILURE,
+  VALIDATORS_SUCCESS
 } from '../actions/settings-action-types'
 import { SHORTCUTS } from '../actions/key-shortcuts-actions'
 
@@ -20,13 +21,13 @@ export const SUGGESTIONS_DIFF = 'suggestions-diff'
 export const KEY_SUGGESTIONS_VISIBLE = 'suggestions-visible'
 
 /* Validation Options */
-export const HTML_XML = 'html-xml-tags'
-export const NEW_LINE = 'leading-trailing-newline'
-export const TAB = 'tab-characters'
-export const JAVA_VARIABLES = 'java-variables'
-export const XML_ENTITY = 'xml-entity-reference'
-export const PRINTF_VARIABLES = 'printf-variables'
-export const PRINTF_XSI_EXTENSION = 'positional-printf-xsi'
+export const HTML_XML = 'HTML_XML'
+export const NEW_LINE = 'NEW_LINE'
+export const TAB = 'TAB'
+export const JAVA_VARIABLES = 'JAVA_VARIABLES'
+export const XML_ENTITY = 'XML_ENTITY'
+export const PRINTF_VARIABLES = 'PRINTF_VARIABLES'
+export const PRINTF_XSI_EXTENSION = 'PRINTF_XSI_EXTENSION'
 
 /* Parse values of known settings to appropriate types */
 function parseKnownSettings (settings) {
@@ -58,6 +59,9 @@ function parseKnownSettings (settings) {
 /* convenience function to construct an empty setting body */
 const newSetting = value => ({ value, saving: false, error: undefined })
 
+// Default validator value: one of ['Error','Warning','Off']
+export const defaultValidation = 'Off'
+
 export const defaultState = {
   // state for all settings being requested on app load
   fetching: false,
@@ -72,13 +76,13 @@ export const defaultState = {
     [SUGGESTIONS_DIFF]: newSetting(true),
     [KEY_SUGGESTIONS_VISIBLE]: newSetting(true),
     // Validator options disabled by default
-    [HTML_XML]: newSetting(false),
-    [NEW_LINE]: newSetting(false),
-    [TAB]: newSetting(false),
-    [JAVA_VARIABLES]: newSetting(false),
-    [XML_ENTITY]: newSetting(false),
-    [PRINTF_VARIABLES]: newSetting(false),
-    [PRINTF_XSI_EXTENSION]: newSetting(false)
+    [HTML_XML]: newSetting(defaultValidation),
+    [NEW_LINE]: newSetting(defaultValidation),
+    [TAB]: newSetting(defaultValidation),
+    [JAVA_VARIABLES]: newSetting(defaultValidation),
+    [XML_ENTITY]: newSetting(defaultValidation),
+    [PRINTF_VARIABLES]: newSetting(defaultValidation),
+    [PRINTF_XSI_EXTENSION]: newSetting(defaultValidation)
   }
 }
 
@@ -156,6 +160,18 @@ export default handleActions({
       fetching: {$set: false},
       settings: {
         ...additions,
+        ...updates
+      }
+    })
+  },
+  [VALIDATORS_SUCCESS]: (state, { payload }) => {
+    const defined = keys(state.settings)
+    const parsed = parseKnownSettings(payload)
+    const updates = mapValues(pick(parsed, defined),
+      value => ({ value: {$set: value} }))
+    return update(state, {
+      fetching: {$set: false},
+      settings: {
         ...updates
       }
     })

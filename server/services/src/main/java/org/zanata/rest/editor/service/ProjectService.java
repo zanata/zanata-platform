@@ -19,7 +19,6 @@ import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ETagUtils;
 import org.zanata.rest.editor.service.resource.ProjectResource;
 import org.zanata.service.ValidationService;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 

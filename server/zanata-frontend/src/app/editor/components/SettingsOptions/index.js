@@ -3,11 +3,12 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import SettingOption from '../SettingOption'
 
-const SettingsOptions = ({settings, updateSetting}) => {
+const SettingsOptions = ({settings, updateSetting, disabled}) => {
   const checkboxes = settings.map((setting, index) => (
     <li key={index}>
       <SettingOption
         updateSetting={updateSetting}
+        disabled={disabled}
         {...setting} />
     </li>
   ))
@@ -27,7 +28,8 @@ SettingsOptions.propTypes = {
     active: PropTypes.bool.isRequired
   })).isRequired,
   /* arguments: (string: settingId, bool: active) */
-  updateSetting: PropTypes.func.isRequired
+  updateSetting: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 export default SettingsOptions

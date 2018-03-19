@@ -34,6 +34,12 @@ import {
   PRINTF_XSI_EXTENSION
 } from '../reducers/settings-reducer'
 
+// Validator error types
+// TODO: convert to tuple
+export const ERROR = 'Error'
+export const WARNING = 'Warning'
+export const OFF = 'Off'
+
 export const SettingsPanel = ({
   enterSavesImmediately,
   syntaxHighligting,
@@ -50,6 +56,9 @@ export const SettingsPanel = ({
   isRTL
 }) => {
   const directionClass = isRTL ? 'rtl' : 'ltr'
+  const validatorChecked = (validator) => {
+    return (validator === ERROR || validator === WARNING)
+  }
   return (
     <div>
       <h1 className="SidebarEditor-heading">
@@ -83,37 +92,40 @@ export const SettingsPanel = ({
               {
                 id: HTML_XML,
                 label: 'HTML/XML tags',
-                active: validateHtmlXml
+                active: validatorChecked(validateHtmlXml),
+                disabled: validateHtmlXml === ERROR
               },
               {
                 id: JAVA_VARIABLES,
                 label: 'Java variables',
-                active: validateJavaVariables
+                active: validatorChecked(validateJavaVariables),
+                disabled: validateJavaVariables === ERROR
               },
               {
                 id: NEW_LINE,
                 label: 'Leading/trailing newline (\\n)',
-                active: validateNewLine
+                active: validatorChecked(validateNewLine),
+                disabled: validateNewLine === ERROR
               },
               {
                 id: PRINTF_XSI_EXTENSION,
                 label: 'Positional printf (XSI extention)',
-                active: validatePrintfXsi
+                active: validatorChecked(validatePrintfXsi)
               },
               {
                 id: PRINTF_VARIABLES,
                 label: 'Printf variables',
-                active: validatePrintfVariables
+                active: validatorChecked(validatePrintfVariables)
               },
               {
                 id: TAB,
                 label: 'Tab characters (\\t)',
-                active: validateTab
+                active: validatorChecked(validateTab)
               },
               {
                 id: XML_ENTITY,
                 label: 'XML entity reference',
-                active: validateXmlEntity
+                active: validatorChecked(validateXmlEntity)
               }
             ]}
             updateSetting={updateValidationSetting} />
@@ -126,13 +138,13 @@ export const SettingsPanel = ({
 SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
   syntaxHighligting: PropTypes.bool.isRequired,
-  validateHtmlXml: PropTypes.bool.isRequired,
-  validateNewLine: PropTypes.bool.isRequired,
-  validateTab: PropTypes.bool.isRequired,
-  validateJavaVariables: PropTypes.bool.isRequired,
-  validateXmlEntity: PropTypes.bool.isRequired,
-  validatePrintfVariables: PropTypes.bool.isRequired,
-  validatePrintfXsi: PropTypes.bool.isRequired,
+  validateHtmlXml: PropTypes.string.isRequired,
+  validateNewLine: PropTypes.string.isRequired,
+  validateTab: PropTypes.string.isRequired,
+  validateJavaVariables: PropTypes.string.isRequired,
+  validateXmlEntity: PropTypes.string.isRequired,
+  validatePrintfVariables: PropTypes.string.isRequired,
+  validatePrintfXsi: PropTypes.string.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired,
   updateValidationSetting: PropTypes.func.isRequired,
