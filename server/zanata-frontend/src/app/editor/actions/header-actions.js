@@ -189,7 +189,7 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
             .then(checkResponse('fetch statistics failed'))
             .then(stats => dispatch(statsFetched(stats)))
 
-          fetchValidationSettings(dispatch, projectSlug)
+          fetchValidationSettings(dispatch, projectSlug, versionSlug)
 
           // dispatching selected doc and locale must happen after we compare
           // previous state otherwise it will not fetch stats

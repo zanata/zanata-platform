@@ -5,6 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -48,6 +49,8 @@ public interface ProjectResource {
      *
      * @param projectSlug project identifier
      *
+     * @param versionSlug project version identifier
+     *
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - Containing the Project data.<br>
@@ -61,5 +64,6 @@ public interface ProjectResource {
     @Produces({ MediaType.APPLICATION_JSON })
     @Path("/validators/{projectSlug}")
     public Response getValidationSettings(
-            @PathParam("projectSlug") String projectSlug);
+            @PathParam("projectSlug") String projectSlug,
+            @QueryParam("versionSlug") String versionSlug);
 }

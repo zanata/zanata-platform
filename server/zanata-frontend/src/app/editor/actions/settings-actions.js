@@ -37,8 +37,9 @@ export const fetchSettings = () => dispatch => dispatch({
 /**
  * Fetch the Project Validation settings over the REST API.
  */
-export function fetchValidationSettings (dispatch, projectSlug) {
-  const validationSettingsUrl = `${apiUrl}/project/validators/${projectSlug}`
+export function fetchValidationSettings (dispatch, projectSlug, versionSlug) {
+  const validationSettingsUrl =
+    `${apiUrl}/project/validators/${projectSlug}?versionSlug=${versionSlug}`
   dispatch({
     [CALL_API_ENHANCED]: {
       endpoint: validationSettingsUrl,
