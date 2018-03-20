@@ -20,6 +20,9 @@
  */
 package org.zanata.service.impl;
 
+import java.io.File;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
@@ -65,6 +69,7 @@ import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.FileUtil;
 import org.zanata.util.StatisticsUtil;
 import com.google.common.annotations.VisibleForTesting;
 import javax.enterprise.event.Event;
@@ -176,7 +181,13 @@ public class DocumentServiceImpl implements DocumentService {
             // TODO check that entity name matches id parameter
             document = new HDocument(sourceDoc.getName(),
                     sourceDoc.getContentType(), hLocale);
-            if(document.getPath().length() + document.getName().length() > 255) {
+            try {
+                Paths.get(FileUtil.convertToValidPath(
+                        document.getPath()).concat(document.getName()));
+            } catch (InvalidPathException ipe) {
+                throw new ZanataServiceException("Path is not valid");
+            }
+            if(document.getPath().length() + document.getName().length() > 4095) {
                 throw new ZanataServiceException(
                         msgs.get("jsf.upload.FilenameIsTooLarge"));
             }

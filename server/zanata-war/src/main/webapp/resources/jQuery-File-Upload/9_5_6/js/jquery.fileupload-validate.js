@@ -88,6 +88,10 @@
                 if (options.minFileSize || options.maxFileSize) {
                     fileSize = file.size;
                 }
+
+                var filepathLength = file.path ? file.path.length : 0
+                var filenameLength = file.name ? file.name.length : 0
+
                 if ($.type(options.maxNumberOfFiles) === 'number' &&
                         (settings.getNumberOfFiles() || 0) + data.files.length >
                             options.maxNumberOfFiles) {
@@ -101,8 +105,8 @@
                 } else if ($.type(fileSize) === 'number' &&
                         fileSize < options.minFileSize) {
                     file.error = settings.i18n('minFileSize');
-                } else if (file.path.length + file.name.length > 255) {
-                    file.error = settings.i18n('maxNumberOfFiles');
+                } else if (filepathLength + filenameLength > 4095) {
+                    file.error = settings.i18n('maxFilePathSize');
                 } else {
                     delete file.error;
                 }
