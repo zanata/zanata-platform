@@ -50,7 +50,7 @@
         </tr>
 
         <tr>
-          <td>
+          <td class="CodeMirror-searching">
             <g:InlineLabel ui:field="matchLabel">
               <ui:text from="{messages.matching}" />
             </g:InlineLabel>
@@ -63,7 +63,7 @@
         </tr>
 
         <tr>
-          <td class="CodeMirror-searching">
+          <td>
             <g:InlineLabel ui:field="absentLabel">
               <ui:text from="{messages.noMatch}" />
             </g:InlineLabel>
