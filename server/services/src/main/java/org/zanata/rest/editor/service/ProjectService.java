@@ -68,7 +68,7 @@ public class ProjectService implements ProjectResource {
         Collection<ValidationAction> validators =
             validationService.getValidationActions(projectSlug, versionSlug);
 
-        if (validators.isEmpty()) {
+        if (validators == null || validators.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
@@ -84,11 +84,14 @@ public class ProjectService implements ProjectResource {
     public ProjectService() {
     }
 
-    @java.beans.ConstructorProperties({ "request", "eTagUtils", "projectDAO" })
+    @java.beans.ConstructorProperties({ "request", "eTagUtils", "projectDAO",
+            "validationService" })
     protected ProjectService(final Request request, final ETagUtils eTagUtils,
-            final ProjectDAO projectDAO) {
+            final ProjectDAO projectDAO,
+            final ValidationService validationService) {
         this.request = request;
         this.eTagUtils = eTagUtils;
         this.projectDAO = projectDAO;
+        this.validationService = validationService;
     }
 }
