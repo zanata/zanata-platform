@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -42,11 +43,11 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import org.zanata.webtrans.test.GWTTestData;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,14 +76,15 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     private ResourceUtils resourceUtils;
 
     private GetTranslationHistoryAction action;
-    private TransUnitId transUnitId = new TransUnitId(1L);
-    @Mock
-    private HLocale hLocale;
-    private LocaleId localeId = new LocaleId("en-US");
+    public static final long TUID = 1L;
+    private TransUnitId transUnitId = new TransUnitId(TUID);
+    private LocaleId localeId = LocaleId.EN_US;
+    private HLocale hLocale = new HLocale(localeId);
 
     @Before
     public void beforeMethod() {
         action = new GetTranslationHistoryAction(transUnitId);
+        setId(hLocale, 2L);
     }
 
     @Test(expected = ActionException.class)
@@ -131,37 +133,49 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
 
     @Test
     @InRequestScope
-    public void canGetHistoryAndCurrentTranslation() throws ActionException {
+    public void canGetHistoryAndCurrentTranslation() throws Exception {
         // Given: text flow has 2 history translation
         action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel",
                 "7.0", ProjectType.Podir), localeId));
-        when(
-                localeService.validateLocaleByProjectIteration(localeId,
-                        "rhel", "7.0")).thenReturn(hLocale);
-        when(hLocale.getId()).thenReturn(2L);
+        Callable<GetTranslationHistoryResult> callable = () ->
+                handler.execute(action, executionContext);
+
+        canGetTranslationHistory(callable);
+    }
+
+
+    @Test
+    @InRequestScope
+    public void canGetTranslationHistory() throws Exception {
+        Callable<GetTranslationHistoryResult> callable = () ->
+                handler.getTranslationHistory("en-US", TUID, "rhel", "7.0");
+
+        canGetTranslationHistory(callable);
+    }
+
+    private void canGetTranslationHistory(Callable<GetTranslationHistoryResult> invocation)
+            throws Exception {
+        // Given:
         HTextFlow hTextFlow = createHTextFlow();
         // two history items
-        HashMap<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
-        history.put(
-                0,
-                createHistory(createTarget(new Date(), "smith", 0,
-                        Maps.<Integer, HTextFlowTargetHistory> newHashMap())));
-        history.put(
-                1,
-                createHistory(createTarget(new Date(), "john", 1,
-                        Maps.<Integer, HTextFlowTargetHistory> newHashMap())));
+        HashMap<Integer, HTextFlowTargetHistory> history = newHashMap();
+        history.put(0, createHistory(createTarget(new Date(), "smith", 0,
+                newHashMap())));
+        history.put(1, createHistory(createTarget(new Date(), "john", 1,
+                newHashMap())));
         HTextFlowTarget currentTranslation =
                 createTarget(new Date(), "admin", 2, history);
         hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
+        // When:
+        when(localeService.validateLocaleByProjectIteration(localeId,
+                "rhel", "7.0")).thenReturn(hLocale);
         when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale))
                 .thenReturn(2);
-        when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(
+        when(textFlowDAO.findById(TUID, false)).thenReturn(
                 hTextFlow);
 
-        // When:
-        GetTranslationHistoryResult result =
-                handler.execute(action, executionContext);
+        GetTranslationHistoryResult result = invocation.call();
 
         // Then:
         assertThat(result.getHistoryItems()).hasSize(2);
@@ -183,7 +197,6 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
         when(
                 localeService.validateLocaleByProjectIteration(localeId,
                         "rhel", "7.0")).thenReturn(hLocale);
-        when(hLocale.getId()).thenReturn(2L);
         HTextFlow hTextFlow = createHTextFlow();
         HTextFlowTarget currentTranslation =
                 createTarget(new Date(), null, 0,
@@ -219,7 +232,6 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
         when(
                 localeService.validateLocaleByProjectIteration(localeId,
                         "rhel", "7.0")).thenReturn(hLocale);
-        when(hLocale.getId()).thenReturn(2L);
         HTextFlow hTextFlow = createHTextFlow();
         HTextFlowTarget currentTranslation =
                 createTarget(new Date(), null, 0,
@@ -247,7 +259,7 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
 
     private static HTextFlow createHTextFlow() {
         HTextFlow hTextFlow = new HTextFlow();
-        HashMap<Long, HTextFlowTarget> targetMap = Maps.newHashMap();
+        HashMap<Long, HTextFlowTarget> targetMap = newHashMap();
         hTextFlow.setTargets(targetMap);
         hTextFlow.setPlural(true);
         return hTextFlow;
@@ -287,21 +299,19 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
         when(
                 reviewCommentsDAO.getReviewComments(action.getTransUnitId(),
                         localeId)).thenReturn(
-                Lists.newArrayList(makeCommentEntity(localeId, "a comment"),
-                        makeCommentEntity(localeId, "another comment")));
+                Lists.newArrayList(makeCommentEntity("a comment"),
+                        makeCommentEntity("another comment")));
 
-        List<ReviewComment> result = handler.getReviewComments(action);
+        List<ReviewComment> result =
+                handler.getReviewComments(action.getTransUnitId(), hLocale);
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getComment()).isEqualTo("a comment");
         assertThat(result.get(1).getComment()).isEqualTo("another comment");
     }
 
-    private static HTextFlowTargetReviewComment makeCommentEntity(
-            LocaleId localeId, String comment) {
-        HLocale hLocale = new HLocale(localeId);
-        setId(hLocale, 2L);
-
+    private HTextFlowTargetReviewComment makeCommentEntity(
+            String comment) {
         HTextFlow textFlow =
                 makeHTextFlow(1L, hLocale, ContentState.Rejected);
 

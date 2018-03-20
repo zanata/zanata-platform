@@ -47,7 +47,7 @@ class Entry extends Component {
     const url = getLanguageUrl(localeDetails.localeId)
 
     return (
-      <tr name='language-entry'>
+      <tr name='language-entry' className='bstrapReact'>
         <td>
           <a href={url} id={'language-name-' + localeDetails.localeId}>
             <span name='language-name'>

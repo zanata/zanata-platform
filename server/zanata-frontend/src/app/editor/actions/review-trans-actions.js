@@ -6,6 +6,7 @@ import {
   // eslint-disable-next-line
   APITypes
 } from '../../actions/common-actions'
+import { fetchTransUnitHistory } from '../api'
 import { savePhraseWithStatus } from './phrases-actions'
 import { STATUS_REJECTED } from '../utils/status-util'
 import { createAction } from 'redux-actions'
@@ -31,7 +32,8 @@ export function rejectTranslation (dispatch, review) {
       type: ADD_REVIEW_SUCCESS,
       payload: (_action, _state, res) => {
         return res.json().then((json) => {
-          dispatch(savePhraseWithStatus(review.phrase, STATUS_REJECTED))
+          dispatch(savePhraseWithStatus(
+            review.phrase, STATUS_REJECTED, review.reviewComment))
           return json
         })
       }
@@ -43,6 +45,42 @@ export function rejectTranslation (dispatch, review) {
     comment: review.reviewComment,
     reviewCriteriaId: review.criteriaId,
     status: 'Rejected'
+  }
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'PUT', getJsonHeaders(), apiTypes,
+     JSON.stringify(body))
+  }
+}
+
+/**
+ * Perform a save of a review comment for a given TransUnit
+ */
+export function postReviewComment (dispatch, review) {
+  const endpoint = `${apiUrl}/review/trans/${review.localeId}`
+  /** @type {APITypes} */
+  const apiTypes = [
+    ADD_REVIEW_REQUEST,
+    {
+      type: ADD_REVIEW_SUCCESS,
+      payload: (_action, _state, res) => {
+        return res.json().then((json) => {
+          dispatch(fetchTransUnitHistory(
+            review.localeId,
+            review.transUnitId,
+            review.phrase.projectSlug,
+            review.phrase.versionSlug
+          ))
+          return json
+        })
+      }
+    },
+    ADD_REVIEW_FAILURE]
+  const body = {
+    transUnitId: review.transUnitId,
+    revision: review.revision,
+    comment: review.reviewComment,
+    reviewCriteriaId: review.criteriaId,
+    status: review.status
   }
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'PUT', getJsonHeaders(), apiTypes,

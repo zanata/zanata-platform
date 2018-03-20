@@ -10,6 +10,7 @@ import headerData from './header-data-reducer'
 import settings, * as settingsSelectors from './settings-reducer'
 import suggestions from './suggestions-reducer'
 import review from './review-trans-reducer'
+import activity from './activity-reducer'
 
 const rootReducer = combineReducers({
   context,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   settings,
   suggestions,
   review,
+  activity,
   ui
 })
 

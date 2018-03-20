@@ -1,8 +1,240 @@
-/* GWT overrides */
+/* JSF and GWT overrides
+- fixes UI issues caused by assets and bootstrap css conflicts
+*/
+@import "./variables.less";
+
+// These two rules do not apply to specifically new-zanata wrapped pages
+body.bodyStyle {
+  margin: 0;
+  padding: 0;
+}
+
+.htmlStyle {
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  background-color: #fff;
+  font-size: @font-size-base;
+}
 
 .new-zanata {
+  //body class
   .bg--pop-highest {
     border: none;
+  }
+  .view {
+    width: 100%;
+    height: 100%;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  .u-fullWidth {
+    width: 100%;
+  }
+  .u-blockPadding {
+    padding: @spacing-rh;
+  }
+  .u-textNeutral-top {
+    color: @color-neutral;
+    margin-top: 0.3em;
+  }
+  .u-textNeutral, .txt--neutral {
+    color: @color-neutral;
+  }
+  .iconUser {
+    fill: #03A6D7;
+    margin-right: @spacing-re;
+    vertical-align: sub;
+  }
+  .iconProject {
+    margin-right: @spacing-re;
+  }
+  .iconLanguage {
+    vertical-align: sub;
+  }
+  .iconUser-muted {
+    color: @color-muted;
+    margin-right: @spacing-rh;
+  }
+  .iconsStatus {
+    margin-right: @spacing-rh;
+  }
+  .iconDelete {
+    vertical-align: sub;
+  }
+  .iconsHeader {
+    vertical-align: sub;
+  }
+  .iconUsers-muted, .iconTranslate-muted {
+    color: @color-muted;
+    margin-right: @spacing-rh;
+    margin-left: @spacing-rq;
+    vertical-align: sub;
+  }
+  .iconTranslate-neutral, .iconLanguage-neutral, .iconGlossary-neutral {
+    color: rgb(189, 212, 220);
+    margin-left: @spacing-rq;
+    margin-right: @spacing-re;
+  }
+  .lineClamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 24px;
+    padding-left: @spacing-rh;
+  }
+  a.lineClamp {
+    display: -webkit-box;
+    *display: inline;
+    zoom: 1;
+  }
+  a.lineClamp:after {
+    content: ".";
+    font-size: 0;
+    visibility: hidden;
+    display: inline-block;
+    overflow: hidden;
+    height: 0;
+    width: 0;
+  }
+  .u-embedResponsive {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    height: 0;
+    padding: 0;
+  }
+  .u-block {
+    display: block;
+  }
+  .u-centerBlock {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .u-pullRight {
+    float: right !important;
+  }
+  .u-pullLeft {
+    float: left !important;
+  }
+  .hide {
+    display: none !important;
+  }
+  .show {
+    display: block !important;
+  }
+  .invisible {
+    visibility: hidden;
+  }
+  .text-hide {
+    font: 0/0 a;
+    color: transparent;
+    border: 0;
+    background-color: transparent;
+    text-shadow: none;
+  }
+  .hidden {
+    display: none !important;
+  }
+  .affix {
+    position: fixed;
+  }
+  //fix for admin panel icons
+  .panel__header i.i--add:not(.i--large) {
+    color: inherit !important;
+  }
+  .button--small i.i--settings {
+    vertical-align: baseline;
+  }
+  i.i--left.i--lock, i.i--left.i--trash {
+    color: #fff;
+    vertical-align: baseline;
+  }
+  #versionPage.g {
+    width: 100%;
+  }
+  #fileUpload-toggleBtn i.i--add, #addMember-btn i.i--add {
+    color: @color-dark;
+  }
+  .page {
+    overflow: hidden;
+  }
+  .abs {
+    position: absolute;
+  }
+  body.templateStyle {
+    background-color: inherit;
+    font-size: inherit;
+    overflow: hidden !important;
+  }
+  .templateWrapper {
+    align-items: flex-start;
+    -webkit-align-items: flex-start;
+    /* Safari 7.0+ */
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-shrink: 0;
+    -webkit-flex-shrink: 0;
+    height: 100%;
+  }
+  .templateContainer {
+    align-items: flex-start;
+    -webkit-align-items: flex-start;
+    /* Safari 7.0+ */
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-shrink: 0;
+    -webkit-flex-shrink: 0;
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
+    position: fixed;
+  }
+  .templateContainer .rootMain {
+    min-width: fit-content;
+  }
+  .rootMain {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 0 !important;
+    margin-bottom: @spacing-base-and-a-half;
+  }
+  .rootMain-content {
+    align-items: flex-start;
+    -webkit-align-items: flex-start;
+    /* Safari 7.0+ */
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    flex: 1;
+    -webkit-box-flex: 1;
+    -moz-flex: 1;
+    -webkit-flex: 1;
+    overflow: hidden;
+    height: auto;
+    min-height: max-content;
   }
   h1 {
     height: 1.1em;
@@ -52,11 +284,11 @@
     position: relative;
     margin-top: -1rem;
   }
-  .button--group input[type=radio]:checked+.button--Off, .button--group input[type=radio]:checked+.button--Off:hover {
+  .button--group input[type=radio]:checked + .button--Off, .button--group input[type=radio]:checked + .button--Off:hover {
     background-color: #546677 !important;
     color: #f7f7f7 !important;
   }
-  .button--group input[type=radio]:checked+.button--danger, .button--group input[type=radio]:checked+.button--danger:hover {
+  .button--group input[type=radio]:checked + .button--danger, .button--group input[type=radio]:checked + .button--danger:hover {
     color: #f7f7f7 !important;
   }
   label {
@@ -105,7 +337,6 @@
     display: flex !important;
     padding: 10px !important;
   }
-
   #gwt-debug-transHistoryTabPanel .gwt-TabLayoutPanelContent {
     overflow-x: hidden !important;
   }
@@ -135,12 +366,106 @@
     white-space: pre-wrap;
   }
   //fixes to Versions/Projects page
-  #projectsWrapper ~ .g.u-fullWidth,
-  li#projects.is-active  {
+  #projectsWrapper ~ .g.u-fullWidth, li#projects.is-active {
     padding-bottom: 12rem;
   }
   // fix to settings dropdowns on languages tab
   li#settings ul.tabsContent {
     padding-bottom: 10rem;
+  }
+  ul#languages-language_list .list__item {
+    width: 100%;
+  }
+}
+
+/* Media queries shared between jsf and bootstrap pages */
+
+// @screen-xs variable depreciated
+@media (max-width: 29.375rem) {
+  .templateContainer {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    width: 100%;
+  }
+
+  main {
+    margin-left: 0;
+  }
+
+  #nav {
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
+    bottom: 0;
+    z-index: 1000;
+  }
+
+  .nav-bar {
+    order: 1;
+    width: 100%;
+    height: 3.5rem;
+  }
+
+  .nav-link {
+    display: none;
+  }
+
+  .nav-link.small {
+    display: inline-flex;
+    flex-grow: 1;
+    -webkit-flex-grow: 1;
+    padding: @spacing-rh;
+  }
+
+  .containerEditor {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 4.5rem;
+  }
+}
+
+@media (min-width: 29.376rem) {
+  main {
+    margin-left: 4.5rem;
+  }
+
+  .containerEditor {
+    margin-left: 4.5rem;
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  #nav {
+    height: 100vh;
+    top: 0;
+    overflow: hidden;
+  }
+
+  .nav-bar {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    height: 100%;
+    order: 0;
+    width: 4.5rem;
+  }
+
+  .nav-link {
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    flex-grow: 0;
+    -webkit-flex-grow: 0;
+    padding-top: @spacing-rq;
+    padding-bottom: @spacing-rq;
+  }
+}
+
+@media (min-width: @screen-lg) {
+  .containerEditor {
+    overflow-x: hidden;
   }
 }

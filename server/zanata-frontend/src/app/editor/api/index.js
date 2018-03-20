@@ -23,6 +23,11 @@ import {
   LOCALE_MESSAGES_FAILURE
 } from '../actions/header-action-types'
 import {
+  TRANS_HISTORY_REQUEST,
+  TRANS_HISTORY_SUCCESS,
+  TRANS_HISTORY_FAILURE
+} from '../actions/activity-action-types'
+import {
   buildAPIRequest,
   getJsonHeaders,
   // eslint-disable-next-line
@@ -114,6 +119,30 @@ export function fetchI18nLocale (locale) {
   }
 }
 
+export function fetchTransUnitHistory (
+  localeId, transUnitId, projectSlug, versionSlug) {
+  // eslint-disable-next-line max-len
+  const endpoint = `${apiUrl}/transhist/${localeId}/${transUnitId}/${projectSlug}?versionSlug=${versionSlug}`
+  /** @type {APITypes} */
+  const apiTypes = [
+    TRANS_HISTORY_REQUEST,
+    {
+      type: TRANS_HISTORY_SUCCESS,
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      }
+    },
+    TRANS_HISTORY_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
 export function fetchMyInfo () {
   const userUrl = `${apiUrl}/user`
   return fetch(userUrl, {
@@ -171,7 +200,7 @@ export function fetchVersionLocales (projectSlug, versionSlug) {
 }
 
 export function savePhrase ({ id, revision, plural },
-                            { localeId, status, translations }) {
+  { localeId, status, translations, revisionComment }) {
   const translationUrl = `${apiUrl}/trans/${localeId}`
   return fetch(translationUrl, {
     credentials: 'include',
@@ -187,6 +216,7 @@ export function savePhrase ({ id, revision, plural },
       plural,
       content: translations[0],
       contents: translations,
+      revisionComment: revisionComment,
       status: phraseStatusToTransUnitStatus(status)
     })
   })

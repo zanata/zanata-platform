@@ -79,6 +79,11 @@ public class TransUnitUpdateRequest implements IsSerializable {
         return this;
     }
 
+    public TransUnitUpdateRequest addRevisionComment(String comment) {
+        revisionComment = comment;
+        return this;
+    }
+
     public TransUnitId getTransUnitId() {
         return transUnitId;
     }
