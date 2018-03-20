@@ -45,7 +45,7 @@ public interface ProjectResource {
     public Response getProject(@PathParam("projectSlug") String projectSlug);
 
     /**
-     * Returns Validation settings for a Project.
+     * Returns Validation settings for a Project Version.
      *
      * @param projectSlug project identifier
      *
@@ -62,8 +62,8 @@ public interface ProjectResource {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON })
-    @Path("/validators/{projectSlug}")
+    @Path("validators/project/{projectSlug}/version/{versionSlug}")
     public Response getValidationSettings(
             @PathParam("projectSlug") String projectSlug,
-            @QueryParam("versionSlug") String versionSlug);
+            @PathParam("versionSlug") String versionSlug);
 }

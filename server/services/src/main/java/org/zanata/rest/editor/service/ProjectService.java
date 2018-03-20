@@ -3,7 +3,6 @@ package org.zanata.rest.editor.service;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +23,7 @@ import org.zanata.webtrans.shared.model.ValidationId;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -63,7 +63,7 @@ public class ProjectService implements ProjectResource {
     @Override
     public Response getValidationSettings(
             @PathParam("projectSlug") String projectSlug,
-            @QueryParam("versionSlug") String versionSlug) {
+            @PathParam("versionSlug") String versionSlug) {
 
         Collection<ValidationAction> validators =
             validationService.getValidationActions(projectSlug, versionSlug);
@@ -72,8 +72,8 @@ public class ProjectService implements ProjectResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        HashMap<ValidationId, ValidationAction.State> result =
-                new HashMap<ValidationId, ValidationAction.State>();
+        Map<ValidationId, ValidationAction.State> result =
+                new HashMap<>();
 
         for (ValidationAction validationAction : validators) {
             result.put(validationAction.getId(), validationAction.getState());

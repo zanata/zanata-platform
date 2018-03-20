@@ -23,6 +23,7 @@ import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.when;
 
@@ -42,8 +43,8 @@ public class ProjectServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        service = new ProjectService(
-                request, etagUtil, projectDAO,validationService);
+        service = new ProjectService(request, etagUtil, projectDAO,
+                validationService);
         ValidationMessages message =
                 Gwti18nReader.create(ValidationMessages.class);
         validationFactory = new ValidationFactory(message);
@@ -90,7 +91,7 @@ public class ProjectServiceTest {
         Response response = service.getValidationSettings(
                 "about-fedora", "ver1");
         // Modify the validationList result identically
-        HashMap<ValidationId, ValidationAction.State> result =
+        Map<ValidationId, ValidationAction.State> result =
                 new HashMap<ValidationId, ValidationAction.State>();
         for (ValidationAction validationAction : validationList) {
             result.put(validationAction.getId(), validationAction.getState());
