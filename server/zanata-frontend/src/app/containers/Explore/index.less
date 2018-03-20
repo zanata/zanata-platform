@@ -94,17 +94,18 @@
     flex-direction: row;
     -webkit-flex-direction: row;
   }
+  .teaserHeader span .iconsHeader {
+    vertical-align: sub;
+  }
   .teaserHeader-inner {
     margin-left: @spacing-rh;
     color: @color-light;
-    display: flex;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: -o-flex;
-    align-items: center;
-    -webkit-align-items: center;
-    /* Safari 7.0+ */
+  }
+  .teaserHeader-inner button {
+    margin-top: @spacing-rh;
+  }
+  .teaserHeader-inner .iconsHeader {
+    margin-right: 0;
   }
   .teamTeaser {
     align-items: center;
@@ -123,6 +124,11 @@
     margin-left: auto;
     float: right;
     padding-right: @spacing-xlarge;
+    color: @color-muted;
+  }
+  .languageTeamTeaser-members .iconUsers-muted {
+    padding-right: 0.375rem;
+    vertical-align: sub;
   }
   .metaInfo {
     align-items: center;
