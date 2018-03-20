@@ -15,6 +15,7 @@ import {
 } from './settings-action-types'
 import { apiUrl } from '../../config'
 import { isEmptyObject } from '../../utils/ObjectUtils'
+import { WARNING, OFF } from '../utils/validation-util'
 
 export const settingsUrl = `${apiUrl}/user/settings/webeditor`
 
@@ -101,6 +102,7 @@ export const updateSetting = (key, value) => dispatch => {
  * Update a setting locally for the current editor session.
  */
 export const updateValidationSetting = (key, value) => dispatch => {
-  const setting = { [key]: value }
+  const newValue = value ? WARNING : OFF
+  const setting = { [key]: newValue }
   dispatch(createAction(SETTING_UPDATE)(setting))
 }

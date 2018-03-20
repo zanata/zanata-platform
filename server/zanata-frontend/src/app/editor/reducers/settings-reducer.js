@@ -38,13 +38,6 @@ function parseKnownSettings (settings) {
         case SYNTAX_HIGHLIGTING:
         case SUGGESTIONS_DIFF:
         case KEY_SUGGESTIONS_VISIBLE:
-        case HTML_XML:
-        case NEW_LINE:
-        case TAB:
-        case JAVA_VARIABLES:
-        case XML_ENTITY:
-        case PRINTF_VARIABLES:
-        case PRINTF_XSI_EXTENSION:
           return JSON.parse(value)
         default:
           return value

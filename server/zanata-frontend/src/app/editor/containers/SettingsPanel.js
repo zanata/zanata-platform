@@ -33,12 +33,7 @@ import {
   PRINTF_VARIABLES,
   PRINTF_XSI_EXTENSION
 } from '../reducers/settings-reducer'
-
-// Validator error types
-// TODO: convert to tuple
-export const ERROR = 'Error'
-export const WARNING = 'Warning'
-export const OFF = 'Off'
+import { ERROR, WARNING } from '../utils/validation-util'
 
 export const SettingsPanel = ({
   enterSavesImmediately,
