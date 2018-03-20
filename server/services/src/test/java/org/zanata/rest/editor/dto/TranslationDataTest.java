@@ -18,9 +18,12 @@ public class TranslationDataTest {
     @Test
     public void testJsonOutput() throws IOException {
         String json =
-            "{\n" + "    \"id\" : \"10\",\n" + "    \"revision\" : \"10000\",\n" +
-                "\"plural\" : false,\n" + "     \"status\" : \"NeedReview\" " +
-                "\n}";
+                "{\n" + "    \"id\" : \"10\",\n" +
+                        "    \"revision\" : \"10000\",\n" +
+                        "\"plural\" : false,\n" +
+                        "\"revisionComment\" : \"comment\",\n" +
+                        "     \"status\" : \"NeedReview\" " +
+                        "\n}";
 
         TranslationData translationData = om.readValue(json, TranslationData.class);
 
@@ -29,6 +32,7 @@ public class TranslationDataTest {
         expected.setRevision(10000);
         expected.setPlural(false);
         expected.setStatus(ContentState.NeedReview);
+        expected.setRevisionComment("comment");
 
         assertThat(translationData).isEqualTo(expected);
     }

@@ -19,7 +19,9 @@ public class TransHistoryItem extends ComparableByDate implements
     private String versionNum;
     private List<String> contents;
     private ContentState status;
+    /** account username */
     private String modifiedBy;
+    private String modifiedByPersonName = "";
     private Date modifiedDate;
     private String optionalTag = "";
     private String revisionComment;
@@ -89,6 +91,15 @@ public class TransHistoryItem extends ComparableByDate implements
     public TransHistoryItem setOptionalTag(String optionalTag) {
         this.optionalTag = Strings.nullToEmpty(optionalTag);
         return this;
+    }
+
+    public TransHistoryItem setModifiedByPersonName(String personName) {
+        this.modifiedByPersonName = personName;
+        return this;
+    }
+
+    public String getModifiedByPersonName() {
+        return Strings.nullToEmpty(modifiedByPersonName);
     }
 
     public String getOptionalTag() {

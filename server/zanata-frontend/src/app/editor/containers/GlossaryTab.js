@@ -6,7 +6,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Tab, Table } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import GlossaryTerm from '../components/GlossaryTerm'
 import GlossaryTermModal from '../components/GlossaryTermModal'
@@ -25,7 +25,6 @@ class GlossaryTab extends React.Component {
       show: PropTypes.bool.isRequired
     }).isRequired,
     // eventKey prop to use for the bootstrap Tab
-    eventKey: PropTypes.number.isRequired,
     searchText: PropTypes.string.isRequired,
     searching: PropTypes.bool.isRequired,
     showDetails: PropTypes.func.isRequired,
@@ -110,11 +109,11 @@ class GlossaryTab extends React.Component {
     const glossaryModal = this.props.details.show
       ? <GlossaryTermModal /> : undefined
 
-    const {eventKey, searchText, onGlossaryTextChange, isRTLSource} = this.props
+    const {searchText, onGlossaryTextChange, isRTLSource} = this.props
 
     const directionClass = isRTLSource ? 'rtl' : 'ltr'
     return (
-      <Tab eventKey={eventKey} title="">
+      <div>
         <div className="SidebarEditor-wrapper" id="tab1">
           <GlossarySearchInput
             text={searchText}
@@ -123,7 +122,7 @@ class GlossaryTab extends React.Component {
         </div>
         {this.renderResultsPanel()}
         {glossaryModal}
-      </Tab>
+      </div>
     )
   }
 }

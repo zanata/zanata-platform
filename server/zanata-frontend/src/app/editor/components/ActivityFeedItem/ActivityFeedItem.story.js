@@ -22,7 +22,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import ActivityFeedItem from '.'
-import { MINOR, MAJOR, CRITICAL } from "./index";
+import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -30,82 +30,79 @@ import { MINOR, MAJOR, CRITICAL } from "./index";
 
 const lastModifiedTime = new Date(2016, 11, 16, 2, 19)
 const user = {
-  username: 'damason',
   name: 'David Mason',
-  imageUrl:
-      'https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72'
+  username: 'damason'
 }
 
 storiesOf('ActivityFeedItem', module)
     .add('comment', () => (
-        <ActivityFeedItem
-            type="comment"
-            content={'What in the world does this mean?'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+      <ActivityFeedItem
+        type='comment'
+        content={'What in the world does this mean?'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
     ))
 
     .add('translated', () => (
-        <ActivityFeedItem
-            type="revision"
-            status="translated"
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+      <ActivityFeedItem
+        type='revision'
+        status='translated'
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
     ))
 
-    .add('fuzzy', () => (
-        <ActivityFeedItem
-            type="revision"
-            status="fuzzy"
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+    .add('needswork', () => (
+      <ActivityFeedItem
+        type='revision'
+        status='needswork'
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
     ))
 
     .add('approved', () => (
-        <ActivityFeedItem
-            type="revision"
-            status="approved"
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+      <ActivityFeedItem
+        type='revision'
+        status='approved'
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
     ))
 
     .add('rejected - minor priority', () => (
-        <ActivityFeedItem
-            criteria="Spelling and Grammar"
-            type="revision"
-            priority={MINOR}
-            textStatus="u-textHighlight"
-            status="rejected"
-            commentText="You spelt this wrong."
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+      <ActivityFeedItem
+        criteria='Spelling and Grammar'
+        type='revision'
+        priority={MINOR}
+        textStatus='u-textHighlight'
+        status='rejected'
+        commentText='You spelt this wrong.'
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
     ))
     .add('rejected - major priority', () => (
-        <ActivityFeedItem
-            criteria="Spelling and Grammar"
-            type="revision"
-            priority={MAJOR}
-            textStatus="u-textWarning"
-            status="rejected"
-            commentText="You spelt this wrong."
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+      <ActivityFeedItem
+        criteria='Spelling and Grammar'
+        type='revision'
+        priority={MAJOR}
+        textStatus='u-textWarning'
+        status='rejected'
+        commentText='You spelt this wrong.'
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
     ))
     .add('rejected - critical priority', () => (
-        <ActivityFeedItem
-            criteria="Spelling and Grammar"
-            type="revision"
-            priority={CRITICAL}
-            textStatus="u-textDanger"
-            status="rejected"
-            commentText="You spelt this wrong."
-            content={'নাম'}
-            lastModifiedTime={lastModifiedTime}
-            user={user}/>
+      <ActivityFeedItem
+        criteria='Spelling and Grammar'
+        type='revision'
+        priority={CRITICAL}
+        textStatus='u-textDanger'
+        status='rejected'
+        commentText='You spelt this wrong.'
+        content={'নাম'}
+        lastModifiedTime={lastModifiedTime}
+        user={user} />
     ))
-

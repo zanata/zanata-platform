@@ -122,10 +122,14 @@ public class TranslationService implements TranslationResource {
                 textFlow.getDocument().getProjectIteration().getProject(),
                 locale);
         // //Only support 1 translation update for the moment
+        String revisionComment = requestData.getRevisionComment();
         TransUnitUpdateRequest request = new TransUnitUpdateRequest(
                 new TransUnitId(requestData.getId().longValue()),
                 requestData.getContents(), requestData.getStatus(),
                 requestData.getRevision(), sourceType);
+        if (revisionComment != null) {
+            request.addRevisionComment(revisionComment);
+        }
         List<TranslationResult> translationResults = translationServiceImpl
                 .translate(new LocaleId(localeId), Lists.newArrayList(request));
         TranslationResult result = translationResults.get(0);

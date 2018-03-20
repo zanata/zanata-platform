@@ -32,7 +32,9 @@ class MainContent extends React.Component {
     translationLocale: PropTypes.shape({
       id: PropTypes.string.isRequired
     }).isRequired,
-    selectedPhraseId: PropTypes.number
+    selectedPhraseId: PropTypes.number,
+    projectSlug: PropTypes.string.isRequired,
+    versionSlug: PropTypes.string.isRequired
   }
   componentDidMount () {
     this.props.fetchAllCriteria()
@@ -50,7 +52,6 @@ class MainContent extends React.Component {
         </div>
       )
     }
-
     const transUnits = phrases.map((phrase, _index) => {
       // FIXME maybe use phrase id, next page will have
       //       same index for different id. Not sure if
@@ -65,7 +66,10 @@ class MainContent extends React.Component {
             index={phrase.id}
             phrase={phrase}
             criteria={this.props.criteriaList}
-            toggleRejectModal={this.props.toggleReviewModal} />
+            toggleRejectModal={this.props.toggleReviewModal}
+            translationLocale={this.props.translationLocale}
+            projectSlug={this.props.projectSlug}
+            versionSlug={this.props.versionSlug} />
         </li>
       )
     })
@@ -115,7 +119,9 @@ function mapStateToProps (state, _ownProps) {
     translationLocale: {
       id: state.context.lang
     },
-    selectedPhraseId: state.phrases.selectedPhraseId
+    selectedPhraseId: state.phrases.selectedPhraseId,
+    projectSlug: state.context.projectSlug,
+    versionSlug: state.context.versionSlug
   }
 }
 
