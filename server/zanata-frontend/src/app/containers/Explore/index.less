@@ -100,12 +100,13 @@
   .teaserHeader-inner {
     margin-left: @spacing-rh;
     color: @color-light;
-  }
-  .teaserHeader-inner button {
-    margin-top: @spacing-rh;
+    display: flex;
+    align-items: left;
+    flex-direction: row;
   }
   .teaserHeader-inner .iconsHeader {
     margin-right: 0;
+    vertical-align: baseline;
   }
   .teamTeaser {
     align-items: center;
@@ -127,8 +128,11 @@
     color: @color-muted;
   }
   .languageTeamTeaser-members .iconUsers-muted {
-    padding-right: 0.375rem;
+    padding-right: @spacing-rq;
     vertical-align: sub;
+  }
+  .teaserHeader-pagination {
+   margin-top: @spacing-rh;
   }
   .metaInfo {
     align-items: center;

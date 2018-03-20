@@ -41,16 +41,22 @@ const TeaserListHeader = ({
       </h2>
       {totalPage > 1 && (
         <div className='teaserHeader-inner'>
-          <Button bsStyle='link' disabled={currentPage === 1}
-            onClick={() => { updatePage(type, currentPage, totalPage, false) }}>
-            <Icon className='s1' parentClassName='iconsHeader'
-              name='chevron-left' />
-          </Button>
-          <span className='pageCurrent'>{currentPage} of {totalPage}</span>
-          <Button bsStyle='link' disabled={currentPage === totalPage}
-            onClick={() => { updatePage(type, currentPage, totalPage, true) }}>
-            <Icon className='iconsHeader s1' name='chevron-right' />
-          </Button>
+          <div className='teaserHeader-pagination'>
+            <Button bsStyle='link' disabled={currentPage === 1}
+              onClick={() => {
+                updatePage(type, currentPage, totalPage, false)
+              }}>
+              <Icon className='s1' parentClassName='iconsHeader'
+                name='chevron-left' />
+            </Button>
+            <span className='pageCurrent'>{currentPage} of {totalPage}</span>
+            <Button bsStyle='link' disabled={currentPage === totalPage}
+              onClick={() => {
+                updatePage(type, currentPage, totalPage, true)
+              }}>
+              <Icon className='iconsHeader s1' name='chevron-right' />
+            </Button>
+          </div>
         </div>
       )}
       {loading && <Loader className='headerLoader s1' />}
