@@ -13,7 +13,8 @@ import reducer, {
   XML_ENTITY,
   PRINTF_VARIABLES,
   PRINTF_XSI_EXTENSION,
-  getSuggestionsPanelVisible
+  getSuggestionsPanelVisible,
+  defaultValidation
 } from './settings-reducer'
 import { createAction } from 'redux-actions'
 import {
@@ -26,151 +27,100 @@ import {
   SETTINGS_SAVE_FAILURE
 } from '../actions/settings-action-types'
 
+const defaultSettings = {
+  [ENTER_SAVES_IMMEDIATELY]: {
+    value: false,
+    saving: false,
+    error: undefined
+  },
+  [KEY_SUGGESTIONS_VISIBLE]: {
+    value: true,
+    saving: false,
+    error: undefined
+  },
+  [SYNTAX_HIGHLIGTING]: {
+    value: false,
+    saving: false,
+    error: undefined
+  },
+  [SUGGESTIONS_DIFF]: {
+    value: true,
+    saving: false,
+    error: undefined
+  },
+  [HTML_XML]: {
+    value: defaultValidation,
+    saving: false,
+    error: undefined
+  },
+  [JAVA_VARIABLES]: {
+    value: defaultValidation,
+    saving: false,
+    error: undefined
+  },
+  [NEW_LINE]: {
+    value: defaultValidation,
+    saving: false,
+    error: undefined
+  },
+  [PRINTF_XSI_EXTENSION]: {
+    value: defaultValidation,
+    saving: false,
+    error: undefined
+  },
+  [PRINTF_VARIABLES]: {
+    value: defaultValidation,
+    saving: false,
+    error: undefined
+  },
+  [TAB]: {
+    value: defaultValidation,
+    saving: false,
+    error: undefined
+  },
+  [XML_ENTITY]: {
+    value: defaultValidation,
+    saving: false,
+    error: undefined
+  }
+}
+
 describe('settings-reducer test', () => {
   it('generates initial state', () => {
     const initial = reducer(undefined, createAction('any')())
     expect(initial).toEqual({
       fetching: false,
       error: undefined,
-      settings: {
-        [ENTER_SAVES_IMMEDIATELY]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [KEY_SUGGESTIONS_VISIBLE]: {
-          value: true,
-          saving: false,
-          error: undefined
-        },
-        [SYNTAX_HIGHLIGTING]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [SUGGESTIONS_DIFF]: {
-          value: true,
-          saving: false,
-          error: undefined
-        },
-        [HTML_XML]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [JAVA_VARIABLES]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [NEW_LINE]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [PRINTF_XSI_EXTENSION]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [PRINTF_VARIABLES]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [TAB]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [XML_ENTITY]: {
-          value: false,
-          saving: false,
-          error: undefined
-        }
-      }
+      settings: defaultSettings
     })
   })
   // FIXME check the loaded settings individually, don't depend on initial state
   it('can load settings', () => {
     const loading = reducer(undefined, createAction(SETTINGS_REQUEST)())
     const loaded = reducer(loading, createAction(SETTINGS_SUCCESS)({
-      [KEY_SUGGESTIONS_VISIBLE]: 'false',
+      [KEY_SUGGESTIONS_VISIBLE]: 'true',
       foo: 'bar',
       unknown: 'false'
     }))
     expect(loading.fetching).toBe(true)
+    const unknownSettings = {
+      ...defaultSettings,
+      foo: {
+        value: 'bar',
+        saving: false,
+        error: undefined
+      },
+      unknown: {
+        // unknown settings should not be parsed, even if they can be
+        value: 'false',
+        saving: false,
+        error: undefined
+      }
+    }
     expect(loaded).toEqual({
       fetching: false,
       error: undefined,
-      settings: {
-        [ENTER_SAVES_IMMEDIATELY]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [KEY_SUGGESTIONS_VISIBLE]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [SYNTAX_HIGHLIGTING]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [SUGGESTIONS_DIFF]: {
-          value: true,
-          saving: false,
-          error: undefined
-        },
-        [HTML_XML]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [JAVA_VARIABLES]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [NEW_LINE]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [PRINTF_XSI_EXTENSION]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [PRINTF_VARIABLES]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [TAB]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        [XML_ENTITY]: {
-          value: false,
-          saving: false,
-          error: undefined
-        },
-        foo: {
-          value: 'bar',
-          saving: false,
-          error: undefined
-        },
-        unknown: {
-          // unknown settings should not be parsed, even if they can be
-          value: 'false',
-          saving: false,
-          error: undefined
-        }
-      }
+      settings: unknownSettings
     })
   })
   it('falls back on string if value parsing fails', () => {
