@@ -68,6 +68,10 @@ not conflict with the other frontend code
   border-radius: 8px;
 }
 
+.TransUnit-panelFooter .EditorDropdown-content {
+  border: none;
+}
+
 .EditorDropdown.is-active > .EditorDropdown-content {
   visibility: visible;
   transform: translateY(0);
