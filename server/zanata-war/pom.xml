@@ -1608,7 +1608,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.deltaspike.modules</groupId>
-      <artifactId>deltaspike-servlet-module-impl</artifactId>
+      <artifactId>deltaspike-proxy-module-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.deltaspike.modules</groupId>
@@ -1616,23 +1616,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.deltaspike.modules</groupId>
-      <artifactId>deltaspike-jsf-module-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.deltaspike.modules</groupId>
       <artifactId>deltaspike-security-module-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.deltaspike.modules</groupId>
-      <artifactId>deltaspike-security-module-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.deltaspike.modules</groupId>
       <artifactId>deltaspike-jpa-module-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.deltaspike.modules</groupId>
-      <artifactId>deltaspike-jpa-module-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.deltaspike.cdictrl</groupId>

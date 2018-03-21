@@ -191,6 +191,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-proxy-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-servlet-module-impl</artifactId>
         <version>${deltaspike.version}</version>
         <scope>runtime</scope>
