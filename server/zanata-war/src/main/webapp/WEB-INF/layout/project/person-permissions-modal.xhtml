@@ -23,7 +23,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:z="http://java.sun.com/jsf/composite/zanata"
+        xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
         xmlns:a4j="http://richfaces.org/a4j"
         xmlns:f="http://java.sun.com/jsf/core">
 
@@ -76,7 +76,7 @@
             <h3 class="l--push-top-0">#{msgs['jsf.people.SelectUser']}</h3>
 
             <ui:fragment rendered="#{empty person}">
-              <z:autocomplete actionBean="#{dialogBean}"
+              <zanata:autocomplete actionBean="#{dialogBean}"
                   fetchValue="#{result.account.username}"
                   id="#{id}Autocomplete"
                   render="#{id}-content"
@@ -86,13 +86,13 @@
                   <img src="#{gravatarServiceImpl.getUserImageUrl(48, result.email)}" alt=""/>
                 </span>
                 <h:outputText value="#{result.account.username}"/>
-              </z:autocomplete>
+              </zanata:autocomplete>
             </ui:fragment>
 
             <ui:fragment rendered="#{not empty person}">
               <p class="txt--lead">
-                <z:person-tile person="#{person}"/>
-                <z:ajax-command-button
+                <zanata:person-tile person="#{person}"/>
+                <zanata:ajax-command-button
                     styleClass="button button--link link--neutral bx--inline-block"
                     action="#{projectPermissionDialog.setData(projectHome.instance, null)}"
                     render="modalManagePermissions-content"
@@ -107,7 +107,7 @@
                       <span class="is-sr-only">#{msgs['jsf.projectPermissions.SelectDifferentPerson']}</span>
                     </span>
                   </f:facet>
-                </z:ajax-command-button>
+                </zanata:ajax-command-button>
 
                 <!-- without this, the above button only works the second time it is clicked -->
                 <!-- TODO put this somewhere more general
@@ -128,7 +128,7 @@
                   <ul id="#{id}-project-permissions"
                       class="list--horizontal">
                     <li>
-                      <z:checkbox
+                      <zanata:checkbox
                           label="#{msgs['jsf.projectPermissions.ManageTranslators']}"
                           labelStyle="form__checkbox__label js-form__checkbox__label"
                           checked="#{projectPermissionDialog.data.translationMaintainer}"
@@ -136,7 +136,7 @@
                           value="TranslationMaintainer"/>
                     </li>
                     <li>
-                      <z:checkbox
+                      <zanata:checkbox
                           label="#{msgs['jsf.projectPermissions.MaintainProject']}"
                           labelStyle="form__checkbox__label js-form__checkbox__label"
                           checked="#{projectPermissionDialog.data.maintainer}"
@@ -205,7 +205,7 @@
                       <div class="g__item w--2-3">
                         <ul class="list--horizontal">
                           <li>
-                            <z:checkbox
+                            <zanata:checkbox
                                 label="#{msgs['jsf.translate.content']}"
                                 labelStyle="form__checkbox__label js-form__checkbox__label"
                                 onValueChanged="bindTranslationPermissionRole"
@@ -213,7 +213,7 @@
                                 checked="#{roles.translator}"/>
                           </li>
                           <li>
-                            <z:checkbox
+                            <zanata:checkbox
                                 label="#{msgs['jsf.label.review']}"
                                 labelStyle="form__checkbox__label js-form__checkbox__label"
                                 onValueChanged="bindTranslationPermissionRole"
@@ -221,7 +221,7 @@
                                 checked="#{roles.reviewer}"/>
                           </li>
                           <li>
-                            <z:checkbox
+                            <zanata:checkbox
                               label="#{msgs['jsf.label.glossary.modify']}"
                               labelStyle="form__checkbox__label js-form__checkbox__label"
                               onValueChanged="bindTranslationPermissionRole"
