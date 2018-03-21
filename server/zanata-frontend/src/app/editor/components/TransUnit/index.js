@@ -61,7 +61,9 @@ class TransUnit extends React.Component {
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })),
-    toggleRejectModal: PropTypes.func.isRequired
+    toggleRejectModal: PropTypes.func.isRequired,
+    projectSlug: PropTypes.string.isRequired,
+    versionSlug: PropTypes.string.isRequired
   }
 
   constructor (props) {
@@ -72,13 +74,14 @@ class TransUnit extends React.Component {
   }
 
   selectPhrase = () => {
-    const { phrase, selectPhrase } = this.props
-    selectPhrase(phrase.id)
+    const {
+      phrase, selectPhrase, translationLocale, projectSlug, versionSlug
+    } = this.props
+    selectPhrase(phrase.id, translationLocale.id, projectSlug, versionSlug)
   }
 
   render () {
     // TODO different display if isLoading (need to add or infer isLoading)
-
     const displayStatus = this.props.phrase.inProgressSave
       ? this.props.phrase.inProgressSave.status
       : this.props.phrase.status
@@ -177,7 +180,6 @@ function mapStateToProps (state, ownProps) {
 
   const saveAsMode = state.phrases.saveAsMode
   const criteria = state.review.criteria
-
   return {
     ...passThroughProps,
     // TODO add something for looking up locale name instead, or check
@@ -224,10 +226,19 @@ function mapDispatchToProps (dispatch, ownProps) {
       dispatch(savePhraseWithStatus(phrase, status))
     },
     selectPhrase: () => {
-      dispatch(selectPhrase(ownProps.phrase.id))
+      dispatch(selectPhrase(
+        ownProps.phrase.id,
+        ownProps.translationLocale.id,
+        ownProps.projectSlug,
+        ownProps.versionSlug))
     },
     selectPhrasePluralIndex: (phraseId, index) => {
-      dispatch(selectPhrasePluralIndex(phraseId, index))
+      dispatch(selectPhrasePluralIndex(
+        phraseId,
+        index,
+        ownProps.translationLocale.id,
+        ownProps.projectSlug,
+        ownProps.versionSlug))
     },
     textChanged: (id, index, event) => {
       const text = event.target.value

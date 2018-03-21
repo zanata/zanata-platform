@@ -29,7 +29,7 @@
   height: 99.5% !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  padding-top: 90px !important;
+  margin-top: 90px !important;
   position: static !important;
   width: 35%;
 }
@@ -461,6 +461,7 @@ h1.SidebarEditor-heading button svg {
 }
 
 .RevisionBox {
+  overflow-wrap: break-word;
   margin-bottom: 1rem;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
@@ -555,7 +556,6 @@ img.ActivityAvatar {
   border-radius: 0.25rem;
   height: 5rem;
   max-width: 100%;
-  padding: 0.5625rem;
   width: 100%;
 }
 

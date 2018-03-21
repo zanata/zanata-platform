@@ -112,7 +112,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
                     UserTransaction.class)).thenReturn(new TestTransaction(getEm()));
         } catch (NamingException e) {
             // this should not happen
-            new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -33,6 +33,20 @@
   margin-top: 0;
 }
 
+.searchView {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  color: @color-dark;
+  position: relative;
+  width: var(--ExploreSearch-width);
+  padding-top: @spacing-xlarge;
+  margin-bottom: @spacing-base;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+}
+
 .searchView .textInput {
   background-color: "";
   border: @color-neutral solid 2px !important;
@@ -44,9 +58,9 @@
   font-style: inherit;
   outline: 0;
   width: 80%;
-  padding-left: @spacing-xlarge;
   padding-right: 0;
   margin-left: -1.75rem;
+  padding-left: 2rem !important;
 }
 
 .searchView .listInline {
@@ -73,8 +87,8 @@
 }
 
 .teaserHeader {
-  align-items: center;
-  -webkit-align-items: center;
+  align-items: baseline;
+  -webkit-align-items: baseline;
   /* Safari 7.0+ */
   display: inline-flex;
   vertical-align: sub;
@@ -144,19 +158,6 @@
   -webkit-align-items: center;
   /* Safari 7.0+ */
   margin-left: auto;
-}
-
-.searchView {
-  align-items: center;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  color: @color-dark;
-  position: relative;
-  width: var(--ExploreSearch-width);
-  margin-top: @spacing-rq;
-  margin-bottom: @spacing-base;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .searchView svg {

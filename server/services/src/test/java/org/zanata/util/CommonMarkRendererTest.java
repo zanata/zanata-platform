@@ -21,6 +21,7 @@
 package org.zanata.util;
 
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -36,8 +37,12 @@ public class CommonMarkRendererTest {
 
     @Rule
     public RepeatRule repeatRule = new RepeatRule();
+    private static final CommonMarkRenderer renderer = new CommonMarkRenderer(new WebJars());
 
-    private CommonMarkRenderer renderer = new CommonMarkRenderer();
+    @BeforeClass
+    public static void beforeClass() {
+        renderer.postConstruct();
+    }
 
     @Test
     public void testRenderToHtmlSafe() throws Exception {

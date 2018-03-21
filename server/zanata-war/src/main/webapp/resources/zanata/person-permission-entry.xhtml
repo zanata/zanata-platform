@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:z="http://java.sun.com/jsf/composite/zanata"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:f="http://java.sun.com/jsf/core">
 
 <composite:interface>
@@ -30,7 +30,7 @@
   <li>
     <div class="g g--tighter">
       <div class="g__item w--4-12">
-        <z:person-tile person="#{cc.attrs.person}"/>
+        <zanata:person-tile person="#{cc.attrs.person}"/>
       </div>
       <div class="g__item #{cc.attrs.canManageMembers ? 'w--4-12' : 'w--7-12'}">
         <ui:repeat value="#{cc.attrs.roleNames}" var="role">
@@ -39,7 +39,7 @@
       </div>
       <div class="g__item w--4-12 txt--align-right">
         <ui:fragment rendered="#{cc.attrs.canManageMembers}">
-            <z:ajax-command-button
+            <zanata:ajax-command-button
                 styleClass="button button--small"
                 action="#{projectPermissionDialog.setData(cc.attrs.project, cc.attrs.person)}"
                 render="#{cc.attrs.managePermissionsRender}"
@@ -48,7 +48,7 @@
               <f:facet name="loading">
                 <i class="i i--settings"></i> #{msgs['jsf.projectPermissions.ManagePermissions']}
               </f:facet>
-            </z:ajax-command-button>
+            </zanata:ajax-command-button>
         </ui:fragment>
       </div>
     </div>

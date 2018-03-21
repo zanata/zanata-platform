@@ -61,7 +61,7 @@
 
 <composite:implementation>
 
-  <h:outputScript library="script" name="jquery.typing-0.2.0.min.js" target="body"/>
+  <h:outputScript library="webjars" name="${webjars.JQueryTypingJS}" target="body"/>
 
   <a4j:jsFunction name="#{cc.attrs.id}RenderResult"
     render="#{cc.attrs.id}-result"

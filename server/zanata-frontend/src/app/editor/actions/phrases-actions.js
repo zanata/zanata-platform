@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { savePhrase } from '../api'
+import { savePhrase, fetchTransUnitHistory } from '../api'
 import { toggleDropdown } from '.'
 import { createAction } from 'redux-actions'
 import {
@@ -56,8 +56,10 @@ export const undoEdit = createAction(UNDO_EDIT)
  * Set the selected phrase to the given ID.
  * Only one phrase is selected at a time.
  */
-export function selectPhrase (phraseId) {
+export function selectPhrase (phraseId, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
+    dispatch(
+      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(createAction(SELECT_PHRASE)(phraseId))
   }
@@ -72,8 +74,11 @@ const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
  * and gains it back again (unless it gains focus from a different plural form
  * being specifically targeted).
  */
-export function selectPhrasePluralIndex (phraseId, index) {
+export function selectPhrasePluralIndex (
+  phraseId, index, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
+    dispatch(
+      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(selectPhraseSpecificPlural(phraseId, index))
   }
@@ -123,7 +128,7 @@ const saveFinished = createAction(SAVE_FINISHED,
     revision
   }))
 
-export function savePhraseWithStatus (phrase, status) {
+export function savePhraseWithStatus (phrase, status, reviewComment) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
     dispatch(toggleDropdown(undefined))
@@ -133,6 +138,7 @@ export function savePhraseWithStatus (phrase, status) {
       localeId: stateBefore.context.lang,
       status,
       translations: phrase.newTranslations,
+      revisionComment: reviewComment,
       reviewer: stateBefore.headerData.permissions.reviewer,
       translator: stateBefore.headerData.permissions.translator
     }

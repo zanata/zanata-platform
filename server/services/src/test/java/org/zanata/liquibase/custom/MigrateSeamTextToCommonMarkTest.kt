@@ -37,6 +37,7 @@ import org.junit.Test
 import org.zanata.util.CommonMarkRenderer
 import org.zanata.seam.text.SeamTextLexer
 import org.zanata.seam.text.SeamTextParser
+import org.zanata.util.WebJars
 
 // non-breaking spaces
 private val NBSP_CHAR = "\u00A0"
@@ -62,7 +63,7 @@ class MigrateSeamTextToCommonMarkTest {
     private fun convertToCommonMark(seamText: String, name: String) =
             MigrateSeamTextToCommonMark.convertToCommonMark(seamText, name, logger)
 
-    private val cmRenderer = CommonMarkRenderer()
+    private val cmRenderer = CommonMarkRenderer(WebJars()).apply { postConstruct() }
     private val jsoupSettings = OutputSettings().prettyPrint(true).indentAmount(2)
 
     private val nodeCleaner = NodeTraversor(object : NodeVisitor {

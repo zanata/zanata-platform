@@ -24,24 +24,20 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textHighlight"
       >
         <span>
-          approved a translation
+          approved this translation
         </span>
       </span>
     </span>
@@ -55,6 +51,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -133,19 +130,15 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
-       has commented on a translation
+       has commented on this translation
     </span>
   </p>
   <div
@@ -157,6 +150,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -211,7 +205,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
+exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
 <div
   className="RevisionBox"
 >
@@ -235,17 +229,13 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -258,7 +248,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     </span>
   </p>
   <div
-    className="well-fuzzy well"
+    className="well"
   >
     নাম
     <span
@@ -266,6 +256,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -344,60 +335,23 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textDanger"
-        >
-          Critical
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -435,6 +389,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -513,60 +468,23 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textWarning"
-        >
-          Major
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -604,6 +522,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -682,60 +601,23 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textHighlight"
-        >
-          Minor
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -773,6 +655,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -851,17 +734,13 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -882,6 +761,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -5739,9 +5619,11 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     <textarea
       className="form-control"
       id="formControlsTextarea"
+      maxLength={undefined}
       onChange={[Function]}
       placeholder="..."
       type={undefined}
+      value=""
     />
   </div>
   <button
@@ -7407,60 +7289,6 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots RejectTranslationModal Other - no criteria set 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-<p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-<p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-<p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-<p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <div
-    className="static-modal"
-  />
-</div>
-`;
-
 exports[`Editor Storyshots SelectButton active 1`] = `
 <button
   className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
@@ -7705,16 +7533,25 @@ exports[`Editor Storyshots TextDiff default 1`] = `
     changed
   </ins>
   <span>
-     text, what
+     text, 
   </span>
   <del>
-    ever it wa
+    whatever
   </del>
   <ins>
-     it now i
+    what
   </ins>
   <span>
-    s.
+     it 
+  </span>
+  <del>
+    was
+  </del>
+  <ins>
+    now is
+  </ins>
+  <span>
+    .
   </span>
 </div>
 `;

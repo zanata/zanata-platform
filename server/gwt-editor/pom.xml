@@ -365,6 +365,7 @@
 
       </plugin>
 
+      <!-- TODO see if this can go away now that shared has been extracted -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>

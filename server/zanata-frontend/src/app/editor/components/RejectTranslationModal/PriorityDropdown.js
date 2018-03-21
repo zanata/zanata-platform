@@ -9,7 +9,7 @@ import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
  * A Local Editor Dropdown coponent that selects the Priority of a
  * translation rejection message
  */
-class ProirityDropdown extends Component {
+class PriorityDropdown extends Component {
   static propTypes = {
     textState: PropTypes.string.isRequired,
     priority: PropTypes.oneOf(
@@ -72,4 +72,4 @@ class ProirityDropdown extends Component {
     )
   }
 }
-export default ProirityDropdown
+export default PriorityDropdown

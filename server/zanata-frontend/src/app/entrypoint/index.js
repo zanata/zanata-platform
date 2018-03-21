@@ -26,20 +26,24 @@ WebFont.load({
   timeout: 2000
 })
 
+const DEV = process.env && process.env.NODE_ENV === 'development'
+
 // const routerMiddleware = syncHistory(history)
 
 const logger = createLogger({
-  predicate: (_getState, _action) =>
-  process.env && (process.env.NODE_ENV === 'development')
+  // options
 })
 
+const middleware = [
+  DEV && require('redux-immutable-state-invariant').default(),
+  thunk,
+  apiMiddleware,
+  // routerMiddleware,
+  DEV && logger // must be last to avoid logging thunk/promise
+].filter(Boolean)
+
 const finalCreateStore = compose(
-  applyMiddleware(
-    thunk,
-    apiMiddleware,
-    // routerMiddleware,
-    logger
-  )
+  applyMiddleware(...middleware)
 )(createStore)
 
 // Call and assign the store with no initial state
@@ -62,6 +66,6 @@ const enhancedHistory = syncHistoryWithStore(history, store)
 
 render(
   // @ts-ignore store
-  <Root store={store} history={enhancedHistory} />,
+  <Root store={store} history={enhancedHistory} className='bstrapReact' />,
   document.getElementById('root')
 )
