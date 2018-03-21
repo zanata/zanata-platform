@@ -1367,9 +1367,36 @@
     </dependency>
 
     <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <!-- AKA JavaScript-Templates -->
+      <artifactId>blueimp-tmpl</artifactId>
+      <!-- If we upgrade to v3.11.0, github-com-blueimp-JavaScript-Templates is smaller -->
+      <version>2.5.3</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.webjars.npm</groupId>
       <artifactId>diff</artifactId>
       <version>3.5.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>crossroads.js</artifactId>
+      <version>0.12.0-1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>github-com-ccakes-jquery-typing</artifactId>
+      <!-- NB we were using 0.2.0, but its packaging won't work as an automatic webjar -->
+      <version>0.3.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>js-signals</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>

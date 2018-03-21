@@ -394,34 +394,27 @@ site: http://www.fsf.org.
   </script>
 
   <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
-  <h:outputScript target="body" library="jQuery-File-Upload"
-    name="js/vendor/jquery.ui.widget.js"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/vendor/jquery.ui.widget.js"/>
 
   <!-- The Templates plugin is included to render the upload/download listings -->
-  <h:outputScript target="body" library="JavaScript-Templates"
-    name="js/tmpl.min.js"/>
+  <h:outputScript target="body" library="webjars" name="${webjars.blueimpJavaScriptTemplatesJS}"/>
 
   <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-  <h:outputScript target="body" library="jQuery-File-Upload"
-    name="js/jquery.iframe-transport.js"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.iframe-transport.js"/>
 
   <!-- The basic File Upload plugin -->
-  <h:outputScript target="body" library="jQuery-File-Upload"
-    name="js/jquery.fileupload.js"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload.js"/>
 
   <!-- The File Upload processing plugin -->
-  <h:outputScript target="body" library="jQuery-File-Upload"
-    name="js/jquery.fileupload-process.js"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload-process.js"/>
 
   <!-- The File Upload validation plugin -->
-  <h:outputScript target="body" library="jQuery-File-Upload"
-    name="js/jquery.fileupload-validate.js"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload-validate.js"/>
 
   <!-- The File Upload user interface plugin -->
-  <h:outputScript target="body" library="jQuery-File-Upload"
-    name="js/jquery.fileupload-ui.js"/>
+  <h:outputScript target="body" library="jQuery-File-Upload" name="js/jquery.fileupload-ui.js"/>
 
-  <!-- The main application script -->
+  <!-- The File Upload main script -->
   <h:outputScript target="body" library="jQuery-File-Upload" name="js/main.js"/>
 
   <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
