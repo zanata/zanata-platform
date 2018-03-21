@@ -126,8 +126,9 @@ public class ProjectHome extends SlugHome<HProject>
     @Inject
     private SlugEntityService slugEntityServiceImpl;
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private CommonMarkRenderer renderer;
-    @SuppressFBWarnings("SE_BAD_FIELD")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     @Inject
     private EntityManager entityManager;
     @Inject

@@ -23,7 +23,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:z="http://java.sun.com/jsf/composite/zanata"
+        xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:a4j="http://richfaces.org/a4j"
         xmlns:rich="http://richfaces.org/rich">
@@ -39,7 +39,7 @@
         <ui:fragment rendered="#{canManageMembers}">
 
           <h:form styleClass="bx--inline" id="project-people_add">
-            <z:ajax-command-button
+            <zanata:ajax-command-button
                 id="project-people_addbutton"
                 styleClass="button button--primary panel__header__button"
                 action="#{projectPermissionDialog.setData(projectHome.instance, null)}"
@@ -49,11 +49,11 @@
               <f:facet name="loading">
                 <i class="i i--add"></i> #{msgs['jsf.people.AddSomeone']}
               </f:facet>
-            </z:ajax-command-button>
+            </zanata:ajax-command-button>
           </h:form>
 
         </ui:fragment>
-        <z:sortlist id="project-people_sorting"
+        <zanata:sortlist id="project-people_sorting"
           sortAction="#{projectHomeAction.peopleFilterComparator.sortPeopleList()}"
           render="people_form, peopleSearch-pager, peopleSearch-page-info, peopleSearchBottom-pager, peopleSearchBottom-page-info"
           oncomplete="refreshTooltip('#{rich:clientId('people_form')}')"
@@ -64,7 +64,7 @@
       <h2 class="panel__heading">#{msgs['jsf.People']}
         <a4j:status name="peopleTab-peopleLoader">
           <f:facet name="start">
-            <z:loader layout="inline" type="loader--small"/>
+            <zanata:loader layout="inline" type="loader--small"/>
           </f:facet>
         </a4j:status>
       </h2>
@@ -72,7 +72,7 @@
 
     <!-- Search row -->
     <div class="panel__sub-header js-reveal">
-      <z:list-filter status="peopleTab-peopleLoader"
+      <zanata:list-filter status="peopleTab-peopleLoader"
         listId="people_form" iconClass="i--users"
         render="people_form, peopleSearchBottom-pager, peopleSearchBottom-page-info"
         id="peopleSearch"
@@ -89,7 +89,7 @@
         <p class="txt--meta">#{msgs['jsf.NoPeople']}</p>
         <ui:fragment rendered="#{canManageMembers}">
           <p>
-            <z:ajax-command-button
+            <zanata:ajax-command-button
                 styleClass="button button--primary panel__header__button"
                 action="#{projectPermissionDialog.setData(projectHome.instance, null)}"
                 render="modalManagePermissions-content"
@@ -98,7 +98,7 @@
               <f:facet name="loading">
                 <i class="i i--add"></i> #{msgs['jsf.people.AddSomeone']}
               </f:facet>
-            </z:ajax-command-button>
+            </zanata:ajax-command-button>
           </p>
         </ui:fragment>
       </h:panelGroup>
@@ -114,7 +114,7 @@
           rendered="#{not projectHomeAction.peopleFilterComparator.currentPage.isEmpty()}">
           <ul class="list--slat l--push-all-half">
             <ui:repeat value="#{projectHomeAction.peopleFilterComparator.currentPage}" var="person">
-              <z:person-permission-entry person="#{person}"
+              <zanata:person-permission-entry person="#{person}"
                 project="#{projectHomeAction.project}"
                 roleNames="#{projectHomeAction.allRoleDisplayNames(person)}"
                 canManageMembers="#{canManageMembers}"
@@ -145,7 +145,7 @@
           </h3>
           <ul class="list--slat">
             <ui:repeat value="#{maintainers}" var="person">
-              <z:person-permission-entry person="#{person}"
+              <zanata:person-permission-entry person="#{person}"
                 project="#{projectHomeAction.project}"
                 roleNames="#{projectHomeAction.projectRoleDisplayNames(person)}"
                 canManageMembers="#{canManageMembers}"
@@ -174,7 +174,7 @@
             </h4>
             <ul class="list--slat l--push-bottom-1">
               <ui:repeat value="#{localeMembers}" var="person">
-                <z:person-permission-entry person="#{person}"
+                <zanata:person-permission-entry person="#{person}"
                   project="#{projectHomeAction.project}"
                   roleNames="#{projectHomeAction.rolesDisplayForLocale(person, localeGrouping)}"
                   canManageMembers="#{canManageMembers}"
@@ -188,7 +188,7 @@
     </h:form>
 
     <!-- people count at bottom -->
-    <z:list-filter status="peopleTab-peopleLoader"
+    <zanata:list-filter status="peopleTab-peopleLoader"
       listId="people_form" iconClass="i--users"
       render="people_form, peopleSearch-pager, peopleSearch-page-info"
       id="peopleSearchBottom" bottomPanel="true"

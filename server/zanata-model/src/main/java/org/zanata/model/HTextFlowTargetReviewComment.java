@@ -88,6 +88,14 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
         return commenterName;
     }
 
+    @Transient
+    public String getCommenterUsername() {
+        return commenter.hasAccount()
+                ? commenter.getAccount().getUsername()
+                : "";
+    }
+
+
     protected HTextFlowTargetReviewComment() {
     }
 

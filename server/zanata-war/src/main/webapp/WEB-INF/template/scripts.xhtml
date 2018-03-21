@@ -41,6 +41,6 @@
   <h:outputScript library="org.richfaces" name="jquery.js" target="head"/>
   <script type="text/javascript" src="#{request.contextPath}/resources/assets/script.js"></script>
   <h:outputScript library="script" name="components-script.js"/>
-  <h:outputScript library="script" name="signals.min.js"/>
-  <h:outputScript library="script" name="crossroads.min.js"/>
+  <h:outputScript library="webjars" name="${webjars.signalsJS}"/>
+  <h:outputScript library="webjars" name="${webjars.crossroadsJS}"/>
 </f:view>

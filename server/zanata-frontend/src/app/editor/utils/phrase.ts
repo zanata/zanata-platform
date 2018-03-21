@@ -1,6 +1,6 @@
 import {tuple} from '../../utils/tuple'
 
-const statuses = tuple(
+export const statuses = tuple(
   'untranslated',
   'needswork',
   'translated',
