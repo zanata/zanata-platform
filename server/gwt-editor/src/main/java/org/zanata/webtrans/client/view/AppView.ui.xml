@@ -69,11 +69,16 @@
   </ui:style>
   <g:LayoutPanel stylePrimaryName="{style.rootContainer}"
     ui:field="rootContainer">
-    <g:layer top="0.40625em" height="1.8em" left="0.5em" right="0.5em">
+    <g:layer top="0.40625em" height="2.3em" left="0.5em" right="0.5em">
       <g:HTMLPanel styleName="new-zanata">
         <ul class="list--horizontal">
           <li class="{style.topPanel-Workspace}">
             <nobr>
+              <g:HTMLPanel styleName="bx--inline-block">
+                <a href="/">
+                  <img src="http://zanata.org/images/logo/logo-32.png" height="30" width="30"/>
+                </a>
+              </g:HTMLPanel>
               <g:InlineLabel ui:field="readOnlyLabel"
                 styleName="i i--lock txt--danger txt--hero l--push-right-quarter" />
               <g:InlineLabel ui:field="obsoleteLabel"
@@ -102,7 +107,7 @@
       </g:HTMLPanel>
     </g:layer>
 
-    <g:layer top="2em" bottom="0" left='0.5em' right='0.5em'>
+    <g:layer top="2.8em" bottom="0" left='0.5em' right='0.5em'>
       <g:HTMLPanel ui:field="contentContainer">
         <div class="new-zanata">
           <fui:UnorderedListWidget ui:field="notifications"
@@ -116,7 +121,7 @@
       </g:HTMLPanel>
     </g:layer>
 
-    <g:layer right="0" width="2em" top="2em" bottom="0">
+    <g:layer right="0" width="2em" top="2.8em" bottom="0">
       <g:LayoutPanel ui:field="sideMenuContainer" styleName="new-zanata" />
     </g:layer>
 
