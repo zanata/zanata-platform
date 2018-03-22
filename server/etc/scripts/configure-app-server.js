@@ -32,7 +32,7 @@
  * by Patrick Huang. Converted to Nashorn JavaScript by Sean Flanigan.
  *
  * NB this script uses jjs Nashorn scripting extensions (not vanilla ES5/ES6)
- * and should be run with these jjs options: --language=es6 -scripting -strict
+ * and should be run with these jjs options: --language=es6 -scripting
  *
  * Requires org.jboss.as.cli on the module-path (preferably) or
  * wildfly-cli-4.0.0.Final-client.jar on the classpath (some cli commands
@@ -44,6 +44,9 @@
  * Author: Patrick Huang <pahuang@redhat.com>
  * Author: Sean Flanigan <sflaniga@redhat.com>
  */
+
+'use strict';
+
 function padRight(str, paddingValue) {
   return String(str + paddingValue).slice(0, paddingValue.length)
 }

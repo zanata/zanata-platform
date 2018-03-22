@@ -59,7 +59,6 @@ def args = [
         'jdk.nashorn.tools.Shell',
         '--language=es6',
         '-scripting',
-        '-strict',
         zanataConfigScript,
         '--',
         '--quiet'
