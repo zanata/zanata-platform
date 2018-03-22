@@ -26,8 +26,9 @@
 
 ### Manual standalone installation
 
-1. Download zanata-cli dist.zip from [maven central](http://search.maven.org/remotecontent?filepath=org/zanata/zanata-cli/3.8.1/zanata-cli-3.8.1-dist.zip)
-2. Extract the downloaded file into a folder.
+1. Download the latest zanata-cli `dist.zip` from [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3Aorg.zanata%20a%3Azanata-cli)
+2. Extract the downloaded zip file into a folder.
 3. Search for `cmd` in Windows Start button and open up `Command prompt window`
-4. Navigate to the extracted folder by using `cd` command. e.g. `cd C:\temp`
-4. Run the following command `java -cp lib/* org.zanata.client.ZanataClient` to start zanata-cli.
+4. Navigate to the extracted folder by using `cd` command. e.g. `cd C:\temp\zanata-cli-x.y.z`
+5. Run the command `bin\zanata-cli` to start zanata-cli.
+6. You may also which to add the bin directory to your system PATH, to ensure zanata-cli is always available.
