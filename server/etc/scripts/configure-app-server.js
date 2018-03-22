@@ -64,7 +64,8 @@ const help = {
 
 function usage() {
   echo('Usage: zanataConfigTest.js [OPTIONS]')
-  for (let opt in help) {
+  for (let i = 0; i < help.length; i++) {
+    const opt = help[i]
     const left = padRight(opt, '                 ')
     const text = help[opt]
     echo("  ${left}${text}")
@@ -79,7 +80,8 @@ const options = {
   quiet: false
 }
 
-for each (let arg in $ARG) {
+for (let i = 0; i < $ARG.length; i++) {
+  const arg = $ARG[i]
   switch(arg) {
     case '--dry-run':
       options.dryRun = true
@@ -152,7 +154,7 @@ function cmdIgnoreError(command) {
     } else {
       ignoreResponse(res)
     }
-  } catch (e if e instanceof java.lang.IllegalArgumentException) {
+  } catch (e) {
     if (options.verbose) {
       echo("Ignoring exception: ${e}")
     }
