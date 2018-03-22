@@ -14,16 +14,6 @@ import org.zanata.model.HProject;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ETagUtils;
-import org.zanata.service.ValidationService;
-import org.zanata.webtrans.server.locale.Gwti18nReader;
-import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.ValidationFactory;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.when;
 
@@ -35,19 +25,11 @@ public class ProjectServiceTest {
     private Request request;
     @Mock
     private ETagUtils etagUtil;
-    @Mock
-    private ValidationService validationService;
-
-    private ValidationFactory validationFactory;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        service = new ProjectService(request, etagUtil, projectDAO,
-                validationService);
-        ValidationMessages message =
-                Gwti18nReader.create(ValidationMessages.class);
-        validationFactory = new ValidationFactory(message);
+        service = new ProjectService(request, etagUtil, projectDAO);
     }
 
     @Test
@@ -71,34 +53,6 @@ public class ProjectServiceTest {
         Response response = service.getProject("about-fedora");
         Assertions.assertThat(response.getStatus()).isEqualTo(200);
         Assertions.assertThat(response.getEntity()).isInstanceOf(Project.class);
-    }
-
-    @Test
-    public void willReturnNotFoundIfValidatorsNotFound() {
-        when(validationService.getValidationActions("about-fedora", "ver1"))
-                .thenReturn(null);
-        Response response = service.getValidationSettings(
-                "about-fedora", "ver1");
-        Assertions.assertThat(response.getStatus()).isEqualTo(404);
-    }
-
-    @Test
-    public void willReturnFoundValidators() {
-        Collection<ValidationAction> validationList =
-                validationFactory.getAllValidationActions().values();
-        when(validationService.getValidationActions("about-fedora", "ver1"))
-                .thenReturn(validationList);
-        Response response = service.getValidationSettings(
-                "about-fedora", "ver1");
-        // Modify the validationList result identically
-        Map<ValidationId, ValidationAction.State> result =
-                new HashMap<ValidationId, ValidationAction.State>();
-        for (ValidationAction validationAction : validationList) {
-            result.put(validationAction.getId(), validationAction.getState());
-        }
-        Assertions.assertThat(response.getStatus()).isEqualTo(200);
-        Assertions.assertThat(response.getEntity())
-                .isEqualToComparingFieldByField(result);
     }
 
     @Test

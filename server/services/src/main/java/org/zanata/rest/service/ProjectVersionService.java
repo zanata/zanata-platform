@@ -7,7 +7,10 @@ import static org.zanata.util.DateUtil.parseQueryDate;
 import static org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService.TextFlowResultTransformer;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,9 +63,12 @@ import org.zanata.rest.editor.service.UserService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.ValidationService;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
@@ -111,6 +117,8 @@ public class ProjectVersionService implements ProjectVersionResource {
     private TransMemoryMergeManager transMemoryMergeManager;
     @Inject
     private UrlUtil urlUtil;
+    @Inject
+    private ValidationService validationService;
 
     @Override
     public Response head(@PathParam("projectSlug") String projectSlug,
@@ -555,13 +563,30 @@ public class ProjectVersionService implements ProjectVersionResource {
         return null;
     }
 
+    @Override
+    public Response getValidationSettings(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("versionSlug") String versionSlug) {
+
+        Collection<ValidationAction> validators =
+                validationService.getValidationActions(projectSlug, versionSlug);
+
+        if (validators == null || validators.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        Map<ValidationId, ValidationAction.State> result =
+                new HashMap<>();
+
+        for (ValidationAction validationAction : validators) {
+            result.put(validationAction.getId(), validationAction.getState());
+        }
+        return Response.ok(result).build();
+    }
+
     public ProjectVersionService() {
     }
 
-    @java.beans.ConstructorProperties({ "textFlowDAO", "documentDAO",
-            "projectDAO", "projectIterationDAO", "localeServiceImpl", "request",
-            "eTagUtils", "resourceUtils", "configurationServiceImpl",
-            "identity", "userService", "applicationConfiguration", "uri" })
     protected ProjectVersionService(final TextFlowDAO textFlowDAO,
             final DocumentDAO documentDAO, final ProjectDAO projectDAO,
             final ProjectIterationDAO projectIterationDAO,
@@ -570,7 +595,8 @@ public class ProjectVersionService implements ProjectVersionResource {
             final ConfigurationService configurationServiceImpl,
             final ZanataIdentity identity, final UserService userService,
             final ApplicationConfiguration applicationConfiguration,
-            final UriInfo uri, final UrlUtil urlUtil) {
+            final UriInfo uri, final UrlUtil urlUtil,
+            ValidationService validationService) {
         this.textFlowDAO = textFlowDAO;
         this.documentDAO = documentDAO;
         this.projectDAO = projectDAO;
@@ -585,5 +611,6 @@ public class ProjectVersionService implements ProjectVersionResource {
         this.applicationConfiguration = applicationConfiguration;
         this.uri = uri;
         this.urlUtil = urlUtil;
+        this.validationService = validationService;
     }
 }

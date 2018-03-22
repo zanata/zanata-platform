@@ -1,11 +1,15 @@
 package org.zanata.rest.service;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,13 +32,19 @@ import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.UserService;
+import org.zanata.service.ValidationService;
 import org.zanata.util.UrlUtil;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.resources.ValidationMessages;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.common.collect.ImmutableMap;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
@@ -62,6 +72,11 @@ public class ProjectVersionServiceUnitTest {
     @Mock private UriInfo uri;
     @Mock private UrlUtil urlUtil;
 
+    @Mock
+    private ValidationService validationService;
+
+    private ValidationFactory validationFactory;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -69,8 +84,10 @@ public class ProjectVersionServiceUnitTest {
             new ProjectVersionService(textFlowDAO, documentDAO, null,
                 projectIterationDAO, localeService, request, etagUtil,
                 new ResourceUtils(), null, null, userService,
-                    applicationConfiguration, uri, urlUtil);
-
+                    applicationConfiguration, uri, urlUtil, validationService);
+        ValidationMessages message =
+                Gwti18nReader.create(ValidationMessages.class);
+        validationFactory = new ValidationFactory(message);
     }
 
     @Test
@@ -270,5 +287,33 @@ public class ProjectVersionServiceUnitTest {
         assertThat(response.getStatus()).isEqualTo(200);
         verify(textFlowDAO).getNavigationByDocumentId(isA(DocumentId.class), isA(HLocale.class), isA(
                 GetTransUnitsNavigationService.TextFlowResultTransformer.class), isA(FilterConstraints.class));
+    }
+
+    @Test
+    public void willReturnNotFoundIfValidatorsNotFound() {
+        when(validationService.getValidationActions("about-fedora", "ver1"))
+                .thenReturn(null);
+        Response response = service.getValidationSettings(
+                "about-fedora", "ver1");
+        Assertions.assertThat(response.getStatus()).isEqualTo(404);
+    }
+
+    @Test
+    public void willReturnFoundValidators() {
+        Collection<ValidationAction> validationList =
+                validationFactory.getAllValidationActions().values();
+        when(validationService.getValidationActions("about-fedora", "ver1"))
+                .thenReturn(validationList);
+        Response response = service.getValidationSettings(
+                "about-fedora", "ver1");
+        // Modify the validationList result identically
+        Map<ValidationId, ValidationAction.State> result =
+                new HashMap<ValidationId, ValidationAction.State>();
+        for (ValidationAction validationAction : validationList) {
+            result.put(validationAction.getId(), validationAction.getState());
+        }
+        Assertions.assertThat(response.getStatus()).isEqualTo(200);
+        Assertions.assertThat(response.getEntity())
+                .isEqualToComparingFieldByField(result);
     }
 }

@@ -17,13 +17,6 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ETagUtils;
 import org.zanata.rest.editor.service.resource.ProjectResource;
-import org.zanata.service.ValidationService;
-import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationId;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -39,8 +32,6 @@ public class ProjectService implements ProjectResource {
     private ETagUtils eTagUtils;
     @Inject
     private ProjectDAO projectDAO;
-    @Inject
-    private ValidationService validationService;
 
     @Override
     public Response getProject(@PathParam("projectSlug") String projectSlug) {
@@ -60,38 +51,14 @@ public class ProjectService implements ProjectResource {
         }
     }
 
-    @Override
-    public Response getValidationSettings(
-            @PathParam("projectSlug") String projectSlug,
-            @PathParam("versionSlug") String versionSlug) {
-
-        Collection<ValidationAction> validators =
-            validationService.getValidationActions(projectSlug, versionSlug);
-
-        if (validators == null || validators.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        Map<ValidationId, ValidationAction.State> result =
-                new HashMap<>();
-
-        for (ValidationAction validationAction : validators) {
-            result.put(validationAction.getId(), validationAction.getState());
-        }
-        return Response.ok(result).build();
-    }
-
     public ProjectService() {
     }
 
-    @java.beans.ConstructorProperties({ "request", "eTagUtils", "projectDAO",
-            "validationService" })
+    @java.beans.ConstructorProperties({ "request", "eTagUtils", "projectDAO" })
     protected ProjectService(final Request request, final ETagUtils eTagUtils,
-            final ProjectDAO projectDAO,
-            final ValidationService validationService) {
+            final ProjectDAO projectDAO) {
         this.request = request;
         this.eTagUtils = eTagUtils;
         this.projectDAO = projectDAO;
-        this.validationService = validationService;
     }
 }
