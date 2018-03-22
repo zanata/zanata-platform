@@ -1,6 +1,44 @@
 {
+  "ActivityFeedItem.comment": {
+    "defaultMessage": "{name} has commented on this translation"
+  },
+  "ActivityFeedItem.approved.approvedTranslation": {
+    "defaultMessage": "approved this translation"
+  },
+  "ActivityFeedItem.approved": {
+    "defaultMessage": "{name} has {approvedTranslation}"
+  },
+  "ActivityFeedItem.rejected.rejectedTranslation": {
+    "defaultMessage": "rejected this translation"
+  },
+  "ActivityFeedItem.rejected": {
+    "defaultMessage": "{name} has {rejectedTranslation} {comment}"
+  },
+  "ActivityFeedItem.translated.translatedRevision": {
+    "defaultMessage": "created a translation revision"
+  },
+  "ActivityFeedItem.translated": {
+    "defaultMessage": "{name} has {translatedRevision}"
+  },
+  "ActivityFeedItem.fuzzy.fuzzyRevision": {
+    "defaultMessage": "created a fuzzy revision"
+  },
+  "ActivityFeedItem.fuzzy": {
+    "defaultMessage": "{name} has {fuzzyRevision}"
+  },
+  "ActivityFeedItem.deleted.deletedTranslation": {
+    "defaultMessage": "deleted this translation"
+  },
+  "ActivityFeedItem.deleted": {
+    "defaultMessage": "{name} has {deletedTranslation}"
+  },
+  "TranslatingIndicator.reviewing": {
+    "defaultMessage": "添削モード"
+  },
   "TranslatingIndicator.translating": {
-    "defaultMessage": "翻訳中",
-    "description": "翻訳モードを示す"
+    "defaultMessage": "翻訳モード"
+  },
+  "TranslatingIndicator.viewing": {
+    "defaultMessage": "表示専用モード"
   }
 }

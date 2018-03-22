@@ -20,14 +20,13 @@ function runner (pattern, cb) {
 }
 
 runner(null, function (res) {
-
   var messages = {}
-
   res.forEach(r => {
     messages[r.id] = {
-      defaultMessage: r.defaultMessage,
-      description: r.description
+      defaultMessage: r.defaultMessage
+      // TODO: Update Zanata to handle muli-value JSON objects
+      // description: r.description
     }
   })
-  fs.writeFileSync(`messages/en-us.json`, JSON.stringify(messages, undefined, 2))
+  fs.writeFileSync(`messages/en.json`, JSON.stringify(messages, undefined, 2))
 })
