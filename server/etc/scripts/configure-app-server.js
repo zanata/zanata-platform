@@ -1,4 +1,3 @@
-#!/bin/env jjs
 /*
  * Copyright 2018, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
@@ -20,48 +19,64 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-// NB this script uses Nashorn scripting extensions (not vanilla ES5)
-// Requires org.jboss.as.cli on the module-path or
-// wildfly-cli-4.0.0.Final-client.jar on the classpath.
-// Ref: https://github.com/wildfly/wildfly-core/blob/4.0.0.Final/cli/src/main/java/org/jboss/as/cli/scriptsupport/CLI.java
 
+/*
+ * Script name: configure-app-server.js
+ * Run it like this:
+ * jboss-cli-jjs --language=es6 -scripting -strict configure-app-server.js -- [OPTION]...
+ *
+ * This script uses the JBoss CLI API to configure JBoss EAP or WildFly
+ * to run Zanata. Run with option --help to see all available options.
+ *
+ * Derived from zanata-config-test-common.cli and zanata-config-arq-test.cli
+ * by Patrick Huang. Converted to Nashorn JavaScript by Sean Flanigan.
+ *
+ * NB this script uses jjs Nashorn scripting extensions (not vanilla ES5/ES6)
+ * and should be run with these jjs options: --language=es6 -scripting -strict
+ *
+ * Requires org.jboss.as.cli on the module-path (preferably) or
+ * wildfly-cli-4.0.0.Final-client.jar on the classpath (some cli commands
+ * won't work). Running via jboss-cli-jjs will provide a suitable module
+ * environment.
+ *
+ * API Ref: https://github.com/wildfly/wildfly-core/blob/4.0.0.Final/cli/src/main/java/org/jboss/as/cli/scriptsupport/CLI.java
+ *
+ * Author: Patrick Huang <pahuang@redhat.com>
+ * Author: Sean Flanigan <sflaniga@redhat.com>
+ */
 function padRight(str, paddingValue) {
   return String(str + paddingValue).slice(0, paddingValue.length)
 }
 
-/**
- * Derived from zanata-config-test-common.cli and zanata-config-arq-test.cli
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- */
-var serverConfig = 'standalone-full-ha.xml'
+const serverConfig = 'standalone-full-ha.xml'
 
-var help = {
+const help = {
   '--help':          'Show usage information',
   '--dry-run':       'Show CLI commands without executing',
   '--datasource':    'Create a datasource (for Arquillian tests)',
   '--list-commands': 'Output a list of commands instead of executing them (use with jboss-cli.sh --commands',
-  '--verbose':       'Report errors for tryExec commands'
+  '--verbose':       'Report errors for tryExec commands',
+  '--quiet':         "Don't output anything unless there is an error"
 }
 
 function usage() {
   echo('Usage: zanataConfigTest.js [OPTIONS]')
-  for (var opt in help) {
-    var left = padRight(opt, '                 ')
-    var text = help[opt]
+  for (let opt in help) {
+    const left = padRight(opt, '                 ')
+    const text = help[opt]
     echo("  ${left}${text}")
   }
 }
 
-var options = {
+const options = {
   dryRun: false,
   createDataSource: false,
   listCommands: false,
-  verboseMode: false
+  verbose: false,
+  quiet: false
 }
 
-for each (var arg in $ARG) {
+for each (let arg in $ARG) {
   switch(arg) {
     case '--dry-run':
       options.dryRun = true
@@ -75,6 +90,9 @@ for each (var arg in $ARG) {
     case '--verbose':
       options.verbose = true
       break
+    case '--quiet':
+      options.quiet = true
+      break
     case '--help':
       usage()
       exit()
@@ -85,7 +103,7 @@ for each (var arg in $ARG) {
   }
 }
 
-var jbossCli = org.jboss.as.cli.scriptsupport.CLI.newInstance()
+const jbossCli = org.jboss.as.cli.scriptsupport.CLI.newInstance()
 
 /**
  * @param {string} command
@@ -96,9 +114,9 @@ function exec(command) {
     echo(command)
     return
   }
-  echo("exec: ${command}")
+  if (options.verbose) echo("exec: ${command}")
   if (!options.dryRun) {
-    var res = jbossCli.cmd(command)
+    const res = jbossCli.cmd(command)
     if (!res.success) throw new Error(res.response.toString())
     //return res.response
   }
@@ -113,7 +131,7 @@ function tryExec(command) {
     echo(command)
     return
   }
-  echo("tryExec: ${command}")
+  if (options.verbose) echo("tryExec: ${command}")
   if (!options.dryRun) {
     cmdIgnoreError(command)
   }
@@ -125,7 +143,7 @@ function tryExec(command) {
  */
 function cmdIgnoreError(command) {
   try {
-    var res = jbossCli.cmd(command)
+    const res = jbossCli.cmd(command)
     if (res.success) {
       return //res.response
     } else {
@@ -178,8 +196,15 @@ function logger(logger, level) {
   exec('/subsystem=logging/logger=' + logger + ':write-attribute(name=level,value=' + level + ')')
 }
 
+if (!options.quiet) echo("Starting embedded server")
 
-exec("embed-server --std-out=echo --server-config=${serverConfig}")
+if (options.verbose) {
+  exec("embed-server --std-out=echo --server-config=${serverConfig}")
+} else {
+  exec("embed-server --server-config=${serverConfig}")
+}
+
+if (!options.quiet) echo("Applying configuration")
 
 try {
 
@@ -309,7 +334,9 @@ try {
         --use-ccm=true
     EOF)
   }
+  if (!options.quiet) echo("Configuration complete")
 
 } finally {
+  if (!options.quiet) echo("Stopping embedded server")
   exec('stop-embedded-server')
 }
