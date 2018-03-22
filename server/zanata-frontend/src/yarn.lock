@@ -8493,12 +8493,6 @@ react-inspector@^2.2.2:
     babel-runtime "^6.26.0"
     is-dom "^1.0.9"
 
-react-intl-aggregate-webpack-plugin@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/react-intl-aggregate-webpack-plugin/-/react-intl-aggregate-webpack-plugin-0.0.1.tgz#c29958860d7bcdfa6f460dec79f55ae0220488c6"
-  dependencies:
-    mkdirp "^0.5.1"
-
 react-intl-flatten-webpack-plugin@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/react-intl-flatten-webpack-plugin/-/react-intl-flatten-webpack-plugin-0.0.1.tgz#46daf56ea47c86c9d66b7e79d9b5b1b40883cf42"
