@@ -2,17 +2,18 @@
 
 # determine directory containing this script
 SOURCE="${BASH_SOURCE[0]}"
+declare SCRIPT_DIR
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SCRIPT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
   SOURCE="$(realpath "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  [[ $SOURCE != /* ]] && SOURCE="$SCRIPT_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+SCRIPT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-source ${DIR}/common
+source $SCRIPT_DIR/common
 
-# change to top of the git working directory
-cd $DIR/../
+# change to the server directory
+cd $SCRIPT_DIR/../
 ZANATA_WAR=$(echo $PWD/zanata-war/target/zanata-*.war)
 
 # volume mapping for JBoss deployment folder (put exploded war or war file here to deploy)
