@@ -115,7 +115,8 @@ class Languages extends Component {
         }
         <Helmet title='Languages' />
         <div className='u-centerBlock'>
-          <div className='clearfix'>
+          <div className='clearfix'
+            id='languages-form'>
             <h1>
               Languages {!loading &&
                 <Badge className='default'>{totalCount}</Badge>}
