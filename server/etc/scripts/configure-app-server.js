@@ -248,7 +248,7 @@ function logger(logger, level, filterSpec) {
   exec('/subsystem=logging/logger=' + logger + ':add')
   exec('/subsystem=logging/logger=' + logger + ':write-attribute(name=level,value=' + level + ')')
   if (filterSpec) {
-    exec('/subsystem=logging/logger=' + logger + ':write-attribute(name=filter-spec,value=' + filterSpec + ')')
+    exec('/subsystem=logging/logger=' + logger + ':write-attribute(name=filter-spec,value="' + filterSpec + '")')
   }
 }
 
@@ -318,6 +318,9 @@ try {
 function configureSystemProperties() {
   // TODO create options for all system properties.
 
+  // this is used by several other properties, so it's first
+  systemProperty('zanata.home', zanataHomeDir)
+
   // ==== system properties /system-property=foo:add(value=bar) ====
   systemProperty('hibernate.search.default.indexBase', searchIndexDir)
   systemProperty('javamelody.storage-directory', javamelodyDir)
@@ -328,7 +331,6 @@ function configureSystemProperties() {
   systemProperty('virusScanner', 'DISABLED')
   systemProperty('zanata.email.defaultfromaddress', 'no-reply@zanata.org')
   systemProperty('zanata.file.directory', fileDir)
-  systemProperty('zanata.home', zanataHomeDir)
   if (options.integrationTest) {
     systemProperty('zanata.javaScriptTestHelper', true)
   }
@@ -396,7 +398,7 @@ function enableLoggingForWeldExceptions() {
   // Enable more CDI weld error logging when exceptions are caught
 
   // This won't work (yet) because filters aren't inherited by sub-categories
-  // logger('org.jboss.weld', DEBUG, "any(match(\"Catching\"), levelRange[INFO, FATAL])")
+  // logger('org.jboss.weld', DEBUG, 'any(match(\\"Catching\\"), levelRange[INFO, FATAL])')
 
   // These are all the Logger classes (as of weld-core 3.0.1.Final) which include
   // catchingDebug() or catchingTrace() (mostly by extending org.jboss.weld.logging.WeldLogger):
@@ -424,7 +426,7 @@ function enableLoggingForWeldExceptions() {
   ]
   for (let i = 0; i < loggers.length; i++) {
     // logger(logger, level, filterSpec)
-    logger(loggers[i], DEBUG, "any(match(\"Catching\"), levelRange[INFO, FATAL])")
+    logger(loggers[i], DEBUG, 'any(match(\\"Catching\\"), levelRange[INFO, FATAL])')
   }
 
 }

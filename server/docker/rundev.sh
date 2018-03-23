@@ -107,6 +107,9 @@ mkdir -p $ZANATA_DIR
 
 # TODO copy jboss-cli-jjs and configure-app-server.js to conf/ or something
 
+mkdir -p docker/target
+cp -a etc/scripts/jboss-cli-jjs etc/scripts/configure-app-server.js docker/target/
+
 # build the docker dev image
 # TODO rename docker/Dockerfile to docker/Dockerfile.zanata-base
 docker build --tag zanata/server-dev --file docker/Dockerfile docker/
