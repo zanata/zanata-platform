@@ -33,7 +33,19 @@ $border-radius: 4px;
   box-shadow: none;
 }
 
-.#{$grommet-namespace}button--plain .#{$grommet-namespace}button__label{
+.#{$grommet-namespace}button--plain .#{$grommet-namespace}button__label {
   color: $brand-link-color;
   font-weight: 400;
+}
+
+#explore {
+
+  .teaserHeader-inner .#{$grommet-namespace}button--plain .#{$grommet-namespace}button__icon  {
+    padding: 0;
+  }
+
+  .teaserHeader-inner .#{$grommet-namespace}control-icon {
+    stroke: $brand-link-color;
+  }
+
 }
