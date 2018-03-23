@@ -24,7 +24,7 @@ $border-radius: 4px;
 // use namespace
 @import "../../node_modules/grommet/scss/grommet-core/settings";
 
-#btn-language-add-new .#{$grommet-namespace}button__icon .#{$grommet-namespace}control-icon {
+.#{$grommet-namespace}button__icon .#{$grommet-namespace}control-icon {
   vertical-align: middle;
 }
 
