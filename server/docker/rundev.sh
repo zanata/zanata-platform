@@ -105,8 +105,7 @@ ZANATA_DIR=$HOME/docker-volumes/zanata
 # create the data directory and set permissions (SELinux)
 mkdir -p $ZANATA_DIR
 
-# TODO copy jboss-cli-jjs and configure-app-server.js to conf/ or something
-
+# make config scripts available inside Docker
 mkdir -p docker/target
 cp -a etc/scripts/jboss-cli-jjs etc/scripts/configure-app-server.js docker/target/
 
