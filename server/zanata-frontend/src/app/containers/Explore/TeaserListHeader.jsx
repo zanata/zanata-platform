@@ -5,7 +5,6 @@ import { Icon, Loader } from '../../components'
 import Button from 'grommet/components/Button'
 import Previous from 'grommet/components/icons/base/Previous'
 import Next from 'grommet/components/icons/base/Next'
-import _ from 'underscore'
 
 /**
  * Header with icon and paging for the TeaserList.
