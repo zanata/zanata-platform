@@ -7,13 +7,6 @@ import Previous from 'grommet/components/icons/base/Previous'
 import Next from 'grommet/components/icons/base/Next'
 import _ from 'underscore'
 
-export default (props) => {
-  const newProps = props.disabled ?
-      Object.assign({}, _.omit(props, 'onClick')) : props
-  return (
-      <Button {...newProps} />
-  )
-}
 /**
  * Header with icon and paging for the TeaserList.
  */
@@ -27,6 +20,8 @@ const TeaserListHeader = ({
   loading,
   ...props
 }) => {
+  const newProps = props.disabled
+      ? Object.assign({}, _.omit(props, 'onClick')) : props
   const icons = {
     Project: 'project',
     LanguageTeam: 'language',
@@ -54,12 +49,12 @@ const TeaserListHeader = ({
           <Button icon={<Previous size='xsmall' />}
             disabled={currentPage === 1}
             onClick={() => { updatePage(type, currentPage, totalPage, false) }}
-            plain />
+            plain {...newProps} />
           <span className='pageCurrent'>{currentPage} of {totalPage}</span>
           <Button icon={<Next size='xsmall' />}
             disabled={currentPage === totalPage}
             onClick={() => { updatePage(type, currentPage, totalPage, true) }}
-            plain />
+            plain {...newProps} />
         </div>
       )}
       {loading && <Loader className='headerLoader s1' />}
