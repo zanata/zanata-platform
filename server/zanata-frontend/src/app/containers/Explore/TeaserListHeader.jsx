@@ -18,6 +18,7 @@ const TeaserListHeader = ({
   page,
   updatePage,
   loading,
+  disabled,
   ...props
 }) => {
   const newProps = props.disabled
