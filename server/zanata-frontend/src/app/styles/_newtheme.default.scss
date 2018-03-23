@@ -27,3 +27,15 @@ $border-radius: 4px;
 #btn-language-add-new .#{$grommet-namespace}button__icon .#{$grommet-namespace}control-icon {
   vertical-align: middle;
 }
+
+.#{$grommet-namespace}button--plain {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.#{$grommet-namespace}button--plain .#{$grommet-namespace}button__label{
+  color: $brand-link-color;
+  font-weight: 400;
+}
+
+
