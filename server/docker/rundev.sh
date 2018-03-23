@@ -105,6 +105,8 @@ ZANATA_DIR=$HOME/docker-volumes/zanata
 # create the data directory and set permissions (SELinux)
 mkdir -p $ZANATA_DIR
 
+# TODO copy jboss-cli-jjs and configure-app-server.js to conf/ or something
+
 # build the docker dev image
 # TODO rename docker/Dockerfile to docker/Dockerfile.zanata-base
 docker build --tag zanata/server-dev --file docker/Dockerfile docker/

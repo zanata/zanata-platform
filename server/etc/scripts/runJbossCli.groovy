@@ -61,11 +61,12 @@ def args = [
         '-scripting',
         zanataConfigScript,
         '--',
+        '--integration-test',
         '--quiet'
 ]
 
 boolean runningArquillian = project.artifactId != 'functional-test'
-if (runningArquillian) args.add('--datasource')
+if (runningArquillian) args.add('--datasource-h2')
 
 println "Executing $scriptName"
 //println args

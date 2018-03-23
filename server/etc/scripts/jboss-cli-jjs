@@ -41,7 +41,8 @@
 #
 # Author: Sean Flanigan <sflaniga@redhat.com>
 
-set -e
+# treat errors as fatal; treat unset vars as errors
+set -eu
 
 : "${JBOSS_HOME:?Please set JBOSS_HOME}" # needed by JBoss CLI
 if [[ ! -d $JBOSS_HOME ]]; then

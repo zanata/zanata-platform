@@ -12,10 +12,16 @@ COPY conf/mysql-module/ /opt/jboss/wildfly/modules/
 RUN yum -y install mysql-connector-java && yum clean all && \
     ln -sf /usr/share/java/mysql-connector-java.jar /opt/jboss/wildfly/modules/com/mysql/main/mysql-connector-java.jar
 
+# TODO remove
 COPY conf/zanata-config.cli /tmp/
 
 USER jboss
 
+# COPY conf/jboss-cli-jjs configure-app-server.js /tmp
+# Uses JAVA_HOME and JBOSS_HOME vars from base image
+# RUN tmp/jboss-cli-jjs tmp/configure-app-server.js --rundev
+
+# TODO remove
 RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/zanata-config.cli
 
 # override the sun jdk module file to support java melody (com.sun.management.* for heap dump)
