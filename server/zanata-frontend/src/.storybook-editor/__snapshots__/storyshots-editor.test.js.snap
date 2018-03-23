@@ -24,24 +24,20 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textHighlight"
       >
         <span>
-          approved a translation
+          approved this translation
         </span>
       </span>
     </span>
@@ -55,6 +51,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -133,19 +130,15 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
-       has commented on a translation
+       has commented on this translation
     </span>
   </p>
   <div
@@ -157,6 +150,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -211,7 +205,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
+exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
 <div
   className="RevisionBox"
 >
@@ -235,17 +229,13 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -258,7 +248,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     </span>
   </p>
   <div
-    className="well-fuzzy well"
+    className="well"
   >
     নাম
     <span
@@ -266,6 +256,7 @@ exports[`Editor Storyshots ActivityFeedItem fuzzy 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -344,60 +335,23 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textDanger"
-        >
-          Critical
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -435,6 +389,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -513,60 +468,23 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textWarning"
-        >
-          Major
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -604,6 +522,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -682,60 +601,23 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
         className="u-textWarning"
       >
         <span>
-          rejected a translation
+          rejected this translation
         </span>
       </span>
-       for the reason: 
-      <span
-        className="CriteriaText"
-      >
-        Spelling and Grammar
-      </span>
-       - 
-      <span
-        className="CriteriaText"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s0"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-        <span
-          className="u-textHighlight"
-        >
-          Minor
-        </span>
-      </span>
-       priority. 
+       
       <span
         className="comment"
       >
@@ -773,6 +655,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -851,17 +734,13 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     </span>
     <a
       href="/profile/view/damason"
-    >
-      <img
-        className="u-round ActivityAvatar"
-        src="https://www.gravatar.com/avatar/a961139da8db88c4ae10d6dacf6bea1e?s=72"
-      />
-    </a>
+    />
     <span>
       <a
         href="/profile/view/damason"
+        title="David Mason"
       >
-        David Mason
+        damason
       </a>
        has 
       <span
@@ -882,6 +761,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     >
       <button
         className="Link Link--neutral"
+        onClick={[Function]}
         title="Copy"
       >
         <span
@@ -5739,9 +5619,11 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     <textarea
       className="form-control"
       id="formControlsTextarea"
+      maxLength={undefined}
       onChange={[Function]}
       placeholder="..."
       type={undefined}
+      value=""
     />
   </div>
   <button
@@ -7651,16 +7533,25 @@ exports[`Editor Storyshots TextDiff default 1`] = `
     changed
   </ins>
   <span>
-     text, what
+     text, 
   </span>
   <del>
-    ever it wa
+    whatever
   </del>
   <ins>
-     it now i
+    what
   </ins>
   <span>
-    s.
+     it 
+  </span>
+  <del>
+    was
+  </del>
+  <ins>
+    now is
+  </ins>
+  <span>
+    .
   </span>
 </div>
 `;

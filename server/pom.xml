@@ -39,7 +39,7 @@
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <weld.spi.version>2.3.Final </weld.spi.version>
-    <groovy.version>2.4.7</groovy.version>
+    <groovy.version>2.4.12</groovy.version>
     <icu4j.version>56.1</icu4j.version>
     <guava.version>23.5-jre</guava.version>
     <gwt.version>2.8.0</gwt.version>
@@ -186,6 +186,12 @@
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-servlet-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-proxy-module-api</artifactId>
         <version>${deltaspike.version}</version>
         <scope>compile</scope>
       </dependency>
@@ -1984,6 +1990,8 @@
             </configuration>
           </execution>
           <execution>
+            <!-- You can test with a command like this:
+                 mvn -Dappserver.home=$HOME/apps/wildfly-10.1.0.Final org.codehaus.gmavenplus:gmavenplus-plugin:execute@run-jboss-cli -->
             <id>run-jboss-cli</id>
             <!-- submodules should use 'package' to activate this -->
             <phase>none</phase>

@@ -231,8 +231,8 @@ public class TranslationHistoryPresenterTest {
                 new TransHistoryItem("4", Lists.newArrayList("a"),
                         ContentState.Approved, "admin", new Date(now - 2000), "comment");
         ReviewComment comment =
-                new ReviewComment(new ReviewCommentId(1L), "comment", "admin",
-                        new Date(now));
+                new ReviewComment(new ReviewCommentId(1L), "comment", "Administrator",
+                        "admin", new Date(now));
 
         presenter.displayEntries(latest, Lists.newArrayList(item),
                 Lists.newArrayList(comment));

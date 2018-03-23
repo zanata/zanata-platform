@@ -10,7 +10,8 @@ import { isUndefined, isEmpty } from 'lodash'
 import {
   MINOR, MAJOR, CRITICAL, UNSPECIFIED, priorities
 } from '../../utils/reject-trans-util'
-const textLimit = 500
+
+export const commentTextLimit = 500
 
 /**
  * Modal to collect feedback on the reason for rejecting a translation.
@@ -40,7 +41,7 @@ export class RejectTranslation extends Component {
       criteriaId: undefined,
       reviewComment: ''
     },
-    charsLeft: textLimit,
+    charsLeft: commentTextLimit,
     selectedCriteria: UNSPECIFIED
   }
   constructor (props) {
@@ -82,7 +83,7 @@ export class RejectTranslation extends Component {
   setReviewComment = (event) => {
     const reviewComment = event.target.value
     const charCount = event.target.value.length
-    const charLeft = textLimit - charCount
+    const charLeft = commentTextLimit - charCount
     this.setState(prevState => ({
       review: update(prevState.review, {
         reviewComment: {$set: reviewComment}
@@ -122,7 +123,7 @@ export class RejectTranslation extends Component {
         onCriteriaChange={this.onCriteriaChange}
         onUnspecifiedCriteria={this.onUnspecifiedCriteria}
         onPriorityChange={this.onPriorityChange}
-        textLimit={textLimit}
+        textLimit={commentTextLimit}
         charsLeft={charsLeft}
         criteriaList={criteriaList}
         saveTransReview={this.saveTransReview}

@@ -1,9 +1,3 @@
-import java.nio.file.Files
-import java.nio.file.attribute.PosixFilePermission
-
-import static java.nio.file.attribute.PosixFilePermission.*
-
-
 /*
  * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
@@ -24,57 +18,60 @@ import static java.nio.file.attribute.PosixFilePermission.*
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-String appServerHome = project.properties.get('appserver.home')
 
+String getPropertyValue(String name) {
+    def value = session.userProperties.get(name)
+    if (value) return value //property was defined from command line e.g.: -DpropertyName=value
+    return project.properties.get(name)
+}
+
+String appServerHome = getPropertyValue('appserver.home')
 if (appServerHome == null) {
-    throw new Exception('Missing appserver properties.  Please invoke mvn with -Dappserver=jbosseap6 or -Dappserver=wildfly8')
+    throw new Exception('Missing appserver properties.  Please invoke mvn with -Dappserver=jbosseap6/wildfly8 or -Dappserver.home=jboss_home_dir')
 }
 
-File baseDir = new File(project.basedir as String)
+String scriptName = 'configureAppServer.js'
+String zanataConfigScript = new File("${project.basedir}/../etc/scripts/$scriptName").canonicalPath
+String javaHome = System.getProperty('java.home')
+String nashornJar = "$javaHome/lib/ext/nashorn.jar"
 
-// basedir will be either functional-test module or services/zanata-war module
-File commonCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-test-common.cli")
-File arqTestCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-arq-test.cli")
+def args = [
+        'java',
+        '-Djava.util.logging.manager=org.jboss.logmanager.LogManager',
+        '-jar', "$appServerHome/jboss-modules.jar",
+        '-modulepath', "$appServerHome/modules",
 
-File serverHome = new File(appServerHome)
+        // TODO add sun.scripting to -dependencies and use -class instead of -classpath
+        // Depends on https://issues.jboss.org/browse/WFCORE-3686
+        // and https://issues.jboss.org/browse/MODULES-271
+        '-dependencies', 'org.jboss.as.cli,org.jboss.logmanager',
+        '-classpath', nashornJar,
+        // '-dependencies', 'org.jboss.as.cli,org.jboss.logmanager,sun.scripting',
+        // '-class',
 
-String ext = isWindows() ? 'bat' : 'sh'
+        'jdk.nashorn.tools.Shell',
+        '-scripting',
+        '-strict',
+        zanataConfigScript
+        // ,'--verbose'
+]
 
-File jbossCLI = new File(serverHome, "bin/jboss-cli.$ext")
+boolean runningArquillian = project.artifactId != 'functional-test'
+if (runningArquillian) args.add('--datasource')
 
-// need to set file to executable
-Set<PosixFilePermission> permissions = [GROUP_READ, GROUP_EXECUTE, OTHERS_EXECUTE, OTHERS_READ, OWNER_EXECUTE, OWNER_READ, OWNER_WRITE]
-Files.setPosixFilePermissions(jbossCLI.toPath(), permissions)
+println "Executing $scriptName"
+//println args
 
-runJBossCLI(jbossCLI, commonCLIScript)
-if (project.artifactId != 'functional-test') {
-    // we are running arquillian test. need to run extra script
-    runJBossCLI(jbossCLI, arqTestCLIScript)
-}
-
-static void runJBossCLI(File jbossCLI, File cliScript) {
-    String cmd = "$jbossCLI.absolutePath --file=$cliScript.absolutePath"
-
-    println "about to execute $cmd"
-
-    def sout = new StringBuilder(), serr = new StringBuilder()
-    def proc = cmd.execute()
-    proc.consumeProcessOutput(sout, serr)
-// give it 30 seconds
-    proc.waitForOrKill(30000)
-    println "jboss cli execution:stdout>  $sout"
-    if (!serr.toString().isEmpty()) {
-        println "jboss cli execution:stderr>  $serr"
-    }
-    def exitValue = proc.exitValue()
-    assert exitValue == 0 : "jboss cli execution returned non-zero code:$exitValue"
-}
-
-
-static boolean isWindows() {
-    System.properties.getProperty('os.name').toLowerCase().contains('windows')
+// 'as String[]' coerces any GStrings and Files to Strings
+def processBuilder = new ProcessBuilder(args as String[])
+processBuilder.environment().put('JBOSS_HOME', appServerHome)
+def resultCode = processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start().waitFor()
+if (resultCode) {
+    throw new Exception("$scriptName failed with exit code $resultCode")
+} else {
+    println "$scriptName completed successfully"
 }

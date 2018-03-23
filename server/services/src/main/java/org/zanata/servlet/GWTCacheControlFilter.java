@@ -43,7 +43,7 @@ public class GWTCacheControlFilter extends CacheControlFilter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI();
 
-        if (requestURI.contains(".cache.")) {
+        if (requestURI.contains(".cache.") || requestURI.contains("webjars")) {
             addCacheHeader(httpResponse);
         } else if (requestURI.contains(".nocache.")) {
             addNoCacheHeader(httpResponse);
