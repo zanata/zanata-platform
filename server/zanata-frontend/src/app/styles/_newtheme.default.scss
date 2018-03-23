@@ -17,6 +17,7 @@ $brand-grey-colors: (#000001, #555, #ddd, #f7f7f7);
 $brand-graph-colors: (#03A6D7, #20718A, #546677, #BDD4DC);
 $focus-border-color: #20718A;
 $border-radius: 4px;
+$btn-clear-padding: 0.5rem;
 
 // use namespace
 @import "../../node_modules/grommet/scss/grommet-core/settings";
@@ -44,4 +45,10 @@ $border-radius: 4px;
   .teaserHeader-inner .#{$grommet-namespace}button--plain .#{$grommet-namespace}button__icon  {
     padding: 0;
   }
+}
+
+#userProfile-activityTable .#{$grommet-namespace}button--plain.btn-clear {
+  margin-top: $btn-clear-padding;
+  padding: 0;
+  margin-left: $btn-clear-padding;
 }
