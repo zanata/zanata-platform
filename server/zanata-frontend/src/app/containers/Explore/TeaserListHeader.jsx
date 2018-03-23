@@ -73,7 +73,8 @@ TeaserListHeader.propTypes = {
   sizePerPage: PropTypes.number,
   page: PropTypes.number,
   updatePage: PropTypes.func,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool
 }
 
 export default TeaserListHeader
