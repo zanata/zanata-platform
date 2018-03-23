@@ -18,11 +18,8 @@ const TeaserListHeader = ({
   page,
   updatePage,
   loading,
-  disabled,
   ...props
 }) => {
-  const newProps = props.disabled
-      ? Object.assign({}, _.omit(props, 'onClick')) : props
   const icons = {
     Project: 'project',
     LanguageTeam: 'language',
@@ -48,14 +45,12 @@ const TeaserListHeader = ({
       {totalPage > 1 && (
         <div className='teaserHeader-inner'>
           <Button icon={<Previous size='xsmall' />}
-            disabled={currentPage === 1}
             onClick={() => { updatePage(type, currentPage, totalPage, false) }}
-            plain {...newProps} />
+            plain />
           <span className='pageCurrent'>{currentPage} of {totalPage}</span>
           <Button icon={<Next size='xsmall' />}
-            disabled={currentPage === totalPage}
             onClick={() => { updatePage(type, currentPage, totalPage, true) }}
-            plain {...newProps} />
+            plain />
         </div>
       )}
       {loading && <Loader className='headerLoader s1' />}
