@@ -7,7 +7,7 @@ import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
 import { Icon, LoaderText, Select, Notification } from '../../components/'
-import { Button, Row } from 'react-bootstrap'
+import { Row } from 'react-bootstrap'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -25,6 +25,9 @@ import {
 } from '../../actions/glossary-actions'
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
+import Button from 'grommet/components/Button'
+import Previous from 'grommet/components/icons/base/Previous'
+import Next from 'grommet/components/icons/base/Next'
 
 /**
  * Root component for Glossary page
@@ -227,30 +230,26 @@ class Glossary extends Component {
               }
               {displayPaging &&
                 <div className='u-pullRight glossaryPaging'>
-                  <Button bsStyle='link' disabled={currentPage <= 1}
-                    title='First page'
-                    onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
-                    <Icon name='previous' className='s1' />
-                  </Button>
-                  <Button bsStyle='link' disabled={currentPage <= 1}
-                    title='Previous page'
+                  <Button icon={<Previous size='xsmall' />}
+                    disabled={currentPage <= 1}
+                    onClick={() => { gotoFirstPage(currentPage, totalPage) }}
+                    plain />
+                  <Button icon={<Previous size='xsmall' />}
+                    disabled={currentPage <= 1}
                     onClick={
-                    () => { gotoPreviousPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-left' className='s1' />
-                  </Button>
-                  <span className='u-textNeutral-top'>
+                      () => { gotoPreviousPage(currentPage, totalPage) }}
+                    plain />
+                  <span className='u-textNeutral'>
                     {currentPage} of {totalPage}
                   </span>
-                  <Button bsStyle='link' disabled={currentPage === totalPage}
-                    title='Next page'
-                    onClick={() => { gotoNextPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-right' className='s1' />
-                  </Button>
-                  <Button bsStyle='link' disabled={currentPage === totalPage}
-                    title='Last page'
-                    onClick={() => { gotoLastPage(currentPage, totalPage) }}>
-                    <Icon name='next' className='s1' />
-                  </Button>
+                  <Button icon={<Next size='xsmall' />}
+                    disabled={currentPage === totalPage}
+                    onClick={() => { gotoNextPage(currentPage, totalPage) }}
+                    plain />
+                  <Button icon={<Next size='xsmall' />}
+                    disabled={currentPage === totalPage}
+                    onClick={() => { gotoLastPage(currentPage, totalPage) }}
+                    plain />
                   <span className='textNeutralTotal'
                     title='Total glossary terms'>
                     <Row>

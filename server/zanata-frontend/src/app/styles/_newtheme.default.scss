@@ -35,11 +35,13 @@ $border-radius: 4px;
   font-weight: 400;
 }
 
+.#{$grommet-namespace}control-icon {
+  stroke: $brand-link-color !important;
+  fill: $brand-link-color !important;
+}
+
 #explore {
   .teaserHeader-inner .#{$grommet-namespace}button--plain .#{$grommet-namespace}button__icon  {
     padding: 0;
-  }
-  .teaserHeader-inner .#{$grommet-namespace}control-icon {
-    stroke: $brand-link-color;
   }
 }
