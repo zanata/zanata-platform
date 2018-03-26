@@ -182,6 +182,36 @@
       role="M"
   />
 
+  <HProject defaultProjectType="File"
+            id="6"
+            versionNum="1"
+            creationDate="2009-09-01 20:30:16"
+            lastChanged="2009-09-01 20:30:16"
+            slug="file-project"
+            description="An example File Project"
+            homeContent=""
+            name="File Project"
+            privateProject="FALSE"
+            overrideLocales="FALSE"
+            restrictedByRoles="FALSE"
+            status="A"
+  />
+  <HProjectIteration id="1001"
+                     versionNum="1"
+                     creationDate="2009-09-01 20:30:46"
+                     lastChanged="2009-09-01 20:30:46"
+                     slug="1.0"
+                     parentId="[NULL]"
+                     project_id="6"
+                     overrideLocales="FALSE"
+                     status="A"
+                     projectType="File"
+  />
+  <HProject_Member personId="5"
+                   projectId="6"
+                   role="M"
+  />
+
   <!-- Tell DbUnit to delete any existing documents -->
   <HDocument />
 </dataset>

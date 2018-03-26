@@ -82,6 +82,6 @@ public class ProjectsServiceTest extends ZanataDbunitJpaTest {
                 .isEqualTo(Response.Status.OK.getStatusCode());
         @SuppressWarnings("unchecked")
         List<Project> projects = (List<Project>) response.getEntity();
-        assertThat(projects).hasSize(3);
+        assertThat(projects).hasSize(4);
     }
 }

@@ -52,10 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.common.ContentState;
-import org.zanata.common.DocumentType;
-import org.zanata.common.FileTypeInfo;
-import org.zanata.common.LocaleId;
+import org.zanata.common.*;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.FilePersistService;
@@ -230,7 +227,7 @@ public class FileService implements FileResource {
     @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Response downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileType,
-            String docId) {
+            String docId, String minContentState) {
         GlobalDocumentId id =
                 new GlobalDocumentId(projectSlug, iterationSlug, docId);
         // TODO scan (again) for virus
@@ -239,101 +236,109 @@ public class FileService implements FileResource {
                 projectSlug, iterationSlug, docId);
         if (document == null) {
             response = Response.status(Status.NOT_FOUND).build();
-        } else if ("po".equals(fileType)
-                || FILE_TYPE_OFFLINE_PO.equals(fileType)) {
-            // Note: could return 404 or Unsupported media type for "po" in
-            // non-po projects,
-            // and suggest to use offlinepo
-            final Set<String> extensions = new HashSet<String>();
-            extensions.add("gettext");
-            extensions.add("comment");
-            // Perform translation of Hibernate DTOs to JAXB DTOs
-
-            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
-            String convertedId = RestUtil.convertFromDocumentURIId(docId);
-            TranslationsResource transRes =
-                    (TranslationsResource) this.translatedDocResourceService
-                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
-                                    extensions, true, null)
-                            .getEntity();
-            Resource res = this.resourceUtils.buildResource(document);
-            StreamingOutput output = new POStreamingOutput(res, transRes,
-                    FILE_TYPE_OFFLINE_PO.equals(fileType));
-            response = Response.ok()
-                    .header("Content-Disposition",
-                            "attachment; filename=\"" + document.getName()
-                                    + ".po\"")
-                    .type(MediaType.TEXT_PLAIN).entity(output).build();
-        } else if (FILETYPE_TRANSLATED_APPROVED.equals(fileType)
-                || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType)) {
-            if (!filePersistService.hasPersistedDocument(id)) {
-                return Response.status(Status.NOT_FOUND).build();
-            }
-            Resource res = this.resourceUtils.buildResource(document);
-            final Set<String> extensions = Collections.<String> emptySet();
-            // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
-            String convertedId = RestUtil.convertFromDocumentURIId(docId);
-            TranslationsResource transRes =
-                    (TranslationsResource) this.translatedDocResourceService
-                            .getTranslationsWithDocId(new LocaleId(locale), convertedId,
-                                    extensions, true, null)
-                            .getEntity();
-            // Filter to only provide translated targets. "Preview" downloads
-            // include fuzzy.
-            // New list is used as transRes list appears not to be a modifiable
-            // implementation.
-            List<TextFlowTarget> filteredTranslations = Lists.newArrayList();
-            boolean useFuzzy =
-                    FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
-            for (TextFlowTarget target : transRes.getTextFlowTargets()) {
-                // TODO rhbz953734 - translatedDocResourceService will map
-                // review content state to old state. For now this is
-                // acceptable. Once we have new REST options, we should review
-                // this
-                if (target.getState() == ContentState.Approved || (useFuzzy
-                        && target.getState() == ContentState.NeedReview)) {
-                    filteredTranslations.add(target);
-                }
-            }
-            transRes.getTextFlowTargets().clear();
-            transRes.getTextFlowTargets().addAll(filteredTranslations);
-            InputStream inputStream;
-            try {
-                inputStream = filePersistService.getRawDocumentContentAsStream(
-                        document.getRawDocument());
-            } catch (RawDocumentContentAccessException e) {
-                log.error(e.toString(), e);
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
-                        .build();
-            }
-            File tempFile =
-                    translationFileServiceImpl.persistToTempFile(inputStream);
-            String name = projectSlug + ":" + iterationSlug + ":" + docId;
-            // TODO damason: this file is not transmitted, but used to generate
-            // a file later
-            // the generated file should be scanned instead
-            virusScanner.scan(tempFile, name);
-            URI uri = tempFile.toURI();
-            HRawDocument hRawDocument = document.getRawDocument();
-            FileFormatAdapter adapter = translationFileServiceImpl
-                    .getAdapterFor(hRawDocument.getType());
-            String rawParamString = hRawDocument.getAdapterParameters();
-            Optional<String> params = Optional
-                    .<String> fromNullable(Strings.emptyToNull(rawParamString));
-            StreamingOutput output = new FormatAdapterStreamingOutput(uri, res,
-                    transRes, locale, adapter, params);
-            String translationFilename =
-                    adapter.generateTranslationFilename(document, locale);
-            response = Response.ok()
-                    .header("Content-Disposition", "attachment; filename=\""
-                            + translationFilename + "\"")
-                    .entity(output).build();
-            // TODO damason: remove more immediately, but make sure response has
-            // finished with the file
-            // Note: may not be necessary when file storage is on disk.
-            tempFile.deleteOnExit();
         } else {
-            response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
+            MinContentState minContentStateObject = MinContentState.Translated;
+
+            if (minContentState != null) {
+                minContentStateObject = MinContentState.fromString(minContentState);
+            }
+
+            if ("po".equals(fileType)
+                    || FILE_TYPE_OFFLINE_PO.equals(fileType)) {
+                // Note: could return 404 or Unsupported media type for "po" in
+                // non-po projects,
+                // and suggest to use offlinepo
+                final Set<String> extensions = new HashSet<String>();
+                extensions.add("gettext");
+                extensions.add("comment");
+                // Perform translation of Hibernate DTOs to JAXB DTOs
+
+                // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+                String convertedId = RestUtil.convertFromDocumentURIId(docId);
+                TranslationsResource transRes =
+                        (TranslationsResource) this.translatedDocResourceService
+                                .getTranslationsWithDocId(new LocaleId(locale), convertedId,
+                                        extensions, true, minContentStateObject, null)
+                                .getEntity();
+                Resource res = this.resourceUtils.buildResource(document);
+                StreamingOutput output = new POStreamingOutput(res, transRes,
+                        FILE_TYPE_OFFLINE_PO.equals(fileType));
+                response = Response.ok()
+                        .header("Content-Disposition",
+                                "attachment; filename=\"" + document.getName()
+                                        + ".po\"")
+                        .type(MediaType.TEXT_PLAIN).entity(output).build();
+            } else if (FILETYPE_TRANSLATED_APPROVED.equals(fileType)
+                    || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType)) {
+                if (!filePersistService.hasPersistedDocument(id)) {
+                    return Response.status(Status.NOT_FOUND).build();
+                }
+                Resource res = this.resourceUtils.buildResource(document);
+                final Set<String> extensions = Collections.<String> emptySet();
+                // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
+                String convertedId = RestUtil.convertFromDocumentURIId(docId);
+                TranslationsResource transRes =
+                        (TranslationsResource) this.translatedDocResourceService
+                                .getTranslationsWithDocId(new LocaleId(locale), convertedId,
+                                        extensions, true, minContentStateObject, null)
+                                .getEntity();
+                // Filter to only provide translated targets. "Preview" downloads
+                // include fuzzy.
+                // New list is used as transRes list appears not to be a modifiable
+                // implementation.
+                List<TextFlowTarget> filteredTranslations = Lists.newArrayList();
+                boolean useFuzzy =
+                        FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
+                for (TextFlowTarget target : transRes.getTextFlowTargets()) {
+                    // TODO rhbz953734 - translatedDocResourceService will map
+                    // review content state to old state. For now this is
+                    // acceptable. Once we have new REST options, we should review
+                    // this
+                    if (target.getState() == ContentState.Approved || (useFuzzy
+                            && target.getState() == ContentState.NeedReview)) {
+                        filteredTranslations.add(target);
+                    }
+                }
+                transRes.getTextFlowTargets().clear();
+                transRes.getTextFlowTargets().addAll(filteredTranslations);
+                InputStream inputStream;
+                try {
+                    inputStream = filePersistService.getRawDocumentContentAsStream(
+                            document.getRawDocument());
+                } catch (RawDocumentContentAccessException e) {
+                    log.error(e.toString(), e);
+                    return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
+                            .build();
+                }
+                File tempFile =
+                        translationFileServiceImpl.persistToTempFile(inputStream);
+                String name = projectSlug + ":" + iterationSlug + ":" + docId;
+                // TODO damason: this file is not transmitted, but used to generate
+                // a file later
+                // the generated file should be scanned instead
+                virusScanner.scan(tempFile, name);
+                URI uri = tempFile.toURI();
+                HRawDocument hRawDocument = document.getRawDocument();
+                FileFormatAdapter adapter = translationFileServiceImpl
+                        .getAdapterFor(hRawDocument.getType());
+                String rawParamString = hRawDocument.getAdapterParameters();
+                Optional<String> params = Optional
+                        .<String> fromNullable(Strings.emptyToNull(rawParamString));
+                StreamingOutput output = new FormatAdapterStreamingOutput(uri, res,
+                        transRes, locale, adapter, params);
+                String translationFilename =
+                        adapter.generateTranslationFilename(document, locale);
+                response = Response.ok()
+                        .header("Content-Disposition", "attachment; filename=\""
+                                + translationFilename + "\"")
+                        .entity(output).build();
+                // TODO damason: remove more immediately, but make sure response has
+                // finished with the file
+                // Note: may not be necessary when file storage is on disk.
+                tempFile.deleteOnExit();
+            } else {
+                response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
+            }
         }
         return response;
     }

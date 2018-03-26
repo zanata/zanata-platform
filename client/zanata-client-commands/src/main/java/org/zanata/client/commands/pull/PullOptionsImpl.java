@@ -24,11 +24,9 @@ package org.zanata.client.commands.pull;
 import java.io.File;
 
 import org.kohsuke.args4j.Option;
-import org.zanata.client.commands.AbstractPushPullOptionsImpl;
-import org.zanata.client.commands.BooleanValueHandler;
-import org.zanata.client.commands.ZanataCommand;
-import org.zanata.client.commands.PushPullType;
+import org.zanata.client.commands.*;
 import com.google.common.base.Preconditions;
+import org.zanata.common.MinContentState;
 
 /**
  * @author Sean Flanigan <a
@@ -44,6 +42,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private static final boolean DEFAULT_USE_CACHE = true;
     private static final boolean DEFAULT_PURGE_CACHE = false;
     private static final boolean DEFAULT_CONTINUE_AFTER_ERROR = false;
+    private static final String DEFAULT_MIN_CONTENT_STATE = "Translated";
 
     private String pullType = DEFAULT_PULL_TYPE;
 
@@ -53,6 +52,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private boolean useCache = DEFAULT_USE_CACHE;
     private boolean purgeCache = DEFAULT_PURGE_CACHE;
     private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
+    private String minContentState = DEFAULT_MIN_CONTENT_STATE;
     private int minDocPercent = 0;
     private File cacheDir = new File(".");
 
@@ -154,6 +154,11 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
         return useCache;
     }
 
+    @Override
+    public MinContentState getMinContentState() {
+        return MinContentState.fromString(minContentState);
+    }
+
     @Option(
             name = "--continue-after-error",
             aliases = "-c",
@@ -212,5 +217,17 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     @Override
     public File getCacheDir() {
         return this.cacheDir;
+    }
+
+    @Option(
+            name = "--min-content-state",
+            metaVar = "TYPE",
+            required = false,
+            usage = "Minimum content state to pull:\n"
+                    + "  \"translated\" (default) fetches approved or translated only.\n"
+                    + "  \"approved\" fetches approved only.\n")
+    public
+    void setMinContentState(String minContentState) {
+        this.minContentState = minContentState;
     }
 }

@@ -37,6 +37,7 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MinContentState;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.rest.StringSet;
@@ -135,12 +136,13 @@ public class PullCommandTest {
             protected void pullDocForLocale(PullStrategy strat, Resource doc,
                     String localDocName, String docUri,
                     boolean createSkeletons,
-                    LocaleMapping locMapping, File transFile)
+                    LocaleMapping locMapping, MinContentState minContentState,
+                                            File transFile)
                     throws IOException {
                 // pretend we are pulling
                 transClient.getTranslations(docUri,
                         new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, null);
+                        createSkeletons, minContentState, null);
             }
         };
 
@@ -150,11 +152,11 @@ public class PullCommandTest {
         // Then:
         verifyZeroInteractions(statsClient);
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false,
-                null);
+                EXTENSIONS, false, MinContentState.Translated
+                , null);
         verify(transClient).getTranslations("file1", new LocaleId("de"),
-                EXTENSIONS, false,
-                null);
+                EXTENSIONS, false, MinContentState.Translated
+                , null);
     }
 
     @Test
@@ -199,12 +201,13 @@ public class PullCommandTest {
             protected void pullDocForLocale(PullStrategy strat, Resource doc,
                     String localDocName, String docUri,
                     boolean createSkeletons,
-                    LocaleMapping locMapping, File transFile)
+                    LocaleMapping locMapping, MinContentState minContentState,
+                                            File transFile)
                     throws IOException {
                 // pretend we are pulling
                 transClient.getTranslations(docUri,
                         new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, null);
+                        createSkeletons, minContentState, null);
             }
         };
 
@@ -216,7 +219,7 @@ public class PullCommandTest {
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
                 EXTENSIONS, false,
-                null);
+                MinContentState.Translated, null);
         verifyNoMoreInteractions(transClient);
     }
 
@@ -262,12 +265,13 @@ public class PullCommandTest {
             protected void pullDocForLocale(PullStrategy strat, Resource doc,
                     String localDocName, String docUri,
                     boolean createSkeletons,
-                    LocaleMapping locMapping, File transFile)
+                    LocaleMapping locMapping, MinContentState minContentState,
+                                            File transFile)
                     throws IOException {
                 // pretend we are pulling
                 transClient.getTranslations(docUri,
                         new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, null);
+                        createSkeletons, minContentState, null);
             }
         };
 
@@ -279,7 +283,7 @@ public class PullCommandTest {
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
                 EXTENSIONS, false,
-                null);
+                MinContentState.Translated, null);
         verifyNoMoreInteractions(transClient);
     }
 

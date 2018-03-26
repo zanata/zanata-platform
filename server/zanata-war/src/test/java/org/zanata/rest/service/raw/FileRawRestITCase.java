@@ -20,22 +20,34 @@
  */
 package org.zanata.rest.service.raw;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.google.common.base.Strings;
+import org.apache.commons.codec.binary.Hex;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.service.FileResource;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.*;
+import java.lang.annotation.Annotation;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
@@ -43,10 +55,18 @@ import static org.zanata.util.RawRestTestUtils.assertHeaderValue;
 
 public class FileRawRestITCase extends RestTest {
 
+    private FileClient fileResource;
+
+    private final Annotation[] multipartFormAnnotations =
+            { new MultipartFormLiteral() };
+
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
@@ -61,64 +81,237 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getPo() throws Exception {
-        new ResourceRequest(
-                getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"),
-                "GET", getAuthorizedEnvironment()) {
-            @Override
-            protected Invocation.Builder prepareRequest(
-                    ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("docId", "my/path/document.txt")
-                        .request();
-            }
+    public void getPo() {
+        final Response response = getFileResource()
+                .downloadTranslationFile("sample-project", "1.0", "en-US", "po", "my/path/document.txt", "");
 
-            @Override
-            protected void onResponse(Response response) {
-                // Ok
-                assertThat(response.getStatus()).isEqualTo(200);
-                assertHeaderValue(response, "Content-Disposition",
-                        "attachment; filename=\"document.txt.po\"");
-                assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
-                        MediaType.TEXT_PLAIN);
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertHeaderValue(response, "Content-Disposition",
+                "attachment; filename=\"document.txt.po\"");
+        assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
+                MediaType.TEXT_PLAIN);
 
-                String entityString = response.readEntity(String.class);
+        String entityString = response.readEntity(String.class);
 
-                assertPoFileCorrect(entityString);
-                assertPoFileContainsTranslations(entityString, "hello world",
-                        "");
-            }
-        }.run();
+        assertPoFileCorrect(entityString);
+        assertPoFileContainsTranslations(entityString, "hello world", "");
     }
 
     @Test
     @RunAsClient
-    public void getPo2() throws Exception {
-        new ResourceRequest(
-                getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"),
-                "GET", getAuthorizedEnvironment()) {
-            @Override
-            protected Invocation.Builder prepareRequest(
-                    ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("docId", "my/path/document-2.txt")
-                        .request();
-            }
+    public void getPo2() {
+        Response response = getFileResource()
+                .downloadTranslationFile("sample-project", "1.0", "en-US", "po", "my/path/document-2.txt", "");
 
-            @Override
-            protected void onResponse(Response response) {
-                // Ok
-                assertThat(response.getStatus()).isEqualTo(200);
-                assertHeaderValue(response, "Content-Disposition",
-                        "attachment; filename=\"document-2.txt.po\"");
-                assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
-                        MediaType.TEXT_PLAIN);
-                String entityString = response.readEntity(String.class);
-                assertPoFileCorrect(entityString);
-                assertPoFileContainsTranslations(
-                        entityString, "mssgId1",
-                        "mssgTrans1", "mssgId2", "mssgTrans2", "mssgId3",
-                        "mssgTrans3");
+        // Ok
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertHeaderValue(response, "Content-Disposition",
+                "attachment; filename=\"document-2.txt.po\"");
+        assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
+                MediaType.TEXT_PLAIN);
+
+        String entityString = response.readEntity(String.class);
+        assertPoFileCorrect(entityString);
+        assertPoFileContainsTranslations(
+                entityString, "mssgId1",
+                "mssgTrans1", "mssgId2", "mssgTrans2", "mssgId3",
+                "mssgTrans3");
+    }
+
+    @Test
+    @RunAsClient
+    public void getBakedXliff() throws Exception {
+        uploadSourceFile("test-xliff.xlf", "XLIFF");
+        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
+                "test-xliff.xlf", "", "test-xliff.xlf");
+
+        assertThat(entityOctetStreamAsString).isNotEmpty();
+    }
+
+    @Test
+    @RunAsClient
+    public void getBakedGetText_whenNoTranslations() throws Exception {
+        uploadSourceFile("test-gettext.pot", "GETTEXT");
+
+        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
+                "test-gettext.pot", "", "test-gettext.po");
+
+        assertThat(entityOctetStreamAsString).isNotEmpty();
+        assertPoFile(entityOctetStreamAsString);
+        assertPoFileContainsTranslations(
+                entityOctetStreamAsString, "Parent Folder", "", "Subject:", "", "Connect", "");
+    }
+
+    @Test
+    @RunAsClient
+    public void getBakedGetTextTranslated_whenImportAsTranslated() throws Exception {
+        uploadSourceFile("test-gettext.pot", "GETTEXT");
+
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
+
+        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
+                "test-gettext.pot", "Translated", "test-gettext.po");
+
+        assertThat(entityOctetStreamAsString).isNotEmpty();
+        assertPoFile(entityOctetStreamAsString);
+        assertPoFileContainsTranslations(
+                entityOctetStreamAsString, "Parent Folder", "Carpeta padre", "Subject:", "Asunto:", "Connect", "Conectar");
+    }
+
+    @Test
+    @RunAsClient
+    public void getBakedGetTextApproved_whenImportAsTranslated() throws Exception {
+        uploadSourceFile("test-gettext.pot", "GETTEXT");
+
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
+
+        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
+                "test-gettext.pot", "Approved", "test-gettext.po");
+
+        assertThat(entityOctetStreamAsString).isNotEmpty();
+        assertPoFile(entityOctetStreamAsString);
+        assertPoFileContainsTranslations(
+                entityOctetStreamAsString, "Parent Folder", "", "Subject:", "", "Connect", "");
+    }
+
+    @Test
+    @RunAsClient
+    public void getBakedGetTextTranslated_whenImportAsApproved() throws Exception {
+        uploadSourceFile("test-gettext.pot", "GETTEXT");
+
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
+        uploadTranslationFile("test-gettext-translated-updated.po", "test-gettext.pot", "GETTEXT", "es");
+
+        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
+                "test-gettext.pot", "Translated", "test-gettext.po");
+
+        assertThat(entityOctetStreamAsString).isNotEmpty();
+        assertPoFile(entityOctetStreamAsString);
+        assertPoFileContainsTranslations(
+                entityOctetStreamAsString, "Parent Folder", "Carpeta principal", "Subject:", "Tema:", "Connect", "Conectar");
+    }
+
+    @Test
+    @RunAsClient
+    public void getBakedGetTextApproved_whenImportAsApproved() throws Exception {
+        uploadSourceFile("test-gettext.pot", "GETTEXT");
+
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
+        uploadTranslationFile("test-gettext-translated-updated.po", "test-gettext.pot", "GETTEXT", "es");
+
+        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
+                "test-gettext.pot", "Approved", "test-gettext.po");
+
+        assertThat(entityOctetStreamAsString).isNotEmpty();
+        assertPoFile(entityOctetStreamAsString);
+        assertPoFileContainsTranslations(
+                entityOctetStreamAsString, "Parent Folder", "Carpeta principal", "Subject:", "Tema:", "Connect", "");
+    }
+
+    private String downloadTranslationFile(String locale, String fileExtension, String docId, String minContentState, String expectedFileName) {
+        Response response = getFileResource()
+                .downloadTranslationFile("file-project", "1.0", locale, fileExtension, docId, minContentState);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertHeaderValue(response, "Content-Disposition",
+                "attachment; filename=\"" + expectedFileName + "\"");
+
+        assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
+                MediaType.APPLICATION_OCTET_STREAM);
+
+        return getInputStreamAsStringFromResponse(response);
+    }
+
+    private void uploadSourceFile(String fileName, String fileType) throws FileNotFoundException {
+        DocumentFileUploadForm fileUploadForm = getDocumentFileUploadForm(fileName, fileType);
+
+        Response response = getFileResource().uploadSourceFile("file-project", "1.0", fileName, fileUploadForm);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+
+        ChunkUploadResponse chunkUploadResponseFromResponse = getChunkUploadResponseFromResponse(response);
+
+        assertThat(chunkUploadResponseFromResponse.getErrorMessage()).isNullOrEmpty();
+    }
+
+    private void uploadTranslationFile(String fileName, String docId, String fileType, String locale) throws FileNotFoundException {
+        uploadTranslationFile(fileName, docId, fileType, locale, "import");
+    }
+
+    private void uploadTranslationFile(String fileName, String docId, String fileType, String locale, String merge) throws FileNotFoundException {
+        DocumentFileUploadForm fileUploadForm = getDocumentFileUploadForm(fileName, fileType);
+
+        Response response = getFileResource().uploadTranslationFile("file-project", "1.0", locale, docId, merge, fileUploadForm);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+
+        ChunkUploadResponse chunkUploadResponseFromResponse = getChunkUploadResponseFromResponse(response);
+
+        assertThat(chunkUploadResponseFromResponse.getErrorMessage()).isNullOrEmpty();
+    }
+
+    private DocumentFileUploadForm getDocumentFileUploadForm(String fileName, String fileType) throws FileNotFoundException {
+        File file = new File("src/test/resources/org/zanata/" + fileName);
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        String hash = calculateFileHash(file);
+
+        return generateUploadForm(true, true, fileType, hash, file.length(), fileInputStream);
+    }
+
+    private String getInputStreamAsStringFromResponse(Response response) {
+        InputStream inputStream = response.readEntity(InputStream.class);
+
+        String theString = new BufferedReader(new InputStreamReader(inputStream))
+                .lines().collect(Collectors.joining("\n"));
+
+        return theString;
+    }
+
+    private ChunkUploadResponse getChunkUploadResponseFromResponse(Response response) {
+        response.bufferEntity();
+
+        return response.readEntity(ChunkUploadResponse.class);
+    }
+
+    private String calculateFileHash(File srcFile) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            InputStream fileStream = new FileInputStream(srcFile);
+            try {
+                fileStream = new DigestInputStream(fileStream, md);
+                byte[] buffer = new byte[256];
+                //noinspection StatementWithEmptyBody
+                while (fileStream.read(buffer) > 0) {
+                    // just keep digesting the input
+                }
+            } finally {
+                fileStream.close();
             }
-        }.run();
+            //noinspection UnnecessaryLocalVariable
+            String md5hash = new String(Hex.encodeHex(md.digest()));
+            return md5hash;
+        } catch (NoSuchAlgorithmException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private DocumentFileUploadForm generateUploadForm(boolean isFirst,
+                                                      boolean isLast, String fileType, String md5hash, long streamSize,
+                                                      InputStream fileStream) {
+        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
+        uploadForm.setFirst(isFirst);
+        uploadForm.setLast(isLast);
+        uploadForm.setFileType(fileType);
+        uploadForm.setHash(md5hash);
+        uploadForm.setSize(streamSize);
+        uploadForm.setFileStream(fileStream);
+        return uploadForm;
+    }
+
+    private static void assertPoFile(String poFileContents) {
+        MessageStreamParser messageParser =
+                new MessageStreamParser(new StringReader(poFileContents));
     }
 
     private static void assertPoFileCorrect(String poFileContents) {
@@ -150,7 +343,7 @@ public class FileRawRestITCase extends RestTest {
      *            trans1, mssgid2, trans2, ... etc.
      */
     private static void assertPoFileContainsTranslations(String poFileContents,
-            String... translations) {
+                                                         String... translations) {
         if (translations.length % 2 != 0) {
             throw new AssertionError(
                     "Translation parameters should be given in pairs.");
@@ -202,6 +395,207 @@ public class FileRawRestITCase extends RestTest {
             }
 
             throw new AssertionError(assertionError.toString());
+        }
+    }
+
+    public FileClient getFileResource() {
+        if (fileResource == null) {
+            fileResource = new FileClient();
+        }
+        return fileResource;
+    }
+
+    public class FileClient implements FileResource {
+        @Override
+        public Response acceptedFileTypes() {
+            return new ResourceRequest(
+                    getRestEndpointUrl(""),
+                    "GET", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .request().header(HttpHeaders.ACCEPT,
+                                    MediaType.APPLICATION_XML_TYPE);
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+
+        @Override
+        public Response acceptedFileTypeList() {
+            return new ResourceRequest(
+                    getRestEndpointUrl(""),
+                    "GET", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .request().header(HttpHeaders.ACCEPT,
+                                    MediaType.APPLICATION_XML_TYPE);
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+
+        @Override
+        public Response fileTypeInfoList() {
+            return new ResourceRequest(
+                    getRestEndpointUrl(""),
+                    "GET", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .request().header(HttpHeaders.ACCEPT,
+                                    MediaType.APPLICATION_XML_TYPE);
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+
+        @Override
+        public Response uploadSourceFile(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm) {
+            return new ResourceRequest(
+                    getRestEndpointUrl("/file/source/" + projectSlug + "/" + iterationSlug + "/"),
+                    "POST", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .queryParam("docId", docId)
+                            .request(MediaType.APPLICATION_XML_TYPE);
+                }
+
+                @Override
+                public Response invokeWithResponse(
+                        Invocation.Builder builder) {
+                    Entity<DocumentFileUploadForm> entity = Entity.entity(uploadForm, MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations);
+
+                    return builder.buildPost(entity).invoke();
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+
+        @Override
+        public Response uploadTranslationFile(String projectSlug, String iterationSlug, String localeId, String docId, String merge, DocumentFileUploadForm uploadForm) {
+            return new ResourceRequest(
+                    getRestEndpointUrl("/file/translation/" + projectSlug + "/" + iterationSlug + "/" + localeId),
+                    "POST", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .queryParam("docId", docId)
+                            .queryParam("merge", merge)
+                            .request(MediaType.APPLICATION_XML_TYPE);
+                }
+
+                @Override
+                public Response invokeWithResponse(
+                        Invocation.Builder builder) {
+                    Entity<DocumentFileUploadForm> entity = Entity.entity(uploadForm, MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations);
+
+                    return builder.buildPost(entity).invoke();
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+
+        @Override
+        public Response downloadSourceFile(String projectSlug, String iterationSlug, String fileType, String docId) {
+            return new ResourceRequest(
+                    getRestEndpointUrl("/file/source/" + projectSlug + "/" + iterationSlug + "/" + fileType),
+                    "GET", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget.queryParam("docId", docId).request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                }
+
+                @Override
+                public Response invokeWithResponse(
+                        Invocation.Builder builder) {
+                    return builder.get();
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+
+        @Override
+        public Response downloadTranslationFile(String projectSlug, String iterationSlug, String locale, String fileExtension, String docId, String minContentState) {
+            return new ResourceRequest(
+                    getRestEndpointUrl("/file/translation/" + projectSlug + "/" + iterationSlug + "/" + locale + "/" + fileExtension),
+                    "GET", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    ResteasyWebTarget target = webTarget.queryParam("docId", docId);
+
+                    if (!Strings.isNullOrEmpty(minContentState)) {
+                        target = target.queryParam("minContentState", minContentState);
+                    }
+
+                    return target.request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                }
+
+                @Override
+                public Response invokeWithResponse(
+                        Invocation.Builder builder) {
+                    return builder.get();
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+
+        @Override
+        public Response download(String downloadId) {
+            return new ResourceRequest(
+                    getRestEndpointUrl(""),
+                    "GET", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .request().header(HttpHeaders.ACCEPT,
+                                    MediaType.APPLICATION_XML_TYPE);
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+        }
+    }
+
+    @SuppressWarnings("all")
+    private static class MultipartFormLiteral implements MultipartForm {
+
+        @Override
+        public java.lang.Class<? extends Annotation> annotationType() {
+            return MultipartForm.class;
         }
     }
 }

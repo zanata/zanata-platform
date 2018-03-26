@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.common.MinContentState;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -124,14 +125,14 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
-            Set<String> extensions, boolean skeletons, String eTag) {
+                                    Set<String> extensions, boolean skeletons, MinContentState minContentState, String eTag) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
-        return getTranslationsWithDocId(locale, id, extensions, skeletons, eTag);
+        return getTranslationsWithDocId(locale, id, extensions, skeletons, minContentState, eTag);
     }
 
     @Override
     public Response getTranslationsWithDocId(LocaleId locale, String docId,
-            Set<String> extensions, boolean createSkeletons, String eTag) {
+            Set<String> extensions, boolean createSkeletons, MinContentState minContentState, String eTag) {
         log.debug("start to get translation");
         if (StringUtils.isBlank(docId)) {
             // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
@@ -166,9 +167,15 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         // TODO avoid queries for better cacheability
         List<HTextFlowTarget> hTargets =
                 textFlowTargetDAO.findTranslations(document, hLocale);
+        Optional<String> apiVersion = Optional.<String>absent();
+
+        if (MinContentState.Approved.equals(minContentState)) {
+            apiVersion = Optional.of("StatusApproved");
+        }
+
         boolean foundData = resourceUtils.transferToTranslationsResource(
                 translationResource, document, hLocale, extensions, hTargets,
-                Optional.<String> absent());
+                apiVersion);
         if (!foundData && !createSkeletons) {
             return Response.status(Status.NOT_FOUND).build();
         }
