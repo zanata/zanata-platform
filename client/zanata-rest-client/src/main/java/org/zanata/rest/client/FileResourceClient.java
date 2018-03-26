@@ -35,6 +35,7 @@ import javax.ws.rs.core.Response;
 import org.zanata.common.FileTypeInfo;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.DocumentType;
+import org.zanata.common.MinContentState;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.service.FileResource;
@@ -138,13 +139,25 @@ public class FileResourceClient {
     }
 
     public Response downloadTranslationFile(String projectSlug,
-            String iterationSlug, String locale, String fileExtension,
-            String docId) {
+                                            String iterationSlug, String locale, String fileExtension,
+                                            String docId) {
         WebTarget webResource = factory.getClient().target(baseUri)
                 .path(FileResource.SERVICE_PATH).path("translation")
                 .path(projectSlug).path(iterationSlug).path(locale)
                 .path(fileExtension);
         return webResource.queryParam("docId", docId)
+                .request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get();
+    }
+
+    public Response downloadTranslationFile(String projectSlug,
+                                            String iterationSlug, String locale, String fileExtension,
+                                            String docId, MinContentState minContentState) {
+        WebTarget webResource = factory.getClient().target(baseUri)
+                .path(FileResource.SERVICE_PATH).path("translation")
+                .path(projectSlug).path(iterationSlug).path(locale)
+                .path(fileExtension);
+        return webResource.queryParam("docId", docId)
+                          .queryParam("minContentState", minContentState.toString())
                 .request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get();
     }
 

@@ -23,6 +23,7 @@ package org.zanata.maven;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.pull.PullOptions;
+import org.zanata.common.MinContentState;
 
 /**
  * Pulls translated text from Zanata.
@@ -30,6 +31,7 @@ import org.zanata.client.commands.pull.PullOptions;
  */
 @Mojo(name = "pull", requiresOnline = true, requiresProject = false)
 public class PullSimpleMojo extends AbstractPullMojo implements PullOptions {
+
 
     /**
      * Whether module processing should be enabled. This option is obsolete.
@@ -50,4 +52,8 @@ public class PullSimpleMojo extends AbstractPullMojo implements PullOptions {
         return false;
     }
 
+    @Override
+    public MinContentState getMinContentState() {
+        return MinContentState.Translated;
+    }
 }

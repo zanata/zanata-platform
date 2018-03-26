@@ -28,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
+import org.zanata.common.MinContentState;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -41,15 +42,15 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
     @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
-            Set<String> extensions, boolean createSkeletons,
+            Set<String> extensions, boolean createSkeletons, MinContentState minContentState,
             @HeaderParam("If-None-Match") String eTag) {
         return getTranslationsWithDocId(locale, idNoSlash, extensions,
-                createSkeletons, eTag);
+                createSkeletons, minContentState, eTag);
     }
 
     @Override
     public Response getTranslationsWithDocId(LocaleId locale, String docId,
-            Set<String> extensions, boolean createSkeletons, String eTag) {
+            Set<String> extensions, boolean createSkeletons, MinContentState minContentState, String eTag) {
         MockResourceUtil.validateExtensions(extensions);
         TranslationsResource transResource = new TranslationsResource();
         transResource.getTextFlowTargets().add(new TextFlowTarget(docId));

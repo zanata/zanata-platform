@@ -44,6 +44,7 @@ import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MinContentState;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
@@ -113,6 +114,7 @@ public interface TranslatedDocResource {
             @PathParam("locale") LocaleId locale,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("skeletons") boolean skeletons,
+            @QueryParam("minContentState") MinContentState minContentState,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**
@@ -150,6 +152,7 @@ public interface TranslatedDocResource {
             @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("skeletons") boolean createSkeletons,
+            @QueryParam("minContentState") MinContentState minContentState,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**

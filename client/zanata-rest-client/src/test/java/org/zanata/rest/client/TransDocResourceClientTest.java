@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MinContentState;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.StubbingServerRule;
 
@@ -50,7 +51,7 @@ public class TransDocResourceClientTest {
     public void testGetTranslations() {
         TranslationsResource translations =
                 client.getTranslations("test", LocaleId.DE,
-                        Sets.newHashSet("gettext", "comment"), true, "abc")
+                        Sets.newHashSet("gettext", "comment"), true, MinContentState.Translated , "abc")
                         .readEntity(TranslationsResource.class);
 
         assertThat(translations.getTextFlowTargets()).hasSize(1);

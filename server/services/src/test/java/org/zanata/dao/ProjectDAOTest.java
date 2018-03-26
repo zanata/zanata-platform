@@ -74,12 +74,12 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     @Test
     public void getFilterProjectSizeAll() {
-        assertThat(dao.getFilterProjectSize(false, false, false)).isEqualTo(4);
+        assertThat(dao.getFilterProjectSize(false, false, false)).isEqualTo(5);
     }
 
     @Test
     public void getFilterProjectSizeOnlyActive() {
-        assertThat(dao.getFilterProjectSize(false, true, true)).isEqualTo(2);
+        assertThat(dao.getFilterProjectSize(false, true, true)).isEqualTo(3);
     }
 
     @Test
@@ -94,12 +94,12 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     @Test
     public void getFilterProjectSizeOnlyActiveAndReadOnly() {
-        assertThat(dao.getFilterProjectSize(false, false, true)).isEqualTo(3);
+        assertThat(dao.getFilterProjectSize(false, false, true)).isEqualTo(4);
     }
 
     @Test
     public void getFilterProjectSizeOnlyActiveAndObsolete() {
-        assertThat(dao.getFilterProjectSize(false, true, false)).isEqualTo(3);
+        assertThat(dao.getFilterProjectSize(false, true, false)).isEqualTo(4);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
     public void getOffsetList() {
         List<HProject> projects =
                 dao.getOffsetList(-1, -1, false, false, false);
-        assertThat(projects.size()).isEqualTo(4);
+        assertThat(projects.size()).isEqualTo(5);
         int size = dao.getFilterProjectSize(false, false, false);
         assertThat(projects.size()).isEqualTo(size);
     }
@@ -121,7 +121,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
         HPerson person = personDAO.findById(4L);
         currentUser.account = person.getAccount();
         List<HProject> projects = dao.getOffsetList(-1, -1, false, false, false);
-        assertThat(projects).hasSize(5);
+        assertThat(projects).hasSize(6);
         int size = dao.getFilterProjectSize(false, false, false);
         assertThat(projects.size()).isEqualTo(size);
     }

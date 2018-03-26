@@ -141,7 +141,7 @@ public class MockFileResource implements FileResource {
     @Override
     public Response downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileExtension,
-            final String docId) {
+            final String docId, final String minContentState) {
         StreamingOutput output = new StreamingOutput() {
 
             @Override

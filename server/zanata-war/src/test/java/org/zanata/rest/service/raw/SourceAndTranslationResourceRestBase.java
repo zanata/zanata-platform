@@ -36,6 +36,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.zanata.RestTest;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MinContentState;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.resource.Resource;
@@ -53,6 +54,8 @@ import org.zanata.util.RawRestTestUtils;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public abstract class SourceAndTranslationResourceRestBase extends RestTest {
+
+
     protected static final String DEPRECATED_BASE_PATH =
             "/projects/p/sample-project/iterations/i/1.0/r/";
     protected static final String BASE_PATH =
@@ -60,19 +63,27 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     private SourceDocClient sourceDocResource;
     private TranslatedDocClient translatedDocResource;
 
+    private static final String LOCALE_DATA_DBUNIT_XML =
+            "org/zanata/test/model/LocalesData.dbunit.xml";
+    private static final String PROJECTS_DATA_DBUNIT_XML =
+            "org/zanata/test/model/ProjectsData.dbunit.xml";
+    private static final String ACCOUNT_DATA_DBUNIT_XML =
+            "org/zanata/test/model/AccountData.dbunit.xml";
+
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
                 "org/zanata/test/model/ClearAllTables.dbunit.xml",
                 DatabaseOperation.DELETE_ALL));
+
         addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                PROJECTS_DATA_DBUNIT_XML,
                 DatabaseOperation.CLEAN_INSERT));
         addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/LocalesData.dbunit.xml",
+                LOCALE_DATA_DBUNIT_XML,
                 DatabaseOperation.CLEAN_INSERT));
         addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/AccountData.dbunit.xml",
+                ACCOUNT_DATA_DBUNIT_XML,
                 DatabaseOperation.CLEAN_INSERT));
 
         addAfterTestOperation(new DBUnitProvider.DataSetOperation(
@@ -428,7 +439,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         @Deprecated
         @Override
         public Response getTranslations(String idNoSlash, LocaleId locale,
-                final Set<String> extensions, final boolean createSkeletons,
+                final Set<String> extensions, final boolean createSkeletons, final MinContentState minContentState,
                 String eTag) {
             return new ResourceRequest(
                     getRestEndpointUrl(DEPRECATED_BASE_PATH + idNoSlash + "/translations/" + locale),
@@ -439,6 +450,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                     return addExtensionToRequest(extensions, webTarget)
                             .queryParam("skeletons",
                                     String.valueOf(createSkeletons))
+                            .queryParam("minContentState", minContentState.toString())
                             .request().header(HttpHeaders.ACCEPT,
                                     MediaType.APPLICATION_XML_TYPE);
                 }
@@ -452,7 +464,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         @Override
         public Response getTranslationsWithDocId(LocaleId locale,
                 String docId,
-                Set<String> extensions, boolean createSkeletons,
+                Set<String> extensions, boolean createSkeletons, MinContentState minContentState,
                 String eTag) {
             return new ResourceRequest(
                     getRestEndpointUrl(BASE_PATH + "/translations/" + locale),
@@ -464,6 +476,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             .queryParam("docId", docId)
                             .queryParam("skeletons",
                                     String.valueOf(createSkeletons))
+                            .queryParam("minContentState", minContentState.toString())
                             .request().header(HttpHeaders.ACCEPT,
                                     MediaType.APPLICATION_XML_TYPE);
                 }

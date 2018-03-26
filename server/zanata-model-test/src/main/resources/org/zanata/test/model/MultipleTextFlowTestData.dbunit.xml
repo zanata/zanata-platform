@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<dataset>
+
+  <!-- HDocument
+         Multiple Text Flow and Various Translation States -->
+
+  <HDocument
+      id="5"
+      versionNum="1"
+      creationDate="2009-09-01 20:30:16"
+      lastChanged="2009-09-01 20:30:16"
+      contentType="text/plain"
+      docId="my/path/document-5.txt"
+      locale="4"
+      name="document-5.txt"
+      path="my/path"
+      project_iteration_id="1"
+      revision="1"
+      obsolete="0"
+  />
+  <HTextFlow
+      id="7"
+      document_id="5"
+      resId="tf1"
+      revision="1"
+      pos="0"
+      obsolete="0"
+      plural="false"
+      wordCount="1"
+      content0="one"
+      contentHash="MD5('one')"
+  />
+  <HTextFlowTarget
+      id="9"
+      versionNum="1"
+      creationDate="2010-09-01 20:30:16"
+      lastChanged="2010-09-01 20:30:16"
+      locale="3"
+      state="1"
+      tf_id="7"
+      tf_revision="1"
+      last_modified_by_id="2"
+      content0="eine"
+  />
+  <HTextFlow
+      id="8"
+      document_id="5"
+      resId="tf2"
+      revision="1"
+      pos="0"
+      obsolete="0"
+      plural="false"
+      wordCount="1"
+      content0="two"
+      contentHash="MD5('two')"
+  />
+  <HTextFlowTarget
+      id="10"
+      versionNum="1"
+      creationDate="2010-09-01 20:30:16"
+      lastChanged="2010-09-01 20:30:16"
+      locale="3"
+      state="2"
+      tf_id="8"
+      tf_revision="1"
+      last_modified_by_id="2"
+      content0="zwei"
+  />
+  <HTextFlow
+      id="9"
+      document_id="5"
+      resId="tf3"
+      revision="1"
+      pos="0"
+      obsolete="0"
+      plural="false"
+      wordCount="1"
+      content0="three"
+      contentHash="MD5('three')"
+  />
+  <HTextFlowTarget
+      id="11"
+      versionNum="1"
+      creationDate="2010-09-01 20:30:16"
+      lastChanged="2010-09-01 20:30:16"
+      locale="3"
+      state="3"
+      tf_id="9"
+      tf_revision="1"
+      last_modified_by_id="2"
+      content0="drei"
+  />
+  <HTextFlow
+      id="10"
+      document_id="5"
+      resId="tf4"
+      revision="1"
+      pos="0"
+      obsolete="0"
+      plural="false"
+      wordCount="1"
+      content0="four"
+      contentHash="MD5('four')"
+  />
+  <HTextFlowTarget
+      id="12"
+      versionNum="1"
+      creationDate="2010-09-01 20:30:16"
+      lastChanged="2010-09-01 20:30:16"
+      locale="3"
+      state="4"
+      tf_id="10"
+      tf_revision="1"
+      last_modified_by_id="2"
+      content0="vier"
+  />
+  <HTextFlow
+      id="11"
+      document_id="5"
+      resId="tf5"
+      revision="1"
+      pos="0"
+      obsolete="0"
+      plural="false"
+      wordCount="1"
+      content0="five"
+      contentHash="MD5('five')"
+  />
+  <HTextFlowTarget
+      id="13"
+      versionNum="1"
+      creationDate="2010-09-01 20:30:16"
+      lastChanged="2010-09-01 20:30:16"
+      locale="3"
+      state="0"
+      tf_id="11"
+      tf_revision="1"
+      last_modified_by_id="2"
+      content0="funf"
+  />
+</dataset>
