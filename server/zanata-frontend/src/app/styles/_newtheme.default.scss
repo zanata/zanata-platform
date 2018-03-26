@@ -36,7 +36,7 @@ $btn-clear-padding: 0.5rem;
   font-weight: 400;
 }
 
-.#{$grommet-namespace}control-icon {
+.#{$grommet-namespace}button--plain .#{$grommet-namespace}control-icon {
   stroke: $brand-link-color !important;
   fill: $brand-link-color !important;
 }
