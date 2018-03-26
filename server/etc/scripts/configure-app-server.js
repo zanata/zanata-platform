@@ -77,67 +77,101 @@ function usage() {
 
 const options = {
   dryRun: false,
-  datasourceH2: false,
-  fas: false,
-  // dev options for dev or test
-  integrationTest: false,
   listCommands: false,
-  oauth: false,
   // rundev options for rundev.sh
-  rundev: false,
-  // nologfile for docker
+  runDev: false,
   verbose: false,
   quiet: false
 }
+
+const configFunctions = []
+let consoleLogLevel = undefined
 
 for (let i = 0; i < $ARG.length; i++) {
   const arg = $ARG[i]
   switch(arg) {
     case '--dry-run':
-      echo("dry run: no configuration will actually be changed")
+      echo('Dry run: no configuration will actually be changed')
       options.dryRun = true
       break
     case '--datasource-h2':
-      echo("creating an H2 datasource for arquillian tests")
-      options.datasourceH2 = true
+      echo('Creating an H2 datasource for Arquillian tests')
+      configFunctions.push(configureDatasourceH2)
       break
     case '--fas':
-      echo("Configuring for Fedora Account System")
-      options.fas = true
+      echo('Configuring for Fedora Account System')
+        // TODO replace --fas with --openid-provider=<URL>
+      configFunctions.push(function() {
+        return configureOpenIdProvider('https://id.fedoraproject.org/openid/')
+      })
       break
     case '--integration-test':
-      echo("enabling test-only configuration")
-      options.integrationTest = true
+      echo('Enabling test-only configuration')
+      consoleLogLevel = 'INFO'
+      configureForIntegrationTest()
       break
     case '--list-commands':
-      // echo("outputting jboss cli commands to stdout")
+      // echo('outputting jboss cli commands to stdout')
       options.listCommands = true
       break
     case '--oauth':
-      echo("enabling OAuth")
-      options.oauth = true
+      echo('Enabling OAuth')
+      configFunctions.push(configureSaml2)
       break
     case '--rundev':
-      echo("enabling options for development with rundev.sh")
-      options.rundev = true
+      echo('Enabling options for development with rundev.sh')
+      options.runDev = true
+      consoleLogLevel = 'TRACE'
+      configureForRunDev()
       break
     case '--verbose':
-      echo("verbose mode")
+      echo('Verbose mode')
       options.verbose = true
       break
     case '--quiet':
-      // echo("quiet mode")
+      // echo('Quiet mode')
       options.quiet = true
       break
     case '--help':
       usage()
       exit()
     default:
-      echo("bad option: ${arg}")
+      echo('bad option: ' + arg)
       usage()
       exit()
   }
 }
+
+function configureForRunDev() {
+  configFunctions.push(
+    configureDatasourceMysqlForRunDev,
+    disableFileLogger,
+    enableJcaConnectionErrors,
+    enableLoggingForWeldExceptions,
+    // enableMoreHibernateLogging,
+    configureSMTPForRunDev, function() {
+      // Allows the editor development server to use the docker server as a backend.
+      // The editor development server is run with `make watch` in zanata-frontend/src/editor
+      systemProperty('zanata.origin.whitelist', 'http://localhost:8000 http://localhost:8001')
+    })
+}
+
+function configureForIntegrationTest() {
+  configFunctions.push(
+    configureSocketsForIntegrationTest,
+    enableJcaConnectionErrors,
+    configureSMTPForIntegrationTest, function() {
+      systemProperty('zanata.javaScriptTestHelper', true)
+      systemProperty('zanata.security.adminusers', 'admin')
+    })
+}
+
+// system property values
+// The system properties are to be expanded by the app server at runtime.
+const searchIndexDir = options.runDev ? '${zanata.home}/indexes' : '${jboss.server.data.dir}/zanata/indexes'
+const javamelodyDir = options.runDev ? '${zanata.home}/stats' : '${jboss.server.data.dir}/zanata/stats'
+const fileDir = options.runDev ? '${zanata.home}/files' : './target/documents'
+const zanataHomeDir = options.runDev ? '${user.home}/zanata' : '${jboss.server.data.dir}/zanata'
 
 const jbossCli = org.jboss.as.cli.scriptsupport.CLI.newInstance()
 
@@ -150,7 +184,7 @@ function exec(command) {
     echo(command)
     return
   }
-  if (options.dryRun || options.verbose) echo("exec: ${command}")
+  if (options.dryRun || options.verbose) echo('exec: ' + command)
   if (!options.dryRun) {
     const res = jbossCli.cmd(command)
     if (!res.success) throw new Error(res.response.toString())
@@ -167,7 +201,7 @@ function tryExec(command) {
     echo(command)
     return
   }
-  if (options.dryRun || options.verbose) echo("tryExec: ${command}")
+  if (options.dryRun || options.verbose) echo('tryExec: ' + command)
   if (!options.dryRun) {
     cmdIgnoreError(command)
   }
@@ -187,7 +221,7 @@ function cmdIgnoreError(command) {
     }
   } catch (e) {
     if (options.verbose) {
-      echo("Ignoring exception: ${e}")
+      echo('Ignoring exception: ' + e)
     }
   }
 }
@@ -201,7 +235,7 @@ function ignoreResponse(res) {
     if (res.localCommand) {
       echo('Ignoring error')
     } else {
-      echo("Ignoring error: ${res.response}")
+      echo('Ignoring error: ' + res.response)
     }
   }
 }
@@ -223,6 +257,8 @@ function systemProperty(name, value) {
 
 // These are all the log levels supported by JBoss Logger (derived from Log4J and JUL)
 // https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/6.4/html/administration_and_configuration_guide/chap-the_logging_subsystem#Supported_Log_Levels
+
+//#region log levels
 const ALL = 'ALL'
 const CONFIG = 'CONFIG'
 const DEBUG = 'DEBUG'
@@ -236,6 +272,7 @@ const OFF = 'OFF'
 const TRACE = 'TRACE'
 const WARN = 'WARN'
 const WARNING = 'WARNING'
+//#endregion log levels
 
 /**
  * @param {string} logger
@@ -252,67 +289,63 @@ function logger(logger, level, filterSpec) {
   }
 }
 
-
-if (!options.quiet) echo("Starting embedded server")
-
-if (options.verbose) {
-  exec("embed-server --std-out=echo --server-config=${serverConfig}")
-} else {
-  exec("embed-server --server-config=${serverConfig}")
+function startEmbeddedServer() {
+  if (!options.quiet) echo('Starting embedded server')
+  if (options.verbose) {
+    exec('embed-server --std-out=echo --server-config=' + serverConfig)
+  } else {
+    exec('embed-server --server-config=' + serverConfig)
+  }
 }
 
-if (!options.quiet) echo("Applying configuration")
+function stopEmbeddedServer() {
+  if (!options.quiet) echo('Stopping embedded server')
+  exec('stop-embedded-server')
+}
 
-const searchIndexDir = options.rundev ? '${zanata.home}/indexes' : '${jboss.server.data.dir}/zanata/indexes'
-const javamelodyDir = options.rundev ? '${zanata.home}/stats' : '${jboss.server.data.dir}/zanata/stats'
-const fileDir = options.rundev ? '${zanata.home}/files' : './target/documents'
-const zanataHomeDir = options.rundev ? '${user.home}/zanata' : '${jboss.server.data.dir}/zanata'
+
+startEmbeddedServer()
 
 try {
-
+  if (!options.quiet) echo('Applying configuration')
   configureSystemProperties()
-
-  // ==== cached connection manager ====
-  exec('/subsystem=jca/cached-connection-manager=cached-connection-manager/:write-attribute(name=debug,value=true)')
-  // NB we don't want error=true in production, but we use it here to help catch connection leaks during tests
-  // only for dev/test
-  if (options.dev) {
-    exec('/subsystem=jca/cached-connection-manager=cached-connection-manager/:write-attribute(name=error,value=true)')
-  }
-
-  // ==== logging configuration ====
+  configureJcaConnectionDebugging()
   configureLogHandlers()
-
   suppressAnnoyingLogging()
-
-  if (options.rundev) {
-    enableLoggingForWeldExceptions()
-    // enableMoreHibernateLogging()
-  }
-
   configureCaches()
-
-  // ==== message queue ====
-  tryExec('jms-queue remove --queue-address=MailsQueue')
-  exec('jms-queue add --queue-address=MailsQueue --durable=true --entries=["java:/jms/queue/MailsQueue"]')
-
+  configureJmsQueues()
   configureSecurity()
-  configureSMTP()
   configureSockets()
+  removeIIOP()
+  configFunctions.forEach(function(elem) {
+    elem()
+  })
+  if (!options.quiet) echo('Configuration complete')
+} finally {
+  stopEmbeddedServer()
+}
 
-  //  ==== disable CORBA ====
+// standalone-full comes with CORBA, but we don't need it
+function removeIIOP() {
   tryExec('/socket-binding-group=standard-sockets/socket-binding=iiop:remove')
   tryExec('/socket-binding-group=standard-sockets/socket-binding=iiop-ssl:remove')
   tryExec('/subsystem=iiop-openjdk:remove')
   tryExec('/extension=org.wildfly.iiop-openjdk:remove')
+}
 
-  configureDatasources()
+function configureJmsQueues() {
+  tryExec('jms-queue remove --queue-address=MailsQueue')
+  exec('jms-queue add --queue-address=MailsQueue --durable=true --entries=["java:/jms/queue/MailsQueue"]')
+}
 
-  if (!options.quiet) echo("Configuration complete")
+function configureJcaConnectionDebugging() {
+  exec('/subsystem=jca/cached-connection-manager=cached-connection-manager/:write-attribute(name=debug,value=true)')
+}
 
-} finally {
-  if (!options.quiet) echo("Stopping embedded server")
-  exec('stop-embedded-server')
+function enableJcaConnectionErrors() {
+  // NB we don't want error=true in production, but we use it here to help catch connection leaks during tests
+  // only for dev/test
+  exec('/subsystem=jca/cached-connection-manager=cached-connection-manager/:write-attribute(name=error,value=true)')
 }
 
 function configureSystemProperties() {
@@ -325,53 +358,31 @@ function configureSystemProperties() {
   systemProperty('hibernate.search.default.indexBase', searchIndexDir)
   systemProperty('javamelody.storage-directory', javamelodyDir)
   systemProperty('jboss.as.management.blocking.timeout', 1000)
-  if (options.rundev || options.oauth) {
-    systemProperty('picketlink.file', '${zanata.home}/picketlink.xml')
-  }
   systemProperty('virusScanner', 'DISABLED')
   systemProperty('zanata.email.defaultfromaddress', 'no-reply@zanata.org')
   systemProperty('zanata.file.directory', fileDir)
-  if (options.integrationTest) {
-    systemProperty('zanata.javaScriptTestHelper', true)
-  }
-
-  // Allows the editor development server to use the docker server as a backend.
-  // The editor development server is run with `make watch` in zanata-frontend/src/editor
-  if (options.rundev) {
-    systemProperty('zanata.origin.whitelist', 'http://localhost:8000 http://localhost:8001')
-  }
-
-  if (options.integrationTest) systemProperty('zanata.security.adminusers', 'admin')
   systemProperty('zanata.security.authpolicy.internal', 'zanata.internal')
   systemProperty('zanata.security.authpolicy.openid', 'zanata.openid')
-  if (options.rundev || options.oauth) {
-    systemProperty('zanata.security.authpolicy.saml2', 'zanata.saml2')
-  }
-  systemProperty('zanata.support.oauth', true)
 }
 
-function configureLogHandlers() {
-  // TODO turn this into a more general option, eg for docker?
-  if (options.rundev) {
-    // Remove default file logging (server.log)
-    tryExec('/subsystem=logging/root-logger=ROOT:remove-handler(name=FILE)')
-    tryExec('/subsystem=logging/periodic-rotating-file-handler=FILE:remove')
-  }
+// TODO turn this into a more general option, eg for docker?
+function disableFileLogger() {
+  // Remove default file logging (server.log)
+  tryExec('/subsystem=logging/root-logger=ROOT:remove-handler(name=FILE)')
+  tryExec('/subsystem=logging/periodic-rotating-file-handler=FILE:remove')
+}
 
+/**
+ * @param {'WARN'|'INFO'|'TRACE'} [consoleLogLevel='WARN']
+ */
+function configureLogHandlers(consoleLogLevel) {
+  if (!consoleLogLevel) consoleLogLevel = 'WARN'
   // Create the CONSOLE handler if it doesn't exist (eg standalone-full-ha.xml
   // on EAP 7) - ZNTA-2281
   // We don't remove the existing CONSOLE handler in case this script is ever
   // used against running servers in future. Plus the default CONSOLE handler
   // is colour.
-  tryExec('/subsystem=logging/console-handler=CONSOLE:add(formatter=PATTERN,level=WARN)')
-
-  if (options.integrationTest) {
-    exec('/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=INFO)')
-  } else if (options.rundev) {
-    exec('/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=TRACE)')
-  } else {
-    exec('/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=WARN)')
-  }
+  tryExec('/subsystem=logging/console-handler=CONSOLE:add(formatter=PATTERN,level='+consoleLogLevel+')')
 }
 
 function suppressAnnoyingLogging() {
@@ -394,6 +405,28 @@ function suppressAnnoyingLogging() {
   logger('org.richfaces.log.Components', 'ERROR')
 }
 
+const weldExceptionLoggers = [
+  'org.jboss.weld.environment.logging.WeldEnvironmentLogger',
+  'org.jboss.weld.logging.BeanLogger',
+  'org.jboss.weld.logging.BeanManagerLogger',
+  'org.jboss.weld.logging.BootstrapLogger',
+  'org.jboss.weld.logging.ConfigurationLogger',
+  'org.jboss.weld.logging.ContextLogger',
+  'org.jboss.weld.logging.ConversationLogger',
+  'org.jboss.weld.logging.ElLogger',
+  'org.jboss.weld.logging.EventLogger',
+  'org.jboss.weld.logging.InterceptorLogger',
+  'org.jboss.weld.logging.MetadataLogger',
+  'org.jboss.weld.logging.ReflectionLogger',
+  'org.jboss.weld.logging.ResolutionLogger',
+  'org.jboss.weld.logging.SerializationLogger',
+  'org.jboss.weld.logging.UtilLogger',
+  'org.jboss.weld.logging.ValidatorLogger',
+  'org.jboss.weld.logging.VersionLogger',
+  'org.jboss.weld.logging.XmlLogger',
+  'org.jboss.weld.probe.ProbeLogger'
+]
+
 function enableLoggingForWeldExceptions() {
   // Enable more CDI weld error logging when exceptions are caught
 
@@ -403,30 +436,9 @@ function enableLoggingForWeldExceptions() {
   // These are all the Logger classes (as of weld-core 3.0.1.Final) which include
   // catchingDebug() or catchingTrace() (mostly by extending org.jboss.weld.logging.WeldLogger):
 
-  const loggers = [
-    'org.jboss.weld.environment.logging.WeldEnvironmentLogger',
-    'org.jboss.weld.logging.BeanLogger',
-    'org.jboss.weld.logging.BeanManagerLogger',
-    'org.jboss.weld.logging.BootstrapLogger',
-    'org.jboss.weld.logging.ConfigurationLogger',
-    'org.jboss.weld.logging.ContextLogger',
-    'org.jboss.weld.logging.ConversationLogger',
-    'org.jboss.weld.logging.ElLogger',
-    'org.jboss.weld.logging.EventLogger',
-    'org.jboss.weld.logging.InterceptorLogger',
-    'org.jboss.weld.logging.MetadataLogger',
-    'org.jboss.weld.logging.ReflectionLogger',
-    'org.jboss.weld.logging.ResolutionLogger',
-    'org.jboss.weld.logging.SerializationLogger',
-    'org.jboss.weld.logging.UtilLogger',
-    'org.jboss.weld.logging.ValidatorLogger',
-    'org.jboss.weld.logging.VersionLogger',
-    'org.jboss.weld.logging.XmlLogger',
-    'org.jboss.weld.probe.ProbeLogger'
-  ]
-  for (let i = 0; i < loggers.length; i++) {
+  for (let i = 0; i < weldExceptionLoggers.length; i++) {
     // logger(logger, level, filterSpec)
-    logger(loggers[i], DEBUG, 'any(match(\\"Catching\\"), levelRange[INFO, FATAL])')
+    logger(weldExceptionLoggers[i], DEBUG, 'any(match(\\"Catching\\"), levelRange[INFO, FATAL])')
   }
 
 }
@@ -476,85 +488,82 @@ function configureSecurity() {
   exec('/subsystem=security/security-domain=zanata.openid:add')
   exec('/subsystem=security/security-domain=zanata.openid/authentication=classic:add')
   exec('/subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:add(code="org.zanata.security.OpenIdLoginModule",flag="required")')
-
-  // Put the instance into single OpenID provider mode. Sign in will go straight to the OpenID provider.
-  // TODO replace --fas with --openid-provider=<URL>
-  if (options.fas) {
-    const openidProvider = 'https://id.fedoraproject.org/openid/'
-    exec('/subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:write-attribute(name=module-options,value={providerURL="' + openidProvider + '"})')
-  }
-
-  // ## add SAML security domain
-  if (options.rundev || options.oauth) {
-    tryExec('/subsystem=security/security-domain=zanata.saml2:remove')
-    exec('/subsystem=security/security-domain=zanata.saml2:add(cache-type=default)')
-    exec('/subsystem=security/security-domain=zanata.saml2/authentication=classic:add')
-    tryExec('/subsystem=security/security-domain=zanata.saml2/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:remove')
-    exec('/subsystem=security/security-domain=zanata.saml2/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:add(code=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule,flag=required)')
-  }
 }
 
-function configureSMTP() {
-  if (options.rundev) {
-    tryExec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:remove')
-    exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:add(host=${env.MAIL_HOST:localhost}, port=${MAIL_PORT:25})')
-    exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=outbound-socket-binding-ref,value=my-smtp)')
-    // The env.MAIL_USERNAME and env.MAIL_PASSWORD value can not be empty otherwise jboss will fail to enable the mail session resource.
-    // Default value set by docker will be ' ' (single space string).
-    exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=username,value=${env.MAIL_USERNAME})')
-    exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=password,value=${env.MAIL_PASSWORD})')
-  } else {
-    exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="port", value=${smtp.port,env.SMTP_PORT:2552})')
-  }
+// Put the instance into single OpenID provider mode. Sign in will go straight to the OpenID provider.
+function configureOpenIdProvider(url) {
+  exec('/subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:write-attribute(name=module-options,value={providerURL="' + url + '"})')
 }
 
-function configureSockets() {
-  if (options.integrationTest) {
-    exec('/socket-binding-group=standard-sockets/socket-binding=management-http:write-attribute(name="port", value=${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090})')
-    exec('/socket-binding-group=standard-sockets/socket-binding=management-https:write-attribute(name="port", value=${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTPS_PORT:10093})')
-    exec('/socket-binding-group=standard-sockets/socket-binding=ajp:write-attribute(name="port", value=${jboss.ajp.port,env.JBOSS_AJP_PORT:8109})')
-    exec('/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name="port", value=${jboss.http.port,env.JBOSS_HTTP_PORT:8180})')
-    exec('/socket-binding-group=standard-sockets/socket-binding=https:write-attribute(name="port", value=${jboss.https.port,env.JBOSS_HTTPS_PORT:8543})')
-    // exec('/socket-binding-group=standard-sockets/socket-binding=iiop:write-attribute(name="port", value=${jboss.iiop.port,env.JBOSS_IIOP_PORT:3628})')
-    // exec('/socket-binding-group=standard-sockets/socket-binding=iiop-ssl:write-attribute(name="port", value=${jboss.iiop.ssl.port,env.JBOSS_IIOP_SSL_PORT:3629})')
-    exec('/socket-binding-group=standard-sockets/socket-binding=txn-recovery-environment:write-attribute(name="port", value=${jboss.txn.recovery.port,env.JBOSS_TXN_RECOVERY_PORT:4812})')
-    exec('/socket-binding-group=standard-sockets/socket-binding=txn-status-manager:write-attribute(name="port", value=${jboss.txn.status.port,env.JBOSS_TXN_STATUS_PORT:4813})')
-  }
+// add SAML security domain
+function configureSaml2() {
+  systemProperty('picketlink.file', '${zanata.home}/picketlink.xml')
+  systemProperty('zanata.security.authpolicy.saml2', 'zanata.saml2')
+  systemProperty('zanata.support.oauth', true)
+  tryExec('/subsystem=security/security-domain=zanata.saml2:remove')
+  exec('/subsystem=security/security-domain=zanata.saml2:add(cache-type=default)')
+  exec('/subsystem=security/security-domain=zanata.saml2/authentication=classic:add')
+  tryExec('/subsystem=security/security-domain=zanata.saml2/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:remove')
+  exec('/subsystem=security/security-domain=zanata.saml2/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:add(code=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule,flag=required)')
 }
 
-function configureDatasources() {
-  if (options.datasourceH2) {
-    // we are running arquillian tests. need to add the datasource
-    tryExec('data-source remove --name=zanataDatasource')
-    exec(<<EOF
-      data-source add --name=zanataDatasource
-        --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=h2
-        --connection-url=jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1
-        --user-name=sa --password=sa
-        --validate-on-match=false --background-validation=false
-        --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.JDBC4ValidConnectionChecker
-        --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter
-        --use-ccm=true
-    EOF)
-  }
+function configureSMTPForRunDev() {
+  tryExec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:remove')
+  exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:add(host=${env.MAIL_HOST:localhost}, port=${MAIL_PORT:25})')
+  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=outbound-socket-binding-ref,value=my-smtp)')
+  // The env.MAIL_USERNAME and env.MAIL_PASSWORD value can not be empty otherwise jboss will fail to enable the mail session resource.
+  // Default value set by docker will be ' ' (single space string).
+  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=username,value=${env.MAIL_USERNAME})')
+  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=password,value=${env.MAIL_PASSWORD})')
+}
 
-  if (options.rundev) {
-    // add driver & datasource for rundev.sh
-    tryExec('/subsystem=datasources/jdbc-driver=mysql:remove')
-    exec('/subsystem=datasources/jdbc-driver=mysql:add(driver-name="mysql",driver-module-name="com.mysql",driver-xa-datasource-class-name="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource",driver-class-name="com.mysql.jdbc.Driver")')
+function configureSMTPForIntegrationTest() {
+  exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="port", value=${smtp.port,env.SMTP_PORT:2552})')
+}
 
-    tryExec('data-source remove --name=zanataDatasource')
-    // by quoting 'EOF' we avoid variable interpolation for the JDBC URL
-    exec(<<'EOF'
-      data-source add --name=zanataDatasource
-        --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=mysql
-        --connection-url=jdbc:mysql://${env.DB_HOSTNAME:zanatadb}:3306/${env.DB_NAME:zanata}
-        --user-name=${env.DB_USER:zanata} --password=${env.DB_PASSWORD:zanatapw}
-        --validate-on-match=true --background-validation=false
-        --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker
-        --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
-        --min-pool-size=0 --max-pool-size=20 --flush-strategy=FailingConnectionOnly
-        --track-statements=NOWARN --use-ccm=true
-    EOF)
-  }
+function configureSocketsForIntegrationTest() {
+  exec('/socket-binding-group=standard-sockets/socket-binding=management-http:write-attribute(name="port", value=${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090})')
+  exec('/socket-binding-group=standard-sockets/socket-binding=management-https:write-attribute(name="port", value=${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTPS_PORT:10093})')
+  exec('/socket-binding-group=standard-sockets/socket-binding=ajp:write-attribute(name="port", value=${jboss.ajp.port,env.JBOSS_AJP_PORT:8109})')
+  exec('/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name="port", value=${jboss.http.port,env.JBOSS_HTTP_PORT:8180})')
+  exec('/socket-binding-group=standard-sockets/socket-binding=https:write-attribute(name="port", value=${jboss.https.port,env.JBOSS_HTTPS_PORT:8543})')
+  // exec('/socket-binding-group=standard-sockets/socket-binding=iiop:write-attribute(name="port", value=${jboss.iiop.port,env.JBOSS_IIOP_PORT:3628})')
+  // exec('/socket-binding-group=standard-sockets/socket-binding=iiop-ssl:write-attribute(name="port", value=${jboss.iiop.ssl.port,env.JBOSS_IIOP_SSL_PORT:3629})')
+  exec('/socket-binding-group=standard-sockets/socket-binding=txn-recovery-environment:write-attribute(name="port", value=${jboss.txn.recovery.port,env.JBOSS_TXN_RECOVERY_PORT:4812})')
+  exec('/socket-binding-group=standard-sockets/socket-binding=txn-status-manager:write-attribute(name="port", value=${jboss.txn.status.port,env.JBOSS_TXN_STATUS_PORT:4813})')
+}
+
+function configureDatasourceH2() {
+  // we are running arquillian tests. need to add the datasource
+  tryExec('data-source remove --name=zanataDatasource')
+  // quote 'EOF' to avoid variable interpolation for the JDBC URL
+  exec(<<'EOF'
+    data-source add --name=zanataDatasource
+      --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=h2
+      --connection-url=jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1
+      --user-name=sa --password=sa
+      --validate-on-match=false --background-validation=false
+      --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.JDBC4ValidConnectionChecker
+      --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter
+      --use-ccm=true
+  EOF)
+}
+
+function configureDatasourceMysqlForRunDev() {
+  // add driver & datasource for rundev.sh
+  tryExec('/subsystem=datasources/jdbc-driver=mysql:remove')
+  exec('/subsystem=datasources/jdbc-driver=mysql:add(driver-name="mysql",driver-module-name="com.mysql",driver-xa-datasource-class-name="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource",driver-class-name="com.mysql.jdbc.Driver")')
+
+  tryExec('data-source remove --name=zanataDatasource')
+  exec(<<'EOF'
+    data-source add --name=zanataDatasource
+      --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=mysql
+      --connection-url=jdbc:mysql://${env.DB_HOSTNAME:zanatadb}:3306/${env.DB_NAME:zanata}
+      --user-name=${env.DB_USER:zanata} --password=${env.DB_PASSWORD:zanatapw}
+      --validate-on-match=true --background-validation=false
+      --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker
+      --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
+      --min-pool-size=0 --max-pool-size=20 --flush-strategy=FailingConnectionOnly
+      --track-statements=NOWARN --use-ccm=true
+  EOF)
 }

@@ -17,7 +17,7 @@ USER jboss
 COPY target/jboss-cli-jjs target/configure-app-server.js /tmp/
 
 # Uses JAVA_HOME and JBOSS_HOME vars from base image
-RUN /tmp/jboss-cli-jjs --language=es6 -scripting /tmp/configure-app-server.js  -- --rundev
+RUN /tmp/jboss-cli-jjs --language=es6 -scripting /tmp/configure-app-server.js  -- --rundev --oauth
 
 # override the sun jdk module file to support java melody (com.sun.management.* for heap dump)
 # TODO remove this when https://github.com/javamelody/javamelody/issues/585 is resolved
