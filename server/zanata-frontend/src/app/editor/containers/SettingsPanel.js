@@ -84,22 +84,26 @@ export const SettingsPanel = ({
         {
           id: PRINTF_XSI_EXTENSION,
           label: 'Positional printf (XSI extention)',
-          active: validatorChecked(validatePrintfXsi)
+          active: validatorChecked(validatePrintfXsi),
+          disabled: validatePrintfXsi === ERROR
         },
         {
           id: PRINTF_VARIABLES,
           label: 'Printf variables',
-          active: validatorChecked(validatePrintfVariables)
+          active: validatorChecked(validatePrintfVariables),
+          disabled: validatePrintfVariables === ERROR
         },
         {
           id: TAB,
           label: 'Tab characters (\\t)',
-          active: validatorChecked(validateTab)
+          active: validatorChecked(validateTab),
+          disabled: validateTab === ERROR
         },
         {
           id: XML_ENTITY,
           label: 'XML entity reference',
-          active: validatorChecked(validateXmlEntity)
+          active: validatorChecked(validateXmlEntity),
+          disabled: validateXmlEntity === ERROR
         }
       ]}
       updateSetting={updateValidationSetting} />
