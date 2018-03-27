@@ -15,7 +15,7 @@ var postcssCalc = require('postcss-calc')
 var postcssColorFunction = require('postcss-color-function')
 var postcssCustomMedia = require('postcss-custom-media')
 var postcssEsplit = require('postcss-esplit')
-var ReactIntlFlattenPlugin = require('react-intl-flatten-webpack-plugin')
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 var cssNano = require('cssnano')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
@@ -284,11 +284,18 @@ module.exports = function (env, isEditor, devServerPort) {
       // Convert source (en) and translated strings to the format the app
       // can consume, in the dist directory.
       fullBuild
-        ? new ReactIntlFlattenPlugin({
-          aggregatePattern: join(__dirname, 'messages/*.json'),
-          // dist/messages/[locale-id].json
-          langOutputDir: 'messages'
-        })
+        ? new CopyWebpackPlugin([
+          {
+            from: join(__dirname, 'messages/*.json'),
+            to: 'messages',
+            toType: 'dir',
+            flatten: true,
+            transform (content, path) {
+              // Minimize the JSON files
+              return JSON.stringify(JSON.parse(content))
+            }
+          }
+        ])
         : undefined,
 
       new ManifestPlugin()

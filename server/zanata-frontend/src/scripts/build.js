@@ -6,6 +6,7 @@ const createConfig = require('../webpack.config.js')
 // execute icon scripts to generate required files
 require('./createIconsComponent')
 require('./generateIconList')
+require('./extract-messages')
 
 const isDraft = process.argv.indexOf('--draft') !== -1
 
