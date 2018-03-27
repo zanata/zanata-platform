@@ -43,6 +43,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
+import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -70,6 +71,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StringUtil;
 import com.google.common.base.Optional;
@@ -127,6 +129,10 @@ public class ResourceUtils implements Serializable {
     private EntityManager entityManager;
     @Inject
     private LocaleDAO localeDAO;
+    @Inject
+    private ZanataIdentity identity;
+    @Inject
+    private DatabaseBackedConfig config;
 
     @PostConstruct
     public void create() {
@@ -1392,6 +1398,7 @@ public class ResourceUtils implements Serializable {
         boolean found = this.transferToTranslationsResourceExtensions(document,
                 transRes.getExtensions(true), enabledExtensions, locale,
                 hTargets);
+        boolean showEmail = config.isDisplayUserEmail() || identity.hasRole("admin");
         for (HTextFlowTarget hTarget : hTargets) {
             found = true;
             TextFlowTarget target = new TextFlowTarget();
@@ -1399,6 +1406,9 @@ public class ResourceUtils implements Serializable {
             this.transferToTextFlowTarget(hTarget, target, apiVersion);
             this.transferToTextFlowTargetExtensions(hTarget,
                     target.getExtensions(true), enabledExtensions);
+            if (!showEmail) {
+                target.getTranslator().setEmail("-hidden-");
+            }
             transRes.getTextFlowTargets().add(target);
         }
         return found;
