@@ -1,3 +1,4 @@
+//@ts-check
 /*
  * Copyright 2018, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
@@ -47,10 +48,21 @@
 
 'use strict';
 
-function echo(s) {
-  java.lang.System.out.println(s.toString())
+// This always points to the "real" stdout, even if we reassign System.out
+const stdout = java.lang.System.out
+
+/**
+ * @param {object} o
+ */
+function echo(o) {
+  // sometimes Nashorn seems to pass 'o' as a java.lang.Character
+  stdout.println(o.toString())
 }
 
+/**
+ * @param {string} str
+ * @param {string} paddingValue
+ */
 function padRight(str, paddingValue) {
   return String(str + paddingValue).slice(0, paddingValue.length)
 }
@@ -84,10 +96,19 @@ function usage() {
   }
 }
 
+/**
+ * @template T
+ * @param {T[]} arr
+ * @param {T[]} elems
+ */
 function pushAll(arr, elems) {
   Array.prototype.push.apply(arr, elems)
 }
 
+/**
+ *
+ * @param {string[]} args
+ */
 function parseArgs(args) {
   const opts = {
     dryRun: false,
@@ -96,7 +117,9 @@ function parseArgs(args) {
     quiet: false,
     // rundev options for rundev.sh
     runDev: false,
+    /** @type {(() => void)[]} */
     configCallbacks: [],
+    /** @type {'WARN'|'INFO'|'TRACE'|undefined} */
     consoleLogLevel: undefined,
     // The system properties are expanded by the app server (not by JS).
     zanataHomeDir: '${jboss.server.data.dir}/zanata',
@@ -114,37 +137,39 @@ function parseArgs(args) {
         opts.dryRun = true
         break
       case '--auth-internal':
-        echo('Configuring for internal authentication')
+        echo('Enabling internal authentication')
         opts.configCallbacks.push(configureAuthInternal)
         enabledAuth = true
         break
       case '--auth-openid':
-        echo('Configuring for OpenID authentication')
+        echo('Enabling OpenID authentication')
         opts.configCallbacks.push(configureAuthOpenId)
         enabledAuth = true
         break
       case '--auth-openid-provider': {
-        echo('Configuring for OpenID authentication (single Provider)')
+        echo('Enabling OpenID authentication (single Provider)')
         ++i
         if (i >= args.length) {
           echo('Missing argument\nTry --help for help')
           exit(1)
         }
         const url = args[i]
-        opts.configCallbacks.push(configureAuthOpenId, function() {
-          return configureOpenIdProvider(url)
-        })
+        opts.configCallbacks.push(
+          configureAuthOpenId,
+          function() {
+            return configureOpenIdProvider(url)
+          })
         enabledAuth = true
         break
       }
       case '--auth-saml2':
-        echo('Enabling SAML2')
+        echo('Enabling SAML2 authentication')
         opts.configCallbacks.push(configureAuthSaml2)
         enabledAuth = true
         break
       case '--datasource-h2':
         echo('Creating an H2 datasource for Arquillian tests')
-        pushAll(opts.configCallbacks, configureDatasourceH2)
+        opts.configCallbacks.push(configureDatasourceH2)
         break
       case '--integration-test':
         echo('Enabling test-only configuration')
@@ -236,6 +261,7 @@ function exec(command) {
     if (!res.success) throw new Error(res.response.toString())
     //return res.response
   }
+  return
 }
 
 /**
@@ -322,8 +348,8 @@ const WARNING = 'WARNING'
 
 /**
  * @param {string} logger
- * @param {ALL|CONFIG|DEBUG|ERROR|FATAL|FINE|FINER|FINEST|INFO|OFF|TRACE|WARN|WARNING} level
- * @param {string} filterSpec
+ * @param {'ALL'|'CONFIG'|'DEBUG'|'ERROR'|'FATAL'|'FINE'|'FINER'|'FINEST'|'INFO'|'OFF'|'TRACE'|'WARN'|'WARNING'} level
+ * @param {string=} filterSpec
  * @return {void}
  */
 function logger(logger, level, filterSpec) {
@@ -337,16 +363,12 @@ function logger(logger, level, filterSpec) {
 
 function startEmbeddedServer() {
   if (!options.quiet) echo('Starting embedded server')
-  if (options.verbose) {
-    exec('embed-server --std-out=echo --server-config=' + serverConfig)
-  } else {
-    exec('embed-server --server-config=' + serverConfig)
-  }
+  const echoOrDiscard = options.verbose ? 'echo' : 'discard'
+  exec('embed-server --std-out='+echoOrDiscard+' --server-config=' + serverConfig)
 }
 
 function stopEmbeddedServer() {
   if (!options.quiet) echo('Stopping embedded server')
-  exec('stop-embedded-server')
 }
 
 // standalone-full comes with CORBA, but we don't need it
@@ -395,7 +417,7 @@ function disableFileLogger() {
 }
 
 /**
- * @param {'WARN'|'INFO'|'TRACE'} [consoleLogLevel='WARN']
+ * @param {'WARN'|'INFO'|'TRACE'|undefined} [consoleLogLevel='WARN']
  */
 function configureLogHandlers(consoleLogLevel) {
   if (!consoleLogLevel) consoleLogLevel = 'WARN'
@@ -481,11 +503,13 @@ function enableMoreHibernateLogging() {
 function configureCaches() {
   // ==== infinispan ====
   tryExec('/subsystem=infinispan/cache-container=zanata:remove')
+  // TODO WFLYCTL0028: Attribute 'jndi-name' in the resource at address '/subsystem=infinispan/cache-container=zanata' is deprecated, and may be removed in a future version. See the attribute description in the output of the read-resource-description operation to learn more about the deprecation.
   exec('/subsystem=infinispan/cache-container=zanata:add(module="org.jboss.as.clustering.web.infinispan",jndi-name="java:jboss/infinispan/container/zanata",statistics-enabled="true")')
 
   // NB for HA, we should probably use replicated-cache, not local-cache
   exec('/subsystem=infinispan/cache-container=zanata/local-cache=default:add(statistics-enabled="true")')
   exec('/subsystem=infinispan/cache-container=zanata/local-cache=default/transaction=TRANSACTION:add(mode="NON_XA")')
+  // TODO WFLYCTL0028: Attribute 'strategy' in the resource at address '/subsystem=infinispan/cache-container=zanata/local-cache=default/memory=object' is deprecated, and may be removed in a future version. See the attribute description in the output of the read-resource-description operation to learn more about the deprecation.
   exec('/subsystem=infinispan/cache-container=zanata/local-cache=default/eviction=EVICTION:add(max-entries="10000",strategy="LRU")')
   exec('/subsystem=infinispan/cache-container=zanata/local-cache=default/expiration=EXPIRATION:add(max-idle="100000")')
 
@@ -538,7 +562,10 @@ function configureAuthSaml2() {
   exec(domainPath+'/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:add(code=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule,flag=required)')
 }
 
-// Put the instance into single OpenID provider mode. Sign in will go straight to the OpenID provider.
+/**
+ * Put the instance into single OpenID provider mode. Sign in will go straight to the OpenID provider.
+ * @param {string} url
+ */
 function configureOpenIdProvider(url) {
   exec('/subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:write-attribute(name=module-options,value={providerURL="' + url + '"})')
 }
@@ -607,13 +634,18 @@ function configureDatasourceMysqlForRunDev() {
   */}))
 }
 
-// https://eli.thegreenplace.net/2013/11/09/javascript-es-5-hack-for-clean-multi-line-strings
+/**
+ * https://eli.thegreenplace.net/2013/11/09/javascript-es-5-hack-for-clean-multi-line-strings
+ * @param {() => void} f
+ */
 function multiline(f) {
-  return f.toString().split('\n').slice(1, -1).join('\n');
+  const s = f.toString().split('\n').slice(1, -1).join('\n')
+  // sanity check
+  if (s.length == 0) throw new Error('empty multiline string')
+  return s
 }
 
 startEmbeddedServer()
-
 try {
   if (!options.quiet) echo('Applying configuration')
   configureSystemProperties()
@@ -631,3 +663,5 @@ try {
 } finally {
   stopEmbeddedServer()
 }
+// sometimes JBoss CLI seems to leave threads running, so we exit explicitly
+exit()
