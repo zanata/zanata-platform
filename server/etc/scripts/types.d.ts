@@ -5,6 +5,7 @@ declare const arguments: string[]
 declare namespace java {
   namespace lang {
     namespace System {
+      const err: PrintStream
       const out: PrintStream
     }
   }

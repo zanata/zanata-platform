@@ -48,15 +48,20 @@
 
 'use strict';
 
-// This always points to the "real" stdout, even if we reassign System.out
-const stdout = java.lang.System.out
+/**
+ * @param {object} o
+ */
+function stderr(o) {
+  // sometimes Nashorn seems to pass 'o' as a java.lang.Character
+  java.lang.System.err.println(o.toString())
+}
 
 /**
  * @param {object} o
  */
-function echo(o) {
+function stdout(o) {
   // sometimes Nashorn seems to pass 'o' as a java.lang.Character
-  stdout.println(o.toString())
+  java.lang.System.out.println(o.toString())
 }
 
 /**
@@ -86,13 +91,13 @@ const help = {
 }
 
 function usage() {
-  echo('Usage: configure-app-server.js [OPTIONS]')
-  echo('Note that you must enable at least one authentication option.')
-  echo('Some combinations are not supported by Zanata.')
+  stderr('Usage: configure-app-server.js [OPTIONS]')
+  stderr('Note that you must enable at least one authentication option.')
+  stderr('Some combinations are not supported by Zanata.')
   for (let opt in help) {
     const nameWithPad = padRight(opt, '                       ')
     const desc = help[opt]
-    echo('  ' + nameWithPad + desc)
+    stderr('  ' + nameWithPad + desc)
   }
 }
 
@@ -133,24 +138,24 @@ function parseArgs(args) {
     const arg = args[i]
     switch(arg) {
       case '--dry-run':
-        echo('Dry run: no configuration will actually be changed')
+        stderr('Dry run: no configuration will actually be changed')
         opts.dryRun = true
         break
       case '--auth-internal':
-        echo('Enabling internal authentication')
+        stderr('Enabling internal authentication')
         opts.configCallbacks.push(configureAuthInternal)
         enabledAuth = true
         break
       case '--auth-openid':
-        echo('Enabling OpenID authentication')
+        stderr('Enabling OpenID authentication')
         opts.configCallbacks.push(configureAuthOpenId)
         enabledAuth = true
         break
       case '--auth-openid-provider': {
-        echo('Enabling OpenID authentication (single Provider)')
+        stderr('Enabling OpenID authentication (single Provider)')
         ++i
         if (i >= args.length) {
-          echo('Missing argument\nTry --help for help')
+          stderr('Missing argument\nTry --help for help')
           exit(1)
         }
         const url = args[i]
@@ -163,53 +168,53 @@ function parseArgs(args) {
         break
       }
       case '--auth-saml2':
-        echo('Enabling SAML2 authentication')
+        stderr('Enabling SAML2 authentication')
         opts.configCallbacks.push(configureAuthSaml2)
         enabledAuth = true
         break
       case '--datasource-h2':
-        echo('Creating an H2 datasource for Arquillian tests')
+        stderr('Creating an H2 datasource for Arquillian tests')
         opts.configCallbacks.push(configureDatasourceH2)
         break
       case '--integration-test':
-        echo('Enabling test-only configuration')
+        stderr('Enabling test-only configuration')
         opts.consoleLogLevel = 'INFO'
         opts.fileDir = './target/documents'
         pushAll(opts.configCallbacks, configCallbacksForIntegrationTest())
         break
       case '--list-commands':
-        // echo('Outputting jboss cli commands to stdout')
+        // stderr('Outputting jboss cli commands to stdout')
         opts.listCommands = true
         break
       case '--oauth':
-        echo('Enabling OAuth logins')
+        stderr('Enabling OAuth logins')
         opts.configCallbacks.push(configureOAuth)
         break
       case '--rundev':
-        echo('Enabling options for development with rundev.sh')
+        stderr('Enabling options for development with rundev.sh')
         opts.runDev = true
         opts.consoleLogLevel = 'TRACE'
         opts.zanataHomeDir = '${user.home}/zanata'
         pushAll(opts.configCallbacks, configCallbacksForRunDev())
         break
       case '--verbose':
-        echo('Verbose mode')
+        stderr('Verbose mode')
         opts.verbose = true
         break
       case '--quiet':
-        // echo('Quiet mode')
+        // stderr('Quiet mode')
         opts.quiet = true
         break
       case '--help':
         usage()
         exit()
       default:
-        echo('Bad option: ' + arg + '\nTry --help for help')
+        stderr('Bad option: ' + arg + '\nTry --help for help')
         exit(1)
     }
   }
   if (!enabledAuth) {
-    echo('Please enable at least one authentication method\nTry --help for help')
+    stderr('Please enable at least one authentication method\nTry --help for help')
     exit(1)
   }
   return opts
@@ -252,10 +257,10 @@ const jbossCli = org.jboss.as.cli.scriptsupport.CLI.newInstance()
  */
 function exec(command) {
   if (options.listCommands) {
-    echo(command)
+    stdout(command)
     return
   }
-  if (options.dryRun || options.verbose) echo('exec: ' + command)
+  if (options.dryRun || options.verbose) stderr('exec: ' + command)
   if (!options.dryRun) {
     const res = jbossCli.cmd(command)
     if (!res.success) throw new Error(res.response.toString())
@@ -270,10 +275,10 @@ function exec(command) {
  */
 function tryExec(command) {
   if (options.listCommands) {
-    echo(command)
+    stdout(command)
     return
   }
-  if (options.dryRun || options.verbose) echo('tryExec: ' + command)
+  if (options.dryRun || options.verbose) stderr('tryExec: ' + command)
   if (!options.dryRun) {
     cmdIgnoreError(command)
   }
@@ -293,7 +298,7 @@ function cmdIgnoreError(command) {
     }
   } catch (e) {
     if (options.verbose) {
-      echo('Ignoring exception: ' + e)
+      stderr('Ignoring exception: ' + e)
     }
   }
 }
@@ -305,9 +310,9 @@ function cmdIgnoreError(command) {
 function ignoreResponse(res) {
   if (options.verbose) {
     if (res.localCommand) {
-      echo('Ignoring error')
+      stderr('Ignoring error')
     } else {
-      echo('Ignoring error: ' + res.response)
+      stderr('Ignoring error: ' + res.response)
     }
   }
 }
@@ -362,13 +367,13 @@ function logger(logger, level, filterSpec) {
 }
 
 function startEmbeddedServer() {
-  if (!options.quiet) echo('Starting embedded server')
+  if (!options.quiet) stderr('Starting embedded server')
   const echoOrDiscard = options.verbose ? 'echo' : 'discard'
   exec('embed-server --std-out='+echoOrDiscard+' --server-config=' + serverConfig)
 }
 
 function stopEmbeddedServer() {
-  if (!options.quiet) echo('Stopping embedded server')
+  if (!options.quiet) stderr('Stopping embedded server')
 }
 
 // standalone-full comes with CORBA, but we don't need it
@@ -647,7 +652,7 @@ function multiline(f) {
 
 startEmbeddedServer()
 try {
-  if (!options.quiet) echo('Applying configuration')
+  if (!options.quiet) stderr('Applying configuration')
   configureSystemProperties()
   configureJcaConnectionDebugging()
   configureLogHandlers(options.consoleLogLevel)
@@ -659,7 +664,7 @@ try {
   options.configCallbacks.forEach(function(cb) {
     cb()
   })
-  if (!options.quiet) echo('Configuration complete')
+  if (!options.quiet) stderr('Configuration complete')
 } finally {
   stopEmbeddedServer()
 }
