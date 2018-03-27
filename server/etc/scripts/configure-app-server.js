@@ -23,7 +23,7 @@
 /*
  * Script name: configure-app-server.js
  * Run it like this:
- * jboss-cli-jjs --language=es6 -scripting -strict configure-app-server.js -- [OPTION]...
+ * jboss-cli-jjs --language=es6 configure-app-server.js -- [OPTION]...
  *
  * This script uses the JBoss CLI API to configure JBoss EAP or WildFly
  * to run Zanata. Run with option --help to see all available options.
@@ -47,6 +47,10 @@
 
 'use strict';
 
+function echo(s) {
+  java.lang.System.out.println(s.toString())
+}
+
 function padRight(str, paddingValue) {
   return String(str + paddingValue).slice(0, paddingValue.length)
 }
@@ -54,124 +58,166 @@ function padRight(str, paddingValue) {
 const serverConfig = 'standalone-full-ha.xml'
 
 const help = {
-  '--help':             'Show usage information',
-  '--dry-run':          'Show CLI commands without executing',
-  '--datasource-h2':    'Create a datasource (for Arquillian tests)',
-  '--fas':              'Experimental: Restrict OpenID support to Fedora Account System. NB this option is subject to change',
-  '--integration-test': 'Enable integration test configuration',
-  '--list-commands':    'Output a list of commands instead of executing them (use with jboss-cli.sh --commands',
-  '--oauth':            'Enable OAuth logins',
-  '--rundev':           'Enable options for development with rundev.sh',
-  '--verbose':          'Report errors for tryExec commands',
-  '--quiet':            "Don't output anything unless there is an error"
+  '--help':                 'Show usage information',
+  '--dry-run':              'Show CLI commands without executing',
+  '--datasource-h2':        'Create a datasource (for Arquillian tests)',
+  '--auth-internal':        "Enable Zanata's internal authentication",
+  '--auth-openid':          'Enable OpenID authentication',
+  '--auth-openid-provider': 'Enable OpenID and restrict to a single provider URL. eg for Fedora Account System: --auth-openid-provider https://id.fedoraproject.org/openid/',
+  '--auth-saml2':           'Enable SAML2 authentication (SSO)',
+  '--integration-test':     'Enable integration test configuration',
+  '--list-commands':        'Output a list of commands instead of executing them (use with jboss-cli.sh --commands',
+  '--oauth':                'Enable OAuth logins for Zanata clients (experimental)',
+  '--rundev':               'Enable options for development with rundev.sh',
+  '--verbose':              'Report errors for tryExec commands',
+  '--quiet':                "Don't output anything unless there is an error"
 }
 
 function usage() {
   echo('Usage: configure-app-server.js [OPTIONS]')
+  echo('Note that you must enable at least one authentication option.')
+  echo('Some combinations are not supported by Zanata.')
   for (let opt in help) {
-    const left = padRight(opt, '                   ')
-    const text = help[opt]
-    echo("  ${left}${text}")
+    const nameWithPad = padRight(opt, '                       ')
+    const desc = help[opt]
+    echo('  ' + nameWithPad + desc)
   }
 }
 
-const options = {
-  dryRun: false,
-  listCommands: false,
-  // rundev options for rundev.sh
-  runDev: false,
-  verbose: false,
-  quiet: false
+function pushAll(arr, elems) {
+  Array.prototype.push.apply(arr, elems)
 }
 
-const configFunctions = []
-let consoleLogLevel = undefined
-
-for (let i = 0; i < $ARG.length; i++) {
-  const arg = $ARG[i]
-  switch(arg) {
-    case '--dry-run':
-      echo('Dry run: no configuration will actually be changed')
-      options.dryRun = true
-      break
-    case '--datasource-h2':
-      echo('Creating an H2 datasource for Arquillian tests')
-      configFunctions.push(configureDatasourceH2)
-      break
-    case '--fas':
-      echo('Configuring for Fedora Account System')
-        // TODO replace --fas with --openid-provider=<URL>
-      configFunctions.push(function() {
-        return configureOpenIdProvider('https://id.fedoraproject.org/openid/')
-      })
-      break
-    case '--integration-test':
-      echo('Enabling test-only configuration')
-      consoleLogLevel = 'INFO'
-      configureForIntegrationTest()
-      break
-    case '--list-commands':
-      // echo('outputting jboss cli commands to stdout')
-      options.listCommands = true
-      break
-    case '--oauth':
-      echo('Enabling OAuth')
-      configFunctions.push(configureSaml2)
-      break
-    case '--rundev':
-      echo('Enabling options for development with rundev.sh')
-      options.runDev = true
-      consoleLogLevel = 'TRACE'
-      configureForRunDev()
-      break
-    case '--verbose':
-      echo('Verbose mode')
-      options.verbose = true
-      break
-    case '--quiet':
-      // echo('Quiet mode')
-      options.quiet = true
-      break
-    case '--help':
-      usage()
-      exit()
-    default:
-      echo('bad option: ' + arg)
-      usage()
-      exit()
+function parseArgs(args) {
+  const opts = {
+    dryRun: false,
+    listCommands: false,
+    verbose: false,
+    quiet: false,
+    // rundev options for rundev.sh
+    runDev: false,
+    configCallbacks: [],
+    consoleLogLevel: undefined,
+    // The system properties are expanded by the app server (not by JS).
+    zanataHomeDir: '${jboss.server.data.dir}/zanata',
+    searchIndexDir: '${zanata.home}/indexes',
+    javamelodyDir: '${zanata.home}/stats',
+    fileDir: '${zanata.home}/files'
   }
+  let enabledAuth = false
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    switch(arg) {
+      case '--dry-run':
+        echo('Dry run: no configuration will actually be changed')
+        opts.dryRun = true
+        break
+      case '--auth-internal':
+        echo('Configuring for internal authentication')
+        opts.configCallbacks.push(configureAuthInternal)
+        enabledAuth = true
+        break
+      case '--auth-openid':
+        echo('Configuring for OpenID authentication')
+        opts.configCallbacks.push(configureAuthOpenId)
+        enabledAuth = true
+        break
+      case '--auth-openid-provider': {
+        echo('Configuring for OpenID authentication (single Provider)')
+        ++i
+        if (i >= args.length) {
+          echo('Missing argument\nTry --help for help')
+          exit(1)
+        }
+        const url = args[i]
+        opts.configCallbacks.push(configureAuthOpenId, function() {
+          return configureOpenIdProvider(url)
+        })
+        enabledAuth = true
+        break
+      }
+      case '--auth-saml2':
+        echo('Enabling SAML2')
+        opts.configCallbacks.push(configureAuthSaml2)
+        enabledAuth = true
+        break
+      case '--datasource-h2':
+        echo('Creating an H2 datasource for Arquillian tests')
+        pushAll(opts.configCallbacks, configureDatasourceH2)
+        break
+      case '--integration-test':
+        echo('Enabling test-only configuration')
+        opts.consoleLogLevel = 'INFO'
+        opts.fileDir = './target/documents'
+        pushAll(opts.configCallbacks, configCallbacksForIntegrationTest())
+        break
+      case '--list-commands':
+        // echo('Outputting jboss cli commands to stdout')
+        opts.listCommands = true
+        break
+      case '--oauth':
+        echo('Enabling OAuth logins')
+        opts.configCallbacks.push(configureOAuth)
+        break
+      case '--rundev':
+        echo('Enabling options for development with rundev.sh')
+        opts.runDev = true
+        opts.consoleLogLevel = 'TRACE'
+        opts.zanataHomeDir = '${user.home}/zanata'
+        pushAll(opts.configCallbacks, configCallbacksForRunDev())
+        break
+      case '--verbose':
+        echo('Verbose mode')
+        opts.verbose = true
+        break
+      case '--quiet':
+        // echo('Quiet mode')
+        opts.quiet = true
+        break
+      case '--help':
+        usage()
+        exit()
+      default:
+        echo('Bad option: ' + arg + '\nTry --help for help')
+        exit(1)
+    }
+  }
+  if (!enabledAuth) {
+    echo('Please enable at least one authentication method\nTry --help for help')
+    exit(1)
+  }
+  return opts
 }
 
-function configureForRunDev() {
-  configFunctions.push(
+function configCallbacksForRunDev() {
+  return [
     configureDatasourceMysqlForRunDev,
     disableFileLogger,
     enableJcaConnectionErrors,
     enableLoggingForWeldExceptions,
     // enableMoreHibernateLogging,
-    configureSMTPForRunDev, function() {
+    configureSMTPForRunDev,
+    function() {
       // Allows the editor development server to use the docker server as a backend.
       // The editor development server is run with `make watch` in zanata-frontend/src/editor
       systemProperty('zanata.origin.whitelist', 'http://localhost:8000 http://localhost:8001')
-    })
+    }]
 }
 
-function configureForIntegrationTest() {
-  configFunctions.push(
+function configCallbacksForIntegrationTest() {
+  return [
     configureSocketsForIntegrationTest,
     enableJcaConnectionErrors,
-    configureSMTPForIntegrationTest, function() {
+    configureSMTPForIntegrationTest,
+    function() {
       systemProperty('zanata.javaScriptTestHelper', true)
       systemProperty('zanata.security.adminusers', 'admin')
-    })
+    }]
 }
 
-// system property values
-// The system properties are to be expanded by the app server at runtime.
-const searchIndexDir = options.runDev ? '${zanata.home}/indexes' : '${jboss.server.data.dir}/zanata/indexes'
-const javamelodyDir = options.runDev ? '${zanata.home}/stats' : '${jboss.server.data.dir}/zanata/stats'
-const fileDir = options.runDev ? '${zanata.home}/files' : './target/documents'
-const zanataHomeDir = options.runDev ? '${user.home}/zanata' : '${jboss.server.data.dir}/zanata'
+// parse the command line arguments
+const options = parseArgs(arguments)
 
 const jbossCli = org.jboss.as.cli.scriptsupport.CLI.newInstance()
 
@@ -303,28 +349,6 @@ function stopEmbeddedServer() {
   exec('stop-embedded-server')
 }
 
-
-startEmbeddedServer()
-
-try {
-  if (!options.quiet) echo('Applying configuration')
-  configureSystemProperties()
-  configureJcaConnectionDebugging()
-  configureLogHandlers()
-  suppressAnnoyingLogging()
-  configureCaches()
-  configureJmsQueues()
-  configureSecurity()
-  configureSockets()
-  removeIIOP()
-  configFunctions.forEach(function(elem) {
-    elem()
-  })
-  if (!options.quiet) echo('Configuration complete')
-} finally {
-  stopEmbeddedServer()
-}
-
 // standalone-full comes with CORBA, but we don't need it
 function removeIIOP() {
   tryExec('/socket-binding-group=standard-sockets/socket-binding=iiop:remove')
@@ -352,17 +376,15 @@ function configureSystemProperties() {
   // TODO create options for all system properties.
 
   // this is used by several other properties, so it's first
-  systemProperty('zanata.home', zanataHomeDir)
+  systemProperty('zanata.home', options.zanataHomeDir)
 
   // ==== system properties /system-property=foo:add(value=bar) ====
-  systemProperty('hibernate.search.default.indexBase', searchIndexDir)
-  systemProperty('javamelody.storage-directory', javamelodyDir)
+  systemProperty('hibernate.search.default.indexBase', options.searchIndexDir)
+  systemProperty('javamelody.storage-directory', options.javamelodyDir)
   systemProperty('jboss.as.management.blocking.timeout', 1000)
   systemProperty('virusScanner', 'DISABLED')
   systemProperty('zanata.email.defaultfromaddress', 'no-reply@zanata.org')
-  systemProperty('zanata.file.directory', fileDir)
-  systemProperty('zanata.security.authpolicy.internal', 'zanata.internal')
-  systemProperty('zanata.security.authpolicy.openid', 'zanata.openid')
+  systemProperty('zanata.file.directory', options.fileDir)
 }
 
 // TODO turn this into a more general option, eg for docker?
@@ -470,24 +492,50 @@ function configureCaches() {
   exec('/subsystem=infinispan/cache-container=zanata:write-attribute(name="default-cache",value="default")')
 }
 
+// add top-level zanata security domain
 function configureSecurity() {
-  // add zanata security domain
   tryExec('/subsystem=security/security-domain=zanata:remove')
   exec('/subsystem=security/security-domain=zanata:add')
   exec('/subsystem=security/security-domain=zanata/authentication=classic:add')
   exec('/subsystem=security/security-domain=zanata/authentication=classic/login-module=ZanataCentralLoginModule:add(code="org.zanata.security.ZanataCentralLoginModule",flag="required")')
+  if (!options.noAuthInternal) configureAuthInternal()
+}
 
-  // add zanata.internal security domain
-  tryExec('/subsystem=security/security-domain=zanata.internal:remove')
-  exec('/subsystem=security/security-domain=zanata.internal:add')
-  exec('/subsystem=security/security-domain=zanata.internal/authentication=classic:add')
-  exec('/subsystem=security/security-domain=zanata.internal/authentication=classic/login-module=ZanataInternalLoginModule:add(code="org.zanata.security.jaas.InternalLoginModule",flag="required")')
+// add zanata.internal security domain
+function configureAuthInternal() {
+  const name = 'zanata.internal'
+  systemProperty('zanata.security.authpolicy.internal', name)
+  const domainPath = '/subsystem=security/security-domain='+name
 
-  // add zanata.openid security domain
-  tryExec('/subsystem=security/security-domain=zanata.openid:remove')
-  exec('/subsystem=security/security-domain=zanata.openid:add')
-  exec('/subsystem=security/security-domain=zanata.openid/authentication=classic:add')
-  exec('/subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:add(code="org.zanata.security.OpenIdLoginModule",flag="required")')
+  tryExec(domainPath+':remove')
+  exec(domainPath+':add')
+  exec(domainPath+'/authentication=classic:add')
+  exec(domainPath+'/authentication=classic/login-module=ZanataInternalLoginModule:add(code="org.zanata.security.jaas.InternalLoginModule",flag="required")')
+}
+
+// add zanata.openid security domain
+function configureAuthOpenId() {
+  const name = 'zanata.openid'
+  systemProperty('zanata.security.authpolicy.openid', name)
+  const domainPath = '/subsystem=security/security-domain='+name
+
+  tryExec(domainPath+':remove')
+  exec(domainPath+':add')
+  exec(domainPath+'/authentication=classic:add')
+  exec(domainPath+'/authentication=classic/login-module=ZanataOpenIdLoginModule:add(code="org.zanata.security.OpenIdLoginModule",flag="required")')
+}
+
+// add zanata.saml2 security domain
+function configureAuthSaml2() {
+  systemProperty('picketlink.file', '${zanata.home}/picketlink.xml')
+  const name = 'zanata.saml2'
+  systemProperty('zanata.security.authpolicy.saml2', name)
+  const domainPath = '/subsystem=security/security-domain='+name
+  tryExec(domainPath+':remove')
+  exec(domainPath+':add(cache-type=default)')
+  exec(domainPath+'/authentication=classic:add')
+  tryExec(domainPath+'/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:remove')
+  exec(domainPath+'/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:add(code=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule,flag=required)')
 }
 
 // Put the instance into single OpenID provider mode. Sign in will go straight to the OpenID provider.
@@ -495,16 +543,8 @@ function configureOpenIdProvider(url) {
   exec('/subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:write-attribute(name=module-options,value={providerURL="' + url + '"})')
 }
 
-// add SAML security domain
-function configureSaml2() {
-  systemProperty('picketlink.file', '${zanata.home}/picketlink.xml')
-  systemProperty('zanata.security.authpolicy.saml2', 'zanata.saml2')
+function configureOAuth() {
   systemProperty('zanata.support.oauth', true)
-  tryExec('/subsystem=security/security-domain=zanata.saml2:remove')
-  exec('/subsystem=security/security-domain=zanata.saml2:add(cache-type=default)')
-  exec('/subsystem=security/security-domain=zanata.saml2/authentication=classic:add')
-  tryExec('/subsystem=security/security-domain=zanata.saml2/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:remove')
-  exec('/subsystem=security/security-domain=zanata.saml2/authentication=classic/login-module=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule:add(code=org.picketlink.identity.federation.bindings.jboss.auth.SAML2LoginModule,flag=required)')
 }
 
 function configureSMTPForRunDev() {
@@ -536,8 +576,7 @@ function configureSocketsForIntegrationTest() {
 function configureDatasourceH2() {
   // we are running arquillian tests. need to add the datasource
   tryExec('data-source remove --name=zanataDatasource')
-  // quote 'EOF' to avoid variable interpolation for the JDBC URL
-  exec(<<'EOF'
+  exec(multiline(function() {/*
     data-source add --name=zanataDatasource
       --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=h2
       --connection-url=jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1
@@ -546,7 +585,7 @@ function configureDatasourceH2() {
       --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.JDBC4ValidConnectionChecker
       --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter
       --use-ccm=true
-  EOF)
+  */}))
 }
 
 function configureDatasourceMysqlForRunDev() {
@@ -555,7 +594,7 @@ function configureDatasourceMysqlForRunDev() {
   exec('/subsystem=datasources/jdbc-driver=mysql:add(driver-name="mysql",driver-module-name="com.mysql",driver-xa-datasource-class-name="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource",driver-class-name="com.mysql.jdbc.Driver")')
 
   tryExec('data-source remove --name=zanataDatasource')
-  exec(<<'EOF'
+  exec(multiline(function() {/*
     data-source add --name=zanataDatasource
       --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=mysql
       --connection-url=jdbc:mysql://${env.DB_HOSTNAME:zanatadb}:3306/${env.DB_NAME:zanata}
@@ -565,5 +604,30 @@ function configureDatasourceMysqlForRunDev() {
       --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
       --min-pool-size=0 --max-pool-size=20 --flush-strategy=FailingConnectionOnly
       --track-statements=NOWARN --use-ccm=true
-  EOF)
+  */}))
+}
+
+// https://eli.thegreenplace.net/2013/11/09/javascript-es-5-hack-for-clean-multi-line-strings
+function multiline(f) {
+  return f.toString().split('\n').slice(1, -1).join('\n');
+}
+
+startEmbeddedServer()
+
+try {
+  if (!options.quiet) echo('Applying configuration')
+  configureSystemProperties()
+  configureJcaConnectionDebugging()
+  configureLogHandlers(options.consoleLogLevel)
+  suppressAnnoyingLogging()
+  configureCaches()
+  configureJmsQueues()
+  configureSecurity()
+  removeIIOP()
+  options.configCallbacks.forEach(function(cb) {
+    cb()
+  })
+  if (!options.quiet) echo('Configuration complete')
+} finally {
+  stopEmbeddedServer()
 }

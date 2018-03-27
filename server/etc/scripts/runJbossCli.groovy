@@ -61,7 +61,11 @@ def args = [
         '-scripting',
         zanataConfigScript,
         '--',
+        '--auth-internal',
+        '--auth-openid',
+        '--auth-saml2',
         '--integration-test',
+        '--oauth',
         '--quiet'
 ]
 
