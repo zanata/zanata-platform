@@ -8,12 +8,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.zanata.PerformanceProfiling;
 import org.zanata.SlowTest;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ResourceType;
+import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -29,6 +31,7 @@ import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.collect.Sets;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -53,6 +56,12 @@ public class ResourceUtilsJpaTest extends ZanataJpaTest {
     protected EntityManager getEm() {
         return super.getEm();
     }
+
+    @Produces @Mock
+    private ZanataIdentity identity;
+
+    @Produces @Mock
+    private DatabaseBackedConfig config;
 
     @Before
     public void setUp() {
