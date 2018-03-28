@@ -22,6 +22,22 @@ body.bodyStyle {
   .bg--pop-highest {
     border: none;
   }
+  /* Fixes for Add translation modal buttons */
+  #uploadForm .rf-fu,
+  #uploadForm .rf-fu-btns-lft,
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add,
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add,
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add input.rf-fu-inp {
+    width: 100%;
+  }
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add .rf-fu-inp-cntr {
+    position: relative;
+  }
+  /* remove + icon that cannot be clicked */
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add {
+    padding: 0 0 0 10px !important;
+    background-image: none;
+  }
   .view {
     width: 100%;
     height: 100%;
