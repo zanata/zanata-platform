@@ -58,10 +58,11 @@ export const undoEdit = createAction(UNDO_EDIT)
  */
 export function selectPhrase (phraseId, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
-    dispatch(
-      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
-    dispatch(createAction(SELECT_PHRASE)(phraseId))
+    dispatch(createAction(SELECT_PHRASE)(phraseId)).then(
+      dispatch(
+        fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
+    )
   }
 }
 
@@ -185,7 +186,14 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
             // dispatch(phraseSaveFailed(currentPhrase, saveInfo))
           } else {
             response.json().then(({ revision, status }) => {
-              dispatch(saveFinished(phrase.id, status, revision))
+              dispatch(saveFinished(phrase.id, status, revision)).then(
+                dispatch(fetchTransUnitHistory(
+                  saveInfo.localeId,
+                  phrase.id,
+                  stateBefore.context.projectSlug,
+                  stateBefore.context.versionSlug
+                ))
+              )
             })
           }
           startPendingSaveIfPresent(currentPhrase)
