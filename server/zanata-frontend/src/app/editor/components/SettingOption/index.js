@@ -8,7 +8,8 @@ class SettingOption extends React.Component {
     label: PropTypes.string.isRequired,
     active: PropTypes.bool.isRequired,
     /* arguments: (string: settingId, bool: active) */
-    updateSetting: PropTypes.func.isRequired
+    updateSetting: PropTypes.func.isRequired,
+    disabled: PropTypes.bool
   }
 
   updateSetting = (event) => {
@@ -16,9 +17,10 @@ class SettingOption extends React.Component {
   }
 
   render () {
-    const { label, active } = this.props
+    const { label, active, disabled } = this.props
     return (
       <Checkbox checked={active}
+        disabled={disabled}
         onChange={this.updateSetting}>
         &nbsp;{label}
       </Checkbox>
