@@ -41,6 +41,7 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.ValidationService;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.servlet.annotations.SessionId;
@@ -78,6 +79,8 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
     @Produces @Mock ZanataIdentity identity;
 
     @Produces @Mock TransMemoryMergeManager transMemoryMergeManager;
+
+    @Produces @Mock ValidationService validationService;
 
     @Override
     @Produces

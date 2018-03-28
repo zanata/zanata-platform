@@ -23,6 +23,7 @@ import {
   STATS_FETCHED,
   HEADER_DATA_FETCHED
 } from './header-action-types'
+import { fetchValidationSettings } from './settings-actions'
 import { some, curry, isEmpty } from 'lodash'
 import { createAction } from 'redux-actions'
 import { equals } from '../utils/string-utils'
@@ -187,6 +188,8 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
             selectedLocaleId)
             .then(checkResponse('fetch statistics failed'))
             .then(stats => dispatch(statsFetched(stats)))
+
+          fetchValidationSettings(dispatch, projectSlug, versionSlug)
 
           // dispatching selected doc and locale must happen after we compare
           // previous state otherwise it will not fetch stats

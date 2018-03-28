@@ -1,23 +1,42 @@
-/* JSF and GWT overrides
+/* JSF overrides
 - fixes UI issues caused by assets and bootstrap css conflicts
 */
 
 @import "./variables.less";
+
 // These two rules do not apply to specifically new-zanata wrapped pages
 body.bodyStyle {
   margin: 0;
   padding: 0;
 }
+
 .htmlStyle {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.5;
   background-color: #fff;
   font-size: @font-size-base;
 }
+
 .new-zanata {
   //body class
   .bg--pop-highest {
     border: none;
+  }
+  /* Fixes for Add translation modal buttons */
+  #uploadForm .rf-fu,
+  #uploadForm .rf-fu-btns-lft,
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add,
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add,
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add input.rf-fu-inp {
+    width: 100%;
+  }
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add .rf-fu-inp-cntr {
+    position: relative;
+  }
+  /* remove + icon that cannot be clicked */
+  #uploadForm .rf-fu-btns-lft .rf-fu-btn-add .rf-fu-btn-cnt-add {
+    padding: 0 0 0 10px !important;
+    background-image: none;
   }
   .view {
     width: 100%;
@@ -315,16 +334,6 @@ body.bodyStyle {
   .panel__results .txt--meta {
     color: #BDD4DC;
   }
-  /* Fix for Search and Replace in GWT */
-  table .projectWideSearchResultsDocumentBody {
-    display: table !important;
-  } // Bugfix for a container, do not remove
-  .GNM0BIKDBN {
-    min-width: unset;
-  } // GWT cancel buttons at bottom of pages
-  form .button.button--link {
-    padding: 0.1875em 0.75em
-  }
   #cacheStatisticsTable {
     overflow: auto;
     overflow-x: scroll;
@@ -337,50 +346,16 @@ body.bodyStyle {
   select {
     width: inherit !important;
   }
-  .gwt-DialogBox-CloseButton {
-    position: relative;
-    bottom: -4px;
-    right: 5px;
-    float: right;
-    clear: both;
-    width: 6%;
-    margin-left: 94%;
-  }
   .revision__box {
     display: flex !important;
     padding: 10px !important;
   }
-  #gwt-debug-transHistoryTabPanel .gwt-TabLayoutPanelContent {
-    overflow-x: hidden !important;
-  }
-  #gwt-debug-transHistoryTabPanel .gwt-TabLayoutPanelContent .g--tight {
-    margin: 0 !important;
-  }
-  .gwt-DialogBox {
-    padding-right: 15px;
-  }
-  .resultTable, .transUnitTable {
-    margin: 0;
-  }
-  .resultTable button {
-    padding: 0.1875em 0.375em !important;
-  }
-  .gwt-TabLayoutPanelContent table {
-    margin: auto;
-  }
-  .button--small {
-    padding: 0.21429em 0.42857em !important;
-  }
-  #gwt-debug-transHistoryTabPanel .gwt-TabLayoutPanelContent .gwt-InlineHTML .l--pad-v-half {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    min-height: 1em;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-  } //fixes to Versions/Projects page
-  #projectsWrapper~.g.u-fullWidth, li#projects.is-active {
+
+  //fixes to Versions/Projects page
+  #projectsWrapper ~ .g.u-fullWidth, li#projects.is-active {
     padding-bottom: 12rem;
-  } // fix to settings dropdowns on languages tab
+  }
+  // fix to settings dropdowns on languages tab
   li#settings ul.tabsContent {
     padding-bottom: 10rem;
   }
@@ -418,22 +393,10 @@ body.bodyStyle {
     -webkit-flex-grow: 1;
     padding: @spacing-rh;
   }
-  .containerEditor {
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
-    overflow-x: scroll;
-    margin-bottom: 4.5rem;
-  }
 }
 @media (min-width: 29.376rem) {
   main {
     margin-left: 4.5rem;
-  }
-  .containerEditor {
-    margin-left: 4.5rem;
-    width: 100%;
-    margin-bottom: 0;
   }
   #nav {
     height: 100vh;
@@ -459,9 +422,3 @@ body.bodyStyle {
     padding-bottom: @spacing-rq;
   }
 }
-@media (min-width: @screen-lg) {
-  .containerEditor {
-    overflow-x: hidden;
-  }
-}
-

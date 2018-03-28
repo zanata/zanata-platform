@@ -8,10 +8,14 @@ import {
   SETTING_UPDATE,
   SETTINGS_SAVE_REQUEST,
   SETTINGS_SAVE_SUCCESS,
-  SETTINGS_SAVE_FAILURE
+  SETTINGS_SAVE_FAILURE,
+  VALIDATORS_REQUEST,
+  VALIDATORS_SUCCESS,
+  VALIDATORS_FAILURE
 } from './settings-action-types'
 import { apiUrl } from '../../config'
 import { isEmptyObject } from '../../utils/ObjectUtils'
+import { WARNING, OFF } from '../utils/validation-util'
 
 export const settingsUrl = `${apiUrl}/user/settings/webeditor`
 
@@ -30,6 +34,24 @@ export const fetchSettings = () => dispatch => dispatch({
     ]
   }
 })
+
+/**
+ * Fetch the Project Validation settings over the REST API.
+ */
+export function fetchValidationSettings (dispatch, projectSlug, versionSlug) {
+  const validationSettingsUrl =
+    `${apiUrl}/project/${projectSlug}/version/${versionSlug}/validators`
+  dispatch({
+    [CALL_API_ENHANCED]: {
+      endpoint: validationSettingsUrl,
+      types: [
+        VALIDATORS_REQUEST,
+        VALIDATORS_SUCCESS,
+        VALIDATORS_FAILURE
+      ]
+    }
+  })
+}
 
 /**
  * Save one or more settings to the server
@@ -74,4 +96,13 @@ export const updateSetting = (key, value) => dispatch => {
   const setting = { [key]: value }
   dispatch(createAction(SETTING_UPDATE)(setting))
   return saveSettings(setting)(dispatch)
+}
+
+/*
+ * Update a setting locally for the current editor session.
+ */
+export const updateValidationSetting = (key, value) => dispatch => {
+  const newValue = value ? WARNING : OFF
+  const setting = { [key]: newValue }
+  dispatch(createAction(SETTING_UPDATE)(setting))
 }
