@@ -1,21 +1,19 @@
 /* JSF and GWT overrides
 - fixes UI issues caused by assets and bootstrap css conflicts
 */
-@import "./variables.less";
 
+@import "./variables.less";
 // These two rules do not apply to specifically new-zanata wrapped pages
 body.bodyStyle {
   margin: 0;
   padding: 0;
 }
-
 .htmlStyle {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.5;
   background-color: #fff;
   font-size: @font-size-base;
 }
-
 .new-zanata {
   //body class
   .bg--pop-highest {
@@ -31,8 +29,23 @@ body.bodyStyle {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
+  .list--panel .list__item__info, .list--stats .list__item__info {
+    width: 100%;
+  }
+  .list--stats .list__item__content {
+    width: inherit !important;
+  }
+  .panel__header__actions a.button--snug {
+    padding: 0.1rem;
+  }
   .u-fullWidth {
     width: 100%;
+  }
+  .i--left.i--document {
+    color: @color-muted;
+  }
+  .txt--meta {
+    color: @color-new-zanata-blue;
   }
   .u-blockPadding {
     padding: @spacing-rh;
@@ -143,7 +156,9 @@ body.bodyStyle {
   .affix {
     position: fixed;
   }
-  //fix for admin panel icons
+  .panel__header a#new-version-link i.i.i--add:not(.i--large) {
+    color: @color-light;
+  } //fix for admin panel icons
   .panel__header i.i--add:not(.i--large) {
     color: inherit !important;
   }
@@ -284,11 +299,11 @@ body.bodyStyle {
     position: relative;
     margin-top: -1rem;
   }
-  .button--group input[type=radio]:checked + .button--Off, .button--group input[type=radio]:checked + .button--Off:hover {
+  .button--group input[type=radio]:checked+.button--Off, .button--group input[type=radio]:checked+.button--Off:hover {
     background-color: #546677 !important;
     color: #f7f7f7 !important;
   }
-  .button--group input[type=radio]:checked + .button--danger, .button--group input[type=radio]:checked + .button--danger:hover {
+  .button--group input[type=radio]:checked+.button--danger, .button--group input[type=radio]:checked+.button--danger:hover {
     color: #f7f7f7 !important;
   }
   label {
@@ -303,12 +318,10 @@ body.bodyStyle {
   /* Fix for Search and Replace in GWT */
   table .projectWideSearchResultsDocumentBody {
     display: table !important;
-  }
-  // Bugfix for a container, do not remove
+  } // Bugfix for a container, do not remove
   .GNM0BIKDBN {
     min-width: unset;
-  }
-  // GWT cancel buttons at bottom of pages
+  } // GWT cancel buttons at bottom of pages
   form .button.button--link {
     padding: 0.1875em 0.75em
   }
@@ -318,8 +331,8 @@ body.bodyStyle {
     width: 48rem;
     font-size: 0.875rem;
   }
-  .panel__results--bottom .panel__results__type {
-    top: 0.2rem;
+  .panel__results__type {
+    top: 0.2rem !important;
   }
   select {
     width: inherit !important;
@@ -364,20 +377,14 @@ body.bodyStyle {
     min-height: 1em;
     word-wrap: break-word;
     white-space: pre-wrap;
-  }
-  //fixes to Versions/Projects page
-  #projectsWrapper ~ .g.u-fullWidth, li#projects.is-active {
+  } //fixes to Versions/Projects page
+  #projectsWrapper~.g.u-fullWidth, li#projects.is-active {
     padding-bottom: 12rem;
-  }
-  // fix to settings dropdowns on languages tab
+  } // fix to settings dropdowns on languages tab
   li#settings ul.tabsContent {
     padding-bottom: 10rem;
   }
-  ul#languages-language_list .list__item {
-    width: 100%;
-  }
 }
-
 /* Media queries shared between jsf and bootstrap pages */
 
 // @screen-xs variable depreciated
@@ -387,11 +394,9 @@ body.bodyStyle {
     -webkit-flex-direction: column;
     width: 100%;
   }
-
   main {
     margin-left: 0;
   }
-
   #nav {
     width: 100%;
     position: fixed;
@@ -399,24 +404,20 @@ body.bodyStyle {
     bottom: 0;
     z-index: 1000;
   }
-
   .nav-bar {
     order: 1;
     width: 100%;
     height: 3.5rem;
   }
-
   .nav-link {
     display: none;
   }
-
   .nav-link.small {
     display: inline-flex;
     flex-grow: 1;
     -webkit-flex-grow: 1;
     padding: @spacing-rh;
   }
-
   .containerEditor {
     margin-left: 0;
     margin-right: 0;
@@ -425,24 +426,20 @@ body.bodyStyle {
     margin-bottom: 4.5rem;
   }
 }
-
 @media (min-width: 29.376rem) {
   main {
     margin-left: 4.5rem;
   }
-
   .containerEditor {
     margin-left: 4.5rem;
     width: 100%;
     margin-bottom: 0;
   }
-
   #nav {
     height: 100vh;
     top: 0;
     overflow: hidden;
   }
-
   .nav-bar {
     flex-direction: column;
     -webkit-flex-direction: column;
@@ -450,7 +447,6 @@ body.bodyStyle {
     order: 0;
     width: 4.5rem;
   }
-
   .nav-link {
     display: flex;
     display: -webkit-flex;
@@ -463,9 +459,9 @@ body.bodyStyle {
     padding-bottom: @spacing-rq;
   }
 }
-
 @media (min-width: @screen-lg) {
   .containerEditor {
     overflow-x: hidden;
   }
 }
+

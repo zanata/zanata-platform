@@ -40,7 +40,7 @@ export class Item extends Component<ItemProps, {}> {
     value: FromProjectVersionType.isRequired,
     removeVersion: PropTypes.func.isRequired
   }
-
+  // styling for panel appears in TMMergeModal (ProjectVersion/index.less) css
   public render () {
     const { value: { version, projectSlug } } = this.props
     return <ListGroupItem className='v' >

@@ -56,7 +56,7 @@ class Notification extends Component {
 
     /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
     return (
-      <Modal show={show} onHide={this.clearMessage}>
+      <Modal className='bstrapReact' show={show} onHide={this.clearMessage}>
         <Modal.Header>
           <Modal.Title>
             <Row

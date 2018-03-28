@@ -19,7 +19,7 @@ describe('TranslatingIndicator', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       /* eslint-disable max-len */
-      <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4'>
+      <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sMR-1-4'>
         <Row>
           <Icon name='locked' className='s2 u-textDanger' /> <span
             className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
@@ -43,7 +43,7 @@ describe('TranslatingIndicator', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       /* eslint-disable max-len */
-      <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4'>
+      <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sMR-1-4'>
         <Row>
           <Icon name='review' className='s2' /> <span
             className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
@@ -67,7 +67,7 @@ describe('TranslatingIndicator', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       /* eslint-disable max-len */
-      <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sizeHeight-1_1-2 u-sMR-1-4'>
+      <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sMR-1-4'>
         <Row>
           <Icon name='translate' className='s2' /> <span
             className='u-ltemd-hidden TransIndicator u-sMR-1-4'>

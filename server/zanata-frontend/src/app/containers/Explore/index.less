@@ -1,18 +1,4 @@
 @import "../../styles/variables.less";
-
-:root {
-  --ExploreSearch-width: 80%;
-  --ExploreSearchTextInput-width: 70%;
-}
-
-.containerContentView {
-  max-width: 48rem;
-  width: 100%;
-  margin-top: @spacing-base;
-  margin-left: @spacing-base;
-  margin-right: @spacing-base;
-}
-
 .scrollView {
   align-items: center;
   -webkit-align-items: center;
@@ -27,12 +13,12 @@
   padding-left: @spacing-base;
   padding-right: @spacing-base;
 }
-
 .scrollView h2 {
   padding-left: @spacing-re;
   margin-top: 0;
 }
 
+#explore {
 .searchView {
   align-items: center;
   -webkit-align-items: center;
@@ -172,20 +158,99 @@
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
   .teaser-inner {
-    flex-direction: row;
-    -webkit-flex-direction: row;
+    flex-direction: column;
+    -webkit-flex-direction: column;
     flex: 1;
     -webkit-box-flex: 1;
     -moz-flex: 1;
     -webkit-flex: 1;
   }
+  .userTeaser-inner {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    flex-direction: row;
+    -webkit-flex-direction: row;
+  }
+  .teaserHeader span .iconsHeader {
+    vertical-align: sub;
+  }
+  .teaserHeader-inner {
+    margin-left: @spacing-rh;
+    color: @color-light;
+    display: flex;
+    align-items: left;
+    flex-direction: row;
+  }
+  .teaserHeader-inner .iconsHeader {
+    margin-right: 0;
+    vertical-align: baseline;
+  }
+  .teamTeaser {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    margin-bottom: @spacing-rq;
+    margin-right: 1.75rem;
+  }
+  .languageTeamTeaser-id {
+    margin-left: @spacing-rq;
+  }
+  .languageTeamTeaser-members {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    margin-left: auto;
+    float: right;
+    padding-right: @spacing-xlarge;
+    color: @color-muted;
+  }
+  .languageTeamTeaser-members .iconUsers-muted {
+    padding-right: @spacing-rq;
+    vertical-align: sub;
+  }
+  .teaserHeader-pagination {
+   margin-top: @spacing-rh;
+  }
+  .teaserHeader-pagination button:first-of-type {
+    margin-top: 0.2rem;
+  }
   .metaInfo {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    font-size: 0.833rem;
+  }
+  .wordsTranslatedView {
+    align-items: center;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
     margin-left: auto;
   }
-  .searchView span svg {
-    font-size: 1.4rem;
+  .searchView svg {
+    vertical-align: sub;
   }
-  .searchView .textInput {
-    width: var(--ExploreSearchTextInput-width);
+  #explore h1 {
+    font-size: 1.2em !important;
+    margin-bottom: 0;
+  } // @screen-xs variable depreciated
+  @media (max-width: 29.375rem) {
+    .teaser-inner {
+      flex-direction: row;
+      -webkit-flex-direction: row;
+      flex: 1;
+      -webkit-box-flex: 1;
+      -moz-flex: 1;
+      -webkit-flex: 1;
+    }
+    .metaInfo {
+      margin-left: auto;
+    }
+    .searchView span svg {
+      font-size: 1.4rem;
+    }
+    .searchView .textInput {
+      width: 70%;
+    }
   }
 }

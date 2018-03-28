@@ -11,7 +11,7 @@ describe('SelectableDropdown', () => {
     // Function used in TMMergeModal for a percentage selection dropdown
     const valueToDisplay = v => `The function says ${v}`
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <SelectableDropdown title={'TestDropdown'}
+        <SelectableDropdown title={'TestDropdown'}
         id='dropdown-basic' classNameName='vmerge-ddown'
         onSelectDropdownItem={callback}
         selectedValue={'woof'}
@@ -19,8 +19,8 @@ describe('SelectableDropdown', () => {
         values={['moo', 'woof', 'meow']} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <DropdownButton id={'dropdown-basic'} bsStyle={'default'}
-        bsSize={'sm'} title={'TestDropdown'}>
+       <DropdownButton id={'dropdown-basic'} bsStyle={'default'}
+        bsSize={'sm'} title={'TestDropdown'} className='bstrapReact'>
         <MenuItem onClick={callback} active={false}>
           The function says moo
         </MenuItem>
