@@ -34,7 +34,7 @@ describe('DropdownTest', () => {
              onClick={toggleTheDoor}>
           <button>Boom boom acka lacka lacka boom</button>
         </div>
-        <div className="EditorDropdown-content EditorDropdown-content--bordered">
+        <div className="EditorDropdown-content">
           <ul>
             <li>Open the door</li>
             <li>Get on the floor</li>
@@ -77,7 +77,7 @@ describe('DropdownTest', () => {
              onClick={toggleTheDoor}>
           <button>Boom boom acka lacka lacka boom</button>
         </div>
-        <div className="EditorDropdown-content EditorDropdown-content--bordered">
+        <div className="EditorDropdown-content">
           <ul>
             <li>Open the door</li>
             <li>Get on the floor</li>

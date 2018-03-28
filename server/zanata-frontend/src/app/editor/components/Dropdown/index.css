@@ -6,7 +6,6 @@
   --Dropdown-z-index             : 100;
   --Dropdown-is-active-z-index   : 900;
   --Dropdown-content-color-bg    : #fff;
-  --Dropdown-content-border      : 1px solid rgba(0,0,0,.15);
   --Dropdown-content-z-index     : 800;
   --Dropdown-title-size          : calc(14/16 * 1rem);
   --Dropdown-title-color         : color(#416988 tint(20%));
@@ -63,11 +62,14 @@ not conflict with the other frontend code
   background-color: var(--Dropdown-content-color-bg);
   background-clip: padding-box;
   box-shadow: 0 0 var(--Dropdown-rhythm) rgba(0,0,0,0.1);
+  border: 1px solid #639cad;
+  border-bottom-width: 2px;
+  border-top: none;
+  border-radius: 8px;
 }
 
-.EditorDropdown-content--Bordered {
-  border: var(--Dropdown-content-border);
-  border-bottom-width: 2px;
+.TransUnit-panelFooter .EditorDropdown-content {
+  border: none;
 }
 
 .EditorDropdown.is-active > .EditorDropdown-content {
