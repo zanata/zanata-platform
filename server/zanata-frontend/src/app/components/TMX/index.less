@@ -1,98 +1,91 @@
 @import "../../styles/variables.less";
 
-:root {
-  --TMXExportModal-fontSm: 0.75rem;
-  --TMXExportModal-badgeWidth: 4rem;
-  --TMXExportModal-reset: 0;
-}
-
-// These are bootstrap overrides specific to this modal
-#tmxExportModal .modal-header {
-  padding-bottom: var(--TMXExportModal-reset) !important;
-}
-
-#tmxExportModal .modal-body {
-  padding-top: var(--TMXExportModal-reset) !important;
-}
-
 #tmxExportModal {
+  // These are bootstrap overrides specific to this modal
   visibility: visible;
   opacity: inherit;
   backface-visibility: hidden;
-}
+  .modal-header {
+    padding-bottom: 0 !important;
+  }
 
-// Modal content override specific to this modal
-.tmxExport {
-  text-align: center;
-}
+  .modal-body {
+    padding-top: 0 !important;
+  }
 
-.tmxExport p.lead {
-  font-weight: 500;
-}
+  // Modal content override specific to this modal
+  .tmxExport {
+    text-align: center;
+  }
 
-.tmxExport p.u-textWarning {
-  font-size: var(--TMXExportModal-fontSm);
-}
+  .tmxExport p.lead {
+    font-weight: 500;
+  }
 
-table.tmxTable {
-  width: 50% !important;
-  margin-left: auto;
-  margin-right: auto;
-}
+  .tmxExport p.u-textWarning {
+    font-size: 0.75rem;
+  }
 
-table.tmxTable tbody tr td {
-  border-top: var(--TMXExportModal-reset);
-}
+  table.tmxTable {
+    width: 50% !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-table.tmxTable tbody tr td:last-child {
-  float: right;
-}
+  table.tmxTable tbody tr td {
+    border-top: 0;
+  }
 
-table.tmxTable tbody tr td:first-child {
-  color: @color-light;
-}
+  table.tmxTable tbody tr td:last-child {
+    float: right;
+  }
 
-table.tmxTable .btn-sm {
-  padding: @spacing-small-horizontal @spacing-large-horizontal;
-}
+  table.tmxTable tbody tr td:first-child {
+    color: @color-light;
+  }
 
-.asterix {
-  vertical-align: bottom;
-  margin-left: @spacing-half-base;
-  color: @color-warning;
-}
+  table.tmxTable .btn-sm {
+    padding: @spacing-small-horizontal @spacing-large-horizontal;
+  }
 
-table.tmxTable .badge {
-  background-color: @color-muted;
-  color: #fff;
-  font-size: 1rem;
-  line-height: @line-height-small;
-  width: var(--TMXExportModal-badgeWidth);
-  font-weight: 400;
-  height: 100%;
-}
+  .asterix {
+    vertical-align: bottom;
+    margin-left: @spacing-half-base;
+    color: @color-warning;
+  }
 
-.tmxExport p.allWarnings {
-  position: absolute;
-  bottom: 80px;
-  right: 30px;
-}
+  table.tmxTable .badge {
+    background-color: @color-muted;
+    color: #fff;
+    font-size: 1rem;
+    line-height: @line-height-small;
+    width: 4rem;
+    font-weight: 400;
+    height: 100%;
+  }
 
-.tmxExport p.allWarnings .btn-link {
-  font-size: var(--TMXExportModal-fontSm);
-  line-height: @spacing-base;
-  color: @color-warning;
-}
+  .tmxExport p.allWarnings {
+    position: absolute;
+    bottom: 80px;
+    right: 30px;
+  }
 
-.tmxExport p.allWarnings .btn-link .n1 {
-  vertical-align: sub;
-}
+  .tmxExport p.allWarnings .btn-link {
+    font-size: 0.75rem;
+    line-height: @spacing-base;
+    color: @color-warning;
+  }
 
-.tmxExport p.allWarnings .btn-link:focus, .tmxExport p.allWarnings .btn-link:hover, .tmxExport p.allWarnings .btn-link:active {
-  text-decoration: none;
-  opacity: 1 !important;
-}
+  .tmxExport p.allWarnings .btn-link .n1 {
+    vertical-align: sub;
+  }
 
-table.tmxTable .badge .n1 {
-  vertical-align: middle;
+  .tmxExport p.allWarnings .btn-link:focus, .tmxExport p.allWarnings .btn-link:hover, .tmxExport p.allWarnings .btn-link:active {
+    text-decoration: none;
+    opacity: 1 !important;
+  }
+
+  table.tmxTable .badge .n1 {
+    vertical-align: middle;
+  }
 }

@@ -21,7 +21,7 @@ describe('CancellableProgressBar', () => {
         queryProgress={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <div className='bstrapReact'>
         <ProgressBar now={0}label={' 0%'} />
         <button type='button' className='btn-danger btn btn-primary'>
           Cancel TM Merge
@@ -42,7 +42,7 @@ describe('CancellableProgressBar', () => {
         processStatus={cancelledStatus} buttonLabel='Cancel TM Merge'
         queryProgress={callback} />
     )).toEqual(ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <div className='bstrapReact'>
         <ProgressBar now={0}label={' 0%'} />
         <button disabled type='button' className='btn-danger btn btn-primary'>
           Cancel TM Merge

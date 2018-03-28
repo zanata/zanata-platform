@@ -61,7 +61,7 @@ class AdminReview extends Component {
 
     const notificationBar = notification &&
       <Alert bsStyle='danger'>{notification}</Alert>
-    return <div className='container centerWrapper'>
+    return <div className='container centerWrapper' id='admin-review'>
       <Breadcrumb>
         <Breadcrumb.Item href='home'>
           Administration

@@ -150,7 +150,8 @@ class TMXExportModal extends Component {
      'selected source language will be included.'
 
     return (
-      <Modal id='tmxExportModal' show={show} onHide={handleOnClose}
+      <Modal id='tmxExportModal'
+        show={show} onHide={handleOnClose}
         keyboard backdrop>
         <Modal.Header>
           <Modal.Title>{title}</Modal.Title>

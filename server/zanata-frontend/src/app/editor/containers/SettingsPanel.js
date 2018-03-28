@@ -3,27 +3,111 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { hideSettings } from '../actions'
-import { updateSetting } from '../actions/settings-actions'
+import {
+  updateSetting,
+  updateValidationSetting
+} from '../actions/settings-actions'
 import { Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import SettingsOptions from '../components/SettingsOptions'
 import {
   getEnterSavesImmediately,
-  getSyntaxHighlighting
+  getSyntaxHighlighting,
+  getValidateHtmlXml,
+  getValidateNewLine,
+  getValidateTab,
+  getValidateJavaVariables,
+  getValidateXmlEntity,
+  getValidatePrintfVariables,
+  getValidatePrintfXsi
  } from '../reducers'
 import {
   ENTER_SAVES_IMMEDIATELY,
-  SYNTAX_HIGHLIGTING
+  SYNTAX_HIGHLIGTING,
+  // Validation options
+  HTML_XML,
+  NEW_LINE,
+  TAB,
+  JAVA_VARIABLES,
+  XML_ENTITY,
+  PRINTF_VARIABLES,
+  PRINTF_XSI_EXTENSION
 } from '../reducers/settings-reducer'
+import { ERROR, WARNING } from '../utils/validation-util'
+import { showValidationOptions } from '../../utils/FeatureToggles'
+
+const DO_NOT_RENDER = undefined
 
 export const SettingsPanel = ({
   enterSavesImmediately,
   syntaxHighligting,
+  validateHtmlXml,
+  validateNewLine,
+  validateTab,
+  validateJavaVariables,
+  validateXmlEntity,
+  validatePrintfVariables,
+  validatePrintfXsi,
   hideSettings,
   updateSetting,
+  updateValidationSetting,
   isRTL
 }) => {
   const directionClass = isRTL ? 'rtl' : 'ltr'
+  const validatorChecked = (validator) => {
+    return (validator === ERROR || validator === WARNING)
+  }
+  const validationOptionsHeader = showValidationOptions()
+    ? <h2 className='SettingsHeading'>Validation options</h2>
+    : DO_NOT_RENDER
+  const validationOptions = showValidationOptions()
+    ? <SettingsOptions
+      settings={[
+        {
+          id: HTML_XML,
+          label: 'HTML/XML tags',
+          active: validatorChecked(validateHtmlXml),
+          disabled: validateHtmlXml === ERROR
+        },
+        {
+          id: JAVA_VARIABLES,
+          label: 'Java variables',
+          active: validatorChecked(validateJavaVariables),
+          disabled: validateJavaVariables === ERROR
+        },
+        {
+          id: NEW_LINE,
+          label: 'Leading/trailing newline (\\n)',
+          active: validatorChecked(validateNewLine),
+          disabled: validateNewLine === ERROR
+        },
+        {
+          id: PRINTF_XSI_EXTENSION,
+          label: 'Positional printf (XSI extention)',
+          active: validatorChecked(validatePrintfXsi),
+          disabled: validatePrintfXsi === ERROR
+        },
+        {
+          id: PRINTF_VARIABLES,
+          label: 'Printf variables',
+          active: validatorChecked(validatePrintfVariables),
+          disabled: validatePrintfVariables === ERROR
+        },
+        {
+          id: TAB,
+          label: 'Tab characters (\\t)',
+          active: validatorChecked(validateTab),
+          disabled: validateTab === ERROR
+        },
+        {
+          id: XML_ENTITY,
+          label: 'XML entity reference',
+          active: validatorChecked(validateXmlEntity),
+          disabled: validateXmlEntity === ERROR
+        }
+      ]}
+      updateSetting={updateValidationSetting} />
+    : DO_NOT_RENDER
   return (
     <div>
       <h1 className="SidebarEditor-heading">
@@ -51,6 +135,8 @@ export const SettingsPanel = ({
               }
             ]}
             updateSetting={updateSetting} />
+          {validationOptionsHeader}
+          {validationOptions}
         </div>
       </div>
     </div>
@@ -60,8 +146,16 @@ export const SettingsPanel = ({
 SettingsPanel.propTypes = {
   enterSavesImmediately: PropTypes.bool.isRequired,
   syntaxHighligting: PropTypes.bool.isRequired,
+  validateHtmlXml: PropTypes.string.isRequired,
+  validateNewLine: PropTypes.string.isRequired,
+  validateTab: PropTypes.string.isRequired,
+  validateJavaVariables: PropTypes.string.isRequired,
+  validateXmlEntity: PropTypes.string.isRequired,
+  validatePrintfVariables: PropTypes.string.isRequired,
+  validatePrintfXsi: PropTypes.string.isRequired,
   hideSettings: PropTypes.func.isRequired,
   updateSetting: PropTypes.func.isRequired,
+  updateValidationSetting: PropTypes.func.isRequired,
   isRTL: PropTypes.bool.isRequired
 }
 
@@ -72,10 +166,17 @@ const mapStateToProps = (state) => {
   return {
     enterSavesImmediately: getEnterSavesImmediately(state),
     syntaxHighligting: getSyntaxHighlighting(state),
+    validateHtmlXml: getValidateHtmlXml(state),
+    validateNewLine: getValidateNewLine(state),
+    validateTab: getValidateTab(state),
+    validateJavaVariables: getValidateJavaVariables(state),
+    validateXmlEntity: getValidateXmlEntity(state),
+    validatePrintfVariables: getValidatePrintfVariables(state),
+    validatePrintfXsi: getValidatePrintfXsi(state),
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false
   }
 }
 
 export default connect(mapStateToProps,
-  { hideSettings, updateSetting })(SettingsPanel)
+  { hideSettings, updateSetting, updateValidationSetting })(SettingsPanel)

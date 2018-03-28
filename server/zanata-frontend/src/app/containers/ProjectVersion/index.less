@@ -1,546 +1,336 @@
 @import "../../styles/variables.less";
-
-:root {
-  --VersionMerge-fontSm: 0.975rem;
-  --VersionMerge-font: 1rem;
-  --VersionMerge-fontLg: 1.1rem;
-}
-
 /* Modal specific css */
-
-.versionMergeSearch-input.form-control {
-  height: inherit !important;
-}
-
-.versionMergeContainer .list-group-item:last-child {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.versionMergeTarget {
-  margin-left: @spacing-base;
-}
-
-.proj-select .list-group-item {
-  border: none;
-}
-
-.proj-select .panel-heading {
-  padding: 0;
-}
-
-.versionMergeTarget ul {
-  list-style-type: none;
-  margin-bottom: 0;
-  line-height: @spacing-xlarge;
-  margin-left: @spacing-base;
-}
-
-#tmMergeModal .label {
-  font-size: var(--VersionMerge-fontSm);
-  font-weight: 400;
-  padding: @spacing-search-box;
-}
-
-.label-success {
-  background-color :@color-success;
-}
-
-button#percent-dropdown-basic {
-  margin-left: @spacing-rq;
-  margin-right: @spacing-rq;
-}
-
-#tmMergeModal .label-default {
-  background-color: @color-muted;
-}
-
-#tmMergeModal .col-md-4 {
-  width: 33.333333%;
-  margin: 0;
-  padding-left: 0;
-  padding-right: 1.2rem;
-}
-
-#tmMergeModal .modal-content p {
-  word-break: normal;
-  word-break: break-word;
-  /*Chrome specific*/
-  hyphens: none;
-}
-
-.versionMergeContainer .panel-group {
-  margin-bottom: 0;
-}
-
-.versionMergeRow {
-  margin-bottom: 1.75em;
-}
-
-.versionMergeDropdown {
-  font-weight: 500;
-}
-
-.VersionMergeTitle {
-  font-weight: 600;
-  font-size: var(--VersionMerge-font);
-  margin-bottom: @spacing-rh;
-}
-
-.versionMergeTitle-flex {
-  display: inline-flex;
-  align-items: center;
-  margin-bottom: @spacing-base;
-}
-
-.VersionMergeTitle .u-textMuted {
-  margin-left: @spacing-base;
-}
-
-.versionMergeSearch {
-  display: inline-flex;
-}
-
-#tmMergeModal .search-input .input-group {
-  margin-bottom: @spacing-base-and-a-half;
-}
-
-.versionMergeSearch .input-group-addon {
-  color: @color-muted;
-  height: @spacing-xlarge;
-}
-
-.iconHelp {
-  vertical-align: middle;
-  padding-left: @spacing-base;
-}
-
-.versionMergeContainer .iconInfoVersionMerge, .s0.iconInfoVersionMerge {
-  vertical-align: middle;
-  margin-left: @spacing-rh;
-  color: @color-light;
-}
-
-.versionMergeContainer li.v.list-group-item label.checkbox-inline {
-  margin-left: @spacing-xlarge;
-}
-
-.s0.icon-locked {
-  color: @color-warning;
-  vertical-align: middle;
-  margin-left: @spacing-rh;
-}
-
-.versionMergeTitle-adjusted {
-  color: @color-light;
-  font-style: italic;
-  font-weight: 500;
-}
-
-.versionMergeTarget ul {
-  padding-left: 0;
-  margin-left: 0;
-}
-
-.versionMergeTitle-sub {
-  font-size: 0.85em;
-}
-
-.modal-body .dropdown .dropdown-menu>li>a {
-  font-size: var(--VersionMerge-font);
-}
-
-.tm-panel .checkbox .label {
-  font-size: 0.875rem;
-  margin-left: @spacing-base;
-  padding: @spacing-rh;
-}
-
-.tm-panel .checkbox small {
-  color: @color-muted;
-}
-
-#tmMergeModal .panel-title {
-  font-size: var(--VersionMerge-font) !important;
-  margin: 0 !important;
-  font-weight: 400;
-}
-
-.react-draggable.list-group-item span.u-textMuted {
-  margin-left: @spacing-base !important;
-}
-
-.drag-handle {
-  top: 50% !important;
-  right: 3% !important;
-  -ms-transform: translate(3%, -50%);
-  transform: translate(3%, -50%);
-  padding: @spacing-rq !important;
-  cursor: ns-resize !important;
-}
-
-.rm-version-btn {
-  top: 50% !important;
-  right: 3% !important;
-  -ms-transform: translate(3%, -50%);
-  transform: translate(3%, -50%);
-  padding: @spacing-rq !important;
-  color: red !important;
-}
-
-.sortable-helper {
-  z-index: 10000 !important;
-}
-
-#tmMergeModal .button.btn-primary {
-  color: #fff !important;
-  border-color: @color-neutral !important;
-  background-color: @color-light !important;
-}
-
-.button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
-  background-color: transparent !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-
-.new-zanata #tmMergeModal ul {
-  margin: 0;
-  padding: 0;
-}
-
-.new-zanata #tmMergeModal ul, .new-zanata #tmMergeModal ul li {
-  list-style-type: none !important;
-}
-
-.new-zanata #tmMergeModal input[type=text] {
-  margin: 0;
-}
-
-.new-zanata #tmMergeModal label {
-  font-weight: 500;
-}
-
-#tmMergeModal .progress-bar {
-  height: 100% !important;
-}
-
-#tmMergeModal .panel-group .panel-heading {
-  border-bottom: 1px solid #cdd4dc !important;
-}
-
-#tmMergeModal .modal-body .introPar {
-  margin-bottom: @spacing-base !important;
-}
 
 #tmMergeModal {
   visibility: visible;
   opacity: inherit;
   backface-visibility: hidden;
-}
-
-.import-type {
-  font-size: var(--VersionMerge-fontLg);
-}
-
-.iconTMX {
-  margin-right: @spacing-rh;
-}
-
-.VersionMergeTitle .u-textInfo {
-  margin-right: @spacing-base;
-}
-
-#tmMergeModal li.v input.checkbox {
-  margin-left: @spacing-base;
-}
-
-#versionMergeDropdown {
-  display: inline-flex;
-  align-items: center;
-}
-
-#tmMergeModal #versionMergeDropdown span.s1 {
-  margin-right: @spacing-rh;
-}
-
-#tmMergeModal .s0.icon-locked {
-  color: @color-warning !important;
-  vertical-align: middle;
-  margin-left: @spacing-rh;
-}
-
-.select-project {
-  padding-bottom: @spacing-base-and-a-half;
-}
-
-.validations {
-  padding-top: @spacing-base-and-a-half;
-}
-
-.validations span {
-  font-weight: 500;
-}
-
-#tmMergeModal .radio.has-success label, #tmMergeModal .radio.has-warning label, #tmMergeModal .radio.has-error label {
-  font-weight: 500;
-  font-size: var(--VersionMerge-fontSm);
-}
-
-.versionMergeSource {
-  display: flex;
-  padding-bottom: @spacing-rq;
-}
-
-.versionMergeSource span {
-  padding-right: @spacing-base;
-}
-
-#tmMergeModal p.lead {
-  font-weight: 400;
-  margin-bottom: @spacing-half-base;
-}
-
-#tmMergeModal li.v span.text-muted {
-  font-weight: 500;
-  margin-left: 2.5rem;
-}
-
-#tmMergeModal li.list-group-item.to .item {
-  vertical-align: middle;
-  margin-right: @spacing-base-and-a-half;
-}
-
-li.list-group-item.to .item .iconTMX {
-  vertical-align: sub;
-}
-
-#tmMergeModal .panel-name {
-  font-size: var(--VersionMerge-fontLg);
-}
-
-#tmMergeModal .tooltip-btn {
-  padding: 0;
-}
-
-#tmMergeModal .well {
-  background-color: #fff;
-  border-color: @color-neutral;
-  text-align: center;
-  margin-top: @spacing-xlarge;
-}
-
-#tmMergeModal .well p {
-  padding: @spacing-base-and-a-half;
-  font-size: var(--VersionMerge-fontLg);
-}
-
-.no-v {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: @spacing-xlarge;
-  font-weight: 500;
-  font-size: var(--VersionMerge-fontLg);
-}
-
-.no-v .s8 {
-  margin-top: @spacing-base;
-}
-
-#tmMergeModal .radio.disabled {
-  opacity: 0.5;
-}
-
-#tmMergeModal .radio input[type=radio] {
-  margin-bottom: @spacing-rq;
-  margin-left: @spacing-base;
-}
-
-#tmMergeModal .btn-link {
-  line-height: inherit;
-}
-
-#tmMergeModal .panel-title p {
-  hyphens: initial;
-}
-
-.VersionMergeTitle.u-textNewBlue {
-  display: inline-flex;
-  align-items: center;
-}
-
-.VersionMergeTitle.u-textNewBlue .dropdown {
-  width: auto;
-  margin-left: @spacing-rq;
-  margin-right: @spacing-rq;
-}
-
-.versionMergeSearch span {
-  margin-right: @spacing-base-and-a-half;
-}
-
-/* React Toggle Component CSS */
-
-.react-toggle {
-  touch-action: pan-x;
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  background-color: transparent;
-  border: 0;
-  padding: 0;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent;
-  margin-right: 1rem;
-  vertical-align: bottom;
-}
-
-.react-toggle-screenreader-only {
-  border: 0;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
-}
-
-.react-toggle--disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-  -webkit-transition: opacity 0.25s;
-  transition: opacity 0.25s;
-}
-
-.react-toggle-track {
-  width: 50px;
-  height: 24px;
-  padding: 0;
-  border-radius: 30px;
-  background-color: #A2B3BE;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-}
-
-.react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: #A2B3BE;
-}
-
-.react-toggle--checked .react-toggle-track {
-  background-color: #20718A;
-}
-
-.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: #20718A;
-}
-
-.react-toggle-track-check {
-  position: absolute;
-  width: 14px;
-  height: 10px;
-  top: 0px;
-  bottom: 0px;
-  margin-top: auto;
-  margin-bottom: auto;
-  line-height: 0;
-  left: 8px;
-  opacity: 0;
-  -webkit-transition: opacity 0.25s ease;
-  -moz-transition: opacity 0.25s ease;
-  transition: opacity 0.25s ease;
-}
-
-.react-toggle--checked .react-toggle-track-check {
-  opacity: 1;
-  -webkit-transition: opacity 0.25s ease;
-  -moz-transition: opacity 0.25s ease;
-  transition: opacity 0.25s ease;
-}
-
-.react-toggle-track-x {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  top: 0px;
-  bottom: 0px;
-  margin-top: auto;
-  margin-bottom: auto;
-  line-height: 0;
-  right: 10px;
-  opacity: 1;
-  -webkit-transition: opacity 0.25s ease;
-  -moz-transition: opacity 0.25s ease;
-  transition: opacity 0.25s ease;
-}
-
-.react-toggle--checked .react-toggle-track-x {
-  opacity: 0;
-}
-
-.react-toggle-thumb {
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background-color: #FAFAFA;
-  -webkit-transition: all 0.25s ease;
-  -moz-transition: all 0.25s ease;
-  transition: all 0.25s ease;
-}
-
-.react-toggle--checked .react-toggle-thumb {
-  left: 27px;
-}
-
-/* Project version sidebar pageview */
-.flexTab.wideView {
-  padding-left: @spacing-xlarge;
-}
-
-.flexTab.wideView span.n1 {
-  padding-right: @spacing-rh;
-}
-
-.flexTab.wideView button {
-  font-weight: 500;
-}
-
-.flexTab.wideView .btn-default .s0 {
-  padding-right: @spacing-half-base;
-  vertical-align: middle;
-}
-
-.flexTab.wideView .table {
-  width: 100%;
-  color: @color-dark;
-}
-
-@media (max-width: @screen-sm-max) {
-  #tmMergeModal .label {
+  .versionMergeSearch-input.form-control {
+    height: inherit !important;
+  }
+  .versionMergeContainer .list-group-item:last-child {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .versionMergeTarget {
     margin-left: @spacing-base;
   }
-  #tmMergeModal .col-md-4 {
-    width: 100%;
+  .proj-select .list-group-item {
+    border: none;
+  }
+  .proj-select .panel-heading {
+    padding: 0;
+  }
+  .versionMergeTarget ul {
+    list-style-type: none;
+    margin-bottom: 0;
+    line-height: @spacing-xlarge;
+    margin-left: @spacing-base;
+  }
+  ul li {
+    list-style-type: none;
+  }
+  .label {
+    font-size: 0.975rem;
+    font-weight: 400;
+    padding: @spacing-search-box;
+  }
+  .label-success {
+    background-color: @color-success;
+  }
+  button#percent-dropdown-basic {
+    margin-left: @spacing-rq;
+    margin-right: @spacing-rq;
+  }
+  .label-default {
+    background-color: @color-muted;
+  }
+  .col-md-4 {
+    width: 33.333333%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 1.2rem;
+  }
+  .modal-content p {
+    word-break: normal;
+    word-break: break-word;
+    /*Chrome specific*/
+    hyphens: none;
+  }
+  .versionMergeContainer .panel-group {
+    margin-bottom: 0;
+  }
+  .versionMergeRow {
+    margin-bottom: 1.75em;
+  }
+  .versionMergeDropdown {
+    font-weight: 500;
+  }
+  .VersionMergeTitle {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: @spacing-rh;
+  }
+  .versionMergeTitle-flex {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: @spacing-base;
+  }
+  .VersionMergeTitle .u-textMuted {
+    margin-left: @spacing-base;
+  }
+  .versionMergeSearch {
+    display: inline-flex;
+  }
+  .search-input .input-group {
+    margin-bottom: @spacing-base-and-a-half;
+  }
+  .versionMergeSearch .input-group-addon {
+    color: @color-muted;
+    height: @spacing-xlarge;
+  }
+  .iconHelp {
+    vertical-align: middle;
+    padding-left: @spacing-base;
+  }
+  .versionMergeContainer .iconInfoVersionMerge, .s0.iconInfoVersionMerge {
+    vertical-align: middle;
+    margin-left: @spacing-rh;
+    color: @color-light;
+  }
+  .versionMergeContainer li.v.list-group-item label.checkbox-inline {
+    margin-left: @spacing-xlarge;
+  }
+  .s0.icon-locked {
+    color: @color-warning;
+    vertical-align: middle;
+    margin-left: @spacing-rh;
+  }
+  .versionMergeTitle-adjusted {
+    color: @color-light;
+    font-style: italic;
+    font-weight: 500;
+  }
+  .versionMergeTarget ul {
+    padding-left: 0;
+    margin-left: 0;
+  }
+  .versionMergeTitle-sub {
+    font-size: 0.85em;
+  }
+  .modal-body .dropdown .dropdown-menu>li>a {
+    font-size: 1rem;
+  }
+  .tm-panel .checkbox .label {
+    font-size: 0.875rem;
+    margin-left: @spacing-base;
+    padding: @spacing-rh;
+  }
+  .tm-panel .checkbox small {
+    color: @color-muted;
+  }
+  .panel-title {
+    font-size: 1rem !important;
+    margin: 0 !important;
+    font-weight: 400;
+  }
+  .react-draggable.list-group-item span.u-textMuted {
+    margin-left: @spacing-base !important;
+  }
+  .drag-handle {
+    top: 50% !important;
+    right: 3% !important;
+    -ms-transform: translate(3%, -50%);
+    transform: translate(3%, -50%);
+    padding: @spacing-rq !important;
+    cursor: ns-resize !important;
+  }
+  .rm-version-btn {
+    top: 50% !important;
+    right: 3% !important;
+    -ms-transform: translate(3%, -50%);
+    transform: translate(3%, -50%);
+    padding: @spacing-rq !important;
+    color: red !important;
+  }
+  .sortable-helper {
+    z-index: 10000 !important;
+  }
+  .button.btn-primary {
+    color: #fff !important;
+    border-color: @color-neutral !important;
+    background-color: @color-light !important;
+  }
+  .button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+    background-color: transparent !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .new-zanata ul {
+    margin: 0;
+    padding: 0;
+  }
+  .new-zanata ul, .new-zanata ul li {
+    list-style-type: none !important;
+  }
+  .new-zanata input[type=text] {
+    margin: 0;
+  }
+  .new-zanata label {
+    font-weight: 500;
+  }
+  .progress-bar {
+    height: 100% !important;
+  }
+  .panel-group .panel-heading {
+    border-bottom: 1px solid #cdd4dc !important;
+  }
+  .modal-body .introPar {
+    margin-bottom: @spacing-base !important;
+  }
+  .import-type {
+    font-size: 1.1rem;
+  }
+  .iconTMX {
+    margin-right: @spacing-rh;
+  }
+  .VersionMergeTitle .u-textInfo {
+    margin-right: @spacing-base;
+  }
+  li.v input.checkbox {
+    margin-left: @spacing-base;
+  }
+  #versionMergeDropdown {
+    display: inline-flex;
+    align-items: center;
+  }
+  #versionMergeDropdown span.s1 {
+    margin-right: @spacing-rh;
+  }
+  .s0.icon-locked {
+    color: @color-warning !important;
+    vertical-align: middle;
+    margin-left: @spacing-rh;
+  }
+  .select-project {
+    padding-bottom: @spacing-base-and-a-half;
+  }
+  .validations {
+    padding-top: @spacing-base-and-a-half;
+  }
+  .validations span {
+    font-weight: 500;
+  }
+  .radio.has-success label, .radio.has-warning label, .radio.has-error label {
+    font-weight: 500;
+    font-size: 0.975rem;
+  }
+  .versionMergeSource {
+    display: flex;
+    padding-bottom: @spacing-rq;
+  }
+  .versionMergeSource span {
+    padding-right: @spacing-base;
+  }
+  p.lead {
+    font-weight: 400;
+    margin-bottom: @spacing-half-base;
+  }
+  li.v span.text-muted {
+    font-weight: 500;
+    margin-left: 2.5rem;
+  }
+  li.list-group-item.to .item {
+    vertical-align: middle;
+    margin-right: @spacing-base-and-a-half;
+  }
+  li.list-group-item.to .item .iconTMX {
+    vertical-align: sub;
+  }
+  .panel-name {
+    font-size: 1.1rem;
+  }
+  .tooltip-btn {
+    padding: 0;
+  }
+  .well {
+    background-color: #fff;
+    border-color: @color-neutral;
+    text-align: center;
+    margin-top: @spacing-xlarge;
+  }
+  .well p {
+    padding: @spacing-base-and-a-half;
+    font-size: 1.1rem;
+  }
+  .no-v {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: @spacing-xlarge;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .no-v .s8 {
     margin-top: @spacing-base;
   }
-}
-
-@media (min-width: @screen-md-min) {
-  #tmMergeModal .label {
-    margin-left: 0;
-    margin-top: @spacing-rq;
+  .radio.disabled {
+    opacity: 0.5;
+  }
+  .radio input[type=radio] {
+    margin-bottom: @spacing-rq;
+    margin-left: @spacing-base;
+  }
+  .btn-link {
+    line-height: inherit;
+  }
+  .panel-title p {
+    hyphens: initial;
+  }
+  .VersionMergeTitle.u-textNewBlue {
+    display: inline-flex;
+    align-items: center;
+  }
+  .VersionMergeTitle.u-textNewBlue .dropdown {
+    width: auto;
+    margin-left: @spacing-rq;
+    margin-right: @spacing-rq;
+  }
+  .versionMergeSearch span {
+    margin-right: @spacing-base-and-a-half;
+  }
+  /* Project version sidebar pageview */
+  .flexTab.wideView {
+    padding-left: @spacing-xlarge;
+  }
+  .flexTab.wideView span.n1 {
+    padding-right: @spacing-rh;
+  }
+  .flexTab.wideView button {
+    font-weight: 500;
+  }
+  .flexTab.wideView .btn-default .s0 {
+    padding-right: @spacing-half-base;
+    vertical-align: middle;
+  }
+  .flexTab.wideView .table {
+    width: 100%;
+    color: @color-dark;
+  }
+  @media (max-width: @screen-sm-max) {
+    .label {
+      margin-left: @spacing-base;
+    }
+    .col-md-4 {
+      width: 100%;
+      margin-top: @spacing-base;
+    }
+  }
+  @media (min-width: @screen-md-min) {
+    .label {
+      margin-left: 0;
+      margin-top: @spacing-rq;
+    }
   }
 }
