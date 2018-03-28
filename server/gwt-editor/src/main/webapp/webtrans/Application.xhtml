@@ -38,11 +38,10 @@
     <link rel="preload" as="font" crossorigin="anonymous" type="font/woff"
       href="#{request.contextPath}/resources/fontello/font/fontello.woff" />
 
-    <link rel="stylesheet" href="#{frontendAssets.frontendCss}" type="text/css"/>
     <link type="text/css" rel="stylesheet"
       href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
     <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/assets/css/style.css"/>
-    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/assets/css/application.css"/>
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/assets/css/gwt-editor.css"/>
 
     <script src="codemirror/codemirror-compressed-3.21.cache.js"
         type="text/javascript"></script>
@@ -69,31 +68,11 @@
   <!--                                           -->
   <h:body styleClass="new-zanata-body">
     <ds:windowId/>
-    <div id="config"
-      data-app-url="#{request.contextPath}"
-      data-server-url="#{request.contextPath}"
-      data-api-server-url="#{request.contextPath}/rest"
-      data-user="#{authenticatedAccountHome.getUser()}"
-      data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
-      data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
-                   "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'>
-    </div>
     <script type="application/javascript">
       var zanataSessionId = '#{request.session.id}';
-      window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
     </script>
 
-
-    <div class='templateWrapper'>
-      <div class='templateContainer'>
-        <div id="root" />
-        <div id="container" class="containerEditor"/>
-      </div>
-    </div>
-    <script type="text/javascript"
-      src="#{frontendAssets.runtime}"></script>
-    <script type="text/javascript"
-      src="#{frontendAssets.legacyJs}"></script>
+    <div id="container"/>
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
       style="position:absolute;width:0;height:0;border:0"></iframe>

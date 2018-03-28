@@ -10,9 +10,13 @@
       text-decoration: none;
       cursor: default;
     }
+
+    .breadcrumb {
+      font-size: 1.1em;
+    }
   </ui:style>
 
-  <g:HTMLPanel styleName="bx--inline-block">
+  <g:HTMLPanel styleName="bx--inline-block {style.breadcrumb}">
     <g:HTMLPanel tag="i" ui:field="rightChevron"
       styleName="i i--arrow-right" />
     <g:Anchor ui:field="link"/>
