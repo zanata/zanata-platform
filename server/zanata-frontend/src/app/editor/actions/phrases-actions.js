@@ -59,10 +59,9 @@ export const undoEdit = createAction(UNDO_EDIT)
 export function selectPhrase (phraseId, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
-    dispatch(createAction(SELECT_PHRASE)(phraseId)).then(
-      dispatch(
-        fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
-    )
+    dispatch(createAction(SELECT_PHRASE)(phraseId))
+    dispatch(fetchTransUnitHistory(
+      localeId, phraseId, projectSlug, versionSlug))
   }
 }
 
@@ -78,10 +77,10 @@ const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
 export function selectPhrasePluralIndex (
   phraseId, index, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
-    dispatch(
-      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(selectPhraseSpecificPlural(phraseId, index))
+    dispatch(fetchTransUnitHistory(
+      localeId, phraseId, projectSlug, versionSlug))
   }
 }
 
