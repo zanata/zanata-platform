@@ -215,7 +215,7 @@ input, textarea, select, button  {
 }
 
 .Editor-docsDropdown button.Link--invert div span {
-  max-width: 25em;
+  max-width: 25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -227,7 +227,7 @@ input, textarea, select, button  {
 }
 
 .TransUnit-panel .u-textMeta .loaderText span span {
-  padding-left: 1em;
+  padding-left: 1rem;
 }
 
 .Editor-suggestionsBody .loaderText span span {
@@ -331,12 +331,12 @@ li.DocName span.ellipsis {
 }
 
 .TransUnitLink.form-group {
-  padding-top: 0.75em;
+  padding-top: 0.75rem;
 }
 
 .TransUnitLink.form-group .form-control {
   color: var(--Editor-color-dark);
-  height: 2.25em;
+  height: 2.25rem;
   width: 90%;
 }
 
@@ -348,7 +348,7 @@ li.DocName span.ellipsis {
 }
 
 .panel-group {
-  margin-bottom: 1.429em;
+  margin-bottom: 1.429rem;
 }
 
 .panel-group .panel {
@@ -357,7 +357,7 @@ li.DocName span.ellipsis {
 }
 
 .panel-group .panel + .panel {
-  margin-top: 0.357em;
+  margin-top: 0.357rem;
 }
 
 .panel-group .panel-heading {
@@ -383,12 +383,12 @@ li.DocName span.ellipsis {
   border-radius: var(--border-radius-base);
   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-  margin-bottom: 1.429em;
+  margin-bottom: 1.429rem;
 }
 
 .panel-body {
   color: var(--brand-primary);
-  font-size: 1em;
+  font-size: 1rem;
   padding: var(--padding-large-vertical);
 }
 
@@ -398,7 +398,7 @@ li.DocName span.ellipsis {
 
 .panel-title {
   color: inherit;
-  font-size: 1.143em;
+  font-size: 1.143rem;
   margin-bottom: 0;
   margin-top: 0;
   padding-bottom: 0
@@ -416,7 +416,7 @@ li.DocName span.ellipsis {
   border-top-left-radius: var(--Editor-border-radius-small);
   border-top-right-radius: var(--Editor-border-radius-small);
   color: var(--brand-secondary);
-  font-size: 1.1em !important;
+  font-size: 1.1rem !important;
   font-weight: 600;
   padding: var(--padding-small-horizontal);
 }
@@ -471,7 +471,7 @@ li.DocName span.ellipsis {
   left: 0;
   outline: 0;
   overflow: hidden;
-  padding: 1em;
+  padding: 1rem;
   position: fixed;
   right: 0;
   top: 0;
@@ -502,7 +502,7 @@ li.DocName span.ellipsis {
 }
 
 .modal-dialog {
-  margin: 1em;
+  margin: 1rem;
   position: relative;
   width: auto;
 }
@@ -557,14 +557,14 @@ li.DocName span.ellipsis {
 .modal-title {
   font-size: 1.725rem;
   font-weight: 400;
-  line-height: 1.333em;
+  line-height: 1.333rem;
   margin: 0;
   text-align: center;
 }
 
 .modal-body {
   color: #333;
-  padding: 2em;
+  padding: 2rem;
   position: relative;
 }
 
@@ -584,14 +584,14 @@ li.DocName span.ellipsis {
 .modal-footer {
   background: rgba(0, 0, 0, .05);
   border-top: 0;
-  padding: 1em;
+  padding: 1rem;
   right: 0;
   text-align: right;
 }
 
 .modal-footer .btn + .btn {
   margin-bottom: 0;
-  margin-left: 0.75em;
+  margin-left: 0.75rem;
 }
 
 .modal-footer .btn-group .btn + .btn {
@@ -614,18 +614,18 @@ h4.modal-title {
   color: var(--Editor-color-bright);
   font-size: 1.728rem;
   font-weight: 300;
-  line-height: 1em;
+  line-height: 1rem;
   text-align: center;
 }
 
 .label {
   color: #fff;
   border-radius: var(--Editor-border-radius-small);
-  padding: 0.21429em 0.42857em;
+  padding: 0.21429rem 0.42857rem;
 }
 
 .panel-body h3 {
-  font-size: 1.2em;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 
@@ -639,13 +639,13 @@ h4.modal-title {
 
 .modal-body .list-group-item-heading {
   color: var(--Editor-color-dark);
-  margin-top: 0.5em;
+  margin-top: 0.5rem;
 }
 
 .panel-body .modal-term {
   color: var(--Editor-color-dark);
-  font-size: 1.1em;
-  line-height: 2em;
+  font-size: 1.1rem;
+  line-height: 2rem;
 }
 
 .row span.s1, .row span.s0, .row span.n1 {
@@ -679,7 +679,7 @@ h4.modal-title {
 }
 
 .CommentBox {
-  margin-top: 1em;
+  margin-top: 1rem;
 }
 
 .CommentBox li {
@@ -691,7 +691,7 @@ h4.modal-title {
 }
 
 ul.listInline li.s1 {
-  margin-right: 0.375em;
+  margin-right: 0.375rem;
 }
 
 ul.Source-infoList {
@@ -871,7 +871,7 @@ ul.u-listInline li .u-textHighlight {
 }
 
 .tab-pane #tab1, .tab-pane #tab2 {
-  margin-top: 2.7em;
+  margin-top: 2.7rem;
 }
 
 .nav-tabs .dropdown-menu {
@@ -1029,17 +1029,17 @@ label span.n1 {
 
 @media (max-width: 740px) {
   .TransUnit-heading {
-    padding-left: 1.5em;
+    padding-left: 1.5rem;
   }
 
   td.StringLong {
     display: table-row !important;
-    max-width: 10em !important;
+    max-width: 10rem !important;
     padding-bottom: 0 !important;
   }
 
   .StringLong span {
-    max-width: 9.5em !important;
+    max-width: 9.5rem !important;
   }
 }
 
@@ -1065,17 +1065,17 @@ label span.n1 {
   }
 
   .hide-mdplus {
-    margin-right: 0.75em;
+    margin-right: 0.75rem;
   }
 
   td.StringLong {
     display: table-row !important;
-    max-width: 12em !important;
+    max-width: 12rem !important;
     padding-bottom: 0 !important;
   }
 
   .StringLong span {
-    max-width: 10em !important;
+    max-width: 10rem !important;
   }
 
   .hide-md {
@@ -1085,18 +1085,18 @@ label span.n1 {
 
   #SidebarEditor-tabsPane1 table tbody tr {
     display: inline-table;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
   }
 
   #SidebarEditor-tabsPane1.tab-pane.active table tbody tr {
     border-bottom: 1px solid rgb(99, 156, 173);
-    padding-bottom: 0.375em;
+    padding-bottom: 0.375rem;
     width: 100%;
   }
 
   #SidebarEditor-tabsPane1 td .Button--primary {
     float: none;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
   }
 
 }
@@ -1113,12 +1113,12 @@ label span.n1 {
   }
 
   td.StringLong {
-    min-width: 6em;
-    padding-bottom: 0.75em;
+    min-width: 6rem;
+    padding-bottom: 0.75rem;
   }
 
   .StringLong span {
-    max-width: 5.5em;
+    max-width: 5.5rem;
   }
 
   #SidebarEditor-tabsPane1 table tbody tr {
@@ -1130,17 +1130,17 @@ label span.n1 {
   }
 
   #SidebarEditor-tabsPane1 table tbody tr td {
-    padding-right: 0.5em;
+    padding-right: 0.5rem;
   }
 }
 
 @media (min-width: 1100px) {
   td.StringLong {
-    max-width: 10em;
+    max-width: 10rem;
   }
 
   .StringLong span {
-    max-width: 9.5em;
+    max-width: 9.5rem;
   }
 
   li.DocName .row {
