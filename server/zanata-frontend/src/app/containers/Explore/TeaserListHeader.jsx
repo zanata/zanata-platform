@@ -2,7 +2,9 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon, Loader } from '../../components'
-import { Button } from 'react-bootstrap'
+import Button from 'grommet/components/Button'
+import Previous from 'grommet/components/icons/base/Previous'
+import Next from 'grommet/components/icons/base/Next'
 
 /**
  * Header with icon and paging for the TeaserList.
@@ -41,22 +43,13 @@ const TeaserListHeader = ({
       </h2>
       {totalPage > 1 && (
         <div className='teaserHeader-inner'>
-          <div className='teaserHeader-pagination'>
-            <Button bsStyle='link' disabled={currentPage === 1}
-              onClick={() => {
-                updatePage(type, currentPage, totalPage, false)
-              }}>
-              <Icon className='s1' parentClassName='iconsHeader'
-                name='chevron-left' />
-            </Button>
-            <span className='pageCurrent'>{currentPage} of {totalPage}</span>
-            <Button bsStyle='link' disabled={currentPage === totalPage}
-              onClick={() => {
-                updatePage(type, currentPage, totalPage, true)
-              }}>
-              <Icon className='iconsHeader s1' name='chevron-right' />
-            </Button>
-          </div>
+          <Button icon={<Previous size='xsmall' />}
+            onClick={() => { updatePage(type, currentPage, totalPage, false) }}
+            plain />
+          <span className='pageCurrent'>{currentPage} of {totalPage}</span>
+          <Button icon={<Next size='xsmall' />}
+            onClick={() => { updatePage(type, currentPage, totalPage, true) }}
+            plain />
         </div>
       )}
       {loading && <Loader className='headerLoader s1' />}
@@ -74,7 +67,8 @@ TeaserListHeader.propTypes = {
   sizePerPage: PropTypes.number,
   page: PropTypes.number,
   updatePage: PropTypes.func,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool
 }
 
 export default TeaserListHeader

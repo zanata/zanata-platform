@@ -1,0 +1,54 @@
+$brand-font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$control-font-size: 16px;
+$brand-color: #546677;
+$brand-color-lighter: desaturate(lighten($brand-color, 50%), 20%);
+$brand-neutral-colors: (#646569, #004876, #004876);
+$brand-accent-colors: (#03A6D7, #20718A);
+$brand-status-colors: (
+    critical: #dd3000,
+    error: #ff3b3d,
+    warning: #ffa800,
+    ok: #62c876,
+    unknown: $brand-color,
+    disabled: #A2B3BE,
+);
+$brand-link-color: #03A6D7;
+$brand-grey-colors: (#000001, #555, #ddd, #f7f7f7);
+$brand-graph-colors: (#03A6D7, #20718A, #546677, #BDD4DC);
+$focus-border-color: #20718A;
+$border-radius: 4px;
+$btn-clear-padding: 0.5rem;
+
+// use namespace
+@import "../../node_modules/grommet/scss/grommet-core/settings";
+
+.#{$grommet-namespace}button__icon .#{$grommet-namespace}control-icon {
+  vertical-align: baseline !important;
+}
+
+.#{$grommet-namespace}button--plain {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.#{$grommet-namespace}button--plain .#{$grommet-namespace}button__label {
+  color: $brand-link-color;
+  font-weight: 400;
+}
+
+.#{$grommet-namespace}button--plain .#{$grommet-namespace}control-icon {
+  stroke: $brand-link-color !important;
+  fill: $brand-link-color !important;
+}
+
+#explore {
+  .teaserHeader-inner .#{$grommet-namespace}button--plain .#{$grommet-namespace}button__icon  {
+    padding: 0;
+  }
+}
+
+#userProfile-activityTable .#{$grommet-namespace}button--plain.btn-clear {
+  margin-top: $btn-clear-padding;
+  padding: 0;
+  margin-left: $btn-clear-padding;
+}

@@ -3,9 +3,10 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import DraggableVersionPanels, {Item, DragHandle, tooltipSort} from '.'
-import {Button, ListGroup, ListGroupItem, OverlayTrigger} from 'react-bootstrap'
+import {ListGroup, ListGroupItem, OverlayTrigger} from 'react-bootstrap'
 import {Icon, LockIcon} from '../../components'
-
+import Button from 'grommet/components/Button'
+import Close from 'grommet/components/icons/base/Close'
 const callback = function (_e) {}
 
 describe('DraggableVersionPanels', () => {
@@ -28,11 +29,10 @@ describe('DraggableVersionPanels', () => {
         {'ver1'} <span className='u-textMuted'> {'meikai1'}
         </span> <LockIcon status={'ACTIVE'} />
         {" "}
-        <Button bsSize='xsmall' className='close rm-version-btn'
-          onClick={callback}>
-          <Icon name='cross' className='n2' parentClassName='iconCross'
-              title='remove version'/>
-        </Button>
+        <Button icon={<Close size='xsmall' />}
+          label='Clear selection'
+          onClick={callback}
+          plain className='close rm-version-btn' />
       </ListGroupItem>
     )
     expect(actual).toEqual(expected)

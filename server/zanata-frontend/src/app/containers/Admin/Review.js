@@ -5,12 +5,13 @@ import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
-import Icon from '../../components/Icon'
-import {Button, Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
+import {Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
+import Button from 'grommet/components/Button'
+import Add from 'grommet/components/icons/base/Add'
 
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
@@ -92,10 +93,10 @@ class AdminReview extends Component {
       {criteriaList}
       {newEntryForm}
       <div className='rejection-btns'>
-        <Button bsStyle='primary' className='btn-left'
-          onClick={this.showAddNewEntryForm}>
-          <Icon name='plus' className='s1' /> New review criteria entry
-        </Button>
+        <Button icon={<Add size='xsmall' />}
+          label='New review criteria entry'
+          primary
+          onClick={this.showAddNewEntryForm} />
       </div>
     </div>
   }

@@ -1,4 +1,5 @@
 @import "../../styles/variables.less";
+
 .scrollView {
   align-items: center;
   -webkit-align-items: center;
@@ -13,18 +14,13 @@
   padding-left: @spacing-base;
   padding-right: @spacing-base;
 }
+
 .scrollView h2 {
   padding-left: @spacing-re;
   margin-top: 0;
 }
+
 #explore {
-  .containerContentView {
-    max-width: 48rem;
-    width: 100%;
-    margin-top: @spacing-base;
-    margin-left: @spacing-base;
-    margin-right: @spacing-base;
-  }
   .searchView {
     align-items: center;
     -webkit-align-items: center;
@@ -38,6 +34,7 @@
     margin-right: auto;
     display: flex;
   }
+
   .searchView .textInput {
     background-color: "";
     border: @color-neutral solid 2px !important;
@@ -53,18 +50,23 @@
     margin-left: -1.75rem;
     padding-left: 2rem !important;
   }
+
   .searchView .listInline {
     vertical-align: text-bottom;
   }
+
   .searchView button.btn-link {
     margin-left: @spacing-half-base;
   }
+
   .teaserList {
     margin-bottom: 2.25rem;
   }
+
   .teaserList .listTheme {
     margin-top: @spacing-base-and-a-half;
   }
+
   .teaserView {
     align-items: center;
     -webkit-align-items: center;
@@ -87,6 +89,7 @@
     -moz-flex: 1;
     -webkit-flex: 1;
   }
+
   .userTeaser-inner {
     align-items: center;
     -webkit-align-items: center;
@@ -94,20 +97,24 @@
     flex-direction: row;
     -webkit-flex-direction: row;
   }
+
   .teaserHeader span .iconsHeader {
     vertical-align: sub;
   }
+
   .teaserHeader-inner {
     margin-left: @spacing-rh;
     color: @color-light;
     display: flex;
-    align-items: left;
+    align-items: inherit;
     flex-direction: row;
   }
+
   .teaserHeader-inner .iconsHeader {
     margin-right: 0;
     vertical-align: baseline;
   }
+
   .teamTeaser {
     align-items: center;
     -webkit-align-items: center;
@@ -115,9 +122,11 @@
     margin-bottom: @spacing-rq;
     margin-right: 1.75rem;
   }
+
   .languageTeamTeaser-id {
     margin-left: @spacing-rq;
   }
+
   .languageTeamTeaser-members {
     align-items: center;
     -webkit-align-items: center;
@@ -127,35 +136,44 @@
     padding-right: @spacing-xlarge;
     color: @color-muted;
   }
+
   .languageTeamTeaser-members .iconUsers-muted {
     padding-right: @spacing-rq;
     vertical-align: sub;
   }
+
   .teaserHeader-pagination {
-   margin-top: @spacing-rh;
+    margin-top: @spacing-rh;
   }
+
   .teaserHeader-pagination button:first-of-type {
     margin-top: 0.2rem;
   }
+
   .metaInfo {
     align-items: center;
     -webkit-align-items: center;
     /* Safari 7.0+ */
     font-size: 0.833rem;
   }
+
   .wordsTranslatedView {
     align-items: center;
     -webkit-align-items: center;
     /* Safari 7.0+ */
     margin-left: auto;
   }
+
   .searchView svg {
     vertical-align: sub;
   }
+
   #explore h1 {
     font-size: 1.2em !important;
     margin-bottom: 0;
-  } // @screen-xs variable depreciated
+  }
+
+  // @screen-xs variable depreciated
   @media (max-width: 29.375rem) {
     .teaser-inner {
       flex-direction: row;
@@ -165,14 +183,18 @@
       -moz-flex: 1;
       -webkit-flex: 1;
     }
+
     .metaInfo {
       margin-left: auto;
     }
+
     .searchView span svg {
       font-size: 1.4rem;
     }
+
     .searchView .textInput {
       width: 70%;
     }
   }
 }
+

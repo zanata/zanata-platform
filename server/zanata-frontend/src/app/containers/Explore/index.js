@@ -5,7 +5,6 @@ import * as PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput, Icon } from '../../components'
 import {
@@ -14,6 +13,7 @@ import {
   updateSearchPage,
   SIZE_PER_PAGE
 } from '../../actions/explore-actions'
+import Button from 'grommet/components/Button'
 
 /**
  * Root component for Explore page
@@ -156,11 +156,10 @@ class Explore extends Component {
               onKeyDown={this.handleKeyDown}
               onChange={handleSearchTextChange}
             />
-            <Button
-              bsStyle='link' disabled={isEmpty(searchText)}
-              onClick={this.handleClearSearch}>
-              Cancel
-            </Button>
+            <Button label='Cancel'
+              disabled={isEmpty(searchText)}
+              onClick={this.handleClearSearch}
+              plain />
           </div>
         </div>
         <div className='containerContentView'>

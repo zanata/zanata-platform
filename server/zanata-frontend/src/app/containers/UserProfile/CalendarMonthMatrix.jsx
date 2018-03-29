@@ -5,7 +5,7 @@ import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
 import utilsDate from '../../utils/DateHelper'
-import { Button } from 'react-bootstrap'
+import Button from 'grommet/components/Button'
 
 const classes = {
   calendar: {
@@ -94,11 +94,9 @@ const CalendarMonthMatrix = ({
         </div>
         {selectedDay &&
         (<div>
-          <Button bsStyle='link'
-            className='btn-clear'
-            onClick={() => handleSelectedDayChanged(null)}>
-            Clear selection
-          </Button>
+          <Button label='Clear selection'
+            onClick={() => handleSelectedDayChanged(null)}
+            plain className='btn-clear' />
         </div>)}
       </div>
       <table className={calClass}>
