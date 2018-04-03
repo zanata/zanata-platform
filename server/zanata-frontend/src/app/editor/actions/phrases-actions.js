@@ -58,10 +58,10 @@ export const undoEdit = createAction(UNDO_EDIT)
  */
 export function selectPhrase (phraseId, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
-    dispatch(
-      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(createAction(SELECT_PHRASE)(phraseId))
+    dispatch(fetchTransUnitHistory(
+      localeId, phraseId, projectSlug, versionSlug))
   }
 }
 
@@ -77,10 +77,10 @@ const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
 export function selectPhrasePluralIndex (
   phraseId, index, localeId, projectSlug, versionSlug) {
   return (dispatch) => {
-    dispatch(
-      fetchTransUnitHistory(localeId, phraseId, projectSlug, versionSlug))
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(selectPhraseSpecificPlural(phraseId, index))
+    dispatch(fetchTransUnitHistory(
+      localeId, phraseId, projectSlug, versionSlug))
   }
 }
 
@@ -185,7 +185,14 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
             // dispatch(phraseSaveFailed(currentPhrase, saveInfo))
           } else {
             response.json().then(({ revision, status }) => {
-              dispatch(saveFinished(phrase.id, status, revision))
+              dispatch(saveFinished(phrase.id, status, revision)).then(
+                dispatch(fetchTransUnitHistory(
+                  saveInfo.localeId,
+                  phrase.id,
+                  stateBefore.context.projectSlug,
+                  stateBefore.context.versionSlug
+                ))
+              )
             })
           }
           startPendingSaveIfPresent(currentPhrase)
