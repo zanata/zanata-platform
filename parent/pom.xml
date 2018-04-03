@@ -982,6 +982,51 @@
     </profile>
 
     <profile>
+      <id>dependency-check</id>
+      <activation>
+        <property>
+          <name>depcheck</name>
+        </property>
+      </activation>
+      <properties>
+        <!-- for OWASP: -->
+        <failBuildOnCVSS>10</failBuildOnCVSS>
+        <!-- for ossindex: -->
+        <audit.failOnError>false</audit.failOnError>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>3.1.2</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>net.ossindex</groupId>
+            <artifactId>ossindex-maven-plugin</artifactId>
+            <version>2.3.8</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>audit</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
       <!-- This profile runs a single integration test with
         -Dit.test=<integration-test-name>, skipping unit tests. -->
       <id>it.test</id>

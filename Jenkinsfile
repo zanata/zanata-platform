@@ -235,7 +235,7 @@ timestamps {
             -DskipFuncTests \
             -DskipArqTests \
             -Dmaven.test.failure.ignore \
-            -Dvictims \
+            -Ddepcheck \
           """
 
           def surefireTestReports = 'target/surefire-reports/TEST-*.xml'
