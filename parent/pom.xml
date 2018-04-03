@@ -997,14 +997,14 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <version>3.1.2</version>
+            <groupId>com.redhat.victims.maven</groupId>
+            <artifactId>security-versions</artifactId>
+            <version>1.0.6</version>
             <executions>
               <execution>
                 <phase>verify</phase>
                 <goals>
-                  <goal>aggregate</goal>
+                  <goal>check</goal>
                 </goals>
               </execution>
             </executions>
@@ -1018,6 +1018,19 @@
                 <phase>verify</phase>
                 <goals>
                   <goal>audit</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>3.1.2</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>aggregate</goal>
                 </goals>
               </execution>
             </executions>
