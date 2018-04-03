@@ -3,8 +3,8 @@
 
 ### With 0install (recommended way)
 1. Click [here](http://0install.de/files/zero-install.exe) to download and install [0Install for Windows](http://0install.net/install-windows.html).
-2. Run `0install https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli-jre.xml` to setup alias.
-3. Now you can run `zanata-cli.bat --help` for more options.
+2. Run `0install add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli-jre.xml` to set up an alias `zanata-cli`.
+3. Now you can run `zanata-cli --help` for more options.
 
 *Note: If you have installed `zanata-cli` previously through another method, you need to uninstall that for this to work.*
 
@@ -22,6 +22,7 @@
 
 **Zanata-cli feed without JRE dependency**
 
+Use one of the commands above, but with this URL instead:
 `https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml`
 
 ### Manual standalone installation
