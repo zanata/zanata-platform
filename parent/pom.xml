@@ -989,10 +989,6 @@
         </property>
       </activation>
       <properties>
-        <!-- for OWASP: -->
-        <failBuildOnCVSS>10</failBuildOnCVSS>
-        <!-- this is a classpath resource from build-tools -->
-        <suppressionFile>zanata-build-tools/dependency-suppression.xml</suppressionFile>
         <!-- for ossindex: -->
         <audit.failOnError>false</audit.failOnError>
       </properties>
@@ -1023,26 +1019,6 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <version>3.1.2</version>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>aggregate</goal>
-                </goals>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.zanata</groupId>
-                <artifactId>build-tools</artifactId>
-                <version>${project.version}</version>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>
