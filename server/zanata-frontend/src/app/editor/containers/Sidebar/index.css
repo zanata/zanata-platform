@@ -32,6 +32,7 @@
   margin-top: 90px !important;
   position: static !important;
   width: 35%;
+  background-color: #fff;
 }
 
 .sidebar-editor :focus {
@@ -447,10 +448,6 @@ select.SettingsSelect {
   margin-bottom: 1em;
 }
 
-#SidebarEditorTabs-pane2 {
-  background-color: var(--Sidebar-tabpane);
-}
-
 .SidebarActivity {
   padding-bottom: 0.5rem;
   padding-top: 0.5rem;
@@ -542,7 +539,6 @@ img.ActivityAvatar {
 }
 
 .TransUnit-commentBox {
-  margin-top: 1rem;
   padding: 0.75rem;
 }
 
