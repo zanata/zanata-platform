@@ -216,18 +216,18 @@ class TranslationInfoPanel extends React.Component {
         username: latestHistoryItem.modifiedBy
       }
     }
-    return historyActivityItems.concat(latestHistoryActivityItem)
+    return {...historyActivityItems, latestHistoryActivityItem}
   }
   /* Returns Activity Items list filtered by comments and updates */
   filterActivityItems = (activityFilterType) => {
-    const { reviewComments, historyItems } = this.props
-    if (isEmpty(reviewComments) && isEmpty(historyItems)) {
+    const { reviewComments, latestHistoryItem } = this.props
+    if (isEmpty(reviewComments) && isEmpty(latestHistoryItem)) {
       return undefined
     }
     switch (activityFilterType) {
       case ALL:
-        return orderBy(this.reviewCommentsList()
-          .concat(this.historyItemsList()), ['lastModifiedTime'], ['desc'])
+        return orderBy({...this.reviewCommentsList(),
+          ...this.historyItemsList()}, ['lastModifiedTime'], ['desc'])
       case COMMENTS:
         return orderBy(this.reviewCommentsList(),
           ['lastModifiedTime'], ['desc'])
