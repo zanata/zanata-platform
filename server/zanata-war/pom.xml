@@ -118,9 +118,6 @@
             <!-- Used for StringUtils lib -->
             <!-- Needed by ui rendering at runtime -->
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
-            <!-- Used for different content analyzers based on langugage for search. -->
-            <usedDependency>org.apache.solr:solr-core</usedDependency>
-            <usedDependency>org.apache.solr:solr-solrj</usedDependency>
             <!-- Used for unit tests via persistence.xml
                  (org.hibernate.testing.cache.CachingRegionFactory) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
@@ -1266,16 +1263,6 @@
           <artifactId>plexus-utils</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <!-- Solr dependencies -->
-    <dependency>
-      <groupId>org.apache.solr</groupId>
-      <artifactId>solr-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.solr</groupId>
-      <artifactId>solr-solrj</artifactId>
     </dependency>
 
     <dependency>
