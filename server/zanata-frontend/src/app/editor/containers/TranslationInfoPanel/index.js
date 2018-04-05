@@ -7,11 +7,21 @@ import { Tabs, FormGroup, InputGroup, InputGroupAddon,
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined, orderBy } from 'lodash'
-import { FormattedDate, FormattedTime } from 'react-intl'
 import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
 import { ALL, COMMENTS, UPDATES } from '../../utils/activity-util'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
+import DetailsPane from './DetailsPane'
+
+const historyShape = PropTypes.shape({
+  contents: PropTypes.arrayOf(PropTypes.string),
+  modifiedBy: PropTypes.string,
+  modifiedDate: PropTypes.number,
+  optionalTag: PropTypes.string,
+  revisionComment: PropTypes.string,
+  status: PropTypes.string,
+  versionNum: PropTypes.string
+})
 
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
@@ -33,17 +43,7 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime: PropTypes.instanceOf(Date),
       revision: PropTypes.number
     }),
-    historyItems: PropTypes.arrayOf(
-      PropTypes.shape({
-        contents: PropTypes.arrayOf(PropTypes.string),
-        modifiedBy: PropTypes.string,
-        modifiedDate: PropTypes.number,
-        optionalTag: PropTypes.string,
-        revisionComment: PropTypes.string,
-        status: PropTypes.string,
-        versionNum: PropTypes.string
-      })
-    ),
+    historyItems: PropTypes.arrayOf(historyShape),
     reviewComments: PropTypes.arrayOf(
       PropTypes.shape({
         comment: PropTypes.string,
@@ -52,15 +52,7 @@ class TranslationInfoPanel extends React.Component {
         id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
       })
     ),
-    latestHistoryItem: PropTypes.shape({
-      contents: PropTypes.arrayOf(PropTypes.string),
-      modifiedBy: PropTypes.string,
-      modifiedDate: PropTypes.number,
-      optionalTag: PropTypes.string,
-      revisionComment: PropTypes.string,
-      status: PropTypes.string,
-      versionNum: PropTypes.string
-    }),
+    latestHistoryItem: historyShape,
     isRTL: PropTypes.bool.isRequired
   }
   constructor (props) {
@@ -89,61 +81,6 @@ class TranslationInfoPanel extends React.Component {
       phrase: this.props.selectedPhrase
     }
     this.props.postReviewComment(reviewData)
-  }
-  sidebarDetails = () => {
-    if (!this.props.hasSelectedPhrase) {
-      return <span>Select a phrase to see details.</span>
-    }
-    const {
-      msgctxt,
-      resId,
-      sourceComment,
-      sourceFlags,
-      sourceReferences,
-      lastModifiedBy,
-      lastModifiedTime
-    } = this.props.selectedPhrase
-    const directionClass = this.props.isRTL ? 'rtl' : 'ltr'
-    return (
-      <ul className={directionClass + ' SidebarEditor-details'}>
-        {this.detailItem('Resource ID', resId)}
-        {this.detailItem('Message Context', msgctxt)}
-        {this.detailItem('Reference', sourceReferences)}
-        {this.detailItem('Flags', sourceFlags)}
-        {this.detailItem('Source Comment', sourceComment)}
-        {this.detailItem('Last Modified',
-            this.lastModifiedDisplay(lastModifiedBy, lastModifiedTime))}
-      </ul>
-    )
-  }
-  detailItem = (label, value) => {
-    const valueDisplay = isEmpty(value)
-        ? <span className="SidebarEditor-details--nocontent">No content</span>
-        : <span className="SidebarEditor-details--content">{value}</span>
-    return (
-      <li>
-        <span>{label}</span> {valueDisplay}
-      </li>
-    )
-  }
-  lastModifiedDisplay = (lastModifiedBy, lastModifiedTime) => {
-    if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
-      return undefined
-    }
-    const modifiedByIcon = isUndefined(lastModifiedBy) ? undefined
-        : <Icon name="user" className="n1" />
-    const modifiedTimeIcon = isUndefined(lastModifiedTime) ? undefined
-        : <Icon name="clock" className="n1" />
-    const modifiedDate = isUndefined(lastModifiedTime) ? undefined
-        : <FormattedDate value={lastModifiedTime} format="medium" />
-    const modifiedTime = isUndefined(lastModifiedTime) ? undefined
-        : <FormattedTime value={lastModifiedTime} />
-    return (
-      <span>
-        {modifiedByIcon} {lastModifiedBy} {modifiedTimeIcon
-        } {modifiedDate} {modifiedTime}
-      </span>
-    )
   }
   /* URL of the selected phrase, with copy button. */
   phraseLink = () => {
@@ -203,18 +140,18 @@ class TranslationInfoPanel extends React.Component {
         username: latestHistoryItem.modifiedBy
       }
     }
-    return {...historyActivityItems, latestHistoryActivityItem}
+    return historyActivityItems.concat(latestHistoryActivityItem)
   }
   /* Returns Activity Items list filtered by comments and updates */
   filterActivityItems = (activityFilterType) => {
-    const { reviewComments, latestHistoryItem } = this.props
-    if (isEmpty(reviewComments) && isEmpty(latestHistoryItem)) {
+    const { reviewComments, historyItems } = this.props
+    if (isEmpty(reviewComments) && isEmpty(historyItems)) {
       return undefined
     }
     switch (activityFilterType) {
       case ALL:
-        return orderBy({...this.reviewCommentsList(),
-          ...this.historyItemsList()}, ['lastModifiedTime'], ['desc'])
+        return orderBy(this.reviewCommentsList()
+          .concat(this.historyItemsList()), ['lastModifiedTime'], ['desc'])
       case COMMENTS:
         return orderBy(this.reviewCommentsList(),
           ['lastModifiedTime'], ['desc'])
@@ -257,7 +194,11 @@ class TranslationInfoPanel extends React.Component {
           </span>
         </h1>
         <div className="SidebarEditor-wrapper">
-          {this.sidebarDetails()}
+          <DetailsPane
+            // @ts-ignore
+            hasSelectedPhrase={this.props.hasSelectedPhrase}
+            selectedPhrase={this.props.selectedPhrase}
+            isRTL={this.props.isRTL} />
         </div>
         <Tabs activeKey={this.state.key}
           onSelect={this.handleSelectTab}
