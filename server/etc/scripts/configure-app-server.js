@@ -648,18 +648,20 @@ function configureOAuth() {
   systemProperty('zanata.support.oauth', true)
 }
 
-// TODO use this for rundev, integration-test and everything else (but not with my-smtp)
+// TODO use this for rundev, integration-test and everything else
 function configureSMTPForRunDev() {
-  // TODO why "my-smtp"? what's wrong with the built-in "mail-smtp" binding?
-  tryExec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:remove')
-  exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:add(host=${env.MAIL_HOST:localhost}, port=${MAIL_PORT:25})')
-  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=outbound-socket-binding-ref,value=my-smtp)')
+  const smtpSocket = '/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp'
+
+  exec(smtpSocket+':write-attribute(name=host,value="${env.MAIL_HOST:localhost}")')
+  exec(smtpSocket+':write-attribute(name=port,value="${MAIL_PORT:25}")')
+
   // The env.MAIL_USERNAME and env.MAIL_PASSWORD value can not be empty otherwise jboss will fail to enable the mail session resource.
   // Default value set by docker will be ' ' (single space string).
-  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=username,value=${env.MAIL_USERNAME})')
-  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=password,value=${env.MAIL_PASSWORD})')
-  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=tls,value=${env.MAIL_TLS:false})')
-  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=ssl,value=${env.MAIL_SSL:false})')
+  const smtpSession = '/subsystem=mail/mail-session=default/server=smtp'
+  exec(smtpSession+':write-attribute(name=username,value="${env.MAIL_USERNAME: }")')
+  exec(smtpSession+':write-attribute(name=password,value="${env.MAIL_PASSWORD: }")')
+  exec(smtpSession+':write-attribute(name=tls,value="${env.MAIL_TLS:false}")')
+  exec(smtpSession+':write-attribute(name=ssl,value="${env.MAIL_SSL:false}")')
 }
 
 function configureSMTPForIntegrationTest() {
