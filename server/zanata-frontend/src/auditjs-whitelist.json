@@ -1,0 +1,17 @@
+{
+  "shelljs": [
+    {
+      "id": 8402517471,
+      "resource": "https://github.com/shelljs/shelljs/issues/524",
+      "title": "Possible Command Injection",
+      "description": "There are `relevant security flaws surrounding command injection and unexpected globbing` due to the use of the exec function.",
+      "references": [
+        "https://github.com/shelljs/shelljs/issues/524"
+      ],
+      "depPaths": [
+        "/@storybook/react/shelljs",
+        "/eslint/shelljs"
+      ]
+    }
+  ]
+}

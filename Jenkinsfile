@@ -268,7 +268,7 @@ timestamps {
           // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
-          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv,**/reports/scan_node_modules.xml"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
