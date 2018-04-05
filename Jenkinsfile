@@ -230,6 +230,7 @@ timestamps {
             --batch-mode -Dstyle.color=never \
             --update-snapshots \
             -DstaticAnalysisCI \
+            -Doptimise \
             $gwtOpts \
             -Dkotlin.compiler.incremental=false \
             -DskipFuncTests \
