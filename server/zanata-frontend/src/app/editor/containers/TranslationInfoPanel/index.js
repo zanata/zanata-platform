@@ -31,7 +31,7 @@ class TranslationInfoPanel extends React.Component {
     glossaryCount: PropTypes.number.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
     localeId: PropTypes.string.isRequired,
-    transUnitId: PropTypes.number.isRequired,
+    transUnitId: PropTypes.number,
     postReviewComment: PropTypes.func.isRequired,
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,

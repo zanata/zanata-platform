@@ -7,13 +7,14 @@ import { SelectedPhrase } from '../../utils/phrase'
 
 interface DetailsPaneProps {
   hasSelectedPhrase: boolean,
-  selectedPhrase: SelectedPhrase,
-  isRTL: boolean
+  selectedPhrase?: SelectedPhrase,
+  isRTL?: boolean
 }
 
 const DetailsPane: React.SFC<DetailsPaneProps> = ({
   hasSelectedPhrase,
   selectedPhrase,
+  isRTL
 }) => {
   if (!hasSelectedPhrase) {
     return <span>Select a phrase to see details.</span>
@@ -54,7 +55,7 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
     sourceFlags,
     sourceReferences
   } = selectedPhrase
-  const directionClass = this.props.isRTL ? 'rtl' : 'ltr'
+  const directionClass = isRTL ? 'rtl' : 'ltr'
   return (
     <ul className={directionClass + ' SidebarEditor-details'}>
       {detailItem('Resource ID', resId)}

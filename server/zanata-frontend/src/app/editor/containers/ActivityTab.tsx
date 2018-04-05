@@ -14,10 +14,10 @@ import { commentTextLimit } from './RejectTranslation'
 const DO_NOT_RENDER = undefined
 
 interface ActivityTabProps {
-  activityItems: ActivityItemList,
+  activityItems?: ActivityItemList,
   postComment: (text: string) => void
   selectActivityTypeFilter: (text: string) => void,
-  selectedActivites: ActivityFilter
+  selectedActivites?: ActivityFilter
 }
 
 /*
@@ -61,7 +61,7 @@ ActivityTab.propTypes = {
        name: PropTypes.string.isRequired,
        username: PropTypes.string.isRequired
      }).isRequired
-   })).isRequired,
+   })),
    postComment: PropTypes.func.isRequired,
    selectActivityTypeFilter: PropTypes.func.isRequired,
    selectedActivites: PropTypes.oneOf(filterActivityTypes),
