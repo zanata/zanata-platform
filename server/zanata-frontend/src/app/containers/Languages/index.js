@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {
-  Button, InputGroup, FormGroup, FormControl,
+  InputGroup, FormGroup, FormControl,
   Badge, Pagination
 } from 'react-bootstrap'
 import Helmet from 'react-helmet'
@@ -12,6 +12,7 @@ import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
 import {Icon, Notification, LoaderText} from '../../components'
+import { Button } from 'antd'
 
 import {
   initialLoad,
@@ -123,13 +124,9 @@ class Languages extends Component {
             </h1>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary'
-                  id='btn-language-add-new'
+                <Button type="primary" icon="plus"
                   onClick={handleOnDisplayNewLanguage}>
-                  <Icon name='plus' className='n1' parentClassName='plusicon'
-                    title='plus' />&nbsp;
-                  Add new language
-                </Button>
+                Add new language</Button>
                 <NewLanguageModal />
               </div>
             }

@@ -23,6 +23,14 @@ var cssNano = require('cssnano')
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin
+const path = require('path');
+const fs  = require('fs');
+
+const lessToJs = require('less-vars-to-js');
+const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './app/styles/ant-theme-vars.less'), 'utf8'));
+
+// lessToJs does not support @icon-url: "some-string", so we are manually adding it to the produced themeVariables js object here
+themeVariables["@icon-url"] = "'//localhost:8080/fonts/iconfont'";
 
 /**
  * Helper so we can use ternary with undefined to not specify a key
@@ -30,6 +38,14 @@ const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin
  */
 function dropUndef (obj) {
   return _(obj).omitBy(_.isNil).value()
+}
+
+var lessLoader = {
+  loader: 'less-loader',
+  options: {
+    modifyVars: themeVariables,
+    root: path.resolve(__dirname, './')
+  }
 }
 
 var postCssLoader = {
@@ -173,7 +189,10 @@ module.exports = function (env, isEditor, devServerPort) {
             formatter: 'verbose'
           }
         },
-
+        {
+          test: /\.js$/,
+          exclude: /node_modules(?!\/antd)/
+        },
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
         {
@@ -212,7 +231,6 @@ module.exports = function (env, isEditor, devServerPort) {
          */
         {
           test: /\.less$/,
-          exclude: /node_modules/,
           use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
             use: [
@@ -226,7 +244,7 @@ module.exports = function (env, isEditor, devServerPort) {
                 }
               },
               postCssLoader,
-              'less-loader'
+              lessLoader
             ]
           })
         }
