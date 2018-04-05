@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
 import com.google.common.collect.MapMaker;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -182,11 +183,11 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         try {
             transRes = adapter.parseTranslationFile(tempFile.toURI(),
                     doc.getSourceLocaleId(), localeId, getAdapterParams(doc));
-        } catch (FileFormatAdapterException e) {
-            throw new ZanataServiceException(
-                    "Error parsing translation file: " + fileName, e);
         } catch (RuntimeException e) {
-            throw new ZanataServiceException(e);
+            Throwable rootCause = Throwables.getRootCause(e);
+            throw new ZanataServiceException(
+                    "Translation file error: " + fileName + " " +
+                    rootCause.getMessage(), e);
         }
         return transRes;
     }
@@ -250,9 +251,12 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         try {
             doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"),
                     params);
-        } catch (FileFormatAdapterException e) {
+        } catch (RuntimeException e) {
+            Throwable rootCause = Throwables.getRootCause(e);
+            // Filename may not be a 'file name' e.g GETTEXT
             throw new ZanataServiceException(
-                    "Error parsing document file: " + fileName, e);
+                    "Error parsing document file: " + fileName + " " +
+                            rootCause.getMessage(), e);
         }
         doc.setName(docId);
         return doc;
@@ -268,9 +272,12 @@ public class TranslationFileServiceImpl implements TranslationFileService {
             boolean offlinePo) {
         PoReader2 poReader = new PoReader2(offlinePo);
         // assume english as source locale
-        Resource res = poReader.extractTemplate(new InputSource(fileContents),
-                new LocaleId("en"), docId);
-        return res;
+        try {
+            return poReader.extractTemplate(new InputSource(fileContents),
+                    new LocaleId("en"), docId);
+        } catch (IllegalStateException e) {
+            throw new ZanataServiceException(e.getMessage());
+        }
     }
     // TODO replace these with values from DocumentType
 
