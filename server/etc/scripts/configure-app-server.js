@@ -77,8 +77,11 @@ const serverConfig = 'standalone-full-ha.xml'
 const help = {
   '--help':                 'Show usage information',
   '--dry-run':              'Show CLI commands without executing',
-  '--datasource-h2':        'Create a datasource (for Arquillian tests)',
+  '--datasource-h2':        'Create an H2 datasource (for Arquillian tests only)',
+  '--datasource':           'Create a MySQL/MariaDB datasource',
+  '--disable-file-logger':  'Disable default FILE logger (handy for containers)',
   '--auth-internal':        "Enable Zanata's internal authentication",
+  '--auth-kerberos':        'Enable Kerberos authentication (NB make sure you set KERBEROS_PRINCIPAL and KERBEROS_KEYTAB when running Zanata!)',
   '--auth-openid':          'Enable OpenID authentication',
   '--auth-openid-provider': 'Enable OpenID and restrict to a single provider URL. eg for Fedora Account System: --auth-openid-provider https://id.fedoraproject.org/openid/',
   '--auth-saml2':           'Enable SAML2 authentication (SSO)',
@@ -127,10 +130,12 @@ function parseArgs(args) {
     /** @type {'WARN'|'INFO'|'TRACE'|undefined} */
     consoleLogLevel: undefined,
     // The system properties are expanded by the app server (not by JS).
-    zanataHomeDir: '${jboss.server.data.dir}/zanata',
+    zanataHomeDir: '${env.ZANATA_HOME:/var/lib/zanata}',
     searchIndexDir: '${zanata.home}/indexes',
     javamelodyDir: '${zanata.home}/stats',
-    fileDir: '${zanata.home}/files'
+    fileDir: '${zanata.home}/files',
+    kerberosPrincipal: '${env.KERBEROS_PRINCIPAL:HTTP/hostname.example.com@EXAMPLE_REALM}',
+    kerberosKeytab: '${env.KERBEROS_KEYTAB:${zanata.home}/zanata.keytab}'
   }
   let enabledAuth = false
 
@@ -144,6 +149,11 @@ function parseArgs(args) {
       case '--auth-internal':
         stderr('Enabling internal authentication')
         opts.configCallbacks.push(configureAuthInternal)
+        enabledAuth = true
+        break
+      case '--auth-kerberos':
+        stderr('Enabling Kerberos authentication')
+        opts.configCallbacks.push(configureAuthKerberos)
         enabledAuth = true
         break
       case '--auth-openid':
@@ -176,10 +186,19 @@ function parseArgs(args) {
         stderr('Creating an H2 datasource for Arquillian tests')
         opts.configCallbacks.push(configureDatasourceH2)
         break
+      case '--datasource':
+        stderr('Creating a MySQL datasource')
+        opts.configCallbacks.push(configureDatasourceMysql)
+        break
+      case '--disable-file-logger':
+        stderr('Disabling FILE logger')
+        opts.configCallbacks.push(disableFileLogger)
+        break
       case '--integration-test':
         stderr('Enabling test-only configuration')
         opts.consoleLogLevel = 'INFO'
         opts.fileDir = './target/documents'
+        opts.zanataHomeDir = '${jboss.server.data.dir}/zanata'
         pushAll(opts.configCallbacks, configCallbacksForIntegrationTest())
         break
       case '--list-commands':
@@ -222,7 +241,6 @@ function parseArgs(args) {
 
 function configCallbacksForRunDev() {
   return [
-    configureDatasourceMysqlForRunDev,
     disableFileLogger,
     enableJcaConnectionErrors,
     enableLoggingForWeldExceptions,
@@ -400,8 +418,6 @@ function enableJcaConnectionErrors() {
 }
 
 function configureSystemProperties() {
-  // TODO create options for all system properties.
-
   // this is used by several other properties, so it's first
   systemProperty('zanata.home', options.zanataHomeDir)
 
@@ -409,12 +425,11 @@ function configureSystemProperties() {
   systemProperty('hibernate.search.default.indexBase', options.searchIndexDir)
   systemProperty('javamelody.storage-directory', options.javamelodyDir)
   systemProperty('jboss.as.management.blocking.timeout', 1000)
-  systemProperty('virusScanner', 'DISABLED')
-  systemProperty('zanata.email.defaultfromaddress', 'no-reply@zanata.org')
+  systemProperty('virusScanner', '${env.VIRUS_SCANNER:DISABLED}')
+  systemProperty('zanata.email.defaultfromaddress', '${env.ZANATA_FROM_ADDRESS:no-reply@zanata.org}')
   systemProperty('zanata.file.directory', options.fileDir)
 }
 
-// TODO turn this into a more general option, eg for docker?
 function disableFileLogger() {
   // Remove default file logging (server.log)
   tryExec('/subsystem=logging/root-logger=ROOT:remove-handler(name=FILE)')
@@ -532,9 +547,9 @@ function configureSecurity() {
 
 // add zanata.internal security domain
 function configureAuthInternal() {
-  const name = 'zanata.internal'
-  systemProperty('zanata.security.authpolicy.internal', name)
-  const domainPath = '/subsystem=security/security-domain='+name
+  const domain = 'zanata.internal'
+  systemProperty('zanata.security.authpolicy.internal', domain)
+  const domainPath = '/subsystem=security/security-domain='+domain
 
   tryExec(domainPath+':remove')
   exec(domainPath+':add')
@@ -542,11 +557,65 @@ function configureAuthInternal() {
   exec(domainPath+'/authentication=classic/login-module=ZanataInternalLoginModule:add(code="org.zanata.security.jaas.InternalLoginModule",flag="required")')
 }
 
+// add zanata.kerberos security domain
+function configureAuthKerberos() {
+  // Ref: https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.1/html-single/how_to_set_up_sso_with_kerberos/#configure_legacy_security_subsystem
+
+  // 1. Create a server identity, or host, security domain
+
+  const hostDomain = 'host'
+  const hostDomainPath = '/subsystem=security/security-domain='+hostDomain
+  tryExec(hostDomainPath+':remove')
+  exec(hostDomainPath+':add(cache-type=default)')
+  exec(hostDomainPath+'/authentication=classic:add')
+
+  exec(hostDomainPath+'/authentication=classic/login-module=Kerberos:add(code=com.sun.security.auth.module.Krb5LoginModule, flag=required, module-options=[storeKey=true, refreshKrb5Config=true, useKeyTab=true, principal='+ options.kerberosPrincipal +', keyTab='+ options.kerberosKeytab + ', doNotPrompt=true, debug=false])')
+
+  // These system properties are supported by Krb5LoginModule, but not required on Linux
+  // if you use /etc/krb.conf:
+  // java.security.krb5.kdc, java.security.krb5.realm, java.security.krb5.conf
+  // See https://docs.oracle.com/javase/8/docs/technotes/guides/security/jgss/tutorials/KerberosReq.html
+
+  // probably only for IBM JDK
+  // systemProperty('jboss.security.disable.secdomain.option', true)
+
+
+  // 2. Create username-password security domain
+
+  const kerberosDomain = 'krb5'
+  const kerberosDomainPath = '/subsystem=security/security-domain='+kerberosDomain
+  tryExec(kerberosDomainPath+':remove')
+  exec(kerberosDomainPath+':add(cache-type=default)')
+  exec(kerberosDomainPath+'/authentication=classic:add')
+  // refreshKrb5Config=true
+  exec(kerberosDomainPath+'/authentication=classic/login-module=Kerberos:add(code=com.sun.security.auth.module.Krb5LoginModule, flag=sufficient, module-options=[clearPass=true, debug=false, doNotPrompt=false, storePass=false])')
+
+
+  // 3. Create web application security domain (delegates to the other two)
+
+  const spnegoDomain = 'zanata.kerberos'
+  const spnegoDomainPath = '/subsystem=security/security-domain='+spnegoDomain
+  tryExec(spnegoDomainPath+':remove')
+  exec(spnegoDomainPath+':add(cache-type=default)')
+  exec(spnegoDomainPath+'/authentication=classic:add')
+  const spnegoModulePath = spnegoDomainPath+'/authentication=classic/login-module=SPNEGO'
+  // TODO flag=required?
+  exec(spnegoModulePath+':add(code=org.jboss.security.negotiation.spnego.SPNEGOLoginModule, flag=sufficient, module-options=[serverSecurityDomain='+hostDomain+'])')
+  exec(spnegoModulePath+':map-put(name=module-options, key=password-stacking, value=useFirstPass)')
+  exec(spnegoModulePath+':map-put(name=module-options, key=removeRealmFromPrincipal, value=true)')
+  exec(spnegoModulePath+':map-put(name=module-options, key=usernamePasswordDomain, value='+ kerberosDomain +')')
+
+  systemProperty('zanata.security.authpolicy.kerberos', spnegoDomain)
+
+  const debugKrb = false
+  systemProperty('sun.security.krb5.debug', debugKrb)
+}
+
 // add zanata.openid security domain
 function configureAuthOpenId() {
-  const name = 'zanata.openid'
-  systemProperty('zanata.security.authpolicy.openid', name)
-  const domainPath = '/subsystem=security/security-domain='+name
+  const domain = 'zanata.openid'
+  systemProperty('zanata.security.authpolicy.openid', domain)
+  const domainPath = '/subsystem=security/security-domain='+domain
 
   tryExec(domainPath+':remove')
   exec(domainPath+':add')
@@ -557,9 +626,9 @@ function configureAuthOpenId() {
 // add zanata.saml2 security domain
 function configureAuthSaml2() {
   systemProperty('picketlink.file', '${zanata.home}/picketlink.xml')
-  const name = 'zanata.saml2'
-  systemProperty('zanata.security.authpolicy.saml2', name)
-  const domainPath = '/subsystem=security/security-domain='+name
+  const domain = 'zanata.saml2'
+  systemProperty('zanata.security.authpolicy.saml2', domain)
+  const domainPath = '/subsystem=security/security-domain='+domain
   tryExec(domainPath+':remove')
   exec(domainPath+':add(cache-type=default)')
   exec(domainPath+'/authentication=classic:add')
@@ -579,7 +648,9 @@ function configureOAuth() {
   systemProperty('zanata.support.oauth', true)
 }
 
+// TODO use this for rundev, integration-test and everything else (but not with my-smtp)
 function configureSMTPForRunDev() {
+  // TODO why "my-smtp"? what's wrong with the built-in "mail-smtp" binding?
   tryExec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:remove')
   exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:add(host=${env.MAIL_HOST:localhost}, port=${MAIL_PORT:25})')
   exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=outbound-socket-binding-ref,value=my-smtp)')
@@ -587,16 +658,19 @@ function configureSMTPForRunDev() {
   // Default value set by docker will be ' ' (single space string).
   exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=username,value=${env.MAIL_USERNAME})')
   exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=password,value=${env.MAIL_PASSWORD})')
+  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=tls,value=${env.MAIL_TLS:false})')
+  exec('/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=ssl,value=${env.MAIL_SSL:false})')
 }
 
 function configureSMTPForIntegrationTest() {
-  exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="port", value=${smtp.port,env.SMTP_PORT:2552})')
+  exec('/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="port", value=${smtp.port,env.MAIL_PORT:25})')
 }
 
 function configureSocketsForIntegrationTest() {
   exec('/socket-binding-group=standard-sockets/socket-binding=management-http:write-attribute(name="port", value=${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090})')
   exec('/socket-binding-group=standard-sockets/socket-binding=management-https:write-attribute(name="port", value=${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTPS_PORT:10093})')
   exec('/socket-binding-group=standard-sockets/socket-binding=ajp:write-attribute(name="port", value=${jboss.ajp.port,env.JBOSS_AJP_PORT:8109})')
+  // TODO use env.ZANATA_PORT for compatibility with Zanata image on Docker Hub
   exec('/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name="port", value=${jboss.http.port,env.JBOSS_HTTP_PORT:8180})')
   exec('/socket-binding-group=standard-sockets/socket-binding=https:write-attribute(name="port", value=${jboss.https.port,env.JBOSS_HTTPS_PORT:8543})')
   // exec('/socket-binding-group=standard-sockets/socket-binding=iiop:write-attribute(name="port", value=${jboss.iiop.port,env.JBOSS_IIOP_PORT:3628})')
@@ -620,7 +694,7 @@ function configureDatasourceH2() {
   */}))
 }
 
-function configureDatasourceMysqlForRunDev() {
+function configureDatasourceMysql() {
   // add driver & datasource for rundev.sh
   tryExec('/subsystem=datasources/jdbc-driver=mysql:remove')
   exec('/subsystem=datasources/jdbc-driver=mysql:add(driver-name="mysql",driver-module-name="com.mysql",driver-xa-datasource-class-name="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource",driver-class-name="com.mysql.jdbc.Driver")')
@@ -629,14 +703,15 @@ function configureDatasourceMysqlForRunDev() {
   exec(multiline(function() {/*
     data-source add --name=zanataDatasource
       --jndi-name=java:jboss/datasources/zanataDatasource --driver-name=mysql
-      --connection-url=jdbc:mysql://${env.DB_HOSTNAME:zanatadb}:3306/${env.DB_NAME:zanata}
-      --user-name=${env.DB_USER:zanata} --password=${env.DB_PASSWORD:zanatapw}
+      --connection-url=jdbc:mysql://${env.DB_HOSTNAME:zanatadb}:${env.DB_PORTNUMBER:3306}/${env.DB_SCHEMA:zanata}?characterEncoding=UTF-8
+      --user-name=${env.DB_USERNAME:zanata} --password=${env.DB_PASSWORD:zanatapw}
       --validate-on-match=true --background-validation=false
       --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker
       --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
       --min-pool-size=0 --max-pool-size=20 --flush-strategy=FailingConnectionOnly
       --track-statements=NOWARN --use-ccm=true
   */}))
+  // TODO --track-statements=NOWARN may not be best for tests
 }
 
 /**
