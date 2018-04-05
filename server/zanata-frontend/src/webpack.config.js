@@ -258,7 +258,7 @@ module.exports = function (env, isEditor, devServerPort) {
         // storybook should use the fallback: style-loader
         disable: storybook || dev
       }),
-      new webpack.NoEmitOnErrorsPlugin(),
+      // new webpack.NoEmitOnErrorsPlugin(),
 
       prod
         ? new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
@@ -300,6 +300,16 @@ module.exports = function (env, isEditor, devServerPort) {
 
       new ManifestPlugin()
     ]),
+
+    optimization: {
+      // namedModules: true, // NamedModulesPlugin()
+      splitChunks: { // CommonsChunkPlugin()
+        name: 'vendor',
+        minChunks: 2
+      },
+      noEmitOnErrors: true // NoEmitOnErrorsPlugin
+      // concatenateModules: true // ModuleConcatenationPlugin
+    },
 
     resolve: {
       /* Subdirectories to check while searching up tree for module
