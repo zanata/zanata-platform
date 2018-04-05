@@ -991,6 +991,7 @@
       <properties>
         <!-- for ossindex: -->
         <audit.failOnError>false</audit.failOnError>
+        <audit.quiet>true</audit.quiet>
       </properties>
       <build>
         <plugins>
