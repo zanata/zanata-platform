@@ -173,6 +173,16 @@
           </filesets>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <configuration>
+          <fileTypes>
+            <fileType>JSON</fileType>
+          </fileTypes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
