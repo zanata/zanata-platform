@@ -6,9 +6,7 @@ import { Tabs, FormGroup, InputGroup, InputGroupAddon,
   FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
-import { isEmpty, isUndefined, orderBy } from 'lodash'
-import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
-import { ALL, COMMENTS, UPDATES } from '../../utils/activity-util'
+import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 import DetailsPane from './DetailsPane'
@@ -33,6 +31,18 @@ class TranslationInfoPanel extends React.Component {
     localeId: PropTypes.string.isRequired,
     transUnitId: PropTypes.number,
     postReviewComment: PropTypes.func.isRequired,
+    transHistory: PropTypes.shape({
+      historyItems: PropTypes.arrayOf(historyShape),
+      reviewComments: PropTypes.arrayOf(
+        PropTypes.shape({
+          comment: PropTypes.string,
+          commenterName: PropTypes.string,
+          creationDate: PropTypes.number,
+          id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
+        })
+      ),
+      latestHistoryItem: historyShape
+    }),
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
       resId: PropTypes.string.isRequired,
@@ -43,16 +53,6 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime: PropTypes.instanceOf(Date),
       revision: PropTypes.number
     }),
-    historyItems: PropTypes.arrayOf(historyShape),
-    reviewComments: PropTypes.arrayOf(
-      PropTypes.shape({
-        comment: PropTypes.string,
-        commenterName: PropTypes.string,
-        creationDate: PropTypes.number,
-        id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
-      })
-    ),
-    latestHistoryItem: historyShape,
     isRTL: PropTypes.bool.isRequired
   }
   constructor (props) {
@@ -96,72 +96,6 @@ class TranslationInfoPanel extends React.Component {
       </FormGroup>
     )
   }
-  // Format a reviewCommentsList from reviewComments
-  reviewCommentsList = () => {
-    return this.props.reviewComments.map((value) => {
-      const lastModified = new Date(value.creationDate)
-      return {
-        type: 'comment',
-        content: value.comment,
-        lastModifiedTime: lastModified,
-        user: {
-          name: value.commenterName,
-          username: value.username
-        }
-      }
-    })
-  }
-  // Format a historyItemsList from historyItems
-  historyItemsList = () => {
-    const { historyItems, latestHistoryItem } = this.props
-    const historyActivityItems = historyItems.map((historyItem) => {
-      const lastModified = new Date(historyItem.modifiedDate)
-      return {
-        type: 'revision',
-        content: historyItem.contents[0],
-        commentText: historyItem.revisionComment,
-        lastModifiedTime: lastModified,
-        status: transUnitStatusToPhraseStatus(historyItem.status),
-        user: {
-          name: historyItem.modifiedByPersonName,
-          username: historyItem.modifiedBy
-        }
-      }
-    })
-    const latestLastModified = new Date(latestHistoryItem.modifiedDate)
-    const latestHistoryActivityItem = {
-      type: 'revision',
-      content: latestHistoryItem.contents[0],
-      commentText: latestHistoryItem.revisionComment,
-      lastModifiedTime: latestLastModified,
-      status: transUnitStatusToPhraseStatus(latestHistoryItem.status),
-      user: {
-        name: latestHistoryItem.modifiedByPersonName,
-        username: latestHistoryItem.modifiedBy
-      }
-    }
-    return historyActivityItems.concat(latestHistoryActivityItem)
-  }
-  /* Returns Activity Items list filtered by comments and updates */
-  filterActivityItems = (activityFilterType) => {
-    const { reviewComments, historyItems } = this.props
-    if (isEmpty(reviewComments) && isEmpty(historyItems)) {
-      return undefined
-    }
-    switch (activityFilterType) {
-      case ALL:
-        return orderBy(this.reviewCommentsList()
-          .concat(this.historyItemsList()), ['lastModifiedTime'], ['desc'])
-      case COMMENTS:
-        return orderBy(this.reviewCommentsList(),
-          ['lastModifiedTime'], ['desc'])
-      case UPDATES:
-        return orderBy(this.historyItemsList(),
-          ['lastModifiedTime'], ['desc'])
-      default:
-        return undefined
-    }
-  }
   render () {
     const { glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
@@ -181,7 +115,6 @@ class TranslationInfoPanel extends React.Component {
         <span className="hide-md">Activity</span>
       </span>
     )
-    const activityItems = this.filterActivityItems(this.state.selectedActivites)
     return (
       <div>
         <h1 className="SidebarEditor-heading">
@@ -207,7 +140,7 @@ class TranslationInfoPanel extends React.Component {
             <ActivityTab
               // @ts-ignore
               activeKey={this.state.key}
-              activityItems={activityItems}
+              transHistory={this.props.transHistory}
               selectedActivites={this.state.selectedActivites}
               selectActivityTypeFilter={this.selectActivityTypeFilter}
               postComment={this.postComment} />
@@ -229,9 +162,7 @@ function mapStateToProps (state) {
   const { results, searchText } = glossary
   const glossaryResults = results.get(searchText)
   const glossaryCount = glossaryResults ? glossaryResults.length : 0
-  const historyItems = activity.transHistory.historyItems
-  const reviewComments = activity.transHistory.reviewComments
-  const latestHistoryItem = activity.transHistory.latest
+  const transHistory = activity.transHistory
   const transUnitId = state.phrases.selectedPhraseId
   const localeId = state.context.lang
   // Need to check whether phrase itself is undefined since the detail may not
@@ -242,9 +173,7 @@ function mapStateToProps (state) {
   const newProps = {
     glossaryCount,
     hasSelectedPhrase,
-    historyItems,
-    reviewComments,
-    latestHistoryItem,
+    transHistory,
     transUnitId,
     localeId,
     isRTL
