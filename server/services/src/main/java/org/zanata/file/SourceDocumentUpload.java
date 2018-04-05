@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import com.google.common.collect.Sets;
@@ -282,12 +283,12 @@ public class SourceDocumentUpload implements Serializable {
                     id.getVersionSlug(), doc,
                     Sets.newHashSet(PotEntryHeader.ID, SimpleComment.ID),
                     false);
-        } catch (SecurityException e) {
+        } catch (SecurityException | ZanataServiceException e) {
             throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
                     e.getMessage(), e);
-        } catch (ZanataServiceException e) {
+        } catch (WebApplicationException e) {
             throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
-                    e.getMessage(), e);
+                    e.getResponse().getEntity().toString(), e);
         }
         String contentHash = uploadForm.getHash();
         DocumentType documentType =

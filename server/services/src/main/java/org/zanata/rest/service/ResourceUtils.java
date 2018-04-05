@@ -164,7 +164,7 @@ public class ResourceUtils implements Serializable {
         for (TextFlow tf : from) {
             if (!incomingIds.add(tf.getId())) {
                 Response response = Response.status(Status.BAD_REQUEST).entity(
-                        "encountered TextFlow with duplicate ID " + tf.getId())
+                        "Encountered TextFlow with duplicate ID")
                         .build();
                 log.warn(
                         "encountered TextFlow with duplicate ID {}", tf.getId());
