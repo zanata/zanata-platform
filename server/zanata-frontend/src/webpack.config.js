@@ -126,9 +126,8 @@ module.exports = function (env, isEditor, devServerPort) {
 
   return dropUndef({
     // Built in Webpack mode definition
-    // TODO: Resolve Production mode warnings which fail the prod build.
-    // mode: dev ? 'development' : 'production',
-    mode: 'development',
+    mode: dev ? 'development' : 'production',
+
     entry: storybook ? undefined : dropUndef({
       'frontend': './app/entrypoint/index',
       'editor': './app/editor/entrypoint/index.js',
@@ -262,15 +261,6 @@ module.exports = function (env, isEditor, devServerPort) {
         // storybook should use the fallback: style-loader
         disable: storybook || dev
       }),
-      // new webpack.NoEmitOnErrorsPlugin(),
-
-      prod
-        ? new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
-        : undefined,
-      prod
-        // Workaround to switch old loaders to minimize mode
-        ? new webpack.LoaderOptionsPlugin({ minimize: true })
-        : undefined,
 
       new webpack.DefinePlugin({
         'process.env': {
@@ -300,12 +290,12 @@ module.exports = function (env, isEditor, devServerPort) {
 
       new ManifestPlugin()
     ]),
-
+    // Suppress warnings about assets and entrypoint size
+    performance: { hints: false },
     optimization: {
       // namedModules: true, // NamedModulesPlugin()
       splitChunks: { // CommonsChunkPlugin()
-        name: 'vendor',
-        minChunks: 2
+        name: 'runtime'
       },
       noEmitOnErrors: true // NoEmitOnErrorsPlugin
       // concatenateModules: true // ModuleConcatenationPlugin
