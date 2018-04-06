@@ -1003,7 +1003,8 @@
               <execution>
                 <phase>verify</phase>
                 <goals>
-                  <goal>check</goal>
+                  <!-- Disabled due to https://github.com/victims/maven-security-versions/issues/4 -->
+                  <!-- <goal>check</goal> -->
                 </goals>
               </execution>
             </executions>
