@@ -15,7 +15,7 @@
     "build": "yarn run check && node scripts/build",
     "draft": "yarn run check && node scripts/build --draft",
     "extract-messages": "yarn run check && node scripts/extract-messages",
-    "watch": "yarn run check && node scripts/dev-server --mode development",
+    "watch": "yarn run check && node scripts/dev-server",
     "watch:editor": "yarn run check && node scripts/dev-server --editor",
     "styleguide-server": "yarn run check && styleguidist server",
     "styleguide-build": "yarn run check && styleguidist build",

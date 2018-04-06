@@ -125,6 +125,10 @@ module.exports = function (env, isEditor, devServerPort) {
   }
 
   return dropUndef({
+    // Built in Webpack mode definition
+    // TODO: Resolve Production mode warnings which fail the prod build.
+    // mode: dev ? 'development' : 'production',
+    mode: 'development',
     entry: storybook ? undefined : dropUndef({
       'frontend': './app/entrypoint/index',
       'editor': './app/editor/entrypoint/index.js',
