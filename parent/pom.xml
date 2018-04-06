@@ -991,6 +991,7 @@
       <properties>
         <!-- for ossindex: -->
         <audit.failOnError>false</audit.failOnError>
+        <audit.quiet>true</audit.quiet>
       </properties>
       <build>
         <plugins>
@@ -1002,7 +1003,8 @@
               <execution>
                 <phase>verify</phase>
                 <goals>
-                  <goal>check</goal>
+                  <!-- Disabled due to https://github.com/victims/maven-security-versions/issues/4 -->
+                  <!-- <goal>check</goal> -->
                 </goals>
               </execution>
             </executions>
