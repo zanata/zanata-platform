@@ -277,10 +277,6 @@ module.exports = function (env, isEditor, devServerPort) {
 
       fullBuild ? new webpack.HashedModuleIdsPlugin() : undefined,
 
-      storybook || dev ? undefined : new webpack.optimize.CommonsChunkPlugin({
-        name: 'runtime'
-      }),
-
       // Convert source (en) and translated strings to the format the app
       // can consume, in the dist directory.
       fullBuild
