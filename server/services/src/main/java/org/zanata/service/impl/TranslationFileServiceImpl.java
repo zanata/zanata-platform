@@ -44,6 +44,7 @@ import org.zanata.adapter.SubtitleAdapter;
 import org.zanata.adapter.TSAdapter;
 import org.zanata.adapter.XliffAdapter;
 import org.zanata.adapter.po.PoReader2;
+import org.zanata.adapter.po.PoReaderException;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -186,7 +187,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         } catch (RuntimeException e) {
             Throwable rootCause = Throwables.getRootCause(e);
             throw new ZanataServiceException(
-                    "Translation file error: " + fileName + " " +
+                    "Error parsing translation file: " + fileName + " " +
                     rootCause.getMessage(), e);
         }
         return transRes;
@@ -275,7 +276,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         try {
             return poReader.extractTemplate(new InputSource(fileContents),
                     new LocaleId("en"), docId);
-        } catch (IllegalStateException e) {
+        } catch (PoReaderException e) {
             throw new ZanataServiceException(e.getMessage());
         }
     }

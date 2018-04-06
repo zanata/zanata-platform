@@ -283,11 +283,14 @@ public class SourceDocumentUpload implements Serializable {
                     id.getVersionSlug(), doc,
                     Sets.newHashSet(PotEntryHeader.ID, SimpleComment.ID),
                     false);
-        } catch (SecurityException | ZanataServiceException e) {
-            throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
+        } catch (SecurityException e) {
+            throw new DocumentUploadException(Status.FORBIDDEN,
+                    e.getMessage(), e);
+        } catch (ZanataServiceException e) {
+            throw new DocumentUploadException(Status.BAD_REQUEST,
                     e.getMessage(), e);
         } catch (WebApplicationException e) {
-            throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
+            throw new DocumentUploadException(Status.BAD_REQUEST,
                     e.getResponse().getEntity().toString(), e);
         }
         String contentHash = uploadForm.getHash();

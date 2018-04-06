@@ -339,7 +339,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         .putResourceWithDocId(doc, docName, null, false);
         assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST.getStatusCode());
         String message = response.readEntity(String.class);
-        assertThat(message).contains("duplicate");
+        assertThat(message).contains("Duplicate").contains("tf1");
     }
 
     @Test

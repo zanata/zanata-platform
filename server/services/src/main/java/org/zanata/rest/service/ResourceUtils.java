@@ -71,6 +71,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.ShortString;
 import org.zanata.util.StringUtil;
 import com.google.common.base.Optional;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -163,11 +164,13 @@ public class ResourceUtils implements Serializable {
         int count = 0;
         for (TextFlow tf : from) {
             if (!incomingIds.add(tf.getId())) {
-                Response response = Response.status(Status.BAD_REQUEST).entity(
-                        "Encountered TextFlow with duplicate ID")
-                        .build();
-                log.warn(
-                        "encountered TextFlow with duplicate ID {}", tf.getId());
+                String message = String.format(
+                        "Duplicate ID: %s: %s",
+                        tf.getId(),
+                        ShortString.shorten(tf.getContents().get(0), 50));
+                Response response = Response.status(Status.BAD_REQUEST)
+                        .entity(message).build();
+                log.warn("TextFlow error: {}", message);
                 throw new WebApplicationException(response);
             }
             HTextFlow textFlow;
