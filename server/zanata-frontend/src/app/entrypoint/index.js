@@ -15,7 +15,7 @@ import Root from '../containers/Root'
 
 import '../editor/index.css'
 import '../styles/style.less'
-import '../styles/style-0.less'
+import '../../node_modules/antd/dist/antd.less'
 
 WebFont.load({
   google: {

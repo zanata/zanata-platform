@@ -11,8 +11,8 @@ import Helmet from 'react-helmet'
 import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
-import {Icon, Notification, LoaderText} from '../../components'
-import { Button } from 'antd'
+import {Notification, LoaderText} from '../../components'
+import { Button, Icon } from 'antd'
 
 import {
   initialLoad,
