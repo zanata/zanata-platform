@@ -137,7 +137,7 @@
     "style-loader": "0.19.1",
     "tslint": "^5.9.1",
     "tslint-loader": "^3.6.0",
-    "typescript": "^2.7.1",
+    "typescript": "^2.8.1",
     "webpack": "4.5.0",
     "webpack-dev-server": "2.11.0",
     "webpack-manifest-plugin": "^2.0.0-rc.2",
