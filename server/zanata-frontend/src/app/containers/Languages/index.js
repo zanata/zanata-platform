@@ -147,9 +147,7 @@ class Languages extends Component {
                           value={this.state.searchText}
                           onChange={this.onUpdateSearch} />
                         <InputGroup.Addon>
-                          <Icon name='search'
-                            className='s1'
-                            title='search' />
+                          <Icon type='search' />
                         </InputGroup.Addon>
                       </InputGroup>
                     </FormGroup>
@@ -187,7 +185,7 @@ class Languages extends Component {
                   {noResults &&
                     <div className='loader-loadingContainer'>
                       <span className='u-textLoadingMuted'>
-                        <Icon name='language' />
+                        <Icon type='global' />
                       </span>
                       <p className='glossaryText-muted'>No results</p>
                     </div>
