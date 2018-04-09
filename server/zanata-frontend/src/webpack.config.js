@@ -10,11 +10,6 @@ var _ = require('lodash')
 var postcssDiscardDuplicates = require('postcss-discard-duplicates')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var postcssImport = require('postcss-import')
-var postcssCustomProperties = require('postcss-custom-properties')
-var postcssCalc = require('postcss-calc')
-var postcssColorFunction = require('postcss-color-function')
-var postcssCustomMedia = require('postcss-custom-media')
-var postcssEsplit = require('postcss-esplit')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 var cssNano = require('cssnano')
@@ -35,27 +30,11 @@ var postCssLoader = {
   loader: 'postcss-loader',
   options: {
     plugins: [
-      postcssDiscardDuplicates(),
-      postcssImport(),
-      postcssCustomProperties,
-      postcssCalc,
-      cssNano(),
-      postcssColorFunction,
-      postcssCustomMedia,
-      postcssEsplit({
-        quiet: true
-      }),
-
-      autoprefixer({
-        browsers: [
-          'Explorer >= 9',
-          'last 2 Chrome versions',
-          'last 2 Firefox versions',
-          'last 2 Safari versions',
-          'last 2 iOS versions',
-          'Android 4'
-        ]
-      })
+      require('postcss-discard-duplicates'),
+      require('postcss-import')(),
+      require('postcss-url')(),
+      require('postcss-cssnext')(),
+      require('postcss-reporter')(),
     ]
   }
 }
@@ -221,7 +200,6 @@ module.exports = function (env, isEditor, devServerPort) {
                 loader: 'postcss-loader',
                 options: {
                   plugins: [
-                    require('stylelint'),
                     require('postcss-discard-duplicates')
                   ]
                 }

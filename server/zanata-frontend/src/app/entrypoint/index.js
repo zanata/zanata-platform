@@ -14,8 +14,8 @@ import rootReducer from '../reducers'
 import Root from '../containers/Root'
 
 import '../editor/index.css'
+import '../../node_modules/antd/dist/antd.css'
 import '../styles/style.less'
-import '../styles/style-0.less'
 
 WebFont.load({
   google: {

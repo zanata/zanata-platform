@@ -12,7 +12,8 @@ import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
 import {Notification, LoaderText} from '../../components'
-import { Button, Icon, Layout } from 'antd'
+import { Button, Layout } from 'antd'
+import Icon from 'antd/lib/icon'
 
 import {
   initialLoad,

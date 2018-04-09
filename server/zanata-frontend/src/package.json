@@ -171,6 +171,7 @@
     "normalizr": "2.1.0",
     "postcss": "6.0.16",
     "postcss-cssnext": "3.0.2",
+    "postcss-url": "^7.3.2",
     "prop-types": "15.6.0",
     "react": "15.6.1",
     "react-autosuggest": "9.0.1",
