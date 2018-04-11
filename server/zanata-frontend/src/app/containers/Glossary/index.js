@@ -231,22 +231,34 @@ class Glossary extends Component {
                   <div className='u-pullRight glossaryPaging'>
                     <Button className='btn-link' disabled={currentPage <= 1}
                       title='First page' icon='left'
-                      onClick={() => { gotoFirstPage(currentPage, totalPage) }} />
+                      onClick={() => {
+                        gotoFirstPage(currentPage, totalPage)
+                      }}
+                    />
                     <Button className='btn-link' disabled={currentPage <= 1}
                       title='Previous page' icon='left'
                       onClick={
-                      () => { gotoPreviousPage(currentPage, totalPage) }} />
+                      () => {
+                        gotoPreviousPage(currentPage, totalPage)
+                      }}
+                    />
                     <span className='u-textNeutral-top'>
                       {currentPage} of {totalPage}
                     </span>
                     <Button className='btn-link'
                       disabled={currentPage === totalPage}
                       title='Next page' icon='right'
-                      onClick={() => { gotoNextPage(currentPage, totalPage) }} />
+                      onClick={() => {
+                        gotoNextPage(currentPage, totalPage)
+                      }}
+                    />
                     <Button className='btn-link'
                       disabled={currentPage === totalPage}
                       title='Last page' icon='next'
-                      onClick={() => { gotoLastPage(currentPage, totalPage) }} />
+                      onClick={() => {
+                        gotoLastPage(currentPage, totalPage)
+                      }}
+                    />
                     <span className='textNeutralTotal'
                       title='Total glossary terms'>
                       <Row>
