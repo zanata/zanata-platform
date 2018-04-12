@@ -254,7 +254,7 @@ class Glossary extends Component {
                     />
                     <Button className='btn-link'
                       disabled={currentPage === totalPage}
-                      title='Last page' icon='next'
+                      title='Last page' icon='right'
                       onClick={() => {
                         gotoLastPage(currentPage, totalPage)
                       }}
