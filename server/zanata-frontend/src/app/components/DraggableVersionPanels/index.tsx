@@ -10,12 +10,12 @@ import {
   SortableHandle,
 } from 'react-sortable-hoc'
 import {
-  Button,
   ListGroup,
   ListGroupItem,
   Tooltip,
   OverlayTrigger
 } from 'react-bootstrap'
+import { Button } from 'antd'
 
 export const tooltipSort = (
   <Tooltip id='tooltipsort'>Best match will be chosen based on the priority of
@@ -47,11 +47,8 @@ export class Item extends Component<ItemProps, {}> {
       {version.id} <span className='u-textMuted'> {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
-      <Button bsSize='xsmall' className='close rm-version-btn'
-        onClick={this.removeVersion}>
-        <Icon name='cross' className='n2' parentClassName='iconCross'
-          title='remove version' />
-      </Button>
+      <Button className='close rm-version-btn btn-xs'
+        onClick={this.removeVersion} icon='close' />
     </ListGroupItem>
   }
 

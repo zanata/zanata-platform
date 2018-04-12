@@ -5,7 +5,7 @@ import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
 import { DateRange } from 'react-date-range'
 import utilsDate from '../../utils/DateHelper'
-import { Button } from 'react-bootstrap'
+import { Button } from 'antd'
 import { Modal, TextInput } from '../../components'
 
 const STATS_MAX_DAYS = 365
@@ -74,7 +74,7 @@ class RecentContributions extends React.Component {
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
           <div className='dateRange-container'>
-            <Button bsStyle='link' className='u-pullRight'
+            <Button className='btn-link u-pullRight'
               onClick={() => this.onToggleShowDateRange()}>
               <span className='dateRange-textField'>
                 <TextInput editable={false} value={displayDateRange} />
@@ -99,11 +99,11 @@ class RecentContributions extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                   <span className='u-pullRight'>
-                    <Button bsStyle='link'
+                    <Button className='btn-link'
                       onClick={() => this.onToggleShowDateRange()}>
                       Cancel
                     </Button>
-                    <Button bsStyle='primary'
+                    <Button className='btn-primary'
                       onClick={
                       () => handleDateRangeChanged(this.state.dateRange)}>
                       Apply
