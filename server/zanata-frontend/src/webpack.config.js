@@ -153,6 +153,7 @@ module.exports = function (env, isEditor, devServerPort) {
         },
         {
           test: /\.js$/,
+          loader: 'babel-loader',
           exclude: /node_modules(?!\/antd)/
         },
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
