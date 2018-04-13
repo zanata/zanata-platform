@@ -4,15 +4,11 @@
  */
 
 var webpack = require('webpack')
-var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
-var postcssDiscardDuplicates = require('postcss-discard-duplicates')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var postcssImport = require('postcss-import')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
-var cssNano = require('cssnano')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.

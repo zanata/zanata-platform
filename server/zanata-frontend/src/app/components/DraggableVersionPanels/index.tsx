@@ -1,21 +1,21 @@
-import * as PropTypes from "prop-types"
-import React from "react"
-import { Component } from "react"
-import {Icon, LockIcon} from "../../components"
+import * as PropTypes from "prop-types";
+import React from "react";
+import { Component } from "react";
+import {Icon, LockIcon} from "../../components";
 import { FromProjectVersion, FromProjectVersionType
-} from "../../utils/prop-types-util"
+} from "../../utils/prop-types-util";
 import {
   SortableContainer,
   SortableElement,
   SortableHandle,
-} from "react-sortable-hoc"
+} from "react-sortable-hoc";
 import {
   ListGroup,
   ListGroupItem,
   Tooltip,
   OverlayTrigger
-} from "react-bootstrap"
-import { Button } from "antd"
+} from "react-bootstrap";
+import { Button } from "antd";
 
 export const tooltipSort = (
   <Tooltip id="tooltipsort">Best match will be chosen based on the priority of
@@ -25,7 +25,7 @@ export const tooltipSort = (
 
 export const DragHandle = SortableHandle(() =>
   <Icon name="menu" className="n1" parentClassName="drag-handle"
-    title="click to drag" />)
+    title="click to drag" />);
 
 interface ItemProps {
   dispatch: (action: any) => void
