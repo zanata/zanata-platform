@@ -151,10 +151,16 @@ module.exports = function (env, isEditor, devServerPort) {
             formatter: 'verbose'
           }
         },
+        // antd build
         {
           test: /\.js$/,
           loader: 'babel-loader',
-          exclude: /node_modules(?!\/antd)/
+          exclude: /node_modules(?!\/antd)/,
+          options: {
+            plugins: [
+              ['import', { libraryName: "antd", style: true }]
+            ]
+          },
         },
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
