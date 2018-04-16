@@ -2,7 +2,7 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { isEmpty, isUndefined } from 'lodash'
 import Icon from '../../../components/Icon'
-import { FormattedDate, FormattedTime } from 'react-intl'
+import { FormattedMessage, FormattedDate, FormattedTime } from 'react-intl'
 import { SelectedPhrase } from '../../utils/phrase'
 
 interface DetailsPaneProps {
@@ -53,18 +53,30 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
     resId,
     sourceComment,
     sourceFlags,
-    sourceReferences
+    sourceReferences,
   } = selectedPhrase
   const directionClass = isRTL ? 'rtl' : 'ltr'
   return (
     <ul className={directionClass + ' SidebarEditor-details'}>
-      {detailItem('Resource ID', resId)}
-      {detailItem('Message Context', msgctxt)}
-      {detailItem('Reference', sourceReferences)}
-      {detailItem('Flags', sourceFlags)}
-      {detailItem('Source Comment', sourceComment)}
-      {detailItem('Last Modified',
-          lastModifiedDisplay(selectedPhrase.lastModifiedBy, selectedPhrase.lastModifiedTime))}
+    {detailItem(<FormattedMessage
+      id='TranslationInfoPanel.details.resourceid'
+      defaultMessage='Resource ID' />, resId)}
+    {detailItem(<FormattedMessage
+      id='TranslationInfoPanel.details.messagecontext'
+      defaultMessage='Message Context' />, msgctxt)}
+    {detailItem(<FormattedMessage
+      id='TranslationInfoPanel.details.reference'
+      defaultMessage='Reference' />, sourceReferences)}
+    {detailItem(<FormattedMessage
+      id='TranslationInfoPanel.details.flags'
+      defaultMessage='Flags' />, sourceFlags)}
+    {detailItem(<FormattedMessage
+      id='TranslationInfoPanel.details.sourcecomment'
+      defaultMessage='Source Comment' />, sourceComment)}
+    {detailItem(<FormattedMessage
+      id='TranslationInfoPanel.details.lastmodified'
+      defaultMessage='Last Modified' />,
+        lastModifiedDisplay(selectedPhrase.lastModifiedBy, selectedPhrase.lastModifiedTime))}
     </ul>
   )
 }

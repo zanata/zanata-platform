@@ -1,0 +1,15 @@
+<config xmlns="http://zanata.org/namespace/config/">
+  <url>https://translate.zanata.org/</url>
+  <project>zanata-frontend</project>
+  <project-version>master</project-version>
+  <project-type>file</project-type>
+
+  <src-dir>src/messages</src-dir>
+  <trans-dir>src/messages</trans-dir>
+  <!-- only one file -->
+  <includes>en.json</includes>
+
+  <rules>
+    <rule pattern="en.json">{locale}.json</rule>
+  </rules>
+</config>

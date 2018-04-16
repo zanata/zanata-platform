@@ -6,6 +6,7 @@ import { Tabs, FormGroup, InputGroup, InputGroupAddon,
   FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
@@ -105,21 +106,33 @@ class TranslationInfoPanel extends React.Component {
     const glossaryTitle = (
       <span>
         <Icon name="glossary" className="s1" parentClassName="gloss-tab-svg" />
-        <span className="hide-md">Glossary</span>{glossaryCountDisplay}
+        <span className="hide-md">
+          <FormattedMessage id='TranslationInfoPanel.glossaryTitle'
+            description={'Title for the Glossary Panel'}
+            defaultMessage='Glossary' />
+        </span>{glossaryCountDisplay}
       </span>
     )
     // Use this when activity tab is activated
     const activityTitle = (
       <span>
         <Icon name="clock" className="s1 gloss-tab-svg" />
-        <span className="hide-md">Activity</span>
+        <span className="hide-md">
+          <FormattedMessage id='TranslationInfoPanel.activityTitle'
+            description={'Title for the Activity Panel'}
+            defaultMessage='Activity' />
+        </span>
       </span>
     )
     return (
       <div>
         <h1 className="SidebarEditor-heading">
           <Icon name="info" className="s1" parentClassName='details-svg' />
-          <span className="hide-md">Details</span>
+          <span className="hide-md">
+            <FormattedMessage id='TranslationInfoPanel.detailsTitle'
+              description={'Title for the Details Panel'}
+              defaultMessage='Details' />
+          </span>
           <span className="s1 u-pullRight">
             <Button bsStyle="link" onClick={this.props.close}>
               <Icon name="cross" />
