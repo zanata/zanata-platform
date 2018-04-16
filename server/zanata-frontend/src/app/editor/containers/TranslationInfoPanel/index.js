@@ -22,6 +22,13 @@ const historyShape = PropTypes.shape({
   versionNum: PropTypes.string
 })
 
+const commentShape = PropTypes.shape({
+  comment: PropTypes.string,
+  commenterName: PropTypes.string,
+  creationDate: PropTypes.number,
+  id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
+})
+
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
@@ -34,14 +41,7 @@ class TranslationInfoPanel extends React.Component {
     postReviewComment: PropTypes.func.isRequired,
     transHistory: PropTypes.shape({
       historyItems: PropTypes.arrayOf(historyShape),
-      reviewComments: PropTypes.arrayOf(
-        PropTypes.shape({
-          comment: PropTypes.string,
-          commenterName: PropTypes.string,
-          creationDate: PropTypes.number,
-          id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
-        })
-      ),
+      reviewComments: PropTypes.arrayOf(commentShape),
       latestHistoryItem: historyShape
     }),
     selectedPhrase: PropTypes.shape({
