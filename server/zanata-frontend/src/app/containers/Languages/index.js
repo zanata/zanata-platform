@@ -127,6 +127,7 @@ class Languages extends Component {
               {permission.canAddLocale &&
                 <div>
                   <Button type="primary" icon="plus"
+                    id="btn-language-add-new"
                     onClick={handleOnDisplayNewLanguage}>
                   Add new language</Button>
                   <NewLanguageModal />
