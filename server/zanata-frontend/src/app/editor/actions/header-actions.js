@@ -30,8 +30,8 @@ import { createAction } from 'redux-actions'
 import { equals } from '../utils/string-utils'
 
 export const hideSidebar = createAction(HIDE_SIDEBAR)
-export const toggleGlossary = createAction(TOGGLE_GLOSSARY)
 export const toggleActivity = createAction(TOGGLE_ACTIVITY)
+export const toggleGlossary = createAction(TOGGLE_GLOSSARY)
 export const toggleInfoPanel = createAction(TOGGLE_INFO_PANEL)
 export const toggleHeader = createAction(TOGGLE_HEADER)
 export const toggleKeyboardShortcutsModal = createAction(TOGGLE_KEY_SHORTCUTS)

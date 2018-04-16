@@ -10,6 +10,7 @@ import PhraseStatusFilter from '../components/PhraseStatusFilter'
 import React from 'react'
 import { connect } from 'react-redux'
 import {
+  getActivityVisible,
   getGlossaryVisible,
   getInfoPanelVisible,
   getKeyShortcutsVisible,
@@ -19,6 +20,7 @@ import {
 } from '../reducers'
 import { toggleShowSettings } from '../actions'
 import {
+  toggleActivity,
   toggleGlossary,
   toggleInfoPanel,
   toggleHeader,
@@ -29,6 +31,7 @@ import { toggleSuggestions } from '../actions/suggestions-actions'
 /*::
 type props = {
   +toggleKeyboardShortcutsModal: () => void,
+  +toggleActivity: () => void,
   +toggleGlossary: () => void,
   +toggleInfoPanel: () => void,
   +toggleHeader: () => void,
@@ -53,6 +56,7 @@ type props = {
  */
 export const ControlsHeader = ({
   /* eslint-disable react/prop-types */
+  activityVisible,
   glossaryVisible,
   infoPanelVisible,
   keyShortcutsVisible,
@@ -60,6 +64,7 @@ export const ControlsHeader = ({
   showSettings,
   suggestionsVisible,
   toggleKeyboardShortcutsModal,
+  toggleActivity,
   toggleGlossary,
   toggleInfoPanel,
   toggleHeader,
@@ -94,6 +99,14 @@ export const ControlsHeader = ({
                 : gettextCatalog.getString('Show suggestions panel')}
               onClick={toggleSuggestions}
               active={suggestionsVisible} />
+          </li>
+          <li className="u-sM-1-8">
+            <IconButtonToggle
+              icon="clock"
+              title={activityVisible ? 'Hide activity' : 'Show activity'}
+              onClick={toggleActivity}
+              active={activityVisible}
+            />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
@@ -164,6 +177,7 @@ export const ControlsHeader = ({
 function mapStateToProps (state) {
   const { ui: { gettextCatalog } } = state
   return {
+    activityVisible: getActivityVisible(state),
     glossaryVisible: getGlossaryVisible(state),
     infoPanelVisible: getInfoPanelVisible(state),
     keyShortcutsVisible: getKeyShortcutsVisible(state),
@@ -177,6 +191,7 @@ function mapStateToProps (state) {
 
 const mapDispatchToProps = {
   toggleShowSettings,
+  toggleActivity,
   toggleGlossary,
   toggleInfoPanel,
   toggleSuggestions,

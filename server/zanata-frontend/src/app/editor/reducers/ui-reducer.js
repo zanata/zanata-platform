@@ -90,7 +90,7 @@ export const getShowSettings = (state/*: State*/) => state.showSettings
 export const getGlossaryVisible = createSelector(getSidebarVisible,
   getShowSettings, getSidebarTab,
     (sidebar, settings, tab) => sidebar && !settings && tab === GLOSSARY_TAB)
-export const getActivtyVisible = createSelector(getSidebarVisible,
+export const getActivityVisible = createSelector(getSidebarVisible,
   getShowSettings, getSidebarTab,
     (sidebar, settings, tab) => sidebar && !settings && tab === ACTIVITY_TAB)
 // info panel is always-on in the non-settings sidebar

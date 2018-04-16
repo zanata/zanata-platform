@@ -1,6 +1,8 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { setSidebarVisibility } from '../../actions'
+import { toggleGlossary, toggleActivity } from '../../actions/header-actions'
+import { getGlossaryVisible, getActivityVisible } from '../../reducers'
 import { postReviewComment } from '../../actions/review-trans-actions'
 import { Tabs, FormGroup, InputGroup, InputGroupAddon,
   FormControl, Button, Tab } from 'react-bootstrap'
@@ -11,6 +13,10 @@ import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 import DetailsPane from './DetailsPane'
+
+/* React Bootstrap Tab keys for tracking active Tab */
+const activityTabKey = 1
+const glossaryTabKey = 2
 
 const historyShape = PropTypes.shape({
   contents: PropTypes.arrayOf(PropTypes.string),
@@ -32,13 +38,17 @@ const commentShape = PropTypes.shape({
 /* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
+    activityVisible: PropTypes.bool.isRequired,
     /* close the sidebar */
     close: PropTypes.func.isRequired,
     glossaryCount: PropTypes.number.isRequired,
+    glossaryVisible: PropTypes.bool.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
     localeId: PropTypes.string.isRequired,
     transUnitId: PropTypes.number,
     postReviewComment: PropTypes.func.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
+    toggleActivity: PropTypes.func.isRequired,
     transHistory: PropTypes.shape({
       historyItems: PropTypes.arrayOf(historyShape),
       reviewComments: PropTypes.arrayOf(commentShape),
@@ -62,11 +72,13 @@ class TranslationInfoPanel extends React.Component {
     this.selectActivityTypeFilter =
       this.selectActivityTypeFilter.bind(this)
     this.state = {
-      key: 1,
+      key: activityTabKey,
       selectedActivites: 'all'
     }
   }
   handleSelectTab (key) {
+    if (key === activityTabKey) this.props.toggleActivity()
+    if (key === glossaryTabKey) this.props.toggleGlossary()
     this.setState({ key })
   }
   selectActivityTypeFilter (activityFilterType) {
@@ -98,7 +110,7 @@ class TranslationInfoPanel extends React.Component {
     )
   }
   render () {
-    const { glossaryCount } = this.props
+    const { activityVisible, glossaryVisible, glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
       // TODO kgough display as a badge instead of text in parens
       ? <span className="badge">{this.props.glossaryCount}</span>
@@ -124,6 +136,12 @@ class TranslationInfoPanel extends React.Component {
         </span>
       </span>
     )
+    /* Activity Panel is open as default case, but not always visible.
+     * eg: when entire info panel is hidden. */
+    const activePanelKey =
+      activityVisible ? activityTabKey
+      : glossaryVisible ? glossaryTabKey
+      : activityTabKey
     return (
       <div>
         <h1 className="SidebarEditor-heading">
@@ -146,10 +164,10 @@ class TranslationInfoPanel extends React.Component {
             selectedPhrase={this.props.selectedPhrase}
             isRTL={this.props.isRTL} />
         </div>
-        <Tabs activeKey={this.state.key}
+        <Tabs activeKey={activePanelKey}
           onSelect={this.handleSelectTab}
           id="SidebarEditor-tabsPane1">
-          <Tab eventKey={1} title={activityTitle}>
+          <Tab eventKey={activityTabKey} title={activityTitle}>
             <ActivityTab
               // @ts-ignore
               activeKey={this.state.key}
@@ -158,7 +176,7 @@ class TranslationInfoPanel extends React.Component {
               selectActivityTypeFilter={this.selectActivityTypeFilter}
               postComment={this.postComment} />
           </Tab>
-          <Tab eventKey={2} title={glossaryTitle}>
+          <Tab eventKey={glossaryTabKey} title={glossaryTitle}>
             <GlossaryTab
               // @ts-ignore
               activeKey={this.state.key} />
@@ -183,7 +201,11 @@ function mapStateToProps (state) {
   const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
       !isUndefined(selectedPhrase)
   const isRTL = context.sourceLocale.isRTL
+  const glossaryVisible = getGlossaryVisible(state)
+  const activityVisible = getActivityVisible(state)
   const newProps = {
+    activityVisible,
+    glossaryVisible,
     glossaryCount,
     hasSelectedPhrase,
     transHistory,
@@ -202,7 +224,9 @@ function mapDispatchToProps (dispatch) {
     // @ts-ignore
     close: () => dispatch(setSidebarVisibility(false)),
     postReviewComment: (reviewData) =>
-      dispatch(postReviewComment(dispatch, reviewData))
+      dispatch(postReviewComment(dispatch, reviewData)),
+    toggleActivity: () => dispatch(toggleActivity()),
+    toggleGlossary: () => dispatch(toggleGlossary())
   }
 }
 
