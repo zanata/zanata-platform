@@ -12,6 +12,7 @@ import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { injectIntl, intlShape, defineMessages } from 'react-intl'
 import {
+  getSidebarTab,
   getActivityVisible,
   getGlossaryVisible,
   getInfoPanelVisible,
@@ -20,6 +21,7 @@ import {
   getShowSettings,
   getSuggestionsPanelVisible
 } from '../reducers'
+import { ACTIVITY_TAB, GLOSSARY_TAB } from '../reducers/ui-reducer'
 import { toggleShowSettings } from '../actions'
 import {
   toggleActivity,
@@ -36,51 +38,51 @@ import { toggleSuggestions } from '../actions/suggestions-actions'
  * and: https://github.com/yahoo/react-intl/wiki/API#injectintl */
 export const messages = defineMessages({
   suggestHide: {
-    id: 'Controlsheader.suggestion.hide',
+    id: 'ControlsHeader.suggestion.hide',
     defaultMessage: 'Hide suggestions panel'
   },
   suggestShow: {
-    id: 'Controlsheader.suggestion.show',
+    id: 'ControlsHeader.suggestion.show',
     defaultMessage: 'Show suggestions panel'
   },
   activityHide: {
-    id: 'Controlsheader.activity.hide',
+    id: 'ControlsHeader.activity.hide',
     defaultMessage: 'Hide activity tab'
   },
   activityShow: {
-    id: 'Controlsheader.activity.show',
+    id: 'ControlsHeader.activity.show',
     defaultMessage: 'Show activity tab'
   },
   glossaryHide: {
-    id: 'Controlsheader.glossary.hide',
+    id: 'ControlsHeader.glossary.hide',
     defaultMessage: 'Hide glossary tab'
   },
   glossaryShow: {
-    id: 'Controlsheader.glossary.show',
+    id: 'ControlsHeader.glossary.show',
     defaultMessage: 'Show glossary tab'
   },
   sidebarHide: {
-    id: 'Controlsheader.sidebar.hide',
+    id: 'ControlsHeader.sidebar.hide',
     defaultMessage: 'Hide sidebar'
   },
   sidebarShow: {
-    id: 'Controlsheader.sidebar.Show',
+    id: 'ControlsHeader.sidebar.Show',
     defaultMessage: 'Show sidebar'
   },
   keyShortcuts: {
-    id: 'Controlsheader.keyboardshortcuts',
+    id: 'ControlsHeader.keyboardshortcuts',
     defaultMessage: 'Keyboard Shortcuts'
   },
   settings: {
-    id: 'Controlsheader.settings',
+    id: 'ControlsHeader.settings',
     defaultMessage: 'Settings'
   },
   menubarHide: {
-    id: 'Controlsheader.menubar.hide',
+    id: 'ControlsHeader.menubar.hide',
     defaultMessage: 'Hide Menubar'
   },
   menubarShow: {
-    id: 'Controlsheader.menubar.show',
+    id: 'ControlsHeader.menubar.show',
     defaultMessage: 'Show Menubar'
   }
 })
@@ -90,7 +92,9 @@ export const messages = defineMessages({
  */
 export const ControlsHeader = ({
   intl,
+  activitySelected,
   activityVisible,
+  glossarySelected,
   glossaryVisible,
   infoPanelVisible,
   keyShortcutsVisible,
@@ -138,7 +142,12 @@ export const ControlsHeader = ({
               title={activityVisible
                 ? intl.formatMessage(messages.activityHide)
                 : intl.formatMessage(messages.activityShow)}
-              onClick={infoPanelVisible ? toggleActivity : toggleInfoPanel}
+              onClick={infoPanelVisible
+                ? toggleActivity : activitySelected
+                ? toggleInfoPanel : function () {
+                  toggleInfoPanel()
+                  toggleActivity()
+                }}
               active={activityVisible}
             />
           </li>
@@ -148,7 +157,12 @@ export const ControlsHeader = ({
               title={glossaryVisible
                 ? intl.formatMessage(messages.glossaryHide)
                 : intl.formatMessage(messages.glossaryShow)}
-              onClick={infoPanelVisible ? toggleGlossary : toggleInfoPanel}
+              onClick={infoPanelVisible
+                ? toggleGlossary : glossarySelected
+                ? toggleInfoPanel : function () {
+                  toggleInfoPanel()
+                  toggleGlossary()
+                }}
               active={glossaryVisible}
             />
           </li>
@@ -195,12 +209,14 @@ export const ControlsHeader = ({
 
 ControlsHeader.propTypes = {
   intl: intlShape.isRequired,
+  activitySelected: PropTypes.bool.isRequired,
   activityVisible: PropTypes.bool.isRequired,
+  glossarySelected: PropTypes.bool.isRequired,
   glossaryVisible: PropTypes.bool.isRequired,
   infoPanelVisible: PropTypes.bool.isRequired,
   keyShortcutsVisible: PropTypes.bool.isRequired,
   navHeaderVisible: PropTypes.bool.isRequired,
-  showSettings: PropTypes.func.isRequired,
+  showSettings: PropTypes.bool.isRequired,
   suggestionsVisible: PropTypes.bool.isRequired,
   toggleKeyboardShortcutsModal: PropTypes.func.isRequired,
   toggleActivity: PropTypes.func.isRequired,
@@ -217,6 +233,8 @@ ControlsHeader.propTypes = {
 
 function mapStateToProps (state) {
   return {
+    activitySelected: getSidebarTab(state) === ACTIVITY_TAB,
+    glossarySelected: getSidebarTab(state) === GLOSSARY_TAB,
     activityVisible: getActivityVisible(state),
     glossaryVisible: getGlossaryVisible(state),
     infoPanelVisible: getInfoPanelVisible(state),
