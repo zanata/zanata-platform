@@ -9,6 +9,7 @@ import TranslatingIndicator from '../components/TranslatingIndicator'
 import PhraseStatusFilter from '../components/PhraseStatusFilter'
 import React from 'react'
 import { connect } from 'react-redux'
+import { injectIntl, defineMessages } from 'react-intl'
 import {
   getActivityVisible,
   getGlossaryVisible,
@@ -44,18 +45,70 @@ type props = {
   +navHeaderVisible: bool,
   +showSettings: bool,
   +suggestionsVisible: bool,
-
-  +gettextCatalog: {
-    getString: (string) => string
-  }
 }
 */
+
+/* React-Intl I18n messages.
+ * Consumed as Strings rather than FormattedMessage React Elements.
+ * see: https://github.com/yahoo/react-intl/wiki/API#definemessages
+ * and: https://github.com/yahoo/react-intl/wiki/API#injectintl */
+export const messages = defineMessages({
+  suggestHide: {
+    id: 'Controlsheader.suggestion.hide',
+    defaultMessage: 'Hide suggestions panel'
+  },
+  suggestShow: {
+    id: 'Controlsheader.suggestion.show',
+    defaultMessage: 'Show suggestions panel'
+  },
+  activityHide: {
+    id: 'Controlsheader.activity.hide',
+    defaultMessage: 'Hide activity tab'
+  },
+  activityShow: {
+    id: 'Controlsheader.activity.show',
+    defaultMessage: 'Show activity tab'
+  },
+  glossaryHide: {
+    id: 'Controlsheader.glossary.hide',
+    defaultMessage: 'Hide glossary tab'
+  },
+  glossaryShow: {
+    id: 'Controlsheader.glossary.show',
+    defaultMessage: 'Show glossary tab'
+  },
+  sidebarHide: {
+    id: 'Controlsheader.sidebar.hide',
+    defaultMessage: 'Hide sidebar'
+  },
+  sidebarShow: {
+    id: 'Controlsheader.sidebar.Show',
+    defaultMessage: 'Show sidebar'
+  },
+  keyShortcuts: {
+    id: 'Controlsheader.keyboardshortcuts',
+    defaultMessage: 'Keyboard Shortcuts'
+  },
+  settings: {
+    id: 'Controlsheader.settings',
+    defaultMessage: 'Settings'
+  },
+  menubarHide: {
+    id: 'Controlsheader.menubar.hide',
+    defaultMessage: 'Hide Menubar'
+  },
+  menubarShow: {
+    id: 'Controlsheader.menubar.show',
+    defaultMessage: 'Show Menubar'
+  }
+})
 
 /**
  * Header row with editor controls (filtering, paging, etc.)
  */
 export const ControlsHeader = ({
   /* eslint-disable react/prop-types */
+  intl,
   activityVisible,
   glossaryVisible,
   infoPanelVisible,
@@ -70,7 +123,6 @@ export const ControlsHeader = ({
   toggleHeader,
   toggleShowSettings,
   toggleSuggestions,
-  gettextCatalog,
   permissions
   /* eslint-enable react/prop-types */
  }/*: props*/) => {
@@ -95,24 +147,28 @@ export const ControlsHeader = ({
             <IconButtonToggle
               icon="suggestions"
               title={suggestionsVisible
-                ? gettextCatalog.getString('Hide suggestions panel')
-                : gettextCatalog.getString('Show suggestions panel')}
+                ? intl.formatMessage({id: 'Controlsheader.suggestion.hide'})
+                : intl.formatMessage({id: 'Controlsheader.suggestion.show'})}
               onClick={toggleSuggestions}
               active={suggestionsVisible} />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
               icon="clock"
-              title={activityVisible ? 'Hide activity' : 'Show activity'}
-              onClick={toggleActivity}
+              title={activityVisible
+                ? intl.formatMessage({id: 'Controlsheader.activity.hide'})
+                : intl.formatMessage({id: 'Controlsheader.activity.show'})}
+              onClick={infoPanelVisible ? toggleActivity : toggleInfoPanel}
               active={activityVisible}
             />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
               icon="glossary"
-              title={glossaryVisible ? 'Hide glossary' : 'Show glossary'}
-              onClick={toggleGlossary}
+              title={glossaryVisible
+                ? intl.formatMessage({id: 'Controlsheader.glossary.hide'})
+                : intl.formatMessage({id: 'Controlsheader.glossary.show'})}
+              onClick={infoPanelVisible ? toggleGlossary : toggleInfoPanel}
               active={glossaryVisible}
             />
           </li>
@@ -121,39 +177,22 @@ export const ControlsHeader = ({
               icon="info"
               className="hide-sidebar-toggle"
               title={infoPanelVisible
-                ? gettextCatalog.getString('Hide sidebar')
-                : gettextCatalog.getString('Show sidebar')}
+                ? intl.formatMessage({id: 'Controlsheader.sidebar.hide'})
+                : intl.formatMessage({id: 'Controlsheader.sidebar.Show'})}
               onClick={toggleInfoPanel}
               active={infoPanelVisible} />
           </li>
-          {/* extra items from the angular template that were not being
-           displayed
-          <li ng-show="appCtrl.PRODUCTION">
-            <button class="Link--neutral u-sizeHeight-1_1-2"
-              title="{{'Details'|translate}}">
-              <icon name="info" title="{{'Details'|translate}}"
-                    class="u-sizeWidth-1_1-2"></icon>
-            </button>
-          </li>
-          <li ng-show="appCtrl.PRODUCTION">
-            <button class="Link--neutral u-sizeHeight-1_1-2"
-            title="{{'Editor Settings'|translate}}">
-              <icon name="settings" title="{{'Editor Settings'|translate}}"
-                    class="u-sizeWidth-1_1-2"></icon>
-            </button>
-          </li>
-    */}
           <li className="u-sm-hidden u-sM-1-8">
             <IconButtonToggle
               icon="keyboard"
-              title={gettextCatalog.getString('Keyboard Shortcuts')}
+              title={intl.formatMessage({id: 'Controlsheader.keyboardshortcuts'})}
               onClick={toggleKeyboardShortcutsModal}
               active={keyShortcutsVisible} />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
               icon="settings"
-              title={gettextCatalog.getString('Settings')}
+              title={intl.formatMessage({id: 'Controlsheader.settings'})}
               onClick={toggleShowSettings}
               active={showSettings} />
           </li>
@@ -161,8 +200,8 @@ export const ControlsHeader = ({
             <IconButtonToggle
               icon="chevron-up-double"
               title={navHeaderVisible
-                ? gettextCatalog.getString('Hide Menubar')
-                : gettextCatalog.getString('Show Menubar')}
+                ? intl.formatMessage({id: 'Controlsheader.menubar.hide'})
+                : intl.formatMessage({id: 'Controlsheader.menubar.show'})}
               onClick={toggleHeader}
               active={!navHeaderVisible}
               className={cx({'is-rotated': !navHeaderVisible})} />
@@ -175,7 +214,6 @@ export const ControlsHeader = ({
 }
 
 function mapStateToProps (state) {
-  const { ui: { gettextCatalog } } = state
   return {
     activityVisible: getActivityVisible(state),
     glossaryVisible: getGlossaryVisible(state),
@@ -184,7 +222,6 @@ function mapStateToProps (state) {
     navHeaderVisible: getNavHeaderVisible(state),
     suggestionsVisible: getSuggestionsPanelVisible(state),
     showSettings: getShowSettings(state),
-    gettextCatalog,
     permissions: state.headerData.permissions
   }
 }
@@ -199,4 +236,5 @@ const mapDispatchToProps = {
   toggleHeader
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ControlsHeader)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  injectIntl(ControlsHeader))
