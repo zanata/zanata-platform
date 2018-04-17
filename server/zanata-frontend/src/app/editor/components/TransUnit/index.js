@@ -240,7 +240,8 @@ function mapDispatchToProps (dispatch, ownProps) {
         index,
         ownProps.translationLocale.id,
         ownProps.projectSlug,
-        ownProps.versionSlug))
+        ownProps.versionSlug,
+        ownProps.activityVisible))
     },
     textChanged: (id, index, event) => {
       const text = event.target.value

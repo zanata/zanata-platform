@@ -78,12 +78,14 @@ const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
  * being specifically targeted).
  */
 export function selectPhrasePluralIndex (
-  phraseId, index, localeId, projectSlug, versionSlug) {
+  phraseId, index, localeId, projectSlug, versionSlug, activityVisible) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(selectPhraseSpecificPlural(phraseId, index))
-    dispatch(fetchTransUnitHistory(
-      localeId, phraseId, projectSlug, versionSlug))
+    if (activityVisible) {
+      dispatch(fetchTransUnitHistory(
+        localeId, phraseId, projectSlug, versionSlug))
+    }
   }
 }
 
