@@ -1,6 +1,6 @@
 // @ts-nocheck
 /* eslint-disable spaced-comment */
-/* @flow */ // TODO convert to TS
+// TODO convert to TS
 import cx from 'classnames'
 import EditorSearchInput from '../components/EditorSearchInput'
 import IconButtonToggle from '../components/IconButtonToggle'
@@ -8,8 +8,9 @@ import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
 import PhraseStatusFilter from '../components/PhraseStatusFilter'
 import React from 'react'
+import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { injectIntl, defineMessages } from 'react-intl'
+import { injectIntl, intlShape, defineMessages } from 'react-intl'
 import {
   getActivityVisible,
   getGlossaryVisible,
@@ -28,25 +29,6 @@ import {
   toggleKeyboardShortcutsModal
 } from '../actions/header-actions'
 import { toggleSuggestions } from '../actions/suggestions-actions'
-
-/*::
-type props = {
-  +toggleKeyboardShortcutsModal: () => void,
-  +toggleActivity: () => void,
-  +toggleGlossary: () => void,
-  +toggleInfoPanel: () => void,
-  +toggleHeader: () => void,
-  +toggleShowSettings: () => void,
-  +toggleSuggestions: () => void,
-
-  +glossaryVisible: bool,
-  +infoPanelVisible: bool,
-  +keyShortcutsVisible: bool,
-  +navHeaderVisible: bool,
-  +showSettings: bool,
-  +suggestionsVisible: bool,
-}
-*/
 
 /* React-Intl I18n messages.
  * Consumed as Strings rather than FormattedMessage React Elements.
@@ -107,7 +89,6 @@ export const messages = defineMessages({
  * Header row with editor controls (filtering, paging, etc.)
  */
 export const ControlsHeader = ({
-  /* eslint-disable react/prop-types */
   intl,
   activityVisible,
   glossaryVisible,
@@ -124,8 +105,7 @@ export const ControlsHeader = ({
   toggleShowSettings,
   toggleSuggestions,
   permissions
-  /* eslint-enable react/prop-types */
- }/*: props*/) => {
+  }) => {
   return (
     /* eslint-disable max-len */
     <nav className="flex flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of">
@@ -147,8 +127,8 @@ export const ControlsHeader = ({
             <IconButtonToggle
               icon="suggestions"
               title={suggestionsVisible
-                ? intl.formatMessage({id: 'Controlsheader.suggestion.hide'})
-                : intl.formatMessage({id: 'Controlsheader.suggestion.show'})}
+                ? intl.formatMessage(messages.suggestHide)
+                : intl.formatMessage(messages.suggestShow)}
               onClick={toggleSuggestions}
               active={suggestionsVisible} />
           </li>
@@ -156,8 +136,8 @@ export const ControlsHeader = ({
             <IconButtonToggle
               icon="clock"
               title={activityVisible
-                ? intl.formatMessage({id: 'Controlsheader.activity.hide'})
-                : intl.formatMessage({id: 'Controlsheader.activity.show'})}
+                ? intl.formatMessage(messages.activityHide)
+                : intl.formatMessage(messages.activityShow)}
               onClick={infoPanelVisible ? toggleActivity : toggleInfoPanel}
               active={activityVisible}
             />
@@ -166,8 +146,8 @@ export const ControlsHeader = ({
             <IconButtonToggle
               icon="glossary"
               title={glossaryVisible
-                ? intl.formatMessage({id: 'Controlsheader.glossary.hide'})
-                : intl.formatMessage({id: 'Controlsheader.glossary.show'})}
+                ? intl.formatMessage(messages.glossaryHide)
+                : intl.formatMessage(messages.glossaryShow)}
               onClick={infoPanelVisible ? toggleGlossary : toggleInfoPanel}
               active={glossaryVisible}
             />
@@ -177,22 +157,22 @@ export const ControlsHeader = ({
               icon="info"
               className="hide-sidebar-toggle"
               title={infoPanelVisible
-                ? intl.formatMessage({id: 'Controlsheader.sidebar.hide'})
-                : intl.formatMessage({id: 'Controlsheader.sidebar.Show'})}
+                ? intl.formatMessage(messages.sidebarHide)
+                : intl.formatMessage(messages.sidebarShow)}
               onClick={toggleInfoPanel}
               active={infoPanelVisible} />
           </li>
           <li className="u-sm-hidden u-sM-1-8">
             <IconButtonToggle
               icon="keyboard"
-              title={intl.formatMessage({id: 'Controlsheader.keyboardshortcuts'})}
+              title={intl.formatMessage(messages.keyShortcuts)}
               onClick={toggleKeyboardShortcutsModal}
               active={keyShortcutsVisible} />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
               icon="settings"
-              title={intl.formatMessage({id: 'Controlsheader.settings'})}
+              title={intl.formatMessage(messages.settings)}
               onClick={toggleShowSettings}
               active={showSettings} />
           </li>
@@ -200,8 +180,8 @@ export const ControlsHeader = ({
             <IconButtonToggle
               icon="chevron-up-double"
               title={navHeaderVisible
-                ? intl.formatMessage({id: 'Controlsheader.menubar.hide'})
-                : intl.formatMessage({id: 'Controlsheader.menubar.show'})}
+                ? intl.formatMessage(messages.menubarHide)
+                : intl.formatMessage(messages.menubarShow)}
               onClick={toggleHeader}
               active={!navHeaderVisible}
               className={cx({'is-rotated': !navHeaderVisible})} />
@@ -211,6 +191,28 @@ export const ControlsHeader = ({
     </nav>
     /* eslint-enable max-len */
   )
+}
+
+ControlsHeader.propTypes = {
+  intl: intlShape.isRequired,
+  activityVisible: PropTypes.bool.isRequired,
+  glossaryVisible: PropTypes.bool.isRequired,
+  infoPanelVisible: PropTypes.bool.isRequired,
+  keyShortcutsVisible: PropTypes.bool.isRequired,
+  navHeaderVisible: PropTypes.bool.isRequired,
+  showSettings: PropTypes.func.isRequired,
+  suggestionsVisible: PropTypes.bool.isRequired,
+  toggleKeyboardShortcutsModal: PropTypes.func.isRequired,
+  toggleActivity: PropTypes.func.isRequired,
+  toggleGlossary: PropTypes.func.isRequired,
+  toggleInfoPanel: PropTypes.func.isRequired,
+  toggleHeader: PropTypes.func.isRequired,
+  toggleShowSettings: PropTypes.func.isRequired,
+  toggleSuggestions: PropTypes.func.isRequired,
+  permissions: PropTypes.shape({
+    reviewer: PropTypes.bool.isRequired,
+    translator: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 function mapStateToProps (state) {
