@@ -31,6 +31,13 @@ import {
   toggleKeyboardShortcutsModal
 } from '../actions/header-actions'
 import { toggleSuggestions } from '../actions/suggestions-actions'
+import {
+  firstPage,
+  nextPage,
+  previousPage,
+  lastPage
+} from '../actions/controls-header-actions'
+import { getMaxPageIndex } from '../selectors'
 
 /* React-Intl I18n messages.
  * Consumed as Strings rather than FormattedMessage React Elements.
@@ -108,7 +115,13 @@ export const ControlsHeader = ({
   toggleHeader,
   toggleShowSettings,
   toggleSuggestions,
-  permissions
+  permissions,
+  firstPage,
+  previousPage,
+  nextPage,
+  lastPage,
+  pageCount,
+  pageNumber
   }) => {
   return (
     /* eslint-disable max-len */
@@ -125,7 +138,14 @@ export const ControlsHeader = ({
       <div className="u-floatRight controlHeader-right">
         <ul className="u-listHorizontal u-textCenter">
           <li className="u-sMV-1-4">
-            <Pager />
+            <Pager
+              firstPage={firstPage}
+              previousPage={previousPage}
+              nextPage={nextPage}
+              lastPage={lastPage}
+              pageCount={pageCount}
+              pageNumber={pageNumber}
+            />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
@@ -228,11 +248,22 @@ ControlsHeader.propTypes = {
   permissions: PropTypes.shape({
     reviewer: PropTypes.bool.isRequired,
     translator: PropTypes.bool.isRequired
-  }).isRequired
+  }).isRequired,
+  firstPage: PropTypes.func.isRequired,
+  previousPage: PropTypes.func.isRequired,
+  nextPage: PropTypes.func.isRequired,
+  lastPage: PropTypes.func.isRequired,
+  pageNumber: PropTypes.number.isRequired,
+  pageCount: PropTypes.number
 }
 
 function mapStateToProps (state) {
+  const { phrases } = state
+  const pageCount = getMaxPageIndex(state) + 1
+  const pageNumber = Math.min(pageCount, phrases.paging.pageIndex + 1)
   return {
+    pageCount: pageCount,
+    pageNumber: pageNumber,
     activitySelected: getSidebarTab(state) === ACTIVITY_TAB,
     glossarySelected: getSidebarTab(state) === GLOSSARY_TAB,
     activityVisible: getActivityVisible(state),
@@ -253,7 +284,11 @@ const mapDispatchToProps = {
   toggleInfoPanel,
   toggleSuggestions,
   toggleKeyboardShortcutsModal,
-  toggleHeader
+  toggleHeader,
+  firstPage,
+  previousPage,
+  nextPage,
+  lastPage
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(

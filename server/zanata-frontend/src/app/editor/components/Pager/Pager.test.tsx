@@ -5,7 +5,6 @@ import * as ReactDOMServer from 'react-dom/server'
 import { mount } from 'enzyme'
 import { Pager } from '.'
 import { Icon } from '../../../components'
-import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
 
 // tslint:disable-next-line:no-empty
 const callback = () => {}
@@ -18,8 +17,7 @@ describe('PagerTest', () => {
       nextPage={callback}
       lastPage={callback}
       pageNumber={7}
-      pageCount={11}
-      gettextCatalog={mockGettextCatalog} />)
+      pageCount={11} />)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <ul className='u-listHorizontal u-textCenter'>
@@ -70,8 +68,7 @@ describe('PagerTest', () => {
         nextPage={goNext}
         lastPage={goLast}
         pageNumber={2}
-        pageCount={20}
-        gettextCatalog={mockGettextCatalog} />
+        pageCount={20}/>
     )
 
     // click events are expected on the <a> tags

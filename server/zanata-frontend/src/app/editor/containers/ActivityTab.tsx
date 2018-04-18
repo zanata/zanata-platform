@@ -2,7 +2,7 @@ import ActivitySelectList from "../components/ActivitySelectList"
 // import LanguageSelectList from "../components/LanguageSelectList"
 import CommentBox from "../components/CommentBox"
 import ActivityFeedItem from "../components/ActivityFeedItem"
-import SFCPager from "../components/Pager/SFC"
+import SFCPager from "../components/Pager"
 import {
   ActivityFilter, filterActivityTypes
 } from "../utils/activity-util"
