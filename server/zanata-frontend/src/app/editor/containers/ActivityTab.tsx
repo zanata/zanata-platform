@@ -1,16 +1,17 @@
-import ActivitySelectList from '../components/ActivitySelectList'
-// import LanguageSelectList from '../components/LanguageSelectList'
-import CommentBox from '../components/CommentBox'
-import ActivityFeedItem from '../components/ActivityFeedItem'
+import ActivitySelectList from "../components/ActivitySelectList"
+// import LanguageSelectList from "../components/LanguageSelectList"
+import CommentBox from "../components/CommentBox"
+import ActivityFeedItem from "../components/ActivityFeedItem"
+import SFCPager from "../components/Pager/SFC"
 import {
   ActivityFilter, filterActivityTypes
-} from '../utils/activity-util'
-import { transUnitStatusToPhraseStatus } from '../utils/status-util'
-import { ALL, COMMENTS, UPDATES } from '../utils/activity-util'
-import { isUndefined, isEmpty, orderBy } from 'lodash'
-import React from 'react'
-import * as PropTypes from 'prop-types'
-import { commentTextLimit } from './RejectTranslation'
+} from "../utils/activity-util"
+import { transUnitStatusToPhraseStatus } from "../utils/status-util"
+import { ALL, COMMENTS, UPDATES } from "../utils/activity-util"
+import { isUndefined, isEmpty, orderBy } from "lodash"
+import React from "react"
+import * as PropTypes from "prop-types"
+import { commentTextLimit } from "./RejectTranslation"
 
 const DO_NOT_RENDER = undefined
 
@@ -32,7 +33,7 @@ type Filter = (transHistory: any) => any
 
 const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) => {
   return {
-    type: 'comment',
+    type: "comment",
     content: value.comment,
     lastModifiedTime: (new Date(value.creationDate)),
     user: {
@@ -45,7 +46,7 @@ const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) =
 const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map((historyItem) => {
   const lastModified = new Date(historyItem.modifiedDate)
   return {
-    type: 'revision',
+    type: "revision",
     content: historyItem.contents[0],
     commentText: historyItem.revisionComment,
     lastModifiedTime: lastModified,
@@ -58,7 +59,7 @@ const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map
 })), latest: latestHistoryAsItem(latest)})
 
 const latestHistoryAsItem = (latest) => ({
-  type: 'revision',
+  type: "revision",
   content: latest.contents[0],
   commentText: latest.revisionComment,
   lastModifiedTime: (new Date(latest.modifiedDate)),
@@ -68,6 +69,66 @@ const latestHistoryAsItem = (latest) => ({
     username: latest.modifiedBy
   }
 })
+
+interface Props {
+  ActivityItems?: any,
+  pageCount: number
+}
+
+interface State {
+  currentPage: number
+}
+
+/*
+ * Helper Class to handle Pagination State
+ */
+class ActivityItemsPager extends React.Component<Props, State> {
+  private defaultState = {
+    currentPage: 1
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = this.defaultState
+  }
+
+  public render () {
+    const { ActivityItems, pageCount} = this.props
+    const { currentPage } = this.state
+    const PaginatedActivityItems = (isUndefined(ActivityItems))
+      ? DO_NOT_RENDER
+      : ActivityItems.slice(currentPage * 10, currentPage * 10 + 10)
+    return (
+      <div>
+        <SFCPager
+          firstPage={this.firstPage}
+          previousPage={this.previousPage}
+          nextPage={this.nextPage}
+          lastPage={this.lastPage}
+          pageNumber={currentPage}
+          pageCount={pageCount}
+        />
+        {PaginatedActivityItems}
+      </div>
+    )
+  }
+  private firstPage = () => {
+    this.setState({currentPage: 0})
+  }
+  private previousPage = () => {
+    this.setState((prevState, _props) => ({
+        currentPage: prevState.currentPage - 1
+    }));
+  }
+  private nextPage = () => {
+    this.setState((prevState, _props) => ({
+        currentPage: prevState.currentPage + 1
+    }));
+  }
+  private lastPage = () => {
+    this.setState({currentPage: this.props.pageCount})
+  }
+}
 
 /*
  * ActivityTab for Sidebar, displays TransUnit History, CommentBox
@@ -100,22 +161,28 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
       default:
         throw new Error()
     }
-    return orderBy(results, ['lastModifiedTime'], ['desc'])
+    return orderBy(results, ["lastModifiedTime"], ["desc"])
   }
   const filteredActivityItems = filterActivityItems(selectedActivites)
   const ActivityItems = (isUndefined(filteredActivityItems))
     ? DO_NOT_RENDER
     : filteredActivityItems.map((item, index) => (
       <ActivityFeedItem key={index} {...item} />))
+  const pageCount = (isUndefined(ActivityItems))
+    ? 0
+    : Math.ceil(Object.keys(ActivityItems).length / 10 - 1)
   return (
     <div>
-      <div className='SidebarEditor-wrapper' id='SidebarEditorTabs-pane2'>
+      <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
         <ActivitySelectList selectItem={selectActivityTypeFilter}
           selected={selectedActivites} />
       </div>
-      <div className='SidebarActivity'>
+      <div className="SidebarActivity">
         <CommentBox postComment={postComment} maxLength={commentTextLimit} />
-        {ActivityItems}
+        <ActivityItemsPager
+          ActivityItems={ActivityItems}
+          pageCount={pageCount}
+        />
       </div>
     </div>
   )
