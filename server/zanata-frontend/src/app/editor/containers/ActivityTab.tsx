@@ -15,6 +15,9 @@ import { commentTextLimit } from "./RejectTranslation"
 
 const DO_NOT_RENDER = undefined
 
+// Number of Activity Items to display per paginated page
+const COUNT_PER_PAGE = 10
+
 interface ActivityTabProps {
   transHistory?: any,
   postComment: (text: string) => void
@@ -72,7 +75,8 @@ const latestHistoryAsItem = (latest) => ({
 
 interface Props {
   ActivityItems?: any,
-  pageCount: number
+  pageCount: number,
+  countPerPage: number
 }
 
 interface State {
@@ -84,7 +88,7 @@ interface State {
  */
 class ActivityItemsPager extends React.Component<Props, State> {
   private defaultState = {
-    currentPage: 1
+    currentPage: 0
   }
 
   constructor (props) {
@@ -95,9 +99,10 @@ class ActivityItemsPager extends React.Component<Props, State> {
   public render () {
     const { ActivityItems, pageCount} = this.props
     const { currentPage } = this.state
+    const startSlice = currentPage * COUNT_PER_PAGE
     const PaginatedActivityItems = (isUndefined(ActivityItems))
       ? DO_NOT_RENDER
-      : ActivityItems.slice(currentPage * 10, currentPage * 10 + 10)
+      : ActivityItems.slice(startSlice, startSlice + COUNT_PER_PAGE)
     return (
       <div>
         <Pager
@@ -106,7 +111,7 @@ class ActivityItemsPager extends React.Component<Props, State> {
           previousPage={this.previousPage}
           nextPage={this.nextPage}
           lastPage={this.lastPage}
-          pageNumber={currentPage}
+          pageNumber={currentPage + 1}
           pageCount={pageCount}
         />
         {PaginatedActivityItems}
@@ -114,7 +119,7 @@ class ActivityItemsPager extends React.Component<Props, State> {
     )
   }
   private firstPage = () => {
-    this.setState({currentPage: 1})
+    this.setState({currentPage: 0})
   }
   private previousPage = () => {
     this.setState((prevState, _props) => ({
@@ -127,7 +132,9 @@ class ActivityItemsPager extends React.Component<Props, State> {
     }));
   }
   private lastPage = () => {
-    this.setState({currentPage: this.props.pageCount})
+    this.setState((_prevState, props) => ({
+        currentPage: props.pageCount - 1
+    }));
   }
 }
 
@@ -171,7 +178,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
       <ActivityFeedItem key={index} {...item} />))
   const pageCount = (isUndefined(ActivityItems))
     ? 0
-    : Math.ceil(Object.keys(ActivityItems).length / 10 - 1)
+    : Math.ceil(Object.keys(ActivityItems).length / COUNT_PER_PAGE)
   return (
     <div>
       <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
@@ -183,6 +190,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
         <ActivityItemsPager
           ActivityItems={ActivityItems}
           pageCount={pageCount}
+          countPerPage={COUNT_PER_PAGE}
         />
       </div>
     </div>
