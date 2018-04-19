@@ -458,11 +458,12 @@ h1.SidebarEditor-heading button svg {
 }
 
 .RevisionBox {
+  font-size: var(--Sidebar-small-text);
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 .RevisionBox p {
@@ -470,13 +471,6 @@ h1.SidebarEditor-heading button svg {
   margin-top: 1rem;
   padding-bottom: 0.375rem;
 
-}
-
-.RevisionBox {
-  font-size: var(--Sidebar-small-text);
-  margin-bottom: 1.5rem;
-  margin-left: 1rem;
-  margin-top: 3rem;
 }
 
 .RevisionBox img {
