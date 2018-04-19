@@ -144,7 +144,9 @@
     "webpack-merge": "4.1.1"
   },
   "dependencies": {
+    "antd": "3.4.0",
     "awesome-typescript-loader": "^3.4.1",
+    "babel-plugin-import": "1.7.0",
     "babel-polyfill": "6.9.1",
     "caniuse-lite": "1.0.30000745",
     "chart.js": "2.7.1",
@@ -161,6 +163,7 @@
     "immutability-helper": "2.6.4",
     "intl": "1.2.5",
     "jest": "22.1.1",
+    "less-vars-to-js": "^1.2.1",
     "lodash": "4.17.4",
     "moment": "^2.20.1",
     "moment-range": "^3.1.1",
@@ -168,6 +171,7 @@
     "normalizr": "2.1.0",
     "postcss": "6.0.16",
     "postcss-cssnext": "3.0.2",
+    "postcss-url": "^7.3.2",
     "prop-types": "15.6.0",
     "react": "15.6.1",
     "react-autosuggest": "9.0.1",
