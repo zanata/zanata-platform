@@ -8,12 +8,12 @@
 
 .Editor-suggestionsBody .TransUnit--suggestion .TransUnit-text--tight {
     padding-top: 0 !important;
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 .TransUnit--suggestion .TransUnit-text--tight {
     padding-top: 40px !important;
-    font-size: 1.2em;
+    font-size: 1.2rem;
 }
 /* Based on bootstrap styles. */
 
@@ -35,7 +35,7 @@
 }
 
 .panel-group {
-    margin-bottom: 1.429em;
+    margin-bottom: 1.429rem;
 }
 
 .panel-group .panel {
@@ -44,7 +44,7 @@
 }
 
 .panel-group .panel + .panel {
-    margin-top: 0.357em;
+    margin-top: 0.357rem;
 }
 
 .panel-group .panel-heading {
@@ -65,19 +65,19 @@
 }
 
 .panel {
-    margin-bottom: 1.429em;
+    margin-bottom: 1.429rem;
     border: 1px solid transparent;
     border-radius: var(--border-radius-base);
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     background-color: #fcfcfc;
-    line-height: 1.2em;
+    line-height: 1.2rem;
 }
 
 .panel-body {
     padding: var(--padding-large-vertical);
     color: var(--brand-primary);
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 .panel-body h3 {
@@ -88,7 +88,7 @@
     margin-top: 0;
     margin-bottom: 0;
     color: inherit;
-    font-size: 1.143em;
+    font-size: 1.143rem;
     padding-bottom: 0;
 }
 
@@ -103,14 +103,14 @@
     border-bottom: 1px solid transparent;
     border-top-left-radius: var(--border-radius-small);
     border-top-right-radius: var(--border-radius-small);
-    font-size: 1.1em !important;
+    font-size: 1.1rem !important;
     font-weight: 600;
     color: var(--brand-secondary);
     background-color: #fff;
 }
 
 .panel-heading .TransUnit-details {
-  line-height: 1.2em;
+  line-height: 1.2rem;
 }
 
 .panel-info > .panel-heading {
@@ -168,17 +168,17 @@
 }
 
 .TransUnit-sourceHeading {
-    padding-left: 1.1em;
+    padding-left: 1.1rem;
     top: inherit;
-    line-height: 3em;
+    line-height: 3rem;
     font-weight: 600;
     color: var(--brand-primary);
 }
 
 .TransUnit-targetHeading {
-    padding-left: 1.9em;
+    padding-left: 1.9rem;
     top: inherit;
-    line-height: 3em;
+    line-height: 3rem;
     font-weight: 600;
     color: var(--brand-primary);
 }
@@ -187,18 +187,18 @@
     font-size: 70%;
     font-weight: 600;
     display: inline;
-    padding: 0.2em 0.6em 0.3em;
+    padding: 0.2rem 0.6rem 0.3rem;
     text-align: center;
     vertical-align: super;
     white-space: nowrap;
     color: #fff;
-    border-radius: 0.25em;
+    border-radius: 0.25rem;
 }
 
 .TransUnit-details {
     white-space: normal;
     word-break: break-all;
-    line-height: 1em;
+    line-height: 1rem;
 }
 
 .TransUnit-details .u-listInline {
@@ -211,7 +211,7 @@ li.TransUnit-label-suggestions {
 }
 
 span.TransUnit-details-inner {
-    padding-left: 0.375em;
+    padding-left: 0.375rem;
     font-weight: 500;
     color: #444c54;
 }
@@ -219,12 +219,12 @@ span.TransUnit-details-inner {
 
 @media (max-width: 740px) {
   .TransUnit-sourceHeading {
-    padding-left: 2.1em;
+    padding-left: 2.1rem;
   }
 
   .TransUnit--suggestion .TransUnit-text--tight {
     padding-top: 0 !important;
-    font-size: 1.2em;
+    font-size: 1.2rem;
   }
 
 }

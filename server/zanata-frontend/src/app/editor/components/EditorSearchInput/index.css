@@ -4,8 +4,8 @@
 }
 
 .InputEditorSearch {
-  margin-left: 0.75em;
-  margin-right: 1em;
+  margin-left: 0.75rem;
+  margin-right: 1rem;
   display: inline-flex;
   padding-top: 0.35rem;
   flex: 2 0 16rem;
@@ -16,7 +16,7 @@
 }
 
 .InputEditorSearch input {
-  font-size: 0.875em;
+  font-size: 0.875rem;
 }
 
 .InputEditorSearch > div {
@@ -34,7 +34,7 @@
 /* bootstrap classes used throughout */
 
 .InputEditorSearch .panel {
-  margin-bottom: 0.5em !important;
+  margin-bottom: 0.5rem !important;
   position: absolute;
   width: 100%;
 }
@@ -50,7 +50,7 @@
 
 .InputEditorSearch .icon-help button {
   vertical-align: sub;
-  margin-left: 0.375em;
+  margin-left: 0.375rem;
 }
 
 .InputEditorSearch .EditorInputGroup {
@@ -73,7 +73,7 @@
 li.InlineSearch-list {
   display: inline-flex;
   width: 100%;
-  margin-right: 1em;
+  margin-right: 1rem;
 }
 
 li.InlineSearch-list span {
@@ -100,6 +100,6 @@ li.InlineSearch-list span {
 button.AdvSearch-clear {
   color: #03A6D7;
   padding: 0;
-  padding-top: 0.75em;
+  padding-top: 0.75rem;
 }
 
