@@ -15,6 +15,7 @@ import Root from '../containers/Root'
 
 import '../styles/style.less'
 import '../editor/index.css'
+import '../../node_modules/tachyons/css/tachyons.min.css'
 
 WebFont.load({
   google: {
