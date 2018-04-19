@@ -2,7 +2,7 @@ import ActivitySelectList from "../components/ActivitySelectList"
 // import LanguageSelectList from "../components/LanguageSelectList"
 import CommentBox from "../components/CommentBox"
 import ActivityFeedItem from "../components/ActivityFeedItem"
-import SFCPager from "../components/Pager"
+import Pager from "../components/Pager"
 import {
   ActivityFilter, filterActivityTypes
 } from "../utils/activity-util"
@@ -100,7 +100,8 @@ class ActivityItemsPager extends React.Component<Props, State> {
       : ActivityItems.slice(currentPage * 10, currentPage * 10 + 10)
     return (
       <div>
-        <SFCPager
+        <Pager
+          intl={undefined}
           firstPage={this.firstPage}
           previousPage={this.previousPage}
           nextPage={this.nextPage}
@@ -113,7 +114,7 @@ class ActivityItemsPager extends React.Component<Props, State> {
     )
   }
   private firstPage = () => {
-    this.setState({currentPage: 0})
+    this.setState({currentPage: 1})
   }
   private previousPage = () => {
     this.setState((prevState, _props) => ({

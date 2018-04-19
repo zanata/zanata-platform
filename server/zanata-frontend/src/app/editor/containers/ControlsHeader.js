@@ -40,7 +40,7 @@ import {
 import { getMaxPageIndex } from '../selectors'
 
 /* React-Intl I18n messages.
- * Consumed as Strings rather than FormattedMessage React Elements.
+ * Consumed as Strings rather than FormattedMessage span elements.
  * see: https://github.com/yahoo/react-intl/wiki/API#definemessages
  * and: https://github.com/yahoo/react-intl/wiki/API#injectintl */
 export const messages = defineMessages({

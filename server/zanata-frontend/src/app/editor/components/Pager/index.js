@@ -23,6 +23,8 @@
 import { Icon } from '../../../components'
 import React from 'react'
 import * as PropTypes from 'prop-types'
+import { FormattedMessage } from 'react-intl'
+import { injectIntl, intlShape, defineMessages } from 'react-intl'
 
 /**
 * Paging buttons and current-page indicator.
@@ -60,7 +62,19 @@ PagerButton.propTypes = {
   action: PropTypes.func.isRequired
 }
 
+/* React-Intl I18n messages.
+ * Consumed as Strings rather than FormattedMessage span elements.
+ * see: https://github.com/yahoo/react-intl/wiki/API#definemessages
+ * and: https://github.com/yahoo/react-intl/wiki/API#injectintl */
+export const messages = defineMessages({
+  firstPage: { id: 'Pager.firstPage', defaultMessage: 'First page' },
+  prevPage: { id: 'Pager.prevPage', defaultMessage: 'Previous page' },
+  nextPage: { id: 'Pager.nextPage', defaultMessage: 'Next page' },
+  lastPage: { id: 'Pager.lastPage', defaultMessage: 'Last page' }
+})
+
 export const Pager = ({
+  intl,
   firstPage,
   previousPage,
   nextPage,
@@ -68,30 +82,36 @@ export const Pager = ({
   pageCount,
   pageNumber
 }) => {
-  const pageXofY = `${pageNumber} of ${pageCount}`
-
+  // const pageXofY = `${pageNumber} of ${pageCount}`
+  const pageXofY = <FormattedMessage
+    tagName='option'
+    id='Pager.pageXofY'
+    description='Indicator of the current page y of x pages.'
+    defaultMessage='{pageNumber} of {pageCount}'
+    values={{pageNumber, pageCount}}
+  />
   const buttons = {
     first: {
       icon: 'previous',
-      title: 'First page',
+      title: intl.formatMessage(messages.firstPage),
       action: firstPage,
       disabled: pageNumber <= 1
     },
     prev: {
       icon: 'chevron-left',
-      title: 'Previous page',
+      title: intl.formatMessage(messages.prevPage),
       action: previousPage,
       disabled: pageNumber <= 1
     },
     next: {
       icon: 'chevron-right',
-      title: 'Next page',
+      title: intl.formatMessage(messages.nextPage),
       action: nextPage,
       disabled: pageNumber >= pageCount
     },
     last: {
       icon: 'next',
-      title: 'Last page',
+      title: intl.formatMessage(messages.lastPage),
       action: lastPage,
       disabled: pageNumber >= pageCount
     }
@@ -113,6 +133,7 @@ export const Pager = ({
 }
 
 Pager.propTypes = {
+  intl: intlShape,
   firstPage: PropTypes.func.isRequired,
   previousPage: PropTypes.func.isRequired,
   nextPage: PropTypes.func.isRequired,
@@ -121,4 +142,4 @@ Pager.propTypes = {
   pageCount: PropTypes.number
 }
 
-export default Pager
+export default injectIntl(Pager)
