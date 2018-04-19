@@ -57,7 +57,7 @@
     overflow: hidden;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    max-width: 90%;
+    max-width: 100%;
     width: inherit;
     margin-left: 1rem;
     padding-left: @spacing-base;
@@ -65,9 +65,6 @@
   }
   .wideView.languages, .wideView#glossary {
     padding-bottom: 3rem;
-  }
-  .wideView#profile, .wideView#glossary {
-    max-width: 100%;
   }
   .gwtBase {
     background-color: #fff;
@@ -421,8 +418,8 @@
     flex-direction: row;
     display: inline-flex;
     flex-wrap: wrap;
-    width: 90%;
     line-height: 2rem;
+    max-width: 90%;
   }
   /* Icons and other svgs - not specific to Icon/s components so it should stay in this file */
   .icon {
@@ -4122,7 +4119,7 @@
       width: 300px;
     }
     .container {
-      width: @container-tablet;
+      width: 100%;
     }
     .content {
       width: 65%;
@@ -4498,9 +4495,6 @@
     .modal-lg {
       width: 900px;
     }
-    .container {
-      width: @container-desktop;
-    }
     .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9 {
       float: left;
     }
@@ -4657,9 +4651,6 @@
     .col-md-offset-0 {
       margin-left: 0;
     }
-    .toolbar {
-      width: 100%;
-    }
   }
   @media (max-width: @screen-md-max) {
     .hidden-xs {
@@ -4678,9 +4669,6 @@
     }
   }
   @media (min-width: @screen-lg-min) {
-    .container {
-      width: @container-large-desktop;
-    }
     .containerSidebar td.td-2 {
       width: 16.6667%;
     }

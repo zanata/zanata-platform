@@ -177,7 +177,8 @@ body.bodyStyle {
   }
   .panel__header a#new-version-link i.i.i--add:not(.i--large) {
     color: @color-light;
-  } //fix for admin panel icons
+  }
+  //fix for admin panel icons
   .panel__header i.i--add:not(.i--large) {
     color: inherit !important;
   }
@@ -315,11 +316,11 @@ body.bodyStyle {
     position: relative;
     margin-top: -1rem;
   }
-  .button--group input[type=radio]:checked+.button--Off, .button--group input[type=radio]:checked+.button--Off:hover {
+  .button--group input[type=radio]:checked + .button--Off, .button--group input[type=radio]:checked + .button--Off:hover {
     background-color: #546677 !important;
     color: #f7f7f7 !important;
   }
-  .button--group input[type=radio]:checked+.button--danger, .button--group input[type=radio]:checked+.button--danger:hover {
+  .button--group input[type=radio]:checked + .button--danger, .button--group input[type=radio]:checked + .button--danger:hover {
     color: #f7f7f7 !important;
   }
   label {
@@ -419,3 +420,10 @@ body.bodyStyle {
     padding-bottom: @spacing-rq;
   }
 }
+
+@media (min-width: 46.25rem) {
+  .l__wrapper {
+    padding: 0 1rem !important;
+  }
+}
+
