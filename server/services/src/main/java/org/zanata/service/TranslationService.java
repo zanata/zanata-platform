@@ -166,5 +166,7 @@ public interface TranslationService extends Serializable {
         ContentState getBaseContentState();
 
         String getErrorMessage();
+
+        double getSimilarityPercent();
     }
 }

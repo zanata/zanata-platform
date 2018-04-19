@@ -22,9 +22,12 @@ package org.zanata.service.impl;
 
 import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectSome;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -239,11 +242,29 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         return AsyncTaskResult.completed(translationResults);
     }
 
+    public class TranslationResults {
+        private Long wordCount;
+        private Long count;
+
+        public TranslationResults() {
+        }
+
+        public Long getWordCount() {
+            return wordCount;
+        }
+
+        public void addCount(Long count, Long wordCount) {
+            this.count += count;
+            this.wordCount += wordCount;
+        }
+    }
+
     @Async
     @Override
     public Future<Void> startMergeTranslations(Long targetVersionId,
             VersionTMMerge mergeRequest,
             MergeTranslationsTaskHandle handle) {
+        Map<ContentState, Map<Double, TranslationResults>> results = new HashMap<>();
         InternalTMSource internalTMSource = mergeRequest.getInternalTMSource();
         List<Long> fromVersionIds = internalTMSource.getFilteredProjectVersionIds();
         if (internalTMSource.getChoice() == SelectSome
@@ -304,8 +325,24 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                     .getUntranslatedOrFuzzyTextFlowsInVersion(
                             targetVersionId, targetLocale, startCount,
                             BATCH_SIZE);
-            translateInBatch(mergeRequest, batch,
+            List<TranslationService.TranslationResult> batchResults =
+                translateInBatch(mergeRequest, batch,
                     targetLocale, internalTMSource, Optional.empty());
+
+            // store results into memory
+            for (TranslationService.TranslationResult batchResult: batchResults) {
+                Map<Double, TranslationResults> contentStateResult = results
+                    .getOrDefault(batchResult.getBaseContentState(),
+                        new HashMap<>());
+                TranslationResults similarityResult = contentStateResult
+                    .getOrDefault(batchResult.getSimilarityPercent(),
+                        new TranslationResults());
+                similarityResult.addCount(1L,
+                    batchResult.getTranslatedTextFlowTarget().getTextFlow()
+                        .getWordCount());
+                contentStateResult.put(batchResult.getSimilarityPercent(), similarityResult);
+                results.put(batchResult.getBaseContentState(), contentStateResult);
+            }
 
             taskHandleOpt.ifPresent(
                     mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
@@ -316,6 +353,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         log.info("merge translation from TM end: from {} to {}, {}",
                 mergeRequest.getInternalTMSource(),
                 targetVersionStr, overallStopwatch);
+        //TODO: sends email to requester using the stats in memory
         return AsyncTaskResult.completed();
     }
 
@@ -419,11 +457,13 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         if (statusToSet != null) {
 
             TransUnitUpdateRequest request =
-                    new TransUnitUpdateRequest(new TransUnitId(hTextFlowToBeFilled.getId()),
-                            tmResult.getTargetContents(), statusToSet,
-                            oldTarget == null ? 0 : oldTarget.getVersionNum(),
-                            revisionComment, entityId, entityType,
-                            TranslationSourceType.TM_MERGE.getAbbr());
+                new TransUnitUpdateRequest(
+                    new TransUnitId(hTextFlowToBeFilled.getId()),
+                    tmResult.getTargetContents(), statusToSet,
+                    oldTarget == null ? 0 : oldTarget.getVersionNum(),
+                    revisionComment, entityId, entityType,
+                    TranslationSourceType.TM_MERGE.getAbbr(),
+                    tmResult.getSimilarityPercent());
             request.addTargetComment(comment);
             log.debug("auto translate from translation memory {}", request);
             return request;

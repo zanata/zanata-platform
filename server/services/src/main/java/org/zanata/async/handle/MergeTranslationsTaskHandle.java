@@ -34,6 +34,7 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implement
 
     private static final long serialVersionUID = -8026264371441200919L;
     private long totalTranslations;
+    // username
     private String triggeredBy;
 
     public MergeTranslationsTaskHandle(

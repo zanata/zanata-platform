@@ -182,6 +182,7 @@ public class TranslationServiceImpl implements TranslationService {
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class,
                     request.getTransUnitId().getValue());
             TranslationResultImpl result = new TranslationResultImpl();
+            result.similarityPercent = request.getSimilarityPercent();
             if (runValidation) {
                 String validationMessage = validateTranslations(
                         request.getNewContentState(), projectIteration,
@@ -830,6 +831,7 @@ public class TranslationServiceImpl implements TranslationService {
         private int baseVersion;
         private ContentState baseContentState;
         private String errorMessage;
+        private double similarityPercent;
 
         @Override
         public boolean isTranslationSuccessful() {
@@ -865,6 +867,13 @@ public class TranslationServiceImpl implements TranslationService {
         public String getErrorMessage() {
             return errorMessage;
         }
+
+        @Override
+        public double getSimilarityPercent() {
+            return similarityPercent;
+        }
+
+
     }
 
     @Override
