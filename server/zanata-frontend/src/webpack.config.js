@@ -7,17 +7,9 @@ var webpack = require('webpack')
 var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
-var postcssDiscardDuplicates = require('postcss-discard-duplicates')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var postcssImport = require('postcss-import')
-var postcssCustomProperties = require('postcss-custom-properties')
-var postcssCalc = require('postcss-calc')
-var postcssColorFunction = require('postcss-color-function')
-var postcssCustomMedia = require('postcss-custom-media')
-var postcssEsplit = require('postcss-esplit')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
-var cssNano = require('cssnano')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
@@ -35,17 +27,11 @@ var postCssLoader = {
   loader: 'postcss-loader',
   options: {
     plugins: [
-      postcssDiscardDuplicates(),
-      postcssImport(),
-      postcssCustomProperties,
-      postcssCalc,
-      cssNano(),
-      postcssColorFunction,
-      postcssCustomMedia,
-      postcssEsplit({
-        quiet: true
-      }),
-
+      require('postcss-discard-duplicates'),
+      require('postcss-import')(),
+      require('postcss-url')(),
+      require('postcss-cssnext')(),
+      require('postcss-reporter')(),
       autoprefixer({
         browsers: [
           'Explorer >= 9',
@@ -54,8 +40,8 @@ var postCssLoader = {
           'last 2 Safari versions',
           'last 2 iOS versions',
           'Android 4'
-        ]
-      })
+          ]
+        }),
     ]
   }
 }
@@ -175,7 +161,17 @@ module.exports = function (env, isEditor, devServerPort) {
             formatter: 'verbose'
           }
         },
-
+        // antd build
+        {
+          test: /\.js$/,
+          loader: 'babel-loader',
+          exclude: /node_modules(?!\/antd)/,
+          options: {
+            plugins: [
+              ['import', { libraryName: "antd", style: true }]
+            ]
+          },
+        },
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
         {
@@ -214,7 +210,6 @@ module.exports = function (env, isEditor, devServerPort) {
          */
         {
           test: /\.less$/,
-          exclude: /node_modules/,
           use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
             use: [
@@ -222,13 +217,15 @@ module.exports = function (env, isEditor, devServerPort) {
                 loader: 'postcss-loader',
                 options: {
                   plugins: [
-                    require('stylelint'),
                     require('postcss-discard-duplicates')
                   ]
                 }
               },
               postCssLoader,
-              'less-loader'
+              {
+                loader: 'less-loader',
+                options: {javascriptEnabled: true}
+              }
             ]
           })
         }

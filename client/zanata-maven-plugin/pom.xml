@@ -40,6 +40,16 @@
   </prerequisites>
   <inceptionYear>2010</inceptionYear>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.jcraft</groupId>
+        <artifactId>jsch</artifactId>
+        <version>0.1.54</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
