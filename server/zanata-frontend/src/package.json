@@ -193,7 +193,7 @@
     "react-syntax-highlighter": "6.1.1",
     "react-textarea-autosize": "4.3.2",
     "react-toggle": "4.0.2",
-    "redux": "3.5.2",
+    "redux": "4.0.0",
     "redux-actions": "0.10.0",
     "redux-api-middleware": "1.0.2",
     "redux-logger": "2.6.1",
