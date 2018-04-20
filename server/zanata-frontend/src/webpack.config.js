@@ -40,8 +40,8 @@ var postCssLoader = {
           'last 2 Safari versions',
           'last 2 iOS versions',
           'Android 4'
-          ]
-        }),
+        ]
+      })
     ]
   }
 }
@@ -159,15 +159,15 @@ module.exports = function (env, isEditor, devServerPort) {
           }
         },
         // antd build
-        {
+        storybook ? undefined : {
           test: /\.js$/,
           loader: 'babel-loader',
           exclude: /node_modules(?!\/antd)/,
           options: {
             plugins: [
-              ['import', { libraryName: "antd", style: true }]
+              ['import', { libraryName: 'antd', style: true }]
             ]
-          },
+          }
         },
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
