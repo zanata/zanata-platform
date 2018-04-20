@@ -17,6 +17,7 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -125,18 +126,10 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     }
 
     public List<String> getUserNames(String filter, int offset, int maxResults) {
-        StringBuilder queryBuilder =
-                new StringBuilder("select username from HAccount ");
-        if (!StringUtils.isEmpty(filter)) {
-            queryBuilder.append("where lower(username) like :filter");
-        }
-        Query query = getSession().createQuery(queryBuilder.toString());
-        if (!StringUtils.isEmpty(filter)) {
-            query.setParameter("filter", "%" + filter.toLowerCase() + "%");
-        }
+        Query query = createQuery(new StringBuilder(
+                "select distinct acc.username from HAccount acc "), filter);
         query.setMaxResults(maxResults);
         query.setFirstResult(offset);
-        query.setCacheable(true);
         query.setComment("accountDAO.getUserNames");
         @SuppressWarnings("unchecked")
         List<String> list = query.list();
@@ -144,21 +137,25 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     }
 
     public int getUserCount(String filter) {
-        StringBuilder queryBuilder = new StringBuilder("select count(*) from HAccount ");
+        Query query = createQuery(new StringBuilder(
+                "select count(*) from HAccount acc "), filter);
+        query.setComment("accountDAO.getUserCount");
+        return ObjectUtils.firstNonNull((Long) query.uniqueResult(), 0).intValue();
+    }
+
+    private Query createQuery(StringBuilder builder, String filter) {
         if (!StringUtils.isEmpty(filter)) {
-            queryBuilder.append("where lower(username) like :filter");
+            builder.append("inner join acc.person as person ")
+                    .append("where lower(acc.username) like :filter ")
+                    .append("OR lower(person.email) like :filter ")
+                    .append("OR lower(person.name) like :filter");
         }
-        Query query = getSession().createQuery(queryBuilder.toString());
+        Query query = getSession().createQuery(builder.toString());
         if (!StringUtils.isEmpty(filter)) {
             query.setParameter("filter", "%" + filter.toLowerCase() + "%");
         }
         query.setCacheable(true);
-        query.setComment("accountDAO.getUserCount");
-        Long totalCount = (Long) query.uniqueResult();
-        if (totalCount == null) {
-            return 0;
-        }
-        return totalCount.intValue();
+        return query;
     }
 
     public HAccount getByCredentialsId(String credentialsId) {
