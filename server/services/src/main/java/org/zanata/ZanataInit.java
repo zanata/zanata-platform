@@ -138,8 +138,16 @@ public class ZanataInit {
             log.info("OpenID authentication: enabled");
             authlogged = true;
         }
+        if (applicationConfiguration.isJaasAuth()) {
+            log.info("JAAS authentication: enabled");
+            authlogged = true;
+        }
         if (applicationConfiguration.isKerberosAuth()) {
             log.info("SPNEGO/Kerberos authentication: enabled");
+            authlogged = true;
+        }
+        if (applicationConfiguration.isSaml2Auth()) {
+            log.info("SAML2 authentication: enabled");
             authlogged = true;
         }
         log.info("Configured authentications: {}", applicationConfiguration.getAuthTypes());
