@@ -23,16 +23,27 @@
   --Editor-color-rejected: #FFA800;
 }
 
+/* const height = this.props.headerOpen ? '91%' : '93%'
+const margin = this.props.headerOpen ? '6rem' : '3rem' */
+
 .sidebar-editor {
   border-left: solid 1px var(--Sidebar-border);
   float: right !important;
-  height: 99.5% !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  margin-top: 90px !important;
   position: static !important;
   width: 35%;
   background-color: #fff;
+}
+
+.sidebar-editor-contract {
+  height: 91% !important;
+  margin-top: 6rem !important;
+}
+
+.sidebar-editor-expand {
+  height: 95.3% !important;
+  margin-top: 3rem !important;
 }
 
 .sidebar-editor :focus {
