@@ -234,7 +234,7 @@ timestamps {
             -DskipFuncTests \
             -DskipArqTests \
             -Dmaven.test.failure.ignore \
-            -Dvictims \
+            -Ddepcheck \
           """
 
           def surefireTestReports = 'target/surefire-reports/TEST-*.xml'
@@ -266,7 +266,7 @@ timestamps {
           // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
-          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv,target/dependencies/**"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
