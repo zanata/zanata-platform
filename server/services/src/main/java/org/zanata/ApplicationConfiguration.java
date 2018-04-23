@@ -306,20 +306,9 @@ public class ApplicationConfiguration implements Serializable {
         return databaseBackedConfig.getHelpUrl();
     }
 
-    public boolean isInternalAuth() {
-        return this.loginModuleNames.containsKey(AuthenticationType.INTERNAL);
-    }
-
-    public boolean isOpenIdAuth() {
-        return this.loginModuleNames.containsKey(AuthenticationType.OPENID);
-    }
-
-    public boolean isSingleOpenIdProvider() {
-        return openIdProvider.isPresent();
-    }
-
     @Produces
     @Dependent
+    // TODO This seems to return the "primary" or "main" authentication type. Injected by LoginAction.
     protected AuthenticationType authenticationType() {
         if (isInternalAuth()) {
             return AuthenticationType.INTERNAL;
@@ -327,21 +316,41 @@ public class ApplicationConfiguration implements Serializable {
             return AuthenticationType.JAAS;
         } else if (isKerberosAuth()) {
             return AuthenticationType.KERBEROS;
+        } else if (isOpenIdAuth()) {
+            return AuthenticationType.OPENID;
+        } else if (isSaml2Auth()) {
+            return AuthenticationType.SAML2;
         }
         throw new RuntimeException(
-                "only supports internal, jaas, sso or kerberos authentication");
+                "no active authentication types found");
     }
 
     public String getOpenIdProviderUrl() {
         return openIdProvider.orNull();
     }
 
-    public boolean isKerberosAuth() {
-        return this.loginModuleNames.containsKey(AuthenticationType.KERBEROS);
+    public boolean isInternalAuth() {
+        return this.loginModuleNames.containsKey(AuthenticationType.INTERNAL);
     }
 
     public boolean isJaasAuth() {
         return this.loginModuleNames.containsKey(AuthenticationType.JAAS);
+    }
+
+    public boolean isKerberosAuth() {
+        return this.loginModuleNames.containsKey(AuthenticationType.KERBEROS);
+    }
+
+    public boolean isOpenIdAuth() {
+        return this.loginModuleNames.containsKey(AuthenticationType.OPENID);
+    }
+
+    public boolean isSaml2Auth() {
+        return this.loginModuleNames.containsKey(AuthenticationType.SAML2);
+    }
+
+    public boolean isSingleOpenIdProvider() {
+        return openIdProvider.isPresent();
     }
 
     public boolean isMultiAuth() {
