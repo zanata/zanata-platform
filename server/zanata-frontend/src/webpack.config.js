@@ -161,6 +161,7 @@ module.exports = function (env, isEditor, devServerPort) {
             formatter: 'verbose'
           }
         },
+
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
         {
