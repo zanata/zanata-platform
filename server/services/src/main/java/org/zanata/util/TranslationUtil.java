@@ -32,6 +32,7 @@ import org.zanata.model.type.EntityType;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -178,6 +179,7 @@ public class TranslationUtil {
                 .getCopiedEntityId();
     }
 
+    @Nullable
     public static EntityType getCopiedEntityType(
         @Nonnull ITextFlowTargetHistory from) {
         if (from != null) {

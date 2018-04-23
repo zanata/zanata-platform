@@ -432,30 +432,34 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         String revisionComment;
         String entityType;
         Long entityId;
-        if (tmResult
-                .getMatchType() == TransMemoryResultItem.MatchType.Imported) {
-            TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
-            statusToSet = TransMemoryMergeStatusResolver.newInstance()
-                    .decideStatus(action, tmResult, oldTarget);
-            comment = buildTargetComment(tu);
-            revisionComment = TranslationUtil.getTMMergeMessage(tu);
-            entityId = tu.getId();
-            entityType = EntityType.TMX.getAbbr();
-        } else {
-            HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
-            TransMemoryDetails tmDetail = translationMemoryServiceImpl
-                    .getTransMemoryDetail(hLocale, tmSource);
-            statusToSet = TransMemoryMergeStatusResolver.newInstance()
-                    .decideStatus(action, hTextFlowToBeFilled, tmDetail,
-                            tmResult, oldTarget);
-            comment = buildTargetComment(tmDetail);
-            revisionComment = TranslationUtil.getTMMergeMessage(tmDetail);
-            HTextFlowTarget target = tmSource.getTargets().get(hLocale.getId());
-            entityId = TranslationUtil.getCopiedEntityId(target);
-            entityType = TranslationUtil.getCopiedEntityType(target).getAbbr();
+        switch (tmResult.getMatchType()) {
+            case Imported:
+                TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
+                statusToSet = TransMemoryMergeStatusResolver.newInstance()
+                        .decideStatus(action, tmResult, oldTarget);
+                comment = buildTargetComment(tu);
+                revisionComment = TranslationUtil.getTMMergeMessage(tu);
+                entityId = tu.getId();
+                entityType = EntityType.TMX.getAbbr();
+                break;
+            case TranslatedInternal:
+            case ApprovedInternal:
+                HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
+                TransMemoryDetails tmDetail = translationMemoryServiceImpl
+                        .getTransMemoryDetail(hLocale, tmSource);
+                statusToSet = TransMemoryMergeStatusResolver.newInstance()
+                        .decideStatus(action, hTextFlowToBeFilled, tmDetail,
+                                tmResult, oldTarget);
+                comment = buildTargetComment(tmDetail);
+                revisionComment = TranslationUtil.getTMMergeMessage(tmDetail);
+                HTextFlowTarget target = tmSource.getTargets().get(hLocale.getId());
+                entityId = TranslationUtil.getCopiedEntityId(target);
+                entityType = TranslationUtil.getCopiedEntityType(target).getAbbr();
+                break;
+            default:
+                throw new RuntimeException("unhandled match type: " + tmResult.getMatchType());
         }
         if (statusToSet != null) {
-
             TransUnitUpdateRequest request =
                 new TransUnitUpdateRequest(
                     new TransUnitId(hTextFlowToBeFilled.getId()),
@@ -472,16 +476,16 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     }
 
     private static String buildTargetComment(TransMemoryDetails tmDetail) {
-        return new StringBuilder(commentPrefix).append(" project: ")
-                .append(tmDetail.getProjectName()).append(", version: ")
-                .append(tmDetail.getIterationName()).append(", DocId: ")
-                .append(tmDetail.getDocId()).toString();
+        return commentPrefix + " project: " +
+                tmDetail.getProjectName() + ", version: " +
+                tmDetail.getIterationName() + ", DocId: " +
+                tmDetail.getDocId();
     }
 
     private static String buildTargetComment(TransMemoryUnit tu) {
-        return new StringBuilder(commentPrefix).append(" translation memory: ")
-                .append(tu.getTranslationMemory().getSlug())
-                .append(", unique id: ").append(tu.getUniqueId()).toString();
+        return commentPrefix + " translation memory: " +
+                tu.getTranslationMemory().getSlug() +
+                ", unique id: " + tu.getUniqueId();
     }
 
     private static class NeededEntities {
