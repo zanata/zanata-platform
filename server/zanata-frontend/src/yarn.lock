@@ -805,9 +805,9 @@ ansi-styles@^3.1.0, ansi-styles@^3.2.0:
   dependencies:
     color-convert "^1.9.0"
 
-antd@3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-3.4.0.tgz#ad67872ab3d3e31d32b2b6feabc2fa5f5b27a48e"
+antd@3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-3.4.1.tgz#9f93c712e14d692a3db70fa3f254c79874cd3822"
   dependencies:
     array-tree-filter "^2.0.0"
     babel-runtime "6.x"
@@ -11179,6 +11179,12 @@ trough@^1.0.0:
 tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
+
+ts-import-plugin@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/ts-import-plugin/-/ts-import-plugin-1.4.4.tgz#0c12d99f36429fb29b6c1c2e823acff99f5f411b"
+  dependencies:
+    tslib "^1.9.0"
 
 ts-jest@^22.0.1:
   version "22.0.1"
