@@ -15,15 +15,11 @@ import {
 } from "react-bootstrap";
 import { Button, Tooltip, Icon } from "antd";
 
-export const tooltipSort = (
-  <Tooltip id="tooltipsort">Best match will be chosen based on the priority of
-    selected projects. Exact matches take precendence.
-  </Tooltip>
-)
+export const tooltipSort = <span>Best match will be chosen based on the priority
+  of selected projects. Exact matches take precendence.</span>;
 
 export const DragHandle = SortableHandle(() =>
-  <Icon name="menu" className="n1" parentClassName="drag-handle"
-    title="click to drag" />);
+  <Icon type="bars" className="n1 drag" title="click to drag" />);
 
 interface ItemProps {
   dispatch: (action: any) => void
@@ -83,9 +79,10 @@ class Items extends Component<ItemsProps, {}> {
         <span className="u-textMuted versionMergeTitle-sub">
         (best first)
         </span>
-        <Tooltip placement="top" title={tooltipSort}
-          className='iconInfoVersionMerge'>
-          <Icon type="info-circle-o" />
+        <Tooltip placement="top" title={tooltipSort} trigger="hover">
+          <Button className="btn-xs btn-link iconInfoVersionMerge">
+            <Icon type="info-circle-o" className="s0" />
+          </Button>
         </Tooltip>
         {sortableItems}
       </div>
@@ -114,7 +111,7 @@ class DraggableVersionPanels extends Component<{
       return (
         <span className="no-v text-muted">
           Please select versions to sort<br />
-          <Icon name="version" className="s8" />
+          <Icon type="api" className="s8" />
         </span>
       )
     }
