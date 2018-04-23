@@ -126,35 +126,34 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     }
 
     public List<String> getUserNames(String filter, int offset, int maxResults) {
-        Query query = createQuery(new StringBuilder(
-                "select distinct acc.username from HAccount acc "), filter);
-        query.setMaxResults(maxResults);
-        query.setFirstResult(offset);
-        query.setComment("accountDAO.getUserNames");
+        Query query = createFilteredQuery(
+                "select distinct acc.username from HAccount acc ", filter)
+                .setMaxResults(maxResults)
+                .setFirstResult(offset)
+                .setComment("accountDAO.getUserNames");
         @SuppressWarnings("unchecked")
         List<String> list = query.list();
         return list;
     }
 
     public int getUserCount(String filter) {
-        Query query = createQuery(new StringBuilder(
-                "select count(*) from HAccount acc "), filter);
-        query.setComment("accountDAO.getUserCount");
+        Query query = createFilteredQuery(
+                "select count(*) from HAccount acc ", filter)
+                .setComment("accountDAO.getUserCount");
         return ObjectUtils.firstNonNull((Long) query.uniqueResult(), 0).intValue();
     }
 
-    private Query createQuery(StringBuilder builder, String filter) {
+    private Query createFilteredQuery(String queryBase, String filter) {
         if (!StringUtils.isEmpty(filter)) {
-            builder.append("inner join acc.person as person ")
-                    .append("where lower(acc.username) like :filter ")
-                    .append("OR lower(person.email) like :filter ")
-                    .append("OR lower(person.name) like :filter");
+            queryBase += "inner join acc.person as person " +
+                    "where lower(acc.username) like :filter " +
+                    "OR lower(person.email) like :filter " +
+                    "OR lower(person.name) like :filter";
         }
-        Query query = getSession().createQuery(builder.toString());
+        Query query = getSession().createQuery(queryBase).setCacheable(true);
         if (!StringUtils.isEmpty(filter)) {
             query.setParameter("filter", "%" + filter.toLowerCase() + "%");
         }
-        query.setCacheable(true);
         return query;
     }
 
