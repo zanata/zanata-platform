@@ -33,14 +33,14 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
     if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
       return undefined
     }
-    const modifiedByIcon = isUndefined(lastModifiedBy) ? undefined
-        : <Icon name="user" className="n1" />
-    const modifiedTimeIcon = isUndefined(lastModifiedTime) ? undefined
-        : <Icon name="clock" className="n1" />
-    const modifiedDate = isUndefined(lastModifiedTime) ? undefined
-        : <FormattedDate value={lastModifiedTime} format="medium" />
-    const modifiedTime = isUndefined(lastModifiedTime) ? undefined
-        : <FormattedTime value={lastModifiedTime} />
+    const modifiedByIcon = isUndefined(lastModifiedBy) &&
+      <Icon name="user" className="n1" />
+    const modifiedTimeIcon = isUndefined(lastModifiedTime) &&
+      <Icon name="clock" className="n1" />
+    const modifiedDate = isUndefined(lastModifiedTime) &&
+      <FormattedDate value={lastModifiedTime} format="medium" />
+    const modifiedTime = isUndefined(lastModifiedTime) &&
+      <FormattedTime value={lastModifiedTime} />
     return (
       <span>
         {modifiedByIcon} {lastModifiedBy} {modifiedTimeIcon

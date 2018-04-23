@@ -82,7 +82,6 @@ export const Pager = ({
   pageCount,
   pageNumber
 }) => {
-  // const pageXofY = `${pageNumber} of ${pageCount}`
   const pageXofY = <FormattedMessage
     tagName='option'
     id='Pager.pageXofY'

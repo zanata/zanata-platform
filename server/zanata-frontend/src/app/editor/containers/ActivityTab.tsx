@@ -1,10 +1,9 @@
 import ActivitySelectList from "../components/ActivitySelectList"
-// import LanguageSelectList from "../components/LanguageSelectList"
 import CommentBox from "../components/CommentBox"
 import ActivityFeedItem from "../components/ActivityFeedItem"
 import Pager from "../components/Pager"
 import {
-  ActivityFilter, filterActivityTypes
+  ActivityFilter, ActivityItemList, activityTypes, filterActivityTypes
 } from "../utils/activity-util"
 import { transUnitStatusToPhraseStatus } from "../utils/status-util"
 import { ALL, COMMENTS, UPDATES } from "../utils/activity-util"
@@ -25,18 +24,11 @@ interface ActivityTabProps {
   selectedActivites?: ActivityFilter
 }
 
-// interface FilterItem {
-//   type: string,
-//   content: string,
-//   lastModifiedTime: any,
-//   user: any
-// }
-
-type Filter = (transHistory: any) => any
+type Filter = (transHistory: any) => ActivityItemList
 
 const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) => {
   return {
-    type: "comment",
+    type: activityTypes.comment,
     content: value.comment,
     lastModifiedTime: (new Date(value.creationDate)),
     user: {
@@ -49,7 +41,7 @@ const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) =
 const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map((historyItem) => {
   const lastModified = new Date(historyItem.modifiedDate)
   return {
-    type: "revision",
+    type: activityTypes.revision,
     content: historyItem.contents[0],
     commentText: historyItem.revisionComment,
     lastModifiedTime: lastModified,
@@ -62,7 +54,7 @@ const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map
 })), latest: latestHistoryAsItem(latest)})
 
 const latestHistoryAsItem = (latest) => ({
-  type: "revision",
+  type: activityTypes.revision,
   content: latest.contents[0],
   commentText: latest.revisionComment,
   lastModifiedTime: (new Date(latest.modifiedDate)),
@@ -74,7 +66,7 @@ const latestHistoryAsItem = (latest) => ({
 })
 
 interface Props {
-  ActivityItems?: any,
+  ActivityItems?: ActivityItemList,
   pageCount: number,
   countPerPage: number
 }

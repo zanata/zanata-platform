@@ -77,8 +77,11 @@ class TranslationInfoPanel extends React.Component {
     }
   }
   handleSelectTab (key) {
-    if (key === activityTabKey) this.props.toggleActivity()
-    if (key === glossaryTabKey) this.props.toggleGlossary()
+    if (key === activityTabKey) {
+      this.props.toggleActivity()
+    } else {
+      if (key === glossaryTabKey) this.props.toggleGlossary()
+    }
     this.setState({ key })
   }
   selectActivityTypeFilter (activityFilterType) {
