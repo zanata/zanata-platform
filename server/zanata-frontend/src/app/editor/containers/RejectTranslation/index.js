@@ -58,9 +58,7 @@ export class RejectTranslation extends Component {
       })
     }))
   }
-  onCriteriaChange = (event) => {
-    const selectedCriteria = this.props.criteriaList.find(
-      x => x.description === event.target.innerText)
+  onCriteriaChange = (selectedCriteria) => {
     this.setState(prevState => ({
       review: update(prevState.review, {
         criteriaDescription: {$set: selectedCriteria.description},

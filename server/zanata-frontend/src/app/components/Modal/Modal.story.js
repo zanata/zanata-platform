@@ -2,7 +2,10 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { Modal, Button } from 'antd'
+import Modal from 'antd/lib/modal'
+// import 'antd/lib/modal/style/index.less'
+import Button from 'antd/lib/button'
+// import 'antd/lib/button/style/index.less'
 
 storiesOf('Modal', module)
   .add('default', () => (
