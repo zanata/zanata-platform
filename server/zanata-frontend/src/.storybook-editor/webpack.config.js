@@ -1,2 +1,2 @@
-/* build from the master config specifying storybook */
-module.exports = require('../webpack.config.js')({ buildtype: 'storybook' })
+/* build from the webpack config for storybook */
+module.exports = require('../webpack.config.storybook.js')({ buildtype: 'storybook' })
