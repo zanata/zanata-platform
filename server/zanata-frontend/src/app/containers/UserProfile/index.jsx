@@ -102,7 +102,10 @@ class UserProfile extends Component {
                 {username}
               </li>
               {email &&
-              (<span className='userProfile-email'>{email}</span>)}
+              (<li className='u-flexCenter' id='profileEmail'>
+                <Icon name='mail' className='s0' title='Email' />
+                {email}
+              </li>)}
               {languageTeams &&
               (<li id='profileLanguages'>
                 <Icon name='language' className='s0' title='Spoken languages'
