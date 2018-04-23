@@ -8,14 +8,6 @@ var _ = require('lodash')
 // var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 
-/**
- * Helper so we can use ternary with undefined to not specify a key
- * @param {any} obj
- */
-function dropUndef (obj) {
-  return _(obj).omitBy(_.isNil).value()
-}
-
 var postCssLoader = {
   loader: 'postcss-loader',
   options: {
@@ -29,37 +21,19 @@ var postCssLoader = {
   }
 }
 
-/**
- * To set env on command line:
- *   webpack --env.buildtype=storybook
- *
- * To set env in build scripts, just pass it as a normal function argument:
- *   import createConfig from '../webpack.config'
- *   const config = createConfig({ buildtype: 'storybook' })
- *
- * Valid buildtype settings: storybook.
- *
- * More info:
- *   https://blog.flennik.com/the-fine-art-of-the-webpack-2-config-dc4d19d7f172
- * @param {any} env
- * @param {boolean=} isEditor
- * @param {number=} devServerPort
- */
-module.exports = function (env, isEditor, devServerPort) {
-  const distDir = isEditor ? 'dist.editor' : 'dist'
-
+module.exports = function () {
   require.extensions['.css'] = () => {
     return
   }
 
-  return dropUndef({
-    entry: dropUndef({
+  return {
+    entry: {
       'frontend': './app/entrypoint/index',
       'editor': './app/editor/entrypoint/index.js'
-    }),
+    },
 
     output: {
-      path: join(__dirname, distDir),
+      path: join(__dirname, 'dist'),
       filename: '[name].js',
       chunkFilename: '[name].js',
       publicPath: `http://localhost:9001`
@@ -123,22 +97,6 @@ module.exports = function (env, isEditor, devServerPort) {
     },
 
     plugins: _.compact([
-      // This makes it easier to see if watch has picked up changes yet.
-      // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
-      // There's probably a config option for this (stats?) but I can't find it.
-      function () {
-        this.plugin('watch-run',
-          /**
-           * @param {any} _watching
-           * @param {any} callback
-           */
-          function (_watching, callback) {
-            // eslint-disable-next-line no-console
-            console.log('Begin compile at ' + new Date())
-            callback()
-          })
-      },
-
       // TODO: Include react-itnl I18n messages in Storybook
       // Convert source (en) and translated strings to the format the app
       // can consume, in the dist directory.
@@ -154,7 +112,6 @@ module.exports = function (env, isEditor, devServerPort) {
       //     }
       //   }
       // ]),
-
       new ManifestPlugin()
     ]),
 
@@ -175,5 +132,5 @@ module.exports = function (env, isEditor, devServerPort) {
     bail: false,
 
     devtool: 'eval-source-map'
-  })
+  }
 }
