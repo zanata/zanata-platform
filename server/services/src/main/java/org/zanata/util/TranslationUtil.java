@@ -59,10 +59,8 @@ public class TranslationUtil {
      */
     public static void copyEntity(@Nonnull ITextFlowTargetHistory copyFrom,
         @Nonnull ITextFlowTargetHistory copyTo) {
-        if (copyFrom != null && copyTo != null) {
-            copyTo.setCopiedEntityType(getCopiedEntityType(copyFrom));
-            copyTo.setCopiedEntityId(getCopiedEntityId(copyFrom));
-        }
+        copyTo.setCopiedEntityType(getCopiedEntityType(copyFrom));
+        copyTo.setCopiedEntityId(getCopiedEntityId(copyFrom));
     }
 
     /**
@@ -73,7 +71,7 @@ public class TranslationUtil {
      *
      * @param tft - HTextFlowTarget to copy from
      */
-    public static final String getMergeTranslationMessage(
+    public static String getMergeTranslationMessage(
         HTextFlowTarget tft) {
         HDocument document = tft.getTextFlow().getDocument();
         return generateAutoCopiedMessage(PREFIX_MERGE_VERSION,
@@ -89,7 +87,7 @@ public class TranslationUtil {
      *
      * @param tft - HTextFlowTarget to copy from
      */
-    public static final String getCopyTransMessage(HTextFlowTarget tft) {
+    public static String getCopyTransMessage(HTextFlowTarget tft) {
         HDocument document = tft.getTextFlow().getDocument();
         return generateAutoCopiedMessage(PREFIX_COPY_TRANS,
             document.getProjectIteration()
@@ -104,7 +102,7 @@ public class TranslationUtil {
      *
      * @param tft - HTextFlowTarget to copy from
      */
-    public static final String getCopyVersionMessage(HTextFlowTarget tft) {
+    public static String getCopyVersionMessage(HTextFlowTarget tft) {
         HDocument document = tft.getTextFlow().getDocument();
         return generateAutoCopiedMessage(PREFIX_COPY_VERSION,
             document.getProjectIteration().getProject().getName(),
@@ -119,17 +117,13 @@ public class TranslationUtil {
      *
      * @param tu
      */
-    public static final String getTMMergeMessage(TransMemoryUnit tu) {
-        StringBuilder comment = new StringBuilder();
-
-        comment.append(PREFIX_TM_MERGE)
-            .append(": translation copied from translation memory '")
-            .append(tu.getTranslationMemory().getSlug())
-            .append("', description '")
-            .append(tu.getTranslationMemory().getDescription())
-            .append("'");
-
-        return comment.toString();
+    public static String getTMMergeMessage(TransMemoryUnit tu) {
+        return PREFIX_TM_MERGE +
+                ": translation copied from translation memory '" +
+                tu.getTranslationMemory().getSlug() +
+                "', description '" +
+                tu.getTranslationMemory().getDescription() +
+                "'";
     }
 
     /**
@@ -138,7 +132,7 @@ public class TranslationUtil {
      *
      * @param tmDetails
      */
-    public static final String getTMMergeMessage(TransMemoryDetails tmDetails) {
+    public static String getTMMergeMessage(TransMemoryDetails tmDetails) {
         return generateAutoCopiedMessage(PREFIX_TM_MERGE,
             tmDetails.getProjectName(),
             tmDetails.getIterationName(), tmDetails.getDocId(),
@@ -152,7 +146,7 @@ public class TranslationUtil {
         return null;
     }
 
-    private static final String generateAutoCopiedMessage(String prefix,
+    private static String generateAutoCopiedMessage(String prefix,
         String projectName, String versionSlug, String docId, String author) {
         StringBuilder comment = new StringBuilder();
 
@@ -171,28 +165,35 @@ public class TranslationUtil {
         return comment.toString();
     }
 
+    /**
+     * Returns the entity ID for the original entity (if 'from' is itself
+     * a copy) or for 'from' (if not a copy)
+     * @param from
+     * @return
+     */
     public static Long getCopiedEntityId(@Nonnull ITextFlowTargetHistory from) {
-        if (from == null) {
-            return null;
-        }
         return from.getCopiedEntityId() == null ? from.getId() : from
                 .getCopiedEntityId();
     }
 
+    /**
+     * Returns the entity type for the original entity (if 'from' is itself
+     * a copy) or for 'from' (if not a copy)
+     * @param from
+     * @return
+     */
     @Nullable
     public static EntityType getCopiedEntityType(
         @Nonnull ITextFlowTargetHistory from) {
-        if (from != null) {
-            if(from.getCopiedEntityType() != null) {
-                return from.getCopiedEntityType();
-            } else {
-                if(from instanceof HTextFlowTarget) {
-                    return EntityType.HTexFlowTarget;
-                } else if(from instanceof HTextFlowTargetHistory) {
-                    return EntityType.HTextFlowTargetHistory;
-                }
+        if (from.getCopiedEntityType() != null) {
+            return from.getCopiedEntityType();
+        } else {
+            if (from instanceof HTextFlowTarget) {
+                return EntityType.HTexFlowTarget;
+            } else if (from instanceof HTextFlowTargetHistory) {
+                return EntityType.HTextFlowTargetHistory;
             }
+            throw new RuntimeException("unexpected type " + from.getClass());
         }
-        return null;
     }
 }
