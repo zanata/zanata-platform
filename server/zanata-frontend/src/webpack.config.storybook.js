@@ -7,6 +7,7 @@ var join = require('path').join
 var _ = require('lodash')
 // var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
+const tsImportPluginFactory = require('ts-import-plugin')
 
 var postCssLoader = {
   loader: 'postcss-loader',
@@ -46,7 +47,21 @@ module.exports = function () {
           test: /\.(j|t)sx?$/,
           exclude: /node_modules/,
           include: join(__dirname, 'app'),
-          loader: 'awesome-typescript-loader'
+          loader: 'awesome-typescript-loader',
+          // load antd through modular import plugin
+          options: {
+            transpileOnly: true,
+            getCustomTransformers: () => ({
+              before: [ tsImportPluginFactory({
+                libraryName: 'antd',
+                libraryDirectory: 'es',
+                style: 'css'
+              }) ]
+            }),
+            compilerOptions: {
+              module: 'es2015'
+            }
+          }
         },
 
         /* Bundles all the css and allows use of various niceties, including
