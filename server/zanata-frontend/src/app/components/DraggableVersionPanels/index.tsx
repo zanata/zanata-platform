@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import React from "react";
 import { Component } from "react";
-import {Icon, LockIcon} from "../../components";
+import {LockIcon} from "../../components";
 import { FromProjectVersion, FromProjectVersionType
 } from "../../utils/prop-types-util";
 import {
@@ -12,10 +12,8 @@ import {
 import {
   ListGroup,
   ListGroupItem,
-  Tooltip,
-  OverlayTrigger
 } from "react-bootstrap";
-import { Button } from "antd";
+import { Button, Tooltip, Icon } from "antd";
 
 export const tooltipSort = (
   <Tooltip id="tooltipsort">Best match will be chosen based on the priority of
@@ -85,10 +83,10 @@ class Items extends Component<ItemsProps, {}> {
         <span className="u-textMuted versionMergeTitle-sub">
         (best first)
         </span>
-        <OverlayTrigger placement="top" overlay={tooltipSort}>
-          <Icon name="info" className="s0"
-            parentClassName="iconInfoVersionMerge" />
-        </OverlayTrigger>
+        <Tooltip placement="top" title={tooltipSort}
+          className='iconInfoVersionMerge'>
+          <Icon type="info-circle-o" />
+        </Tooltip>
         {sortableItems}
       </div>
     )
