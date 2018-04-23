@@ -79,7 +79,7 @@
     <include.test.patterns>${default.test.patterns}</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
-    <!-- This may be changed by the SMTP_PORT profile -->
+    <!-- This may be changed by the MAIL_PORT profile -->
     <smtp.port>2552</smtp.port>
     <jndi-remote-client.groupId>org.wildfly.core</jndi-remote-client.groupId>
     <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
@@ -850,14 +850,14 @@
     </profile>
 
     <profile>
-      <id>SMTP_PORT</id>
+      <id>MAIL_PORT</id>
       <activation>
         <property>
-          <name>env.SMTP_PORT</name>
+          <name>env.MAIL_PORT</name>
         </property>
       </activation>
       <properties>
-        <smtp.port>${env.SMTP_PORT}</smtp.port>
+        <smtp.port>${env.MAIL_PORT}</smtp.port>
       </properties>
     </profile>
   </profiles>
