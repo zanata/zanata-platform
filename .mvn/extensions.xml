@@ -17,18 +17,6 @@
     <version>0.8.3</version>
   </extension>
  -->
-  <!-- Enable Takari's Smart Builder -->
-  <extension>
-    <groupId>io.takari.maven</groupId>
-    <artifactId>takari-smart-builder</artifactId>
-    <version>0.5.0</version>
-  </extension>
-  <!-- Enable faster downloads -->
-  <extension>
-    <groupId>io.takari.aether</groupId>
-    <artifactId>aether-connector-okhttp</artifactId>
-    <version>0.16.0</version>
-  </extension>
   <!-- Enable build profiling.
        Run mvn with -Dbuildtime.output.log to see timings in the Maven log.
        NB: may give odd timings when running multi-threaded
