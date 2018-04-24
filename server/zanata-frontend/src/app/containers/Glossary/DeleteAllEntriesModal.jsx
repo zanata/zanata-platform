@@ -2,9 +2,8 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import * as ReactDOM from 'react-dom'
-import { LoaderText, Icon } from '../../components'
-import { Button, Tooltip, Overlay } from 'react-bootstrap'
+import { LoaderText } from '../../components'
+import { Button, Tooltip } from 'antd'
 
 /**
  * Confirmation modal dialog for delete all glossary entries
@@ -24,47 +23,41 @@ class DeleteAllEntriesModal extends Component {
       handleDeleteAllEntriesDisplay,
       handleDeleteAllEntries
     } = this.props
-
+    const deleteAll = (
+      <span>
+        <p>
+        Are you sure you want to delete&nbsp;
+          <strong>all entries</strong>&nbsp;?
+        </p>
+        <span className='button-spacing'>
+          <Button className='btn-default btn-sm'
+            onClick={() => handleDeleteAllEntriesDisplay(false)}>
+            Cancel
+          </Button>
+          <Button className='btn-sm btn-danger' type='button'
+            disabled={isDeleting}
+            onClick={() => handleDeleteAllEntries}>
+            <LoaderText loading={isDeleting} size='n1'
+              loadingText='Deleting'>
+              Delete
+            </LoaderText>
+          </Button>
+        </span>
+      </span>
+    )
     /* eslint-disable react/jsx-no-bind */
     return (
       <div className='u-block'>
-        <Overlay
+        <Tooltip
           placement='bottom'
-          target={() => ReactDOM.findDOMNode(this)}
-          rootClose
-          className='bstrapReact'
-          show={show}
-          onHide={() => handleDeleteAllEntriesDisplay(false)}>
-          <Tooltip id='delete-entries' title='Delete all glossary entries'
-            className='bstrapReact'>
-            <p>
-              Are you sure you want to delete&nbsp;
-              <strong>all entries</strong>&nbsp;?
-            </p>
-            <span className='button-spacing'>
-              <Button bsStyle='default' className='btn-sm'
-                onClick={() => handleDeleteAllEntriesDisplay(false)}>
-                Cancel
-              </Button>
-              <Button bsStyle='danger' className='btn-sm' type='button'
-                disabled={isDeleting}
-                onClick={handleDeleteAllEntries}>
-                <LoaderText loading={isDeleting} size='n1'
-                  loadingText='Deleting'>
-                  Delete
-                </LoaderText>
-              </Button>
-            </span>
-          </Tooltip>
-        </Overlay>
-        <Button bsStyle='link' type='button'
-          onClick={() => handleDeleteAllEntriesDisplay(true)}
-          disabled={isDeleting}>
-          <span>
-            <Icon name='trash' className='s1' parentClassName='iconDelete' />
+          visible={show}
+          title={deleteAll}>
+          <Button className='btn-link icon-delete' type='button'
+            onClick={() => handleDeleteAllEntriesDisplay(true)}
+            disabled={isDeleting} icon='delete'>
             <span className='hidden-lesm'>Delete</span>
-          </span>
-        </Button>
+          </Button>
+        </Tooltip>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */

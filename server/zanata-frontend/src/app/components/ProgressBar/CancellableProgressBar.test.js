@@ -44,7 +44,7 @@ describe('CancellableProgressBar', () => {
     )).toEqual(ReactDOMServer.renderToStaticMarkup(
       <div className='bstrapReact'>
         <ProgressBar now={0}label={' 0%'} />
-        <button disabled type='button' className='btn-danger btn btn-primary'>
+        <button disabled type='button' className='btn-danger btn'>
           Cancel TM Merge
         </button>
       </div>

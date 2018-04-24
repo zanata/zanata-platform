@@ -13,10 +13,13 @@ import {
   ListGroup,
   ListGroupItem,
 } from "react-bootstrap";
-import { Button, Tooltip, Icon } from "antd";
+import Button from 'antd/lib/button';
+import Icon from 'antd/lib/icon';
+import Tooltip from 'antd/lib/tooltip';
+import 'antd/lib/tooltip/style/';
+import Layout from 'antd/lib/layout'
 
-export const tooltipSort = <span>Best match will be chosen based on the priority
-  of selected projects. Exact matches take precendence.</span>;
+export const tooltipSort = <span>Best match</span>;
 
 export const DragHandle = SortableHandle(() =>
   <Icon type="bars" className="n1 drag" title="click to drag" />);
@@ -73,6 +76,7 @@ class Items extends Component<ItemsProps, {}> {
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
+        <Layout>
         <span className="versionMergeTitle-adjusted VersionMergeTitle">
         Adjust priority of selected versions
         </span><br />
@@ -85,6 +89,7 @@ class Items extends Component<ItemsProps, {}> {
           </Button>
         </Tooltip>
         {sortableItems}
+        </Layout>
       </div>
     )
   }

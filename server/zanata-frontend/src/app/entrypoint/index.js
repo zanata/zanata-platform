@@ -14,7 +14,6 @@ import rootReducer from '../reducers'
 import Root from '../containers/Root'
 
 import '../editor/index.css'
-import '../styles/antd.less'
 import '../styles/style.less'
 
 WebFont.load({

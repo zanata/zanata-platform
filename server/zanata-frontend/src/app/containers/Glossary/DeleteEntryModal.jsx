@@ -55,7 +55,7 @@ class DeleteEntryModal extends Component {
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='button' className='btn-sm'
+              <Button type='button' className='btn-sm'
                 disabled={isDeleting}
                 onClick={() => {
                   handleDeleteEntry(entry.id)
