@@ -25,17 +25,17 @@ class DeleteAllEntriesModal extends Component {
     } = this.props
     const deleteAllEntries = () => handleDeleteAllEntriesDisplay(false)
     const deleteAll = (
-      <span>
+      <span className='tc'>
         <p>
         Are you sure you want to delete&nbsp;
           <strong>all entries</strong>&nbsp;?
         </p>
-        <span className='button-spacing'>
-          <Button className='btn-default btn-sm'
+        <span className='tc'>
+          <Button className='btn-default btn-sm mr2'
             onClick={deleteAllEntries}>
             Cancel
           </Button>
-          <Button className='btn-sm btn-danger' type='button'
+          <Button type='danger' className='btn-sm btn-danger'
             disabled={isDeleting}
             onClick={handleDeleteAllEntries}>
             <LoaderText loading={isDeleting} size='n1'
@@ -50,9 +50,10 @@ class DeleteAllEntriesModal extends Component {
     return (
       <div className='u-block'>
         <Tooltip
-          placement='bottom'
+          placement='left'
           visible={show}
-          title={deleteAll}>
+          title={deleteAll}
+          arrowPointAtCenter>
           <Button className='btn-link icon-delete' type='button'
             onClick={() => handleDeleteAllEntriesDisplay(true)}
             disabled={isDeleting} icon='delete'>
