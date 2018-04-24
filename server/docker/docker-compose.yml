@@ -22,8 +22,8 @@ services:
       - zanatadb
     environment:
       DB_HOSTNAME: zanatadb
-      DB_NAME: zanata
-      DB_USER: zanata
+      DB_SCHEMA: zanata
+      DB_USERNAME: zanata
       DB_PASSWORD: zanatapw
       # TODO MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
       PREPEND_JAVA_OPTS: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata"
