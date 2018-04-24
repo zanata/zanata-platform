@@ -5,12 +5,12 @@ import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
-import Icon from '../../components/Icon'
-import {Button, Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
+import {Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
+import { Button, Layout } from 'antd'
 
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
@@ -62,41 +62,42 @@ class AdminReview extends Component {
     const notificationBar = notification &&
       <Alert bsStyle='danger'>{notification}</Alert>
     return <div className='container centerWrapper' id='admin-review'>
-      <Breadcrumb>
-        <Breadcrumb.Item href='home'>
-          Administration
-        </Breadcrumb.Item>
-      </Breadcrumb>
-      {notificationBar}
-      <h1>Reject translations settings</h1>
-      <p className='lead'>Set the translation rejection criteria to be used
-        in the editor. Start by adding your first 'new rejection criteria
-      entry' and add as many criteria as you require.</p>
-      <Well bsSize='lg'><h2>Example criteria</h2>
-        <hr />
-        <ul>
-          <li><strong>Translation Errors</strong>: terminology, mistranslated,
-          addition, omission, un-localized, do not translate, etc</li>
-          <li><strong>Language Quality</strong>: grammar, spelling,
-            punctuation, typo, ambiguous wording, product name,
-            sentence structuring, readability, word choice, not natural,
-          too literal, style and tone, etc</li>
-          <li><strong>Style Guide and Glossary Violations</strong></li>
-          <li><strong>Consistency</strong>: inconsistent style or vocabulary,
-          brand inconsistency, etc.</li>
-          <li><strong>Format</strong>: mismatches, white-spaces, tag error
-            or missing, special character, numeric format, truncated,
-          etc.</li>
-        </ul>
-      </Well>
-      {criteriaList}
-      {newEntryForm}
-      <div className='rejection-btns'>
-        <Button bsStyle='primary' className='btn-left'
-          onClick={this.showAddNewEntryForm}>
-          <Icon name='plus' className='s1' /> New review criteria entry
-        </Button>
-      </div>
+      <Layout>
+        <Breadcrumb>
+          <Breadcrumb.Item href='home'>
+            Administration
+          </Breadcrumb.Item>
+        </Breadcrumb>
+        {notificationBar}
+        <h1>Reject translations settings</h1>
+        <p className='lead'>Set the translation rejection criteria to be used
+          in the editor. Start by adding your first 'new rejection criteria
+        entry' and add as many criteria as you require.</p>
+        <Well bsSize='lg'><h2>Example criteria</h2>
+          <hr />
+          <ul>
+            <li><strong>Translation Errors</strong>: terminology, mistranslated,
+            addition, omission, un-localized, do not translate, etc</li>
+            <li><strong>Language Quality</strong>: grammar, spelling,
+              punctuation, typo, ambiguous wording, product name,
+              sentence structuring, readability, word choice, not natural,
+            too literal, style and tone, etc</li>
+            <li><strong>Style Guide and Glossary Violations</strong></li>
+            <li><strong>Consistency</strong>: inconsistent style or vocabulary,
+            brand inconsistency, etc.</li>
+            <li><strong>Format</strong>: mismatches, white-spaces, tag error
+              or missing, special character, numeric format, truncated,
+            etc.</li>
+          </ul>
+        </Well>
+        {criteriaList}
+        {newEntryForm}
+        <div className='rejection-btns'>
+          <Button type="primary" icon="plus"
+            onClick={this.showAddNewEntryForm()}>
+          New review criteria entry</Button>
+        </div>
+      </Layout>
     </div>
   }
 }
