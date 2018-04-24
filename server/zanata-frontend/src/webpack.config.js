@@ -4,7 +4,6 @@
  */
 
 var webpack = require('webpack')
-var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -31,17 +30,7 @@ var postCssLoader = {
       require('postcss-import')(),
       require('postcss-url')(),
       require('postcss-cssnext')(),
-      require('postcss-reporter')(),
-      autoprefixer({
-        browsers: [
-          'Explorer >= 9',
-          'last 2 Chrome versions',
-          'last 2 Firefox versions',
-          'last 2 Safari versions',
-          'last 2 iOS versions',
-          'Android 4'
-        ]
-      })
+      require('postcss-reporter')()
     ]
   }
 }
