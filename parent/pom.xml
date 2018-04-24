@@ -893,6 +893,14 @@
           </plugin>
         </plugins>
       </build>
+      <dependencies>
+        <!-- nexus-staging-maven-plugin need this one -->
+        <dependency>
+          <groupId>org.sonatype.aether</groupId>
+          <artifactId>aether-api</artifactId>
+          <version>1.13.1</version>
+        </dependency>
+      </dependencies>
     </profile>
 
     <profile>
