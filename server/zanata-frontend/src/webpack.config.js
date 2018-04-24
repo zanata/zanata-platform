@@ -14,7 +14,7 @@ var ManifestPlugin = require('webpack-manifest-plugin')
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin
-
+const tsImportPluginFactory = require('ts-import-plugin')
 /**
  * Helper so we can use ternary with undefined to not specify a key
  * @param {any} obj
@@ -158,24 +158,27 @@ module.exports = function (env, isEditor, devServerPort) {
             formatter: 'verbose'
           }
         },
-        // antd build
-        storybook ? undefined : {
-          test: /\.js$/,
-          loader: 'babel-loader',
-          exclude: /node_modules(?!\/antd)/,
-          options: {
-            plugins: [
-              ['import', { libraryName: 'antd', style: true }]
-            ]
-          }
-        },
         /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
          */
         {
           test: /\.(j|t)sx?$/,
           exclude: /node_modules/,
           include: join(__dirname, 'app'),
-          loader: 'awesome-typescript-loader'
+          loader: 'awesome-typescript-loader',
+          // load antd through modular import plugin
+          options: {
+            transpileOnly: true,
+            getCustomTransformers: () => ({
+              before: [ tsImportPluginFactory({
+                libraryName: 'antd',
+                libraryDirectory: 'es',
+                style: 'css'
+              }) ]
+            }),
+            compilerOptions: {
+              module: 'es2015'
+            }
+          }
         },
 
         /* TODO:

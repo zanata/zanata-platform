@@ -135,6 +135,7 @@
     "reselect": "3.0.1",
     "storybook-host": "4.1.5",
     "style-loader": "0.19.1",
+    "ts-import-plugin": "^1.4.4",
     "tslint": "^5.9.1",
     "tslint-loader": "^3.5.3",
     "typescript": "^2.8.1",
@@ -144,7 +145,7 @@
     "webpack-merge": "4.1.1"
   },
   "dependencies": {
-    "antd": "3.4.0",
+    "antd": "3.4.1",
     "awesome-typescript-loader": "^3.4.1",
     "babel-plugin-import": "1.7.0",
     "babel-polyfill": "6.9.1",
