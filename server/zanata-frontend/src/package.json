@@ -146,7 +146,7 @@
   },
   "dependencies": {
     "antd": "3.4.1",
-    "awesome-typescript-loader": "^3.4.1",
+    "awesome-typescript-loader": "^5.0.0-1",
     "babel-plugin-import": "1.7.0",
     "babel-polyfill": "6.9.1",
     "caniuse-lite": "1.0.30000745",
