@@ -23,6 +23,7 @@ class DeleteAllEntriesModal extends Component {
       handleDeleteAllEntriesDisplay,
       handleDeleteAllEntries
     } = this.props
+    const deleteAllEntries = () => handleDeleteAllEntriesDisplay(false)
     const deleteAll = (
       <span>
         <p>
@@ -31,12 +32,12 @@ class DeleteAllEntriesModal extends Component {
         </p>
         <span className='button-spacing'>
           <Button className='btn-default btn-sm'
-            onClick={() => handleDeleteAllEntriesDisplay(false)}>
+            onClick={deleteAllEntries}>
             Cancel
           </Button>
           <Button className='btn-sm btn-danger' type='button'
             disabled={isDeleting}
-            onClick={() => handleDeleteAllEntries}>
+            onClick={handleDeleteAllEntries}>
             <LoaderText loading={isDeleting} size='n1'
               loadingText='Deleting'>
               Delete
