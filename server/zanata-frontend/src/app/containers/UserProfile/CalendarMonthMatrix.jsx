@@ -5,7 +5,7 @@ import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
 import utilsDate from '../../utils/DateHelper'
-import { Button } from 'react-bootstrap'
+import { Button } from 'antd'
 
 const classes = {
   calendar: {
@@ -94,8 +94,7 @@ const CalendarMonthMatrix = ({
         </div>
         {selectedDay &&
         (<div>
-          <Button bsStyle='link'
-            className='btn-clear'
+          <Button className='btn-link btn-clear'
             onClick={() => handleSelectedDayChanged(null)}>
             Clear selection
           </Button>

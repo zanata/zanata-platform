@@ -100,7 +100,7 @@ not conflict with the other frontend code
 }
 
 .TransUnit-panelFooter .EditorDropdown-content .EditorButton {
-  padding-right: .5rem;
+  padding-right: 0.5rem;
 }
 
 /**

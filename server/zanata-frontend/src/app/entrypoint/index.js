@@ -13,8 +13,10 @@ import { apiMiddleware } from 'redux-api-middleware'
 import rootReducer from '../reducers'
 import Root from '../containers/Root'
 
-import '../styles/style.less'
 import '../editor/index.css'
+import '../../node_modules/tachyons/css/tachyons.min.css'
+import '../styles/antd.less'
+import '../styles/style.less'
 
 WebFont.load({
   google: {

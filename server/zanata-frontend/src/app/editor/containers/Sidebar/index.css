@@ -23,16 +23,27 @@
   --Editor-color-rejected: #FFA800;
 }
 
+/* const height = this.props.headerOpen ? '91%' : '93%'
+const margin = this.props.headerOpen ? '6rem' : '3rem' */
+
 .sidebar-editor {
   border-left: solid 1px var(--Sidebar-border);
   float: right !important;
-  height: 99.5% !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  margin-top: 90px !important;
   position: static !important;
   width: 35%;
   background-color: #fff;
+}
+
+.sidebar-editor-contract {
+  height: 91% !important;
+  margin-top: 6rem !important;
+}
+
+.sidebar-editor-expand {
+  height: 95.3% !important;
+  margin-top: 3rem !important;
 }
 
 .sidebar-editor :focus {
@@ -189,7 +200,7 @@ table th {
 }
 
 table tbody tr {
-  height: 2em;
+  height: 2rem;
 }
 
 table.GlossaryDetails-table {
@@ -197,7 +208,7 @@ table.GlossaryDetails-table {
 }
 
 table.GlossaryDetails-table tbody td {
-  font-size: 1em;
+  font-size: 1rem;
   white-space: inherit;
 }
 
@@ -217,7 +228,7 @@ table.GlossaryDetails-table thead th {
 
 .GlossaryDetails-panel.panel .panel-body {
   height: inherit;
-  max-height: 10em;
+  max-height: 10rem;
   overflow: auto;
 }
 
@@ -240,7 +251,7 @@ table.GlossaryDetails-table thead th {
 }
 
 .icon-comment svg {
-  margin-right: 0.1375em;
+  margin-right: 0.1375rem;
 }
 
 .Glossary-noResults svg, .Search-enterText svg {
@@ -282,7 +293,7 @@ table td button.gButton--link {
   font-style: normal;
   font-weight: 400;
   letter-spacing: normal;
-  line-height: 1.333em;
+  line-height: 1.333rem;
   position: absolute;
   text-align: left;
   text-decoration: none;
@@ -305,7 +316,7 @@ table td button.gButton--link {
 }
 
 .tooltip.top {
-  margin-top: -.75em;
+  margin-top: -0.75rem;
   padding: var(--Sidebar-spacing-small) 0;
 }
 
@@ -315,7 +326,7 @@ table td button.gButton--link {
   border-radius: 3px;
   color: #fff;
   max-width: 15rem;
-  padding: 0.5em;
+  padding: 0.5rem;
   text-align: center;
 }
 
@@ -337,7 +348,7 @@ span.loader span div {
   border-radius: 5px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-  margin-bottom: 1.3em;
+  margin-bottom: 1.3rem;
 }
 
 .panel-default, .well blockquote {
@@ -346,7 +357,7 @@ span.loader span div {
 
 .panel-body {
   color: var(--Sidebar-panel-dark);
-  padding: 0.85em;
+  padding: 0.85rem;
 }
 
 .panel-title {
@@ -359,7 +370,7 @@ span.loader span div {
 .panel.panel-side {
   background-color: #fff !important;
   border: solid 1px var(--Sidebar-border) !important;
-  padding: 0.5em;
+  padding: 0.5rem;
 }
 
 .panel-heading {
@@ -368,14 +379,14 @@ span.loader span div {
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   color: var(--Sidebar-color-highlight);
-  font-size: 1.1em !important;
+  font-size: 1.1rem !important;
   font-weight: 600;
 }
 
 .panel-body h3 {
   color: var(--Sidebar-color-highlight);
   margin-bottom: 0.714rem;
-  margin-top: 0.5em;
+  margin-top: 0.5rem;
 }
 
 .InlineSearch {
@@ -445,7 +456,7 @@ li .checkbox input {
 
 select.SettingsSelect {
   color: var(--Sidebar-color-text);
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
 }
 
 .SidebarActivity {
@@ -581,7 +592,7 @@ h3.SettingsHeading {
 
 @media (max-width: 740px) {
   table td button.Button--link {
-    margin-right: 1em;
+    margin-right: 1rem;
     vertical-align: middle;
   }
 }
