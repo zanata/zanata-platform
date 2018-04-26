@@ -74,6 +74,7 @@ public class LoginAction implements Serializable {
     @Inject
     private UserRedirectBean userRedirect;
     @Inject
+    // TODO get authType from the login form or something; eliminate ApplicationConfiguration.authenticationType()
     private AuthenticationType authenticationType;
     @Inject
     private UrlUtil urlUtil;

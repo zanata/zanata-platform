@@ -1,0 +1,89 @@
+<!--
+  ~ Copyright 2018, Red Hat, Inc. and individual contributors as indicated by the
+  ~  @author tags. See the copyright.txt file in the distribution for a full
+  ~  listing of individual contributors.
+  ~
+  ~  This is free software; you can redistribute it and/or modify it under the
+  ~  terms of the GNU Lesser General Public License as published by the Free
+  ~  Software Foundation; either version 2.1 of the License, or (at your option)
+  ~  any later version.
+  ~
+  ~  This software is distributed in the hope that it will be useful, but WITHOUT
+  ~  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  ~  FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+  ~  details.
+  ~
+  ~  You should have received a copy of the GNU Lesser General Public License
+  ~  along with this software; if not, write to the Free Software Foundation,
+  ~  Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+  ~  site: http://www.fsf.org.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:h="http://java.sun.com/jsf/html">
+
+
+
+  <div class="modal" id="delete-group-confirmation-modal" tabindex="-1"
+    role="dialog" >
+    <div class="modal__dialog l--constrain-medium">
+      <header class="modal__header">
+        <h2 class="modal__title">#{msgs.format('jsf.DeleteConfirmation', 'group', entityName)}</h2>
+        <button class="modal__close button--link" data-dismiss="modal"><i
+          class="i i--huge i--cancel"></i></button>
+      </header>
+
+
+      <h:outputScript>
+        function toggleDeleteButton(textField) {
+          var enabled = textField.value === '#{entityName}';
+          var deleteButton = document.getElementById('#{deleteButton.clientId}');
+          deleteButton.disabled = !enabled;
+          if (enabled) {
+            deleteButton.disabled = false;
+            deleteButton.onclick = function() {
+              runDelete();
+              zanata.modal.hide('#delete-group-confirmation-modal')
+            }
+          }
+        }
+      </h:outputScript>
+      <div class="modal__content">
+        <div class="l--pad-all-1">
+          <div class="message--danger">
+            <h:outputText value="#{msgs['jsf.DeleteConfirmation.Message.prefix']}" />
+            <strong>#{msgs['jsf.DeleteConfirmation.Message.word.permanently']}</strong>
+            <h:outputText value="#{msgs['jsf.DeleteConfirmation.Message.suffix']}" />
+          </div>
+          <div class="l--pad-all-1">
+            <h:outputLabel value="#{msgs.format('jsf.DeleteConfirmation.Prompt', entityName)}" />
+            <h:inputText id="confirmDeleteInput" onkeyup="toggleDeleteButton(this);return true;" />
+          </div>
+        </div>
+      </div>
+
+
+
+      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+        <div class="g--tight">
+          <h:panelGroup layout="block"  styleClass="g__item txt--align-right"
+            id="delete-confirmation-buttons">
+            <div class="bx--inline-block">
+              <button id="cancelDelete" onclick="zanata.modal.hide('#delete-group-confirmation-modal');return false;"
+                class="cancel button--link l--push-right-half" data-dismiss="modal">
+                #{msgs['jsf.Cancel']}
+              </button>
+            </div>
+            <div class="bx--inline-block">
+              <button id="deleteButton" styleClass="button--danger" jsfc="a4j:commandButton" binding="#{deleteButton}" disabled="true"
+                value="#{msgs['jsf.Delete']}"></button>
+            </div>
+          </h:panelGroup>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+</ui:composition>

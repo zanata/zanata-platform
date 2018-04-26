@@ -6,6 +6,9 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
+  <h:form>
+    <a4j:jsFunction name="runDelete" action="#{versionGroupHome.deleteSelf()}" />
+  </h:form>
 <h1>#{msgs['jsf.Settings']}</h1>
 
 <div class="tabs--vertical js-tabs">
@@ -63,33 +66,15 @@
         </div>
         <hr/>
         <h:panelGroup id="status">
-          <ui:fragment
-            rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
-            <p>
-              <a4j:commandLink styleClass="button--danger"
-                action="#{versionGroupHome.setStatus('O')}" render="status">
-                #{msgs['jsf.ArchiveThisGroup']}
-              </a4j:commandLink>
-            </p>
-
-            <p class="txt--meta">#{msgs['jsf.ArchiveGroupMessage']}</p>
-          </ui:fragment>
-
-          <ui:fragment
-            rendered="#{versionGroupHome.instance.status != 'ACTIVE'}">
-            <p>
-              <a4j:commandLink styleClass="button--success"
-                action="#{versionGroupHome.setStatus('A')}" render="status">
-                <i
-                  class="i--left i--archive"></i> #{msgs['jsf.UnArchiveThisGroup']}
-              </a4j:commandLink>
-            </p>
-
-            <p class="txt--meta">
-              <i
-                class="i--left i--archive"></i> #{msgs['jsf.ActivateGroupMessage']}
-            </p>
-          </ui:fragment>
+          <p>
+            <a href="javascript:void(0)" id="button-delete-group"
+               class="button--danger l--push-bottom-half"
+               data-toggle="modal"
+               data-target="#delete-group-confirmation-modal">
+              #{msgs['jsf.DeleteThisGroup']} <i class="i--left i--trash"></i>
+            </a>
+          </p>
+          <p class="txt--meta">#{msgs['jsf.DeleteGroupMessage']}</p>
         </h:panelGroup>
       </div>
     </h:form>
@@ -274,4 +259,7 @@
   </li>
 </ul>
 </div>
+  <ui:include src="/WEB-INF/layout/version-group/delete_group_confirmation_modal.xhtml">
+    <ui:param name="entityName" value="#{versionGroupHome.instance.name}" />
+  </ui:include>
 </ui:composition>
