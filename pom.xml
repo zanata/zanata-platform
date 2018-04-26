@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.4.4-SNAPSHOT</version>
+    <version>4.4.4</version>
     <relativePath>parent</relativePath>
   </parent>
 
@@ -17,7 +17,7 @@
   <scm>
     <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>platform-4.4.4</tag>
   </scm>
 
   <build>
