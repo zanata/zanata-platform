@@ -1,0 +1,5 @@
+// Babel configuration for babel-jest use in Storybook StoryShot tests
+{
+  "presets": ["react", "env", "stage-3"],
+  "plugins": ["transform-class-properties"]
+}

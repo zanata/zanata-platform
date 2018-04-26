@@ -16,6 +16,7 @@
     "\\.(css|less)$": "<rootDir>/__mocks__/cssMock.js"
   },
   "transform": {
+    "\\.js$": "babel-jest",
     "\\.(jsx?|tsx?)$": "ts-jest"
   },
   "testPathIgnorePatterns": [
