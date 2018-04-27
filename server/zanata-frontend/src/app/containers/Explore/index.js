@@ -158,7 +158,7 @@ class Explore extends Component {
             />
             <Button
               className='btn-link' disabled={isEmpty(searchText)}
-              onClick={this.handleClearSearch}>
+              onClick={this.handleClearSearch} aria-label="button">
               Cancel
             </Button>
           </div>

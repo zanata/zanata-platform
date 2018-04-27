@@ -94,7 +94,7 @@ const CalendarMonthMatrix = ({
         </div>
         {selectedDay &&
         (<div>
-          <Button className='btn-link btn-clear'
+          <Button className='btn-link btn-clear' aria-label='button'
             onClick={() => handleSelectedDayChanged(null)}>
             Clear selection
           </Button>
