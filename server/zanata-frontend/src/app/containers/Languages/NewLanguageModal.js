@@ -239,7 +239,7 @@ class NewLanguageModal extends Component {
         <Modal.Footer>
           <span className='bootstrap u-pullRight'>
             <Row>
-              <Button bsStyle='link'
+              <Button className='btn-link'
                 id='btn-new-language-cancel'
                 disabled={saving}
                 onClick={this.handleCancel}>
@@ -249,7 +249,7 @@ class NewLanguageModal extends Component {
                 disabled={saving ||
                   (isEmpty(details.localeId) && isEmpty(query))}
                 id='btn-new-language-save'
-                bsStyle='primary'
+                className='btn-primary'
                 onClick={this.validateDetails}>
                 Save
               </Button>

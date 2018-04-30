@@ -5,8 +5,9 @@ import * as PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
-import { EditableText, Icon, LoaderText } from '../../components'
-import { Button, Row, Table } from 'react-bootstrap'
+import { EditableText, LoaderText } from '../../components'
+import { Row, Table } from 'react-bootstrap'
+import { Button } from 'antd'
 /**
  * Component to display a GlossaryEntry
  */
@@ -89,7 +90,7 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <Button bsSize='small' bsStyle='primary'
+      <Button className='btn-primary btn-sm'
         disabled={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
@@ -166,13 +167,10 @@ class Entry extends Component {
               {termsLoading
                 ? loadingDiv
                 : (<Row className='entry-row'>
-                  <Button bsStyle="link"
-                    className="btn-link-end"
+                  <Button icon="info"
+                    className="btn-link-end btn-link iconInfo-noMargin"
                     disabled={isDeleting}
-                    onClick={() => this.setShowingEntryModal(true)}>
-                    <Icon name='info' className='s1'
-                      parentClassName='iconInfo-noMargin' />
-                  </Button>
+                    onClick={() => this.setShowingEntryModal(true)} />
                   <EntryModal entry={entry}
                     show={this.state.showEntryModal}
                     isSaving={isSaving}
@@ -191,7 +189,7 @@ class Entry extends Component {
                       <Row className='entry-row'>
                         {updateButton}
                         {displayUpdateButton && !isSaving ? (
-                          <Button bsStyle='link' bsSize='small'
+                          <Button className='btn-link btn-sm'
                             onClick={() => handleResetTerm(entry.id)}>
                             Cancel
                           </Button>

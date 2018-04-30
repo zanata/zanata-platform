@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { LoaderText, Modal, Select } from '../../components'
-import { Button } from 'react-bootstrap'
+import { Button } from 'antd'
 
 import {
   glossaryUpdateExportType,
@@ -81,12 +81,12 @@ class ExportModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <div className='u-pullRight'>
-            <Button bsStyle='link'
+            <Button className='btn-link'
               disabled={isExporting}
               onClick={() => handleExportFileDisplay(false)}>
               Cancel
             </Button>
-            <Button bsStyle='primary'
+            <Button className='btn-primary'
               type='button'
               disabled={isExporting}
               onClick={handleExport}>
