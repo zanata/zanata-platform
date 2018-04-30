@@ -6,6 +6,7 @@ import {
 } from '../../utils/reject-trans-util'
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/index.less'
+import 'antd/lib/icon/style/'
 
 /**
  * A Local Editor Dropdown coponent that selects the Criteria

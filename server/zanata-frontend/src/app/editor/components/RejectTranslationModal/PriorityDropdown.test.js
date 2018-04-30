@@ -2,12 +2,24 @@ import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import PriorityDropdown from './PriorityDropdown'
 import { Icon } from '../../../components'
-import Dropdown from '../../components/Dropdown'
 import {
   MINOR, MAJOR, CRITICAL, textState
 } from '../../utils/reject-trans-util'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/index.less'
 
 const defaultClick = () => {}
+const options = [
+  <Select.Option key={1}>
+    <span>Minor</span>
+  </Select.Option>,
+  <Select.Option key={2}>
+    <span className='u-textWarning'>Major</span>
+  </Select.Option>,
+  <Select.Option key={3}>
+    <span className='u-textDanger'>Critical</span>
+  </Select.Option>
+]
 /* global describe it expect */
 describe('PriorityDropdown', () => {
   it('renders minor priority selected markup', () => {
@@ -24,31 +36,12 @@ describe('PriorityDropdown', () => {
         <Icon name='warning' className='s2'
           parentClassName='u-textWarning' />
         <span id='PriorityTitle'>Priority</span>
-        <Dropdown enabled isOpen={false}
-          onToggle={defaultClick}
-          className='dropdown-menu priority'>
-          <Dropdown.Button>
-            <a className='EditorDropdown-item'>
-              <span className={minorStyle}>{MINOR}</span>
-              <span className='arrow'>
-                <Icon className='n1' name='chevron-down' />
-              </span>
-            </a>
-          </Dropdown.Button>
-          <Dropdown.Content>
-            <ul>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span>Minor</span></li>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span className='u-textWarning'>Major</span></li>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span className='u-textDanger'>Critical</span></li>
-            </ul>
-          </Dropdown.Content>
-        </Dropdown>
+        <Select
+          defaultValue={MINOR}
+          style={{ width: '100%' }}
+          onChange={defaultClick}>
+          {options}
+        </Select>
       </span>
     )
     expect(actual).toEqual(expected)
@@ -67,31 +60,13 @@ describe('PriorityDropdown', () => {
         <Icon name='warning' className='s2'
           parentClassName='u-textWarning' />
         <span id='PriorityTitle'>Priority</span>
-        <Dropdown enabled isOpen={false}
-          onToggle={defaultClick}
-          className='dropdown-menu priority'>
-          <Dropdown.Button>
-            <a className='EditorDropdown-item'>
-              <span className={majorStyle}>{MAJOR}</span>
-              <span className='arrow'>
-                <Icon className='n1' name='chevron-down' />
-              </span>
-            </a>
-          </Dropdown.Button>
-          <Dropdown.Content>
-            <ul>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span>Minor</span></li>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span className='u-textWarning'>Major</span></li>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span className='u-textDanger'>Critical</span></li>
-            </ul>
-          </Dropdown.Content>
-        </Dropdown>
+        <Select
+          className={majorStyle}
+          defaultValue={MAJOR}
+          style={{ width: '100%' }}
+          onChange={defaultClick}>
+          {options}
+        </Select>
       </span>
     )
     expect(actual).toEqual(expected)
@@ -110,31 +85,13 @@ describe('PriorityDropdown', () => {
         <Icon name='warning' className='s2'
           parentClassName='u-textWarning' />
         <span id='PriorityTitle'>Priority</span>
-        <Dropdown enabled isOpen={false}
-          onToggle={defaultClick}
-          className='dropdown-menu priority'>
-          <Dropdown.Button>
-            <a className='EditorDropdown-item'>
-              <span className={criticalStyle}>{CRITICAL}</span>
-              <span className='arrow'>
-                <Icon className='n1' name='chevron-down' />
-              </span>
-            </a>
-          </Dropdown.Button>
-          <Dropdown.Content>
-            <ul>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span>Minor</span></li>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span className='u-textWarning'>Major</span></li>
-              <li className='EditorDropdown-item'
-                onClick={defaultClick}>
-                <span className='u-textDanger'>Critical</span></li>
-            </ul>
-          </Dropdown.Content>
-        </Dropdown>
+        <Select
+          className={criticalStyle}
+          defaultValue={CRITICAL}
+          style={{ width: '100%' }}
+          onChange={defaultClick}>
+          {options}
+        </Select>
       </span>
     )
     expect(actual).toEqual(expected)

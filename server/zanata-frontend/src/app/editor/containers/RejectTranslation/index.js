@@ -48,9 +48,8 @@ export class RejectTranslation extends Component {
     super(props)
     this.state = this.defaultState
   }
-  onPriorityChange = (event) => {
-    const selectedPriority = event.target.innerText
-    const priorityIdIndex = priorities.indexOf(event.target.innerText)
+  onPriorityChange = (selectedPriority) => {
+    const priorityIdIndex = priorities.indexOf(selectedPriority)
     this.setState(prevState => ({
       review: update(prevState.review, {
         selectedPriority: {$set: selectedPriority},
