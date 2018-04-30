@@ -51,7 +51,7 @@ class CriteriaDropdown extends Component {
     return (
       <Select
         defaultValue={criteriaDescription}
-        style={{ width: '100%' }}
+        style={{ width: '95%' }}
         onChange={handleChange}>
         {options}
       </Select>

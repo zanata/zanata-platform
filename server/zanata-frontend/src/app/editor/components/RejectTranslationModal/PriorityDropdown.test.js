@@ -38,7 +38,7 @@ describe('PriorityDropdown', () => {
         <span id='PriorityTitle'>Priority</span>
         <Select
           defaultValue={MINOR}
-          style={{ width: '100%' }}
+          style={{ width: 'auto' }}
           onChange={defaultClick}>
           {options}
         </Select>
@@ -63,7 +63,7 @@ describe('PriorityDropdown', () => {
         <Select
           className={majorStyle}
           defaultValue={MAJOR}
-          style={{ width: '100%' }}
+          style={{ width: 'auto' }}
           onChange={defaultClick}>
           {options}
         </Select>
@@ -88,7 +88,7 @@ describe('PriorityDropdown', () => {
         <Select
           className={criticalStyle}
           defaultValue={CRITICAL}
-          style={{ width: '100%' }}
+          style={{ width: 'auto' }}
           onChange={defaultClick}>
           {options}
         </Select>

@@ -25,7 +25,6 @@ class PriorityDropdown extends Component {
   }
   render () {
     const { textState, priority, priorityChange } = this.props
-    console.log(priority)
     const options = [
       <Select.Option key={0} value={MINOR}>
         {MINOR}
@@ -45,7 +44,7 @@ class PriorityDropdown extends Component {
         <Select
           className={textState}
           defaultValue={priority}
-          style={{ width: '100%' }}
+          style={{ width: 'auto' }}
           onChange={priorityChange}>
           {options}
         </Select>

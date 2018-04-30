@@ -42,7 +42,7 @@ describe('CriteriaDropdown', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <Select
         defaultValue={'One'}
-        style={{ width: '100%' }}
+        style={{ width: '95%' }}
         onChange={defaultClick}>
         {options}
       </Select>
