@@ -17,7 +17,6 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -137,10 +136,10 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     }
 
     public int getUserCount(String filter) {
-        Query query = createFilteredQuery(
+        return ((Long) createFilteredQuery(
                 "select count(*) from HAccount acc ", filter)
-                .setComment("accountDAO.getUserCount");
-        return ObjectUtils.firstNonNull((Long) query.uniqueResult(), 0).intValue();
+                .setComment("accountDAO.getUserCount").uniqueResult())
+                .intValue();
     }
 
     private Query createFilteredQuery(String queryBase, String filter) {
