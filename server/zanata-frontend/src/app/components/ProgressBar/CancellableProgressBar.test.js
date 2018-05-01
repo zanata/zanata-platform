@@ -23,8 +23,8 @@ describe('CancellableProgressBar', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className='bstrapReact'>
         <ProgressBar now={0}label={' 0%'} />
-        <button type='button' className='btn-danger btn btn-primary'>
-          Cancel TM Merge
+        <button type='button' className='ant-btn btn-danger ant-btn-danger'>
+          <span>Cancel TM Merge</span>
         </button>
       </div>
     )
@@ -44,8 +44,8 @@ describe('CancellableProgressBar', () => {
     )).toEqual(ReactDOMServer.renderToStaticMarkup(
       <div className='bstrapReact'>
         <ProgressBar now={0}label={' 0%'} />
-        <button disabled type='button' className='btn-danger btn'>
-          Cancel TM Merge
+        <button disabled type='button' className='ant-btn btn-danger ant-btn-danger'>
+          <span>Cancel TM Merge</span>
         </button>
       </div>
     ))

@@ -61,7 +61,7 @@ class CancellableProgressBar extends Component {
         <ProgressBar now={processStatus.percentageComplete}
           label={`${heading} ${processStatus.percentageComplete}%`}
         />
-        <Button className="btn-danger"
+        <Button className='btn-danger' type='danger'
           disabled={isProcessEnded(processStatus)}
           onClick={onCancelOperation}>
           {buttonLabel}
