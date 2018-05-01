@@ -6,7 +6,6 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-// import { Modal } from '../../../components'
 import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'
 import ImportedTMDetailPanel from './ImportedTMDetailPanel'
