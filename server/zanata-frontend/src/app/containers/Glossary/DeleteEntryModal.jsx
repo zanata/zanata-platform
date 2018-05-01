@@ -38,7 +38,7 @@ class DeleteEntryModal extends Component {
     const deleteConfirm = () => handleDeleteEntryDisplay(true)
     const deleteButtons = (
       <span className='button-spacing tc'>
-        <Button className='btn-sm btn-default mt2 mr2' aria-label='button'
+        <Button className='btn-sm btn-default mt3 mr3' aria-label='button'
           onClick={cancelDelete}>
           Cancel
         </Button>

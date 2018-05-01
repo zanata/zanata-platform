@@ -31,7 +31,7 @@ class DeleteAllEntriesModal extends Component {
         Are you sure you want to delete&nbsp;
           <strong>all entries</strong>&nbsp;?
           <br />
-          <Button className='tc btn-default btn-sm mr2' aria-label='button'
+          <Button className='tc btn-default btn-sm mr3 mt3' aria-label='button'
             onClick={deleteAllEntries}>
             Cancel
           </Button>
