@@ -66,7 +66,7 @@ const latestHistoryAsItem = (latest) => ({
 })
 
 interface Props {
-  ActivityItems?: ActivityItemList,
+  ActivityItems: ActivityItemList,
   pageCount: number,
   countPerPage: number
 }
@@ -92,21 +92,23 @@ class ActivityItemsPager extends React.Component<Props, State> {
     const { ActivityItems, pageCount} = this.props
     const { currentPage } = this.state
     const startSlice = currentPage * COUNT_PER_PAGE
-    const PaginatedActivityItems = (isUndefined(ActivityItems))
+    const paginatedActivityItems = ActivityItems
+      .slice(startSlice, startSlice + COUNT_PER_PAGE)
+    const pager = (pageCount <= 1)
       ? DO_NOT_RENDER
-      : ActivityItems.slice(startSlice, startSlice + COUNT_PER_PAGE)
+      : <Pager
+        intl={undefined}
+        firstPage={this.firstPage}
+        previousPage={this.previousPage}
+        nextPage={this.nextPage}
+        lastPage={this.lastPage}
+        pageNumber={currentPage + 1}
+        pageCount={pageCount}
+      />
     return (
       <div>
-        <Pager
-          intl={undefined}
-          firstPage={this.firstPage}
-          previousPage={this.previousPage}
-          nextPage={this.nextPage}
-          lastPage={this.lastPage}
-          pageNumber={currentPage + 1}
-          pageCount={pageCount}
-        />
-        {PaginatedActivityItems}
+        {pager}
+        {paginatedActivityItems}
       </div>
     )
   }
@@ -171,6 +173,13 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
   const pageCount = (isUndefined(ActivityItems))
     ? 0
     : Math.ceil(Object.keys(ActivityItems).length / COUNT_PER_PAGE)
+  const ActivityPager = (isUndefined(ActivityItems))
+    ? DO_NOT_RENDER
+    : <ActivityItemsPager
+      ActivityItems={ActivityItems}
+      pageCount={pageCount}
+      countPerPage={COUNT_PER_PAGE}
+    />
   return (
     <div>
       <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
@@ -179,11 +188,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
       </div>
       <div className="SidebarActivity">
         <CommentBox postComment={postComment} maxLength={commentTextLimit} />
-        <ActivityItemsPager
-          ActivityItems={ActivityItems}
-          pageCount={pageCount}
-          countPerPage={COUNT_PER_PAGE}
-        />
+        {ActivityPager}
       </div>
     </div>
   )
