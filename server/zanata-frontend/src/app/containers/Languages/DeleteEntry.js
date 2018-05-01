@@ -1,10 +1,8 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {
-  Button,
-  Tooltip
-} from 'antd'
+import Button from 'antd/lib/button'
+import Tooltip from 'antd/lib/tooltip'
 
 class DeleteEntry extends Component {
   static propTypes = {
@@ -28,11 +26,12 @@ class DeleteEntry extends Component {
           <strong>{locale.displayName}</strong>?&nbsp;
         </p>
         <span className='button-spacing'>
-          <Button className='btn-default btn-sm'
+          <Button className='btn-default btn-sm' aria-label='button'
             onClick={() => handleDeleteEntryDisplay(false)}>
             Cancel
           </Button>
-          <Button className='btn-danger btn-sm'
+          <Button className='btn-danger btn-sm' type='danger'
+            aria-label='button'
             onClick={() => {
               handleDeleteEntry(locale.localeId)
               handleDeleteEntryDisplay(false)
@@ -48,6 +47,7 @@ class DeleteEntry extends Component {
         <Tooltip placement='top' className='bstrapReact'
           title={deleteLanguage} onVisibleChange={show}>
           <Button className='btn-sm iconCross btn-default' icon='close'
+            aria-label='button'
             onClick={() => handleDeleteEntryDisplay(true)}>
             Delete
           </Button>

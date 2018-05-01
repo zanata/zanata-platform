@@ -3,7 +3,8 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { LoaderText } from '../../components'
-import { Button, Tooltip } from 'antd'
+import Button from 'antd/lib/button'
+import Tooltip from 'antd/lib/tooltip'
 
 /**
  * Confirmation modal dialog for delete all glossary entries
@@ -26,17 +27,17 @@ class DeleteAllEntriesModal extends Component {
     const deleteAllEntries = () => handleDeleteAllEntriesDisplay(false)
     const deleteAll = (
       <span className='tc'>
-        <p>
+        <p className='tc'>
         Are you sure you want to delete&nbsp;
           <strong>all entries</strong>&nbsp;?
         </p>
         <span className='tc'>
-          <Button className='btn-default btn-sm mr2'
+          <Button className='btn-default btn-sm mr2' aria-label='button'
             onClick={deleteAllEntries}>
             Cancel
           </Button>
           <Button type='danger' className='btn-sm btn-danger'
-            disabled={isDeleting}
+            aria-label='button' disabled={isDeleting}
             onClick={handleDeleteAllEntries}>
             <LoaderText loading={isDeleting} size='n1'
               loadingText='Deleting'>
@@ -53,8 +54,9 @@ class DeleteAllEntriesModal extends Component {
           placement='left'
           visible={show}
           title={deleteAll}
+          className='tc'
           arrowPointAtCenter>
-          <Button className='btn-link icon-delete' type='button'
+          <Button className='btn-link icon-delete' aria-label='button'
             onClick={() => handleDeleteAllEntriesDisplay(true)}
             disabled={isDeleting} icon='delete'>
             <span className='hidden-lesm'>Delete</span>

@@ -3,7 +3,7 @@ import { Component } from 'react'
 import { DropdownButton, MenuItem, ProgressBar,
   Nav, NavItem, Well } from 'react-bootstrap'
 import { Icon } from '../../components'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
 
 /**
  * Root component for Sidebar

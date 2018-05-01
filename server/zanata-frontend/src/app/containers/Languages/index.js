@@ -12,7 +12,8 @@ import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
 import {Notification, LoaderText} from '../../components'
-import { Button, Layout } from 'antd'
+import Button from 'antd/lib/button'
+import Layout from 'antd/lib/layout'
 import Icon from 'antd/lib/icon'
 
 import {
@@ -126,7 +127,7 @@ class Languages extends Component {
               </h1>
               {permission.canAddLocale &&
                 <div>
-                  <Button type="primary" icon="plus"
+                  <Button type="primary" icon="plus" aria-label='button'
                     id="btn-language-add-new"
                     onClick={handleOnDisplayNewLanguage}>
                   Add new language</Button>

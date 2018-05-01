@@ -2,9 +2,9 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import * as ReactDOM from 'react-dom'
 import { LoaderText, Icon } from '../../components'
-import { Button, Tooltip, Overlay } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import Tooltip from 'antd/lib/tooltip'
 
 class DeleteEntryModal extends Component {
   static propTypes = {
@@ -30,53 +30,52 @@ class DeleteEntryModal extends Component {
       handleDeleteEntryDisplay,
       handleDeleteEntry
       } = this.props
+    const deleteEntry = () => {
+      handleDeleteEntry(entry.id)
+      handleDeleteEntryDisplay(false)
+    }
+    const cancelDelete = () => handleDeleteEntryDisplay(false)
+    const deleteConfirm = () => handleDeleteEntryDisplay(true)
+    const deleteButtons = (
+      <span className='button-spacing tc'>
+        <Button className='btn-sm btn-default mr2' aria-label='button'
+          onClick={cancelDelete}>
+          Cancel
+        </Button>
+        <Button className='btn-sm btn-danger' aria-label='button'
+          disabled={isDeleting} type='danger'
+          onClick={deleteEntry}>
+          <LoaderText loading={isDeleting} size='n1'
+            loadingText='Deleting'>
+            Delete all
+          </LoaderText>
+        </Button>
+      </span>
+    )
     const info = entry.termsCount > 0 ? (
-      <p>
+      <p className='tc'>
         Are you sure you want to delete this term and&nbsp;
         <strong>{entry.termsCount}</strong>&nbsp;
         {entry.termsCount > 1 ? 'translations' : 'translation'} ?
+        <br />{deleteButtons}
       </p>
-    ) : (<p>Are you sure you want to delete this term?</p>)
+    ) : (<p className='tc'>
+      Are you sure you want to delete this term?<br />{deleteButtons}
+    </p>)
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='u-block bstrapReact'>
-        <Overlay
-          placement='top'
-          target={() => ReactDOM.findDOMNode(this)}
-          rootClose
-          className='bstrapReact'
-          show={show}
-          onHide={() => handleDeleteEntryDisplay(false)}>
-          <Tooltip id='delete-glossary' title='Delete term and translations'
-            className='bstrapReact'>
-            {info}
-            <span className='button-spacing'>
-              <Button bsStyle='default' className='btn-sm'
-                onClick={() => handleDeleteEntryDisplay(false)}>
-                Cancel
-              </Button>
-              <Button type='button' className='btn-sm'
-                disabled={isDeleting}
-                onClick={() => {
-                  handleDeleteEntry(entry.id)
-                  handleDeleteEntryDisplay(false)
-                }}>
-                <LoaderText loading={isDeleting} size='n1'
-                  loadingText='Deleting'>
-                  Delete all
-                </LoaderText>
-              </Button>
-            </span>
-          </Tooltip>
-        </Overlay>
-        <Button bsStyle='link' bsSize='small' className='delete-link'
-          type='button' disabled={isDeleting}
-          onClick={() => handleDeleteEntryDisplay(true)}>
-          <LoaderText loading={isDeleting} loadingText='Deleting'>
-            <Icon name='trash' className='s1' parentClassName='iconDelete' />
-            <span className='hidden-lesm'>Delete</span>
-          </LoaderText>
-        </Button>
+      <div className='u-block bstrapReact tc'>
+        <Tooltip id='delete-glossary' title={info}
+          className='tc' visible={show} placement='left' arrowPointAtCenter>
+          <Button className='delete-link btn-link btn-sm'
+            aria-label='button' disabled={isDeleting}
+            onClick={deleteConfirm}>
+            <LoaderText loading={isDeleting} loadingText='Deleting'>
+              <Icon name='trash' className='s1' parentClassName='iconDelete' />
+              <span className='hidden-lesm'>Delete</span>
+            </LoaderText>
+          </Button>
+        </Tooltip>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */

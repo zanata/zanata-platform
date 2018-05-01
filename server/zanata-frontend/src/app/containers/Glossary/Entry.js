@@ -7,7 +7,7 @@ import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
 import { EditableText, LoaderText } from '../../components'
 import { Row, Table } from 'react-bootstrap'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
 /**
  * Component to display a GlossaryEntry
  */
@@ -90,8 +90,8 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <Button className='btn-primary btn-sm'
-        disabled={isSaving}
+      <Button type='primary' className='btn-primary btn-sm'
+        disabled={isSaving} aria-label='button'
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
           Update
@@ -167,7 +167,7 @@ class Entry extends Component {
               {termsLoading
                 ? loadingDiv
                 : (<Row className='entry-row'>
-                  <Button icon="info"
+                  <Button icon="info" aria-label='button'
                     className="btn-link-end btn-link iconInfo-noMargin"
                     disabled={isDeleting}
                     onClick={() => this.setShowingEntryModal(true)} />
@@ -190,6 +190,7 @@ class Entry extends Component {
                         {updateButton}
                         {displayUpdateButton && !isSaving ? (
                           <Button className='btn-link btn-sm'
+                            aria-label='button'
                             onClick={() => handleResetTerm(entry.id)}>
                             Cancel
                           </Button>

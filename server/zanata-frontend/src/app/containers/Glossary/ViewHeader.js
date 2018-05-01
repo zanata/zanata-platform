@@ -26,7 +26,9 @@ import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
 import {getProjectUrl} from '../../utils/UrlHelper'
-import {Button, Icon} from 'antd'
+import Button from 'antd/lib/button'
+import Icon from 'antd/lib/icon'
+
 /**
  * Header for glossary page
  */
@@ -159,7 +161,7 @@ class ViewHeader extends Component {
               accessibilityLabel='Search Terms'
               defaultValue={filterText}
               onChange={handleFilterFieldUpdate} />
-            <Button className='btn-link iconCross-glossary'
+            <Button className='btn-link iconCross-glossary' aria-label='button'
               icon='close' title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={this.handleClearSearch} />
@@ -167,6 +169,7 @@ class ViewHeader extends Component {
                   {permission.canAddNewEntry && (
                     <div className='glossaryBtn topBtn'>
                       <Button className='btn-link' type='button'
+                        aria-label='button'
                         onClick={() => handleImportFileDisplay(true)}>
                         <Row>
                           <Icon type='upload' className='s1 iconImport' />
@@ -179,6 +182,7 @@ class ViewHeader extends Component {
                   {permission.canDownload && !isEmptyTerms && (
                     <div className='glossaryBtn topBtn'>
                       <Button className='btn-link' type='button'
+                        aria-label='button'
                         onClick={() => handleExportFileDisplay(true)}>
                         <Row>
                           <Icon type='export' className='s1 iconExport' />
@@ -190,7 +194,8 @@ class ViewHeader extends Component {
 
                   {permission.canAddNewEntry && (
                     <div className='glossaryBtn topBtn'>
-                      <Button className='btn-link' onClick={() =>
+                      <Button className='btn-link' aria-label='button'
+                        onClick={() =>
                         handleNewEntryDisplay(true)}>
                         <Row>
                           <Icon type='plus' className='s1 iconPlus2' />
@@ -217,7 +222,7 @@ class ViewHeader extends Component {
               <tr className='tr-flex1'>
                 <td className='td-3'
                   onClick={() => handleSortColumn('src_content')}>
-                  <Button className='btn-link' type='button'>
+                  <Button className='btn-link' aria-label='button'>
                     <Row>
                       {'src_content' in sort
                         ? (sort.src_content === true)
@@ -259,7 +264,7 @@ class ViewHeader extends Component {
                 </td>
                 <td className='hidesmall td-1'
                   onClick={() => handleSortColumn('part_of_speech')}>
-                  <Button className='btn-link' type='button'>
+                  <Button className='btn-link' aria-label='button'>
                     <Row>
                       {'part_of_speech' in sort
                         ? (sort.part_of_speech === true)

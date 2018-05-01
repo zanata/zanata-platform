@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { EditableText, Icon, LoaderText, Modal } from '../../components'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
 
 /**
  * Popup windows to display a glossary entry
@@ -160,8 +160,7 @@ class EntryModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <div className='u-pullRight'>
-
-            <Button className='btn-link'
+            <Button className='btn-link' aria-label='button'
               onClick={
                 () => {
                   handleResetTerm(entry.id); handleEntryModalDisplay(false)
@@ -169,14 +168,13 @@ class EntryModal extends Component {
               }>
               Cancel
             </Button>
-
             {isSaving
-              ? (<Button className='btn-primary'
-                type='button' disabled>
+              ? (<Button className='btn-primary' aria-label='button'
+                type='primary' disabled>
                 <LoaderText loading loadingText='Updating'>Update</LoaderText>
               </Button>)
-              : (<Button className='btn-primary'
-                type='button' onClick={() => handleUpdateTerm(entry)}
+              : (<Button className='btn-primary' aria-label='button'
+                type='primary' onClick={() => handleUpdateTerm(entry)}
                 disabled={!canUpdate}>
                   Update
               </Button>)

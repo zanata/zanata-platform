@@ -2,7 +2,8 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Loader, Icon } from '../../components'
-import { Button, Layout } from 'antd'
+import Button from 'antd/lib/button'
+import Layout from 'antd/lib/layout'
 /**
  * Header with icon and paging for the TeaserList.
  */
@@ -49,7 +50,7 @@ const TeaserListHeader = ({
                 }} />
               <span className='pageCurrent'>{currentPage} of {totalPage}</span>
               <Button icon='right' className='btn-link iconsHeader'
-                disabled={currentPage === totalPage}
+                disabled={currentPage === totalPage} aria-label='button'
                 onClick={() => {
                   updatePage(type, currentPage, totalPage, false)
                 }} />

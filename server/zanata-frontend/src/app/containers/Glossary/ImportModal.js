@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { isEmpty, includes } from 'lodash'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
 
 import {
   LoaderText,
@@ -120,13 +120,13 @@ class ImportModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <div className='u-pullRight'>
-            <Button className='btn-link'
+            <Button className='btn-link' aria-label='button'
               disabled={isUploading}
               onClick={() => handleImportFileDisplay(false)}>
               Cancel
             </Button>
-            <Button className='btn-primary'
-              type='button'
+            <Button className='btn-primary' aria-label='button'
+              type='primary'
               disabled={disableUpload}
               onClick={handleImportFile}>
               <LoaderText loading={isUploading} loadingText='Importing'>

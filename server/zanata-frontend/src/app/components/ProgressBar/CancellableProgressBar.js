@@ -4,7 +4,7 @@ import * as PropTypes from 'prop-types'
 import { ProgressBar } from 'react-bootstrap'
 import { processStatusType } from '../../utils/prop-types-util'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
 
 /**
  * This component can be used to show progress of a background task running on
