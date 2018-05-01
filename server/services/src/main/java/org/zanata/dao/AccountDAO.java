@@ -125,40 +125,35 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     }
 
     public List<String> getUserNames(String filter, int offset, int maxResults) {
-        StringBuilder queryBuilder =
-                new StringBuilder("select username from HAccount ");
-        if (!StringUtils.isEmpty(filter)) {
-            queryBuilder.append("where lower(username) like :filter");
-        }
-        Query query = getSession().createQuery(queryBuilder.toString());
-        if (!StringUtils.isEmpty(filter)) {
-            query.setParameter("filter", "%" + filter.toLowerCase() + "%");
-        }
-        query.setMaxResults(maxResults);
-        query.setFirstResult(offset);
-        query.setCacheable(true);
-        query.setComment("accountDAO.getUserNames");
+        Query query = createFilteredQuery(
+                "select distinct acc.username from HAccount acc ", filter)
+                .setMaxResults(maxResults)
+                .setFirstResult(offset)
+                .setComment("accountDAO.getUserNames");
         @SuppressWarnings("unchecked")
         List<String> list = query.list();
         return list;
     }
 
     public int getUserCount(String filter) {
-        StringBuilder queryBuilder = new StringBuilder("select count(*) from HAccount ");
+        return ((Long) createFilteredQuery(
+                "select count(*) from HAccount acc ", filter)
+                .setComment("accountDAO.getUserCount").uniqueResult())
+                .intValue();
+    }
+
+    private Query createFilteredQuery(String queryBase, String filter) {
         if (!StringUtils.isEmpty(filter)) {
-            queryBuilder.append("where lower(username) like :filter");
+            queryBase += "inner join acc.person as person " +
+                    "where lower(acc.username) like :filter " +
+                    "OR lower(person.email) like :filter " +
+                    "OR lower(person.name) like :filter";
         }
-        Query query = getSession().createQuery(queryBuilder.toString());
+        Query query = getSession().createQuery(queryBase).setCacheable(true);
         if (!StringUtils.isEmpty(filter)) {
             query.setParameter("filter", "%" + filter.toLowerCase() + "%");
         }
-        query.setCacheable(true);
-        query.setComment("accountDAO.getUserCount");
-        Long totalCount = (Long) query.uniqueResult();
-        if (totalCount == null) {
-            return 0;
-        }
-        return totalCount.intValue();
+        return query;
     }
 
     public HAccount getByCredentialsId(String credentialsId) {
