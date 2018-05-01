@@ -26,17 +26,16 @@ class DeleteAllEntriesModal extends Component {
     } = this.props
     const deleteAllEntries = () => handleDeleteAllEntriesDisplay(false)
     const deleteAll = (
-      <span className='tc'>
+      <span>
         <p className='tc'>
         Are you sure you want to delete&nbsp;
           <strong>all entries</strong>&nbsp;?
-        </p>
-        <span className='tc'>
-          <Button className='btn-default btn-sm mr2' aria-label='button'
+          <br />
+          <Button className='tc btn-default btn-sm mr2' aria-label='button'
             onClick={deleteAllEntries}>
             Cancel
           </Button>
-          <Button type='danger' className='btn-sm btn-danger'
+          <Button type='danger' className='tc btn-sm btn-danger'
             aria-label='button' disabled={isDeleting}
             onClick={handleDeleteAllEntries}>
             <LoaderText loading={isDeleting} size='n1'
@@ -44,7 +43,7 @@ class DeleteAllEntriesModal extends Component {
               Delete
             </LoaderText>
           </Button>
-        </span>
+        </p>
       </span>
     )
     /* eslint-disable react/jsx-no-bind */
