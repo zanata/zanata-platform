@@ -1,3 +1,10 @@
+## 4.4.4
+##### Bug Fixes
+ * [ZNTA-2505](https://zanata.atlassian.net/browse/ZNTA-2505) - Release: Missing class  org/sonatype/aether/version/InvalidVersionSpecificationException
+ * [ZNTA-2421](https://zanata.atlassian.net/browse/ZNTA-2421) - Url with selected doc or locale in version page does not reflect in the UI
+
+-----------------------
+
 ## 4.4.3
 ##### Bug Fixes
  * [ZNTA-2371](https://zanata.atlassian.net/browse/ZNTA-2371) - Few version setting options are getting hide if we have more than 2 versions
