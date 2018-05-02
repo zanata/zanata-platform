@@ -3,7 +3,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import {Button} from 'antd'
 storiesOf('Button', module)
-    .add('default', () => (
+    .add('default (no test)', () => (
         <span>
           <Button className='btn-default'>Default</Button>
           <br />
