@@ -17,7 +17,7 @@ import Button from "antd/lib/button";
 import Icon from "antd/lib/icon";
 import Tooltip from "antd/lib/tooltip";
 import "antd/lib/tooltip/style/";
-import Layout from "antd/lib/layout"
+import Layout from "antd/lib/layout";
 
 export const tooltipSort = <span>Best match</span>;
 
