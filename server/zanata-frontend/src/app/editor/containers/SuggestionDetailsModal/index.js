@@ -12,7 +12,7 @@ import ImportedTMDetailPanel from './ImportedTMDetailPanel'
 import PlainSuggestionContents from './PlainSuggestionContents'
 import { matchType } from '../../utils/suggestion-util'
 import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/index.less'
+import 'antd/lib/modal/style/css'
 
 class SuggestionDetailsModal extends Component {
   static propTypes = {

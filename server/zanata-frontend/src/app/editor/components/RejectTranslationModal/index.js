@@ -8,13 +8,14 @@ import {
   MINOR, MAJOR, CRITICAL, textState
 } from '../../utils/reject-trans-util'
 import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/index.less'
+import 'antd/lib/modal/style/css'
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/index.less'
+import 'antd/lib/button/style/css'
 import Row from 'antd/lib/row'
-import 'antd/lib/row/style/'
+import 'antd/lib/row/style/css'
 import Col from 'antd/lib/col'
-import 'antd/lib/col/style/'
+import 'antd/lib/col/style/css'
+
 /*
  * RejectTranslationModal for reviewer rejecting translations feature.
  */
@@ -73,7 +74,11 @@ const RejectTranslationModal = ({
         <Button key='back' onClick={onHideResetState}>
           Cancel
         </Button>,
-        <Button key='ok' onClick={saveTransReview} disabled={cantReject}>
+        <Button
+          key='ok'
+          type='danger'
+          onClick={saveTransReview}
+          disabled={cantReject}>
           Reject translation
         </Button>]}>
       {criteriaTile}

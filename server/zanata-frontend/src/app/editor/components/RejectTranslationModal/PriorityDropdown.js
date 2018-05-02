@@ -4,8 +4,7 @@ import { Icon } from '../../../components'
 import * as PropTypes from 'prop-types'
 import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 import Select from 'antd/lib/select'
-import 'antd/lib/select/style/index.less'
-import 'antd/lib/icon/style/'
+import 'antd/lib/select/style/css'
 
 /**
  * A Local Editor Dropdown coponent that selects the Priority of a

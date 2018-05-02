@@ -7,7 +7,7 @@ import { Icon, LoaderText } from '../../../components'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
 import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/index.less'
+import 'antd/lib/modal/style/css'
 
 /**
  * Modal to show detail for a single glossary term
