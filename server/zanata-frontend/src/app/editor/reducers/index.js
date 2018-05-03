@@ -66,6 +66,8 @@ export const getSidebarVisible = createSelector(
 export const getSidebarTab = createSelector(getUi, uiSelectors.getSidebarTab)
 export const getShowSettings = createSelector(
   getUi, uiSelectors.getShowSettings)
+export const getActivityVisible = createSelector(
+  getUi, uiSelectors.getActivityVisible)
 export const getGlossaryVisible = createSelector(
   getUi, uiSelectors.getGlossaryVisible)
 export const getInfoPanelVisible = createSelector(

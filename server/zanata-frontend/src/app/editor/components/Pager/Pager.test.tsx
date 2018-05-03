@@ -5,22 +5,29 @@ import * as ReactDOMServer from 'react-dom/server'
 import { mount } from 'enzyme'
 import { Pager } from '.'
 import { Icon } from '../../../components'
-import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
+import { IntlProvider } from 'react-intl'
 
 // tslint:disable-next-line:no-empty
 const callback = () => {}
 
 describe('PagerTest', () => {
   it('Pager markup', () => {
-    const actual = ReactDOMServer.renderToStaticMarkup(<Pager
-      firstPage={callback}
-      previousPage={callback}
-      nextPage={callback}
-      lastPage={callback}
-      pageNumber={7}
-      pageCount={11}
-      gettextCatalog={mockGettextCatalog} />)
-
+    // Construct a new `IntlProvider` instance by passing `props` and
+    // `context` as React would, then call `getChildContext()` to get the
+    // React Intl API, complete with the `format*()` functions.
+    // see: https://github.com/yahoo/react-intl/wiki/Testing-with-React-Intl#relativedate-advanced-uses-injectintl
+    const intlProvider = new IntlProvider({locale: 'en'}, {});
+    const {intl} = intlProvider.getChildContext();
+    const actual = ReactDOMServer.renderToStaticMarkup(
+        <Pager
+          intl={intl}
+          firstPage={callback}
+          previousPage={callback}
+          nextPage={callback}
+          lastPage={callback}
+          pageNumber={7}
+          pageCount={11}
+        />)
     const expected = ReactDOMServer.renderToStaticMarkup(
       <ul className='u-listHorizontal u-textCenter'>
         <li>
@@ -65,13 +72,13 @@ describe('PagerTest', () => {
 
     const d20 = mount(
       <Pager
+        intl={undefined}
         firstPage={goFirst}
         previousPage={goPrev}
         nextPage={goNext}
         lastPage={goLast}
         pageNumber={2}
-        pageCount={20}
-        gettextCatalog={mockGettextCatalog} />
+        pageCount={20}/>
     )
 
     // click events are expected on the <a> tags
