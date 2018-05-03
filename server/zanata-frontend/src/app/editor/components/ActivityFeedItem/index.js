@@ -255,7 +255,7 @@ class ActivityFeedItem extends Component {
           <span className='u-pullRight'>
             <button onClick={copyToClipboard}
               className='Link Link--neutral' title='Copy'>
-              <Icon name='copy' className='s1' />
+              <Icon name='project' className='s1' />
             </button>
           </span>
         </Well>
