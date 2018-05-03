@@ -5,12 +5,12 @@ import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
-import {Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
+import {Panel, Alert, Well} from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
-import { Button, Layout } from 'antd'
+import { Button, Layout, Breadcrumb } from 'antd'
 
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
@@ -64,8 +64,8 @@ class AdminReview extends Component {
     return <div className='container centerWrapper' id='admin-review'>
       <Layout>
         <Breadcrumb>
-          <Breadcrumb.Item href='home'>
-            Administration
+          <Breadcrumb.Item>
+            <a href='home'>Administration</a>
           </Breadcrumb.Item>
         </Breadcrumb>
         {notificationBar}
