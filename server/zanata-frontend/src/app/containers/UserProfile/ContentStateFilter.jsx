@@ -22,8 +22,8 @@ const ContentStateFilter = ({
     /* eslint-disable react/jsx-no-bind */
     return (
       <Button key={option} active={active} aria-label='button'
-        className={ContentStateStyles[index] + ' btn-default btn-sm'}
-        onClick={() => handleFilterChanged(option)}>
+        className={ContentStateStyles[index] + ' btn-default'}
+        onClick={() => handleFilterChanged(option)} size='small'>
         {option}
       </Button>
     )
