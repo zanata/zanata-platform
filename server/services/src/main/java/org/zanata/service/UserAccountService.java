@@ -81,4 +81,10 @@ public interface UserAccountService extends Serializable {
      * @return true if username is already used
      */
     boolean isUsernameUsed(String username);
+
+    /**
+     * Anonymize the user and its data.
+     * @param username account username
+     */
+    void eraseUserData(String username);
 }
