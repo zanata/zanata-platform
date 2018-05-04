@@ -15,7 +15,6 @@ const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) =
       <div key={index}>{m.label}: {m.defaultMessage}</div>
     )
   })
-  
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
   function getWarnings(total, m) {
@@ -48,13 +47,13 @@ interface ValidationProps {
   validationOptions: validationOption[]
 }
 
-type message = {
+interface message {
   id: string,
   label: string,
   defaultMessage: string
 }
 
-type validationOption = {
+interface validationOption {
   id: string,
   label: string,
   active: boolean,
