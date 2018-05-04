@@ -5,12 +5,12 @@ import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
-import {Panel, Alert, Well} from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
-import { Button, Layout, Breadcrumb } from 'antd'
+import { Button, Layout, Breadcrumb, Card } from 'antd'
 
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
@@ -53,11 +53,11 @@ class AdminReview extends Component {
       onSave={editEntry} description={c.description}
       priority={c.priority} />)
     const newEntryForm = this.state.showNewEntryForm ? (
-      <Panel header='Add new entry'>
+      <Card title='Add new entry'>
         <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
           criteriaPlaceholder='fill in criteria'
           onSave={this.saveNewEntry} />
-      </Panel>) : DO_NOT_RENDER
+      </Card>) : DO_NOT_RENDER
 
     const notificationBar = notification &&
       <Alert bsStyle='danger'>{notification}</Alert>
@@ -73,7 +73,7 @@ class AdminReview extends Component {
         <p className='lead'>Set the translation rejection criteria to be used
           in the editor. Start by adding your first 'new rejection criteria
         entry' and add as many criteria as you require.</p>
-        <Well bsSize='lg'><h2>Example criteria</h2>
+        <Card type='inner' title='Example criteria'>
           <hr />
           <ul>
             <li><strong>Translation Errors</strong>: terminology, mistranslated,
@@ -89,7 +89,7 @@ class AdminReview extends Component {
               or missing, special character, numeric format, truncated,
             etc.</li>
           </ul>
-        </Well>
+        </Card>
         {criteriaList}
         {newEntryForm}
         <div className='rejection-btns'>
