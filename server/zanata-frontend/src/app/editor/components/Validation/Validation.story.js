@@ -20,7 +20,8 @@ const messages = [
   {
     id: 'java-variables',
     label: 'Java Variables',
-    defaultMessage: 'Number of apostrophes (\' \') in source does not match number in translation. This may lead to other warnings.'
+    defaultMessage: 'Number of apostrophes (\' \') in source does not match number in translation. This may lead to other warnings.',
+    description: 'Lists variables that appear a different number of times between source and target strings'
   },
   {
     id: 'java-variables',
@@ -81,16 +82,19 @@ const validations =
 storiesOf('Validation', module)
   .add('default (no test)', () => (
     <div>
-      <p>Validation Messages Default</p>
+      <h2>Validation Messages Default</h2>
       <Validation messages={messages.slice(0, 1)}
         validationOptions={validations} />
-      <p>Validation Messages Warnings</p>
+      <h2>Validation Messages with Description Tooltip</h2>
+      <Validation messages={messages.slice(2, 3)}
+        validationOptions={validations} />
+      <h2>Validation Messages Warnings</h2>
       <Validation messages={messages.slice(2, 4)}
         validationOptions={validations} />
-      <p>Validation Messages Errors</p>
+      <h2>Validation Messages Errors</h2>
       <Validation messages={messages.slice(0, 2)}
         validationOptions={validations} />
-      <p>Validation Messages Mixed</p>
+      <h2>Validation Messages Mixed</h2>
       <Validation messages={messages} validationOptions={validations} />
     </div>
   ))

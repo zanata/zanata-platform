@@ -2,8 +2,11 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
-const Panel = Collapse.Panel
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 import './index.css'
+
+const Panel = Collapse.Panel
 
 /**
  * Validation Messages
@@ -11,8 +14,16 @@ import './index.css'
 const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) => {
 
   const Messages = messages.map((m, index) => {
+    // If description exists, display in Tooltip
+    const messageBody = m.description
+      ? <Tooltip placement='topRight' title={m.description}>
+          {m.defaultMessage}
+        </Tooltip>
+      : m.defaultMessage
     return (
-      <div key={index}>{m.label}: {m.defaultMessage}</div>
+      <div key={index}>
+        {m.label}: {messageBody}
+      </div>
     )
   })
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
@@ -50,7 +61,8 @@ interface ValidationProps {
 interface message {
   id: string,
   label: string,
-  defaultMessage: string
+  defaultMessage: string,
+  description?: string
 }
 
 interface validationOption {
@@ -63,18 +75,19 @@ interface validationOption {
 Validation.propTypes = {
   messages: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
-      label: PropTypes.string,
-      defaultMessage: PropTypes.string,
-      disabled: PropTypes.bool
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      defaultMessage: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      disabled: PropTypes.bool.isRequired
     })
   ),
   validationOptions: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
-      label: PropTypes.string,
-      active: PropTypes.bool,
-      disabled: PropTypes.bool
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      active: PropTypes.bool.isRequired,
+      disabled: PropTypes.bool.isRequired
     })
   )
 }
