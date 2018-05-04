@@ -10,11 +10,12 @@ import './index.css'
  */
 const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) => {
 
-  const Messages = messages.map((m) => {
+  const Messages = messages.map((m, index) => {
     return (
-      <div>{m.label}: {m.defaultMessage}</div>
+      <div key={index}>{m.label}: {m.defaultMessage}</div>
     )
   })
+  
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
   function getWarnings(total, m) {
@@ -31,7 +32,6 @@ const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) =
   const warningCount = messages.reduce(getWarnings, 0)
   return (
     <div className='TextflowValidation'>
-      <p>Validation Messages Collapse</p>
       <Collapse defaultActiveKey={['1']}>
         <Panel
           key='1'

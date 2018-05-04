@@ -67,8 +67,9 @@ const validations =
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('Validation', module)
-  .add('default (no-test)', () => (
+  .add('default (no test)', () => (
     <div>
+      <p>Validation Messages Collapse</p>
       <Validation messages={messages} validationOptions={validations} />
     </div>
   ))
