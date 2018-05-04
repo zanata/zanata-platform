@@ -31,7 +31,7 @@ const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) =
   const warningCount = messages.reduce(getWarnings, 0)
   return (
     <div className='TextflowValidation'>
-      <Collapse defaultActiveKey={['1']}>
+      <Collapse>
         <Panel
           key='1'
           header={`Warnings: ${warningCount}, Errors: ${errorCount}`} >
