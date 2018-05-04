@@ -27,9 +27,19 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.model.validator.EmailDomain;
 import org.zanata.model.validator.ZanataEmail;
 
+/**
+ * Provide a validated username for Zanata
+ * The rules are:
+ * - must be between 3 and 20 characters inclusive
+ * - must start with a letter or number
+ * - may only contain numbers, letters or underscores
+ */
 public interface HasUserDetail {
-    String USERNAME_REGEX = "^([a-z\\d][a-z\\d_]*){3,20}$";
+    int USERNAME_MIN_LENGTH = 3;
     int USERNAME_MAX_LENGTH = 20;
+
+    String USERNAME_REGEX = "^([a-z\\d][a-z\\d_]*){" +
+            USERNAME_MIN_LENGTH + "," + USERNAME_MAX_LENGTH + "}$";
 
     @ZanataEmail
     @NotEmpty
@@ -37,7 +47,7 @@ public interface HasUserDetail {
     String getEmail();
 
     @NotEmpty
-    @Size(min = 3, max = USERNAME_MAX_LENGTH)
+    @Size(min = USERNAME_MIN_LENGTH, max = USERNAME_MAX_LENGTH)
     @Pattern(regexp = USERNAME_REGEX,
             message = "{validation.username.constraints}")
     String getUsername();
