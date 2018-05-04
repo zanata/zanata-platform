@@ -10,7 +10,6 @@ import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/index.less'
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/index.less'
-import 'antd/lib/icon/style/'
 
 import {
   glossaryUpdateExportType,

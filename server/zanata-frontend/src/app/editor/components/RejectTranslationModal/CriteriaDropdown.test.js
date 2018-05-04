@@ -3,7 +3,7 @@ import * as ReactDOMServer from 'react-dom/server'
 import CriteriaDropdown from './CriteriaDropdown'
 import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
 import Select from 'antd/lib/select'
-import 'antd/lib/select/style/index.less'
+import 'antd/lib/select/style/css'
 
 const defaultClick = () => {}
 const criteriaList = [{

@@ -6,7 +6,7 @@ import {
   MINOR, MAJOR, CRITICAL, textState
 } from '../../utils/reject-trans-util'
 import Select from 'antd/lib/select'
-import 'antd/lib/select/style/index.less'
+import 'antd/lib/select/style/css'
 
 const defaultClick = () => {}
 const options = [
