@@ -26,9 +26,9 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 import { isAdmin } from '../../config'
-import { Grid, Col, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { Icon } from '../../components'
 import Helmet from 'react-helmet'
+import { Col, Row, Card } from 'antd'
 
 import {
   showExportTMXModal
@@ -55,123 +55,132 @@ class Admin extends Component {
         </div>
       )
     }
+    const style = {
+      backgroundColor: 'rgb(250,250,250)',
+      fontSize: 16,
+      marginBottom: 5
+    }
     return (
       <div>
         <Helmet title='Administration' />
         <div className='page wideView' id='admin'>
           <div className='u-centerBlock'>
-            <Grid>
-              <h1>Administration</h1>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Server_configuration_home'
-                    href='/admin/server_configuration'>
-                    <Icon name='settings' className='s2' />
+            <h1>Administration</h1>
+            <Row gutter={6}>
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Admin_Server_configuration_home'
+                  href='/admin/server_configuration'>
+                  <Card style={style} hoverable>
+                    <Icon name='settings' className='s2 mr2 mr2' />
                     Server configuration
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_users_home'
-                    href='/admin/usermanager'>
-                    <Icon name='user' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Admin_Manage_users_home'
+                  href='/admin/usermanager'>
+                  <Card style={style} hoverable>
+                    <Icon name='user' className='s2 mr2' />
                     Manage users
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_roles_home'
-                    href='/admin/rolemanager'>
-                    <Icon name='users' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Admin_Manage_roles_home'
+                  href='/admin/rolemanager'>
+                  <Card style={style} hoverable>
+                    <Icon name='users' className='s2 mr2' />
                     Manage roles
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_search_home'
-                    href='/admin/search'>
-                    <Icon name='search' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Admin_Manage_search_home'
+                  href='/admin/search'>
+                  <Card style={style} hoverable>
+                    <Icon name='search' className='s2 mr2' />
                     Manage search
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Role_Assignment_Rules_home'
-                    href='/admin/rolerules'>
-                    <Icon name='assign' className='s2' />
+            </Row>
+            <Row gutter={6}>
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Admin_Role_Assignment_Rules_home'
+                  href='/admin/rolerules'>
+                  <Card style={style} hoverable>
+                    <Icon name='assign' className='s2 mr2' />
                     Role assignment rules
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Translation_Memory_home'
-                    href='/tm/home.xhtml'>
-                    <Icon name='tm' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Translation_Memory_home'
+                  href='/tm/home.xhtml'>
+                  <Card style={style} hoverable>
+                    <Icon name='tm' className='s2 mr2' />
                     Translation memory
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Process_Management_home'
-                    href='/admin/processmanager'>
-                    <Icon name='clock' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Process_Management_home'
+                  href='/admin/processmanager'>
+                  <Card style={style} hoverable>
+                    <Icon name='clock' className='s2 mr2' />
                     Process manager
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_stats_home'
-                    href='/admin/stats'>
-                    <Icon name='piestats' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Admin_Manage_stats_home'
+                  href='/admin/stats'>
+                  <Card style={style} hoverable>
+                    <Icon name='piestats' className='s2 mr2' />
                     Overall statistics
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Monitoring_home'
-                    href='/admin/monitoring'>
-                    <Icon name='servmon' className='s2' />
+            </Row>
+            <Row gutter={6}>
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Admin_Monitoring_home'
+                  href='/admin/monitoring'>
+                  <Card style={style} hoverable>
+                    <Icon name='servmon' className='s2 mr2' />
                     Server monitoring
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Cache_Stats_Home'
-                    href='/admin/cachestats'>
-                    <Icon name='document' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='Cache_Stats_Home'
+                  href='/admin/cachestats'>
+                  <Card style={style} hoverable>
+                    <Icon name='document' className='s2 mr2' />
                     Cache statistics
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='exportTMXAllLink'
-                    href='#'
-                    onClick={this.props.toggleTMXExportModal}>
-                    <Icon name='export' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='exportTMXAllLink'
+                  href='#'
+                  onClick={this.props.toggleTMXExportModal}>
+                  <Card style={style} hoverable>
+                    <Icon name='export' className='s2 mr2' />
                     Export all to TMX
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='reviewCriteria'
-                    href='/admin/review'>
-                    <Icon name='tick' className='s2' />
+              <Col xs={24} sm={12} lg={6}>
+                <a id='reviewCriteria'
+                  href='/admin/review'>
+                  <Card style={style} hoverable>
+                    <Icon name='tick' className='s2 mr2' />
                     Review criteria
-                  </ListGroupItem>
-                </ListGroup>
+                  </Card>
+                </a>
               </Col>
-            </Grid>
+            </Row>
             <TMXExportModal />
           </div>
         </div>
