@@ -54,18 +54,18 @@ const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) =
 }
 
 interface ValidationProps {
-  messages: message[],
-  validationOptions: validationOption[]
+  messages: Message[],
+  validationOptions: ValidationOption[]
 }
 
-interface message {
+interface Message {
   id: string,
   label: string,
   defaultMessage: string,
   description?: string
 }
 
-interface validationOption {
+interface ValidationOption {
   id: string,
   label: string,
   active: boolean,
