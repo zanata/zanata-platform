@@ -127,7 +127,7 @@ class Languages extends Component {
               </h1>
               {permission.canAddLocale &&
                 <div>
-                  <Button type="primary" icon="plus" aria-label='button'
+                  <Button type="primary" icon="plus"
                     id="btn-language-add-new"
                     aria-label="button"
                     onClick={handleOnDisplayNewLanguage}>
