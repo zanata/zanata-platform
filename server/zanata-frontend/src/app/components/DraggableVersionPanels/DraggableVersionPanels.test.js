@@ -30,7 +30,7 @@ describe('DraggableVersionPanels', () => {
         {'ver1'} <span className='u-textMuted'> {'meikai1'}
         </span> <LockIcon status={'ACTIVE'} />
         {" "}
-        <Button className='close rm-version-btn btn-xs'
+        <Button className='close rm-version-btn btn-xs' aria-label='button'
           onClick={callback} icon='close' />
       </ListGroupItem>
     )

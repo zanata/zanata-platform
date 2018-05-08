@@ -44,7 +44,7 @@ export class Item extends Component<ItemProps, {}> {
       {version.id} <span className="u-textMuted"> {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
-      <Button className="close rm-version-btn btn-xs"
+      <Button className="close rm-version-btn btn-xs" aria-label="button"
         onClick={this.removeVersion} icon="close" />
     </ListGroupItem>
   }

@@ -129,6 +129,7 @@ class Languages extends Component {
                 <div>
                   <Button type="primary" icon="plus" aria-label='button'
                     id="btn-language-add-new"
+                    aria-label="button"
                     onClick={handleOnDisplayNewLanguage}>
                   Add new language</Button>
                   <NewLanguageModal />
