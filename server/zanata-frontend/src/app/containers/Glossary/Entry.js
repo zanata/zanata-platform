@@ -90,7 +90,7 @@ class Entry extends Component {
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
       <Button type='primary' className='btn-primary'
-        disabled={isSaving}
+        disabled={isSaving} aria-label='button'
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
           Update
@@ -166,13 +166,10 @@ class Entry extends Component {
               {termsLoading
                 ? loadingDiv
                 : (<Row className='entry-row'>
-                  <Button
+                  <Button aria-label='button'
                     className="btn-link-end btn-link"
                     disabled={isDeleting}
-                    onClick={() => this.setShowingEntryModal(true)}>
-                    <Icon name='info' className='s1'
-                      parentClassName='iconInfo-noMargin' />
-                  </Button>
+                    onClick={() => this.setShowingEntryModal(true)} />
                   <EntryModal entry={entry}
                     show={this.state.showEntryModal}
                     isSaving={isSaving}
@@ -191,7 +188,7 @@ class Entry extends Component {
                       <Row className='entry-row'>
                         {updateButton}
                         {displayUpdateButton && !isSaving ? (
-                          <Button className='btn-link'
+                          <Button className='btn-link' aria-label='button'
                             onClick={() => handleResetTerm(entry.id)}>
                             Cancel
                           </Button>

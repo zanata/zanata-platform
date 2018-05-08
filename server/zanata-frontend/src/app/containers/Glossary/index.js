@@ -229,14 +229,16 @@ class Glossary extends Component {
                 }
                 {displayPaging &&
                   <div className='u-pullRight glossaryPaging'>
-                    <Button className='btn-link' disabled={currentPage <= 1}
-                      title='First page' icon='left' aria-label='button'
+                    <Button aria-label='button'
+                      className='btn-link' disabled={currentPage <= 1}
+                      title='First page' icon='left'
                       onClick={() => {
                         gotoFirstPage(currentPage, totalPage)
                       }}
                     />
-                    <Button className='btn-link' disabled={currentPage <= 1}
-                      title='Previous page' icon='left' aria-label='button'
+                    <Button aria-label='button'
+                      className='btn-link' disabled={currentPage <= 1}
+                      title='Previous page' icon='left'
                       onClick={
                       () => {
                         gotoPreviousPage(currentPage, totalPage)
@@ -245,14 +247,16 @@ class Glossary extends Component {
                     <span className='u-textNeutral-top'>
                       {currentPage} of {totalPage}
                     </span>
-                    <Button className='btn-link' aria-label='button'
+                    <Button aria-label='button'
+                      className='btn-link'
                       disabled={currentPage === totalPage}
                       title='Next page' icon='right'
                       onClick={() => {
                         gotoNextPage(currentPage, totalPage)
                       }}
                     />
-                    <Button className='btn-link' aria-label='button'
+                    <Button aria-label='button'
+                      className='btn-link'
                       disabled={currentPage === totalPage}
                       title='Last page' icon='right'
                       onClick={() => {

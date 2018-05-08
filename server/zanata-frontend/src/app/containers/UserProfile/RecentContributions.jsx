@@ -5,7 +5,7 @@ import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
 import { DateRange } from 'react-date-range'
 import utilsDate from '../../utils/DateHelper'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
 import { Modal, TextInput } from '../../components'
 
 const STATS_MAX_DAYS = 365
@@ -103,7 +103,8 @@ class RecentContributions extends React.Component {
                       onClick={() => this.onToggleShowDateRange()}>
                       Cancel
                     </Button>
-                    <Button className='btn-primary' aria-label='button'
+                    <Button className='btn-primary' type='primary'
+                      aria-label='button'
                       onClick={
                       () => handleDateRangeChanged(this.state.dateRange)}>
                       Apply

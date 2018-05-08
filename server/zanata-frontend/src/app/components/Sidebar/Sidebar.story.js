@@ -13,7 +13,7 @@ const url = 'https://www.google.com'
 const linkname = 'Our awesome webpage'
 
 storiesOf('Sidebar', module)
-    .add('default', () => (
+    .add('default (no test)', () => (
         <div>
           <Sidebar />
           <div className='flexTab'>
@@ -26,31 +26,31 @@ storiesOf('Sidebar', module)
           </div>
       </div>
     ))
-    .add('AboutPage', () => (
+    .add('AboutPage (no test)', () => (
         <div>
           <Sidebar />
           <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
         </div>
     ))
-    .add('PeoplePage', () => (
+    .add('PeoplePage (no test)', () => (
         <div>
           <Sidebar />
           <PeoplePage />
         </div>
     ))
-    .add('GroupsPage', () => (
+    .add('GroupsPage (no test)', () => (
         <div>
           <Sidebar />
           <GroupsPage />
         </div>
     ))
-    .add('LanguagesPage', () => (
+    .add('LanguagesPage (no test)', () => (
         <div>
           <Sidebar />
           <LanguagesPage />
         </div>
     ))
-    .add('DocumentsPage', () => (
+    .add('DocumentsPage (no test)', () => (
         <div>
           <Sidebar />
           <DocumentsPage />

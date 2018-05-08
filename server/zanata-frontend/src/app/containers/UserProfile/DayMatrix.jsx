@@ -2,7 +2,7 @@ import * as PropTypes from 'prop-types'
 import React from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
 
 /**
  * Clickable date and word count component for daily statistics
@@ -37,7 +37,7 @@ const DayMatrix = ({
   return (
     <td>
       {date
-        ? <Button
+        ? <Button aria-label='button'
           onClick={() => handleSelectedDayChanged(date)}
           className={date === selectedDay ? btnStyle + ' active' : btnStyle}
           disabled={dateIsInFuture || !date}
