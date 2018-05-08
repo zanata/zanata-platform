@@ -93,7 +93,7 @@ class AdminReview extends Component {
         {criteriaList}
         {newEntryForm}
         <div className='rejection-btns'>
-          <Button type="primary" icon="plus"
+          <Button type="primary" icon="plus" aria-label="button"
             onClick={this.showAddNewEntryForm()}>
           New review criteria entry</Button>
         </div>

@@ -43,12 +43,14 @@ const TeaserListHeader = ({
           <div className='teaserHeader-inner'>
             <div className='teaserHeader-pagination'>
               <Button icon='left' className='btn-link iconsHeader'
+                aria-label='button'
                 disabled={currentPage === 1}
                 onClick={() => {
                   updatePage(type, currentPage, totalPage, false)
                 }} />
               <span className='pageCurrent'>{currentPage} of {totalPage}</span>
               <Button icon='right' className='btn-link iconsHeader'
+                aria-label='button'
                 disabled={currentPage === totalPage}
                 onClick={() => {
                   updatePage(type, currentPage, totalPage, false)

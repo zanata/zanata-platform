@@ -77,7 +77,7 @@ class RecentContributions extends React.Component {
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
           <div className='dateRange-container'>
-            <Button className='btn-link u-pullRight'
+            <Button className='btn-link u-pullRight' aria-label='button'
               onClick={() => this.onToggleShowDateRange()}>
               <span className='dateRange-textField'>
                 <TextInput editable={false} value={displayDateRange} />
@@ -93,10 +93,12 @@ class RecentContributions extends React.Component {
                 onCancel={() => this.onToggleShowDateRange()}
                 footer={[
                   <Button key='back'
+                    aria-label='button'
                     onClick={() => this.onToggleShowDateRange()}>
                     Cancel
                   </Button>,
                   <Button key='ok' type='primary'
+                    aria-label='button'
                     onClick={
                     () => handleDateRangeChanged(this.state.dateRange)}>
                     Apply
