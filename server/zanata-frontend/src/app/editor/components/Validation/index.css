@@ -1,0 +1,16 @@
+
+.TextflowValidation .ant-collapse .ant-collapse-item .ant-collapse-header {
+  background-color: #FFA800;
+  color: #FFF;
+  padding: 5px 0 5px 40px;
+}
+
+.TextflowValidation .ant-collapse .ant-collapse-item .ant-collapse-header .arrow {
+  line-height: 34px;
+}
+
+.TextflowValidation .ant-collapse-content-box {
+  color: red;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

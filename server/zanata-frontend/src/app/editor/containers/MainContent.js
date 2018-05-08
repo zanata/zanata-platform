@@ -6,6 +6,7 @@ import { Icon } from '../../components'
 import TransUnit from '../components/TransUnit'
 import { connect } from 'react-redux'
 import { getCurrentPagePhraseDetail } from '../selectors'
+import { getActivityVisible } from '../reducers'
 import {
   fetchAllCriteria, toggleReviewModal
 } from '../actions/review-trans-actions'
@@ -19,6 +20,7 @@ import { isUndefined } from 'lodash'
  */
 class MainContent extends React.Component {
   static propTypes = {
+    activityVisible: PropTypes.bool.isRequired,
     maximised: PropTypes.bool.isRequired,
     showReviewModal: PropTypes.bool.isRequired,
     phrases: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -63,6 +65,7 @@ class MainContent extends React.Component {
       return (
         <li key={phrase.id}>
           <TransUnit
+            activityVisible={this.props.activityVisible}
             index={phrase.id}
             phrase={phrase}
             criteria={this.props.criteriaList}
@@ -112,6 +115,7 @@ function mapStateToProps (state, _ownProps) {
   const maximised = !state.ui.panels.navHeader.visible
   const showReviewModal = state.review.showReviewModal
   return {
+    activityVisible: getActivityVisible(state),
     maximised,
     showReviewModal: showReviewModal,
     criteriaList: getCriteria(state),
