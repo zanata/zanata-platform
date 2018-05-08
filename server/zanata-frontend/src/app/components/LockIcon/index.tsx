@@ -1,5 +1,5 @@
 import React from 'react'
-import {OverlayTrigger, Tooltip} from 'react-bootstrap'
+import { Tooltip } from 'antd'
 import {Icon} from '../../components'
 import {EntityStatus, isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 import {entityStatusPropType} from '../../utils/prop-types-util'
