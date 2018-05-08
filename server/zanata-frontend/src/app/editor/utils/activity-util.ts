@@ -7,17 +7,23 @@ export const filterActivityTypes = tuple(ALL, COMMENTS, UPDATES)
 export type ActivityFilter = typeof filterActivityTypes[number]
 
 export interface User {
-  name: string
+  name?: string,
+  username?: string
 }
 
-export const activityTypes = tuple('comment', 'revision')
+export enum activityTypes {
+  comment = "comment",
+  revision = "revision",
+}
+
 export type ActivityType = typeof activityTypes[number]
 
 export interface ActivityItem {
   type: ActivityType,
   content: string,
+  commentText?: string,
   lastModifiedTime: Date,
-  status: Status,
+  status?: Status,
   user: User
 }
 

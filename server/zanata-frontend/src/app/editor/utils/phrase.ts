@@ -35,3 +35,15 @@ export interface Phrase {
   comments?: number | string,
   errors?: boolean,
 }
+
+// TODO: Determine why this differs from Phrase naming
+export interface SelectedPhrase {
+  msgctxt?: string,
+  resId: string,
+  sourceComment?: number | string,
+  sourceFlags?: string,
+  sourceReferences?: string,
+  lastModifiedBy?: string,
+  lastModifiedTime?: string,
+  revision?: number
+}
