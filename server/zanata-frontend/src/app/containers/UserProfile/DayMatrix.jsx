@@ -2,16 +2,16 @@ import * as PropTypes from 'prop-types'
 import React from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
-import { Button } from 'react-bootstrap'
+import { Button } from 'antd'
 
 /**
  * Clickable date and word count component for daily statistics
  */
 const cssClass = {
-  total: 'primary',
-  approved: 'info',
-  translated: 'success',
-  needswork: 'warning'
+  total: 'btn-primary',
+  approved: 'btn-info',
+  translated: 'btn-success',
+  needswork: 'btn-warning'
 }
 
 /** @type
@@ -38,9 +38,8 @@ const DayMatrix = ({
     <td>
       {date
         ? <Button
-          bsStyle={btnStyle}
           onClick={() => handleSelectedDayChanged(date)}
-          className={date === selectedDay ? 'active ' : ''}
+          className={date === selectedDay ? btnStyle + ' active' : btnStyle}
           disabled={dateIsInFuture || !date}
           title={wordCount + ' words'}>
           <div className='cal-date'>{date ? dateLabel : '\u00a0'}</div>
