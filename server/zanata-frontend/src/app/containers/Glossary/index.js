@@ -215,7 +215,7 @@ class Glossary extends Component {
               <Row>
                 {termCount > 0 &&
                   <Row>
-                    <Col span={1}>
+                    <Col span={2} offset={1}>
                       <Select options={pageSizeOption}
                         placeholder='Terms per page'
                         value={intPageSize}
