@@ -11,10 +11,11 @@ import {
   FormGroup,
   FormControl,
   ControlLabel,
-  Button,
   Checkbox,
   Row
 } from 'react-bootstrap'
+
+import Button from 'antd/lib/button'
 
 import {
   handleNewLanguageDisplay,
@@ -239,17 +240,17 @@ class NewLanguageModal extends Component {
         <Modal.Footer>
           <span className='bootstrap u-pullRight'>
             <Row>
-              <Button bsStyle='link'
+              <Button className='btn-link' aria-label='button'
                 id='btn-new-language-cancel'
                 disabled={saving}
                 onClick={this.handleCancel}>
                 Close
               </Button>
-              <Button
+              <Button aria-label='button'
                 disabled={saving ||
                   (isEmpty(details.localeId) && isEmpty(query))}
                 id='btn-new-language-save'
-                bsStyle='primary'
+                className='btn-primary' type='primary'
                 onClick={this.validateDetails}>
                 Save
               </Button>

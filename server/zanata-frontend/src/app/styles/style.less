@@ -12,6 +12,7 @@
 @import "../components/TriCheckbox/index.less";
 @import "../components/RejectionsForm/index.less";
 @import "legacy.less";
+@import "./antd.less";
 // jsf and gwt overrides
 @import "./bstrap-styleguide.less";
 /* Class wrapper for bootstrap css. Used in:
@@ -25,6 +26,9 @@
 }
 
 .bstrapReact {
+  .drag {
+    padding-right: @spacing-rh;
+  }
   .container {
     margin-right: auto;
     margin-left: auto;
