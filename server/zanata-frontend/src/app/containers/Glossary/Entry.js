@@ -6,7 +6,7 @@ import { isEqual } from 'lodash'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
 import { EditableText, Icon, LoaderText } from '../../components'
-import { Button, Row, Table } from 'react-bootstrap'
+import { Button, Row } from 'antd'
 /**
  * Component to display a GlossaryEntry
  */
@@ -89,7 +89,7 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <Button bsSize='small' bsStyle='primary'
+      <Button type='primary' className='btn-primary'
         disabled={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
@@ -127,7 +127,7 @@ class Entry extends Component {
     const cssClass = 'highlight editable' + (selected ? ' selected' : '')
 
     return (
-      <Table className='glossaryEntry'>
+      <table className='glossaryEntry'>
         <tbody>
           <tr className={cssClass}
             selected={selected}
@@ -146,7 +146,7 @@ class Entry extends Component {
             <td className='td-3 tight'>
               {secondColumnContent}
             </td>
-            <td className='hidesmall td-3'>
+            <td className='hidesmall td-3 tight'>
             {termsLoading
               ? loadingDiv
               : (<EditableText
@@ -162,12 +162,12 @@ class Entry extends Component {
               </EditableText>)
             }
             </td>
-            <td className='td-2'>
+            <td className='td-2 tight'>
               {termsLoading
                 ? loadingDiv
                 : (<Row className='entry-row'>
-                  <Button bsStyle="link"
-                    className="btn-link-end"
+                  <Button
+                    className="btn-link-end btn-link"
                     disabled={isDeleting}
                     onClick={() => this.setShowingEntryModal(true)}>
                     <Icon name='info' className='s1'
@@ -191,7 +191,7 @@ class Entry extends Component {
                       <Row className='entry-row'>
                         {updateButton}
                         {displayUpdateButton && !isSaving ? (
-                          <Button bsStyle='link' bsSize='small'
+                          <Button className='btn-link'
                             onClick={() => handleResetTerm(entry.id)}>
                             Cancel
                           </Button>
@@ -213,7 +213,7 @@ class Entry extends Component {
             </td>
           </tr>
         </tbody>
-      </Table>
+      </table>
     )
     /* eslint-enable react/jsx-no-bind */
   }

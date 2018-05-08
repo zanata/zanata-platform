@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Row } from 'react-bootstrap'
+import { Row } from 'antd'
 
 /**
  * Page top header with Zanata logo

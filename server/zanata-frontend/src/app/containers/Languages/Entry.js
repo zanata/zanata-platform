@@ -6,7 +6,7 @@ import { includes } from 'lodash'
 import DeleteEntry from './DeleteEntry'
 import { Loader, Icon }
  from '../../components'
-import { Label } from 'react-bootstrap'
+import { Label } from 'antd'
 import { getLanguageUrl } from '../../utils/UrlHelper'
 
 class Entry extends Component {

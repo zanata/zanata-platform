@@ -10,12 +10,12 @@ const DO_NOT_RENDER: null = null
  * Version Lock Icon with tooltip
  */
 const LockIcon: React.SFC<LockIconProps> = ({status}) => {
-  const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
+  const tooltipReadOnly = <span id='tooltipreadonly'>Read only</span>
   return isEntityStatusReadOnly(status)
   ? (
-    <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
+    <Tooltip placement='top' title={tooltipReadOnly}>
       <Icon name='locked' className='s0' parentClassName='icon-locked' />
-    </OverlayTrigger>
+    </Tooltip>
   )
   : DO_NOT_RENDER
 }
