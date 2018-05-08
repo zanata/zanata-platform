@@ -53,11 +53,12 @@ class AdminReview extends Component {
       onSave={editEntry} description={c.description}
       priority={c.priority} />)
     const newEntryForm = this.state.showNewEntryForm ? (
-      <Card title='Add new entry'>
-        <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
-          criteriaPlaceholder='fill in criteria'
-          onSave={this.saveNewEntry} />
-      </Card>) : DO_NOT_RENDER
+      <span className='mb2'>
+        <Card title='Add new entry'>
+          <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
+            criteriaPlaceholder='fill in criteria'
+            onSave={this.saveNewEntry} />
+        </Card></span>) : DO_NOT_RENDER
 
     const notificationBar = notification &&
       <Alert bsStyle='danger'>{notification}</Alert>
@@ -73,26 +74,28 @@ class AdminReview extends Component {
         <p className='lead'>Set the translation rejection criteria to be used
           in the editor. Start by adding your first 'new rejection criteria
         entry' and add as many criteria as you require.</p>
-        <Card type='inner' title='Example criteria'>
-          <hr />
-          <ul>
-            <li><strong>Translation Errors</strong>: terminology, mistranslated,
-            addition, omission, un-localized, do not translate, etc</li>
-            <li><strong>Language Quality</strong>: grammar, spelling,
-              punctuation, typo, ambiguous wording, product name,
-              sentence structuring, readability, word choice, not natural,
-            too literal, style and tone, etc</li>
-            <li><strong>Style Guide and Glossary Violations</strong></li>
-            <li><strong>Consistency</strong>: inconsistent style or vocabulary,
-            brand inconsistency, etc.</li>
-            <li><strong>Format</strong>: mismatches, white-spaces, tag error
-              or missing, special character, numeric format, truncated,
-            etc.</li>
-          </ul>
-        </Card>
+        <span className='mb2'>
+          <Card type='inner' title='Example criteria'>
+            <hr />
+            <ul>
+              <li><strong>Translation Errors</strong>: terminology, mistranslated,
+              addition, omission, un-localized, do not translate, etc</li>
+              <li><strong>Language Quality</strong>: grammar, spelling,
+                punctuation, typo, ambiguous wording, product name,
+                sentence structuring, readability, word choice, not natural,
+              too literal, style and tone, etc</li>
+              <li><strong>Style Guide and Glossary Violations</strong></li>
+              <li><strong>Consistency</strong>: inconsistent style or vocabulary,
+              brand inconsistency, etc.</li>
+              <li><strong>Format</strong>: mismatches, white-spaces, tag error
+                or missing, special character, numeric format, truncated,
+              etc.</li>
+            </ul>
+          </Card>
+        </span>
         {criteriaList}
         {newEntryForm}
-        <div className='rejection-btns'>
+        <div className='mb3'>
           <Button type="primary" icon="plus"
             onClick={this.showAddNewEntryForm()}>
           New review criteria entry</Button>
