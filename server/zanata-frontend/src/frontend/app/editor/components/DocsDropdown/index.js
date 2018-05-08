@@ -3,6 +3,7 @@ import { Icon } from '../../../components'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row } from 'react-bootstrap'
+import { serverUrl } from '../../../config'
 
 /**
  * Dropdown to select the current document to work on.
@@ -30,8 +31,8 @@ class DocsDropdown extends React.Component {
     const { projectVersion, selectedLocale } = this.props.context
     const project = projectVersion.project.slug
     const version = projectVersion.version
-    return '/project/translate/' + project + '/v/' + version + '/' + docId +
-      '?lang=' + selectedLocale
+    return serverUrl + '/project/translate/' + project + '/v/' + version +
+      '/' + docId + '?lang=' + selectedLocale
   }
 
   render () {
