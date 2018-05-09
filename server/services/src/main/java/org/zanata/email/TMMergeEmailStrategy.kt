@@ -5,6 +5,7 @@ import org.zanata.common.ContentState
 import org.zanata.common.ContentState.*
 import org.zanata.i18n.Messages
 import org.zanata.service.tm.merge.TMMergeResult
+import javax.mail.internet.InternetAddress
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -12,19 +13,22 @@ import org.zanata.service.tm.merge.TMMergeResult
 
 data class ProjectInfo(val name: String, val url: String)
 data class VersionInfo(val slug: String, val url: String)
-// TODO perhaps extract serverURL to GenericEmailContext
-data class MergeContext(val serverURL: String, val addresses: EmailAddressBlock, val project: ProjectInfo, val version: VersionInfo, val matchRange: IntRange)
+data class MergeEmailContext(val toAddresses: List<InternetAddress>, val project: ProjectInfo, val version: VersionInfo, val matchRange: IntRange)
 
+// It might be better pass context/mergeResult to methods which need them, not to constructor
 class TMMergeEmailStrategy(
-        private val context: MergeContext,
+        private val context: MergeEmailContext,
         private val mergeResult: TMMergeResult): HtmlEmailStrategy() {
+
     override fun getSubject(msgs: Messages): String =
             msgs["email.templates.tm_merge.Results"]!!
     override fun getReceivedReasons(msgs: Messages): List<String> =
             listOf(msgs["email.templates.tm_merge.TriggeredByYou"]!!)
-    override val addresses: EmailAddressBlock = context.addresses
-    override fun bodyProducer() =
-            tmMergeEmailBodyProducer(context, mergeResult)
+    override val addresses: EmailAddressBlock = EmailAddressBlock(
+            fromAddress = null,
+            toAddresses = context.toAddresses)
+    override fun bodyProducer(generalContext: GeneralEmailContext) =
+            tmMergeEmailBodyProducer(generalContext, context, mergeResult)
 }
 
 // inline styles
@@ -78,13 +82,12 @@ private val ContentState.style: String
         else -> ""
     }
 
-private fun tmMergeEmailBodyProducer(context: MergeContext, mergeResult: TMMergeResult): BODY.(Messages) -> Unit = { msgs ->
+private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, context: MergeEmailContext, mergeResult: TMMergeResult): BODY.(Messages) -> Unit = { msgs ->
     div {
         style = s.container + s.text
-        a(href = context.serverURL) {
+        a(href = generalContext.serverURL) {
             style = s.noUnderline
             img {
-//                height = "42px"
                 src = "http://zanata.org/assets/logo-sm.png"
             }
             span {

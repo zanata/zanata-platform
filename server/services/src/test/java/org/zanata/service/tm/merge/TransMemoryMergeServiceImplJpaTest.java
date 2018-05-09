@@ -46,6 +46,7 @@ import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
@@ -145,6 +146,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        authenticated.setPerson(new HPerson());
         sourceLocale = new HLocale(LocaleId.EN);
         targetLocale = new HLocale(LocaleId.DE);
         targetLocale.setEnabledByDefault(true);

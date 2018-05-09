@@ -50,9 +50,8 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.email.Addresses;
-import org.zanata.email.EmailAddressBlock;
 import org.zanata.email.HtmlEmailBuilder;
-import org.zanata.email.MergeContext;
+import org.zanata.email.MergeEmailContext;
 import org.zanata.email.ProjectInfo;
 import org.zanata.email.TMMergeEmailStrategy;
 import org.zanata.email.VersionInfo;
@@ -133,7 +132,6 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
     private VersionStateCache versionStateCacheImpl;
 
-    private Messages msgs;
     private HAccount authenticatedAccount;
     private String serverPath;
     private Map<ContentState, List<IntRange>> tmBands;
@@ -151,7 +149,6 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             TransactionUtil transactionUtil,
             ProjectIterationDAO projectIterationDAO,
             VersionStateCache versionStateCacheImpl,
-            Messages msgs,
             @Authenticated HAccount authenticatedAccount,
             @ServerPath String serverPath,
             @TMBands Map<ContentState, List<IntRange>> tmBands,
@@ -168,7 +165,6 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         this.transactionUtil = transactionUtil;
         this.projectIterationDAO = projectIterationDAO;
         this.versionStateCacheImpl = versionStateCacheImpl;
-        this.msgs = msgs;
         this.authenticatedAccount = authenticatedAccount;
         this.serverPath = serverPath;
         this.tmBands = tmBands;
@@ -394,19 +390,15 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         String projSlug = proj.getSlug();
         String verUrl = serverPath + "/iteration/view/" + projSlug + "/" + verSlug;
         String projUrl = serverPath + "/project/view/" + proj.getSlug();
-        String fromName = msgs.get("jsf.Zanata");
-        // FIXME appConfiguration.getAdmin
-        InternetAddress fromAddress = Addresses.getAddress(null, fromName);
         List<? extends InternetAddress> toAddresses = singletonList(
                 Addresses.getAddress(authenticatedAccount.getPerson()));
-        MergeContext settings = new MergeContext(
-                serverPath,
-                new EmailAddressBlock(fromAddress, toAddresses),
+        MergeEmailContext settings = new MergeEmailContext(
+                toAddresses,
                 new ProjectInfo(proj.getName(), projUrl),
                 new VersionInfo(projVersion.getSlug(), verUrl),
                 new IntRange(mergeRequest.getThresholdPercent(), 100));
-        TMMergeEmailStrategy
-                strategy = new TMMergeEmailStrategy(settings, mergeResult);
+        TMMergeEmailStrategy strategy = new TMMergeEmailStrategy(
+                settings, mergeResult);
         emailBuilder.sendMessage(strategy);
     }
 

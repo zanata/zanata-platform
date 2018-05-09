@@ -9,5 +9,7 @@ import org.zanata.i18n.Messages
 abstract class HtmlEmailStrategy : AbstractEmailStrategy() {
     abstract fun getReceivedReasons(msgs: Messages): List<String>
     abstract val addresses: EmailAddressBlock
-    abstract fun bodyProducer(): BODY.(Messages) -> Unit
+    abstract fun bodyProducer(generalContext: GeneralEmailContext): BODY.(Messages) -> Unit
 }
+
+data class GeneralEmailContext(val serverURL: String, val fromEmail: String)

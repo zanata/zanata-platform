@@ -124,7 +124,7 @@ public class TransMemoryMergeServiceImplTest {
     @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
     @Produces @Authenticated @Mock
-    private HAccount authenticated = new HAccount();
+    private HAccount authenticated;
     @Captor
     private ArgumentCaptor<List<TransUnitUpdateRequest>> updateRequestCaptor;
 

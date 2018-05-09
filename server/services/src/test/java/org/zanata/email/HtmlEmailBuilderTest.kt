@@ -67,7 +67,7 @@ class HtmlEmailBuilderTest {
         override fun getMessages(locale: Locale): Messages = msgs
     }
 
-    private val builder = HtmlEmailBuilder(serverURL, session, msgsFactory)
+    private val builder = HtmlEmailBuilder(serverURL, fromEmail, session, msgsFactory)
 
     init {
         toAddr = Addresses.getAddress(toAddress, toName)
@@ -98,33 +98,20 @@ class HtmlEmailBuilderTest {
     @Test
     fun mergeResult() {
         // given
-        val tmBandDefs = createTMBands(parseBands("70 80 90"))
-        val mergeResult = TMMergeResult(tmBandDefs)
-        mergeResult.countCopy(Approved, 100, MessageStats(233, 98, 12))
-        mergeResult.countCopy(Translated, 100, MessageStats(505, 203, 33))
-        mergeResult.countCopy(NeedReview, 99, MessageStats(99, 20))
-        mergeResult.countCopy(NeedReview, 96, MessageStats(50, 10))
-        mergeResult.countCopy(NeedReview, 86, MessageStats(998, 193, 37))
-        mergeResult.countCopy(NeedReview, 36, MessageStats(200, 43, 16))
-        val fromAddress = Addresses.getAddress(fromEmail, fromName)
-        val toAddresses = listOf(Addresses.getAddress(toAddress, toName))
-        val context = MergeContext(
-                serverURL,
-                EmailAddressBlock(fromAddress, toAddresses),
+        val mergeResult = createTMMergeResult()
+        val context = MergeEmailContext(
+                listOf(Addresses.getAddress(toAddress, toName)),
                 ProjectInfo("Test Project", "$serverURL/project/view/test-project"),
                 VersionInfo("master", "$serverURL/iteration/view/test-project/master"),
                 IntRange(50, 100))
 
-        val subject = msgs["email.templates.tm_merge.Results"]!!
-        val reason = msgs["email.templates.tm_merge.TriggeredByYou"]!!
-        val strategy = TMMergeEmailStrategy(context, mergeResult)
-
         // when
+        val strategy = TMMergeEmailStrategy(context, mergeResult)
         val message = builder.sendMessage(strategy) as MimeMessage
 
         // then
         checkFromAndTo(message)
-        assertThat(message.subject).isEqualTo(subject)
+        assertThat(message.subject).isEqualTo(msgs["email.templates.tm_merge.Results"]!!)
 
         val parts = extractMultipart(message)
         val html = parts.html
@@ -140,12 +127,24 @@ class HtmlEmailBuilderTest {
         println("  ${textFile.absolutePath}")
         println("  ${htmlFile.absolutePath}")
 
-        checkGenericFooter(html, reason)
+        checkGenericFooter(html, msgs["email.templates.tm_merge.TriggeredByYou"]!!)
 
         assertThat(html).contains(context.project.url)
         assertThat(html).contains(context.version.url)
 
         // FIXME check that each ContentState is represented, plus a sample band/range for each ContentState
+    }
+
+    private fun createTMMergeResult(): TMMergeResult {
+        val tmBandDefs = createTMBands(parseBands("70 80 90"))
+        val mergeResult = TMMergeResult(tmBandDefs)
+        mergeResult.countCopy(Approved, 100, MessageStats(233, 98, 12))
+        mergeResult.countCopy(Translated, 100, MessageStats(505, 203, 33))
+        mergeResult.countCopy(NeedReview, 99, MessageStats(99, 20))
+        mergeResult.countCopy(NeedReview, 96, MessageStats(50, 10))
+        mergeResult.countCopy(NeedReview, 86, MessageStats(998, 193, 37))
+        mergeResult.countCopy(NeedReview, 36, MessageStats(200, 43, 16))
+        return mergeResult
     }
 
 }

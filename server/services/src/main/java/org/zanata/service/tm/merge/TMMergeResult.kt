@@ -17,7 +17,7 @@ class TMMergeResult (private val bandDefs: Map<ContentState, List<IntRange>>) {
         }
     }
 
-    // FIXME
+    // FIXME return all keys
     val states: Set<ContentState>
 //        get() {return bandCounters.keys + otherCounters.keys}
         get() {return emptySet()}

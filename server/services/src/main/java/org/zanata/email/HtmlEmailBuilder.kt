@@ -12,12 +12,14 @@ import kotlinx.html.meta
 import kotlinx.html.p
 import kotlinx.html.span
 import kotlinx.html.stream.appendHTML
+import org.zanata.config.ServerFromEmail
 import org.zanata.i18n.Messages
 import org.zanata.i18n.MessagesFactory
 import org.zanata.servlet.annotations.ServerPath
 import org.zanata.util.HtmlUtil
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
+import javax.mail.Message
 import javax.mail.Message.RecipientType.BCC
 import javax.mail.MessagingException
 import javax.mail.Session
@@ -32,9 +34,9 @@ import kotlin.text.Charsets.UTF_8
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ApplicationScoped
-// TODO serverPath also exists in MergeContext
 class HtmlEmailBuilder @Inject constructor(
         @ServerPath val serverPath: String,
+        @ServerFromEmail val serverFromEmail: String,
         val mailSession: Session,
         messagesFactory: MessagesFactory) {
 
@@ -47,10 +49,18 @@ class HtmlEmailBuilder @Inject constructor(
     /**
      * Build message using 'strategy' and send it via JavaMail Transport.
      */
-    fun sendMessage(strategy: HtmlEmailStrategy) =
-            sendEmail(MessageBuilder {
-                buildMessage(MimeMessage(mailSession), strategy.addresses, strategy.getSubject(msgs), strategy.getReceivedReasons(msgs), serverPath, strategy.bodyProducer())
-            })
+    fun sendMessage(strategy: HtmlEmailStrategy): Message {
+        val generalContext = GeneralEmailContext(serverPath, serverFromEmail)
+        return sendEmail(MessageBuilder {
+            buildMessage(
+                    MimeMessage(mailSession),
+                    strategy.addresses,
+                    strategy.getSubject(msgs),
+                    strategy.getReceivedReasons(msgs),
+                    serverPath,
+                    strategy.bodyProducer(generalContext))
+        })
+    }
 
     /**
      * Fills in the provided MimeMessage 'msg' using 'strategy' to select the
@@ -71,7 +81,13 @@ class HtmlEmailBuilder @Inject constructor(
             bodyCallback : BODY.(Messages) -> Unit): MimeMessage {
         // TODO remember users' locales, and customise for each recipient
         // msgs = messagesFactory.getMessages(account.getLocale());
-        msg.setFrom(addresses.fromAddress)
+        if (addresses.fromAddress != null) {
+            msg.setFrom(addresses.fromAddress)
+        } else {
+            val fromName = msgs["jsf.Zanata"]
+            msg.setFrom(Addresses.getAddress(serverFromEmail, fromName))
+        }
+
         if (addresses.replyToAddress != null) {
             msg.replyTo = addresses.replyToAddress.toTypedArray()
         }
@@ -133,6 +149,6 @@ class HtmlEmailBuilder @Inject constructor(
 }
 
 data class EmailAddressBlock @JvmOverloads constructor(
-        val fromAddress: InternetAddress,
+        val fromAddress: InternetAddress? = null,
         val toAddresses: List<InternetAddress>,
         val replyToAddress: List<InternetAddress>? = null)
