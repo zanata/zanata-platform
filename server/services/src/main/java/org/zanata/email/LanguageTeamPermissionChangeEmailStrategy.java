@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class LanguageTeamPermissionChangeEmailStrategy extends EmailStrategy {
+public class LanguageTeamPermissionChangeEmailStrategy extends VelocityEmailStrategy {
     private final LanguageTeamPermissionChangedEvent changedEvent;
     private final Messages msgs;
     private final String contactCoordinatorLink;

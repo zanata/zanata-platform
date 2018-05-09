@@ -1,10 +1,11 @@
-package org.zanata.service.impl;
+package org.zanata.service.tm.merge;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.enterprise.event.Event;
@@ -29,14 +30,18 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataJpaTest;
 import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
+import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.config.TMBands;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
+import org.zanata.email.HtmlEmailBuilder;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.events.TransMemoryMergeEvent;
 import org.zanata.events.TransMemoryMergeProgressEvent;
+import org.zanata.i18n.Messages;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
@@ -54,6 +59,9 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.VersionStateCache;
+import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.TranslationMemoryServiceImpl;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.transaction.TransactionUtilForUnitTest;
@@ -63,6 +71,7 @@ import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 import com.google.common.collect.Lists;
+import kotlin.ranges.IntRange;
 
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ ProjectIterationDAO.class, TextFlowDAO.class,
@@ -79,6 +88,15 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     @Produces
     @Mock
     private ZanataIdentity identity;
+    @Produces
+    @ServerPath
+    private String serverPath = "http://example.com/";
+    @Produces @TMBands
+    private Map<ContentState, List<IntRange>> bands = new TMBandDefsProducer().produce("80 90");
+    @Produces @Mock
+    private Messages messages;
+    @Produces @Mock
+    private HtmlEmailBuilder emailBuilder;
     private HLocale targetLocale;
     private HLocale sourceLocale;
     private TransMemory tmx;

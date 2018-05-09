@@ -18,14 +18,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service.impl;
+package org.zanata.service.tm.merge;
 
+import static java.util.Collections.singletonList;
 import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectSome;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +34,7 @@ import java.util.function.Consumer;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
@@ -44,14 +44,25 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
+import org.zanata.common.HasContents;
+import org.zanata.config.TMBands;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
+import org.zanata.email.Addresses;
+import org.zanata.email.EmailAddressBlock;
+import org.zanata.email.HtmlEmailBuilder;
+import org.zanata.email.MergeContext;
+import org.zanata.email.ProjectInfo;
+import org.zanata.email.TMMergeEmailStrategy;
+import org.zanata.email.VersionInfo;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.events.TransMemoryMergeEvent;
 import org.zanata.events.TransMemoryMergeProgressEvent;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -65,6 +76,7 @@ import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.VersionStateCache;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.TransMemoryMergeStatusResolver;
 import org.zanata.util.TranslationUtil;
@@ -84,6 +96,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import kotlin.ranges.IntRange;
 
 /**
  * @author Sean Flanigan
@@ -120,7 +133,11 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
     private VersionStateCache versionStateCacheImpl;
 
+    private Messages msgs;
     private HAccount authenticatedAccount;
+    private String serverPath;
+    private Map<ContentState, List<IntRange>> tmBands;
+    private HtmlEmailBuilder emailBuilder;
 
     @Inject
     public TransMemoryMergeServiceImpl(
@@ -134,7 +151,11 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             TransactionUtil transactionUtil,
             ProjectIterationDAO projectIterationDAO,
             VersionStateCache versionStateCacheImpl,
-            @Authenticated HAccount authenticatedAccount) {
+            Messages msgs,
+            @Authenticated HAccount authenticatedAccount,
+            @ServerPath String serverPath,
+            @TMBands Map<ContentState, List<IntRange>> tmBands,
+            HtmlEmailBuilder emailBuilder) {
         this.localeServiceImpl = localeServiceImpl;
         this.textFlowDAO = textFlowDAO;
         this.transMemoryUnitDAO = transMemoryUnitDAO;
@@ -147,12 +168,22 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         this.transactionUtil = transactionUtil;
         this.projectIterationDAO = projectIterationDAO;
         this.versionStateCacheImpl = versionStateCacheImpl;
+        this.msgs = msgs;
         this.authenticatedAccount = authenticatedAccount;
+        this.serverPath = serverPath;
+        this.tmBands = tmBands;
+        this.emailBuilder = emailBuilder;
     }
 
     public TransMemoryMergeServiceImpl() {
     }
 
+    /**
+     * TM Merge for an individual document
+     * @param request
+     * @param asyncTaskHandle
+     * @return
+     */
     @Override
     @Transactional
     public List<TranslationService.TranslationResult> executeMerge(
@@ -232,6 +263,12 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         return finalResult;
     }
 
+    /**
+     * Async TM Merge for an individual document
+     * @param request
+     * @param asyncTaskHandle
+     * @return
+     */
     @Async
     @Override
     @Transactional
@@ -242,29 +279,18 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         return AsyncTaskResult.completed(translationResults);
     }
 
-    public class TranslationResults {
-        private Long wordCount;
-        private Long count;
-
-        public TranslationResults() {
-        }
-
-        public Long getWordCount() {
-            return wordCount;
-        }
-
-        public void addCount(Long count, Long wordCount) {
-            this.count += count;
-            this.wordCount += wordCount;
-        }
-    }
-
+    /**
+     * TM Merge for an entire project version
+     * @param targetVersionId
+     * @param mergeRequest
+     * @param handle
+     * @return
+     */
     @Async
     @Override
     public Future<Void> startMergeTranslations(Long targetVersionId,
             VersionTMMerge mergeRequest,
             MergeTranslationsTaskHandle handle) {
-        Map<ContentState, Map<Double, TranslationResults>> results = new HashMap<>();
         InternalTMSource internalTMSource = mergeRequest.getInternalTMSource();
         List<Long> fromVersionIds = internalTMSource.getFilteredProjectVersionIds();
         if (internalTMSource.getChoice() == SelectSome
@@ -273,6 +299,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                     "selected internal TM versions list has nothing to copy from");
             return AsyncTaskResult.completed();
         }
+        TMMergeResult mergeResult = new TMMergeResult(tmBands);
         // we need a separate read only transaction to load all the entities and close
         // it so that the following batch job can take as long as it can and no
         // transaction reaper will kick in.
@@ -331,17 +358,15 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
             // store results into memory
             for (TranslationService.TranslationResult batchResult: batchResults) {
-                Map<Double, TranslationResults> contentStateResult = results
-                    .getOrDefault(batchResult.getBaseContentState(),
-                        new HashMap<>());
-                TranslationResults similarityResult = contentStateResult
-                    .getOrDefault(batchResult.getSimilarityPercent(),
-                        new TranslationResults());
-                similarityResult.addCount(1L,
-                    batchResult.getTranslatedTextFlowTarget().getTextFlow()
-                        .getWordCount());
-                contentStateResult.put(batchResult.getSimilarityPercent(), similarityResult);
-                results.put(batchResult.getBaseContentState(), contentStateResult);
+                HTextFlow textFlow = batchResult
+                        .getTranslatedTextFlowTarget()
+                        .getTextFlow();
+                long charCount = codePoints(textFlow);
+                long wordCount = textFlow.getWordCount();
+                // round down (assuming non-negative)
+                int similarity = (int) batchResult.getSimilarityPercent();
+                ContentState contentState = batchResult.getBaseContentState();
+                mergeResult.countCopy(contentState, similarity, new MessageStats(charCount, wordCount, 1));
             }
 
             taskHandleOpt.ifPresent(
@@ -353,8 +378,48 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         log.info("merge translation from TM end: from {} to {}, {}",
                 mergeRequest.getInternalTMSource(),
                 targetVersionStr, overallStopwatch);
-        //TODO: sends email to requester using the stats in memory
+
+        // send email to requester using mergeResult
+        sendTMMergeEmail(mergeRequest, mergeResult, neededEntities);
+
         return AsyncTaskResult.completed();
+    }
+
+    private void sendTMMergeEmail(VersionTMMerge mergeRequest,
+            TMMergeResult mergeResult,
+            NeededEntities neededEntities) {
+        HProjectIteration projVersion = neededEntities.targetVersion;
+        HProject proj = projVersion.getProject();
+        String verSlug = projVersion.getSlug();
+        String projSlug = proj.getSlug();
+        String verUrl = serverPath + "/iteration/view/" + projSlug + "/" + verSlug;
+        String projUrl = serverPath + "/project/view/" + proj.getSlug();
+        String fromName = msgs.get("jsf.Zanata");
+        // FIXME appConfiguration.getAdmin
+        InternetAddress fromAddress = Addresses.getAddress(null, fromName);
+        List<? extends InternetAddress> toAddresses = singletonList(
+                Addresses.getAddress(authenticatedAccount.getPerson()));
+        MergeContext settings = new MergeContext(
+                serverPath,
+                new EmailAddressBlock(fromAddress, toAddresses),
+                new ProjectInfo(proj.getName(), projUrl),
+                new VersionInfo(projVersion.getSlug(), verUrl),
+                new IntRange(mergeRequest.getThresholdPercent(), 100));
+        TMMergeEmailStrategy
+                strategy = new TMMergeEmailStrategy(settings, mergeResult);
+        emailBuilder.sendMessage(strategy);
+    }
+
+    /**
+     * Counts the Unicode code points in *all* the contents
+     * @param text
+     * @return
+     */
+    private static long codePoints(HasContents text) {
+        return text.getContents()
+                .stream()
+                .mapToLong(s -> (long) s.codePointCount(0, s.length()))
+                .sum();
     }
 
     /**

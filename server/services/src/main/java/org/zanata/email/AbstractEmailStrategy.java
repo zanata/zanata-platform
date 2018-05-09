@@ -22,16 +22,15 @@ package org.zanata.email;
 
 import javax.mail.internet.InternetAddress;
 
-import com.google.common.base.Optional;
-import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
+import com.google.common.base.Optional;
 
 /**
  * Strategy class for EmailBuilder to customise the content and recipients
  * of an email.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class EmailStrategy {
+public abstract class AbstractEmailStrategy {
 
     /**
      * For absent, use the default From address configured by the server
@@ -46,34 +45,4 @@ public abstract class EmailStrategy {
     }
 
     public abstract String getSubject(Messages msgs);
-
-    /**
-     * The classpath resource name of the Velocity template which
-     * will provide the complete email.
-     * @return the resource name
-     */
-    public String getTemplateResourceName() {
-        return "org/zanata/email/templates/template_email.vm";
-    }
-
-    /**
-     * The classpath resource name of the Velocity template which
-     * will provide the body of the email.
-     * @return the resource name
-     */
-    public abstract String getBodyResourceName();
-
-    /**
-     * A map of variable name to value for the context variables needed
-     * by this strategy's template.
-     * @return the context variables
-     * @param genericContext
-     * @param toAddresses
-     */
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
-            InternetAddress[] toAddresses) {
-        return genericContext.put("body", getBodyResourceName());
-    }
-
 }

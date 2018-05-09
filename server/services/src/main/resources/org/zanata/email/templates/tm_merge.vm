@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>$msgs.get("email.templates.tm_merge.Results")</title>
+
+  <style>
+    * {
+      font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    h1 {
+      color:#20718A;
+    }
+    h2 {
+      margin-bottom: 0;
+    }
+    h3 {
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 0;
+    }
+    .approved {
+      color: #20718A;
+    }
+    .translated {
+      color: #62c876;
+    }
+    .fuzzy {
+      color: #ffa800;
+    }
+    .container {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    table {
+      width: 80%;
+    }
+    table * {
+      line-height: 2rem;
+      background-color: #fefefe;
+    }
+    td {
+      border-bottom: solid 1px #BDD4DC;
+      color: #555;
+    }
+    .dark {
+      color: #546677;
+    }
+    .light {
+      color: #A2B3BE;
+      font-weight: 500;
+    }
+    .low-weight {
+      font-weight: 300;
+    }
+    .padRight-20 {
+      padding-right: 20px;
+    }
+    ul {
+      padding-left: 0;
+      margin: 0;
+      display: inline-flex;
+      list-style-type:none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+<img height="30px" src="http://zanata.org/assets/logo.svg" />
+<img height="22px" src="http://zanata.org/assets/logo-text.svg" />
+<h1 class="low-weight">$msgs.get("email.templates.tm_merge.Results")</h1>
+<ul>
+  <li class="dark padRight-20"><i class="far fa-file"></i> $documentName</li>
+  <li class="dark padRight-20"><i class="far fa-clipboard"></i> $projectName</li>
+  <li class="dark"><i class="fas fa-cubes"></i> $version</li>
+</ul>
+<p class="dark">$msgs.get("email.templates.tm_merge.MatchRange"): <span class="light">$msgs.get("email.templates.tm_merge.MatchRangeFromXToY", $matchRangeFrom, $matchRangeTo)</span></p>
+<h2 class="low-weight approved">$msgs.get("email.templates.tm_merge.CopiedAs", "Approved")</h2>
+<h3 class="light">$msgs.get("email.templates.tm_merge.100Match")</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>$msgs.get("email.templates.tm_merge.XWordsInYStrings", 20, 1)</td>
+    </tr>
+  </tbody>
+</table>
+<h2 class="low-weight translated">Copied as translated</h2>
+<h3 class="light">100% match</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>423 words <span class="low-weight">in</span> 73 strings</td>
+    </tr>
+  </tbody>
+</table>
+<h2 class="low-weight fuzzy">Copied as fuzzy</h2>
+<h3 class="light">100% match</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>56 words <span class="low-weight">in</span> 2 strings</td>
+    </tr>
+  </tbody>
+</table>
+<h3 class="light">$msgs.get("email.templates.tm_merge.XToYRangeMatch", 90, 99) </h3>
+<table>
+  <tbody>
+    <tr>
+      <td>56 words <span class="low-weight">in</span> 1 string</td>
+    </tr>
+  </tbody>
+</table>
+<h3 class="light">80% - 89% match</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>42 words <span class="low-weight">in</span> 2 strings</td>
+    </tr>
+  </tbody>
+</table>
+<h3 class="light">70% - 79% match</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>1092 words <span class="low-weight">in</span> 189 strings</td>
+    </tr>
+  </tbody>
+</table>
+<h3 class="light">60% - 69% match</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>9 words <span class="low-weight">in</span> 1 string</td>
+    </tr>
+  </tbody>
+</table>
+<h3 class="light">50% - 59% match</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>367 words <span class="low-weight">in</span> 2 strings</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</body>
+</html>

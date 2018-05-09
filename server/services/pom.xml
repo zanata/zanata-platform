@@ -378,6 +378,13 @@
     </dependency>
 
     <dependency>
+      <groupId>io.kotlintest</groupId>
+      <artifactId>kotlintest-runner-junit4</artifactId>
+      <version>3.1.0-RC3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib-jre8</artifactId>
     </dependency>
@@ -385,6 +392,11 @@
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-test-junit</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-html-jvm</artifactId>
     </dependency>
 
     <dependency>

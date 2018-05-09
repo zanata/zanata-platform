@@ -26,11 +26,11 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.email.ContactAdminAnonymousEmailStrategy;
 import org.zanata.email.ContactAdminEmailStrategy;
-import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.service.EmailService;
@@ -80,7 +80,7 @@ public class ContactAdminAction implements Serializable {
         String replyEmail = authenticatedAccount.getPerson().getEmail();
         subject = msgs.get("jsf.message.admin.inquiry.subject");
         try {
-            EmailStrategy strategy = new ContactAdminEmailStrategy(
+            VelocityEmailStrategy strategy = new ContactAdminEmailStrategy(
                     fromLoginName, fromName, replyEmail, subject, message);
             facesMessages
                     .addGlobal(emailServiceImpl.sendToAdmins(strategy, null));
@@ -96,7 +96,7 @@ public class ContactAdminAction implements Serializable {
         String ipAddress = getClientIp(); // client ip address
         subject = msgs.get("jsf.message.admin.inquiry.subject");
         try {
-            EmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
+            VelocityEmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
                     ipAddress, subject, message);
             facesMessages
                     .addGlobal(emailServiceImpl.sendToAdmins(strategy, null));

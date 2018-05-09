@@ -50,6 +50,7 @@ import org.zanata.config.JaasConfig;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.config.TMFuzzyBandsConfig;
 import org.zanata.events.ConfigurationChanged;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.PostAuthenticateEvent;
@@ -414,6 +415,12 @@ public class ApplicationConfiguration implements Serializable {
         return parseIntegerOrDefault(
                 databaseBackedConfig.getMaxFilesPerUpload(),
                 defaultMaxFilesPerUpload);
+    }
+
+    @Produces
+    @TMFuzzyBandsConfig
+    public String getTMFuzzyBands() {
+        return databaseBackedConfig.getTMFuzzyBands();
     }
 
     private int parseIntegerOrDefault(String value, int defaultValue) {

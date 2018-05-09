@@ -32,6 +32,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -40,7 +41,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
-import org.zanata.email.EmailStrategy;
 import org.zanata.email.RequestToJoinVersionGroupEmailStrategy;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
@@ -161,7 +161,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
                             selectedVersion.getProjectType()));
                 }
             }
-            EmailStrategy strategy = new RequestToJoinVersionGroupEmailStrategy(
+            VelocityEmailStrategy strategy = new RequestToJoinVersionGroupEmailStrategy(
                     fromLoginName, fromName, replyEmail, getGroupName(),
                     getSlug(), projectVersionIds, message);
             try {

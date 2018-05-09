@@ -131,6 +131,7 @@ public class ServerConfigurationBean implements Serializable {
     @DomainList
     private String permittedUserEmailDomains;
     private String gravatarRating;
+    private String tmFuzzyBands;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<PropertyWithKey<String>> commonStringProperties = Arrays
             .asList(new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
@@ -534,5 +535,13 @@ public class ServerConfigurationBean implements Serializable {
 
     public void setGravatarRating(String gravatarRating) {
         this.gravatarRating = gravatarRating;
+    }
+
+    public String getTmFuzzyBands() {
+        return tmFuzzyBands;
+    }
+
+    public void setTmFuzzyBands(String tmFuzzyBands) {
+        this.tmFuzzyBands = tmFuzzyBands;
     }
 }

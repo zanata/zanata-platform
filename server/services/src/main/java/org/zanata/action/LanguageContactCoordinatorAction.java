@@ -27,12 +27,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.LocaleMemberDAO;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.model.HLocaleMember;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.common.LocaleId;
 import org.zanata.email.ContactLanguageCoordinatorEmailStrategy;
-import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -89,7 +89,7 @@ public class LanguageContactCoordinatorAction implements Serializable {
 
         String localeNativeName = getLocale().retrieveNativeName();
 
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new ContactLanguageCoordinatorEmailStrategy(
                         receiver, fromLoginName, fromName, replyEmail,
                         getSubject(),

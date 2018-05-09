@@ -168,4 +168,12 @@
       config_key="gravatar.rating"
       config_value="R"
   />
+  <HApplicationConfiguration
+      id="22"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="tm.fuzzy.bands"
+      config_value="80 90"
+  />
 </dataset>

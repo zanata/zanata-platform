@@ -20,47 +20,44 @@
  */
 package org.zanata.email;
 
-import javaslang.collection.Map;
-import org.zanata.i18n.Messages;
-
 import javax.mail.internet.InternetAddress;
 
+import javaslang.collection.Map;
+
 /**
-* @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
-*/
-public class ActivationEmailStrategy extends VelocityEmailStrategy {
-    private final String key;
-    private final String resetPasswordKey;
+ * Strategy class for EmailBuilder to customise the content and recipients
+ * of an email.
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ */
+public abstract class VelocityEmailStrategy extends AbstractEmailStrategy {
 
-    public ActivationEmailStrategy(String key) {
-        this.key = key;
-        resetPasswordKey = null;
+    /**
+     * The classpath resource name of the Velocity template which
+     * will provide the complete email.
+     * @return the resource name
+     */
+    public String getTemplateResourceName() {
+        return "org/zanata/email/templates/template_email.vm";
     }
 
-    public ActivationEmailStrategy(String key, String resetPasswordKey) {
-        this.key = key;
-        this.resetPasswordKey = resetPasswordKey;
-    }
+    /**
+     * The classpath resource name of the Velocity template which
+     * will provide the body of the email.
+     * @return the resource name
+     */
+    public abstract String getBodyResourceName();
 
-    @Override
-    public String getSubject(Messages msgs) {
-        return msgs.get("jsf.email.activation.Subject");
-    }
-
-    @Override
-    public String getBodyResourceName() {
-        return "org/zanata/email/templates/activation.vm";
-    }
-
-    @Override
+    /**
+     * A map of variable name to value for the context variables needed
+     * by this strategy's template.
+     * @return the context variables
+     * @param genericContext
+     * @param toAddresses
+     */
     public Map<String, Object> makeContext(
             Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(
-                genericContext, toAddresses);
-        return context
-                .put("activationKey", key)
-                .put("resetPasswordKey", resetPasswordKey)
-                .put("toName", toAddresses[0].getPersonal());
+        return genericContext.put("body", getBodyResourceName());
     }
+
 }

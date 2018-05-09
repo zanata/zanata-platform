@@ -33,7 +33,7 @@ import static org.zanata.email.Addresses.getReplyTo;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class RequestToJoinVersionGroupEmailStrategy extends EmailStrategy {
+public class RequestToJoinVersionGroupEmailStrategy extends VelocityEmailStrategy {
     private final String fromLoginName;
     private final String fromName;
     private final String replyEmail;

@@ -61,6 +61,8 @@ public class HApplicationConfiguration extends ModelEntityBase {
             "max.active.req.per.apikey";
     public static String KEY_MAX_FILES_PER_UPLOAD =
             "fileupload.max.files.per.upload";
+    public static String KEY_TM_FUZZY_BANDS =
+            "tm.fuzzy.bands";
     public static String KEY_ALLOW_ANONYMOUS_USER = "allow.anonymous.user";
     public static String KEY_PERMITTED_USER_EMAIL_DOMAIN =
             "permitted.user.email.domain";

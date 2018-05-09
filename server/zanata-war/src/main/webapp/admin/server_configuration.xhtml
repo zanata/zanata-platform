@@ -278,6 +278,7 @@
             </h:inputText>
           </zanata:decorate>
         </div>
+
         <div class="form__item l--push-top-1">
           <h3 class="heading--secondary l--push-all-0">#{msgs['jsf.config.gravatar']}</h3>
           <h:panelGroup layout="block"  id="gravatarSettings" styleClass="l--push-top-half">
@@ -298,6 +299,22 @@
                             itemValue="X"/>
             </h:selectOneMenu>
           </h:panelGroup>
+        </div>
+
+        <div class="form__item l--push-top-1">
+          <h3 class="heading--secondary l--push-all-0">#{msgs['jsf.config.tmfuzzybands']}</h3>
+          <h:outputLabel>#{msgs['jsf.config.tmfuzzybands.heading']}
+            <span class="txt--meta l--push-right-quarter">
+              <i class="i i--info" title="#{msgs['jsf.config.tmfuzzybands.description']}"></i>
+            </span>
+          </h:outputLabel>
+          <zanata:decorate id="tmFuzzyBands" componentId="tmFuzzyBandsField">
+            <h:inputText id="tmFuzzyBands" value="#{serverConfigurationBean.tmFuzzyBands}">
+              <a4j:ajax event="blur" render="tmFuzzyBandsField" execute="@this"/>
+              <rich:placeholder value="#{msgs['jsf.config.tmfuzzybands.placeholder']}"
+                  styleClass="txt--neutral" />
+            </h:inputText>
+          </zanata:decorate>
         </div>
 
         <h:commandButton value="#{msgs['jsf.Save']}" id="save" styleClass="button--primary"

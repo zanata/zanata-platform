@@ -31,7 +31,7 @@ import static org.zanata.email.Addresses.getReplyTo;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
+public class ContactLanguageCoordinatorEmailStrategy extends VelocityEmailStrategy {
     private final String receiver;
     private final String fromLoginName;
     private final String fromName;
