@@ -25,9 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import javax.naming.NoInitialContextException;
 
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;

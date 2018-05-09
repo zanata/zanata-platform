@@ -27,8 +27,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.database.jvm.JdbcConnection;
@@ -37,6 +35,8 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -107,16 +107,15 @@ public class MigrateHTermCommentToString implements CustomTaskChange {
     }
 
     private String joinComment(String existingComment, String newComment) {
-        if (StringUtils.isBlank(existingComment)
-                && StringUtils.isBlank(newComment)) {
+        if (isBlank(existingComment) && isBlank(newComment)) {
             return null;
         }
 
-        if(StringUtils.isBlank(existingComment)) {
+        if (isBlank(existingComment)) {
             return newComment;
         }
 
-        if(StringUtils.isBlank(newComment)) {
+        if (isBlank(newComment)) {
             return existingComment;
         }
         return existingComment + "\n" + newComment;
