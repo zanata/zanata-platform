@@ -72,41 +72,34 @@ public class MigrateHTermCommentToString implements CustomTaskChange {
 
             Map<Long, String> termCommentsMap = new HashMap<Long, String>();
 
-            ResultSet rs1 = null;
-            ResultSet rs2 = null;
-
-            try {
-                String termCommentsSql = "select term.id, comment.comment from " +
-                        "HGlossaryTerm as term, HTermComment as comment where comment.glossaryTermId = term.id";
-                rs1 = stmt.executeQuery(termCommentsSql);
-
+            String termCommentsSql = "select term.id, comment.comment from " +
+                    "HGlossaryTerm as term, HTermComment as comment where comment.glossaryTermId = term.id";
+            try (ResultSet rs1 = stmt.executeQuery(termCommentsSql)) {
                 while (rs1.next()) {
                     long termId = rs1.getLong(1);
                     String comment = rs1.getString(2);
-                    String newComment = null;
+                    String newComment;
 
-                    if(termCommentsMap.containsKey(termId)) {
-                        newComment = joinComment(termCommentsMap.get(termId),
-                                comment);
+                    if (termCommentsMap.containsKey(termId)) {
+                        newComment =
+                                joinComment(termCommentsMap.get(termId),
+                                        comment);
                     } else {
                         newComment = joinComment(null, comment);
                     }
                     termCommentsMap.put(termId, newComment);
                 }
+            }
 
-                String termSql =
-                        "select term.id, term.comment from HGlossaryTerm term";
-                rs2 = stmt.executeQuery(termSql);
-
+            String termSql =
+                    "select term.id, term.comment from HGlossaryTerm term";
+            try (ResultSet rs2 = stmt.executeQuery(termSql)) {
                 while (rs2.next()) {
                     long termId = rs2.getLong(1);
                     String comment = termCommentsMap.get(termId);
                     rs2.updateString(2, comment);
                     rs2.updateRow();
                 }
-            } finally {
-                rs1.close();
-                rs2.close();
             }
         } catch (SQLException | DatabaseException e) {
             throw new CustomChangeException(e);
