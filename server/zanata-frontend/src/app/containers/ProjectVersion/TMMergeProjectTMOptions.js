@@ -24,7 +24,7 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
       <CopyLabel type={REJECT} value={value} />
     </Radio>
   )
-  return <Col xs={12} md={4}>
+  return <Col>
     If the translation is from a different&nbsp;
     <span className="import-type">{name}</span>
     <Radio checked={value === IGNORE_CHECK} validationState='success'
@@ -37,9 +37,8 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
       <span>I will need to review it</span><br />
       <CopyLabel type={FUZZY} value={value} />
       <OverlayTrigger placement='right' overlay={copyAsFuzzyTooltip}>
-        <a className="btn-link tooltip-btn" role="button">
-          <Icon name="info" className="s0"
-            parentClassName="iconInfoVersionMerge" />
+        <a className="btn-link tooltip-btn iconInfoVersionMerge" role="button">
+          <Icon name="info" className="s0" />
         </a>
       </OverlayTrigger>
     </Radio>
@@ -79,7 +78,7 @@ class TMMergeProjectTMOptions extends Component {
       disabled
     } = this.props
     const diffProjectOption = disableDifferentProjectOption
-      ? (<Col xs={12} md={4}>
+      ? (<Col>
         If the translation is from a different&nbsp;
         <span className="import-type">project</span>
         <Radio checked validationState="error" disabled>
@@ -90,7 +89,7 @@ class TMMergeProjectTMOptions extends Component {
       : <MetaDataCheckOption name="project" disabled={disabled}
         value={differentProject} callback={this.onDifferentProjectChange} />
     return (
-      <Col xs={12} className="validations">
+      <Col>
         {diffProjectOption}
         <MetaDataCheckOption name="document" value={differentDocId}
           disabled={disabled}

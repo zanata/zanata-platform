@@ -5,7 +5,7 @@ import * as PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
-import { EditableText, Icon, LoaderText } from '../../components'
+import { EditableText, LoaderText } from '../../components'
 import { Button, Row } from 'antd'
 /**
  * Component to display a GlossaryEntry

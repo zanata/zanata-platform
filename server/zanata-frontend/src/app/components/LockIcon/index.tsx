@@ -14,7 +14,7 @@ const LockIcon: React.SFC<LockIconProps> = ({status}) => {
   return isEntityStatusReadOnly(status)
   ? (
     <Tooltip placement='top' title={tooltipReadOnly}>
-      <Icon name='locked' className='s0' parentClassName='icon-locked' />
+      <Icon name='locked' className='s0 txt-warn' />
     </Tooltip>
   )
   : DO_NOT_RENDER

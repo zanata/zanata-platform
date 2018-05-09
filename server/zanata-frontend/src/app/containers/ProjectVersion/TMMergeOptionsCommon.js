@@ -2,7 +2,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
-import {Label} from 'react-bootstrap'
+import { Tag } from 'antd'
 
 const mergeOptionValues = [IGNORE_CHECK, FUZZY, REJECT]
 export const TMMergeOptionsValuePropType = {
@@ -25,17 +25,17 @@ export const CopyLabel = ({type, value}) => {
   const isActive = value === type
   switch (type) {
     case IGNORE_CHECK:
-      return <Label bsStyle={activeOrDefault(isActive, 'success')}>
+      return <Tag className={activeOrDefault(isActive, 'bg-success')}>
         Copy as Translated
-      </Label>
+      </Tag>
     case FUZZY:
-      return <Label bsStyle={activeOrDefault(isActive, 'warning')}>
+      return <Tag className={activeOrDefault(isActive, 'bg-warn')}>
         Copy as Fuzzy
-      </Label>
+      </Tag>
     case REJECT:
-      return <Label bsStyle={activeOrDefault(isActive, 'danger')}>
+      return <Tag className={activeOrDefault(isActive, 'bg-error')}>
         Discard
-      </Label>
+      </Tag>
   }
   return <span />
 }

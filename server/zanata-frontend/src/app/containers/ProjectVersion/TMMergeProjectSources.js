@@ -2,8 +2,7 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {InputGroup, Col, FormControl, OverlayTrigger, Radio, Well,
-  Tooltip, Panel} from 'react-bootstrap'
+import {Row, Col, Radio, Card, Tooltip, Input, Button} from 'antd'
 import {
   Icon, LoaderText, DraggableVersionPanels
 } from '../../components'
@@ -21,11 +20,13 @@ const SAME = 'SAME'
 const OTHER = 'OTHER'
 
 const fromProjectSourceTooltip = (
-  <Tooltip id='from-project-source' title='From project source'>
+  <p id='from-project-source'>
     Exact text matches from projects are used before exact matches in imported
     TM. Fuzzy text matches from projects are used before fuzzy matches in
     imported TM.
-  </Tooltip>)
+  </p>)
+
+const Search = Input.Search
 
 /*
  * Component to display TM merge from project sources
@@ -40,7 +41,6 @@ class TMMergeProjectSources extends Component {
     }).isRequired,
     onFromAllProjectsChange: PropTypes.func.isRequired,
     onProjectSearchChange: PropTypes.func.isRequired,
-    flushProjectSearch: PropTypes.func.isRequired,
     onVersionCheckboxChange: PropTypes.func.isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired,
     onDragMoveEnd: PropTypes.func.isRequired,
@@ -82,7 +82,6 @@ class TMMergeProjectSources extends Component {
       projectVersions,
       fetchingProject,
       mergeOptions,
-      flushProjectSearch,
       onVersionCheckboxChange,
       onAllVersionCheckboxChange,
       onDragMoveEnd,
@@ -95,89 +94,83 @@ class TMMergeProjectSources extends Component {
       ? DO_NOT_RENDER
       : (
       <span className="search-input">
-        <Col xs={12}>
-          <InputGroup>
-            <InputGroup.Addon>
-              <Icon name='search' className='s0' title='search' />
-            </InputGroup.Addon>
-            <FormControl type='text'
-              value={mergeOptions.projectSearchTerm}
-              className='versionMergeSearch-input'
-              onChange={this.projectSearchTermChanged}
-              onKeyDown={flushProjectSearch}
-            />
-          </InputGroup>
-        </Col>
-        <Col xs={6}>
-          <span className='versionMergeTitle-adjusted VersionMergeTitle'>
-          Select source project versions to merge
-          </span>
-          <div>
-            <LoaderText loading={fetchingProject}
-              loadingText={'Fetching Projects'} />
-            <span className="u-textMuted">{noResults}</span>
-          </div>
-          <ProjectVersionPanels projectVersions={projectVersions}
-            selectedVersions={mergeOptions.selectedVersions}
-            onVersionCheckboxChange={onVersionCheckboxChange}
-            onAllVersionCheckboxChange={onAllVersionCheckboxChange}
-          />
-        </Col>
-        <Col xs={6}>
-          <DraggableVersionPanels
-            selectedVersions={mergeOptions.selectedVersions}
-            onDraggableMoveEnd={onDragMoveEnd}
-            removeVersion={removeProjectVersion} />
-        </Col>
+        <Search
+          placeholder="input search text"
+          onSearch={this.projectSearchTermChange}
+          enterButton />
+        <Row>
+          <Col span={12}>
+            <span className='versionMergeTitle-adjusted VersionMergeTitle'>
+              Select source project versions to merge
+            </span>
+            <div>
+              <LoaderText loading={fetchingProject}
+                loadingText={'Fetching Projects'} />
+              <span className="u-textMuted">{noResults}</span>
+            </div>
+            <ProjectVersionPanels projectVersions={projectVersions}
+              selectedVersions={mergeOptions.selectedVersions}
+              onVersionCheckboxChange={onVersionCheckboxChange}
+              onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
+          </Col>
+          <Col span={12}>
+            <DraggableVersionPanels
+              selectedVersions={mergeOptions.selectedVersions}
+              onDraggableMoveEnd={onDragMoveEnd}
+              removeVersion={removeProjectVersion} />
+          </Col>
+        </Row>
       </span>
       )
     const disableDiffProjectOption = this.state.fromProjectSelection === SAME
     return (
-      <Panel>
-        <Col xs={12}>
-          <div className='VersionMergeTitle versionMergeTitle-flex'>
-            <span>
-              <Toggle icons={false} defaultChecked
-                onChange={this.toggleChange} />
-            </span>
-            <span>From </span>
-            <span className="panel-name">Project Source</span>
-            <OverlayTrigger placement='right'
-              overlay={fromProjectSourceTooltip}>
-              <a className="btn-link tooltip-btn" role="button">
-                <Icon name="info" className="s0"
-                  parentClassName="iconInfoVersionMerge" />
-              </a>
-            </OverlayTrigger>
-          </div>
-        </Col>
-        <Col xs={12} className='versionMergeSearch'>
-          <span>Search TM from</span>
-          <Radio name="fromProjectSelection" inline disabled={disabled}
-            checked={this.state.fromProjectSelection === SAME}
-            onChange={this.onFromProjectSelectionChange(SAME)}> this project
-          </Radio>
-          <Radio name="fromProjectSelection" inline disabled={disabled}
-            checked={this.state.fromProjectSelection === ALL}
-            onChange={this.onFromProjectSelectionChange(ALL)}> all projects
-          </Radio>
-          <Radio name="fromProjectSelection" inline disabled={disabled}
-            checked={this.state.fromProjectSelection === OTHER}
-            onChange={this.onFromProjectSelectionChange(OTHER)}> some projects
-          </Radio>
-        </Col>
-        {fromVersionsPanel}
-        <TMMergeProjectTMOptions {...this.props} disabled={disabled}
-          disableDifferentProjectOption={disableDiffProjectOption}
-        />
-        <Col xs={12}>
-          <Well>
-            <p>Translations which satisfy all conditions will copy as
-              <span className="u-textBold u-textSuccess"> translated</span>.
-            </p>
-          </Well>
-        </Col>
-      </Panel>
+      <span>
+        <Row>
+          <Col span={24}>
+            <div className='VersionMergeTitle versionMergeTitle-flex'>
+              <span>
+                <Toggle icons={false} defaultChecked
+                  onChange={this.toggleChange} />
+              </span>
+              <span>From </span>
+              <span className="panel-name">Project Source</span>
+              <Tooltip placement='right'
+                title={fromProjectSourceTooltip}>
+                <Button className="btn-link tooltip-btn" aria-label="button">
+                  <Icon name="info" className="s0"
+                    parentClassName="iconInfoVersionMerge" />
+                </Button>
+              </Tooltip>
+            </div>
+          </Col>
+          <Col span={24} className='versionMergeSearch'>
+            <span>Search TM from</span>
+            <Radio name="fromProjectSelection" inline disabled={disabled}
+              checked={this.state.fromProjectSelection === SAME}
+              onChange={this.onFromProjectSelectionChange(SAME)}> this project
+            </Radio>
+            <Radio name="fromProjectSelection" inline disabled={disabled}
+              checked={this.state.fromProjectSelection === ALL}
+              onChange={this.onFromProjectSelectionChange(ALL)}> all projects
+            </Radio>
+            <Radio name="fromProjectSelection" inline disabled={disabled}
+              checked={this.state.fromProjectSelection === OTHER}
+              onChange={this.onFromProjectSelectionChange(OTHER)}> some projects
+            </Radio>
+          </Col>
+          {fromVersionsPanel}
+          <TMMergeProjectTMOptions {...this.props} disabled={disabled}
+            disableDifferentProjectOption={disableDiffProjectOption}
+          />
+          <Col span={24}>
+            <Card>
+              <p>Translations which satisfy all conditions will copy as
+                <span className="u-textBold u-textSuccess"> translated</span>.
+              </p>
+            </Card>
+          </Col>
+        </Row>
+      </span>
     )
   }
 }

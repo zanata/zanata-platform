@@ -103,7 +103,7 @@ const MergeOptions = (
             alt="Version TM Merge workflow" /></p>
         </Panel>
       </Accordion>
-      <Col xs={12} className='versionMergeContainer'>
+      <Col>
         <Panel>
           <div className='versionMergeTarget'>
             <div className='VersionMergeTitle'>
@@ -126,7 +126,7 @@ const MergeOptions = (
           </div>
         </Panel>
       </Col>
-      <Col xs={12} className='versionMergeRow'>
+      <Col>
         <p className="lead">For every potential translation:</p>
         <div className="VersionMergeTitle u-textNewBlue">
           If text is less than
@@ -138,7 +138,7 @@ const MergeOptions = (
             values={[80, 90, 100]} /> similar, don't use it.
         </div>
       </Col>
-      <Col xs={12} className='versionMergeContainer'>
+      <Col>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
           flushProjectSearch, onAllVersionCheckboxChange,
