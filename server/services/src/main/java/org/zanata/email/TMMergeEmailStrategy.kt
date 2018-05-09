@@ -13,11 +13,11 @@ import javax.mail.internet.InternetAddress
 
 data class ProjectInfo(val name: String, val url: String)
 data class VersionInfo(val slug: String, val url: String)
-data class MergeEmailContext(val toAddresses: List<InternetAddress>, val project: ProjectInfo, val version: VersionInfo, val matchRange: IntRange)
+data class TMMergeEmailContext(val toAddresses: List<InternetAddress>, val project: ProjectInfo, val version: VersionInfo, val matchRange: IntRange)
 
 // It might be better pass context/mergeResult to methods which need them, not to constructor
 class TMMergeEmailStrategy(
-        private val context: MergeEmailContext,
+        private val context: TMMergeEmailContext,
         private val mergeResult: TMMergeResult): HtmlEmailStrategy() {
 
     override fun getSubject(msgs: Messages): String =
@@ -82,7 +82,7 @@ private val ContentState.style: String
         else -> ""
     }
 
-private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, context: MergeEmailContext, mergeResult: TMMergeResult): BODY.(Messages) -> Unit = { msgs ->
+private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, context: TMMergeEmailContext, mergeResult: TMMergeResult): BODY.(Messages) -> Unit = { msgs ->
     div {
         style = s.container + s.text
         a(href = generalContext.serverURL) {

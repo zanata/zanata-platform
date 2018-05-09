@@ -51,14 +51,13 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.email.Addresses;
 import org.zanata.email.HtmlEmailBuilder;
-import org.zanata.email.MergeEmailContext;
+import org.zanata.email.TMMergeEmailContext;
 import org.zanata.email.ProjectInfo;
 import org.zanata.email.TMMergeEmailStrategy;
 import org.zanata.email.VersionInfo;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.events.TransMemoryMergeEvent;
 import org.zanata.events.TransMemoryMergeProgressEvent;
-import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -392,7 +391,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         String projUrl = serverPath + "/project/view/" + proj.getSlug();
         List<? extends InternetAddress> toAddresses = singletonList(
                 Addresses.getAddress(authenticatedAccount.getPerson()));
-        MergeEmailContext settings = new MergeEmailContext(
+        TMMergeEmailContext settings = new TMMergeEmailContext(
                 toAddresses,
                 new ProjectInfo(proj.getName(), projUrl),
                 new VersionInfo(projVersion.getSlug(), verUrl),

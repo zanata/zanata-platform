@@ -99,7 +99,7 @@ class HtmlEmailBuilderTest {
     fun mergeResult() {
         // given
         val mergeResult = createTMMergeResult()
-        val context = MergeEmailContext(
+        val context = TMMergeEmailContext(
                 listOf(Addresses.getAddress(toAddress, toName)),
                 ProjectInfo("Test Project", "$serverURL/project/view/test-project"),
                 VersionInfo("master", "$serverURL/iteration/view/test-project/master"),
