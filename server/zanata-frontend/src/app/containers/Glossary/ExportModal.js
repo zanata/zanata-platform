@@ -79,12 +79,14 @@ class ExportModal extends Component {
         footer={[
           <Button
             key='back'
+            aria-label='button'
             disabled={isExporting}
             onClick={() => handleExportFileDisplay(false)}>
             Cancel
           </Button>,
           <Button
             key='ok'
+            aria-label='button'
             type='primary'
             disabled={isExporting}
             onClick={handleExport}>

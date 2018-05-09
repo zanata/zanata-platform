@@ -174,6 +174,7 @@ class NewLanguageModal extends Component {
         footer={[
           <Button
             key='back'
+            aria-label='button'
             id='btn-new-language-cancel'
             disabled={saving}
             onClick={this.handleCancel}>
@@ -181,6 +182,7 @@ class NewLanguageModal extends Component {
           </Button>,
           <Button
             key='ok'
+            aria-label='button'
             disabled={saving ||
               (isEmpty(details.localeId) && isEmpty(query))}
             id='btn-new-language-save'

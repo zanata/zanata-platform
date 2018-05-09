@@ -95,12 +95,14 @@ class NewEntryModal extends Component {
         footer={[
           <Button
             key='back'
+            aria-label='button'
             disabled={isSaving}
             onClick={() => this.handleCancel()}>
             Cancel
           </Button>,
           <Button
             key='ok'
+            aria-label='button'
             type='primary'
             disabled={!isAllowSave || isSaving}
             onClick={

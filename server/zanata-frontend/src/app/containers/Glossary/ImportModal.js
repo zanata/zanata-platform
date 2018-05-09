@@ -100,12 +100,14 @@ class ImportModal extends Component {
         footer={[
           <Button
             key='back'
+            aria-label='button'
             disabled={isUploading}
             onClick={() => handleImportFileDisplay(false)}>
             Cancel
           </Button>,
           <Button
             key='ok'
+            aria-label='button'
             type='primary'
             disabled={disableUpload}
             onClick={handleImportFile}>

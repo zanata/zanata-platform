@@ -1,13 +1,8 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {
-  Button,
-  Tooltip,
-  Overlay
-} from 'react-bootstrap'
-import * as ReactDOM from 'react-dom'
-import { Icon } from '../../components'
+import Button from 'antd/lib/button'
+import Tooltip from 'antd/lib/tooltip'
 
 class DeleteEntry extends Component {
   static propTypes = {
@@ -25,36 +20,38 @@ class DeleteEntry extends Component {
       handleDeleteEntry
     } = this.props
     /* eslint-disable react/jsx-no-bind */
+    const deleteLanguage = (
+      <span>
+        <p>Are you sure you want to delete&nbsp;
+          <strong>{locale.displayName}</strong>?&nbsp;
+        </p>
+        <span className='button-spacing'>
+          <Button className='btn-default btn-sm' aria-label='button'
+            onClick={() => handleDeleteEntryDisplay(false)}>
+            Cancel
+          </Button>
+          <Button className='btn-danger btn-sm' type='danger'
+            aria-label='button'
+            onClick={() => {
+              handleDeleteEntry(locale.localeId)
+              handleDeleteEntryDisplay(false)
+            }}>
+            Delete
+          </Button>
+        </span>
+      </span>
+    )
+
     return (
       <div className='u-blockInline'>
-        <Button bsSize='small'
-          onClick={() => handleDeleteEntryDisplay(true)}>
-          <Icon name='cross' className='n2' parentClassName='iconCross'
-            title='cross' />
-          Delete
-        </Button>
-        <Overlay show={show} placement='top'
-          target={() => ReactDOM.findDOMNode(this)}>
-          <Tooltip id='tooltip' className='bstrapReact'
-            title='Delete language'>
-            <p>Are you sure you want to delete&nbsp;
-              <strong>{locale.displayName}</strong>?&nbsp;
-            </p>
-            <span className='button-spacing'>
-              <Button bsStyle='default' bsSize='small'
-                onClick={() => handleDeleteEntryDisplay(false)}>
-                Cancel
-              </Button>
-              <Button bsStyle='danger' bsSize='small' type='button'
-                onClick={() => {
-                  handleDeleteEntry(locale.localeId)
-                  handleDeleteEntryDisplay(false)
-                }}>
-                Delete
-              </Button>
-            </span>
-          </Tooltip>
-        </Overlay>
+        <Tooltip placement='top' className='bstrapReact'
+          title={deleteLanguage} onVisibleChange={show}>
+          <Button className='btn-sm iconCross btn-default' icon='close'
+            aria-label='button'
+            onClick={() => handleDeleteEntryDisplay(true)}>
+            Delete
+          </Button>
+        </Tooltip>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */
