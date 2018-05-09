@@ -92,7 +92,7 @@ private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, contex
             }
             span {
                 style = s.branding
-                +"Zanata"
+                +msgs["jsf.Zanata"]!!
             }
         }
         h1 {
