@@ -27,6 +27,7 @@ import java.sql.Statement;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
@@ -104,10 +105,11 @@ public class MigrateDataToHCredentials implements CustomTaskChange {
             } else {
                 dbAuthType = "OTHER";
             }
-        } catch (NameNotFoundException e) {
-            dbAuthType = "OTHER";
         } catch (NamingException e) {
-            throw new SetupException(e);
+            // If these is any sort of JNDI exception, assume this is not
+            // the Fedora OpenID instance (which we know has already been
+            // migrated anyway).
+            dbAuthType = "OTHER";
         } finally {
             if (initContext != null) {
                 try {
