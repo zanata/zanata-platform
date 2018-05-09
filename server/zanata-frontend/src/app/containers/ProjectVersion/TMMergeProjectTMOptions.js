@@ -3,15 +3,15 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {
-  Col, Radio, OverlayTrigger, Tooltip
-} from 'react-bootstrap'
+  Col, Radio, Tooltip
+} from 'antd'
 import Icon from '../../components/Icon'
 import {TMMergeOptionsValuePropType,
   TMMergeOptionsCallbackPropType, CopyLabel} from './TMMergeOptionsCommon'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 
 const copyAsFuzzyTooltip = (
-  <Tooltip id='copy-as-fuzzy-project' title='Copy as fuzzy - Project'>
+  <Tooltip id='copy-as-fuzzy-project'>
     Can only copy as translated if the context is the same. Otherwise it will
     always use fuzzy.
   </Tooltip>)
@@ -36,11 +36,11 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
       validationState='warning' disabled={disabled}>
       <span>I will need to review it</span><br />
       <CopyLabel type={FUZZY} value={value} />
-      <OverlayTrigger placement='right' overlay={copyAsFuzzyTooltip}>
+      <Tooltip placement='right' title={copyAsFuzzyTooltip}>
         <a className="btn-link tooltip-btn iconInfoVersionMerge" role="button">
           <Icon name="info" className="s0" />
         </a>
-      </OverlayTrigger>
+      </Tooltip>
     </Radio>
     {reject}
   </Col>

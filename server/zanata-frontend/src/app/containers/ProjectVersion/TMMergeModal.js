@@ -138,7 +138,7 @@ const MergeOptions = (
             values={[80, 90, 100]} /> similar, don't use it.
         </div>
       </Col>
-      <Col>
+      <Col z>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
           flushProjectSearch, onAllVersionCheckboxChange,
