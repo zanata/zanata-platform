@@ -25,26 +25,35 @@ class TMMergeResult (private val bandDefs: Map<ContentState, List<IntRange>>) {
     private fun otherCounter(contentState: ContentState) =
             otherCounters.getOrPut(contentState, { Counter() })
 
-    fun countCopy(contentState: ContentState, similarity: Int, stats: MessageStats) {
-        val ranges: List<IntRange>? = bandDefs[contentState]
+    /**
+     * Count one or more copied messages
+     * @param state state of copied message
+     * @param score similarity score of the match (in source language)
+     * @param chars number of characters in the source language (Unicode code points)
+     * @param words number of words in the source language
+     * @param messages number of messages copied
+     */
+    @JvmOverloads
+    fun count(state: ContentState, score: Int,
+              chars: Long, words: Long, messages: Long = 1) {
+        val ranges: List<IntRange>? = bandDefs[state]
+        // find the right counter for ContentState+range
         val counter = if (ranges != null) {
-            val range = ranges.find { range -> range.contains(similarity) }
+            val range = ranges.find { range -> range.contains(score) }
             // if there is a defined band, use its Stats
-            range?.let { r -> bandCounters[contentState to r] }
+            range?.let { r -> bandCounters[state to r] }
                     // otherwise use default Stats
-                    ?: otherCounter(contentState)
+                    ?: otherCounter(state)
         } else {
             // no ranges for this ContentState, use default Stats
-            otherCounter(contentState)
+            otherCounter(state)
         }
-        counter.codePoints += stats.codePoints
-        counter.words += stats.words
-        counter.messages += stats.messages
+        counter.codePoints += chars
+        counter.words += words
+        counter.messages += messages
     }
 
 }
 
 private data class Counter(var codePoints: Long = 0, var words: Long = 0, var messages: Long = 0)
-
-data class MessageStats(val codePoints: Long, val words: Long, val messages: Long = 1)
 

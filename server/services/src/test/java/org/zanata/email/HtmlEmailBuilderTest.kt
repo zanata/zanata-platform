@@ -29,7 +29,6 @@ import org.zanata.common.ContentState.NeedReview
 import org.zanata.common.ContentState.Translated
 import org.zanata.i18n.Messages
 import org.zanata.i18n.MessagesFactory
-import org.zanata.service.tm.merge.MessageStats
 import org.zanata.service.tm.merge.TMMergeResult
 import org.zanata.service.tm.merge.createTMBands
 import org.zanata.service.tm.merge.parseBands
@@ -138,12 +137,12 @@ class HtmlEmailBuilderTest {
     private fun createTMMergeResult(): TMMergeResult {
         val tmBandDefs = createTMBands(parseBands("70 80 90"))
         val mergeResult = TMMergeResult(tmBandDefs)
-        mergeResult.countCopy(Approved, 100, MessageStats(233, 98, 12))
-        mergeResult.countCopy(Translated, 100, MessageStats(505, 203, 33))
-        mergeResult.countCopy(NeedReview, 99, MessageStats(99, 20))
-        mergeResult.countCopy(NeedReview, 96, MessageStats(50, 10))
-        mergeResult.countCopy(NeedReview, 86, MessageStats(998, 193, 37))
-        mergeResult.countCopy(NeedReview, 36, MessageStats(200, 43, 16))
+        mergeResult.count(state = Approved, score = 100, chars = 233, words = 98, messages = 12)
+        mergeResult.count(state = Translated, score = 100, chars = 505, words = 203, messages = 33)
+        mergeResult.count(state = NeedReview, score = 99, chars = 99, words = 20)
+        mergeResult.count(state = NeedReview, score = 96, chars = 50, words = 10)
+        mergeResult.count(state = NeedReview, score = 86, chars = 998, words = 193, messages = 37)
+        mergeResult.count(state = NeedReview, score = 36, chars = 200, words = 43, messages = 16)
         return mergeResult
     }
 

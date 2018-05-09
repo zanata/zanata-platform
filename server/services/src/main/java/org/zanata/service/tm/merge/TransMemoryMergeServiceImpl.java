@@ -361,7 +361,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 // round down (assuming non-negative)
                 int similarity = (int) batchResult.getSimilarityPercent();
                 ContentState contentState = batchResult.getBaseContentState();
-                mergeResult.countCopy(contentState, similarity, new MessageStats(charCount, wordCount, 1));
+                mergeResult.count(contentState, similarity, charCount, wordCount);
             }
 
             taskHandleOpt.ifPresent(
