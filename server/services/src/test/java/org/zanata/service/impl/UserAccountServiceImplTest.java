@@ -169,7 +169,7 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     public void testErase() {
         HAccount account = em.find(HAccount.class, 1L);
 
-        userAccountService.eraseUserData(account.getUsername());
+        userAccountService.eraseUserData(account);
 
         assertThat(account.isErased()).isTrue();
         assertThat(account.getUsername()).startsWith("_deleted_");
@@ -178,5 +178,6 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(person.isErased()).isTrue();
         assertThat(person.getName()).isEqualTo("Erased User");
         assertThat(person.getLanguageMemberships()).isEmpty();
+        assertThat(person.getErasedBy()).isSameAs(getAuthenticatedAccount());
     }
 }

@@ -20,17 +20,27 @@
  */
 package org.zanata.file;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import javax.inject.Qualifier;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.inject.Qualifier;
+
+import org.zanata.ApplicationConfiguration;
+
+/**
+ * CDI Qualifier. File type projects will store their document files on the
+ * server. This represents the directory path on the server.
+ *
+ * @see FileSystemPersistService#documentFilesStorageDirectory()
+ * @see ApplicationConfiguration#getDocumentFileStorageLocation()
+ */
 @Qualifier
 @Retention(RUNTIME)
-@Target({METHOD, FIELD, PARAMETER})
+@Target({ METHOD, FIELD, PARAMETER })
 public @interface DocumentStorage {
 }

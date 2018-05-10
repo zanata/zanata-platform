@@ -23,9 +23,7 @@ package org.zanata.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -46,7 +44,6 @@ import org.zanata.file.DocumentStorage;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.HIterationGroup;
-import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectMember;
@@ -57,7 +54,6 @@ import org.zanata.model.security.HCredentials;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.UserAccountService;
 import org.zanata.util.HashUtil;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
 /**
@@ -192,15 +188,23 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void eraseUserData(String username) {
-        HAccount account = accountDAO.getByUsername(username);
-        if (account == null) {
-            log.warn("can not find account by username {}", username);
-            return;
-        }
-        account.eraseSelf(authenticatedUser);
+    public void eraseUserData(@Nonnull HAccount account) {
+        String originalUsername = account.getUsername();
+        account.erase(authenticatedUser);
         HPerson person = account.getPerson();
-        person.eraseSelf(authenticatedUser);
+        person.erase(authenticatedUser);
+
+        if (account.getAccountActivationKey() != null) {
+            session.delete(account.getAccountActivationKey());
+        }
+        if (account.getAccountResetPasswordKey() != null) {
+            session.delete(account.getAccountResetPasswordKey());
+        }
+        if (account.getEditorOptions() != null && !account.getEditorOptions().isEmpty()) {
+            account.getEditorOptions().clear();
+            session.merge(account);
+        }
+        account.getCredentials().forEach(c -> session.delete(c));
 
         // remove all review comment
         session.createQuery("delete from HTextFlowTargetReviewComment c where c.commenter = :commenter")
@@ -260,7 +264,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         // mark HRawDocument as deleted and delete raw document files on disk
         List<HRawDocument> rawDocs = session.createQuery(
                 "from HRawDocument doc where doc.uploadedBy = :username")
-                .setParameter("username", username)
+                .setParameter("username", originalUsername)
                 .list();
         rawDocs.forEach(doc -> {
             File fileOnDisk = new File(documentStorageFolder, doc.getFileId());

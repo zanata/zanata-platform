@@ -155,26 +155,23 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
         return this.erasedBy;
     }
 
-    @Override
     public void setErasedBy(HAccount erasedBy) {
         this.erasedBy = erasedBy;
     }
 
-    @Override
     public void setErased(boolean erased) {
         this.erased = erased;
     }
 
-    @Override
     public void setErasureDate(Date erasureDate) {
         this.erasureDate =
                 erasureDate == null ? null : new Date(erasureDate.getTime());
     }
 
     @Override
-    public void eraseSelf(HAccount erasedBy) {
+    public void erase(HAccount erasedBy) {
         this.name = "Erased User";
-        this.email = "non-exist-" + getId() + "@example.com";
+        this.email = "erased-" + getId() + "@example.com";
         this.erasureDate = new Date();
         this.erased = true;
         setErasedBy(erasedBy);

@@ -24,5 +24,5 @@ package org.zanata.exception;
  * @author Patrick Huang
  * <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class DeleteUserException extends RuntimeException {
+public class DeleteUserConstraintException extends RuntimeException {
 }

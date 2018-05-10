@@ -31,15 +31,13 @@ public interface Eraseable {
 
     boolean isErased();
 
-    void setErased(boolean erased);
-
-    void setErasureDate(Date erasureDate);
-
     Date getErasureDate();
 
     HAccount getErasedBy();
 
-    void setErasedBy(HAccount erasedBy);
-
-    void eraseSelf(HAccount erasedBy);
+    /**
+     * erase the entity.
+     * @param erasedBy
+     */
+    void erase(HAccount erasedBy);
 }

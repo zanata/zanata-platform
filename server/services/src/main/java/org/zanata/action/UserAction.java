@@ -20,14 +20,15 @@
  */
 package org.zanata.action;
 
+import static javax.faces.application.FacesMessage.SEVERITY_WARN;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getThrowableList;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,7 +39,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.exception.DeleteUserException;
+import org.zanata.exception.DeleteUserConstraintException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
@@ -115,11 +116,10 @@ public class UserAction implements Serializable {
             userFilter.reset();
         } catch (Exception e) {
             List<Throwable> causalChain = getThrowableList(e);
-            Optional<Throwable> constraintEx = causalChain.stream()
-                    .filter(t -> t instanceof ConstraintViolationException)
-                    .findAny();
-            if (constraintEx.isPresent()) {
-                throw new DeleteUserException();
+            boolean hasConstraintEx = causalChain.stream()
+                    .anyMatch(t -> t instanceof ConstraintViolationException);
+            if (hasConstraintEx) {
+                throw new DeleteUserConstraintException();
             } else {
                 throw e;
             }
@@ -129,6 +129,11 @@ public class UserAction implements Serializable {
 
     @Transactional
     public void eraseUser(String username) {
+        HAccount account = accountDAO.getByUsername(username);
+        if (account == null) {
+            facesMessages.addGlobal(SEVERITY_WARN, "can not find user with username " + username);
+            return;
+        }
         userAccountServiceImpl.eraseUserData(username);
         userFilter.reset();
     }

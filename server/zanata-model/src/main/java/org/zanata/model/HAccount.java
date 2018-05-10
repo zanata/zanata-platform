@@ -191,30 +191,28 @@ public class HAccount extends ModelEntityBase
         return this.erasedBy;
     }
 
-    @Override
     public void setErasedBy(HAccount erasedBy) {
         this.erasedBy = erasedBy;
     }
 
-    @Override
     public void setErased(boolean erased) {
         this.erased = erased;
     }
 
-    @Override
     public void setErasureDate(Date erasureDate) {
         this.erasureDate =
                 erasureDate == null ? null : new Date(erasureDate.getTime());
     }
 
     @Override
-    public void eraseSelf(HAccount erasedBy) {
+    public void erase(HAccount erasedBy) {
         this.username = "_deleted_" + getId();
         this.erasureDate = new Date();
         this.erased = true;
         this.passwordHash = null;
         setEnabled(false);
         setErasedBy(erasedBy);
+        this.apiKey = null;
     }
 
     @Override

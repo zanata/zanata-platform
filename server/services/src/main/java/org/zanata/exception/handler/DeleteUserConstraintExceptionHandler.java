@@ -26,14 +26,14 @@ import javax.faces.application.FacesMessage;
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.apache.deltaspike.core.api.exception.control.Handles;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.zanata.exception.DeleteUserException;
+import org.zanata.exception.DeleteUserConstraintException;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ExceptionHandler
-public class DeleteUserExceptionHandler extends AbstractExceptionHandler {
-    public void handleException(@Handles ExceptionEvent<DeleteUserException> event) {
+public class DeleteUserConstraintExceptionHandler extends AbstractExceptionHandler {
+    public void handleException(@Handles ExceptionEvent<DeleteUserConstraintException> event) {
         handle(event, LogLevel.Warn, FacesMessage.SEVERITY_WARN,
                 "jsf.UserManager.delete.constraintViolation.error");
     }

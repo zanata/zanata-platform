@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.zanata.model.HAccount;
@@ -83,8 +84,8 @@ public interface UserAccountService extends Serializable {
     boolean isUsernameUsed(String username);
 
     /**
-     * Anonymize the user and its data.
-     * @param username account username
+     * Anonymise the user by erasing associated personal data.
+     * @param account the account
      */
-    void eraseUserData(String username);
+    void eraseUserData(@Nonnull HAccount account);
 }
