@@ -39,7 +39,7 @@ class ProjectVersionPanels extends Component {
 
   render () {
     if (this.props.projectVersions.length === 0) {
-      return <Collapse><Panel /></Collapse>
+      return <span><Panel /></span>
     }
     const panels = this.props.projectVersions.map((project, index) => {
       const selectedVersionsInProject =
@@ -53,7 +53,7 @@ class ProjectVersionPanels extends Component {
         />
       )
     })
-    return <Collapse defaultActiveKey={0} accordion>{panels}</Collapse>
+    return <span>{panels}</span>
   }
 }
 
@@ -71,27 +71,29 @@ const SelectableProjectPanel = ({
   onAllVersionCheckboxChange,
   onVersionCheckboxChange }) => {
   return (
-    <Panel header={
-      <span className='list-group-item'>
-        <SelectAllVersionsCheckbox
-          project={project}
-          onAllVersionCheckboxChange={onAllVersionCheckboxChange}
-          selectedVersionsInProject={selectedVersionsInProject} />
-      </span>}>
-      <ul>
-        {project.versions.map((version, index) => {
-          const checked = isVersionInList(selectedVersionsInProject, version)
-          return (
-            <li className='v list-group-item' key={index}>
-              <VersionMenuCheckbox version={version}
-                onVersionCheckboxChange={onVersionCheckboxChange}
-                checked={checked}
-                projectSlug={project.id} />
-            </li>
-          )
-        })}
-      </ul>
-    </Panel>
+    <Collapse>
+      <Panel header={
+        <span className='list-group-item'>
+          <SelectAllVersionsCheckbox
+            project={project}
+            onAllVersionCheckboxChange={onAllVersionCheckboxChange}
+            selectedVersionsInProject={selectedVersionsInProject} />
+        </span>}>
+        <ul>
+          {project.versions.map((version, index) => {
+            const checked = isVersionInList(selectedVersionsInProject, version)
+            return (
+              <li className='v list-group-item' key={index}>
+                <VersionMenuCheckbox version={version}
+                  onVersionCheckboxChange={onVersionCheckboxChange}
+                  checked={checked}
+                  projectSlug={project.id} />
+              </li>
+            )
+          })}
+        </ul>
+      </Panel>
+    </Collapse>
   )
 }
 SelectableProjectPanel.propTypes = {
