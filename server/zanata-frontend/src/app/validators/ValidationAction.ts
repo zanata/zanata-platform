@@ -5,15 +5,13 @@ export enum State {
     Off, Warning, Error
 }
 
-interface ValidationAction {
-    rules: ValidationDisplayRules
-    id: ValidationId
-    description: string
+export interface ValidationAction {
+    readonly rules: ValidationDisplayRules
+    readonly id: ValidationId
+    readonly description: string
     state: State
-    sourceExample: string
-    targetExample: string
-    exclusiveValidations: ValidationAction[]
+    readonly sourceExample: string
+    readonly targetExample: string
+    readonly exclusiveValidations: ValidationAction[]
     mutuallyExclusive(exclusiveValidations: ValidationAction)
 }
-
-export default ValidationAction

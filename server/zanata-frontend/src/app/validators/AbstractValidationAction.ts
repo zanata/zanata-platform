@@ -1,4 +1,4 @@
-import ValidationAction, { State } from './ValidationAction'
+import { ValidationAction, State } from './ValidationAction'
 import ValidationDisplayRules from './ValidationDisplayRules'
 import ValidationId from './ValidationId'
 import ValidationMessages from './ValidationMessages'
@@ -22,24 +22,25 @@ import ValidationMessages from './ValidationMessages'
  * @see XmlEntityValidation
  */
 abstract class AbstractValidationAction implements ValidationAction {
+  public readonly id: ValidationId
+  public readonly description: string
+  public readonly messages: ValidationMessages
+  public readonly sourceExample: string
+  public readonly targetExample: string
 
-  public id: ValidationId
-  public description: string
-  public messages: ValidationMessages
-  public sourceExample: string
-  public targetExample: string
+  public readonly rules: ValidationDisplayRules
 
-  public rules: ValidationDisplayRules
-  public state: State = State.Warning
-  set State(state) {
+  private _state: State = State.Warning
+  public get state() {return this._state}
+  public set state(state: State) {
+    this._state = state
     this.rules.updateRules(state)
   }
-
-  public exclusiveValidations: ValidationAction[]
-  get ExclusiveValidations(): ValidationAction[] {
-    return this.exclusiveVals;
-  }
   private exclusiveVals: ValidationAction[]
+
+  public get exclusiveValidations() {
+    return this.exclusiveVals
+  }
 
   constructor(id: ValidationId, description: string, messages: ValidationMessages) {
     this.id = id
@@ -55,9 +56,9 @@ abstract class AbstractValidationAction implements ValidationAction {
       return []
     }
   }
-
-  public mutuallyExclusive(exclusiveValidations: ValidationAction) {
-    this.exclusiveVals = [exclusiveValidations]
+  // TODO: Turn into setter for exclusiveValidations
+  public mutuallyExclusive(...exclusiveValidations: ValidationAction[]) {
+    this.exclusiveVals = exclusiveValidations
   }
 
   protected abstract doValidate(source: string, target: string): string[]
