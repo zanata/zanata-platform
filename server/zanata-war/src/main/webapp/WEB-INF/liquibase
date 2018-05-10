@@ -1,9 +1,13 @@
 #!/bin/bash
 ### USAGE
-###     liquibase [liquibase options] <command> [-- java options]
+###     liquibase [liquibase options] <command>
 ###
 ### EXAMPLE
-###     bash liquibase --logLevel=debug update -- -Dzanata.file.directory=/var/lib/zanata/files
+###     bash liquibase --logLevel=debug update --
+###
+### ENVIRONMENT
+###     LIQUIBASE_JVM_OPTS:
+###         To pass options to JVM, e.g. -Dzanata.file.directory=/var/lib/zanata/files
 ###
 ### DESCRIPTION
 ###     This is a convenience script to run liquibase with suitable
@@ -33,27 +37,13 @@ else
   defs=--defaultsFile=$HOME/.config/liquibase.properties
 fi
 
-JavaOpts=()
-LiquibaseOpts=()
-IsJavaOpts=0
-
-for o in "$@"; do
-    if [[ $IsJavaOpts -eq 1 ]]; then
-        JavaOpts+=( "$o" )
-    elif [[ $o == '--' ]]; then
-        IsJavaOpts=1
-    else
-        LiquibaseOpts+=( "$o" )
-    fi
-done
-
 set -x
-java "${JavaOpts[@]}" \
+java $LIQUIBASE_JVM_OPTS \
 -jar $war/WEB-INF/lib/liquibase-core*.jar \
 --classpath $classpath \
 --changeLogFile db/db.changelog.xml \
 $defs \
-"${LiquibaseOpts[@]}"
+"$@"
 
 exit 0
 
