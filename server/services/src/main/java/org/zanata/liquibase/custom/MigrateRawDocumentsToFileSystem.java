@@ -76,7 +76,6 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     @Override
     public void setUp() throws SetupException {
         resetCounts();
-        createDocsDirectoryFromConfig();
         basePath = System.getProperty(FILE_DIR_PROP_NAME);
         if (Strings.isNullOrEmpty(basePath)) {
             throw new SetupException(
@@ -84,6 +83,8 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
                             + FILE_DIR_PROP_NAME
                             + "\" needs to be provided. Cannot migrate documents to file system.");
         }
+        // must set basePath first!
+        createDocsDirectoryFromConfig();
     }
 
     private void resetCounts() {
