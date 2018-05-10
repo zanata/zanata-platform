@@ -63,3 +63,5 @@ abstract class AbstractValidationAction implements ValidationAction {
 
   protected abstract doValidate(source: string, target: string): string[]
 }
+
+export default AbstractValidationAction
