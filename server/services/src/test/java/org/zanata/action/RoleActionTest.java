@@ -116,6 +116,7 @@ public class RoleActionTest implements Serializable {
 
     @Test
     public void modifiedRoleNameFailsValidation() {
+        // Because we disallow role renaming
         roleAction.setRole("admin");
         roleAction.loadRole();
         assertThat(roleAction.validateRoleName(
