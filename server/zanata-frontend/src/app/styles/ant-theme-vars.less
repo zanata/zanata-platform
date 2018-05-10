@@ -10,6 +10,8 @@
 @highlight-color: @info-color;
 @warning-color: #ffa800;
 @normal-color: #d9d9d9;
+@neutral-color: #BDD4DC;
+@muted-color: #A2B3BE;
 
 @layout-body-background: #fff;
 
@@ -35,6 +37,15 @@
   line-height: 2rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.list-group-item {
+  position: relative;
+  display: block;
+  margin-bottom: 0;
+  padding: 0.62rem 1rem;
+  border: 1px solid @neutral-color;
+  background-color: @layout-body-background;
 }
 // Utility classes not included in Tachiyons
 //  https://github.com/tachyons-css/tachyons/blob/master/css/tachyons.css
@@ -64,11 +75,11 @@
 }
 
 .txt-muted {
-  color: #A2B3BE
+  color: @muted-color;
 }
 
 .txt-neutral {
-  color: #BDD4DC;
+  color: @neutral-color;
 }
 
 .bg-primary {

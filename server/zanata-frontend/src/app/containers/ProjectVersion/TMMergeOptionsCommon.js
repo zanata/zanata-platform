@@ -25,15 +25,15 @@ export const CopyLabel = ({type, value}) => {
   const isActive = value === type
   switch (type) {
     case IGNORE_CHECK:
-      return <Tag className={activeOrDefault(isActive, 'bg-success')}>
+      return <Tag className={activeOrDefault(isActive, 'bg-success white fw6')}>
         Copy as Translated
       </Tag>
     case FUZZY:
-      return <Tag className={activeOrDefault(isActive, 'bg-warn')}>
+      return <Tag className={activeOrDefault(isActive, 'bg-warn white fw6')}>
         Copy as Fuzzy
       </Tag>
     case REJECT:
-      return <Tag className={activeOrDefault(isActive, 'bg-error')}>
+      return <Tag className={activeOrDefault(isActive, 'bg-error white fw6')}>
         Discard
       </Tag>
   }

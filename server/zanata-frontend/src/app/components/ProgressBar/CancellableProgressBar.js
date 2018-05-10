@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { ProgressBar } from 'react-bootstrap'
+import { Progress } from 'antd/lib/progress'
 import { processStatusType } from '../../utils/prop-types-util'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
 import Button from 'antd/lib/button'
@@ -15,14 +15,12 @@ import Button from 'antd/lib/button'
  */
 class CancellableProgressBar extends Component {
   static propTypes = {
-    heading: PropTypes.string,
     onCancelOperation: PropTypes.func.isRequired,
     processStatus: processStatusType.isRequired,
     queryProgress: PropTypes.func.isRequired,
     buttonLabel: PropTypes.string.isRequired
   }
   static defaultProps = {
-    heading: '',
     buttonLabel: 'Cancel Operation'
   }
   constructor (props) {
@@ -54,12 +52,12 @@ class CancellableProgressBar extends Component {
   }
   render () {
     const {
-      heading, onCancelOperation, processStatus, buttonLabel
+      onCancelOperation, processStatus, buttonLabel
     } = this.props
     return (
       <div className='bstrapReact'>
-        <ProgressBar now={processStatus.percentageComplete}
-          label={`${heading} ${processStatus.percentageComplete}%`}
+        <Progress percent={processStatus.percentageComplete}
+          showInfo
         />
         <Button className='btn-danger' type='danger'
           disabled={isProcessEnded(processStatus)}

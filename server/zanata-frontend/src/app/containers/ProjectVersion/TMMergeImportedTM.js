@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {Card, Radio, Tooltip} from 'antd'
+import {Radio, Tooltip} from 'antd'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 import {CopyLabel} from './TMMergeOptionsCommon'
 import Icon from '../../components/Icon'
@@ -34,8 +34,8 @@ class TMMergeImportedTM extends Component {
     const {fromImportedTM, onImportedTMChange} = this.props
     const disabled = !this.state.enabled
     return (
-      <Card>
-        <div className="VersionMergeTitle versionMergeTitle-flex">
+      <span>
+        <div>
           <span>
             <Toggle icons={false} defaultChecked
               onChange={this.toggleChange} />
@@ -44,7 +44,7 @@ class TMMergeImportedTM extends Component {
           <span className="panel-name">TM Source</span>
         </div>
         <div>
-          No project, document or context for TMX
+          No project, document or context for TMX<br />
           <Radio checked={fromImportedTM === IGNORE_CHECK} disabled={disabled}
             onChange={onImportedTMChange(IGNORE_CHECK)}>
             <span>I don't mind at all</span><br />
@@ -62,7 +62,7 @@ class TMMergeImportedTM extends Component {
             <CopyLabel type={FUZZY} value={fromImportedTM} />
           </Radio>
         </div>
-      </Card>
+      </span>
     )
   }
 }

@@ -2,12 +2,12 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {
-  Panel, ListGroup, ListGroupItem, PanelGroup
-} from 'react-bootstrap'
+import { Collapse } from 'antd'
 import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
   versionDtoPropType} from '../../utils/prop-types-util'
+
+const Panel = Collapse.Panel
 
 /**
  * Panels for selecting and prioritising of project-versions
@@ -39,7 +39,7 @@ class ProjectVersionPanels extends Component {
 
   render () {
     if (this.props.projectVersions.length === 0) {
-      return <PanelGroup />
+      return <Collapse><Panel /></Collapse>
     }
     const panels = this.props.projectVersions.map((project, index) => {
       const selectedVersionsInProject =
@@ -53,7 +53,7 @@ class ProjectVersionPanels extends Component {
         />
       )
     })
-    return <PanelGroup defaultActiveKey={0} accordion>{panels}</PanelGroup>
+    return <Collapse defaultActiveKey={0} accordion>{panels}</Collapse>
   }
 }
 
@@ -64,6 +64,7 @@ const isVersionInList =
  * Sub Component of a single project with versions.
  * Handles behavior of display or selecting versions of this project.
  */
+
 const SelectableProjectPanel = ({
   project,
   selectedVersionsInProject,
@@ -71,25 +72,25 @@ const SelectableProjectPanel = ({
   onVersionCheckboxChange }) => {
   return (
     <Panel header={
-      <h3>
+      <span className='list-group-item'>
         <SelectAllVersionsCheckbox
           project={project}
           onAllVersionCheckboxChange={onAllVersionCheckboxChange}
           selectedVersionsInProject={selectedVersionsInProject} />
-      </h3>}>
-      <ListGroup fill>
+      </span>}>
+      <ul>
         {project.versions.map((version, index) => {
           const checked = isVersionInList(selectedVersionsInProject, version)
           return (
-            <ListGroupItem className='v' key={index}>
+            <li className='v list-group-item' key={index}>
               <VersionMenuCheckbox version={version}
                 onVersionCheckboxChange={onVersionCheckboxChange}
                 checked={checked}
                 projectSlug={project.id} />
-            </ListGroupItem>
+            </li>
           )
         })}
-      </ListGroup>
+      </ul>
     </Panel>
   )
 }
