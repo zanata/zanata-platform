@@ -37,7 +37,6 @@ else
   defs=--defaultsFile=$HOME/.config/liquibase.properties
 fi
 
-set -x
 java $LIQUIBASE_JVM_OPTS \
 -jar $war/WEB-INF/lib/liquibase-core*.jar \
 --classpath $classpath \
