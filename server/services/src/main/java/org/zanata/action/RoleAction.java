@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -31,7 +29,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Transactional
 @CheckLoggedIn
 public class RoleAction implements Serializable {
-    private final static Logger log = LoggerFactory.getLogger(RoleAction.class);
     private static final long serialVersionUID = -3830647911484729768L;
     private String originalRoleName;
     private String roleName;
@@ -71,7 +68,7 @@ public class RoleAction implements Serializable {
             facesMessages.addToControl(componentId, "Role name too long");
             return false;
         }
-        if (identityManager.roleExists(newRoleName)){
+        if (identityManager.roleExists(newRoleName)) {
             facesMessages.addToControl(componentId, "Role name not available");
             return false;
         }
