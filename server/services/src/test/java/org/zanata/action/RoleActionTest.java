@@ -62,11 +62,14 @@ public class RoleActionTest implements Serializable {
     @Produces
     FacesMessages facesMessages;
 
+    @Mock
+    UIComponent uiComponent;
+
     @Inject
     private RoleAction roleAction;
 
     @Test
-    public void saveFailWhenEmptyID() {
+    public void saveFailWhenBlankID() {
         roleAction.setRole(null);
         assertThat(roleAction.save()).isEqualTo("failure");
 
@@ -76,7 +79,7 @@ public class RoleActionTest implements Serializable {
     }
 
     @Test
-    public void saveFailWhenRoleExists() {
+    public void cantCreateRoleWithDuplicateRoleName() {
         roleAction.setRole(null);
         roleAction.loadRole();
         roleAction.setRole("admin");
@@ -85,34 +88,39 @@ public class RoleActionTest implements Serializable {
     }
 
     @Test
-    public void validateRoleName() {
-        String oldValue = "";
+    public void cantModifyRoleName() {
+        roleAction.setRole("admin");
+        roleAction.loadRole();
+        roleAction.setRole("admin1");
+        when(identityManager.roleExists("admin1")).thenReturn(true);
+        assertThat(roleAction.save()).isEqualTo("failure");
+    }
+
+    @Test
+    public void duplicateRoleNameFailsValidation() {
         when(identityManager.roleExists("admin")).thenReturn(true);
         roleAction.setRole(null);
         roleAction.loadRole();
         String newValue = "admin";
         assertThat(roleAction.validateRoleName(
-                new ValueChangeEvent(mock(UIComponent.class),
-                        oldValue, newValue))).isFalse();
-
+                new ValueChangeEvent(uiComponent, "", newValue))).isFalse();
     }
 
     @Test
-    public void validateRoleNameLength() {
+    public void longRoleNameFailsValidation() {
         String newValue = RandomStringUtils.random(256, true, true);
         assertThat(newValue.length()).isEqualTo(256);
         assertThat(roleAction.validateRoleName(
-                new ValueChangeEvent(mock(UIComponent.class),
-                        "", newValue))).isFalse();
+                new ValueChangeEvent(uiComponent, "", newValue))).isFalse();
     }
 
     @Test
-    public void rejectUpdatedRoleName() {
+    public void modifiedRoleNameFailsValidation() {
         roleAction.setRole("admin");
         roleAction.loadRole();
         assertThat(roleAction.validateRoleName(
-                new ValueChangeEvent(mock(UIComponent.class),
-                        "admin", "notAdmin"))).isFalse();
+                new ValueChangeEvent(uiComponent, "admin", "notAdmin")))
+                .isFalse();
     }
 
     @Test
@@ -121,7 +129,6 @@ public class RoleActionTest implements Serializable {
         roleAction.loadRole();
         when(identityManager.roleExists("test")).thenReturn(false);
         assertThat(roleAction.validateRoleName(
-                new ValueChangeEvent(mock(UIComponent.class),
-                        "", "test"))).isTrue();
+                new ValueChangeEvent(uiComponent, "", "test"))).isTrue();
     }
 }
