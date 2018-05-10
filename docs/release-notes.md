@@ -1,3 +1,10 @@
+## 4.4.5
+##### Bug Fixes
+ * [ZNTA-2533](https://zanata.atlassian.net/browse/ZNTA-2533) - Liquibase: Liquibase  script does not accept  system properties (-D)
+ * [ZNTA-2531](https://zanata.atlassian.net/browse/ZNTA-2531) - Fix old Liquibase migrations
+
+-----------------------
+
 ## 4.4.4
 ##### Bug Fixes
  * [ZNTA-2505](https://zanata.atlassian.net/browse/ZNTA-2505) - Release: Missing class  org/sonatype/aether/version/InvalidVersionSpecificationException
