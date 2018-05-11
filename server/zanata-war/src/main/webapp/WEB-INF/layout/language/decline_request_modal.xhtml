@@ -2,6 +2,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:f="http://java.sun.com/jsf/core"
   class="modal" id="declineRequestDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" >
 
@@ -68,6 +69,7 @@
           <h:inputTextarea id="decline-request-message" value="#{languageJoinAction.declineMessage}"
             styleClass="l--push-bottom-0" onkeyup="checkDeclineRequestMessage()">
             <a4j:ajax event="blur" render="messageField" execute="@this"/>
+            <f:validateLength maximum="255"/>
           </h:inputTextarea>
           <label id="decline-request-char-count" class="txt--meta"></label>
         </zanata:decorate>

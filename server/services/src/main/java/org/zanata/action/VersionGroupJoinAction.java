@@ -31,6 +31,8 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Size;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.i18n.Messages;
 import org.zanata.security.annotations.Authenticated;
@@ -80,6 +82,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     private List<SelectableVersion> projectVersions = Lists.newArrayList();
     @Inject
     private EmailService emailServiceImpl;
+    @Size(max = 1000)
     private String message;
     @Inject
     private FacesMessages facesMessages;

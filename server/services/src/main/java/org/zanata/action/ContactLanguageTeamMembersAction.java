@@ -37,6 +37,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import com.google.common.collect.Lists;
@@ -66,6 +67,7 @@ public class ContactLanguageTeamMembersAction implements Serializable {
     private ApplicationConfiguration applicationConfiguration;
     @Inject
     private LocaleMemberDAO localeMemberDAO;
+    @Size(max = 1000)
     private String message;
     private String subject;
     private String localeId;
