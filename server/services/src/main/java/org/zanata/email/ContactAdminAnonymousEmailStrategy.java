@@ -52,8 +52,9 @@ public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
-        return context.put("ipAddress", ipAddress).put("htmlMessage", safeHTML);
+        String plainText = HtmlUtil.htmlToText(
+                HtmlUtil.SANITIZER.sanitize(htmlMessage));
+        return context.put("ipAddress", ipAddress).put("htmlMessage", plainText);
     }
 
     @java.beans.ConstructorProperties({ "ipAddress", "userSubject",
