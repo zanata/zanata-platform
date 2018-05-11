@@ -61,22 +61,23 @@ class XmlEntityValidation extends AbstractValidationAction {
   public doValidate(_source: string, target: string): string[] {
     return this.validateIncompleteEntity(target)
   }
-
+  /* tslint:disable */
   private validateIncompleteEntity(target: string): string[] {
-    const errors: string[] = []
+    let errors: string[] = []
 
     const words: string[] = target.split(" ").map((v) => v.trim()).filter((s) => !!s)
 
-    for (let word in words) {
+    for (let w in words) {
+      let word = words[w];
       if (word.includes(this.ENTITY_START_CHAR) && word.length > 1) {
         word = this.replaceEntityWithEmptyString(this.charRefExp, word)
         word = this.replaceEntityWithEmptyString(this.decimalRefExp, word)
         word = this.replaceEntityWithEmptyString(this.hexadecimalRefExp, word)
-
         if (word.includes(this.ENTITY_START_CHAR)) {
           // remove any string that occurs in front
           word = word.substring(word.indexOf(this.ENTITY_START_CHAR))
-          errors.push(this.messages.invalidXMLEntity)
+          // TODO: use react-intl eval of {value} syntax messages instead
+          errors = errors.concat(this.messages.invalidXMLEntity + word)
         }
       }
     }
@@ -91,14 +92,15 @@ class XmlEntityValidation extends AbstractValidationAction {
    * @return
    */
   private replaceEntityWithEmptyString(regex: RegExp, s: string): string {
-    // let text = s
-    // let result = regex.test(text)
-    // while (result != null) {
-    //   // replace match entity with empty string
-    //   text = text.replace(result.groupValues[0], "")
-    //   result = regex.test(text)
-    // }
-    return s.replace(regex, "")
+    let text = s
+    let result = text.match(regex)
+    while (result != null) {
+      // replace match entity with empty string
+      text = text.replace(result[0], "")
+      result = text.match(regex)
+    }
+    return text
+    // return s.replace(regex, "")
   }
 
 }
