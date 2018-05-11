@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* tslint:disable:max-line-length */
 const en = {
   ab: "string",
   notifyValidationError: "Validation error - See validation message",
@@ -24,11 +24,11 @@ const en = {
   varsAdded: "Unexpected variables: {array}",
   varsAddedQuoted: "Variables not quoted: {array}",
   xmlHtmlValidatorDesc: "Check that XML/HTML tags are consistent.",
-  tagsAdded: "Unexpected tags: {array}",
-  tagsMissing: "Missing tags: {array}",
-  tagsWrongOrder: "Tags in unexpected position: {array}",
+  tagsAdded: "Unexpected tags: ",
+  tagsMissing: "Missing tags: ",
+  tagsWrongOrder: "Tags in unexpected position: ",
   xmlEntityValidatorDesc: "Check that XML entity are complete.",
-  invalidXMLEntity:"Invalid XML entity: "
+  invalidXMLEntity: "Invalid XML entity: "
 }
 
 export default en

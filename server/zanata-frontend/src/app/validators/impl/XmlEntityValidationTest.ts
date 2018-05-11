@@ -8,7 +8,7 @@ import ValidationMessages from '../ValidationMessages'
 import en from '../en'
 
 class XmlEntityValidationTest {
-  public id: ValidationId = ValidationId.HTML_XML
+  public id: ValidationId = ValidationId.XML_ENTITY
   public description: string = ''
   public messageData: ValidationMessages = en
 
