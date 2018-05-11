@@ -33,7 +33,7 @@ public class RoleAction implements Serializable {
     private String originalRoleName;
     private String roleName;
     private List<String> groups;
-    private final int MAX_NAME_SIZE = 255;
+    private static final int MAX_NAME_SIZE = 255;
 
     @Inject
     IdentityManager identityManager;
