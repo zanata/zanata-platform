@@ -26,6 +26,7 @@ import org.jglue.cdiunit.InSessionScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.zanata.i18n.Messages;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
@@ -62,6 +63,11 @@ public class RoleActionTest implements Serializable {
     @Produces
     @SuppressWarnings("unused")
     private FacesMessages facesMessages;
+
+    @Mock
+    @Produces
+    @SuppressWarnings("unused")
+    private Messages msgs;
 
     @Mock
     private UIComponent uiComponent;

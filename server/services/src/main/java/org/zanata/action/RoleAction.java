@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.i18n.Messages;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -44,6 +45,9 @@ public class RoleAction implements Serializable {
     @Inject
     FacesMessages facesMessages;
 
+    @Inject
+    private Messages msgs;
+
     public void loadRole() {
         if (isBlank(roleName)) {
             // creating new roleName
@@ -65,16 +69,18 @@ public class RoleAction implements Serializable {
         String componentId = event.getComponent().getId();
 
         if (newRoleName.length() > MAX_NAME_SIZE) {
-            facesMessages.addToControl(componentId, "Role name too long");
+            facesMessages.addToControl(componentId,
+                    msgs.get("jsf.roles.RoleNameTooLong"));
             return false;
         }
         if (identityManager.roleExists(newRoleName)) {
-            facesMessages.addToControl(componentId, "Role name not available");
+            facesMessages.addToControl(componentId,
+                    msgs.get("jsf.roles.RoleNameUnavailable"));
             return false;
         }
         if (!isNewRole() && !newRoleName.equals(originalRoleName)) {
             facesMessages.addToControl(componentId,
-                    "Role name change not allowed");
+                    msgs.get("jsf.roles.RoleNameUnmodifiable"));
             return false;
         }
         return true;
@@ -83,12 +89,11 @@ public class RoleAction implements Serializable {
     public String save() {
         if (isBlank(roleName)) {
             facesMessages.addGlobal(
-                    FacesMessage.SEVERITY_ERROR, "Empty role name");
+                    FacesMessage.SEVERITY_ERROR, "jsf.roles.RoleNameEmpty");
             return "failure";
         } else if (roleName.length() > MAX_NAME_SIZE) {
-            facesMessages.addGlobal(FacesMessage.SEVERITY_ERROR,
-                    "Role name exceeds " + String.valueOf(MAX_NAME_SIZE) +
-                            " characters");
+            facesMessages.addGlobal(FacesMessage.SEVERITY_ERROR, msgs.format(
+                    "jsf.roles.RoleNameLengthExceeded", MAX_NAME_SIZE));
             setRole(originalRoleName);
             return "failure";
         }
@@ -96,7 +101,8 @@ public class RoleAction implements Serializable {
         if (isNewRole()) {
             if (identityManager.roleExists(roleName)) {
                 facesMessages.addGlobal(
-                        FacesMessage.SEVERITY_ERROR, "Role name not available");
+                        FacesMessage.SEVERITY_ERROR,
+                        msgs.get("jsf.roles.RoleNameUnavailable"));
                 setRole(originalRoleName);
                 return "failure";
             }
@@ -104,7 +110,8 @@ public class RoleAction implements Serializable {
         } else {
             if (!roleName.equals(originalRoleName)) {
                 facesMessages.addGlobal(
-                        FacesMessage.SEVERITY_ERROR, "Cannot rename a role");
+                        FacesMessage.SEVERITY_ERROR,
+                        msgs.get("jsf.roles.RoleNameUnmodifiable"));
                 setRole(originalRoleName);
                 return "failure";
             }
