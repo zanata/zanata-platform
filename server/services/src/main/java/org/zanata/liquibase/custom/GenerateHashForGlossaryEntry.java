@@ -88,19 +88,16 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
             Map<Long, String> entryLocaleMap = new HashMap<Long, String>();
             Map<Long, String> entryDescriptionMap = new HashMap<Long, String>();
 
-            ResultSet rs1 = null;
-            ResultSet rs2 = null;
-            try {
-                String entryLocaleSql = "select entry.id, entry.pos, entry.description, locale.localeId, term.content from " +
-                        "HGlossaryEntry entry, HGlossaryTerm term, HLocale locale  " +
-                        "where term.glossaryEntryId = entry.id and term.localeId = locale.id";
-                rs1 = stmt.executeQuery(entryLocaleSql);
+            String entryLocaleSql = "select entry.id, entry.pos, entry.description, locale.localeId, term.content from " +
+                    "HGlossaryEntry entry, HGlossaryTerm term, HLocale locale  " +
+                    "where term.glossaryEntryId = entry.id and term.localeId = locale.id";
+            try (ResultSet rs1 = stmt.executeQuery(entryLocaleSql)) {
 
                 while (rs1.next()) {
                     long entryId = rs1.getLong(1);
                     String pos = rs1.getString(2);
                     String desc = rs1.getString(3);
-                    if(desc == null) {
+                    if (desc == null) {
                         desc = "";
                     }
                     String localeId = rs1.getString(4);
@@ -109,11 +106,11 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
                     String hash = GlossaryUtil.generateHash(new LocaleId(localeId),
                             content, pos, desc);
 
-                    /**
+                    /*
                      * Conflict on source content, pos, description
                      * Update description to unique message string with timestamp.
                      */
-                    if(entryLocaleMap.containsValue(hash)) {
+                    if (entryLocaleMap.containsValue(hash)) {
                         desc = desc + generateConflictMessage(entryId);
                         hash = GlossaryUtil.generateHash(new LocaleId(localeId),
                                 content, pos, desc);
@@ -121,10 +118,11 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
                     }
                     entryLocaleMap.put(entryId, hash);
                 }
+            }
 
-                String entrySql =
-                        "select entry.id, entry.contentHash, entry.description from HGlossaryEntry entry";
-                rs2 = stmt.executeQuery(entrySql);
+            String entrySql =
+                    "select entry.id, entry.contentHash, entry.description from HGlossaryEntry entry";
+            try (ResultSet rs2 = stmt.executeQuery(entrySql)) {
                 while (rs2.next()) {
                     long id = rs2.getLong(1);
                     String hash = entryLocaleMap.get(id);
@@ -134,9 +132,6 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
                     }
                     rs2.updateRow();
                 }
-            } finally {
-                rs1.close();
-                rs2.close();
             }
         } catch (SQLException | DatabaseException e) {
             throw new CustomChangeException(e);
