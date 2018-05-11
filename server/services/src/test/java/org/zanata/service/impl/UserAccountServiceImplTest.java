@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.io.File;
+import java.util.Date;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -30,8 +31,10 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.file.DocumentStorage;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.HPerson;
 import org.zanata.model.security.HCredentials;
@@ -167,10 +170,28 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     @Test
     @InRequestScope
     public void testErase() {
-        HAccount account = em.find(HAccount.class, 1L);
+        HAccount account = getEm().find(HAccount.class, 1L);
+
+        HAccountActivationKey activationKey =
+                new HAccountActivationKey();
+        activationKey.setKeyHash("abcde12345abcde12345abcde12345ab");
+        activationKey.setCreationDate(new Date());
+        activationKey.setAccount(account);
+        getEm().persist(activationKey);
+        account.setAccountActivationKey(activationKey);
+
+        HAccountResetPasswordKey resetPasswordKey =
+                new HAccountResetPasswordKey();
+        resetPasswordKey.setKeyHash("abcde12345abcde12345abcde12345ab");
+        resetPasswordKey.setAccount(account);
+        getEm().persist(resetPasswordKey);
+        account.setAccountResetPasswordKey(resetPasswordKey);
+
+        getEm().flush();
 
         userAccountService.eraseUserData(account);
 
+        account = getEm().find(HAccount.class, 1L);
         assertThat(account.isErased()).isTrue();
         assertThat(account.getUsername()).startsWith("_deleted_");
         assertThat(account.getErasedBy()).isSameAs(getAuthenticatedAccount());
@@ -179,5 +200,7 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(person.getName()).isEqualTo("Erased User");
         assertThat(person.getLanguageMemberships()).isEmpty();
         assertThat(person.getErasedBy()).isSameAs(getAuthenticatedAccount());
+        assertThat(account.getAccountActivationKey()).isNull();
+        assertThat(account.getAccountResetPasswordKey()).isNull();
     }
 }

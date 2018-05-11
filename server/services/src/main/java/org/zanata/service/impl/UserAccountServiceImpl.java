@@ -33,6 +33,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.EntityStatus;
@@ -49,7 +50,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectMember;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HRoleAssignmentRule;
-import org.zanata.model.ProjectRole;
 import org.zanata.model.security.HCredentials;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.UserAccountService;
@@ -190,31 +190,79 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public void eraseUserData(@Nonnull HAccount account) {
         String originalUsername = account.getUsername();
-        account.erase(authenticatedUser);
         HPerson person = account.getPerson();
         person.erase(authenticatedUser);
-
-        if (account.getAccountActivationKey() != null) {
-            session.delete(account.getAccountActivationKey());
-        }
-        if (account.getAccountResetPasswordKey() != null) {
-            session.delete(account.getAccountResetPasswordKey());
-        }
-        if (account.getEditorOptions() != null && !account.getEditorOptions().isEmpty()) {
-            account.getEditorOptions().clear();
-            session.merge(account);
-        }
-        account.getCredentials().forEach(c -> session.delete(c));
-
-        // remove all review comment
-        session.createQuery("delete from HTextFlowTargetReviewComment c where c.commenter = :commenter")
-                .setParameter("commenter", person)
-                .executeUpdate();
-
+        deleteReviewComments(person);
         // remove from language team
         person.getLanguageTeamMemberships()
                 .forEach(membership -> session.delete(membership));
-        // remove from version group
+        removeFromVersionGroupAndPurgeGroupifSoleMaintainer(person);
+        List<HProject> soleMaintainedProjects = removeSolelyMaintainedProjectMembership(person);
+        // soft delete the project and its versions
+        softDeleteProjects(soleMaintainedProjects);
+
+        // remove rest of the project membership link for this user
+        session.createQuery("delete from HProjectMember pm where pm.person = :person")
+                .setParameter("person", person)
+                .executeUpdate();
+
+        deleteRawDocuments(originalUsername);
+
+        deleteAccountObjects(account);
+    }
+
+    /**
+     * mark HRawDocument as deleted and delete raw document files on disk
+     * @param originalUsername
+     */
+    private void deleteRawDocuments(String originalUsername) {
+        List<HRawDocument> rawDocs = session.createQuery(
+                "from HRawDocument doc where doc.uploadedBy = :username")
+                .setParameter("username", originalUsername)
+                .list();
+        rawDocs.forEach(doc -> {
+            File fileOnDisk = new File(documentStorageFolder, doc.getFileId());
+            try {
+                Files.deleteIfExists(fileOnDisk.toPath());
+            } catch (IOException e) {
+                log.warn("unable to delete {}", fileOnDisk);
+            }
+            doc.getDocument().setRawDocument(null);
+            session.update(doc.getDocument());
+            session.delete(doc);
+        });
+        session.flush();
+    }
+
+    private void softDeleteProjects(List<HProject> soleMaintainedProjects) {
+        soleMaintainedProjects.forEach(p -> {
+            p.setStatus(EntityStatus.OBSOLETE);
+            p.setSlug(p.changeToDeletedSlug());
+            p.getProjectIterations().forEach(v -> {
+                v.setStatus(EntityStatus.OBSOLETE);
+                v.setSlug(v.changeToDeletedSlug());
+            });
+        });
+        session.flush();
+    }
+
+    @NotNull
+    private List<HProject> removeSolelyMaintainedProjectMembership(HPerson person) {
+        List<HProjectMember> soleMaintainerProjects = session.createQuery(
+                "from HProjectMember pm where pm.person = :person and 1 = (select count(*) as n from HProjectMember pm1 where pm1.project = pm.project)")
+                .setParameter("person", person)
+                .list();
+
+        List<HProject> projectsToDelete = Lists.newLinkedList();
+        soleMaintainerProjects.forEach(pm -> {
+            projectsToDelete.add(pm.getProject());
+            session.delete(pm);
+        });
+        return projectsToDelete;
+    }
+
+    private void removeFromVersionGroupAndPurgeGroupifSoleMaintainer(
+            HPerson person) {
         List<HIterationGroup> soleMaintainerGroups = Lists.newLinkedList();
         person.getMaintainerVersionGroups().forEach(group -> {
             if (group.getMaintainers().size() == 1) {
@@ -232,51 +280,33 @@ public class UserAccountServiceImpl implements UserAccountService {
 
         });
         session.flush();
-        // remove from project membership
-        // delete projects that is solely maintained by this user
-        List<HProjectMember> soleMaintainerProjects = session.createQuery(
-                "from HProjectMember pm where pm.person = :person and pm.role = :role and 1 = (select count(*) as n from HProjectMember pm1 where pm1.role = :role and pm1.project = pm.project)")
-                .setParameter("person", person)
-                .setParameter("role", ProjectRole.Maintainer)
-                .list();
+    }
 
-        List<HProject> projectsToDelete = Lists.newLinkedList();
-        soleMaintainerProjects.forEach(pm -> {
-            projectsToDelete.add(pm.getProject());
-            session.delete(pm);
-        });
-        // soft delete the project and its versions
-        projectsToDelete.forEach(p -> {
-            p.setStatus(EntityStatus.OBSOLETE);
-            p.setSlug(p.changeToDeletedSlug());
-            p.getProjectIterations().forEach(v -> {
-                v.setStatus(EntityStatus.OBSOLETE);
-                v.setSlug(v.changeToDeletedSlug());
-            });
-        });
-        session.flush();
-
-        // remove rest of the project membership link for this user
-        session.createQuery("delete from HProjectMember pm where pm.person = :person")
-                .setParameter("person", person)
+    /**
+     * remove all review comment.
+     */
+    private void deleteReviewComments(HPerson person) {
+        session.createQuery("delete from HTextFlowTargetReviewComment c where c.commenter = :commenter")
+                .setParameter("commenter", person)
                 .executeUpdate();
+    }
 
-        // mark HRawDocument as deleted and delete raw document files on disk
-        List<HRawDocument> rawDocs = session.createQuery(
-                "from HRawDocument doc where doc.uploadedBy = :username")
-                .setParameter("username", originalUsername)
-                .list();
-        rawDocs.forEach(doc -> {
-            File fileOnDisk = new File(documentStorageFolder, doc.getFileId());
-            try {
-                Files.deleteIfExists(fileOnDisk.toPath());
-            } catch (IOException e) {
-                log.warn("unable to delete {}", fileOnDisk);
-            }
-            doc.getDocument().setRawDocument(null);
-            session.update(doc.getDocument());
-            session.delete(doc);
-        });
+    private void deleteAccountObjects(@Nonnull HAccount account) {
+        account.erase(authenticatedUser);
+        if (account.getAccountActivationKey() != null) {
+            session.delete(account.getAccountActivationKey());
+            account.setAccountActivationKey(null);
+        }
+        if (account.getAccountResetPasswordKey() != null) {
+            session.delete(account.getAccountResetPasswordKey());
+            account.setAccountResetPasswordKey(null);
+        }
+        if (account.getEditorOptions() != null && !account.getEditorOptions().isEmpty()) {
+            account.getEditorOptions().clear();
+            session.merge(account);
+        }
+        account.getCredentials().forEach(c -> session.delete(c));
+        account.getCredentials().clear();
         session.flush();
     }
 }

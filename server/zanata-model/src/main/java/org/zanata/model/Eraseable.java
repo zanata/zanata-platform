@@ -35,9 +35,4 @@ public interface Eraseable {
 
     HAccount getErasedBy();
 
-    /**
-     * erase the entity.
-     * @param erasedBy
-     */
-    void erase(HAccount erasedBy);
 }
