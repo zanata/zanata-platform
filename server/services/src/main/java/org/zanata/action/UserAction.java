@@ -134,7 +134,7 @@ public class UserAction implements Serializable {
             facesMessages.addGlobal(SEVERITY_WARN, "can not find user with username " + username);
             return;
         }
-        userAccountServiceImpl.eraseUserData(username);
+        userAccountServiceImpl.eraseUserData(account);
         userFilter.reset();
     }
 

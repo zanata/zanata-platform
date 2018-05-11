@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Cacheable;
@@ -168,10 +169,9 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
                 erasureDate == null ? null : new Date(erasureDate.getTime());
     }
 
-    @Override
     public void erase(HAccount erasedBy) {
         this.name = "Erased User";
-        this.email = "erased-" + getId() + "@example.com";
+        this.email = "erased-" + UUID.randomUUID() + "@example.com";
         this.erasureDate = new Date();
         this.erased = true;
         setErasedBy(erasedBy);

@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -204,9 +205,8 @@ public class HAccount extends ModelEntityBase
                 erasureDate == null ? null : new Date(erasureDate.getTime());
     }
 
-    @Override
     public void erase(HAccount erasedBy) {
-        this.username = "_deleted_" + getId();
+        this.username = "_deleted_" + UUID.randomUUID();
         this.erasureDate = new Date();
         this.erased = true;
         this.passwordHash = null;
