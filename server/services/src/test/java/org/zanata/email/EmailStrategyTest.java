@@ -44,6 +44,7 @@ import org.junit.Test;
 import org.zanata.common.ProjectType;
 import org.zanata.i18n.Messages;
 import org.zanata.i18n.MessagesFactory;
+import org.zanata.util.HtmlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 /**
@@ -224,8 +225,7 @@ public class EmailStrategyTest {
 
         assertThat(html).contains(msgs.format(
             "jsf.email.admin.UserMessageIntro", fromName, fromLoginName));
-        assertThat(html).contains(
-                htmlMessage);
+        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
     }
 
     @Test
@@ -276,8 +276,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.coordinator.UserMessageIntro",
                 fromName, fromLoginName, localeId, localeNativeName));
-        assertThat(html).contains(
-                htmlMessage);
+        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
         assertThat(html).contains(
                 testServerPath + "/language/view/" + localeId);
     }
@@ -346,7 +345,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.joinrequest.UserRequestingToJoin",
                 fromName, fromLoginName, localeId, localeNativeName));
-        assertThat(html).contains(htmlMessage);
+        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
         assertThat(html).contains(
                 testServerPath + "/language/view/" + localeId);
     }
@@ -402,8 +401,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.joingrouprequest.RequestingToJoinGroup",
                 fromName, fromLoginName, versionGroupName));
-        assertThat(html).contains(
-                htmlMessage);
+        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
         assertThat(html).contains(
                 testServerPath + "/version-group/view/" + versionGroupSlug);
     }
