@@ -63,13 +63,14 @@ public class ContactLanguageCoordinatorEmailStrategy extends
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
+        String plainText = HtmlUtil.htmlToText(
+                HtmlUtil.SANITIZER.sanitize(htmlMessage));
         return context.put("receiver", receiver)
                 .put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", safeHTML);
+                .put("htmlMessage", plainText);
     }
 
     @java.beans.ConstructorProperties({ "receiver", "fromLoginName", "fromName",

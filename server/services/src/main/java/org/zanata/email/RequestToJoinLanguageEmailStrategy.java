@@ -25,6 +25,7 @@ import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
+
 import static org.zanata.email.Addresses.getReplyTo;
 
 /**
@@ -63,12 +64,13 @@ public class RequestToJoinLanguageEmailStrategy extends VelocityEmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
+        String plainText = HtmlUtil.htmlToText(
+                HtmlUtil.SANITIZER.sanitize(htmlMessage));
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", safeHTML)
+                .put("htmlMessage", plainText)
                 .put("requestAsTranslator", requestAsTranslator)
                 .put("requestAsReviewer", requestAsReviewer)
                 .put("requestAsCoordinator", requestAsCoordinator);
