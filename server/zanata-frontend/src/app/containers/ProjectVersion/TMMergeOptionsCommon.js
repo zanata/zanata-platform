@@ -2,7 +2,8 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
-import { Tag } from 'antd'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
 
 const mergeOptionValues = [IGNORE_CHECK, FUZZY, REJECT]
 export const TMMergeOptionsValuePropType = {

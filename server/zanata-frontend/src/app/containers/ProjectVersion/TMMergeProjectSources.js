@@ -2,7 +2,20 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {Row, Col, Radio, Card, Tooltip, Input, Button} from 'antd'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Radio from 'antd/lib/radio'
+import 'antd/lib/radio/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
 import {
   Icon, LoaderText, DraggableVersionPanels
 } from '../../components'
@@ -99,8 +112,8 @@ class TMMergeProjectSources extends Component {
           onSearch={this.projectSearchTermChange}
           enterButton />
         <Row>
-          <Col span={12}>
-            <span className='versionMergeTitle-adjusted VersionMergeTitle'>
+          <Col span={12} className='mr2'>
+            <span>
               Select source project versions to merge
             </span>
             <div>
@@ -127,36 +140,38 @@ class TMMergeProjectSources extends Component {
       <span>
         <Row>
           <Col span={24}>
-            <div className='VersionMergeTitle versionMergeTitle-flex'>
-              <span>
-                <Toggle icons={false} defaultChecked
-                  onChange={this.toggleChange} />
-              </span>
-              <span>From </span>
-              <span className="panel-name">Project Source</span>
-              <Tooltip placement='right'
-                title={fromProjectSourceTooltip}>
-                <Button className="btn-link tooltip-btn" aria-label="button">
-                  <Icon name="info" className="s0"
-                    parentClassName="iconInfoVersionMerge" />
-                </Button>
-              </Tooltip>
-            </div>
+            <Toggle icons={false} defaultChecked
+              onChange={this.toggleChange} />
+            <span>From </span>
+            <span className="panel-name">Project Source</span>
+            <Tooltip placement='right'
+              title={fromProjectSourceTooltip}>
+              <Button className="btn-link tooltip-btn" aria-label="button">
+                <Icon name="info" className="s0" />
+              </Button>
+            </Tooltip>
           </Col>
-          <Col span={24} className='versionMergeSearch'>
-            <span>Search TM from</span>
-            <Radio name="fromProjectSelection" inline disabled={disabled}
-              checked={this.state.fromProjectSelection === SAME}
-              onChange={this.onFromProjectSelectionChange(SAME)}> this project
-            </Radio>
-            <Radio name="fromProjectSelection" inline disabled={disabled}
-              checked={this.state.fromProjectSelection === ALL}
-              onChange={this.onFromProjectSelectionChange(ALL)}> all projects
-            </Radio>
-            <Radio name="fromProjectSelection" inline disabled={disabled}
-              checked={this.state.fromProjectSelection === OTHER}
-              onChange={this.onFromProjectSelectionChange(OTHER)}> some projects
-            </Radio>
+          <Col span={24}>
+            <span className="mr2">Search TM from</span>
+            <Col span={8}>
+              <Radio name="fromProjectSelection" inline disabled={disabled}
+                checked={this.state.fromProjectSelection === SAME}
+                onChange={this.onFromProjectSelectionChange(SAME)}> this project
+              </Radio>
+            </Col>
+            <Col span={8}>
+              <Radio name="fromProjectSelection" inline disabled={disabled}
+                checked={this.state.fromProjectSelection === ALL}
+                onChange={this.onFromProjectSelectionChange(ALL)}> all projects
+              </Radio>
+            </Col>
+            <Col span={8}>
+              <Radio name="fromProjectSelection" inline disabled={disabled}
+                checked={this.state.fromProjectSelection === OTHER}
+                onChange={this.onFromProjectSelectionChange(OTHER)}>
+                some projects
+              </Radio>
+            </Col>
           </Col>
           {fromVersionsPanel}
           <TMMergeProjectTMOptions {...this.props} disabled={disabled}

@@ -2,7 +2,9 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { Collapse } from 'antd'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
+
 import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
   versionDtoPropType} from '../../utils/prop-types-util'
@@ -72,7 +74,7 @@ const SelectableProjectPanel = ({
   onVersionCheckboxChange }) => {
   return (
     <Collapse>
-      <Panel header={
+      <Panel showArrow={false} header={
         <span className='list-group-item'>
           <SelectAllVersionsCheckbox
             project={project}

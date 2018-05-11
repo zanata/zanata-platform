@@ -2,9 +2,12 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {
-  Col, Radio, Tooltip
-} from 'antd'
+import Radio from 'antd/lib/radio'
+import 'antd/lib/radio/style/css'
+import Col from 'antd/lib/radio'
+import 'antd/lib/col/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 import Icon from '../../components/Icon'
 import {TMMergeOptionsValuePropType,
   TMMergeOptionsCallbackPropType, CopyLabel} from './TMMergeOptionsCommon'

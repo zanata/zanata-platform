@@ -1,10 +1,12 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { Progress } from 'antd/lib/progress'
 import { processStatusType } from '../../utils/prop-types-util'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Progress from 'antd/lib/progress'
+import 'antd/lib/progress/style/css'
 
 /**
  * This component can be used to show progress of a background task running on

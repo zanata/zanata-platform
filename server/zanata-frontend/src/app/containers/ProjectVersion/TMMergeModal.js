@@ -5,7 +5,14 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, Col, Accordion} from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 import {
   Icon, Modal, LoaderText, SelectableDropdown, Link} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
@@ -37,6 +44,7 @@ const localeToDisplay = l => l.displayName
 const DO_NOT_RENDER = undefined
 const docLink =
   'http://docs.zanata.org/en/release/user-guide/versions/version-tm-merge/'
+const Panel = Collapse.Panel
 
 /*
  * Component to display TM merge options
@@ -90,7 +98,7 @@ const MergeOptions = (
           </span>
         </Link>
       </p>
-      <Accordion>
+      <Collapse>
         <Panel header={
           <span>
             Matching phrases are found in the selected projects and
@@ -102,7 +110,7 @@ const MergeOptions = (
           <p><img src="https://i.imgur.com/ezA992G.png"
             alt="Version TM Merge workflow" /></p>
         </Panel>
-      </Accordion>
+      </Collapse>
       <Col>
         <Panel>
           <div className='versionMergeTarget'>
@@ -448,11 +456,11 @@ class TMMergeModal extends Component {
     : (
       <span>
         <Row>
-          <Button bsStyle='link' className='link-danger'
+          <Button className='btn-link link-danger'
             onClick={toggleTMMergeModal}>
             Close
           </Button>
-          <Button bsStyle='primary' onClick={this.submitForm}
+          <Button type='primary' onClick={this.submitForm}
             disabled={(triggered || !hasTMSource)}>
             Merge translations
           </Button>
