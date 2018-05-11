@@ -66,7 +66,7 @@ public class ContactAdminAction implements Serializable {
     private Messages msgs;
     @Inject
     private FacesMessages facesMessages;
-    @Size(max = 300)
+    @Size(max = 1000)
     private String message;
     private String subject;
 

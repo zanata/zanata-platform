@@ -3,6 +3,7 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:f="http://java.sun.com/jsf/core"
   class="modal" id="contactAdminDialogAnonymous" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" >
 
@@ -61,6 +62,8 @@
         <zanata:decorate id="messageField">
           <h:inputTextarea id="contact-admin-anonymous-message" value="#{contactAdminAction.message}"
             required="true"/>
+          <a4j:ajax event="blur" render="message" execute="@this"/>
+          <f:validateLength maximum="1000"/>
         </zanata:decorate>
       </div>
 

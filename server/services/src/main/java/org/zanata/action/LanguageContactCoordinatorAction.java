@@ -25,6 +25,8 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Size;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.model.HLocaleMember;
@@ -71,6 +73,7 @@ public class LanguageContactCoordinatorAction implements Serializable {
     @Inject
     private Messages msgs;
 
+    @Size(max = 1000)
     private String message;
 
     private String localeId;

@@ -25,6 +25,7 @@ import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
+
 import static org.zanata.email.Addresses.getReplyTo;
 
 /**

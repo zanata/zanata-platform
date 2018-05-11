@@ -116,7 +116,7 @@
           <span class="txt--meta bx--block">#{msgs['jsf.group.email.AdditionalInfoMessage']}</span>
           <h:inputTextarea id="request-join-group-message" value="#{versionGroupJoinAction.message}"
             styleClass="l--push-bottom-0">
-            <f:validateLength maximum="300"/>
+            <f:validateLength maximum="1000"/>
           </h:inputTextarea>
           <rich:message for="request-join-group-message" ajaxRendered="true"
             id="request-join-group-error-message" name="request-join-group-error-message" errorClass="bg--danger"/>
