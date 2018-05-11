@@ -63,12 +63,13 @@ public class RequestToJoinVersionGroupEmailStrategy extends
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
+        String plainText = HtmlUtil.htmlToText(
+                HtmlUtil.SANITIZER.sanitize(htmlMessage));
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("groupName", groupName).put("versionGroupSlug", groupSlug)
                 .put("projectIterationIds", projectIterationIds)
-                .put("htmlMessage", safeHTML);
+                .put("htmlMessage", plainText);
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
