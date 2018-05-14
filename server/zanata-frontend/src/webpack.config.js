@@ -110,11 +110,12 @@ module.exports = function (env, isEditor, devServerPort) {
     return
   }
 
-  return [ dropUndef({
+  return dropUndef({
     entry: storybook ? undefined : dropUndef({
       'frontend': './app/entrypoint/index',
       'editor': './app/editor/entrypoint/index.js',
-      'frontend.legacy': fullBuild ? './app/entrypoint/legacy' : undefined
+      'frontend.legacy': fullBuild ? './app/entrypoint/legacy' : undefined,
+      'validators': './app/validators/index.ts'
     }),
 
     output: storybook ? undefined : dropUndef({
@@ -318,44 +319,5 @@ module.exports = function (env, isEditor, devServerPort) {
     bail: fullBuild,
 
     devtool: prod ? 'source-map' : 'eval-source-map'
-  }),
-    {
-      /* Webpack Configuration for Validators package */
-      entry: {
-        'validators': './app/validators/index.ts'
-      },
-      output: {
-        path: join(__dirname, distDir)
-      },
-      // Currently we need to add '.ts' to the resolve.extensions array.
-      resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
-      },
-
-      node: {
-        __dirname: true
-      },
-
-      // Source maps support ('inline-source-map' also works)
-      devtool: 'source-map',
-
-      // Add the loader for .ts files.
-      module: {
-        rules: [
-          {
-            test: /\.tsx?$/,
-            loader: 'awesome-typescript-loader',
-            options: {
-              compilerOptions: {
-                transpileOnly: true,
-                module: 'es2015'
-              }
-            }
-          }
-        ]
-      },
-      plugins: [
-        new CheckerPlugin()
-      ]
-    }]
+  })
 }

@@ -46,16 +46,20 @@ class TabValidation extends AbstractValidationAction {
   }
 
   public doValidate(source: string, target: string): string[] {
-    let errors: string[] = []
+    const errors: string[] = []
 
-    const sourceTabs = source.match('\t').length
-    const targetTabs = source.match('\t').length
+    const sourceTabs = source.split('\t')
+    const targetTabs = target.split('\t')
+    console.log(sourceTabs.length)
+    console.log(targetTabs.length)
 
-    if (sourceTabs > targetTabs) {
-      errors = errors.concat(this.messages.targetHasFewerTabs)
-    } else if (targetTabs < sourceTabs) {
-      errors = errors.concat(this.messages.targetHasMoreTabs)
+    if (sourceTabs.length > targetTabs.length) {
+      errors.push(this.messages.targetHasFewerTabs)
+    } else if (targetTabs.length > sourceTabs.length ) {
+      console.log('targetHasMoreTabs')
+      errors.push(this.messages.targetHasMoreTabs)
     }
+    console.log(errors)
 
     return errors
   }
