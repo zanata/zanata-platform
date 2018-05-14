@@ -21,9 +21,12 @@
 package org.zanata.email
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestName
+import org.jvnet.mock_javamail.Mailbox
 import org.zanata.common.ContentState.Approved
 import org.zanata.common.ContentState.NeedReview
 import org.zanata.common.ContentState.Translated
@@ -47,7 +50,7 @@ import javax.mail.internet.MimeMessage
  */
 class HtmlEmailBuilderTest {
     companion object {
-        private val session = Session.getInstance(Properties())
+        private val mailSession = Session.getInstance(Properties())
     }
 
     @Rule @JvmField
@@ -66,7 +69,7 @@ class HtmlEmailBuilderTest {
         override fun getMessages(locale: Locale): Messages = msgs
     }
 
-    private val builder = HtmlEmailBuilder(serverURL, fromEmail, session, msgsFactory)
+    private val emailSender = HtmlEmailSender(serverURL, fromEmail, mailSession, msgsFactory)
 
     init {
         toAddr = Addresses.getAddress(toAddress, toName)
@@ -78,7 +81,7 @@ class HtmlEmailBuilderTest {
     private val Address.name
         get() = (this as InternetAddress).personal
 
-    private fun checkFromAndTo(message: MimeMessage) {
+    private fun checkAddresses(message: MimeMessage) {
         assertThat(message.from.map { it.emailAddress }).containsExactly(fromEmail)
         assertThat(message.from.map { it.name }).containsExactly(fromName)
         assertThat(message.getRecipients(BCC).map { it.emailAddress }).containsExactly(toAddress)
@@ -94,8 +97,18 @@ class HtmlEmailBuilderTest {
         }
     }
 
+    @Before
+    fun before() {
+        Mailbox.clearAll()
+    }
+
+    @After
+    fun after() {
+        Mailbox.clearAll()
+    }
+
     @Test
-    fun mergeResult() {
+    fun `TM Merge Result`() {
         // given
         val mergeResult = createTMMergeResult()
         val context = TMMergeEmailContext(
@@ -106,32 +119,33 @@ class HtmlEmailBuilderTest {
 
         // when
         val strategy = TMMergeEmailStrategy(context, mergeResult)
-        val message = builder.sendMessage(strategy) as MimeMessage
+        emailSender.sendMessage(strategy) as MimeMessage
 
         // then
-        checkFromAndTo(message)
+        val message = Mailbox.get(toAddress).first() as MimeMessage
+        val parts = extractMultipart(message)
+        writeEmailPartsToFiles(parts)
+
+        checkAddresses(message)
         assertThat(message.subject).isEqualTo(msgs["email.templates.tm_merge.Results"]!!)
 
-        val parts = extractMultipart(message)
         val html = parts.html
+        checkGenericFooter(html, msgs["email.templates.tm_merge.TriggeredByYou"]!!)
+        assertThat(html).contains(context.project.url)
+        assertThat(html).contains(context.version.url)
+    }
 
+    private fun writeEmailPartsToFiles(parts: MultipartContents) {
         val outputDir = File("target/test-output")
-        val testMethod = "${javaClass.name}.${name.methodName}"
-        val textFile = File(outputDir, "$testMethod.txt")
-        val htmlFile = File(outputDir, "$testMethod.html")
+        val basename = "${javaClass.name}.${name.methodName}".replace(' ', '_')
+        val textFile = File(outputDir, "$basename.txt")
+        val htmlFile = File(outputDir, "$basename.html")
         outputDir.mkdirs()
         textFile.writeText(parts.text)
-        htmlFile.writeText(html)
+        htmlFile.writeText(parts.html)
         println("Email bodies for ${name.methodName} written to:")
         println("  ${textFile.absolutePath}")
         println("  ${htmlFile.absolutePath}")
-
-        checkGenericFooter(html, msgs["email.templates.tm_merge.TriggeredByYou"]!!)
-
-        assertThat(html).contains(context.project.url)
-        assertThat(html).contains(context.version.url)
-
-        // FIXME check that each ContentState is represented, plus a sample band/range for each ContentState
     }
 
     private fun createTMMergeResult(): TMMergeResult {

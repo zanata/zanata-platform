@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
@@ -52,6 +53,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.slf4j.Logger;
@@ -90,7 +92,6 @@ import org.zanata.webtrans.shared.rpc.LuceneQuery;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -313,7 +314,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             TransMemoryQuery transMemoryQuery, int maxResults,
             Optional<Long> textFlowTargetId, @Nonnull Class<?>... entityTypes) {
         try {
-            if (entityTypes == null || entityTypes.length == 0) {
+            if (entityTypes.length == 0) {
                 throw new RuntimeException(
                         "Need entity type (HTextFlowTarget.class or TransMemoryUnit.class) for TM search");
             }
@@ -322,9 +323,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     textFlowTargetId, entityTypes);
             // filter out invalid target
             // TODO filter by entityTypes as well
-            // TODO returning a filtered collection might be overkill
-            return Collections2.filter(matches,
-                    new ValidTargetFilterPredicate(identity, targetLocaleId));
+            return matches.stream()
+                    .filter(new ValidTargetFilterPredicate(identity, targetLocaleId))
+                    .collect(Collectors.toList());
         } catch (ParseException e) {
             if (e.getCause() instanceof BooleanQuery.TooManyClauses) {
                 log.warn(
@@ -394,6 +395,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     match, TransMemoryResultItem.MatchType.Imported,
                     sourceContents, targetContents, percent, null);
             addTransMemoryUnitToResultMatches(item, transUnit);
+        } else {
+            log.warn("unexpected entity: {}", entity.getClass());
         }
     }
 
@@ -670,7 +673,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         log.debug("Executing Lucene query: {}", textQuery);
         FullTextQuery ftQuery =
                 entityManager.createFullTextQuery(textQuery, entities);
-        ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+        ftQuery.setProjection(
+                ProjectionConstants.SCORE,
+                ProjectionConstants.THIS,
+                ProjectionConstants.OBJECT_CLASS,
+                ProjectionConstants.ID);
         if (maxResult > 0) {
             ftQuery.setMaxResults(maxResult);
         }
@@ -985,6 +992,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         @Override
         public boolean apply(Object[] input) {
             Object entity = input[1];
+            Class entityClass = (Class) input[2];
+            Object entityID = input[3];
             if (entity instanceof HTextFlowTarget) {
                 HTextFlowTarget target = (HTextFlowTarget) entity;
                 if (!target.getLocaleId().equals(localeId)) {
@@ -1031,15 +1040,13 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 return includesTargetLocale;
             } else if (entity == null) {
                 log.error(
-                        "Query results include null entity. You may need to re-index.");
+                        "Missing entity ({} with ID {}). You may need to re-index.", entityClass.getSimpleName(), entityID);
                 return false;
             } else {
-                String name = entity.getClass().getName();
-                log.warn(
-                        "Unexpected query result of type {}: {}. You may need to re-index.",
-                        name, entity);
+                log.error(
+                        "Unexpected entity ({} with ID {}). You may need to re-index.", entityClass.getSimpleName(), entityID);
+                return false;
             }
-            return true;
         }
     }
 

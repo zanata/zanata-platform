@@ -1,6 +1,5 @@
 package org.zanata.email
 
-import com.google.common.annotations.VisibleForTesting
 import kotlinx.html.BODY
 import kotlinx.html.a
 import kotlinx.html.body
@@ -12,143 +11,121 @@ import kotlinx.html.meta
 import kotlinx.html.p
 import kotlinx.html.span
 import kotlinx.html.stream.appendHTML
-import org.zanata.config.ServerFromEmail
 import org.zanata.i18n.Messages
 import org.zanata.i18n.MessagesFactory
-import org.zanata.servlet.annotations.ServerPath
 import org.zanata.util.HtmlUtil
-import javax.enterprise.context.ApplicationScoped
-import javax.inject.Inject
-import javax.mail.Message
 import javax.mail.Message.RecipientType.BCC
 import javax.mail.MessagingException
-import javax.mail.Session
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import kotlin.text.Charsets.UTF_8
 
+private val UTF8 = UTF_8.name()
 
 /**
+ * This function builds email messages using a kotlinx.html builder, controlled by an HtmlEmailStrategy.
+ * Fills in the provided MimeMessage 'msg' using 'strategy' to select the
+ * desired body template and to provide context variable values. Does not
+ * actually send the email.
+ *
+ * @return the same message
+ * @throws javax.mail.MessagingException
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@ApplicationScoped
-class HtmlEmailBuilder @Inject constructor(
-        @ServerPath val serverPath: String,
-        @ServerFromEmail val serverFromEmail: String,
-        val mailSession: Session,
-        messagesFactory: MessagesFactory) {
+@Throws(MessagingException::class)
+internal fun buildMessage(
+        msg: MimeMessage,
+        strategy: HtmlEmailStrategy,
+        generalContext: GeneralEmailContext,
+        messagesFactory: MessagesFactory): MimeMessage {
 
-    companion object {
-        private val UTF8 = UTF_8.name()
+    // TODO remember users' locales, and customise reasons/body/footer/fromName for each recipient
+    // msgs = messagesFactory.getMessages(account.getLocale());
+    val msgs: Messages = messagesFactory.defaultLocaleMessages
+
+    val addresses = strategy.addresses
+    val subject = strategy.getSubject(msgs)
+    val receivedReasons = strategy.getReceivedReasons(msgs)
+    val bodyCallback = strategy.bodyProducer(generalContext)
+
+    if (addresses.fromAddress != null) {
+        msg.setFrom(addresses.fromAddress)
+    } else {
+        val fromName = msgs["jsf.Zanata"]
+        msg.setFrom(Addresses.getAddress(generalContext.fromEmail, fromName))
     }
 
-    private val msgs: Messages = messagesFactory.defaultLocaleMessages
-
-    /**
-     * Build message using 'strategy' and send it via JavaMail Transport.
-     */
-    fun sendMessage(strategy: HtmlEmailStrategy): Message {
-        val generalContext = GeneralEmailContext(serverPath, serverFromEmail)
-        return sendEmail(MessageBuilder {
-            buildMessage(
-                    MimeMessage(mailSession),
-                    strategy.addresses,
-                    strategy.getSubject(msgs),
-                    strategy.getReceivedReasons(msgs),
-                    serverPath,
-                    strategy.bodyProducer(generalContext))
-        })
+    if (addresses.replyToAddress != null) {
+        msg.replyTo = addresses.replyToAddress.toTypedArray()
     }
+    msg.addRecipients(BCC, addresses.toAddresses.toTypedArray())
+    msg.setSubject(subject, UTF8)
+    // optional future extension
+    // strategy.setMailHeaders(msg, msgs)
+    val body = buildBodyWithFooter(msgs, generalContext.serverURL, receivedReasons, bodyCallback)
+    // Alternative parts should be added in increasing order of preference,
+    // ie the preferred format should be added last.
+    val mp = MimeMultipart("alternative")
+    val textPart = MimeBodyPart()
+    val text = HtmlUtil.htmlToText(body)
+    textPart.setText(text, "UTF-8")
+    mp.addBodyPart(textPart)
+    val htmlPart = MimeBodyPart()
+    htmlPart.setContent(body, "text/html; charset=UTF-8")
+    mp.addBodyPart(htmlPart)
+    msg.setContent(mp)
+    return msg
+}
 
-    /**
-     * Fills in the provided MimeMessage 'msg' using 'strategy' to select the
-     * desired body template and to provide context variable values. Does not
-     * actually send the email.
-     *
-     * @return the same message
-     * @throws javax.mail.MessagingException
-     */
-    @VisibleForTesting
-    @Throws(MessagingException::class)
-    internal fun buildMessage(
-            msg: MimeMessage,
-            addresses: EmailAddressBlock,
-            subject: String,
-            receivedReasons: List<String>,
-            serverPath: String,
-            bodyCallback : BODY.(Messages) -> Unit): MimeMessage {
-        // TODO remember users' locales, and customise for each recipient
-        // msgs = messagesFactory.getMessages(account.getLocale());
-        if (addresses.fromAddress != null) {
-            msg.setFrom(addresses.fromAddress)
-        } else {
-            val fromName = msgs["jsf.Zanata"]
-            msg.setFrom(Addresses.getAddress(serverFromEmail, fromName))
+/**
+ * Builds the complete HTML email body (including html, head and body elements). bodyCallback will be
+ * invoked inside the body element to supply the main HTML body (which will be followed by the
+ * generic footer).
+ */
+private fun buildBodyWithFooter(msgs: Messages, serverPath: String = "", receivedReasons: List<String> = listOf(), bodyCallback : BODY.(Messages) -> Unit): String {
+    return StringBuilder().appendHTML().html {
+        head {
+            meta(charset = UTF8)
         }
+        body {
+            bodyCallback(msgs)
+            hr()
 
-        if (addresses.replyToAddress != null) {
-            msg.replyTo = addresses.replyToAddress.toTypedArray()
-        }
-        msg.addRecipients(BCC, addresses.toAddresses.toTypedArray())
-        msg.setSubject(subject, UTF8)
-        // optional future extension
-        // strategy.setMailHeaders(msg, msgs)
-        val body = buildBodyWithFooter(msgs, serverPath, receivedReasons, bodyCallback)
-        // Alternative parts should be added in increasing order of preference,
-        // ie the preferred format should be added last.
-        val mp = MimeMultipart("alternative")
-        val textPart = MimeBodyPart()
-        val text = HtmlUtil.htmlToText(body)
-        textPart.setText(text, "UTF-8")
-        mp.addBodyPart(textPart)
-        val htmlPart = MimeBodyPart()
-        htmlPart.setContent(body, "text/html; charset=UTF-8")
-        mp.addBodyPart(htmlPart)
-        msg.setContent(mp)
-        return msg
-    }
-
-    /**
-     * Builds the complete HTML email body (including html, head and body elements). bodyCallback will be
-     * invoked inside the body element to supply the main HTML body (which will be followed by the
-     * generic footer).
-     */
-    private fun buildBodyWithFooter(msgs: Messages, serverPath: String = "", receivedReasons: List<String> = listOf(), bodyCallback : BODY.(Messages) -> Unit): String {
-        return StringBuilder().appendHTML().html {
-            head {
-                meta(charset = UTF8)
-            }
-            body {
-                bodyCallback(msgs)
-                hr()
-
-                if (!receivedReasons.isEmpty()) {
-                    p {
-                        span {
-                            +msgs["jsf.email.YouAreReceivingThisMailBecause"]!!
+            if (!receivedReasons.isEmpty()) {
+                p {
+                    span {
+                        +msgs["jsf.email.YouAreReceivingThisMailBecause"]!!
+                        br()
+                        receivedReasons.forEach {
+                            +it
                             br()
-                            receivedReasons.forEach {
-                                +it
-                                br()
-                            }
                         }
                     }
                 }
-                p {
-                    +msgs["jsf.email.GeneratedFromZanataServerAt"]!!
-                    +" "
-                    a(href = serverPath) {
-                        +serverPath
-                    }
+            }
+            p {
+                +msgs["jsf.email.GeneratedFromZanataServerAt"]!!
+                +" "
+                a(href = serverPath) {
+                    +serverPath
                 }
             }
-        }.toString()
-    }
+        }
+    }.toString()
 }
 
 data class EmailAddressBlock @JvmOverloads constructor(
+        /**
+         * The "From" address which should be used for this email (optional) - if absent, the server's configured "From" email will be used
+         */
         val fromAddress: InternetAddress? = null,
+        /**
+         * The "To" address(es) which should be used for this email
+         */
         val toAddresses: List<InternetAddress>,
+        /**
+         * The Reply-To address(es) which should be used for this email (optional)
+         */
         val replyToAddress: List<InternetAddress>? = null)

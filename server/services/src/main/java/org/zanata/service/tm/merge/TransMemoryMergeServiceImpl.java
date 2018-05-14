@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -50,7 +51,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.email.Addresses;
-import org.zanata.email.HtmlEmailBuilder;
+import org.zanata.email.HtmlEmailSender;
 import org.zanata.email.TMMergeEmailContext;
 import org.zanata.email.ProjectInfo;
 import org.zanata.email.TMMergeEmailStrategy;
@@ -103,6 +104,8 @@ import kotlin.ranges.IntRange;
  */
 @RequestScoped
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
+    private static final Consumer<TransUnitUpdateRequest> NOOP = it -> {};
+
     private static final Logger log = LoggerFactory
             .getLogger(TransMemoryMergeServiceImpl.class);
     private static final String commentPrefix =
@@ -134,7 +137,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private HAccount authenticatedAccount;
     private String serverPath;
     private Map<ContentState, List<IntRange>> tmBands;
-    private HtmlEmailBuilder emailBuilder;
+    private HtmlEmailSender emailSender;
 
     @Inject
     public TransMemoryMergeServiceImpl(
@@ -151,7 +154,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             @Authenticated HAccount authenticatedAccount,
             @ServerPath String serverPath,
             @TMBands Map<ContentState, List<IntRange>> tmBands,
-            HtmlEmailBuilder emailBuilder) {
+            HtmlEmailSender emailSender) {
         this.localeServiceImpl = localeServiceImpl;
         this.textFlowDAO = textFlowDAO;
         this.transMemoryUnitDAO = transMemoryUnitDAO;
@@ -167,7 +170,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         this.authenticatedAccount = authenticatedAccount;
         this.serverPath = serverPath;
         this.tmBands = tmBands;
-        this.emailBuilder = emailBuilder;
+        this.emailSender = emailSender;
     }
 
     public TransMemoryMergeServiceImpl() {
@@ -235,7 +238,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                          TransUnitUpdated.UpdateType.NonEditorSave));
                 List<TranslationService.TranslationResult> batchResult =
                         translateInBatch(request, textFlowsBatch, targetLocale,
-                                request.getInternalTMSource(), Optional.of(callback));
+                                request.getInternalTMSource(), callback,
+                                TMMergeTracker.NOOP.INSTANCE);
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
@@ -349,20 +353,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                             BATCH_SIZE);
             List<TranslationService.TranslationResult> batchResults =
                 translateInBatch(mergeRequest, batch,
-                    targetLocale, internalTMSource, Optional.empty());
-
-            // store results into memory
-            for (TranslationService.TranslationResult batchResult: batchResults) {
-                HTextFlow textFlow = batchResult
-                        .getTranslatedTextFlowTarget()
-                        .getTextFlow();
-                long charCount = codePoints(textFlow);
-                long wordCount = textFlow.getWordCount();
-                // round down (assuming non-negative)
-                int similarity = (int) batchResult.getSimilarityPercent();
-                ContentState contentState = batchResult.getBaseContentState();
-                mergeResult.count(contentState, similarity, charCount, wordCount);
-            }
+                    targetLocale, internalTMSource, NOOP, mergeResult);
 
             taskHandleOpt.ifPresent(
                     mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
@@ -398,7 +389,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 new IntRange(mergeRequest.getThresholdPercent(), 100));
         TMMergeEmailStrategy strategy = new TMMergeEmailStrategy(
                 settings, mergeResult);
-        emailBuilder.sendMessage(strategy);
+        emailSender.sendMessage(strategy);
     }
 
     /**
@@ -425,15 +416,18 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      * @param internalTMSource
      *            source versions from internal TM
      * @param callbackOnUpdate
-     *            an optional callback to call when we have a
+     *            a callback to call when we have a
      *            TransUnitUpdateRequest ready
+     * @param mergeTracker
+     *            an object which can count copies made during TM merge
      * @return translation results
      */
     private List<TranslationService.TranslationResult> translateInBatch(
             HasTMMergeCriteria request, List<HTextFlow> textFlows,
             HLocale targetLocale,
             InternalTMSource internalTMSource,
-            Optional<Consumer<TransUnitUpdateRequest>> callbackOnUpdate) {
+            Consumer<TransUnitUpdateRequest> callbackOnUpdate,
+            @Nonnull TMMergeTracker mergeTracker) {
 
         if (textFlows.isEmpty()) {
             return Collections.emptyList();
@@ -465,7 +459,13 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
                         if (updateRequest != null) {
                             updateRequests.add(updateRequest);
-                            callbackOnUpdate.ifPresent(c -> c.accept(updateRequest));
+                            callbackOnUpdate.accept(updateRequest);
+                            long charCount = codePoints(hTextFlow);
+                            long wordCount = hTextFlow.getWordCount();
+                            // round down (assuming non-negative)
+                            int similarity = (int) updateRequest.getSimilarityPercent();
+                            ContentState contentState = updateRequest.getNewContentState();
+                            mergeTracker.count(contentState, similarity, charCount, wordCount, 1);
                         }
                     }
                 }

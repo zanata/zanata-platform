@@ -57,7 +57,7 @@ import org.zanata.config.TMBands;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
-import org.zanata.email.HtmlEmailBuilder;
+import org.zanata.email.HtmlEmailSender;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -143,7 +143,7 @@ public class TransMemoryMergeServiceImplTest {
     @Produces @TMBands
     private Map<ContentState, List<IntRange>> bands = new TMBandDefsProducer().produce("80 90");
     @Produces @Mock
-    private HtmlEmailBuilder emailBuilder;
+    private HtmlEmailSender emailSender;
     @Produces @Mock
     private Messages messages;
 
@@ -232,7 +232,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void willTranslateIfMatches() throws ActionException {
+    public void mergeDocWillTranslateIfMatches() throws ActionException {
         // Given:
         // an action with threshold 80% and trans unit id is 1
         final long transUnitId = 1L;
@@ -299,7 +299,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void willNotTranslateIfNoMatches() throws ActionException {
+    public void mergeDocWillNotTranslateIfNoMatches() throws ActionException {
         final long transUnitId = 1L;
         TransMemoryMergeRequest action = prepareAction(80);
 
@@ -333,7 +333,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void canHandleMultipleTextFlows() throws ActionException {
+    public void mergeDocCanHandleMultipleTextFlows() throws ActionException {
         // Given: an action with threshold 90% and trans unit id is 1, 2, 3, 4
         final long idWith100MatchTM = 1L;
         final long idWithoutTM = 2L;
@@ -444,7 +444,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void canAutoTranslateImportedTMResults() throws Exception {
+    public void mergeDocCanAutoTranslateImportedTMResults() throws Exception {
         // Given:
         // an action with threshold 80% and trans unit id
         final long transUnitId = 1L;

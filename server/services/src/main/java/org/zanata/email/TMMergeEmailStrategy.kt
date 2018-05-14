@@ -11,14 +11,33 @@ import javax.mail.internet.InternetAddress
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 
+/**
+ * The name and full URL of a project
+ */
 data class ProjectInfo(val name: String, val url: String)
+
+/**
+ * The slug and full URL of a project version
+ */
 data class VersionInfo(val slug: String, val url: String)
+
+/**
+ * This data class represents the context of a TM merge operation, to help build the email.
+ * @param toAddresses the addresses which should receive the email
+ * @param project the project which is the target of the TM merge
+ * @param version the project version which is the target of the TM merge
+ * @param matchRange the full set of ranges which were enabled for Fuzzy copies
+ * during the TM merge operation (eg 70-100%)
+ */
 data class TMMergeEmailContext(val toAddresses: List<InternetAddress>, val project: ProjectInfo, val version: VersionInfo, val matchRange: IntRange)
 
+/**
+ * The HtmlEmailStrategy for TM Merge results
+ */
 // It might be better pass context/mergeResult to methods which need them, not to constructor
 class TMMergeEmailStrategy(
-        private val context: TMMergeEmailContext,
-        private val mergeResult: TMMergeResult): HtmlEmailStrategy() {
+        val context: TMMergeEmailContext,
+        val mergeResult: TMMergeResult): HtmlEmailStrategy() {
 
     override fun getSubject(msgs: Messages): String =
             msgs["email.templates.tm_merge.Results"]!!
@@ -45,6 +64,7 @@ private object s {
     const val approved = "color: #20718A;"
     const val translated = "color: #62c876;"
     const val fuzzy = "color: #ffa800;"
+    const val error = "color: red;"
     const val container = "width: 80%; margin-left: auto; margin-right: auto;"
     const val dark = "color: #546677;"
     const val light = "color: #A2B3BE; font-weight: 500;"
@@ -68,18 +88,24 @@ private object s {
     """.trimIndent()
 }
 
+/**
+ * Returns a human-readable name for a ContentState, suitable for using in the TM Merge report.
+ */
 private val ContentState.niceName: String
     get() = when (this) {
-        Approved, Translated -> name
         NeedReview -> "Fuzzy"
         else -> name
     }
+
+/**
+ * Returns the inline style which should be used for the section heading corresponding to a ContentState
+ */
 private val ContentState.style: String
     get() = when (this) {
         Approved -> s.approved
         Translated -> s.translated
         NeedReview -> s.fuzzy
-        else -> ""
+        else -> s.error
     }
 
 private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, context: TMMergeEmailContext, mergeResult: TMMergeResult): BODY.(Messages) -> Unit = { msgs ->
@@ -132,15 +158,14 @@ private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, contex
             style = "display:none;"
         }
 
-        // FIXME band states
-        for (state in listOf(Approved, Translated, NeedReview)) {
-//        for (state in mergeResult.states) {
+        for (state in mergeResult.contentStates) {
+            if (mergeResult.noMessagesCounted(state)) continue
             h2 {
                 style = s.h2 + s.lowWeight + state.style
                 +msgs.format("email.templates.tm_merge.CopiedAs", state.niceName)
             }
-            // FIXME band ranges
-            for (range in listOf(80 until 90, 90 until 100, 100 until 101)) {
+            for (range in mergeResult.rangesForContentState(state)) {
+                if (mergeResult.noMessagesCounted(state, range)) continue
                 h3 {
                     style = s.h3 +  s.light
                     if (range.first == 100)
@@ -156,8 +181,9 @@ private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, contex
                             style = s.inTable
                             td {
                                 style = s.td + s.inTable
-                                // FIXME use counters from TM merge result
-                                +msgs.format("email.templates.tm_merge.WordsCharsMessages", 67, 200, 12)
+
+                                val ctr = mergeResult.getCounter(state, range)
+                                +msgs.format("email.templates.tm_merge.WordsCharsMessages", ctr.words, ctr.codePoints, ctr.messages)
                             }
                         }
                     }

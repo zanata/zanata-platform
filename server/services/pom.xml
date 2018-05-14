@@ -678,7 +678,6 @@
     <dependency>
       <groupId>com.github.huangp</groupId>
       <artifactId>entityunit</artifactId>
-      <version>0.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -13,7 +13,7 @@ import javax.mail.Transport
 private val log = getLogger {}
 
 /**
- * Build message using 'messageMaker' and send it via JavaMail Transport to
+ * Build message using 'messageBuilder' and send it via JavaMail Transport to
  * 'addresses'.
  */
 internal fun sendEmail(messageBuilder: MessageBuilder): Message {

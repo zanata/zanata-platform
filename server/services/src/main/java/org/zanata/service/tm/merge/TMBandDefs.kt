@@ -1,9 +1,7 @@
 package org.zanata.service.tm.merge
 
 import org.zanata.common.ContentState
-import org.zanata.common.ContentState.Approved
-import org.zanata.common.ContentState.NeedReview
-import org.zanata.common.ContentState.Translated
+import org.zanata.common.ContentState.*
 import org.zanata.config.TMBands
 import org.zanata.config.TMFuzzyBandsConfig
 import javax.enterprise.context.ApplicationScoped
@@ -14,7 +12,8 @@ import javax.ws.rs.Produces
  */
 
 private val exactly100 = IntRange(100, 100)
-private val upTo99 = 0 until 100
+private val zeroTo99 = IntRange(0, 99)
+private val fullRange = listOf(IntRange(0, 100))
 
 /**
  * Returns a normalised list of numbers, starting from 100 down to 0
@@ -51,20 +50,30 @@ fun parseBands(bandConfig: String): List<IntRange> {
     return ranges
 }
 
+/**
+ * Creates a full set of band definitions, covering each ContentState, and with a list
+ * of IntRanges for each ContentState which cover scores between 0 and 100.
+ * @param fuzzyBands a descending list of IntRanges for Fuzzy copies which together
+ * must cover exactly 0 to 100.
+ */
 fun createTMBands(fuzzyBands: List<IntRange>): Map<ContentState, List<IntRange>> {
     return mapOf(
-            Approved to listOf(exactly100, upTo99),
-            Translated to listOf(exactly100, upTo99),
-            NeedReview to fuzzyBands)
+            Approved to listOf(exactly100, zeroTo99),
+            Translated to listOf(exactly100, zeroTo99),
+            NeedReview to fuzzyBands,
+            Rejected to fullRange,
+            New to fullRange)
 }
 
 @ApplicationScoped
 class TMBandDefsProducer {
+    /**
+     * Produces a full set of TM bands, given the application configuration for the Fuzzy bands as a String.
+     */
     @Produces
     @TMBands
     fun produce(@TMFuzzyBandsConfig config: String): Map<ContentState, List<IntRange>> {
         val fuzzyBands = parseBands(config)
         return createTMBands(fuzzyBands)
     }
-
 }

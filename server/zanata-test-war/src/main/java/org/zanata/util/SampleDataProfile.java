@@ -83,10 +83,9 @@ public class SampleDataProfile implements Serializable {
                 Search.getFullTextEntityManager(
                         entityManagerFactory.createEntityManager());
         try {
-            em.purgeAll(HGlossaryTerm.class);
-            em.purgeAll(HProject.class);
-            em.purgeAll(TransMemoryUnit.class);
-            em.purgeAll(HTextFlowTarget.class);
+            // purge all @Indexed subclasses of Object
+            em.purgeAll(Object.class);
+            em.flushToIndexes();
         } finally {
             em.close();
         }

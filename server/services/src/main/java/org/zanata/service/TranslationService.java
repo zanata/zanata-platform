@@ -163,6 +163,10 @@ public interface TranslationService extends Serializable {
 
         int getBaseVersionNum();
 
+        /**
+         * Previous state of the target TextFlowTarget
+         * @return
+         */
         ContentState getBaseContentState();
 
         String getErrorMessage();
