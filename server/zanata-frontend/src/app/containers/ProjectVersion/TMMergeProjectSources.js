@@ -112,7 +112,7 @@ class TMMergeProjectSources extends Component {
           onSearch={this.projectSearchTermChange}
           enterButton />
         <Row>
-          <Col span={12} className='mr2'>
+          <Col span={24} className='mr2'>
             <span>
               Select source project versions to merge
             </span>
@@ -121,12 +121,16 @@ class TMMergeProjectSources extends Component {
                 loadingText={'Fetching Projects'} />
               <span className="u-textMuted">{noResults}</span>
             </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12} className='mr2'>
             <ProjectVersionPanels projectVersions={projectVersions}
               selectedVersions={mergeOptions.selectedVersions}
               onVersionCheckboxChange={onVersionCheckboxChange}
               onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
           </Col>
-          <Col span={12}>
+          <Col span={11}>
             <DraggableVersionPanels
               selectedVersions={mergeOptions.selectedVersions}
               onDraggableMoveEnd={onDragMoveEnd}
@@ -151,32 +155,37 @@ class TMMergeProjectSources extends Component {
               </Button>
             </Tooltip>
           </Col>
+        </Row>
+        <Row>
           <Col span={24}>
             <span className="mr2">Search TM from</span>
-            <Col span={8}>
-              <Radio name="fromProjectSelection" inline disabled={disabled}
-                checked={this.state.fromProjectSelection === SAME}
-                onChange={this.onFromProjectSelectionChange(SAME)}> this project
-              </Radio>
-            </Col>
-            <Col span={8}>
-              <Radio name="fromProjectSelection" inline disabled={disabled}
-                checked={this.state.fromProjectSelection === ALL}
-                onChange={this.onFromProjectSelectionChange(ALL)}> all projects
-              </Radio>
-            </Col>
-            <Col span={8}>
-              <Radio name="fromProjectSelection" inline disabled={disabled}
-                checked={this.state.fromProjectSelection === OTHER}
-                onChange={this.onFromProjectSelectionChange(OTHER)}>
-                some projects
-              </Radio>
-            </Col>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={8}>
+            <Radio name="fromProjectSelection" inline disabled={disabled}
+              checked={this.state.fromProjectSelection === SAME}
+              onChange={this.onFromProjectSelectionChange(SAME)}> this project
+            </Radio>
+          </Col>
+          <Col span={8}>
+            <Radio name="fromProjectSelection" inline disabled={disabled}
+              checked={this.state.fromProjectSelection === ALL}
+              onChange={this.onFromProjectSelectionChange(ALL)}> all projects
+            </Radio>
+          </Col>
+          <Col span={8}>
+            <Radio name="fromProjectSelection" inline disabled={disabled}
+              checked={this.state.fromProjectSelection === OTHER}
+              onChange={this.onFromProjectSelectionChange(OTHER)}>
+              some projects
+            </Radio>
           </Col>
           {fromVersionsPanel}
           <TMMergeProjectTMOptions {...this.props} disabled={disabled}
-            disableDifferentProjectOption={disableDiffProjectOption}
-          />
+            disableDifferentProjectOption={disableDiffProjectOption} />
+        </Row>
+        <Row>
           <Col span={24}>
             <Card>
               <p>Translations which satisfy all conditions will copy as

@@ -2,7 +2,9 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 class DeleteEntry extends Component {
   static propTypes = {
@@ -21,12 +23,12 @@ class DeleteEntry extends Component {
     } = this.props
     /* eslint-disable react/jsx-no-bind */
     const deleteLanguage = (
-      <span>
+      <span className='tc'>
         <p>Are you sure you want to delete&nbsp;
           <strong>{locale.displayName}</strong>?&nbsp;
         </p>
-        <span className='button-spacing'>
-          <Button className='btn-default btn-sm' aria-label='button'
+        <p className='tc'>
+          <Button className='btn-default btn-sm mr2' aria-label='button'
             onClick={() => handleDeleteEntryDisplay(false)}>
             Cancel
           </Button>
@@ -38,13 +40,13 @@ class DeleteEntry extends Component {
             }}>
             Delete
           </Button>
-        </span>
+        </p>
       </span>
     )
 
     return (
-      <div className='u-blockInline'>
-        <Tooltip placement='top' className='bstrapReact'
+      <div className='di'>
+        <Tooltip placement='top'
           title={deleteLanguage} onVisibleChange={show}>
           <Button className='btn-sm iconCross btn-default' icon='close'
             aria-label='button'

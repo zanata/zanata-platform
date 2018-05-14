@@ -6,7 +6,8 @@ import { includes } from 'lodash'
 import DeleteEntry from './DeleteEntry'
 import { Loader, Icon }
  from '../../components'
-import { Label } from 'antd'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
 import { getLanguageUrl } from '../../utils/UrlHelper'
 
 class Entry extends Component {
@@ -54,19 +55,19 @@ class Entry extends Component {
               {localeDetails.localeId} [{localeDetails.nativeName}]
             </span>
             {localeDetails.enabledByDefault &&
-              <Label className='label-primary'>
+              <Tag color='blue'>
                 DEFAULT
-              </Label>
+              </Tag>
             }
             {!localeDetails.enabled &&
-              <Label className='label-info'>
+              <Tag color='cyan'>
                 DISABLED
-              </Label>
+              </Tag>
             }
             {isUserInTeam &&
-              <Label className='label-success'>
+              <Tag color='green'>
                 Member
-              </Label>
+              </Tag>
             }
           </a>
           <br />
