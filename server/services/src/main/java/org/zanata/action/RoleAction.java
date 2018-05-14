@@ -88,35 +88,31 @@ public class RoleAction implements Serializable {
 
     public String save() {
         if (isBlank(roleName)) {
-            facesMessages.addGlobal(
-                    FacesMessage.SEVERITY_ERROR, "jsf.roles.RoleNameEmpty");
-            return "failure";
+            return alertRoleNameFailure(msgs.get("jsf.roles.RoleNameEmpty"));
         } else if (roleName.length() > MAX_NAME_SIZE) {
-            facesMessages.addGlobal(FacesMessage.SEVERITY_ERROR, msgs.format(
+            return alertRoleNameFailure(msgs.format(
                     "jsf.roles.RoleNameLengthExceeded", MAX_NAME_SIZE));
-            setRole(originalRoleName);
-            return "failure";
         }
 
         if (isNewRole()) {
             if (identityManager.roleExists(roleName)) {
-                facesMessages.addGlobal(
-                        FacesMessage.SEVERITY_ERROR,
+                return alertRoleNameFailure(
                         msgs.get("jsf.roles.RoleNameUnavailable"));
-                setRole(originalRoleName);
-                return "failure";
             }
             return saveNewRole();
         } else {
             if (!roleName.equals(originalRoleName)) {
-                facesMessages.addGlobal(
-                        FacesMessage.SEVERITY_ERROR,
+                return alertRoleNameFailure(
                         msgs.get("jsf.roles.RoleNameUnmodifiable"));
-                setRole(originalRoleName);
-                return "failure";
             }
             return saveExistingRole();
         }
+    }
+
+    private String alertRoleNameFailure(String message) {
+        facesMessages.addGlobal(FacesMessage.SEVERITY_ERROR, message);
+        setRole(originalRoleName);
+        return "failure";
     }
 
     private String saveNewRole() {
