@@ -64,13 +64,11 @@ public class RequestToJoinLanguageEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String plainText = HtmlUtil.htmlToText(
-                HtmlUtil.SANITIZER.sanitize(htmlMessage));
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", plainText)
+                .put("htmlMessage", HtmlUtil.escapeAndSanitizeHtml(htmlMessage))
                 .put("requestAsTranslator", requestAsTranslator)
                 .put("requestAsReviewer", requestAsReviewer)
                 .put("requestAsCoordinator", requestAsCoordinator);

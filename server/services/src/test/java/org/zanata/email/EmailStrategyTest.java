@@ -76,6 +76,7 @@ public class EmailStrategyTest {
     String testServerPath = "https://zanata.example.com";
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
+    String expectedUserMessage = "some &lt;b&gt;HTML&lt;/b&gt;";
 
     private MessagesFactory msgsFactory = new MessagesFactory() {
         private static final long serialVersionUID = 1L;
@@ -142,9 +143,7 @@ public class EmailStrategyTest {
         BodyPart htmlPart = multipart.getBodyPart(1);
         assertThat(htmlPart.getDataHandler().getContentType()).isEqualTo(
                 "text/html; charset=UTF-8");
-        String htmlContent = (String) htmlPart.getContent();
-
-        return htmlContent;
+        return (String) htmlPart.getContent();
     }
 
     private void checkFromAndTo(MimeMessage message) throws MessagingException {
@@ -225,7 +224,7 @@ public class EmailStrategyTest {
 
         assertThat(html).contains(msgs.format(
             "jsf.email.admin.UserMessageIntro", fromName, fromLoginName));
-        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
+        assertThat(html).contains(expectedUserMessage);
     }
 
     @Test
@@ -276,7 +275,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.coordinator.UserMessageIntro",
                 fromName, fromLoginName, localeId, localeNativeName));
-        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
+        assertThat(html).contains(expectedUserMessage);
         assertThat(html).contains(
                 testServerPath + "/language/view/" + localeId);
     }
@@ -345,7 +344,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.joinrequest.UserRequestingToJoin",
                 fromName, fromLoginName, localeId, localeNativeName));
-        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
+        assertThat(html).contains(expectedUserMessage);
         assertThat(html).contains(
                 testServerPath + "/language/view/" + localeId);
     }
@@ -401,7 +400,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.joingrouprequest.RequestingToJoinGroup",
                 fromName, fromLoginName, versionGroupName));
-        assertThat(html).contains(HtmlUtil.htmlToText(htmlMessage));
+        assertThat(html).contains("some &lt;b&gt;HTML&lt;/b&gt;");
         assertThat(html).contains(
                 testServerPath + "/version-group/view/" + versionGroupSlug);
     }
