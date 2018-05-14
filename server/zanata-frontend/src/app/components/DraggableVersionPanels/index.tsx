@@ -40,7 +40,7 @@ export class Item extends Component<ItemProps, {}> {
       {" "}
       <Button className="close btn-xs" aria-label="button"
         onClick={this.removeVersion} icon="close" />
-    </li>
+    </li>;
   }
 
   private removeVersion = () => {
@@ -70,7 +70,7 @@ class Items extends Component<ItemsProps, {}> {
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
-        <Layout className='di'>
+        <Layout className="di">
         Adjust priority of selected versions
         <br />
         <span className="u-textMuted ">

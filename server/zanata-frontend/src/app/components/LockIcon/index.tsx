@@ -1,8 +1,8 @@
-import React from 'react'
-import { Tooltip } from 'antd'
-import {Icon} from '../../components'
-import {EntityStatus, isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
-import {entityStatusPropType} from '../../utils/prop-types-util'
+import React from "react"
+import { Tooltip } from "antd"
+import {Icon} from "../../components"
+import {EntityStatus, isEntityStatusReadOnly} from "../../utils/EnumValueUtils"
+import {entityStatusPropType} from "../../utils/prop-types-util"
 
 const DO_NOT_RENDER: null = null
 
@@ -10,11 +10,11 @@ const DO_NOT_RENDER: null = null
  * Version Lock Icon with tooltip
  */
 const LockIcon: React.SFC<LockIconProps> = ({status}) => {
-  const tooltipReadOnly = <span id='tooltipreadonly'>Read only</span>
+  const tooltipReadOnly = <span id="tooltipreadonly">Read only</span>
   return isEntityStatusReadOnly(status)
   ? (
-    <Tooltip placement='top' title={tooltipReadOnly}>
-      <Icon name='locked' className='s0 txt-warn' />
+    <Tooltip placement="top" title={tooltipReadOnly}>
+      <Icon name="locked" className="s0 txt-warn" />
     </Tooltip>
   )
   : DO_NOT_RENDER
