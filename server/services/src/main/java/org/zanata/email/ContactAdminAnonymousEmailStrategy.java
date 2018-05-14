@@ -52,9 +52,8 @@ public class ContactAdminAnonymousEmailStrategy extends VelocityEmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String plainText = HtmlUtil.htmlToText(
-                HtmlUtil.SANITIZER.sanitize(htmlMessage));
-        return context.put("ipAddress", ipAddress).put("htmlMessage", plainText);
+        return context.put("ipAddress", ipAddress).put("htmlMessage",
+                HtmlUtil.escapeAndSanitizeHtml(htmlMessage));
     }
 
     @java.beans.ConstructorProperties({ "ipAddress", "userSubject",
