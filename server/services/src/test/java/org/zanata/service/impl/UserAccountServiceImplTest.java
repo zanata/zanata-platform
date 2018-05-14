@@ -42,10 +42,12 @@ import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.model.validator.UniqueValidator;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.Zanata;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,6 +73,12 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     @Produces
     protected EntityManager getEm() {
         return super.getEm();
+    }
+
+    @Produces
+    @Zanata
+    protected EntityManagerFactory getEMF() {
+        return getEmf();
     }
 
     @Produces @Authenticated
@@ -187,6 +195,13 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         getEm().persist(resetPasswordKey);
         account.setAccountResetPasswordKey(resetPasswordKey);
 
+        HCredentials fedoraCreds =
+                new HOpenIdCredentials(account,
+                        "http://fedora-user.id.fedoraproject.org/123",
+                        "fedora-user@fedora.org");
+
+        account.getCredentials().add(fedoraCreds);
+
         getEm().flush();
 
         userAccountService.eraseUserData(account);
@@ -202,5 +217,6 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(person.getErasedBy()).isSameAs(getAuthenticatedAccount());
         assertThat(account.getAccountActivationKey()).isNull();
         assertThat(account.getAccountResetPasswordKey()).isNull();
+        assertThat(account.getCredentials()).isEmpty();
     }
 }
