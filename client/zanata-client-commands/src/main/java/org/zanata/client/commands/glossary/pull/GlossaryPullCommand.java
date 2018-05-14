@@ -68,9 +68,11 @@ public class GlossaryPullCommand extends
         String fileType = StringUtils.isEmpty(getOpts().getFileType()) ? "csv"
                 : getOpts().getFileType();
         if (!fileType.equalsIgnoreCase("po")
-                && !fileType.equalsIgnoreCase("csv")) {
+                && !fileType.equalsIgnoreCase("csv")
+                && !fileType.equalsIgnoreCase("json")) {
             throw new RuntimeException(
-                    "Option '--file-type' is not valid. Please use 'csv' or 'po'");
+                    "Option '--file-type' is not valid. " +
+                            "Please use 'csv', 'json' or 'po'");
         }
 
         log.info("Server: {}", getOpts().getUrl());

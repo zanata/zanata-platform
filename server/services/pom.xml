@@ -505,7 +505,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20140107</version>
+      <version>20160810</version>
     </dependency>
 
     <dependency>

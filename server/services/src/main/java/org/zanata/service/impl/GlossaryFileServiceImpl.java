@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +41,7 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.glossary.GlossaryCSVReader;
+import org.zanata.adapter.glossary.GlossaryJsonReader;
 import org.zanata.adapter.glossary.GlossaryPoReader;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
@@ -91,6 +93,8 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
             } else if (FilenameUtils.getExtension(fileName).equals("po")) {
                 return parsePoFile(inputStream, sourceLang, transLang,
                         qualifiedName);
+            } else if (FilenameUtils.getExtension(fileName).equals("json")) {
+                return parseJsonFile(sourceLang, qualifiedName, inputStream);
             }
             throw new ZanataServiceException(
                     "Unsupported Glossary file: " + fileName);
@@ -117,8 +121,17 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
                 }
                 continue;
             }
-            message = checkForDuplicateEntry(entry);
             boolean onlyTransferTransTerm = false;
+            if (StringUtils.isBlank(entry.getExternalId())) {
+                entry.setExternalId(UUID.randomUUID().toString());
+                while(entryExists(entry)) {
+                    entry.setExternalId(UUID.randomUUID().toString());
+                }
+            } else {
+                onlyTransferTransTerm = entryExists(entry);
+            }
+
+            message = checkForDuplicateEntry(entry);
             if (message.isPresent()) {
                 // only update transTerm
                 warnings.add(message.get());
@@ -178,12 +191,8 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
     }
 
     private Optional<GlossaryTerm> getSourceTerm(GlossaryEntry entry) {
-        for (GlossaryTerm term : entry.getGlossaryTerms()) {
-            if (term.getLocale().equals(entry.getSrcLang())) {
-                return Optional.of(term);
-            }
-        }
-        return Optional.empty();
+        return entry.getGlossaryTerms().stream()
+                .filter(p -> p.getLocale().equals(entry.getSrcLang())).findFirst();
     }
 
     public static class GlossaryProcessed {
@@ -222,6 +231,13 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
                 Charsets.UTF_8.displayName()), qualifiedName);
     }
 
+    private Map<LocaleId, List<GlossaryEntry>> parseJsonFile(LocaleId sourceLang,
+            String qualifiedName, InputStream inputStream) throws IOException {
+        GlossaryJsonReader jsonReader = new GlossaryJsonReader(sourceLang);
+        return jsonReader.extractGlossary(new InputStreamReader(inputStream,
+                Charsets.UTF_8.displayName()), qualifiedName);
+    }
+
     private Map<LocaleId, List<GlossaryEntry>> parsePoFile(
             InputStream inputStream, LocaleId sourceLang, LocaleId transLang,
             String qualifiedName) throws IOException {
@@ -254,6 +270,9 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         HGlossaryEntry hGlossaryEntry;
         if (id != null) {
             hGlossaryEntry = glossaryDAO.findById(id);
+        } else if (entryExists(from)) {
+            hGlossaryEntry = glossaryDAO.getEntryByExternalId(from.getExternalId(),
+                    from.getQualifiedName().getName());
         } else {
             hGlossaryEntry = glossaryDAO.getEntryByContentHash(contentHash,
                     from.getQualifiedName().getName());
@@ -265,6 +284,14 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
             hGlossaryEntry.setSourceRef(from.getSourceReference());
         }
         return hGlossaryEntry;
+    }
+
+    /**
+     * Check if entry exists
+     */
+    private boolean entryExists(GlossaryEntry entry) {
+        return null != glossaryDAO.getEntryByExternalId(entry.getExternalId(),
+                entry.getQualifiedName().getName());
     }
 
     /**
@@ -304,6 +331,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         to.setSourceRef(from.getSourceReference());
         to.setPos(from.getPos());
         to.setDescription(from.getDescription());
+        to.setExternalId(from.getExternalId());
         String qualifiedName = GlossaryUtil.GLOBAL_QUALIFIED_NAME;
         if (from.getQualifiedName() != null
                 && StringUtils.isNotBlank(from.getQualifiedName().getName())) {

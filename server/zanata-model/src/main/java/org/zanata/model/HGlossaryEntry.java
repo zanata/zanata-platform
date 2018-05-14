@@ -52,7 +52,8 @@ import org.zanata.util.GlossaryUtil;
 @Entity
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
 @Cacheable
-@Table(uniqueConstraints = @UniqueConstraint(name = "UK_glossaryEntry", columnNames = {"contentHash", "glossaryId"}))
+@Table(uniqueConstraints = @UniqueConstraint(name = "UK_glossaryEntry",
+        columnNames = {"contentHash", "glossaryId", "externalId"}))
 public class HGlossaryEntry extends ModelEntityBase {
 
     private static final long serialVersionUID = -4200183325180630061L;
@@ -61,6 +62,7 @@ public class HGlossaryEntry extends ModelEntityBase {
     private String contentHash;
     private String pos;
     private String description;
+    private String externalId;
     private HLocale srcLocale;
     private Glossary glossary;
 
@@ -109,6 +111,10 @@ public class HGlossaryEntry extends ModelEntityBase {
     @Size(max = 500)
     public String getDescription() {
         return description;
+    }
+
+    public String getExternalId() {
+        return externalId;
     }
 
     public static class EntityListener {
@@ -172,6 +178,10 @@ public class HGlossaryEntry extends ModelEntityBase {
 
     public void setGlossary(final Glossary glossary) {
         this.glossary = glossary;
+    }
+
+    public void setExternalId(final String externalId) {
+        this.externalId = externalId;
     }
 
     @Override

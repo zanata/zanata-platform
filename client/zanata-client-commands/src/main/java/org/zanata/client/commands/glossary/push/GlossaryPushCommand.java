@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.glossary.AbstractGlossaryPushReader;
 import org.zanata.adapter.glossary.GlossaryCSVReader;
+import org.zanata.adapter.glossary.GlossaryJsonReader;
 import org.zanata.adapter.glossary.GlossaryPoReader;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.OptionsUtil;
@@ -79,6 +80,7 @@ public class GlossaryPushCommand extends
         glossaryReaders.put("po", new GlossaryPoReader(
                 srcLocaleId, transLocaleId));
         glossaryReaders.put("csv", new GlossaryCSVReader(srcLocaleId));
+        glossaryReaders.put("json", new GlossaryJsonReader(srcLocaleId));
     }
 
     private AbstractGlossaryPushReader getReader(String fileExtension) {

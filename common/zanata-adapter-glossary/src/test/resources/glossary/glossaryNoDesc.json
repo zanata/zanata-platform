@@ -1,0 +1,12 @@
+{"terms":[
+  {
+    "term": "hello",
+    "pos": "verb",
+    "translations": { "es": "Hola", "zh": "您好" }
+  },
+  {
+    "term": "morning",
+    "partofspeech": "noun",
+    "translations": { "es": "mañana", "zh": "上午" }
+  }]
+}

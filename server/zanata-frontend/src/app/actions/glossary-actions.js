@@ -16,7 +16,7 @@ import {
 } from './common-actions'
 import { apiUrl } from '../config'
 
-export const FILE_TYPES = ['csv', 'po']
+export const FILE_TYPES = ['csv', 'po', 'json']
 export const PAGE_SIZE_SELECTION = [20, 50, 100, 300, 500]
 // 500 by default
 export const PAGE_SIZE_DEFAULT = last(PAGE_SIZE_SELECTION)

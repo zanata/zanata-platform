@@ -48,8 +48,9 @@ import org.zanata.rest.MediaTypes;
  **/
 @XmlRootElement(name = "glossaryEntry")
 @XmlType(name = "glossaryEntryType", propOrder = { "id", "pos",
-        "description", "sourceReference", "glossaryTerms", "termsCount", "qualifiedName" })
-@JsonPropertyOrder({ "id", "pos", "description", "srcLang", "sourceReference", "glossaryTerms", "termsCount", "qualifiedName" })
+        "description", "externalId", "sourceReference", "glossaryTerms", "termsCount", "qualifiedName" })
+@JsonPropertyOrder({ "id", "pos", "description", "externalId", "srcLang", "sourceReference",
+        "glossaryTerms", "termsCount", "qualifiedName" })
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Label("Glossary Entry")
 public class GlossaryEntry implements Serializable, HasMediaType {
@@ -65,6 +66,8 @@ public class GlossaryEntry implements Serializable, HasMediaType {
 
     @Size(max = 500)
     private String description;
+
+    private String externalId;
 
     private List<GlossaryTerm> glossaryTerms;
 
@@ -121,6 +124,20 @@ public class GlossaryEntry implements Serializable, HasMediaType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * An identifier for maintenance in external tools
+     */
+    @XmlElement(name = "externalId", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("externalId")
+    @DocumentationExample(value = "myterm-verb")
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     /**

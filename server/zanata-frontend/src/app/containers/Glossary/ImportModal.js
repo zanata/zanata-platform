@@ -112,8 +112,9 @@ class ImportModal extends Component {
             : langSelection
           }
           <p>
-            CSV and PO files are supported. <strong>The source language should
-            be in {locale}</strong>. For more details on how to prepare glossary
+            CSV, JSON and PO files are supported.
+            <strong>The source language should be in {locale}</strong>.
+            For more details on how to prepare glossary
             files, see our <a href={uploadGlossaryUrl} className='u-textInfo'
               target='_blank'>glossary import documentation</a>.
           </p>

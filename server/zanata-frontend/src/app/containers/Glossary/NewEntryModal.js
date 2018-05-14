@@ -58,6 +58,16 @@ class NewEntryModal extends Component {
     })
   }
 
+  handleExIdChanged = (e) => {
+    const { entry } = this.state
+    this.setState({
+      entry: {
+        ...entry,
+        externalId: e.target.value
+      }
+    })
+  }
+
   handleCancel = () => {
     this.resetFields()
     this.props.handleNewEntryDisplay(false)
@@ -122,6 +132,18 @@ class NewEntryModal extends Component {
               maxLength={500}
               onChange={this.handleDescChanged.bind(this)}>
               {this.state.entry.description}
+            </EditableText>
+          </div>
+          <div className='modal-section'>
+            <label className='text-bold'>External ID</label>
+            <EditableText
+              className='textInput'
+              editable
+              editing
+              placeholder='Optional: for use in external tools'
+              maxLength={100}
+              onChange={this.handleExIdChanged.bind(this)}>
+              {this.state.entry.externalId}
             </EditableText>
           </div>
         </Modal.Body>

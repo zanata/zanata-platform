@@ -61,6 +61,7 @@ import org.zanata.util.UrlUtil;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import org.zanata.service.impl.GlossaryFileServiceImpl.GlossaryProcessed;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -152,6 +153,112 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(entry.getGlossaryTerms()).hasSize(2)
                 .extracting("locale")
                 .contains(srcLocaleId, transLocaleId);
+    }
+
+    @Test
+    @InRequestScope
+    public void parseGlossaryFileJsonTest() throws UnsupportedEncodingException {
+        String jsonSample = "{\"terms\":[" +
+                "{ \"term\":\"test\"," +
+                "\"id\":\"test-noun\"," +
+                "\"description\":\"something that verifies\"," +
+                "\"pos\":\"verb\"," +
+                "\"translations\": { \"de\":\"ttttt\" }" +
+                "}]}";
+
+        InputStream stubInputStream = IOUtils.toInputStream(jsonSample);
+
+        String fileName = "fileName.json";
+        LocaleId srcLocaleId = LocaleId.EN_US;
+        LocaleId transLocaleId = LocaleId.DE;
+
+        Map<LocaleId, List<GlossaryEntry>> result =
+                glossaryFileService.parseGlossaryFile(stubInputStream,
+                        fileName, srcLocaleId,
+                        null, GlossaryResource.GLOBAL_QUALIFIED_NAME);
+
+        assertThat(result).hasSize(1);
+
+        List<GlossaryEntry> entries = result.get(srcLocaleId);
+
+        assertThat(entries).hasSize(1);
+
+        GlossaryEntry entry = entries.get(0);
+        assertThat(entry.getSrcLang()).isEqualTo(srcLocaleId);
+        assertThat(entry.getExternalId()).isEqualTo("test-noun");
+        assertThat(entry.getGlossaryTerms()).hasSize(2)
+                .extracting("locale")
+                .contains(srcLocaleId, transLocaleId);
+    }
+
+    @Test
+    @InRequestScope
+    public void glossaryPosAttributeBoundaryTest() throws UnsupportedEncodingException {
+        String jsonSample = "{\"terms\":[" +
+                "{ \"term\":\"test\"," +
+                "\"id\":\"test-noun\"," +
+                "\"description\":\"something that verifies\"," +
+                "\"pos\":\"FoCAvyFATGWGBqZNsS7wsyO56f5pfyrU8DhoNbCy9IbUZEBEfmItC8s7SDVg" +
+                "VKJi8Nb7EzzRUvP8o XfzoiGIeBX4IZSO7hZb2LjkqM64fGnmohxOhO1fAOvGtjXSgDFoe" +
+                "Iw7GvtBFtaJv6sa8Xw8ZotLkvcE2ie4yQ1w tBm58aoaGyT2apnHGv6YaNXHWygwjGmI2M" +
+                "LemjEf1lkB03QvNhjPqxXpeakE2iTe0Po1n2DAXXBst6ERz7j8clD3BouX\"," +
+                "\"translations\": { \"de\":\"ttttt\" }" +
+                "}]}";
+
+        GlossaryProcessed glossaryProcessed = glossaryFileService.saveOrUpdateGlossary(
+                glossaryFileService.parseGlossaryFile(IOUtils.toInputStream(jsonSample),
+                        "fileName.json", LocaleId.EN_US,
+                        null, GlossaryResource.GLOBAL_QUALIFIED_NAME)
+                                .get(LocaleId.EN_US), Optional.ofNullable(LocaleId.EN_US));
+
+        assertThat(glossaryProcessed.getGlossaryEntries()).hasSize(0);
+        assertThat(glossaryProcessed.getWarnings())
+                .contains("Glossary part of speech too long, maximum 255 character");
+    }
+
+        @Test
+    @InRequestScope
+    public void glossaryDescAttributeBoundaryTest() throws UnsupportedEncodingException {
+        String jsonSample = "{\"terms\":[" +
+                "{ \"term\":\"test\"," +
+                "\"id\":\"test-noun\"," +
+                "\"pos\":\"noun\"," +
+                "\"description\":\"FoCAvyFATGWGBqZNsS7wsyO56f5pfyrU8DhoNbCy9IbUZEBEfmItC8" +
+                "s7SDVgVKJi8Nb7EzzRUvP8oXfzoiGIeBX4IZSO7hZb2LjkqM64fGnmohxOhO1fAOvGtjXSgD" +
+                "FoeIw7GvtBFtaJv6sa8Xw8ZotLkvcE2ie4yQ1wtBm58aoaGyT2apnHGv6YaNXHWygwjGmI2M" +
+                "LemjEf1lkB03QvNhjPqxXpeakE2iTe0Po1n2DAXXBst6ERz7j8clD3BouX\"," +
+                "\"translations\": { \"de\":\"ttttt\" }" +
+                "}]}";
+
+        GlossaryProcessed glossaryProcessed = glossaryFileService.saveOrUpdateGlossary(
+                glossaryFileService.parseGlossaryFile(IOUtils.toInputStream(jsonSample),
+                        "fileName.json", LocaleId.EN_US,
+                        null, GlossaryResource.GLOBAL_QUALIFIED_NAME)
+                        .get(LocaleId.EN_US), Optional.ofNullable(LocaleId.EN_US));
+
+        assertThat(glossaryProcessed.getGlossaryEntries()).hasSize(0);
+        assertThat(glossaryProcessed.getWarnings()).contains("Glossary description too long, maximum " +
+                    "255 character");
+    }
+
+    @Test
+    @InRequestScope
+    public void saveGlossaryFileJsonTest() throws UnsupportedEncodingException {
+        String jsonSample = "{\"terms\":[" +
+                "{ \"term\":\"test\"," +
+                "\"description\":\"something that verifies\"," +
+                "\"pos\":\"verb\"," +
+                "\"translations\": { \"de\":\"ttttt\" }" +
+                "}]}";
+
+        GlossaryProcessed glossaryProcessed = glossaryFileService.saveOrUpdateGlossary(
+                glossaryFileService.parseGlossaryFile(IOUtils.toInputStream(jsonSample),
+                        "fileName.json", LocaleId.EN_US,
+                        null, GlossaryResource.GLOBAL_QUALIFIED_NAME)
+                        .get(LocaleId.EN_US), Optional.ofNullable(LocaleId.EN_US));
+
+        assertThat(glossaryProcessed.getGlossaryEntries()).hasSize(1);
+        assertThat(glossaryProcessed.getGlossaryEntries().get(0).getExternalId()).isNotBlank();
     }
 
     @Test

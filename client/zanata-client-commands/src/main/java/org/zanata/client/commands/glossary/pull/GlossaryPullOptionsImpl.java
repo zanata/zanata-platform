@@ -16,16 +16,18 @@ public class GlossaryPullOptionsImpl extends ConfigurableGlossaryOptionsImpl
     private String fileType;
     private String[] transLang;
 
-    @Option(name = "--file-type", metaVar = "(CSV or PO)",
+    @Option(name = "--file-type", metaVar = "(CSV, JSON or PO)",
         usage = "File type to be downloaded.\n" +
             "csv (default) - csv file format with comma separated values\n" +
-            "po - a zip file of po files on available locales")
+            "po - a zip file of po files on available locales\n" +
+            "json - structured json file format")
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
 
     @Option(name = "--trans-lang", metaVar = "LOCALE1,LOCALE2",
-            usage = "Translation languages to pull from Zanata.\nLeave empty for all available languages.")
+            usage = "Translation languages to pull from Zanata.\n" +
+                    "Leave empty for all available languages.")
     public void setTransLang(String transLang) {
         this.transLang = transLang.split(",");
     }
