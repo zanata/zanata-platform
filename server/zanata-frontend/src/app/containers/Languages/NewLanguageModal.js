@@ -127,8 +127,7 @@ class NewLanguageModal extends Component {
       <span name='new-language-displayName'>
         <span className='u-textLight'>
           {suggestion.displayName}
-        </span>
-        <span className='u-textSuggestion'>
+        </span> <span className='u-textSuggestion'>
           {suggestion.localeId}
         </span>
       </span>
@@ -183,8 +182,9 @@ class NewLanguageModal extends Component {
           <Button
             key='ok'
             aria-label='button'
-            disabled={saving ||
-              (isEmpty(details.localeId) && isEmpty(query))}
+            loading={saving}
+            disabled={(isEmpty(query) || isEmpty(details.nativeName) ||
+              isEmpty(details.displayName || isEmpty(details.pluralForms)))}
             id='btn-new-language-save'
             type='primary'
             onClick={this.validateDetails}>
