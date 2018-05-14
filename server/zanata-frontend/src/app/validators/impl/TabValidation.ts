@@ -50,16 +50,12 @@ class TabValidation extends AbstractValidationAction {
 
     const sourceTabs = source.split('\t')
     const targetTabs = target.split('\t')
-    console.log(sourceTabs.length)
-    console.log(targetTabs.length)
 
     if (sourceTabs.length > targetTabs.length) {
       errors.push(this.messages.targetHasFewerTabs)
     } else if (targetTabs.length > sourceTabs.length ) {
-      console.log('targetHasMoreTabs')
       errors.push(this.messages.targetHasMoreTabs)
     }
-    console.log(errors)
 
     return errors
   }

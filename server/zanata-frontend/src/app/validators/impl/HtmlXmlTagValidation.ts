@@ -100,7 +100,7 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
         }
       }
     }
-    if (longestRun != null && longestRun.length > 0) {
+    if (longestRun !== null && longestRun.length > 0) {
       let outOfOrder: string[] = []
       for (const aSrc in src) {
         if (!longestRun.indexOf(aSrc)) {
