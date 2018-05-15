@@ -27,7 +27,6 @@ import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.more.ContactAdminFormPage;
 import org.zanata.page.more.MorePage;
 import org.zanata.util.HasEmailRule;
@@ -56,47 +55,14 @@ public class ContactAdminTest extends ZanataTestCase {
                 .gotoMorePage()
                 .clickContactAdmin();
 
-        DashboardBasePage dashboardBasePage = contactAdminFormPage
+        MorePage morePage = contactAdminFormPage
                 .inputMessage("I love Zanata")
-                .send(DashboardBasePage.class);
+                .send(MorePage.class);
 
-        assertThat(dashboardBasePage.expectNotification("Your message has " +
-                "been sent to the administrator"))
-                .isTrue()
-                .as("An email sent notification shows");
-
-        List<WiserMessage> messages = emailRule.getMessages();
-
-        assertThat(messages.size())
-                .isGreaterThanOrEqualTo(1)
-                .as("One email was sent");
-
-        WiserMessage wiserMessage = messages.get(0);
-
-        assertThat(wiserMessage.getEnvelopeReceiver())
-                .isEqualTo("admin@example.com")
-                .as("The email recipient is the administrator");
-
-        String content = HasEmailRule.getEmailContent(wiserMessage);
-
-        assertThat(content)
+        assertThat(verifySentEmail(morePage))
                 .contains("You are receiving this mail because:")
                 .contains("You are an administrator")
                 .contains("I love Zanata");
-
-        /*
-         * Check disabled due to concurrency issue with host url in
-         * server config. Should enable this when we have rules to clean database
-         * on each test.
-         *
-        // contains instance url (without last slash)
-        String instanceUrl = PropertiesHolder.getProperty(
-                Constants.zanataInstance.value()).replaceAll("/$", "");
-
-        assertThat(content)
-                .contains(instanceUrl)
-                .as("The email origin (server) is correct");
-         */
     }
 
     @Trace(summary = "The user can contact the site administrator")
@@ -111,27 +77,30 @@ public class ContactAdminTest extends ZanataTestCase {
                 .inputMessage("I love Zanata")
                 .sendAnonymous(MorePage.class);
 
-        assertThat(morePage.expectNotification("Your message has " +
-                "been sent to the administrator"))
-                .isTrue()
-                .as("An email sent notification shows");
-
-        List<WiserMessage> messages = emailRule.getMessages();
-
-        assertThat(messages.size())
-                .isGreaterThanOrEqualTo(1)
-                .as("One email was sent");
-
-        WiserMessage wiserMessage = messages.get(0);
-
-        assertThat(wiserMessage.getEnvelopeReceiver())
-                .isEqualTo("admin@example.com")
-                .as("The email recipient is the administrator");
-
-        String content = HasEmailRule.getEmailContent(wiserMessage);
-
-        assertThat(content)
+        assertThat(verifySentEmail(morePage))
                 .contains("Anonymous user from IP address")
                 .contains("I love Zanata");
+   }
+
+   // Verify the email is sent and received
+   private String verifySentEmail(MorePage morePage) {
+       assertThat(morePage.expectNotification("Your message has " +
+               "been sent to the administrator"))
+               .isTrue()
+               .as("An email sent notification shows");
+
+       List<WiserMessage> messages = emailRule.getMessages();
+
+       assertThat(messages.size())
+               .isGreaterThanOrEqualTo(1)
+               .as("One email was sent");
+
+       WiserMessage wiserMessage = messages.get(0);
+
+       assertThat(wiserMessage.getEnvelopeReceiver())
+               .isEqualTo("admin@example.com")
+               .as("The email recipient is the administrator");
+
+       return HasEmailRule.getEmailContent(wiserMessage);
    }
 }
