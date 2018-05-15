@@ -24,7 +24,7 @@ import javax.mail.internet.InternetAddress;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import com.google.common.base.Optional;
-import org.zanata.util.HtmlUtil;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 public class ContactAdminAnonymousEmailStrategy extends VelocityEmailStrategy {
     private final String ipAddress;
@@ -52,8 +52,8 @@ public class ContactAdminAnonymousEmailStrategy extends VelocityEmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.put("ipAddress", ipAddress).put("htmlMessage",
-                HtmlUtil.escapeAndSanitizeHtml(htmlMessage));
+        return context.put("ipAddress", ipAddress)
+                .put("safeHtmlMessage", textToSafeHtml(htmlMessage));
     }
 
     @java.beans.ConstructorProperties({ "ipAddress", "userSubject",

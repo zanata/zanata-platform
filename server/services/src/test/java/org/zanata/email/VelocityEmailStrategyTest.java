@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.zanata.common.ProjectType;
 import org.zanata.i18n.Messages;
 import org.zanata.i18n.MessagesFactory;
-import org.zanata.util.HtmlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -71,7 +70,7 @@ public class VelocityEmailStrategyTest {
     String testServerPath = "https://zanata.example.com";
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
-    String expectedUserMessage = "some &lt;b&gt;HTML&lt;/b&gt;";
+    private String expectedUserMessage = "some &lt;b&gt;HTML&lt;/b&gt;";
 
     private MessagesFactory msgsFactory = new MessagesFactory() {
         private static final long serialVersionUID = 1L;

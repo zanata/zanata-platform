@@ -2,4 +2,4 @@
 
 <p>$msgs.format("jsf.email.admin.AnonymousUserMessageIntro", $ipAddress)</p>
 <hr/>
-$htmlMessage
+$safeHtmlMessage
