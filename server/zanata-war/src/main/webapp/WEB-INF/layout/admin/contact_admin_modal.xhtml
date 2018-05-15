@@ -66,9 +66,9 @@
     <h:form id="contactAdminForm" styleClass="l--push-bottom-0">
 
       <a4j:jsFunction name="sendContactAdminEmail" action="#{contactAdminAction.send}"
-        execute="@form" oncomplete="completeSending()"/>
+        execute="@form" oncomplete="completeSending()" rendered="#{identity.loggedIn}"/>
       <a4j:jsFunction name="sendContactAdminEmailAnon" action="#{contactAdminAction.sendAnonymous}"
-                      execute="@form" oncomplete="completeSending()"/>
+        execute="@form" oncomplete="completeSending()" rendered="#{not identity.loggedIn}"/>
       <div class="modal__content l--pad-all-1">
         <h:outputLabel for="messageField" rendered="#{not identity.loggedIn}">#{msgs['jsf.ContactAdminMessage']}</h:outputLabel>
         <zanata:decorate id="messageField" componentId="message">
