@@ -55,6 +55,7 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.TextFlowCounter;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.VersionStateCache;
@@ -317,10 +318,10 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
                 getAddress(person));
 
         TMMergeResult mergeResult = str.getMergeResult();
-        Counter translatedCounter = mergeResult.getCounter(ContentState.Translated,
+        TextFlowCounter textFlowCounter = mergeResult.getCounter(ContentState.Translated,
                         new IntRange(100, 100));
 
-        assertThat(translatedCounter.getMessages()).isEqualTo(numOfTextFlows);
+        assertThat(textFlowCounter.getMessages()).isEqualTo(numOfTextFlows);
 
         List<TransUnitUpdateRequest> allRequests = Lists.newLinkedList();
         translationRequestCaptor.getAllValues().forEach(allRequests::addAll);

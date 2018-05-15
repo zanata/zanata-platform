@@ -72,6 +72,7 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TransMemoryMergeService;
+import org.zanata.service.TranslationCounter;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.VersionStateCache;
@@ -239,7 +240,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 List<TranslationService.TranslationResult> batchResult =
                         translateInBatch(request, textFlowsBatch, targetLocale,
                                 request.getInternalTMSource(), callback,
-                                TMMergeTracker.NOOP.INSTANCE);
+                                TranslationCounter.NOOP.INSTANCE);
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
@@ -418,7 +419,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      * @param callbackOnUpdate
      *            a callback to call when we have a
      *            TransUnitUpdateRequest ready
-     * @param mergeTracker
+     * @param translationCounter
      *            an object which can count copies made during TM merge
      * @return translation results
      */
@@ -427,7 +428,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             HLocale targetLocale,
             InternalTMSource internalTMSource,
             Consumer<TransUnitUpdateRequest> callbackOnUpdate,
-            @Nonnull TMMergeTracker mergeTracker) {
+            @Nonnull TranslationCounter translationCounter) {
 
         if (textFlows.isEmpty()) {
             return Collections.emptyList();
@@ -465,7 +466,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                             // round down (assuming non-negative)
                             int similarity = (int) updateRequest.getSimilarityPercent();
                             ContentState contentState = updateRequest.getNewContentState();
-                            mergeTracker.count(contentState, similarity, charCount, wordCount, 1);
+                            translationCounter.count(contentState, similarity, charCount, wordCount, 1);
                         }
                     }
                 }
