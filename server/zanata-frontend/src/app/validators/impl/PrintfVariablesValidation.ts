@@ -29,7 +29,7 @@ import ValidationMessages from '../ValidationMessages'
  *
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
-class PrintfVariablesValidation extends AbstractValidationAction {
+abstract class PrintfVariablesValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
@@ -71,7 +71,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
   protected findMissingVariables(sourceVars: string[],
     targetVars?: string[]): string {
     const missing = this.listMissing(sourceVars, targetVars)
-    return (missing.length > 0) ? this.messages.varsAdded + missing : null
+    return (missing.length > 0) ? this.messages.varsMissing + missing : null
   }
 
   protected findAddedVariables(sourceVars: string[], targetVars?: string[]): string {
