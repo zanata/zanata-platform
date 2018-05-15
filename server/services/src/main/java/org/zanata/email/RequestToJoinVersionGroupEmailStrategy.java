@@ -23,11 +23,11 @@ package org.zanata.email;
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import javax.mail.internet.InternetAddress;
 import java.util.Collection;
 import static org.zanata.email.Addresses.getReplyTo;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Sean Flanigan
@@ -67,7 +67,7 @@ public class RequestToJoinVersionGroupEmailStrategy extends
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("groupName", groupName).put("versionGroupSlug", groupSlug)
                 .put("projectIterationIds", projectIterationIds)
-                .put("htmlMessage", HtmlUtil.escapeAndSanitizeHtml(htmlMessage));
+                .put("safeHtmlMessage", textToSafeHtml(htmlMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",

@@ -2,8 +2,9 @@ package org.zanata.email;
 
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
+
+import static org.zanata.util.HtmlUtil.SANITIZER;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
@@ -31,11 +32,10 @@ public class DeclineLanguageRequestEmailStrategy extends VelocityEmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context.put("toName", toName).put("roles", roles)
                 .put("localeDisplayName", localeDisplayName)
                 .put("contactCoordinatorLink", contactCoordinatorLink)
-                .put("htmlMessage", safeHTML);
+                .put("safeHtmlMessage", SANITIZER.sanitize(htmlMessage));
     }
 
     @java.beans.ConstructorProperties({ "toName", "roles",
