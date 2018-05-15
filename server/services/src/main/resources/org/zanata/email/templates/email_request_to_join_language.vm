@@ -29,10 +29,10 @@
   #end
 </p>
 
-#if ($htmlMessage)
+#if ($safeHtmlMessage)
   <p>$msgs.format("jsf.email.UserMessageIntro", $fromLoginName)</p>
   <hr/>
-  $htmlMessage
+  $safeHtmlMessage
   <hr/>
 #end
 

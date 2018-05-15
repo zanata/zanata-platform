@@ -63,7 +63,7 @@ public class HtmlUtil {
         return htmlRend.toString();
     }
 
-    public static String escapeAndSanitizeHtml(String html) {
-        return SANITIZER.sanitize(StringEscapeUtils.escapeHtml(html));
+    public static String textToSafeHtml(String text) {
+        return SANITIZER.sanitize(StringEscapeUtils.escapeHtml(text));
     }
 }

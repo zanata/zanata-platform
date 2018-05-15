@@ -22,8 +22,9 @@ package org.zanata.email;
 
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
+
+import static org.zanata.util.HtmlUtil.SANITIZER;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
@@ -52,10 +53,9 @@ public class ContactLanguageTeamMembersEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context.put("contactCoordinatorLink", contactCoordinatorLink)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", safeHTML);
+                .put("safeHtmlMessage", SANITIZER.sanitize(htmlMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "userSubject",

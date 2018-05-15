@@ -1,4 +1,4 @@
 <p>$msgs.get("jsf.email.language.members.DearMember")</p>
-$htmlMessage
+$safeHtmlMessage
 <hr/>
 <p>$msgs.format("jsf.email.languageteam.permission.howToReply", $contactCoordinatorLink)</p>

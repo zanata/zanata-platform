@@ -23,9 +23,9 @@ package org.zanata.email;
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
 import static org.zanata.email.Addresses.getReplyTo;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Sean Flanigan
@@ -67,7 +67,7 @@ public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", HtmlUtil.escapeAndSanitizeHtml(htmlMessage));
+                .put("safeHtmlMessage", textToSafeHtml(htmlMessage));
     }
 
     @java.beans.ConstructorProperties({ "receiver", "fromLoginName", "fromName",

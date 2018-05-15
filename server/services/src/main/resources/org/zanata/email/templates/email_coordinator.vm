@@ -2,7 +2,7 @@
 <p>$msgs.format("jsf.email.coordinator.UserMessageIntro",
     $fromName, $fromLoginName, $localeId, $localeNativeName)</p>
 <hr/>
-$htmlMessage
+$safeHtmlMessage
 <hr/>
 <p>$msgs.format("jsf.email.coordinator.ResponseInstructions",
     $localeId, $fromName, $replyEmail)</p>
