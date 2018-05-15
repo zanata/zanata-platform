@@ -686,9 +686,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         List<Object[]> resultList = (List<Object[]>) ftQuery.getResultList();
         if (!resultList.isEmpty() && resultList.size() == maxResult) {
             log.warn(
-                    "Lucene query returned {} results (out of approx {}). Increasing {} might produce more matches.",
+                    "Lucene query returned {} results (out of approx {}). Increasing {} might produce more matches. Query: {}",
                     resultList.size(), ftQuery.getResultSize(),
-                    SysProperties.TM_MAX_RESULTS);
+                    SysProperties.TM_MAX_RESULTS,
+                    textQuery);
             logQueryResults(resultList);
         }
         return resultList;
