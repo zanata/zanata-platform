@@ -58,11 +58,11 @@ class PrintfVariablesValidation extends AbstractValidationAction {
     const sourceVars = this.findVars(source)
     const targetVars = this.findVars(target)
     let messages = this.findMissingVariables(sourceVars, targetVars)
-    if (messages.length > 0) {
+    if (messages) {
       errors.push(messages)
     }
     messages = this.findAddedVariables(sourceVars, targetVars)
-    if (messages.length > 0) {
+    if (messages) {
       errors.push(messages)
     }
     return errors
@@ -95,11 +95,12 @@ class PrintfVariablesValidation extends AbstractValidationAction {
   private listMissing(baseVars: string[], testVars: string[]): string[] {
       const remainingVars = testVars
       const unmatched: string[] = []
-      for (const v in baseVars) {
-        if (remainingVars.includes(baseVars[v])) {
-          remainingVars.splice(remainingVars.indexOf(baseVars[v], 0))
+      for (const baseVar of baseVars) {
+        const index = remainingVars.indexOf(baseVar)
+        if (index !== -1) {
+          remainingVars.splice(index, 1);
         } else {
-          unmatched.push(baseVars[v])
+          unmatched.push(baseVar)
         }
       }
       return unmatched
