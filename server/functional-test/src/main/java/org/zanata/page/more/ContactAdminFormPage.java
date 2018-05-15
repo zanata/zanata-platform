@@ -32,20 +32,14 @@ import org.zanata.page.BasePage;
 public class ContactAdminFormPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ContactAdminFormPage.class);
-    private By subjectField = By.id("contactAdminForm:subjectField:subject");
     private By messageField =
             By.id("contactAdminForm:messageField:input:contact-admin-message");
-    private By sendButton = By.id("contact-admin-send-button");
+    private By sendButton = By.id("contactAdminForm:contact-admin-send-button");
+    private By sendAnonButton = By.id("contactAdminForm:contact-admin-send-button-anon");
+
 
     public ContactAdminFormPage(WebDriver driver) {
         super(driver);
-    }
-
-    public ContactAdminFormPage inputSubject(String subject) {
-        log.info("Enter subject {}", subject);
-        readyElement(subjectField).clear();
-        enterText(readyElement(subjectField), subject);
-        return new ContactAdminFormPage(getDriver());
     }
 
     public ContactAdminFormPage inputMessage(String message) {
@@ -55,7 +49,8 @@ public class ContactAdminFormPage extends BasePage {
     }
 
     /**
-     * Send the message to the administrator Requires a page type to return to
+     * Send the message to the administrator with an active login
+     * Requires a page type to return to
      *
      * @param pageClass
      *            type of page to return to
@@ -64,6 +59,20 @@ public class ContactAdminFormPage extends BasePage {
     public <P> P send(Class<P> pageClass) {
         log.info("Click Send");
         clickElement(sendButton);
+        return PageFactory.initElements(getDriver(), pageClass);
+    }
+
+    /**
+     * Send the message to the administrator, without log in
+     * Requires a page type to return to
+     *
+     * @param pageClass
+     *            type of page to return to
+     * @return new page type P
+     */
+    public <P> P sendAnonymous(Class<P> pageClass) {
+        log.info("Click Send");
+        clickElement(sendAnonButton);
         return PageFactory.initElements(getDriver(), pageClass);
     }
 }
