@@ -75,7 +75,7 @@ class ExportModal extends Component {
       <Modal
         title={'Export Glossary'}
         visible={show}
-        onHide={() => handleExportFileDisplay(false)}
+        onCancel={() => handleExportFileDisplay(false)}
         footer={[
           <Button
             key='back'
