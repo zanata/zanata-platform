@@ -2,14 +2,19 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
-import Button from '../Button'
-import { Row } from 'react-bootstrap'
-import { Modal } from '../../../components'
 import PriorityDropdown from './PriorityDropdown'
 import CriteriaDropdown from './CriteriaDropdown'
 import {
   MINOR, MAJOR, CRITICAL, textState
 } from '../../utils/reject-trans-util'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 
 /*
  * RejectTranslationModal for reviewer rejecting translations feature.
@@ -31,20 +36,24 @@ const RejectTranslationModal = ({
 }) => {
   const priorityTextState = textState(review.selectedPriority)
   const criteriaTile = (!isEmpty(criteriaList))
-      ? <div className='flex'>
-        <span id='CriteriaTitle'>
-          Criteria
-        </span>
-        <CriteriaDropdown
-          criteriaList={criteriaList}
-          onCriteriaChange={onCriteriaChange}
-          onUnspecifiedCriteria={onUnspecifiedCriteria}
-          criteriaDescription={review.criteriaDescription} />
-        <PriorityDropdown
-          textState={priorityTextState}
-          priority={review.selectedPriority}
-          priorityChange={onPriorityChange} />
-      </div>
+      ? <Row>
+        <Col span={21}>
+          <span id='CriteriaTitle'>
+            Criteria
+          </span>
+          <CriteriaDropdown
+            criteriaList={criteriaList}
+            onCriteriaChange={onCriteriaChange}
+            onUnspecifiedCriteria={onUnspecifiedCriteria}
+            criteriaDescription={review.criteriaDescription} />
+        </Col>
+        <Col span={3}>
+          <PriorityDropdown
+            textState={priorityTextState}
+            priority={review.selectedPriority}
+            priorityChange={onPriorityChange} />
+        </Col>
+      </Row>
       : undefined
   const commentPlaceholder = (selectedCriteria.commentRequired === true)
     ? 'You must provide a comment for why this translation has been rejected'
@@ -53,46 +62,38 @@ const RejectTranslationModal = ({
     (isEmpty(review.reviewComment)) &&
     (selectedCriteria.commentRequired === true))
   return (
-    <Modal show={show}
-      onHide={onHideResetState}
+    <Modal
+      visible={show}
+      title={'Reject Translation'}
+      onOk={saveTransReview}
+      onCancel={onHideResetState}
       key='reject-translation-modal'
-      id='RejectTranslationModal'>
-      <Modal.Header>
-        <Modal.Title>Reject translation</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {criteriaTile}
-        <div className='EditorRejection-input'>
-          <textarea
-            type='comment'
-            placeholder={commentPlaceholder}
-            cols='50'
-            onChange={setReviewComment}
-            rows='10'
-            maxLength={textLimit}
-            className='EditorInputGroup-input is-focused InputGroup--outlined
-             Commenting' />
-          <p>{charsLeft}</p>
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <span>
-          <Row>
-            <Button
-              className='EditorButton Button--large u-rounded
-              Button--secondary'
-              onClick={onHideResetState}>
-              Cancel
-            </Button>
-            <Button
-              className='EditorButton Button--large u-rounded Button--primary'
-              onClick={saveTransReview}
-              disabled={cantReject}>
-              Reject translation
-            </Button>
-          </Row>
-        </span>
-      </Modal.Footer>
+      id='RejectTranslationModal'
+      width={'90%'}
+      footer={[
+        <Button key='back' onClick={onHideResetState}>
+          Cancel
+        </Button>,
+        <Button
+          key='ok'
+          type='danger'
+          onClick={saveTransReview}
+          disabled={cantReject}>
+          Reject translation
+        </Button>]}>
+      {criteriaTile}
+      <div className='EditorRejection-input'>
+        <textarea
+          type='comment'
+          placeholder={commentPlaceholder}
+          cols='50'
+          onChange={setReviewComment}
+          rows='10'
+          maxLength={textLimit}
+          className='EditorInputGroup-input is-focused InputGroup--outlined
+           Commenting' />
+        <p>{charsLeft}</p>
+      </div>
     </Modal>
   )
 }
