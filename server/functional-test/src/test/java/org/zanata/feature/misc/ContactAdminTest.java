@@ -29,7 +29,9 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.more.ContactAdminFormPage;
+import org.zanata.page.more.MorePage;
 import org.zanata.util.HasEmailRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import java.util.List;
@@ -82,7 +84,7 @@ public class ContactAdminTest extends ZanataTestCase {
                 .contains("You are an administrator")
                 .contains("I love Zanata");
 
-        /**
+        /*
          * Check disabled due to concurrency issue with host url in
          * server config. Should enable this when we have rules to clean database
          * on each test.
@@ -97,4 +99,39 @@ public class ContactAdminTest extends ZanataTestCase {
          */
     }
 
+    @Trace(summary = "The user can contact the site administrator")
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void testAnonymousContactAdmin() {
+        ContactAdminFormPage contactAdminFormPage = new BasicWorkFlow()
+                .goToHome()
+                .gotoMorePage()
+                .clickContactAdmin();
+
+        MorePage morePage = contactAdminFormPage
+                .inputMessage("I love Zanata")
+                .sendAnonymous(MorePage.class);
+
+        assertThat(morePage.expectNotification("Your message has " +
+                "been sent to the administrator"))
+                .isTrue()
+                .as("An email sent notification shows");
+
+        List<WiserMessage> messages = emailRule.getMessages();
+
+        assertThat(messages.size())
+                .isGreaterThanOrEqualTo(1)
+                .as("One email was sent");
+
+        WiserMessage wiserMessage = messages.get(0);
+
+        assertThat(wiserMessage.getEnvelopeReceiver())
+                .isEqualTo("admin@example.com")
+                .as("The email recipient is the administrator");
+
+        String content = HasEmailRule.getEmailContent(wiserMessage);
+
+        assertThat(content)
+                .contains("Anonymous user from IP address")
+                .contains("I love Zanata");
+   }
 }
