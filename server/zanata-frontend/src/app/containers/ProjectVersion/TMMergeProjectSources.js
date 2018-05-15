@@ -111,26 +111,24 @@ class TMMergeProjectSources extends Component {
           placeholder="input search text"
           onSearch={this.projectSearchTermChange}
           enterButton />
-        <Row>
-          <Col span={24} className='mr2'>
-            <span>
-              Select source project versions to merge
-            </span>
-            <div>
-              <LoaderText loading={fetchingProject}
-                loadingText={'Fetching Projects'} />
-              <span className="u-textMuted">{noResults}</span>
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12} className='mr2'>
+        <Col span={11}>
+          <span className='mb1 b'>
+            Select source project versions to merge
+          </span>
+          <div>
+            <LoaderText loading={fetchingProject}
+              loadingText={'Fetching Projects'} />
+            <span className="u-textMuted">{noResults}</span>
+          </div>
+        </Col>
+        <Row gutter={16}>
+          <Col span={12}>
             <ProjectVersionPanels projectVersions={projectVersions}
               selectedVersions={mergeOptions.selectedVersions}
               onVersionCheckboxChange={onVersionCheckboxChange}
               onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
           </Col>
-          <Col span={11}>
+          <Col span={12}>
             <DraggableVersionPanels
               selectedVersions={mergeOptions.selectedVersions}
               onDraggableMoveEnd={onDragMoveEnd}
@@ -185,7 +183,7 @@ class TMMergeProjectSources extends Component {
           <TMMergeProjectTMOptions {...this.props} disabled={disabled}
             disableDifferentProjectOption={disableDiffProjectOption} />
         </Row>
-        <Row>
+        <Row className='mt3 mb3'>
           <Col span={24}>
             <Card>
               <p>Translations which satisfy all conditions will copy as
