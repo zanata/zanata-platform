@@ -30,8 +30,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -96,6 +98,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import kotlin.Pair;
 import kotlin.ranges.IntRange;
 
 /**
@@ -313,8 +316,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                         localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
                 neededEntities.localesInTargetVersion = localeServiceImpl
                         .getSupportedLanguageByProjectIteration(neededEntities.targetVersion);
-                neededEntities.mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
-                        targetVersionId, neededEntities.targetLocale);
+                neededEntities.activeTextFlows = textFlowDAO.countActiveTextFlowsInProjectIteration(
+                        targetVersionId);
                 return neededEntities;
             });
         } catch (Exception e) {
@@ -322,7 +325,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             return AsyncTaskResult.completed();
         }
 
-        long mergeTargetCount = neededEntities.mergeTargetCount;
+        long activeTextFlows = neededEntities.activeTextFlows;
         HLocale targetLocale = neededEntities.targetLocale;
         String targetVersionStr = neededEntities.targetVersion.userFriendlyToString();
 
@@ -338,28 +341,43 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         if (taskHandleOpt.isPresent()) {
             MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
             handle1.setTriggeredBy(authenticatedAccount.getUsername());
-            handle1.setMaxProgress((int) mergeTargetCount);
-            handle1.setTotalTranslations(mergeTargetCount);
+            handle1.setMaxProgress((int) activeTextFlows);
+            handle1.setTotalTextFlows(activeTextFlows);
         }
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         log.info("merge translations from TM start: from {} to {}",
                 mergeRequest.getInternalTMSource(),
                 targetVersionStr);
-        int startCount = 0;
+        int textFlowIndex = 0;
 
-        while (startCount < mergeTargetCount) {
-            List<HTextFlow> batch = textFlowDAO
-                    .getUntranslatedOrFuzzyTextFlowsInVersion(
-                            targetVersionId, targetLocale, startCount,
-                            BATCH_SIZE);
+        while (textFlowIndex < activeTextFlows) {
+            // Get the next batch of text flows. They may or may not need
+            // translation, but they won't change during the TM merge
+            // (unless someone uploads a source document). We will be
+            // creating/modifying TFTs, so the offset queries shouldn't use them.
+            List<Long> textFlowsIds =
+                    textFlowDAO.getTextFlowsIdsInVersion(
+                            targetVersionId, textFlowIndex, BATCH_SIZE);
+            // Look up each text flow and it's translation state (if any)
+            // This might be more efficient if the HQL query were to check the
+            // translation state directly.
+            List<HTextFlow> translatableTextFlows = textFlowDAO
+                    .getTextFlowAndMaybeTargetState(
+                            textFlowsIds, targetLocale.getId())
+                    .filter(pair -> shouldTranslate(pair.component2()))
+                    .map(Pair::component1)
+                    .collect(Collectors.toList());
+
             List<TranslationService.TranslationResult> batchResults =
-                translateInBatch(mergeRequest, batch,
+                translateInBatch(mergeRequest, translatableTextFlows,
                     targetLocale, internalTMSource, NOOP, mergeResult);
+
+            // FIXME don't count copies which failed because of validation or concurrent edits
 
             taskHandleOpt.ifPresent(
                     mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
-                            .increaseProgress(batch.size()));
-            startCount += BATCH_SIZE;
+                            .increaseProgress(textFlowsIds.size()));
+            textFlowIndex += BATCH_SIZE;
         }
         versionStateCacheImpl.clearVersionStatsCache(targetVersionId);
         log.info("merge translation from TM end: from {} to {}, {}",
@@ -370,6 +388,22 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         sendTMMergeEmail(mergeRequest, mergeResult, neededEntities);
 
         return AsyncTaskResult.completed();
+    }
+
+    private boolean shouldTranslate(@Nullable ContentState state) {
+        if (state == null) return true;
+        switch (state) {
+            case New:
+            case NeedReview:
+            case Rejected:
+                return true;
+            case Translated:
+            case Approved:
+                return false;
+            default:
+                log.warn("unexpected state {}", state);
+                return false;
+        }
     }
 
     private void sendTMMergeEmail(VersionTMMerge mergeRequest,
@@ -444,7 +478,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
                 List<TransUnitUpdateRequest> updateRequests = Lists.newLinkedList();
                 for (HTextFlow hTextFlow : textFlows) {
-                    HTextFlowTarget hTextFlowTarget =
+@Nullable           HTextFlowTarget hTextFlowTarget =
                             hTextFlow.getTargets().get(targetLocale.getId());
                     Optional<TransMemoryResultItem> tmResult =
                             translationMemoryServiceImpl.searchBestMatchTransMemory(
@@ -482,7 +516,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private TransUnitUpdateRequest createRequest(HasTMMergeCriteria action,
             HLocale hLocale,
             HTextFlow hTextFlowToBeFilled, TransMemoryResultItem tmResult,
-            HTextFlowTarget oldTarget) {
+            @Nullable HTextFlowTarget oldTarget) {
         Long tmSourceId = tmResult.getSourceIdList().get(0);
         ContentState statusToSet;
         String comment;
@@ -549,7 +583,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         private HProjectIteration targetVersion;
         private HLocale targetLocale;
         private List<HLocale> localesInTargetVersion;
-        private long mergeTargetCount;
+        private long activeTextFlows;
 
         boolean isTargetLocaleEnabledInVersion() {
             return localesInTargetVersion.contains(targetLocale);

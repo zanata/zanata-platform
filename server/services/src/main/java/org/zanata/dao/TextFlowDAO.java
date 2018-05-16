@@ -23,6 +23,8 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -34,12 +36,14 @@ import org.zanata.common.ContentState;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import kotlin.Pair;
 
 @RequestScoped
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
@@ -88,7 +92,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                 .setResultTransformer(resultTransformer).list();
     }
 
-    public List<Object[]> getTextFlowAndTarget(List<Long> idList,
+    private List<Object[]> getTextFlowAndTarget(List<Long> idList,
             Long localeId) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("from HTextFlow tf ")
@@ -102,6 +106,36 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         @SuppressWarnings("unchecked")
         List<Object[]> list = q.list();
         return list;
+    }
+
+    public Stream<Pair<HTextFlow, HTextFlowTarget>> getTextFlowAndMaybeTarget(
+            List<Long> idList, Long localeId) {
+        return getTextFlowAndTarget(idList, localeId)
+                .stream()
+                .map(o -> new Pair<>((HTextFlow) o[0], (HTextFlowTarget) o[1]));
+    }
+
+    private List<Object[]> getTextFlowAndTargetState(List<Long> idList,
+            Long localeId) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("select tf, tft.state from HTextFlow tf ")
+                .append("left join tf.targets tft with tft.locale.id =:localeId ")
+                .append("where tf.id in (:idList)");
+        Query q = getSession().createQuery(queryBuilder.toString());
+        q.setParameterList("idList", idList);
+        q.setParameter("localeId", localeId);
+        q.setCacheable(true);
+        q.setComment("TextFlowTargetDAO.getTextFlowTarget");
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = q.list();
+        return list;
+    }
+
+    public Stream<Pair<HTextFlow, ContentState>> getTextFlowAndMaybeTargetState(
+            List<Long> idList, Long localeId) {
+        return getTextFlowAndTargetState(idList, localeId)
+                .stream()
+                .map(o -> new Pair<>((HTextFlow) o[0], (ContentState) o[1]));
     }
 
     public int getWordCount(Long id) {
@@ -314,40 +348,21 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         return count == null ? 0 : count.intValue();
     }
 
-    public long getUntranslatedOrFuzzyTextFlowCountInVersion(Long targetVersionId, HLocale targetLocale) {
+    public List<Long> getTextFlowsIdsInVersion(
+            long projectIterationId, int startIndex, int maxCount) {
         String queryString =
-                "select count(*) from HTextFlow tf left join " +
-                        "tf.targets tfts WITH index(tfts) =:locale" +
-                        " WHERE (tf.obsolete=0 AND tf.document.projectIteration.id=:targetVersionId ) AND" +
-                        " ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale.id=:locale) AND state = :untranslatedState)) OR (:locale not in indices(tf.targets) ))";
+                "select id from HTextFlow tf" +
+                        " WHERE (tf.obsolete=0" +
+                        " AND tf.document.obsolete=0" +
+                        " AND tf.document.projectIteration.id=:projectIterationId)";
         Query query = getSession().createQuery(queryString)
-                .setParameter("locale", targetLocale.getId())
-                .setParameter("targetVersionId", targetVersionId)
-                .setParameter("untranslatedState", ContentState.New)
+                .setParameter("projectIterationId", projectIterationId)
+                .setFirstResult(startIndex)
+                .setMaxResults(maxCount)
                 .setCacheable(true)
-                .setComment("TextFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion");
-        Long count = (Long) query.uniqueResult();
-        return count == null ? 0 : count;
-    }
-
-    public List<HTextFlow> getUntranslatedOrFuzzyTextFlowsInVersion(
-            Long targetVersionId,
-            HLocale targetLocale, int startIndex, int maxCount) {
-        String queryString =
-                "select distinct tf from HTextFlow tf left join " +
-                        "tf.targets tfts WITH index(tfts) =:locale" +
-                        " WHERE (tf.obsolete=0 AND tf.document.projectIteration.id=:targetVersionId ) AND" +
-                        " ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale.id=:locale) AND state = :untranslatedState)) OR (:locale not in indices(tf.targets) ))";
-
-        Query query = getSession().createQuery(queryString)
-                .setParameter("locale", targetLocale.getId())
-                .setParameter("targetVersionId", targetVersionId)
-                .setParameter("untranslatedState", ContentState.New)
-                .setFirstResult(startIndex).setMaxResults(maxCount)
-                .setCacheable(true)
-                .setComment("TextFlowDAO.getUntranslatedOrFuzzyTextFlowsInVersion");
+                .setComment("TextFlowDAO.getTextFlowsIdsInVersion");
         @SuppressWarnings("unchecked")
-        List<HTextFlow> list = query.list();
+        List<Long> list = query.list();
         return list;
     }
 

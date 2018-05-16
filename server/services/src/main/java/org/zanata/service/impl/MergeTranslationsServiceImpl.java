@@ -334,7 +334,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         handle.setTriggeredBy(authenticatedAccount.getUsername());
         int total = getTotalProgressCount(sourceVersion, targetVersion);
         handle.setMaxProgress(total);
-        handle.setTotalTranslations(total);
+        handle.setTotalTextFlows(total);
     }
 
     @Override

@@ -2,9 +2,9 @@ package org.zanata.service.tm.merge;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -55,37 +55,45 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.LockManagerService;
 import org.zanata.service.TextFlowCounter;
-import org.zanata.service.TransMemoryMergeService;
-import org.zanata.service.TranslationService;
+import org.zanata.service.ValidationService;
 import org.zanata.service.VersionStateCache;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.service.impl.TranslationMemoryServiceImpl;
+import org.zanata.service.impl.TranslationServiceImpl;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.transaction.TransactionUtilForUnitTest;
 import org.zanata.util.UrlUtil;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.MergeRule;
-import com.google.common.collect.Lists;
 import kotlin.ranges.IntRange;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.zanata.email.Addresses.getAddress;
+import static org.zanata.service.TransMemoryMergeService.BATCH_SIZE;
 import static org.zanata.test.EntityTestData.makeTextFlowTarget;
 
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ ProjectIterationDAO.class, TextFlowDAO.class,
         TransMemoryUnitDAO.class, LocaleServiceImpl.class,
-        TranslationMemoryServiceImpl.class, CurrentUserImpl.class })
+        TranslationMemoryServiceImpl.class, CurrentUserImpl.class,
+        TranslationServiceImpl.class })
 public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
+
+    // TODO test with smaller batches. 22 TextFlows with batchSize=5 would run more quickly, and tell us more.
+    // One and a bit batches:
+    private static final int numOfTextFlows = BATCH_SIZE + 2;
+
+    private MergeTranslationsTaskHandle mergeHandle = new MergeTranslationsTaskHandle(
+            new GenericAsyncTaskKey("textKeyId"));
 
     @Inject
     private TransMemoryMergeServiceImpl service;
@@ -113,30 +121,9 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     private HDocument sourceDoc;
     private HDocument targetDoc;
     @Captor
-    private ArgumentCaptor<List<TransUnitUpdateRequest>> translationRequestCaptor;
-    @Captor
     private ArgumentCaptor<HtmlEmailStrategy> emailStrategy;
     private HPerson person;
 
-    @Produces
-    TransactionUtil transactionUtil() {
-        return new TransactionUtilForUnitTest(getEmf().createEntityManager(), true);
-    }
-
-    @Produces
-    @FullText
-    FullTextEntityManager fullTextEntityManager() {
-        return Search.getFullTextEntityManager(getEm());
-    }
-
-    @Produces
-    Session session() {
-        return getSession();
-    }
-
-    @Produces
-    @Mock
-    private TranslationService translationService;
     @Produces
     @Authenticated
     private
@@ -155,6 +142,30 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     @Produces
     @Mock
     private VersionStateCache versionStateCache;
+    @Produces
+    @Mock
+    private LockManagerService lockManagerService;
+    @Produces
+    @Mock
+    private ValidationService validationService;
+
+    @Produces
+    TransactionUtil transactionUtil() {
+        return new TransactionUtilForUnitTest(getEmf().createEntityManager(), true);
+    }
+
+    @Produces
+    @FullText
+    @Zanata
+    @Default
+    FullTextEntityManager fullTextEntityManager() {
+        return Search.getFullTextEntityManager(getEm());
+    }
+
+    @Produces
+    Session session() {
+        return getSession();
+    }
 
     @Before
     public void setUp() {
@@ -184,14 +195,15 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
         targetDoc.setProjectIteration(targetVersion);
 
         doInTransaction(em -> {
+            em.persist(person);
             em.persist(sourceLocale);
             em.persist(targetLocale);
+            em.persist(tmx);
             em.persist(project);
             em.persist(sourceVersion);
             em.persist(targetVersion);
             em.persist(sourceDoc);
             em.persist(targetDoc);
-            em.persist(tmx);
             em.flush();
         });
     }
@@ -215,7 +227,6 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     public void mergeVersionFromImportedTMOnly() throws Exception {
         // given
 
-        int numOfTextFlows = 100;
         doInTransaction(em -> {
             // template content for both HTextFlow and TransMemoryUnit
             String content = "some text to match";
@@ -226,29 +237,20 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
             em.merge(targetDoc);
         });
 
+        int threshold = 100;
+
         // when
 
-        Future<Void> future = service.startMergeTranslations(
+        service.startMergeTranslations(
                 targetVersion.getId(),
-                new VersionTMMerge(targetLocale.getLocaleId(), 100,
-                        MergeRule.FUZZY, MergeRule.REJECT, MergeRule.REJECT, MergeRule.FUZZY,
-                        InternalTMSource.SELECT_NONE),
-                new MergeTranslationsTaskHandle(
-                        new GenericAsyncTaskKey("textKeyId")));
-        future.get();
+                new VersionTMMerge(targetLocale.getLocaleId(), threshold,
+                        MergeRule.FUZZY, MergeRule.REJECT, MergeRule.REJECT,
+                        MergeRule.FUZZY, InternalTMSource.SELECT_NONE),
+                mergeHandle).get();
 
         // then
 
-        int expectedBatchNumber =
-                calculateExpectedNumberOfBatchRun(numOfTextFlows);
-        verify(translationService, times(expectedBatchNumber)).translate(
-                eq(targetLocale.getLocaleId()),
-                translationRequestCaptor.capture());
-
-        List<TransUnitUpdateRequest> allRequests = Lists.newLinkedList();
-        translationRequestCaptor.getAllValues().forEach(allRequests::addAll);
-        // we should all find matches
-        assertThat(allRequests).hasSize(numOfTextFlows);
+        checkMergeResults(threshold, ContentState.NeedReview);
     }
 
     @Test
@@ -256,23 +258,21 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
     public void mergeVersionFromAnotherVersion() throws Exception {
         // given
 
-        int numOfTextFlows = 100;
-
         doInTransaction(em -> {
             sourceDoc = em.find(HDocument.class, sourceDoc.getId());
             targetDoc = em.find(HDocument.class, targetDoc.getId());
             // template content for HTextFlow in source and target versions
             String content = "DIFFERENT TEXT TO FIND";
             IntStream.rangeClosed(1, numOfTextFlows).forEach(i -> {
-                HTextFlow sourceTextFlow = makeTextFlow(sourceDoc, i, content);
+                makeTextFlow(sourceDoc, i, content);
                 em.merge(sourceDoc);
-                HTextFlow targetTextFlow = makeTextFlow(targetDoc, i, content);
+                makeTextFlow(targetDoc, i, content);
                 em.merge(targetDoc);
             });
 
             // template content for HTextFlow in source and target versions
             IntStream.rangeClosed(1, numOfTextFlows).forEach(i -> {
-                HTextFlow sourceTextFlow = sourceDoc.getAllTextFlows().get("resId"+i);
+                HTextFlow sourceTextFlow = sourceDoc.getAllTextFlows().get("resId" + i);
                 HTextFlowTarget sourceTFTarget =
                         makeTextFlowTarget(sourceTextFlow, targetLocale,
                                 ContentState.Approved);
@@ -282,28 +282,32 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
             });
         });
 
+        // make the translations in TM visible to the user
         when(identity.hasPermission(any(), any())).thenReturn(true);
 
         int threshold = 80;
 
         // when
 
-        Future<Void> future = service.startMergeTranslations(
+        service.startMergeTranslations(
                 targetVersion.getId(),
                 new VersionTMMerge(targetLocale.getLocaleId(), threshold,
-                        MergeRule.FUZZY, MergeRule.REJECT, MergeRule.REJECT, MergeRule.FUZZY,
-                        InternalTMSource.SELECT_ALL),
-                new MergeTranslationsTaskHandle(
-                        new GenericAsyncTaskKey("textKeyId")));
-        future.get();
+                        MergeRule.FUZZY, MergeRule.REJECT, MergeRule.REJECT,
+                        MergeRule.FUZZY, InternalTMSource.SELECT_ALL),
+                mergeHandle).get();
 
         // then
 
-        int expectedBatchNumber =
-                calculateExpectedNumberOfBatchRun(numOfTextFlows);
-        verify(translationService, times(expectedBatchNumber)).translate(
-                eq(targetLocale.getLocaleId()),
-                translationRequestCaptor.capture());
+
+        checkMergeResults(threshold, ContentState.Translated);
+    }
+
+    private void checkMergeResults(
+            int threshold,
+            ContentState expectedCopyState) {
+        assertThat(mergeHandle.getTotalTextFlows()).isEqualTo(numOfTextFlows);
+        assertThat(mergeHandle.getMaxProgress()).isEqualTo(numOfTextFlows);
+        assertThat(mergeHandle.getCurrentProgress()).isEqualTo(numOfTextFlows);
 
         verify(emailSender).sendMessage(emailStrategy.capture());
 
@@ -318,28 +322,18 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
                 getAddress(person));
 
         TMMergeResult mergeResult = str.getMergeResult();
-        TextFlowCounter textFlowCounter = mergeResult.getCounter(ContentState.Translated,
+        TextFlowCounter textFlowCounter = mergeResult.getCounter(
+                expectedCopyState,
                         new IntRange(100, 100));
 
         assertThat(textFlowCounter.getMessages()).isEqualTo(numOfTextFlows);
-
-        List<TransUnitUpdateRequest> allRequests = Lists.newLinkedList();
-        translationRequestCaptor.getAllValues().forEach(allRequests::addAll);
-        // we should all find matches
-        assertThat(allRequests).hasSize(numOfTextFlows);
     }
 
-    private static int calculateExpectedNumberOfBatchRun(double numOfTextFlows) {
-        return (int) Math.ceil(
-                numOfTextFlows / TransMemoryMergeService.BATCH_SIZE);
-    }
-
-    private HTextFlow makeTextFlow(HDocument doc, int index, String content) {
+    private void makeTextFlow(HDocument doc, int index, String content) {
         String sourceContent = content + index;
         HTextFlow hTextFlow =
                 new HTextFlow(doc, "resId" + index, sourceContent);
         doc.getTextFlows().add(hTextFlow);
-        return hTextFlow;
     }
 
     private static TransMemoryUnit makeTransMemoryUnit(TransMemory tmx,
