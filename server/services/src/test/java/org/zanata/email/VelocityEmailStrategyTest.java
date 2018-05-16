@@ -105,7 +105,7 @@ public class VelocityEmailStrategyTest {
     String userSubject = "USER_SUBJECT[测试]";
     String localeId = "LOCALE_ID";
     String localeNativeName = "LOCALE_NAME[测试]";
-    String userMessage = "some <b>HTML</b>";
+    private String userMessage = "some <b>HTML</b>";
 
     public VelocityEmailStrategyTest() throws UnsupportedEncodingException {
         toAddr = Addresses.getAddress(toAddress, toName);
