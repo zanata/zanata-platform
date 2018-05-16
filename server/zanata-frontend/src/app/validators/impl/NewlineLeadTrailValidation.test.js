@@ -3,11 +3,11 @@
 import NewlineLeadTrailValidation from './NewlineLeadTrailValidation'
 import ValidationId from '../ValidationId'
 // TODO: Consume as react-intl JSON messages file
-import en from '../en'
+import Messages from '../messages'
 
 const id = ValidationId.XML_ENTITY
 const description = ''
-const messageData = en
+const messageData = Messages['en-US']
 const NewlineLeadTrailValidator =
   new NewlineLeadTrailValidation(id, description, messageData)
 

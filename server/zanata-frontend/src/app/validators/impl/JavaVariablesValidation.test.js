@@ -25,11 +25,11 @@
 import JavaVariablesValidation from './JavaVariablesValidation'
 import ValidationId from '../ValidationId'
 // TODO: Consume as react-intl JSON messages file
-import en from '../en'
+import Messages from '../messages'
 
 const id = ValidationId.JAVA_VARIABLES
 const description = ''
-const messageData = en
+const messageData = Messages['en-US']
 const JavaVariablesValidator =
   new JavaVariablesValidation(id, description, messageData)
 

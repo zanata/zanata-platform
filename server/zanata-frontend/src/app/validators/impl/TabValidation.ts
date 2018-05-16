@@ -23,6 +23,8 @@ import AbstractValidationAction from '../AbstractValidationAction'
 import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
+import IntlMessageFormat from 'intl-messageformat'
+
 /**
  *
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
@@ -31,6 +33,7 @@ class TabValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public locale: string
 
   public _sourceExample: string
   public get sourceExample() {
@@ -41,20 +44,24 @@ class TabValidation extends AbstractValidationAction {
     return "<span class='js-example__target txt--warning'>missing tab char (\\t)</span> hello world";
   }
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages) {
-    super(id, description, messages)
+  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+    super(id, description, messages, locale)
   }
 
   public doValidate(source: string, target: string): string[] {
     const errors: string[] = []
 
-    const sourceTabs = source.split('\t')
-    const targetTabs = target.split('\t')
+    const sourceTabs = source.split('\t').length - 1
+    const targetTabs = target.split('\t').length - 1
 
-    if (sourceTabs.length > targetTabs.length) {
-      errors.push(this.messages.targetHasFewerTabs)
-    } else if (targetTabs.length > sourceTabs.length ) {
-      errors.push(this.messages.targetHasMoreTabs)
+    if (sourceTabs > targetTabs) {
+      const targetHasFewerTabs = new IntlMessageFormat(this.messages.targetHasFewerTabs, this.locale)
+          .format({ sourceTabs, targetTabs })
+      errors.push(targetHasFewerTabs)
+    } else if (targetTabs > sourceTabs ) {
+      const targetHasMoreTabs = new IntlMessageFormat(this.messages.targetHasMoreTabs, this.locale)
+        .format({ sourceTabs, targetTabs })
+      errors.push(targetHasMoreTabs)
     }
 
     return errors

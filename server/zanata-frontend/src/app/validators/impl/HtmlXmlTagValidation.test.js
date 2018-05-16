@@ -6,11 +6,11 @@ import HtmlXmlTagValidation from './HtmlXmlTagValidation'
 import ValidationId from '../ValidationId'
 // import ValidationMessages from '../ValidationMessages'
 // TODO: Consume as react-intl JSON messages file
-import en from '../en'
+import Messages from '../messages'
 
 const id = ValidationId.HTML_XML
 const description = ''
-const messageData = en
+const messageData = Messages['en-US']
 
 const HtmlXmlTagValidator = new HtmlXmlTagValidation(id, description, messageData)
 

@@ -1,15 +1,16 @@
 /* tslint:disable:max-line-length */
-const en = {
+
+const ja = {
   ab: "string",
   notifyValidationError: "Validation error - See validation message",
-  newLineValidatorDesc: "Check for consistent leading and trailing newline (\\n).",
-  leadingNewlineMissing: "Leading newline (\\n) is missing",
-  leadingNewlineAdded: "Unexpected leading newline (\\n)",
-  trailingNewlineMissing: "Trailing newline (\\n) is missing",
-  trailingNewlineAdded: "Unexpected trailing newline (\\n)",
+  newLineValidatorDesc: "Check for consistent leading and trailing newline (/n).",
+  leadingNewlineMissing: "Leading newline (/n) is missing",
+  leadingNewlineAdded: "Unexpected leading newline (/n)",
+  trailingNewlineMissing: "Trailing newline (/n) is missing",
+  trailingNewlineAdded: "Unexpected trailing newline (/n)",
   tabValidatorDesc: "Check whether source and target have the same number of tabs.",
-  targetHasFewerTabs: "Target has fewer tabs (\\t) than source (source: {0}, target: {1})",
-  targetHasMoreTabs: "Target has more tabs (\\t) than source (source: {0}, target: {1})",
+  targetHasFewerTabs: "ターゲットはソースよりタブ（/ t）の数が少ない（ソース：{sourceTabs}、ターゲット：{targetTabs}）",
+  targetHasMoreTabs: "ターゲットはソースよりタブ（/ t）の数が多い（ソース：{sourceTabs}、ターゲット：{targetTabs}）",
   printfVariablesValidatorDesc: "Check that printf style (%x) variables are consistent.",
   varPositionOutOfRange: "Variable {0} position is out of range",
   mixVarFormats: "Numbered arguments cannot mix with unnumbered arguments",
@@ -18,7 +19,7 @@ const en = {
   differentVarCount: "Inconsistent count for variables: ",
   differentApostropheCount: "Number of apostrophes ('') in source does not match number in translation. This may lead to other warnings.",
   quotedCharsAdded: "Quoted characters found in translation but not in source text. Apostrophe character ('') must be doubled ('''') to prevent quoting when it is used in Java MessageFormat strings.",
-  printfXSIExtensionValidationDesc: "Check that positional printf style (%n\\$x) variables are consistent.",
+  printfXSIExtensionValidationDesc: "Check that positional printf style (%n/$x) variables are consistent.",
   varsMissing: "Missing variables: ",
   varsMissingQuoted: "Unexpected quoting of variables: ",
   varsAdded: "Unexpected variables: ",
@@ -31,4 +32,4 @@ const en = {
   invalidXMLEntity: "Invalid XML entity: "
 }
 
-export default en
+export default ja
