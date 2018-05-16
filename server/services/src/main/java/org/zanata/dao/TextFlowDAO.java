@@ -23,7 +23,6 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
@@ -51,8 +50,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
             org.slf4j.LoggerFactory.getLogger(TextFlowDAO.class);
     private static final long serialVersionUID = 1L;
     // TODO replace all getSession() code to use entityManager
-    @Inject
-    LocaleDAO localeDAO;
 
     public TextFlowDAO() {
         super(HTextFlow.class);

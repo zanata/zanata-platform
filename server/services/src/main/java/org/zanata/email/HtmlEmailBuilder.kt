@@ -67,24 +67,28 @@ internal fun buildMessage(
     val body = buildBodyWithFooter(msgs, generalContext.serverURL, receivedReasons, bodyCallback)
     // Alternative parts should be added in increasing order of preference,
     // ie the preferred format should be added last.
-    val mp = MimeMultipart("alternative")
+    val multipart = MimeMultipart("alternative")
     val textPart = MimeBodyPart()
     val text = HtmlUtil.htmlToText(body)
     textPart.setText(text, "UTF-8")
-    mp.addBodyPart(textPart)
+    multipart.addBodyPart(textPart)
     val htmlPart = MimeBodyPart()
     htmlPart.setContent(body, "text/html; charset=UTF-8")
-    mp.addBodyPart(htmlPart)
-    msg.setContent(mp)
+    multipart.addBodyPart(htmlPart)
+    msg.setContent(multipart)
     return msg
 }
 
-/**
+/*
  * Builds the complete HTML email body (including html, head and body elements). bodyCallback will be
  * invoked inside the body element to supply the main HTML body (which will be followed by the
  * generic footer).
  */
-private fun buildBodyWithFooter(msgs: Messages, serverPath: String = "", receivedReasons: List<String> = listOf(), bodyCallback : BODY.(Messages) -> Unit): String {
+private fun buildBodyWithFooter(
+        msgs: Messages,
+        serverPath: String = "",
+        receivedReasons: List<String> = listOf(),
+        bodyCallback : BODY.(Messages) -> Unit): String {
     return StringBuilder().appendHTML().html {
         head {
             meta(charset = UTF8)
@@ -116,9 +120,13 @@ private fun buildBodyWithFooter(msgs: Messages, serverPath: String = "", receive
     }.toString()
 }
 
+/**
+ * Holds the email addresses (From, To, Reply-To) for an email to be sent
+ */
 data class EmailAddressBlock @JvmOverloads constructor(
         /**
-         * The "From" address which should be used for this email (optional) - if absent, the server's configured "From" email will be used
+         * The "From" address which should be used for this email (optional) -
+         * if absent, the server's configured "From" email will be used
          */
         val fromAddress: InternetAddress? = null,
         /**
