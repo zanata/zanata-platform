@@ -78,11 +78,12 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     private HAccount authenticatedAccount;
     private String slug;
     private String projectSlug;
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<SelectableVersion> projectVersions = Lists.newArrayList();
     @Inject
     private EmailService emailServiceImpl;
-    @Size(max = 1000)
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
     @Inject
     private FacesMessages facesMessages;
@@ -276,5 +277,13 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
 
     public void setMessage(final String message) {
         this.message = message;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

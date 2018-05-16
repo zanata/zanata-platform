@@ -67,7 +67,8 @@ public class ContactLanguageTeamMembersAction implements Serializable {
     private ApplicationConfiguration applicationConfiguration;
     @Inject
     private LocaleMemberDAO localeMemberDAO;
-    @Size(max = 1000)
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
     private String subject;
     private String localeId;
@@ -148,5 +149,13 @@ public class ContactLanguageTeamMembersAction implements Serializable {
 
     public void setLocaleId(final String localeId) {
         this.localeId = localeId;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

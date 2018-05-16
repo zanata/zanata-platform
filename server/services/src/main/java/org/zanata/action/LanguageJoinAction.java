@@ -78,7 +78,8 @@ public class LanguageJoinAction implements Serializable {
     private Messages msgs;
     private String language;
     private HLocale locale;
-    @Size(max = 1000)
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
     @Size(max = 255)
     private String declineMessage;
@@ -292,5 +293,13 @@ public class LanguageJoinAction implements Serializable {
 
     public String getDeclineMessage() {
         return this.declineMessage;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

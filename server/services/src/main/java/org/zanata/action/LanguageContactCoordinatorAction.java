@@ -73,7 +73,8 @@ public class LanguageContactCoordinatorAction implements Serializable {
     @Inject
     private Messages msgs;
 
-    @Size(max = 1000)
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
 
     private String localeId;
@@ -157,5 +158,13 @@ public class LanguageContactCoordinatorAction implements Serializable {
 
     public void setLocaleId(final String localeId) {
         this.localeId = localeId;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

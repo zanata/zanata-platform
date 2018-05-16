@@ -35,6 +35,8 @@ import org.zanata.model.HPerson;
  */
 public interface EmailService extends Serializable {
 
+    public static final int DEFAULT_MAX_MESSAGE_LENGTH = 1000;
+
     /**
      * send account activation email to register user
      *

@@ -5,6 +5,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
   class="modal" id="joinGroupDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" >
 
@@ -115,8 +116,8 @@
           <span>#{msgs['jsf.AdditionalInfo']}</span>
           <span class="txt--meta bx--block">#{msgs['jsf.group.email.AdditionalInfoMessage']}</span>
           <h:inputTextarea id="request-join-group-message" value="#{versionGroupJoinAction.message}"
-            styleClass="l--push-bottom-0">
-            <f:validateLength maximum="1000"/>
+            styleClass="l--push-bottom-0" a:maxlength="#{versionGroupJoinAction.maxUserMessageSize}">
+            <f:validateLength maximum="#{versionGroupJoinAction.maxUserMessageSize}" />
           </h:inputTextarea>
           <rich:message for="request-join-group-message" ajaxRendered="true"
             id="request-join-group-error-message" name="request-join-group-error-message" errorClass="bg--danger"/>

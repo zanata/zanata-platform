@@ -5,6 +5,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
   class="modal" id="contactCoordinatorDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" >
 
@@ -58,9 +59,9 @@
       <div class="modal__content l--pad-all-1">
         <zanata:decorate id="messageField" componentId="message">
           <h:inputTextarea id="contact-coordinator-message" value="#{languageContactCoordinatorAction.message}"
-            styleClass="l--push-bottom-0">
+            styleClass="l--push-bottom-0" a:maxlength="#{languageContactCoordinatorAction.maxUserMessageSize}">
             <a4j:ajax event="blur" render="message" execute="@this"/>
-            <f:validateLength maximum="1000"/>
+            <f:validateLength maximum="#{languageContactCoordinatorAction.maxUserMessageSize}"/>
           </h:inputTextarea>
         </zanata:decorate>
       </div>
