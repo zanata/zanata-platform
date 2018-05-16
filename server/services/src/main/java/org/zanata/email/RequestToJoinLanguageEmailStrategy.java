@@ -38,7 +38,7 @@ public class RequestToJoinLanguageEmailStrategy extends VelocityEmailStrategy {
     private final String replyEmail;
     private final String localeId;
     private final String localeNativeName;
-    private final String htmlMessage;
+    private final String userMessage;
     private final boolean requestAsTranslator;
     private final boolean requestAsReviewer;
     private final boolean requestAsCoordinator;
@@ -68,20 +68,20 @@ public class RequestToJoinLanguageEmailStrategy extends VelocityEmailStrategy {
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("safeHtmlMessage", textToSafeHtml(htmlMessage))
+                .put("safeHtmlMessage", textToSafeHtml(userMessage))
                 .put("requestAsTranslator", requestAsTranslator)
                 .put("requestAsReviewer", requestAsReviewer)
                 .put("requestAsCoordinator", requestAsCoordinator);
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
-            "replyEmail", "localeId", "localeNativeName", "htmlMessage",
+            "replyEmail", "localeId", "localeNativeName", "userMessage",
             "requestAsTranslator", "requestAsReviewer",
             "requestAsCoordinator" })
     public RequestToJoinLanguageEmailStrategy(final String fromLoginName,
             final String fromName, final String replyEmail,
             final String localeId, final String localeNativeName,
-            final String htmlMessage, final boolean requestAsTranslator,
+            final String userMessage, final boolean requestAsTranslator,
             final boolean requestAsReviewer,
             final boolean requestAsCoordinator) {
         this.fromLoginName = fromLoginName;
@@ -89,7 +89,7 @@ public class RequestToJoinLanguageEmailStrategy extends VelocityEmailStrategy {
         this.replyEmail = replyEmail;
         this.localeId = localeId;
         this.localeNativeName = localeNativeName;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
         this.requestAsTranslator = requestAsTranslator;
         this.requestAsReviewer = requestAsReviewer;
         this.requestAsCoordinator = requestAsCoordinator;

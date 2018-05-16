@@ -29,7 +29,7 @@ import static org.zanata.util.HtmlUtil.textToSafeHtml;
 public class ContactAdminAnonymousEmailStrategy extends VelocityEmailStrategy {
     private final String ipAddress;
     private final String userSubject;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getBodyResourceName() {
@@ -53,15 +53,15 @@ public class ContactAdminAnonymousEmailStrategy extends VelocityEmailStrategy {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
         return context.put("ipAddress", ipAddress)
-                .put("safeHtmlMessage", textToSafeHtml(htmlMessage));
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "ipAddress", "userSubject",
-            "htmlMessage" })
+            "userMessage" })
     public ContactAdminAnonymousEmailStrategy(final String ipAddress,
-            final String userSubject, final String htmlMessage) {
+            final String userSubject, final String userMessage) {
         this.ipAddress = ipAddress;
         this.userSubject = userSubject;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }

@@ -40,7 +40,7 @@ public class ContactLanguageCoordinatorEmailStrategy extends
     private final String userSubject;
     private final String localeId;
     private final String localeNativeName;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getBodyResourceName() {
@@ -68,17 +68,17 @@ public class ContactLanguageCoordinatorEmailStrategy extends
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("safeHtmlMessage", textToSafeHtml(htmlMessage));
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "receiver", "fromLoginName", "fromName",
             "replyEmail", "userSubject", "localeId", "localeNativeName",
-            "htmlMessage" })
+            "userMessage" })
     public ContactLanguageCoordinatorEmailStrategy(final String receiver,
             final String fromLoginName,
             final String fromName, final String replyEmail,
             final String userSubject, final String localeId,
-            final String localeNativeName, final String htmlMessage) {
+            final String localeNativeName, final String userMessage) {
         this.receiver = receiver;
         this.fromLoginName = fromLoginName;
         this.fromName = fromName;
@@ -86,6 +86,6 @@ public class ContactLanguageCoordinatorEmailStrategy extends
         this.userSubject = userSubject;
         this.localeId = localeId;
         this.localeNativeName = localeNativeName;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }
