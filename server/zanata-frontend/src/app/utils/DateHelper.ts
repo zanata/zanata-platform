@@ -181,6 +181,7 @@ class DateHelper {
 }
 
 const dateRangeNames = tuple(
+  'This week',
   'Last week',
   'This month',
   'Last month',
