@@ -276,8 +276,8 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         return matches.size() * supportedLocales.size();
     }
 
-    private void mergeTextFlowTarget(HTextFlowTarget sourceTft,
-            HTextFlowTarget targetTft) {
+    private void mergeTextFlowTarget(@Nonnull HTextFlowTarget sourceTft,
+            @Nonnull HTextFlowTarget targetTft) {
         targetTft.setContents(sourceTft.getContents());
         targetTft.setState(sourceTft.getState());
         targetTft.setLastChanged(sourceTft.getLastChanged());

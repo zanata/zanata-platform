@@ -543,6 +543,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                 tmResult, oldTarget);
                 comment = buildTargetComment(tmDetail);
                 revisionComment = TranslationUtil.getTMMergeMessage(tmDetail);
+                // TODO use a more efficient way to get the HTextFlowTarget directly
                 HTextFlowTarget target = tmSource.getTargets().get(hLocale.getId());
                 entityId = TranslationUtil.getCopiedEntityId(target);
                 entityType = TranslationUtil.getCopiedEntityType(target).getAbbr();
