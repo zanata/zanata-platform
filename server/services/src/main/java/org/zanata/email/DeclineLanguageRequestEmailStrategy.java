@@ -14,7 +14,7 @@ public class DeclineLanguageRequestEmailStrategy extends VelocityEmailStrategy {
     private final String roles;
     private final String contactCoordinatorLink;
     private final String localeDisplayName;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getSubject(Messages msgs) {
@@ -35,18 +35,18 @@ public class DeclineLanguageRequestEmailStrategy extends VelocityEmailStrategy {
         return context.put("toName", toName).put("roles", roles)
                 .put("localeDisplayName", localeDisplayName)
                 .put("contactCoordinatorLink", contactCoordinatorLink)
-                .put("safeHtmlMessage", SANITIZER.sanitize(htmlMessage));
+                .put("safeHtmlMessage", SANITIZER.sanitize(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "toName", "roles",
-            "contactCoordinatorLink", "localeDisplayName", "htmlMessage" })
+            "contactCoordinatorLink", "localeDisplayName", "userMessage" })
     public DeclineLanguageRequestEmailStrategy(final String toName,
             final String roles, final String contactCoordinatorLink,
-            final String localeDisplayName, final String htmlMessage) {
+            final String localeDisplayName, final String userMessage) {
         this.toName = toName;
         this.roles = roles;
         this.contactCoordinatorLink = contactCoordinatorLink;
         this.localeDisplayName = localeDisplayName;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }

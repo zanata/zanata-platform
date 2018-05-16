@@ -36,7 +36,7 @@ public class ContactAdminEmailStrategy extends VelocityEmailStrategy {
     private final String fromName;
     private final String replyEmail;
     private final String userSubject;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getBodyResourceName() {
@@ -61,18 +61,18 @@ public class ContactAdminEmailStrategy extends VelocityEmailStrategy {
                 super.makeContext(genericContext, toAddresses);
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
-                .put("safeHtmlMessage", textToSafeHtml(htmlMessage));
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
-            "replyEmail", "userSubject", "htmlMessage" })
+            "replyEmail", "userSubject", "userMessage" })
     public ContactAdminEmailStrategy(final String fromLoginName,
             final String fromName, final String replyEmail,
-            final String userSubject, final String htmlMessage) {
+            final String userSubject, final String userMessage) {
         this.fromLoginName = fromLoginName;
         this.fromName = fromName;
         this.replyEmail = replyEmail;
         this.userSubject = userSubject;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }

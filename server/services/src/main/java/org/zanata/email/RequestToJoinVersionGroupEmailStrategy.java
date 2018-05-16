@@ -41,7 +41,7 @@ public class RequestToJoinVersionGroupEmailStrategy extends
     private final String groupName;
     private final String groupSlug;
     private final Collection<ProjectIterationId> projectIterationIds;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getBodyResourceName() {
@@ -67,23 +67,23 @@ public class RequestToJoinVersionGroupEmailStrategy extends
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("groupName", groupName).put("versionGroupSlug", groupSlug)
                 .put("projectIterationIds", projectIterationIds)
-                .put("safeHtmlMessage", textToSafeHtml(htmlMessage));
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
             "replyEmail", "groupName", "groupSlug", "projectIterationIds",
-            "htmlMessage" })
+            "userMessage" })
     public RequestToJoinVersionGroupEmailStrategy(final String fromLoginName,
             final String fromName, final String replyEmail,
             final String groupName, final String groupSlug,
             final Collection<ProjectIterationId> projectIterationIds,
-            final String htmlMessage) {
+            final String userMessage) {
         this.fromLoginName = fromLoginName;
         this.fromName = fromName;
         this.replyEmail = replyEmail;
         this.groupName = groupName;
         this.groupSlug = groupSlug;
         this.projectIterationIds = projectIterationIds;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }

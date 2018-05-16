@@ -35,7 +35,7 @@ public class ContactLanguageTeamMembersEmailStrategy extends
     private final String userSubject;
     private final String localeId;
     private final String localeNativeName;
-    private final String htmlMessage;
+    private final String userMessage;
     private final String contactCoordinatorLink;
 
     @Override
@@ -56,21 +56,21 @@ public class ContactLanguageTeamMembersEmailStrategy extends
                 super.makeContext(genericContext, toAddresses);
         return context.put("contactCoordinatorLink", contactCoordinatorLink)
                 .put("localeNativeName", localeNativeName)
-                .put("safeHtmlMessage", SANITIZER.sanitize(htmlMessage));
+                .put("safeHtmlMessage", SANITIZER.sanitize(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "userSubject",
-            "localeId", "localeNativeName", "htmlMessage",
+            "localeId", "localeNativeName", "userMessage",
             "contactCoordinatorLink" })
     public ContactLanguageTeamMembersEmailStrategy(final String fromLoginName,
             final String userSubject, final String localeId,
-            final String localeNativeName, final String htmlMessage,
+            final String localeNativeName, final String userMessage,
             final String contactCoordinatorLink) {
         this.fromLoginName = fromLoginName;
         this.userSubject = userSubject;
         this.localeId = localeId;
         this.localeNativeName = localeNativeName;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
         this.contactCoordinatorLink = contactCoordinatorLink;
     }
 }
