@@ -676,25 +676,25 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
         ftQuery.setSort(lastChangedSort);
         @SuppressWarnings("unchecked")
-        List<Object[]> resultList = (List<Object[]>) ftQuery.getResultList();
+        List<Object[]> unfilteredMatches = (List<Object[]>) ftQuery.getResultList();
 
-        List<Object[]> filteredList =
-                resultList.stream().filter(filter).collect(Collectors.toList());
+        List<Object[]> filteredMatches =
+                unfilteredMatches.stream().filter(filter).collect(Collectors.toList());
         // Log a warning if filtering discards more than (say) 3/4 of matches.
         // TODO we could tell the caller instead of logging a warning here
         // (and let the client retry with a larger limit if desired).
-        if (!resultList.isEmpty() && resultList.size() == maxResults && filteredList.size() < maxResults / 4) {
+        if (!unfilteredMatches.isEmpty() && unfilteredMatches.size() == maxResults && filteredMatches.size() < maxResults / 4) {
             log.warn(
                     "Found {} items (out of {} hits) but only {} pass " +
                             "the filter. More acceptable items may be found " +
                             "if maxResults is increased. Query: {}",
-                    resultList.size(),
+                    unfilteredMatches.size(),
                     ftQuery.getResultSize(),
-                    filteredList.size(),
+                    filteredMatches.size(),
                     textQuery);
-            logQueryResults(resultList);
+            logQueryResults(unfilteredMatches);
         }
-        return resultList;
+        return filteredMatches;
     }
 
     @VisibleForTesting
