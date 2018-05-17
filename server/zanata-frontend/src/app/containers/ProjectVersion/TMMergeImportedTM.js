@@ -9,10 +9,11 @@ import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
+import Switch from 'antd/lib/switch'
+import 'antd/lib/switch/style/css'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 import {CopyLabel} from './TMMergeOptionsCommon'
 import Icon from '../../components/Icon'
-import Toggle from 'react-toggle'
 
 const tooltip = (
   <span id='copy-as-translated-TM'>
@@ -44,7 +45,7 @@ class TMMergeImportedTM extends Component {
       <span>
         <div>
           <span>
-            <Toggle icons={false} defaultChecked
+            <Switch defaultChecked
               onChange={this.toggleChange} />
           </span>
           <span>From </span>

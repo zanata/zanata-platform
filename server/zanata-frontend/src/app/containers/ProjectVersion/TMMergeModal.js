@@ -5,6 +5,8 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Collapse from 'antd/lib/collapse'
@@ -14,7 +16,7 @@ import 'antd/lib/row/style/css'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown, Link} from '../../components'
+  Icon, LoaderText, SelectableDropdown, Link} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
@@ -468,15 +470,17 @@ class TMMergeModal extends Component {
       </span>
     )
     return (
-      <Modal id="tmMergeModal" show={showTMMergeModal}
-        onHide={toggleTMMergeModal} keyboard backdrop>
-        <Modal.Header>
-          <Modal.Title>Version TM Merge</Modal.Title>
+      <Modal
+        title='Version TM Merge'
+        visible={showTMMergeModal}
+        onCancel={toggleTMMergeModal}
+        footer={modalFooter}
+        width={'48rem'}>
+        <span>
           <p className="u-textDanger modalText-danger">
             {notification && notification.message}</p>
-        </Modal.Header>
-        <Modal.Body>{modalBody}</Modal.Body>
-        <Modal.Footer>{modalFooter}</Modal.Footer>
+          {modalBody}
+        </span>
       </Modal>
     )
   }

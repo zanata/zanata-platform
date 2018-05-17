@@ -14,6 +14,8 @@ import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
+import Switch from 'antd/lib/switch'
+import 'antd/lib/switch/style/css'
 import Input from 'antd/lib/input'
 import 'antd/lib/input/style/css'
 import {
@@ -21,7 +23,6 @@ import {
 } from '../../components'
 import ProjectVersionPanels from './ProjectVersionPanels'
 import TMMergeProjectTMOptions from './TMMergeProjectTMOptions'
-import Toggle from 'react-toggle'
 
 import {
   ProjectType, FromProjectVersionType
@@ -140,7 +141,7 @@ class TMMergeProjectSources extends Component {
       <span>
         <Row>
           <Col span={24}>
-            <Toggle icons={false} defaultChecked
+            <Switch defaultChecked
               onChange={this.toggleChange} />
             <span>From </span>
             <span className="panel-name">Project Source</span>
