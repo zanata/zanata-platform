@@ -42,12 +42,8 @@ import org.zanata.provider.DBUnitProvider;
 @RunWith(Arquillian.class)
 public abstract class ArquillianTest {
 
-    protected DBUnitProvider dbUnitProvider = new DBUnitProvider() {
-        @Override
-        protected IDatabaseConnection getConnection() {
-            return ArquillianTest.getConnection();
-        }
-    };
+    private DBUnitProvider dbUnitProvider = new DBUnitProvider(
+            ArquillianTest::getConnection);
 
     /**
      * Implement this in a subclass.

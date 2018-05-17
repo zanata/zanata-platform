@@ -88,12 +88,8 @@ public abstract class RestTest {
                     "X-Auth-User", ADMIN,
                     "X-Auth-Token", ADMIN_KEY);
 
-    private DBUnitProvider dbUnitProvider = new DBUnitProvider() {
-        @Override
-        protected IDatabaseConnection getConnection() {
-            return RestTest.this.getConnection();
-        }
-    };
+    private DBUnitProvider dbUnitProvider = new DBUnitProvider(
+            RestTest.this::getConnection);
 
     @ArquillianResource
     private URL deploymentUrl;

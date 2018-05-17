@@ -20,13 +20,15 @@
  */
 package org.zanata.test;
 
+import javax.persistence.EntityManager;
+
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.test.rule.DataSetOperation;
-
-import javax.persistence.EntityManager;
 
 /**
  * Utility test class to run DBUnit data sets using a provided entity manager.
@@ -37,9 +39,13 @@ import javax.persistence.EntityManager;
 public class DBUnitDataSetRunner {
 
     private final EntityManager em;
+//    private final DBUnitProvider dbUnitProvider;
 
     public DBUnitDataSetRunner(EntityManager em) {
         this.em = em;
+//        this.dbUnitProvider = new DBUnitProvider(
+//                () -> new DatabaseConnection(
+//                        ((SessionImplementor) em.getDelegate()).connection()));
     }
 
     public void runDataSetOperations(DataSetOperation... operations) {
@@ -50,6 +56,9 @@ public class DBUnitDataSetRunner {
     }
 
     protected void executeOperations(DataSetOperation... operations) {
+        // TODO eliminate org.zanata.test.rule.DataSetOperation in favour of
+        // org.zanata.provider.DBUnitProvider.DataSetOperation and use this:
+//        dbUnitProvider.executeOperations(asList(operations));
         // NB: Hibernate specific
         em.unwrap(Session.class).doWork(connection -> {
             try {
