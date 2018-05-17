@@ -204,6 +204,27 @@ public class EmailStrategyTest {
     }
 
     @Test
+    public void contactAdminAnonymous() throws Exception {
+        String ipAddress = "101.20.30.40";
+        VelocityEmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
+                ipAddress, userSubject, htmlMessage);
+
+        builder.buildMessage(message, strategy, toAddresses,
+                Lists.newArrayList("contactAdminAnonymous test"));
+
+        assertThat(message.getSubject()).isEqualTo(msgs.format(
+                "jsf.email.admin.SubjectPrefix", ipAddress) +
+                " " + userSubject);
+
+        String html = extractHtmlPart(message);
+        checkGenericTemplate(html);
+
+        assertThat(html).contains(msgs.format(
+                "jsf.email.admin.AnonymousUserMessageIntro", ipAddress));
+        assertThat(html).contains(htmlMessage);
+    }
+
+    @Test
     public void declineLanguageRequest() throws Exception {
         String contactCoordinatorLink = "http://localhost/language";
         String roles = "coordinator, translator";

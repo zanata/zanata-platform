@@ -1,11 +1,11 @@
 import React from 'react'
 import { Component } from 'react'
-import { Icon } from '../../../components'
 import * as PropTypes from 'prop-types'
-import Dropdown from '../../components/Dropdown'
 import {
   MINOR, MAJOR, CRITICAL, UNSPECIFIED
 } from '../../utils/reject-trans-util'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
 
 /**
  * A Local Editor Dropdown coponent that selects the Criteria
@@ -28,48 +28,32 @@ class CriteriaDropdown extends Component {
       dropdownOpen: false
     }
   }
-  toggleDropdown = () => {
-    this.setState(prevState => ({
-      dropdownOpen: !prevState.dropdownOpen
-    }))
-  }
-  onCriteriaChange = (event) => {
-    if (event.target.innerText === UNSPECIFIED.description) {
-      this.props.onUnspecifiedCriteria()
-    } else {
-      this.props.onCriteriaChange(event)
-    }
-    this.toggleDropdown()
-  }
+
   render () {
-    const { criteriaList, criteriaDescription } = this.props
+    const {
+      criteriaList, criteriaDescription, onUnspecifiedCriteria, onCriteriaChange
+    } = this.props
     const options = criteriaList.map((value, index) => {
       return (
-        <li key={index}
-          className='EditorDropdown-item'
-          onClick={this.onCriteriaChange}>
+        <Select.Option key={index}>
           {value.description}
-        </li>
+        </Select.Option>
       )
     })
+    const handleChange = (value) => {
+      if (criteriaList[value].description === UNSPECIFIED.description) {
+        onUnspecifiedCriteria()
+      } else {
+        onCriteriaChange(criteriaList[value])
+      }
+    }
     return (
-      <Dropdown enabled isOpen={this.state.dropdownOpen}
-        onToggle={this.toggleDropdown}
-        className='dropdown-menu Criteria'>
-        <Dropdown.Button>
-          <a className='EditorDropdown-item ellipsis'>
-            {criteriaDescription}
-            <span className='arrow'>
-              <Icon className='n1' name='chevron-down' />
-            </span>
-          </a>
-        </Dropdown.Button>
-        <Dropdown.Content>
-          <ul>
-            {options}
-          </ul>
-        </Dropdown.Content>
-      </Dropdown>
+      <Select
+        defaultValue={criteriaDescription}
+        style={{ width: '95%' }}
+        onChange={handleChange}>
+        {options}
+      </Select>
     )
   }
 }

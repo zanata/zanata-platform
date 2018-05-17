@@ -5,13 +5,12 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {debounce, isEmpty} from 'lodash'
 import {
-  Icon,
   TextInput,
   Link,
   Select
 } from '../../components'
 import Header from './Header'
-import {Button, Row} from 'react-bootstrap'
+import {Row} from 'react-bootstrap'
 import {
   glossaryChangeLocale,
   glossaryFilterTextChanged,
@@ -27,6 +26,8 @@ import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
 import {getProjectUrl} from '../../utils/UrlHelper'
+import Button from 'antd/lib/button'
+import Icon from 'antd/lib/icon'
 
 /**
  * Header for glossary page
@@ -139,7 +140,7 @@ class ViewHeader extends Component {
       <div className='projectLink'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon name='project' className='s1' parentClassName='iconProject' />
+            <Icon type='folder-open' className='s1 iconProject' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
@@ -160,21 +161,18 @@ class ViewHeader extends Component {
               accessibilityLabel='Search Terms'
               defaultValue={filterText}
               onChange={handleFilterFieldUpdate} />
-            <Button bsStyle='link'
-              title='Cancel search'
+            <Button className='btn-link iconCross-glossary' aria-label='button'
+              icon='close' title='Cancel search'
               disabled={isEmpty(filterText)}
-              onClick={this.handleClearSearch}>
-              <Icon name='cross' className='s1'
-                parentClassName='iconCross-glossary' />
-            </Button>
+              onClick={this.handleClearSearch} />
             <div className='glossaryButtons'>
                   {permission.canAddNewEntry && (
                     <div className='glossaryBtn topBtn'>
-                      <Button bsStyle='link' type='button'
+                      <Button className='btn-link' type='button'
+                        aria-label='button'
                         onClick={() => handleImportFileDisplay(true)}>
                         <Row>
-                          <Icon name='import' className='s1'
-                            parentClassName='iconImport' />
+                          <Icon type='upload' className='s1 iconImport' />
                           <span className='hidden-lesm'>Import</span>
                         </Row>
                       </Button>
@@ -183,11 +181,11 @@ class ViewHeader extends Component {
 
                   {permission.canDownload && !isEmptyTerms && (
                     <div className='glossaryBtn topBtn'>
-                      <Button bsStyle='link' type='button'
+                      <Button className='btn-link' type='button'
+                        aria-label='button'
                         onClick={() => handleExportFileDisplay(true)}>
                         <Row>
-                          <Icon name='export' className='s1'
-                            parentClassName='iconExport' />
+                          <Icon type='export' className='s1 iconExport' />
                           <span className='hidden-lesm'>Export</span>
                         </Row>
                       </Button>
@@ -196,10 +194,11 @@ class ViewHeader extends Component {
 
                   {permission.canAddNewEntry && (
                     <div className='glossaryBtn topBtn'>
-                      <Button bsStyle='link' onClick={() =>
+                      <Button className='btn-link' aria-label='button'
+                        onClick={() =>
                         handleNewEntryDisplay(true)}>
                         <Row>
-                          <Icon name='plus' className='s1' parentClassName='iconPlus2' />
+                          <Icon type='plus' className='s1 iconPlus2' />
                           <span className='hidden-lesm'>New</span>
                         </Row>
                       </Button>
@@ -223,15 +222,14 @@ class ViewHeader extends Component {
               <tr className='tr-flex1'>
                 <td className='td-3'
                   onClick={() => handleSortColumn('src_content')}>
-                  <Button bsStyle='link' type='button'>
+                  <Button className='btn-link' aria-label='button'>
                     <Row>
                       {'src_content' in sort
                         ? (sort.src_content === true)
                           ? <Icon name='chevron-down' className='s1' />
                           : <Icon name='chevron-up' className='s1' />
                         : ''}
-                      <Icon name='glossary' className='s1'
-                        parentClassName='iconGlossary-neutral' />
+                      <Icon type='book' className='s1 iconGlossary-neutral' />
                       <span>
                       English (United States)
                       </span>
@@ -266,7 +264,7 @@ class ViewHeader extends Component {
                 </td>
                 <td className='hidesmall td-1'
                   onClick={() => handleSortColumn('part_of_speech')}>
-                  <Button bsStyle='link' type='button'>
+                  <Button className='btn-link' aria-label='button'>
                     <Row>
                       {'part_of_speech' in sort
                         ? (sort.part_of_speech === true)

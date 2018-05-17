@@ -129,24 +129,22 @@ public class ZanataInit {
                 .setScmDescribe(zanataVersion.getScmDescribe());
         this.applicationConfiguration.applyLoggingConfiguration();
         logBanner(zanataVersion);
-        boolean authlogged = false;
         if (applicationConfiguration.isInternalAuth()) {
             log.info("Internal authentication: enabled");
-            authlogged = true;
         }
         if (applicationConfiguration.isOpenIdAuth()) {
             log.info("OpenID authentication: enabled");
-            authlogged = true;
+        }
+        if (applicationConfiguration.isJaasAuth()) {
+            log.info("JAAS authentication: enabled");
         }
         if (applicationConfiguration.isKerberosAuth()) {
             log.info("SPNEGO/Kerberos authentication: enabled");
-            authlogged = true;
+        }
+        if (applicationConfiguration.isSaml2Auth()) {
+            log.info("SAML2 authentication: enabled");
         }
         log.info("Configured authentications: {}", applicationConfiguration.getAuthTypes());
-
-        if (!authlogged) {
-            log.info("Using JAAS authentication");
-        }
         log.info("Enable copyTrans: {}",
                 this.applicationConfiguration.isCopyTransEnabled());
         String javamelodyDir =

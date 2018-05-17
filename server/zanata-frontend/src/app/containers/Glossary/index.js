@@ -7,7 +7,7 @@ import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
 import { Icon, LoaderText, Select, Notification } from '../../components/'
-import { Button, Row } from 'react-bootstrap'
+import { Row } from 'react-bootstrap'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -25,6 +25,8 @@ import {
 } from '../../actions/glossary-actions'
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
+import Button from 'antd/lib/button'
+import Layout from 'antd/lib/layout'
 
 /**
  * Root component for Glossary page
@@ -209,62 +211,74 @@ class Glossary extends Component {
         }
         <Helmet title={headerTitle} />
         <div className='wideView' id='glossary'>
-          <ViewHeader title={headerTitle} />
-          <div className='glossaryHeader'>
-            <Row>
-              {termCount > 0 &&
-                <Row>
-                  <span className='hidden-lesm glossaryRow'>Show</span>
-                  <Select options={pageSizeOption}
-                    placeholder='Terms per page'
-                    value={intPageSize}
-                    name='glossary-page'
-                    className='glossarySelect'
-                    searchable={false}
-                    clearable={false}
-                    onChange={handlePageSizeChange} />
-                </Row>
-              }
-              {displayPaging &&
-                <div className='u-pullRight glossaryPaging'>
-                  <Button bsStyle='link' disabled={currentPage <= 1}
-                    title='First page'
-                    onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
-                    <Icon name='previous' className='s1' />
-                  </Button>
-                  <Button bsStyle='link' disabled={currentPage <= 1}
-                    title='Previous page'
-                    onClick={
-                    () => { gotoPreviousPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-left' className='s1' />
-                  </Button>
-                  <span className='u-textNeutral-top'>
-                    {currentPage} of {totalPage}
-                  </span>
-                  <Button bsStyle='link' disabled={currentPage === totalPage}
-                    title='Next page'
-                    onClick={() => { gotoNextPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-right' className='s1' />
-                  </Button>
-                  <Button bsStyle='link' disabled={currentPage === totalPage}
-                    title='Last page'
-                    onClick={() => { gotoLastPage(currentPage, totalPage) }}>
-                    <Icon name='next' className='s1' />
-                  </Button>
-                  <span className='textNeutralTotal'
-                    title='Total glossary terms'>
-                    <Row>
-                      <Icon name='glossary' className='s1' /> {termCount}
-                    </Row>
-                  </span>
-                </div>
+          <Layout>
+            <ViewHeader title={headerTitle} />
+            <div className='glossaryHeader'>
+              <Row>
+                {termCount > 0 &&
+                  <Row>
+                    <span className='hidden-lesm glossaryRow'>Show</span>
+                    <Select options={pageSizeOption}
+                      placeholder='Terms per page'
+                      value={intPageSize}
+                      name='glossary-page'
+                      className='glossarySelect'
+                      searchable={false}
+                      clearable={false}
+                      onChange={handlePageSizeChange} />
+                  </Row>
                 }
-            </Row>
-          </div>
+                {displayPaging &&
+                  <div className='u-pullRight glossaryPaging'>
+                    <Button aria-label='button'
+                      className='btn-link' disabled={currentPage <= 1}
+                      title='First page' icon='left'
+                      onClick={() => {
+                        gotoFirstPage(currentPage, totalPage)
+                      }}
+                    />
+                    <Button aria-label='button'
+                      className='btn-link' disabled={currentPage <= 1}
+                      title='Previous page' icon='left'
+                      onClick={
+                      () => {
+                        gotoPreviousPage(currentPage, totalPage)
+                      }}
+                    />
+                    <span className='u-textNeutral-top'>
+                      {currentPage} of {totalPage}
+                    </span>
+                    <Button aria-label='button'
+                      className='btn-link'
+                      disabled={currentPage === totalPage}
+                      title='Next page' icon='right'
+                      onClick={() => {
+                        gotoNextPage(currentPage, totalPage)
+                      }}
+                    />
+                    <Button aria-label='button'
+                      className='btn-link'
+                      disabled={currentPage === totalPage}
+                      title='Last page' icon='right'
+                      onClick={() => {
+                        gotoLastPage(currentPage, totalPage)
+                      }}
+                    />
+                    <span className='textNeutralTotal'
+                      title='Total glossary terms'>
+                      <Row>
+                        <Icon name='glossary' className='s1' /> {termCount}
+                      </Row>
+                    </span>
+                  </div>
+                  }
+              </Row>
+            </div>
 
-          <div className='glossaryList'>
-            {list}
-          </div>
+            <div className='glossaryList'>
+              {list}
+            </div>
+          </Layout>
         </div>
       </div>
     )

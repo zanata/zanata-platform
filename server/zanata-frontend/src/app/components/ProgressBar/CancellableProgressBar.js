@@ -1,11 +1,10 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {
-  Button, ProgressBar
-} from 'react-bootstrap'
+import { ProgressBar } from 'react-bootstrap'
 import { processStatusType } from '../../utils/prop-types-util'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
+import Button from 'antd/lib/button'
 
 /**
  * This component can be used to show progress of a background task running on
@@ -62,7 +61,7 @@ class CancellableProgressBar extends Component {
         <ProgressBar now={processStatus.percentageComplete}
           label={`${heading} ${processStatus.percentageComplete}%`}
         />
-        <Button bsStyle="primary" className="btn-danger"
+        <Button className='btn-danger' type='danger'
           disabled={isProcessEnded(processStatus)}
           onClick={onCancelOperation}>
           {buttonLabel}

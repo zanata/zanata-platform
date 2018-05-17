@@ -61,7 +61,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
             className="s1"
             dangerouslySetInnerHTML={
               Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
               }
             }
             style={
@@ -160,7 +160,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
             className="s1"
             dangerouslySetInnerHTML={
               Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
               }
             }
             style={
@@ -266,7 +266,7 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
             className="s1"
             dangerouslySetInnerHTML={
               Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
               }
             }
             style={
@@ -399,7 +399,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
             className="s1"
             dangerouslySetInnerHTML={
               Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
               }
             }
             style={
@@ -532,7 +532,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
             className="s1"
             dangerouslySetInnerHTML={
               Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
               }
             }
             style={
@@ -665,7 +665,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
             className="s1"
             dangerouslySetInnerHTML={
               Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
               }
             }
             style={
@@ -771,7 +771,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
             className="s1"
             dangerouslySetInnerHTML={
               Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+                "__html": "<use xlink:href=\\"#Icon-project\\" />",
               }
             }
             style={

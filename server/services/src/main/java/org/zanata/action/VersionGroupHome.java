@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.VersionGroupDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
@@ -97,6 +98,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     private GroupLocaleAutocomplete localeAutocomplete;
     @Inject
     private UrlUtil urlUtil;
+    @Inject
+    private VersionGroupDAO versionGroupDAO;
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
 
@@ -201,8 +204,14 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     }
 
     @Transactional
-    public void setStatus(char initial) {
-        getInstance().setStatus(EntityStatus.valueOf(initial));
+    public void deleteSelf() {
+        identity.checkPermission(getInstance(), "update");
+        String slug = getInstance().getSlug();
+        versionGroupDAO.makeTransient(getInstance());
+        versionGroupDAO.flush();
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                msgs.format("jsf.group.notification.deleted", slug));
+        urlUtil.redirectToInternal(urlUtil.dashboardUrl());
     }
 
     @Transactional

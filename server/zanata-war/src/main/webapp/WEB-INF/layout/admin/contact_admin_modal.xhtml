@@ -66,9 +66,11 @@
     <h:form id="contactAdminForm" styleClass="l--push-bottom-0">
 
       <a4j:jsFunction name="sendContactAdminEmail" action="#{contactAdminAction.send}"
-        execute="@form" oncomplete="completeSending()"/>
-
+        execute="@form" oncomplete="completeSending()" rendered="#{identity.loggedIn}"/>
+      <a4j:jsFunction name="sendContactAdminEmailAnon" action="#{contactAdminAction.sendAnonymous}"
+        execute="@form" oncomplete="completeSending()" rendered="#{not identity.loggedIn}"/>
       <div class="modal__content l--pad-all-1">
+        <h:outputLabel for="messageField" rendered="#{not identity.loggedIn}">#{msgs['jsf.ContactAdminMessage']}</h:outputLabel>
         <zanata:decorate id="messageField" componentId="message">
           <h:inputTextarea id="contact-admin-message" value="#{contactAdminAction.message}" required="true"
             onkeyup="ShowContactAdminMessageCharCount(this)" styleClass="l--push-bottom-0">
@@ -90,10 +92,16 @@
             </button>
           </div>
           <div class="bx--inline-block">
-            <button id="contact-admin-send-button" class="button loader button--primary"
-               onclick="sendContactAdminEmail();return false;">
-              <span class="loader__label">#{msgs['jsf.email.Send']}</span>
-            </button>
+            <h:commandButton id="contact-admin-send-button"
+               class="button loader button--primary"
+               value="#{msgs['jsf.email.Send']}"
+               onclick="sendContactAdminEmail();return false;"
+               rendered="#{identity.loggedIn}"/>
+            <h:commandButton id="contact-admin-send-button-anon"
+               class="button loader button--primary"
+               value="#{msgs['jsf.email.Send']}"
+               onclick="sendContactAdminEmailAnon();return false;"
+               rendered="#{not identity.loggedIn}"/>
           </div>
         </div>
       </footer>

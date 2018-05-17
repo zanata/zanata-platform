@@ -224,7 +224,7 @@ timestamps {
           // suspected concurrency problems)
           // -Dmaven.test.failure.ignore: Continue building other modules
           // even after test failures.
-          sh """./run-clean.sh ./mvnw -e -V -T 1 \
+          sh """./run-clean.sh ./mvnw -e -V --builder singlethreaded \
             -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             clean install jxr:aggregate \
             --batch-mode -Dstyle.color=never \
@@ -433,7 +433,7 @@ void integrationTests(String appserver) {
         """
 
           def mvnResult = sh returnStatus: true, script: """\
-            ./run-clean.sh ./mvnw -e -V -T 1 \
+            ./run-clean.sh ./mvnw -e -V --builder singlethreaded \
             -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             install \
             --batch-mode -Dstyle.color=never \

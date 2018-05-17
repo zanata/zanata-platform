@@ -1,4 +1,5 @@
 @import "./variables.less";
+
 @import "../containers/Admin/index.less";
 @import "../containers/Explore/index.less";
 @import "../containers/ProjectVersion/index.less";
@@ -11,6 +12,7 @@
 @import "../components/TriCheckbox/index.less";
 @import "../components/RejectionsForm/index.less";
 @import "legacy.less";
+@import "./antd.less";
 // jsf and gwt overrides
 @import "./bstrap-styleguide.less";
 /* Class wrapper for bootstrap css. Used in:
@@ -24,6 +26,9 @@
 }
 
 .bstrapReact {
+  .drag {
+    padding-right: @spacing-rh;
+  }
   .container {
     margin-right: auto;
     margin-left: auto;
@@ -57,7 +62,7 @@
     overflow: hidden;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    max-width: 90%;
+    max-width: 100%;
     width: inherit;
     margin-left: 1rem;
     padding-left: @spacing-base;
@@ -65,9 +70,6 @@
   }
   .wideView.languages, .wideView#glossary {
     padding-bottom: 3rem;
-  }
-  .wideView#profile, .wideView#glossary {
-    max-width: 100%;
   }
   .gwtBase {
     background-color: #fff;
@@ -304,46 +306,6 @@
     margin-left: @spacing-rh;
     vertical-align: middle;
   }
-  /* React autosuggest */
-  .react-autosuggest__container {
-    position: relative;
-  }
-  .react-autosuggest__input {
-    border: 0;
-    width: 100%;
-  }
-  .react-autosuggest__input:focus {
-    outline: 0;
-  }
-  .react-autosuggest__container--open .react-autosuggest__input {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .react-autosuggest__suggestions-container {
-    display: none;
-  }
-  .react-autosuggest__container--open .react-autosuggest__suggestions-container {
-    display: block;
-    position: absolute;
-    border: 1px solid @color-muted;
-    background-color: #fff;
-    border-bottom-left-radius: @border-radius-base;
-    border-bottom-right-radius: @border-radius-base;
-    z-index: 2;
-    margin-top: 0.2rem;
-  }
-  .react-autosuggest__suggestions-list {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-  }
-  .react-autosuggest__suggestion {
-    cursor: pointer;
-    padding: 0.4rem 0.5rem;
-  }
-  .react-autosuggest__suggestion--highlighted {
-    background-color: @color-neutral;
-  }
 
   // Toolbars
   .toolbar .sortItems {
@@ -421,8 +383,8 @@
     flex-direction: row;
     display: inline-flex;
     flex-wrap: wrap;
-    width: 90%;
     line-height: 2rem;
+    max-width: 90%;
   }
   /* Icons and other svgs - not specific to Icon/s components so it should stay in this file */
   .icon {
@@ -4122,7 +4084,7 @@
       width: 300px;
     }
     .container {
-      width: @container-tablet;
+      width: 100%;
     }
     .content {
       width: 65%;
@@ -4498,9 +4460,6 @@
     .modal-lg {
       width: 900px;
     }
-    .container {
-      width: @container-desktop;
-    }
     .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9 {
       float: left;
     }
@@ -4657,9 +4616,6 @@
     .col-md-offset-0 {
       margin-left: 0;
     }
-    .toolbar {
-      width: 100%;
-    }
   }
   @media (max-width: @screen-md-max) {
     .hidden-xs {
@@ -4678,9 +4634,6 @@
     }
   }
   @media (min-width: @screen-lg-min) {
-    .container {
-      width: @container-large-desktop;
-    }
     .containerSidebar td.td-2 {
       width: 16.6667%;
     }
@@ -5165,4 +5118,3 @@ h3.popover-title {
   border-width: 0 5px 5px;
   border-bottom-color: @color-dark;
 }
-
