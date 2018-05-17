@@ -79,7 +79,8 @@ const MergeOptions = (
     : (
     <span>
       <SelectableDropdown
-        id="languageDropdown" className='versionMergeDropdown'
+        id='vmergeDropdown'
+        className='versionMergeDropdown'
         onSelectDropdownItem={onLanguageSelection}
         selectedValue={mergeOptions.selectedLanguage}
         valueToDisplay={localeToDisplay}
@@ -90,7 +91,7 @@ const MergeOptions = (
     )
   return (
     <div>
-      <p className="intro">
+      <p className="intro mb2">
         Copy existing <strong>translations</strong> from similar documents
         in other projects and versions into this project version.
         <Link useHref link={docLink} target="_blank">
@@ -100,7 +101,7 @@ const MergeOptions = (
           </span>
         </Link>
       </p>
-      <Collapse>
+      <Collapse className="mb2">
         <Panel header={
           <span>
             Matching phrases are found in the selected projects and
@@ -137,8 +138,8 @@ const MergeOptions = (
         </Panel>
       </Col>
       <Col>
-        <p className="lead">For every potential translation:</p>
-        <div className="VersionMergeTitle u-textNewBlue">
+        <p className="b f4">For every potential translation:</p>
+        <div className="di text-newblue">
           If text is less than
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
             id="percentDropdown" className='versionMergeDropdown'
@@ -148,7 +149,7 @@ const MergeOptions = (
             values={[80, 90, 100]} /> similar, don't use it.
         </div>
       </Col>
-      <Col z>
+      <Col>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
           flushProjectSearch, onAllVersionCheckboxChange,
