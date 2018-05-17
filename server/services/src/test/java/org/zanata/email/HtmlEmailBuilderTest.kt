@@ -44,8 +44,9 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
 /**
- * Note: as a side effect, the tests in this class generate HTML files which
- * can be used to view the email HTML body and output the file names on stdout.
+ * Note: as a side effect, the tests in this class generate HTML/TXT files
+ * which can be used to view the generated email contents and so we output
+ * the file names on stdout.
  * @author Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
  */
 class HtmlEmailBuilderTest {
@@ -56,6 +57,7 @@ class HtmlEmailBuilderTest {
     @Rule @JvmField
     val name = TestName()
 
+    // generate files in English:
     private val msgs = Messages(Locale.ENGLISH)
     private var fromEmail = "zanata@example.com"
     private var fromName = msgs["jsf.Zanata"]
