@@ -3,11 +3,11 @@
 import TabValidation from './TabValidation'
 import ValidationId from '../ValidationId'
 // TODO: Consume as JSON messages file
-import IntlMessageFormat from 'intl-messageformat'
+import MessageFormat from 'intl-messageformat'
 import Messages from '../messages'
 const locale = 'en-US'
 
-const id = ValidationId.XML_ENTITY
+const id = ValidationId.TAB
 const description = ''
 
 const TabValidator =
@@ -33,7 +33,7 @@ describe('TabValidation', () => {
     const target = 'Target without tab'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new IntlMessageFormat(TabValidator.messages.targetHasFewerTabs, locale)
+      new MessageFormat(TabValidator.messages.targetHasFewerTabs, locale)
       .format({ sourceTabs: 1, targetTabs: 0 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -43,7 +43,7 @@ describe('TabValidation', () => {
     const target = 'Target with\ttab'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new IntlMessageFormat(TabValidator.messages.targetHasMoreTabs, locale)
+      new MessageFormat(TabValidator.messages.targetHasMoreTabs, locale)
         .format({ sourceTabs: 0, targetTabs: 1 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -53,7 +53,7 @@ describe('TabValidation', () => {
     const target = 'Target with one\ttab'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new IntlMessageFormat(TabValidator.messages.targetHasFewerTabs, locale)
+      new MessageFormat(TabValidator.messages.targetHasFewerTabs, locale)
         .format({ sourceTabs: 2, targetTabs: 1 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -63,7 +63,7 @@ describe('TabValidation', () => {
     const target = 'Target with two\t\ttabs'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new IntlMessageFormat(TabValidator.messages.targetHasMoreTabs, locale)
+      new MessageFormat(TabValidator.messages.targetHasMoreTabs, locale)
         .format({ sourceTabs: 1, targetTabs: 2 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)

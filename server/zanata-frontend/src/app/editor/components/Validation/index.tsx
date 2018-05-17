@@ -5,15 +5,38 @@ import 'antd/lib/collapse/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
 import './index.css'
+import * as Validators from '../../../validators'
 
 const Panel = Collapse.Panel
 
 /**
- * Validation Messages
+ * Validation Messages presentational component
  */
-const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) => {
+const Validation: React.SFC<ValidationProps> = ({ source, target, localeId, validationOptions }) => {
+  const {
+    Messages,
+    ValidationId,
+    // HtmlXmlTagValidation,
+    // JavaVariablesValidation,
+    // NewlineLeadTrailValidation,
+    // PrintfVariablesValidation,
+    // PrintfXSIExtensionValidation,
+    TabValidation,
+    // XmlEntityValidation
+  } = Validators
+  const locale = localeId ? localeId : 'en-US'
+  const TabValidator =
+    new TabValidation(ValidationId.TAB, '', Messages[locale], locale)
+  const messages: Message[] = TabValidator.doValidate(source, target).map(message => {
+    return {
+      id: ValidationId.TAB,
+      label: OptionLabels[ValidationId.TAB],
+      description: '',
+      defaultMessage: message
+    }
+  })
 
-  const Messages = messages.map((m, index) => {
+  const MessageList = messages.map((m, index) => {
     // If description exists, display in Tooltip
     const messageBody = m.description
       ? <Tooltip placement='topRight' title={m.description}>
@@ -26,6 +49,7 @@ const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) =
       </div>
     )
   })
+
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
   function getWarnings(total, m) {
@@ -46,15 +70,27 @@ const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) =
         <Panel
           key='1'
           header={`Warnings: ${warningCount}, Errors: ${errorCount}`} >
-          {Messages}
+          {MessageList}
         </Panel>
       </Collapse>
     </div>
   )
 }
 
+enum OptionLabels {
+  'html-xml-tags' = 'HTML/XML tags',
+  'java-variables' = 'Java variables',
+  'leading-trailing-newline' = 'Leading/trailing newline',
+  'positional-printf' = 'Positional printf (XSI extension)',
+  'printf-variables' = 'Printf variables',
+  'tab-characters' = 'Tab characters',
+  'xml-entity-reference' = 'XML entity reference',
+}
+
 interface ValidationProps {
-  messages: Message[],
+  source: string,
+  target: string,
+  localeId?: string,
   validationOptions: ValidationOption[]
 }
 
@@ -73,15 +109,9 @@ interface ValidationOption {
 }
 
 Validation.propTypes = {
-  messages: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      defaultMessage: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      disabled: PropTypes.bool.isRequired
-    })
-  ),
+  source: PropTypes.string.isRequired,
+  target: PropTypes.string.isRequired,
+  localeId: PropTypes.string,
   validationOptions: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
