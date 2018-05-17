@@ -138,6 +138,10 @@ public abstract class ZanataJpaTest extends ZanataTest {
     }
 
     protected void purgeLuceneIndexes() {
+        purgeLuceneIndexes(em);
+    }
+
+    public static void purgeLuceneIndexes(EntityManager em) {
         FullTextEntityManager ftem = Search.getFullTextEntityManager(em);
         ftem.purgeAll(Object.class);
         ftem.flushToIndexes();
