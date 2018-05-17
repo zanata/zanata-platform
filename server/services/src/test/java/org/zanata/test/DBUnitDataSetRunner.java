@@ -64,6 +64,7 @@ public class DBUnitDataSetRunner {
             try {
                 DatabaseConnection dbunitConn =
                         new DatabaseConnection(connection);
+                DBUnitProvider.editConfig(dbunitConn.getConfig());
                 disableReferentialIntegrity(dbunitConn);
                 for (DataSetOperation op : operations) {
                     op.execute(dbunitConn);
