@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class EmailStrategyTest {
+public class VelocityEmailStrategyTest {
     // use this if you want to see the real messages on stderr
     private static final boolean DEBUG = false;
     Locale locale = Locale.ENGLISH;
@@ -106,7 +106,7 @@ public class EmailStrategyTest {
     String localeNativeName = "LOCALE_NAME[测试]";
     String htmlMessage = "some <b>HTML</b>";
 
-    public EmailStrategyTest() throws UnsupportedEncodingException {
+    public VelocityEmailStrategyTest() throws UnsupportedEncodingException {
         toAddr = Addresses.getAddress(toAddress, toName);
         toAddresses = new InternetAddress[] { toAddr };
     }
