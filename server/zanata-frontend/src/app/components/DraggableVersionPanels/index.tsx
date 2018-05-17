@@ -70,7 +70,7 @@ class Items extends Component<ItemsProps, {}> {
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
-        <Layout className="di">
+        <Layout className="d-inh">
         Adjust priority of selected versions
         <br />
         <span className="u-textMuted ">

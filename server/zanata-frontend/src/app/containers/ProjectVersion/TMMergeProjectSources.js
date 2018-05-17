@@ -106,29 +106,27 @@ class TMMergeProjectSources extends Component {
     disabled
       ? DO_NOT_RENDER
       : (
-      <span className="search-input">
+      <span>
         <Search
           placeholder="input search text"
           onSearch={this.projectSearchTermChange}
           enterButton />
-        <Col span={11}>
-          <span className='mb1 b'>
-            Select source project versions to merge
-          </span>
-          <div>
-            <LoaderText loading={fetchingProject}
-              loadingText={'Fetching Projects'} />
-            <span className="u-textMuted">{noResults}</span>
-          </div>
-        </Col>
-        <Row gutter={16}>
-          <Col span={12}>
+        <Row>
+          <Col span={11} className='mr2'>
+            <span>
+              Select source project versions to merge
+            </span>
+            <div>
+              <LoaderText loading={fetchingProject}
+                loadingText={'Fetching Projects'} />
+              <span className="u-textMuted">{noResults}</span>
+            </div>
             <ProjectVersionPanels projectVersions={projectVersions}
               selectedVersions={mergeOptions.selectedVersions}
               onVersionCheckboxChange={onVersionCheckboxChange}
               onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
           </Col>
-          <Col span={12}>
+          <Col span={11}>
             <DraggableVersionPanels
               selectedVersions={mergeOptions.selectedVersions}
               onDraggableMoveEnd={onDragMoveEnd}
@@ -154,25 +152,23 @@ class TMMergeProjectSources extends Component {
             </Tooltip>
           </Col>
         </Row>
-        <Row>
-          <Col span={24}>
+        <Row className='mt2 mb2'>
+          <Col span={6}>
             <span className="mr2">Search TM from</span>
           </Col>
-        </Row>
-        <Row>
-          <Col span={8}>
+          <Col span={6}>
             <Radio name="fromProjectSelection" inline disabled={disabled}
               checked={this.state.fromProjectSelection === SAME}
               onChange={this.onFromProjectSelectionChange(SAME)}> this project
             </Radio>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Radio name="fromProjectSelection" inline disabled={disabled}
               checked={this.state.fromProjectSelection === ALL}
               onChange={this.onFromProjectSelectionChange(ALL)}> all projects
             </Radio>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Radio name="fromProjectSelection" inline disabled={disabled}
               checked={this.state.fromProjectSelection === OTHER}
               onChange={this.onFromProjectSelectionChange(OTHER)}>
