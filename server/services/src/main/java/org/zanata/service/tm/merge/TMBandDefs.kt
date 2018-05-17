@@ -2,7 +2,6 @@ package org.zanata.service.tm.merge
 
 import org.zanata.common.ContentState
 import org.zanata.common.ContentState.*
-import org.zanata.config.TMBands
 import org.zanata.config.TMFuzzyBandsConfig
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Produces
@@ -65,15 +64,16 @@ fun createTMBands(fuzzyBands: List<IntRange>): Map<ContentState, List<IntRange>>
             New to fullRange)
 }
 
+class TMBandDefs (val map: Map<ContentState, List<IntRange>>)
+
 class TMBandDefsProducer {
     /**
      * Produces a full set of TM bands, given the application configuration for the Fuzzy bands as a String.
      */
     @Produces
     @ApplicationScoped
-    @TMBands
-    fun produce(@TMFuzzyBandsConfig config: String): Map<ContentState, List<IntRange>> {
+    fun produce(@TMFuzzyBandsConfig config: String): TMBandDefs {
         val fuzzyBands = parseBands(config)
-        return createTMBands(fuzzyBands)
+        return TMBandDefs(createTMBands(fuzzyBands))
     }
 }

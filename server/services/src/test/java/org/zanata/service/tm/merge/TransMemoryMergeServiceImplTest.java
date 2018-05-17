@@ -53,7 +53,6 @@ import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.config.TMBands;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -140,8 +139,8 @@ public class TransMemoryMergeServiceImplTest {
     @Produces
     @ServerPath
     private String serverPath = "http://example.com/";
-    @Produces @TMBands
-    private Map<ContentState, List<IntRange>> bands = new TMBandDefsProducer().produce("80 90");
+    @Produces
+    private TMBandDefs bands = new TMBandDefsProducer().produce("80 90");
     @Produces @Mock
     private HtmlEmailSender emailSender;
     @Produces @Mock

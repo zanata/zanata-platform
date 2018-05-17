@@ -48,7 +48,6 @@ import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
-import org.zanata.config.TMBands;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -157,7 +156,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             VersionStateCache versionStateCacheImpl,
             @Authenticated HAccount authenticatedAccount,
             @ServerPath String serverPath,
-            @TMBands Map<ContentState, List<IntRange>> tmBands,
+            TMBandDefs tmBands,
             HtmlEmailSender emailSender) {
         this.localeServiceImpl = localeServiceImpl;
         this.textFlowDAO = textFlowDAO;
@@ -173,7 +172,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         this.versionStateCacheImpl = versionStateCacheImpl;
         this.authenticatedAccount = authenticatedAccount;
         this.serverPath = serverPath;
-        this.tmBands = tmBands;
+        this.tmBands = tmBands.getMap();
         this.emailSender = emailSender;
     }
 
