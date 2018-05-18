@@ -4,6 +4,7 @@ import org.zanata.common.ContentState
 import org.zanata.common.ContentState.*
 import org.zanata.config.TMFuzzyBandsConfig
 import javax.enterprise.context.ApplicationScoped
+import javax.enterprise.context.Dependent
 import javax.enterprise.inject.Produces
 
 /**
@@ -71,7 +72,7 @@ class TMBandDefsProducer {
      * Produces a full set of TM bands, given the application configuration for the Fuzzy bands as a String.
      */
     @Produces
-    @ApplicationScoped
+    @Dependent
     fun produce(@TMFuzzyBandsConfig config: String): TMBandDefs {
         val fuzzyBands = parseBands(config)
         return TMBandDefs(createTMBands(fuzzyBands))
