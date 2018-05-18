@@ -63,8 +63,8 @@ object ArquillianRest {
                 .resolve(jarDependenciesForRest() + moreDependencies)
                 .withTransitivity()
                 .asFile()
-        if (log.isInfoEnabled) {
-            log.info("Found {} libs: {}", libs.size, listOf<File>(*libs))
+        if (log.isDebugEnabled) {
+            log.debug("Found {} libs: {}", libs.size, listOf<File>(*libs))
         }
         return libs
     }
