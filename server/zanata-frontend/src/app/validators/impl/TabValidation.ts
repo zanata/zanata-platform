@@ -23,7 +23,7 @@ import AbstractValidationAction from '../AbstractValidationAction'
 import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
-import IntlMessageFormat from 'intl-messageformat'
+import MessageFormat from 'intl-messageformat'
 
 /**
  *
@@ -55,11 +55,11 @@ class TabValidation extends AbstractValidationAction {
     const targetTabs = target.split('\t').length - 1
 
     if (sourceTabs > targetTabs) {
-      const targetHasFewerTabs = new IntlMessageFormat(this.messages.targetHasFewerTabs, this.locale)
+      const targetHasFewerTabs = new MessageFormat(this.messages.targetHasFewerTabs, this.locale)
           .format({ sourceTabs, targetTabs })
       errors.push(targetHasFewerTabs)
     } else if (targetTabs > sourceTabs ) {
-      const targetHasMoreTabs = new IntlMessageFormat(this.messages.targetHasMoreTabs, this.locale)
+      const targetHasMoreTabs = new MessageFormat(this.messages.targetHasMoreTabs, this.locale)
         .format({ sourceTabs, targetTabs })
       errors.push(targetHasMoreTabs)
     }

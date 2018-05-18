@@ -23,16 +23,17 @@ const en = {
   differentApostropheCount: "Number of apostrophes ('') in source does not match number in translation. This may lead to other warnings.",
   quotedCharsAdded: "Quoted characters found in translation but not in source text. Apostrophe character ('') must be doubled ('''') to prevent quoting when it is used in Java MessageFormat strings.",
   printfXSIExtensionValidationDesc: "Check that positional printf style (%n/$x) variables are consistent.",
-  varsMissing: "Missing variables: ",
+  varsMissing: "Missing variables: {missing}",
   varsMissingQuoted: "Unexpected quoting of variables: ",
-  varsAdded: "Unexpected variables: ",
+  varsAdded: "Unexpected variables: {added}",
   varsAddedQuoted: "Variables not quoted: ",
   xmlHtmlValidatorDesc: "Check that XML/HTML tags are consistent.",
-  tagsAdded: "Unexpected tags: ",
-  tagsMissing: "Missing tags: ",
+  tagsAdded: "Unexpected tags: {added}",
+  tagsMissing: "Missing tags: {missing}",
   tagsWrongOrder: "Tags in unexpected position: ",
   xmlEntityValidatorDesc: "Check that XML entity are complete.",
-  invalidXMLEntity: "Invalid XML entity: "
+  invalidXMLEntity: "Invalid XML entity: {entity}"
+  // invalidXMLEntity: "Invalid XML {COUNT, plural, =0 {entity: } =1 {entity: } other {entities: } } {ENTITY}",
 }
 
 export default en

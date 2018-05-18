@@ -57,7 +57,7 @@ const target = `with one\ttab`
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('Validation', module)
-  .add('TabValidation (no test)', () => (
+  .add('TabValidation', () => (
     <div>
       <h2>Validation Messages for TabValidation</h2>
       <p>source: <input value={source} /> </p>

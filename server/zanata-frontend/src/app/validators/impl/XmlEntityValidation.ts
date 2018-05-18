@@ -23,6 +23,8 @@ import AbstractValidationAction from '../AbstractValidationAction'
 import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
+import MessageFormat from 'intl-messageformat'
+
 /**
  *
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
@@ -31,6 +33,7 @@ class XmlEntityValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public locale: string
 
   public _sourceExample: string
   public get sourceExample() {
@@ -54,8 +57,8 @@ class XmlEntityValidation extends AbstractValidationAction {
 
   private ENTITY_START_CHAR = "&"
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages) {
-    super(id, description, messages)
+  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+    super(id, description, messages, locale)
   }
 
   public doValidate(_source: string, target: string): string[] {
@@ -63,8 +66,8 @@ class XmlEntityValidation extends AbstractValidationAction {
   }
   /* tslint:disable */
   private validateIncompleteEntity(target: string): string[] {
-    let errors: string[] = []
-
+    const errors: string[] = []
+    const incompleteEntries: string[] = []
     const words: string[] = target.split(" ").map((v) => v.trim()).filter((s) => !!s)
 
     for (let w in words) {
@@ -76,10 +79,15 @@ class XmlEntityValidation extends AbstractValidationAction {
         if (word.includes(this.ENTITY_START_CHAR)) {
           // remove any string that occurs in front
           word = word.substring(word.indexOf(this.ENTITY_START_CHAR))
-          // TODO: use react-intl eval of {value} syntax messages instead
-          errors = errors.concat(this.messages.invalidXMLEntity + word)
+          incompleteEntries.push(word)
         }
       }
+    }
+    // Push as combined incompleteEntry errors
+    if (incompleteEntries.length > 0) {
+      const message = new MessageFormat(this.messages.invalidXMLEntity, this.locale)
+        .format({ entity: incompleteEntries })
+      errors.push(message)
     }
     return errors
   }

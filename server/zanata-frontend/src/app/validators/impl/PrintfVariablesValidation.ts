@@ -25,6 +25,8 @@ import AbstractValidationAction from '../AbstractValidationAction'
 import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
+import MessageFormat from 'intl-messageformat'
+
 /**
  *
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
@@ -33,6 +35,7 @@ abstract class PrintfVariablesValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public locale: string
 
   public _sourceExample: string
   public get sourceExample() {
@@ -49,8 +52,8 @@ abstract class PrintfVariablesValidation extends AbstractValidationAction {
   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
   private VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])"
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages) {
-    super(id, description, messages)
+  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+    super(id, description, messages, locale)
   }
 
   public doValidate(source: string, target: string): string[] {
@@ -71,13 +74,20 @@ abstract class PrintfVariablesValidation extends AbstractValidationAction {
   protected findMissingVariables(sourceVars: string[],
     targetVars?: string[]): string {
     const missing = this.listMissing(sourceVars, targetVars)
-    return (missing.length > 0) ? this.messages.varsMissing + missing : null
+    return (missing.length > 0)
+      ? new MessageFormat(this.messages.varsMissing, this.locale)
+        .format({ missing })
+      : null
   }
 
   protected findAddedVariables(sourceVars: string[], targetVars?: string[]): string {
     // missing from source = added
     const added = this.listMissing(targetVars, sourceVars)
-    return (added.length > 0) ? this.messages.varsAdded + added : null
+    // Push as combined incompleteEntry errors
+    return (added.length > 0)
+      ?  new MessageFormat(this.messages.varsAdded, this.locale)
+        .format({ added })
+      : null
   }
 
   protected findVars(inString: string): string[] {

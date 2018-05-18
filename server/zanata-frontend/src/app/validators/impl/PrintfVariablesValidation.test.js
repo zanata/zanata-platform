@@ -4,12 +4,13 @@ import PrintfVariablesValidation from './PrintfVariablesValidation'
 import ValidationId from '../ValidationId'
 // TODO: Consume as react-intl JSON messages file
 import Messages from '../messages'
+import MessageFormat from 'intl-messageformat'
+const locale = 'en-US'
 
 const id = ValidationId.XML_ENTITY
 const description = ''
-const messageData = Messages['en-US']
 const PrintfVariablesValidator =
-  new PrintfVariablesValidation(id, description, messageData)
+  new PrintfVariablesValidation(id, description, Messages[locale], locale)
 
 const noErrors = []
 
@@ -24,8 +25,10 @@ describe('PrintfVariablesValidation', () => {
     const source = 'Testing string with variable %1v'
     const target = 'Testing string with no variables'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList)
-    //             .contains(messages.varsMissing(Arrays.asList('%1v')))
+    const errorMessages =
+      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+        .format({ missing: ['%1v'] })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
 
@@ -33,16 +36,20 @@ describe('PrintfVariablesValidation', () => {
     const source = '%a variables in all parts %b of the string %c'
     const target = 'Testing string with no variables'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList)
-    //   .contains(messages.varsMissing(Arrays.asList('%a', '%b', '%c')))
+    const errorMessages =
+      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+        .format({ missing: ['%a', '%b', '%c'] })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
   it('addedVarInTarget', () => {
     const source = 'Testing string with no variables'
     const target = 'Testing string with variable %2$#x'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList)
-    //   .contains(messages.varsAdded(Arrays.asList('%2$#x')))
+    const errorMessages =
+      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+        .format({ added: ['%2$#x'] })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
   it('addedVarsThroughoutTarget', () => {
@@ -50,8 +57,10 @@ describe('PrintfVariablesValidation', () => {
     const target =
       '%1$-0lls variables in all parts %2$-0hs of the string %3$-0ls'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.varsAdded(Arrays.asList(
-    //   '%1$-0lls', '%2$-0hs', '%3$-0ls')))
+    const errorMessages =
+      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+        .format({ added: ['%1$-0lls', '%2$-0hs', '%3$-0ls'] })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
 
@@ -59,8 +68,14 @@ describe('PrintfVariablesValidation', () => {
     const source = 'String with %x and %y only, not z'
     const target = 'String with %y and %z, not x'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.varsAdded(Arrays.asList('%z')),
-    //   messages.varsMissing(Arrays.asList('%x')))
+    const msg1 =
+      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+        .format({ missing: ['%x'] })
+    const msg2 =
+      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+        .format({ added: ['%z'] })
+    const errorMessages = [msg1, msg2]
+    expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
 
@@ -68,7 +83,10 @@ describe('PrintfVariablesValidation', () => {
     const source = '%ll'
     const target = '%l %ll'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.varsAdded(Arrays.asList('%l')))
+    const errorMessages =
+      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+        .format({ added: ['%l'] })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
 
@@ -76,7 +94,10 @@ describe('PrintfVariablesValidation', () => {
     const source = '%l %ll'
     const target = '%ll'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.varsMissing(Arrays.asList('%l')))
+    const errorMessages =
+      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+        .format({ missing: ['%l'] })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
 
@@ -84,9 +105,14 @@ describe('PrintfVariablesValidation', () => {
     const source = '%z'
     const target = '%zz'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList)
-    //   .contains(messages.varsMissing(Arrays.asList('%z')),
-        // messages.varsAdded(Arrays.asList('%zz')))
+    const msg1 =
+      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+        .format({ missing: ['%z'] })
+    const msg2 =
+      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+        .format({ added: ['%zz'] })
+    const errorMessages = [msg1, msg2]
+    expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
   it('checkWithRealWorldExamples', () => {
@@ -94,8 +120,11 @@ describe('PrintfVariablesValidation', () => {
     const source = '%s %d %-25s %r'
     const target = 'no variables'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.varsMissing(Arrays.asList('%s',
-    //   '%d', '%-25s', '%r')))
+    const errorMessages =
+      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+        .format({
+          missing: ['%s', '%d', '%-25s', '%r'] })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
 })
