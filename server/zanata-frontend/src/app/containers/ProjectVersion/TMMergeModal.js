@@ -135,7 +135,7 @@ const MergeOptions = (
             onSelectDropdownItem={onPercentSelection}
             selectedValue={mergeOptions.matchPercentage}
             valueToDisplay={percentValueToDisplay}
-            values={[80, 90, 100]} /> similar, don't use it.
+            values={[75, 80, 90, 100]} /> similar, don't use it.
         </div>
       </Col>
       <Col xs={12} className='versionMergeContainer'>
