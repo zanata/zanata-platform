@@ -76,7 +76,7 @@ class Items extends Component<ItemsProps, {}> {
         <Layout className="d-inh">
         Adjust priority of selected versions
         <br />
-        <span className="u-textMuted ">
+        <span className="u-textMuted">
         (best first)
         </span>
         <Tooltip placement="top" title={tooltipSort} trigger="hover">
