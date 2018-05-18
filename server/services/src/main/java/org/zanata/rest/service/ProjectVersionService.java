@@ -396,9 +396,9 @@ public class ProjectVersionService implements ProjectVersionResource {
             @PathParam("versionSlug") String versionSlug,
             VersionTMMerge mergeRequest) {
         int percent = mergeRequest.getThresholdPercent();
-        if (percent < 80 || percent > 100) {
+        if (percent < 75 || percent > 100) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"percentThreshold must be between 80 and 100\"}")
+                    .entity("{\"error\":\"percentThreshold must be between 75 and 100\"}")
                     .build();
         }
         HProject hProject = projectDAO.getBySlug(projectSlug);
