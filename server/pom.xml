@@ -20,6 +20,7 @@
 
   <properties>
     <byteman.version>2.1.2</byteman.version>
+    <detekt.skip>false</detekt.skip>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
     <kotlin.version>1.2.41</kotlin.version>
@@ -2161,6 +2162,7 @@
             <phase>none</phase>
             <goals><goal>run</goal></goals>
             <configuration>
+              <skip>${detekt.skip}</skip>
               <target name="detekt">
                 <java taskname="detekt" dir="${basedir}"
                     fork="true"
