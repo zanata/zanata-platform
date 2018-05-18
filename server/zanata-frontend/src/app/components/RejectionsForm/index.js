@@ -4,19 +4,22 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../components'
 import { isEmpty } from 'lodash'
-
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/index.less'
+import 'antd/lib/button/style/css'
 import Form from 'antd/lib/form'
-import 'antd/lib/form/style/index.less'
+import 'antd/lib/form/style/css'
 import Input from 'antd/lib/input'
-import 'antd/lib/input/style/index.less'
+import 'antd/lib/input/style/css'
 import Select from 'antd/lib/select'
-import 'antd/lib/select/style/index.less'
+import 'antd/lib/select/style/css'
 import Switch from 'antd/lib/switch'
-import 'antd/lib/switch/style/index.less'
+import 'antd/lib/switch/style/css'
 import Tooltip from 'antd/lib/tooltip'
-import 'antd/lib/tooltip/style/index.less'
+import 'antd/lib/tooltip/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 
 const Option = Select.Option
 
@@ -60,7 +63,6 @@ class RejectionsForm extends Component {
     key: PropTypes.number,
     // whether delete button shoud be displayed
     displayDelete: PropTypes.bool.isRequired,
-    className: PropTypes.string,
     criterionId: PropTypes.string.isRequired
   }
 
@@ -113,7 +115,6 @@ class RejectionsForm extends Component {
   render () {
     const {
       commentRequired,
-      className,
       isAdminMode,
       key,
       displayDelete,
@@ -124,7 +125,7 @@ class RejectionsForm extends Component {
     const deleteBtn = displayDelete
       ? (
       <Tooltip title='Delete criteria'>
-        <Button type='danger' className={className} onClick={this.onDelete}>
+        <Button type='danger' className='btn-danger' onClick={this.onDelete}>
           <Icon name='trash' className='s0 iconEdit' />
         </Button>
       </Tooltip>
@@ -139,46 +140,60 @@ class RejectionsForm extends Component {
       : DO_NOT_RENDER
     const formBtn = isAdminMode ? (
       <Form.Item>
-        <Tooltip title='Save criteria'>
-          <Button type='primary' className={className} onClick={this.onSave}
-            disabled={error}>
-            <Icon name='tick' className='s0 iconEdit' />
-          </Button>
-        </Tooltip>
+        <span className='pr3'>
+          <Tooltip title='Save criteria'>
+            <Button type='primary'
+              onClick={this.onSave}
+              disabled={error}>
+              <Icon name='tick' className='s0 iconEdit' />
+            </Button>
+          </Tooltip>
+        </span>
         {deleteBtn}
       </Form.Item>
     ) : DO_NOT_RENDER
     return (
       <Form key={key} layout='inline'>
-        <Form.Item label='Criteria'>
-          { /* TODO: Fix layout style={{ width: '500px' }} */ }
-          <Input.TextArea
-            disabled={!isAdminMode}
-            maxLength={255}
-            onChange={this.onTextChange}
-            placeholder={criteriaPlaceholder}
-            rows={2}
-            value={this.state.description} />
-        </Form.Item>
-        <Form.Item label='Priority'>
-          <Select
-            defaultValue={this.state.priority}
-            disabled={priorityDisabled}
-            onChange={this.onPriorityChange}
-            label={this.state.priority} >
-            <Option key={0} value={MINOR}>
-              {priorityToDisplay(MINOR)}
-            </Option>
-            <Option key={1} value={MAJOR}>
-              {priorityToDisplay(MAJOR)}
-            </Option>
-            <Option key={2} value={CRITICAL}>
-              {priorityToDisplay(CRITICAL)}
-            </Option>
-          </Select>
-        </Form.Item>
-        {commentToggle}
-        {formBtn}
+        <Row className='pb4'>
+          <Col span={12}>
+            <Form.Item label='Criteria' className='w-100'>
+              { /* TODO: Fix layout style={{ width: '500px' }} */ }
+              <Input.TextArea
+                disabled={!isAdminMode}
+                maxLength={255}
+                onChange={this.onTextChange}
+                placeholder={criteriaPlaceholder}
+                rows={2}
+                className='w-90'
+                value={this.state.description} />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item label='Priority'>
+              <Select
+                defaultValue={this.state.priority}
+                disabled={priorityDisabled}
+                onChange={this.onPriorityChange}
+                label={this.state.priority} >
+                <Option key={0} value={MINOR}>
+                  {priorityToDisplay(MINOR)}
+                </Option>
+                <Option key={1} value={MAJOR}>
+                  {priorityToDisplay(MAJOR)}
+                </Option>
+                <Option key={2} value={CRITICAL}>
+                  {priorityToDisplay(CRITICAL)}
+                </Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            {commentToggle}
+          </Col>
+          <Col span={4}>
+            {formBtn}
+          </Col>
+        </Row>
       </Form>
     )
   }
