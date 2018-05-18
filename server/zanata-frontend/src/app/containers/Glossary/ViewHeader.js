@@ -143,7 +143,7 @@ class ViewHeader extends Component {
       <div className='projectLink'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon type='folder-open' className='s1 iconProject' />
+            <Icon type='folder-open' className='iconProject' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
