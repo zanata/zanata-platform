@@ -4,7 +4,9 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { LoaderText, Icon } from '../../components'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 class DeleteEntryModal extends Component {
   static propTypes = {

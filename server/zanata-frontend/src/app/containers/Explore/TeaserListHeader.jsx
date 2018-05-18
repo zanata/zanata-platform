@@ -3,7 +3,9 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Loader, Icon } from '../../components'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
 /**
  * Header with icon and paging for the TeaserList.
  */

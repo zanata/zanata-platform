@@ -6,13 +6,13 @@ import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
 import { LoaderText } from '../../components'
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/index.less'
+import 'antd/lib/button/style/css'
 import Form from 'antd/lib/form'
 import 'antd/lib/form/style/'
 import Input from 'antd/lib/input'
 import 'antd/lib/input/style/'
 import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/index.less'
+import 'antd/lib/modal/style/css'
 
 import {
   glossaryToggleNewEntryModal,

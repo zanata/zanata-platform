@@ -26,8 +26,11 @@ import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
 import {getProjectUrl} from '../../utils/UrlHelper'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
 import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 
 /**
  * Header for glossary page

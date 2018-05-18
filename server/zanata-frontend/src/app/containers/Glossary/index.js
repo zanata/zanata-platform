@@ -24,7 +24,14 @@ import {
 } from '../../actions/glossary-actions'
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
-import { Button, Layout, Row, Col } from 'antd'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 
 /**
  * Root component for Glossary page

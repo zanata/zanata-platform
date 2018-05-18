@@ -3,6 +3,7 @@ import React from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /**
  * Clickable date and word count component for daily statistics

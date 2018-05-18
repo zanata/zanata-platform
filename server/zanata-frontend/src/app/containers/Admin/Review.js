@@ -10,7 +10,14 @@ import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
-import { Button, Layout, Breadcrumb, Card } from 'antd'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+import Breadcrumb from 'antd/lib/breadcrumb'
+import 'antd/lib/breadcrumb/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */

@@ -6,7 +6,11 @@ import { isEqual } from 'lodash'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
 import { EditableText, LoaderText } from '../../components'
-import { Button, Row } from 'antd'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+
 /**
  * Component to display a GlossaryEntry
  */

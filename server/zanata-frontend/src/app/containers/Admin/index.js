@@ -28,7 +28,12 @@ import TMXExportModal from '../../components/TMX/TMXExportModal'
 import { isAdmin } from '../../config'
 import { Icon } from '../../components'
 import Helmet from 'react-helmet'
-import { Col, Row, Card } from 'antd'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 
 import {
   showExportTMXModal
