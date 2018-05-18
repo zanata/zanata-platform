@@ -1,15 +1,7 @@
+@file:Suppress("MatchingDeclarationName")
 package org.zanata.email
 
-import kotlinx.html.BODY
-import kotlinx.html.a
-import kotlinx.html.body
-import kotlinx.html.br
-import kotlinx.html.head
-import kotlinx.html.hr
-import kotlinx.html.html
-import kotlinx.html.meta
-import kotlinx.html.p
-import kotlinx.html.span
+import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import org.zanata.i18n.Messages
 import org.zanata.i18n.MessagesFactory
@@ -20,9 +12,8 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
-import kotlin.text.Charsets.UTF_8
 
-private val UTF8 = UTF_8.name()
+private const val UTF8 = "UTF-8"
 
 /**
  * This function builds email messages using a kotlinx.html builder, controlled by an HtmlEmailStrategy.
@@ -88,7 +79,7 @@ private fun buildBodyWithFooter(
         msgs: Messages,
         serverPath: String = "",
         receivedReasons: List<String> = listOf(),
-        bodyCallback : BODY.(Messages) -> Unit): String {
+        bodyCallback: BODY.(Messages) -> Unit): String {
     return StringBuilder().appendHTML().html {
         head {
             meta(charset = UTF8)

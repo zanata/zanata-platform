@@ -1,9 +1,14 @@
+@file:Suppress("MagicNumber")
+
 package org.zanata.service.tm.merge
 
 import org.zanata.common.ContentState
-import org.zanata.common.ContentState.*
+import org.zanata.common.ContentState.Approved
+import org.zanata.common.ContentState.NeedReview
+import org.zanata.common.ContentState.New
+import org.zanata.common.ContentState.Translated
+import org.zanata.common.ContentState.Rejected
 import org.zanata.config.TMFuzzyBandsConfig
-import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.context.Dependent
 import javax.enterprise.inject.Produces
 

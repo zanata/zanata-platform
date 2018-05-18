@@ -2,7 +2,9 @@ package org.zanata.email
 
 import kotlinx.html.*
 import org.zanata.common.ContentState
-import org.zanata.common.ContentState.*
+import org.zanata.common.ContentState.Approved
+import org.zanata.common.ContentState.NeedReview
+import org.zanata.common.ContentState.Translated
 import org.zanata.i18n.Messages
 import org.zanata.service.tm.merge.TMMergeResult
 import javax.mail.internet.InternetAddress
@@ -29,7 +31,11 @@ data class VersionInfo(val slug: String, val url: String)
  * @param matchRange the full set of ranges which were enabled for Fuzzy copies
  * during the TM merge operation (eg 70-100%)
  */
-data class TMMergeEmailContext(val toAddresses: List<InternetAddress>, val project: ProjectInfo, val version: VersionInfo, val matchRange: IntRange)
+data class TMMergeEmailContext(
+        val toAddresses: List<InternetAddress>,
+        val project: ProjectInfo,
+        val version: VersionInfo,
+        val matchRange: IntRange)
 
 /**
  * The HtmlEmailStrategy for TM Merge results
@@ -37,7 +43,7 @@ data class TMMergeEmailContext(val toAddresses: List<InternetAddress>, val proje
 // It might be better pass context/mergeResult to methods which need them, not to constructor
 class TMMergeEmailStrategy(
         val context: TMMergeEmailContext,
-        val mergeResult: TMMergeResult): HtmlEmailStrategy() {
+        val mergeResult: TMMergeResult) : HtmlEmailStrategy() {
 
     override fun getSubject(msgs: Messages): String =
             msgs["email.templates.tm_merge.Results"]!!
@@ -51,6 +57,7 @@ class TMMergeEmailStrategy(
 }
 
 // inline styles
+@Suppress("ClassNaming")
 private object s {
     // based on class styles:
     val branding = """
@@ -108,7 +115,12 @@ private val ContentState.style: String
         else -> s.error
     }
 
-private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, context: TMMergeEmailContext, mergeResult: TMMergeResult): BODY.(Messages) -> Unit = { msgs ->
+private const val ONE_HUNDRED = 100
+
+private fun tmMergeEmailBodyProducer(
+        generalContext: GeneralEmailContext,
+        context: TMMergeEmailContext,
+        mergeResult: TMMergeResult): BODY.(Messages) -> Unit = { msgs ->
     div {
         style = s.container + s.text
         a(href = generalContext.serverURL) {
@@ -150,7 +162,10 @@ private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, contex
             +": "
             span {
                 style = s.light
-                + msgs.format("email.templates.tm_merge.MatchRangeFromXToY", context.matchRange.first, context.matchRange.last)!!
+                + msgs.format(
+                        "email.templates.tm_merge.MatchRangeFromXToY",
+                        context.matchRange.first,
+                        context.matchRange.last)!!
             }
         }
         // hr is useful for the plain text version generated from this HTML
@@ -167,8 +182,8 @@ private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, contex
             for (range in mergeResult.rangesForContentState(state)) {
                 if (mergeResult.noMessagesCounted(state, range)) continue
                 h3 {
-                    style = s.h3 +  s.light
-                    if (range.first == 100)
+                    style = s.h3 + s.light
+                    if (range.first == ONE_HUNDRED)
                         +msgs["email.templates.tm_merge.100Match"]!!
                     else
                         +msgs.format("email.templates.tm_merge.XToYRangeMatch", range.first, range.last)!!
@@ -183,7 +198,11 @@ private fun tmMergeEmailBodyProducer(generalContext: GeneralEmailContext, contex
                                 style = s.td + s.inTable
 
                                 val ctr = mergeResult.getCounter(state, range)
-                                +msgs.format("email.templates.tm_merge.WordsCharsMessages", ctr.words, ctr.codePoints, ctr.messages)
+                                +msgs.format(
+                                        "email.templates.tm_merge.WordsCharsMessages",
+                                        ctr.words,
+                                        ctr.codePoints,
+                                        ctr.messages)
                             }
                         }
                     }

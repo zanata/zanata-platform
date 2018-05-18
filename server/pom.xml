@@ -2155,21 +2155,30 @@
             </configuration>
           </execution>
           <execution>
-            <!-- This can be run separately with mvn antrun:run@detekt -->
+            <!-- This can be run separately with mvn antrun:run@detekt -pl '!:zanata-frontend' -->
             <id>detekt</id>
             <!-- Profiles should use 'test' to activate this -->
             <phase>none</phase>
             <goals><goal>run</goal></goals>
             <configuration>
               <target name="detekt">
-                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
-                    classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                <java taskname="detekt" dir="${basedir}"
+                    fork="true"
+                    failonerror="true"
+                    classname="io.gitlab.arturbosch.detekt.cli.Main"
+                    classpathref="maven.plugin.classpath">
                   <arg value="--config-resource"/>
                   <arg value="zanata-build-tools/detekt.yml"/>
-                  <arg value="--project"/>
-                  <arg value="${basedir}/src"/>
+                  <arg value="--input"/>
+                  <arg value="${basedir}/src/main"/>
                   <arg value="--filters"/>
                   <arg value=".*test.*"/>
+                  <arg value="--output"/>
+                  <arg value="${basedir}/target/reports"/>
+                  <!--<arg value="&#45;&#45;outputname"/>-->
+                  <!--<arg value="detekt-report"/>-->
+                  <arg value="--baseline"/>
+                  <arg value="${basedir}/reports/baseline.xml"/>
                 </java>
               </target>
             </configuration>
@@ -2184,12 +2193,12 @@
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M11</version>
+            <version>1.0.0.RC7</version>
           </dependency>
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M11</version>
+            <version>1.0.0.RC7</version>
           </dependency>
         </dependencies>
       </plugin>

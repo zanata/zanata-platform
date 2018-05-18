@@ -1,7 +1,11 @@
 package org.zanata.service.tm.merge
 
 import org.zanata.common.ContentState
-import org.zanata.common.ContentState.*
+import org.zanata.common.ContentState.Approved
+import org.zanata.common.ContentState.NeedReview
+import org.zanata.common.ContentState.New
+import org.zanata.common.ContentState.Rejected
+import org.zanata.common.ContentState.Translated
 import org.zanata.service.TranslationCounter
 import org.zanata.service.TextFlowCounter
 import java.util.*
@@ -9,13 +13,13 @@ import java.util.*
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-class TMMergeResult (private val bandDefs: Map<ContentState, List<IntRange>>): TranslationCounter {
+class TMMergeResult (private val bandDefs: Map<ContentState, List<IntRange>>) : TranslationCounter {
 
     private val bandCounters = HashMap<Pair<ContentState, IntRange>, MutableTextFlowCounter>()
 
     init {
         // for each defined ContentState/IntRange pair, we hold a Counter
-        for((contentState, ranges) in bandDefs) {
+        for ((contentState, ranges) in bandDefs) {
             ranges.forEach { r ->
                 bandCounters[Pair(contentState, r)] = MutableTextFlowCounter()
             }
@@ -69,4 +73,7 @@ class TMMergeResult (private val bandDefs: Map<ContentState, List<IntRange>>): T
     }
 }
 
-private data class MutableTextFlowCounter(override var codePoints: Long = 0, override var words: Long = 0, override var messages: Long = 0): TextFlowCounter
+private data class MutableTextFlowCounter(
+        override var codePoints: Long = 0,
+        override var words: Long = 0,
+        override var messages: Long = 0) : TextFlowCounter

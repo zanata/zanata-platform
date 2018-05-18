@@ -13,7 +13,7 @@ interface TranslationCounter {
      */
     fun count(state: ContentState, score: Int, chars: Long, words: Long, messages: Long = 1)
 
-    object NOOP: TranslationCounter {
+    object NOOP : TranslationCounter {
         override fun count(state: ContentState, score: Int, chars: Long, words: Long, messages: Long) {}
     }
 }
