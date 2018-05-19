@@ -120,8 +120,6 @@
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
-            <!-- Used for email unit tests -->
-            <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
             <!-- Need for test scope -->
             <usedDependency>${jdbc.groupId}:${jdbc.artifactId}</usedDependency>
             <!-- used for arquillian tests -->
