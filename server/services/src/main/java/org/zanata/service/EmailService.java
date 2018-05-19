@@ -26,7 +26,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import org.zanata.common.LocaleId;
-import org.zanata.email.EmailStrategy;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 
@@ -67,32 +67,32 @@ public interface EmailService extends Serializable {
      *            there's no coordinator. 4) User request to join a version group
      *            when there's no maintainer.
      */
-    String sendToAdmins(EmailStrategy strategy,
+    String sendToAdmins(VelocityEmailStrategy strategy,
             @Nullable List<String> receivedReasons);
 
     /**
      * sends emails to version group maintainers -> admin -> admin users
      */
     String sendToVersionGroupMaintainers(List<HPerson> maintainers,
-            EmailStrategy strategy);
+            VelocityEmailStrategy strategy);
 
     /**
      * sends emails to language coordinators -> admin -> admin users
      *
      */
     String sendToLanguageCoordinators(LocaleId localeId,
-            EmailStrategy strategy);
+            VelocityEmailStrategy strategy);
 
     String sendUsernameChangedEmail(String email, String newUsername);
 
     /**
      * sends email to requester of the language request
      */
-    void sendToLanguageRequester(EmailStrategy strategy, HPerson person);
+    void sendToLanguageRequester(VelocityEmailStrategy strategy, HPerson person);
 
     /**
      * sends email to language team members.
      */
-    String sendToLanguageTeamMembers(LocaleId localeId, EmailStrategy strategy,
+    String sendToLanguageTeamMembers(LocaleId localeId, VelocityEmailStrategy strategy,
         List<HLocaleMember> members);
 }
