@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
@@ -47,6 +46,8 @@ import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.service.ServerConfigurationService;
 import org.zanata.ui.faces.FacesMessages;
+
+import static java.util.Arrays.asList;
 import static org.zanata.model.HApplicationConfiguration.*;
 
 @Named("serverConfigurationBean")
@@ -81,32 +82,32 @@ public class ServerConfigurationBean implements Serializable {
     @ZanataEmail
     private String fromEmailAddr;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithKey<String> fromEmailAddrProperty =
-            new PropertyWithKey<String>("fromEmailAddr",
+    private PropertyWithDBKey<String> fromEmailAddrProperty =
+            new PropertyWithDBKey<String>("fromEmailAddr",
                     KEY_EMAIL_FROM_ADDRESS);
     private String homeContent = "";
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithKey<String> homeContentProperty =
-            new PropertyWithKey<String>("homeContent", KEY_HOME_CONTENT);
+    private PropertyWithDBKey<String> homeContentProperty =
+            new PropertyWithDBKey<String>("homeContent", KEY_HOME_CONTENT);
     private boolean enableLogEmail;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithKey<Boolean> enableLogEmailProperty =
-            new PropertyWithKey<Boolean>("enableLogEmail",
+    private PropertyWithDBKey<Boolean> enableLogEmailProperty =
+            new PropertyWithDBKey<Boolean>("enableLogEmail",
                     KEY_EMAIL_LOG_EVENTS);
     private boolean displayUserEmail;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithKey<Boolean> displayUserEmailProperty =
-            new PropertyWithKey<Boolean>("displayUserEmail",
+    private PropertyWithDBKey<Boolean> displayUserEmailProperty =
+            new PropertyWithDBKey<Boolean>("displayUserEmail",
                     KEY_DISPLAY_USER_EMAIL);
     private boolean allowAnonymousUser = true;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithKey<Boolean> allowAnonymousUserProperty =
-            new PropertyWithKey<Boolean>("allowAnonymousUser",
+    private PropertyWithDBKey<Boolean> allowAnonymousUserProperty =
+            new PropertyWithDBKey<Boolean>("allowAnonymousUser",
                     KEY_ALLOW_ANONYMOUS_USER);
     private boolean autoAcceptRequests = false;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithKey<Boolean> autoAcceptRequestsProperty =
-            new PropertyWithKey<Boolean>("autoAcceptRequests",
+    private PropertyWithDBKey<Boolean> autoAcceptRequestsProperty =
+            new PropertyWithDBKey<Boolean>("autoAcceptRequests",
                     KEY_AUTO_ACCEPT_TRANSLATOR);
 
     @EmailList
@@ -133,35 +134,32 @@ public class ServerConfigurationBean implements Serializable {
     private String gravatarRating;
     private String tmFuzzyBands;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private List<PropertyWithKey<String>> commonStringProperties = Arrays
-            .asList(new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
-                    new PropertyWithKey<String>("serverUrl", KEY_HOST),
-                    new PropertyWithKey<String>("emailDomain", KEY_DOMAIN),
-                    new PropertyWithKey<String>("adminEmail", KEY_ADMIN_EMAIL),
-                    new PropertyWithKey<String>("logDestinationEmails",
-                            KEY_LOG_DESTINATION_EMAIL),
-                    new PropertyWithKey<String>("logEmailLevel",
-                            KEY_EMAIL_LOG_LEVEL),
-                    new PropertyWithKey<String>("piwikUrl", KEY_PIWIK_URL),
-                    new PropertyWithKey<String>("piwikIdSite",
-                            KEY_PIWIK_IDSITE),
-                    new PropertyWithKey<String>("termsOfUseUrl",
-                            KEY_TERMS_CONDITIONS_URL),
-                    new PropertyWithKey<String>("helpUrl", KEY_HELP_URL),
-                    new PropertyWithKey<String>(
-                            "maxConcurrentRequestsPerApiKey",
-                            KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
-                    new PropertyWithKey<String>("maxActiveRequestsPerApiKey",
-                            KEY_MAX_ACTIVE_REQ_PER_API_KEY),
-                    new PropertyWithKey<String>("maxFilesPerUpload",
-                            KEY_MAX_FILES_PER_UPLOAD),
-                    new PropertyWithKey<String>("displayUserEmail",
-                            KEY_DISPLAY_USER_EMAIL),
-                    new PropertyWithKey<String>("permittedUserEmailDomains",
-                            KEY_PERMITTED_USER_EMAIL_DOMAIN),
-                    new PropertyWithKey<String>("gravatarRating",
-                            KEY_GRAVATAR_RATING),
-                    homeContentProperty);
+    private List<PropertyWithDBKey<String>> commonStringProperties = asList(
+            // Please keep these sorted by DB key (to make it easy to
+            // compare with the keys in HApplicationConfiguration):
+            new PropertyWithDBKey<>("adminEmail", KEY_ADMIN_EMAIL),
+            new PropertyWithDBKey<>("displayUserEmail", KEY_DISPLAY_USER_EMAIL),
+            new PropertyWithDBKey<>("emailDomain", KEY_DOMAIN),
+            new PropertyWithDBKey<>("logEmailLevel", KEY_EMAIL_LOG_LEVEL),
+            new PropertyWithDBKey<>("gravatarRating", KEY_GRAVATAR_RATING),
+            new PropertyWithDBKey<>("helpUrl", KEY_HELP_URL),
+            new PropertyWithDBKey<>("serverUrl", KEY_HOST),
+            new PropertyWithDBKey<>("logDestinationEmails",
+                    KEY_LOG_DESTINATION_EMAIL),
+            new PropertyWithDBKey<>("maxActiveRequestsPerApiKey",
+                    KEY_MAX_ACTIVE_REQ_PER_API_KEY),
+            new PropertyWithDBKey<>("maxConcurrentRequestsPerApiKey",
+                    KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
+            new PropertyWithDBKey<>("maxFilesPerUpload",
+                    KEY_MAX_FILES_PER_UPLOAD),
+            new PropertyWithDBKey<>("permittedUserEmailDomains",
+                    KEY_PERMITTED_USER_EMAIL_DOMAIN),
+            new PropertyWithDBKey<>("piwikUrl", KEY_PIWIK_URL),
+            new PropertyWithDBKey<>("piwikIdSite", KEY_PIWIK_IDSITE),
+            new PropertyWithDBKey<>("registerUrl", KEY_REGISTER),
+            new PropertyWithDBKey<>("termsOfUseUrl", KEY_TERMS_CONDITIONS_URL),
+            new PropertyWithDBKey<>("tmFuzzyBands", KEY_TM_FUZZY_BANDS),
+            homeContentProperty);
 
     public String updateHomeContent() {
         persistPropertyToDatabase(homeContentProperty);
@@ -181,14 +179,14 @@ public class ServerConfigurationBean implements Serializable {
     }
 
     private void setPropertiesFromConfigIfNotNull(
-            List<PropertyWithKey<String>> properties) {
-        for (PropertyWithKey<String> property : properties) {
+            List<PropertyWithDBKey<String>> properties) {
+        for (PropertyWithDBKey<String> property : properties) {
             setPropertyFromConfigIfNotNull(property);
         }
     }
 
     private void
-            setPropertyFromConfigIfNotNull(PropertyWithKey<String> property) {
+            setPropertyFromConfigIfNotNull(PropertyWithDBKey<String> property) {
         HApplicationConfiguration valueHolder =
                 applicationConfigurationDAO.findByKey(property.getKey());
         if (valueHolder != null) {
@@ -202,7 +200,7 @@ public class ServerConfigurationBean implements Serializable {
     }
 
     private void setBooleanPropertyFromConfigIfNotNull(
-            PropertyWithKey<Boolean> property) {
+            PropertyWithDBKey<Boolean> property) {
         HApplicationConfiguration valueHolder =
                 applicationConfigurationDAO.findByKey(property.getKey());
         if (valueHolder != null) {
@@ -259,13 +257,13 @@ public class ServerConfigurationBean implements Serializable {
     }
 
     private void persistPropertiesToDatabase(
-            List<PropertyWithKey<String>> properties) {
-        for (PropertyWithKey<String> property : properties) {
+            List<PropertyWithDBKey<String>> properties) {
+        for (PropertyWithDBKey<String> property : properties) {
             persistPropertyToDatabase(property);
         }
     }
 
-    private void persistPropertyToDatabase(PropertyWithKey<String> property) {
+    private void persistPropertyToDatabase(PropertyWithDBKey<String> property) {
         HApplicationConfiguration configItem =
                 applicationConfigurationDAO.findByKey(property.getKey());
         try {
@@ -283,7 +281,7 @@ public class ServerConfigurationBean implements Serializable {
      * Associates a field of type T with a HApplicationConfiguration key,
      * allowing abstraction around setting fields only if keys are bound.
      */
-    private final class PropertyWithKey<T> {
+    private final class PropertyWithDBKey<T> {
         private final String propertyName;
         private final String key;
 
@@ -300,7 +298,7 @@ public class ServerConfigurationBean implements Serializable {
         }
 
         @ConstructorProperties({ "propertyName", "key" })
-        public PropertyWithKey(final String propertyName, final String key) {
+        public PropertyWithDBKey(final String propertyName, final String key) {
             this.propertyName = propertyName;
             this.key = key;
         }
@@ -317,9 +315,9 @@ public class ServerConfigurationBean implements Serializable {
         public boolean equals(final Object o) {
             if (o == this)
                 return true;
-            if (!(o instanceof ServerConfigurationBean.PropertyWithKey))
+            if (!(o instanceof PropertyWithDBKey))
                 return false;
-            final PropertyWithKey<?> other = (PropertyWithKey<?>) o;
+            final PropertyWithDBKey<?> other = (PropertyWithDBKey<?>) o;
             if (!other.canEqual((Object) this))
                 return false;
             final Object this$propertyName = this.getPropertyName();
@@ -336,7 +334,7 @@ public class ServerConfigurationBean implements Serializable {
         }
 
         protected boolean canEqual(final Object other) {
-            return other instanceof ServerConfigurationBean.PropertyWithKey;
+            return other instanceof PropertyWithDBKey;
         }
 
         @Override

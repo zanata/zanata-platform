@@ -35,40 +35,46 @@ import com.google.common.collect.Lists;
 @Entity
 public class HApplicationConfiguration extends ModelEntityBase {
 
+    // Please keep these constants sorted!
+    public static final String KEY_ADMIN_EMAIL = "email.admin.addr";
+    public static final String KEY_ALLOW_ANONYMOUS_USER =
+            "allow.anonymous.user";
+    public static final String KEY_AUTO_ACCEPT_TRANSLATOR =
+            "accept.translator.requests";
+    public static final String KEY_DISPLAY_USER_EMAIL = "display.user.email";
+    public static final String KEY_DOMAIN = "email.domain";
+    public static final String KEY_EMAIL_FROM_ADDRESS = "email.from.addr";
+    public static final String KEY_EMAIL_LOG_EVENTS = "log.email.active";
+    public static final String KEY_EMAIL_LOG_LEVEL = "log.email.level";
+    public static final String KEY_GRAVATAR_RATING = "gravatar.rating";
     /**
      * obsolete data key. Help content was removed from UI but the content was
      * left in the database for reference purposes.
      */
     @Deprecated
-    public static String KEY_HELP_CONTENT = "pages.help.content";
-    public static String KEY_HOST = "host.url";
-    public static String KEY_REGISTER = "register.url";
-    public static String KEY_DOMAIN = "email.domain";
-    public static String KEY_ADMIN_EMAIL = "email.admin.addr";
-    public static String KEY_EMAIL_FROM_ADDRESS = "email.from.addr";
-    public static String KEY_HOME_CONTENT = "pages.home.content";
-    public static String KEY_LOG_DESTINATION_EMAIL = "log.destination.email";
-    public static String KEY_EMAIL_LOG_EVENTS = "log.email.active";
-    public static String KEY_DISPLAY_USER_EMAIL = "display.user.email";
-    public static String KEY_EMAIL_LOG_LEVEL = "log.email.level";
-    public static String KEY_PIWIK_URL = "piwik.url";
-    public static String KEY_HELP_URL = "help.url";
-    public static String KEY_PIWIK_IDSITE = "piwik.idSite";
-    public static String KEY_TERMS_CONDITIONS_URL = "terms.conditions.url";
-    public static String KEY_MAX_CONCURRENT_REQ_PER_API_KEY =
-            "max.concurrent.req.per.apikey";
-    public static String KEY_MAX_ACTIVE_REQ_PER_API_KEY =
+    public static final String KEY_HELP_CONTENT = "pages.help.content";
+    public static final String KEY_HELP_URL = "help.url";
+    public static final String KEY_HOME_CONTENT = "pages.home.content";
+    public static final String KEY_HOST = "host.url";
+    public static final String KEY_LOG_DESTINATION_EMAIL =
+            "log.destination.email";
+    public static final String KEY_MAX_ACTIVE_REQ_PER_API_KEY =
             "max.active.req.per.apikey";
-    public static String KEY_MAX_FILES_PER_UPLOAD =
+    public static final String KEY_MAX_CONCURRENT_REQ_PER_API_KEY =
+            "max.concurrent.req.per.apikey";
+    public static final String KEY_MAX_FILES_PER_UPLOAD =
             "fileupload.max.files.per.upload";
-    public static String KEY_TM_FUZZY_BANDS =
-            "tm.fuzzy.bands";
-    public static String KEY_ALLOW_ANONYMOUS_USER = "allow.anonymous.user";
-    public static String KEY_PERMITTED_USER_EMAIL_DOMAIN =
+    public static final String KEY_PERMITTED_USER_EMAIL_DOMAIN =
             "permitted.user.email.domain";
-    public static String KEY_AUTO_ACCEPT_TRANSLATOR = "accept.translator.requests";
-    public static String KEY_GRAVATAR_RATING = "gravatar.rating";
+    public static final String KEY_PIWIK_IDSITE = "piwik.idSite";
+    public static final String KEY_PIWIK_URL = "piwik.url";
+    public static final String KEY_REGISTER = "register.url";
+    public static final String KEY_TERMS_CONDITIONS_URL =
+            "terms.conditions.url";
+    public static final String KEY_TM_FUZZY_BANDS = "tm.fuzzy.bands";
+
     private static final long serialVersionUID = 8652817113098817448L;
+
     private static List<String> availableKeys;
     private String key;
     private String value;
