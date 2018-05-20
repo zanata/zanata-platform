@@ -139,7 +139,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
     private HAccount authenticatedAccount;
     private String serverPath;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Serializable collection (plus TransMemoryMergeServiceImpl needn't be Serializable)")
     private Map<ContentState, List<IntRange>> tmBands;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxy")
     private HtmlEmailSender emailSender;
 
     @Inject
