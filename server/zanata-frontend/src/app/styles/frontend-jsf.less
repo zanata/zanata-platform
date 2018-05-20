@@ -55,6 +55,10 @@ body.bodyStyle {
   .u-fullWidth {
     width: 100%;
   }
+  //override to stop tachyon float applying to french language list item
+  ul#languages-language_list li a.fr {
+    float: none !important;
+  }
   .i--left.i--document {
     color: @color-muted;
   }
