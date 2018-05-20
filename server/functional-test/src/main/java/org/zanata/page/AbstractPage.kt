@@ -169,6 +169,8 @@ abstract class AbstractPage(val driver: WebDriver) {
 
     /**
      * Wait for any AJAX/timeout requests to return.
+     * It should also wait for the JavaScript engine to finish its current
+     * execution, because executeScript uses the (single-threaded) JS engine.
      */
     fun waitForPageSilence() {
         // TODO wait for any short-lived timeouts to expire (eg less than 1000
@@ -551,6 +553,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      */
 
     fun slightPause() {
+        // TODO waitForPageSilence should work (better, hopefully)
         try {
             Thread.sleep(500)
         } catch (ie: InterruptedException) {
