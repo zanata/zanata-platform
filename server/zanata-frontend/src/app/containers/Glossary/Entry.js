@@ -170,8 +170,10 @@ class Entry extends Component {
               {termsLoading
                 ? loadingDiv
                 : (<Row className='entry-row'>
-                  <Button aria-label='button'
-                    className="btn-link-end btn-link"
+                  <Button
+                    icon='info-circle-o'
+                    className='btn-link'
+                    aria-label='button'
                     disabled={isDeleting}
                     onClick={() => this.setShowingEntryModal(true)} />
                   <EntryModal entry={entry}

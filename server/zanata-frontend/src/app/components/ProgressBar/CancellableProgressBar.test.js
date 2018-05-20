@@ -3,7 +3,7 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import CancellableProgressBar from './CancellableProgressBar'
-import { ProgressBar } from 'react-bootstrap'
+import Progress from 'antd/lib/progress'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
 
 const callback = () => {}
