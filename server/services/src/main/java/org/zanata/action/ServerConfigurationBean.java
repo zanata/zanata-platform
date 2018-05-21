@@ -132,6 +132,8 @@ public class ServerConfigurationBean implements Serializable {
     @DomainList
     private String permittedUserEmailDomains;
     private String gravatarRating;
+    // TODO add validation by calling
+    // org.zanata.service.tm.merge.TMBandDefsKt.parseBands
     private String tmFuzzyBands;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<PropertyWithDBKey<String>> commonStringProperties = asList(
