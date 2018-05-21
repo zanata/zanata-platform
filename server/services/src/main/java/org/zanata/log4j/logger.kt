@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
  * Returns a logger for the package containing the lambda (which may be empty: `getLogger {}`)
  */
 fun getLogger(lambda: () -> Any): Logger =
-        LoggerFactory.getLogger(lambda.javaClass)
+        getLoggerForPackage(lambda.javaClass)
 
 private fun getLoggerForPackage(clazz: Class<*>): Logger =
         LoggerFactory.getLogger(getPackage(clazz))
