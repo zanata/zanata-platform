@@ -40,8 +40,8 @@ public class AddLanguagePage extends BasePage {
     private By enabledByDefaultCheckbox = By.id("chk-new-language-enabled");
     private By pluralsWarning = By.id("new-language-pluralforms-warning");
     private By languageOption = By.name("new-language-displayName");
-    private By newLanguageName = By.id("new-language-name");
-    private By newLanguageNativeName = By.id("new-language-nativeName");
+    private By newLanguageName = By.id("displayName");
+    private By newLanguageNativeName = By.id("nativeName");
 
     public AddLanguagePage(final WebDriver driver) {
         super(driver);
