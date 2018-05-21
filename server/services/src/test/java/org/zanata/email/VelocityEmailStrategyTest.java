@@ -49,7 +49,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class EmailStrategyTest {
+public class VelocityEmailStrategyTest {
     // use this if you want to see the real messages on stderr
     private static final boolean DEBUG = false;
     Locale locale = Locale.ENGLISH;
@@ -111,7 +111,7 @@ public class EmailStrategyTest {
     String localeNativeName = "LOCALE_NAME[测试]";
     String htmlMessage = "some <b>HTML</b>";
 
-    public EmailStrategyTest() throws UnsupportedEncodingException {
+    public VelocityEmailStrategyTest() throws UnsupportedEncodingException {
         toAddr = Addresses.getAddress(toAddress, toName);
         toAddresses = new InternetAddress[] { toAddr };
     }
@@ -165,7 +165,7 @@ public class EmailStrategyTest {
 
     @Test
     public void activation() throws Exception {
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new ActivationEmailStrategy(key);
 
         builder.buildMessage(message, strategy, toAddresses,
@@ -186,7 +186,7 @@ public class EmailStrategyTest {
 
     @Test
     public void activationAndReset() throws Exception {
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new ActivationEmailStrategy(key, passowrdResetKey);
 
         builder.buildMessage(message, strategy, toAddresses,
@@ -207,7 +207,7 @@ public class EmailStrategyTest {
 
     @Test
     public void contactAdmin() throws Exception {
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new ContactAdminEmailStrategy(
                         fromLoginName, fromName, replyEmail, userSubject,
                         htmlMessage);
@@ -231,7 +231,7 @@ public class EmailStrategyTest {
     @Test
     public void contactAdminAnonymous() throws Exception {
         String ipAddress = "101.20.30.40";
-        EmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
+        VelocityEmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
                 ipAddress, userSubject, htmlMessage);
 
         builder.buildMessage(message, strategy, toAddresses,
@@ -255,7 +255,7 @@ public class EmailStrategyTest {
         String roles = "coordinator, translator";
         String localeDisplayName = "Spanish";
 
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
             new DeclineLanguageRequestEmailStrategy(
                 toName, roles, contactCoordinatorLink, localeDisplayName,
                 htmlMessage);
@@ -277,7 +277,7 @@ public class EmailStrategyTest {
 
     @Test
     public void contactLanguageCoordinator() throws Exception {
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new ContactLanguageCoordinatorEmailStrategy(receiver,
                         fromLoginName, fromName, replyEmail, userSubject,
                         localeId, localeNativeName, htmlMessage);
@@ -305,7 +305,7 @@ public class EmailStrategyTest {
 
     @Test
     public void emailValidation() throws Exception {
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new EmailValidationEmailStrategy(key);
 
         builder.buildMessage(message, strategy, toAddresses,
@@ -327,7 +327,7 @@ public class EmailStrategyTest {
 
     @Test
     public void passwordReset() throws Exception {
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new PasswordResetEmailStrategy(key);
 
         builder.buildMessage(message, strategy, toAddresses,
@@ -348,7 +348,7 @@ public class EmailStrategyTest {
 
     @Test
     public void requestToJoinLanguage() throws Exception {
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new RequestToJoinLanguageEmailStrategy(
                         fromLoginName, fromName, replyEmail,
                         localeId, localeNativeName, htmlMessage,
@@ -376,7 +376,7 @@ public class EmailStrategyTest {
     public void contactLanguageMember() throws Exception {
         String subject = "email subject";
         String contactAdminLink = "link";
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
             new ContactLanguageTeamMembersEmailStrategy(
                 fromLoginName, subject, localeId, localeNativeName, htmlMessage,
                 contactAdminLink);
@@ -404,7 +404,7 @@ public class EmailStrategyTest {
                         ProjectType.File)
         );
 
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new RequestToJoinVersionGroupEmailStrategy(
                         fromLoginName, fromName, replyEmail,
                         versionGroupName, versionGroupSlug,
@@ -433,7 +433,7 @@ public class EmailStrategyTest {
     public void usernameChanged() throws Exception {
         String newUsername = "NEW_USERNAME[测试]";
 
-        EmailStrategy strategy =
+        VelocityEmailStrategy strategy =
                 new UsernameChangedEmailStrategy(newUsername, true);
 
         builder.buildMessage(message, strategy, toAddresses,

@@ -40,7 +40,7 @@ import org.zanata.model.type.RequestState;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
-import org.zanata.email.EmailStrategy;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.email.RequestToJoinLanguageEmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
@@ -169,7 +169,7 @@ public class LanguageJoinAction implements Serializable {
         String fromName = authenticatedAccount.getPerson().getName();
         String fromLoginName = authenticatedAccount.getUsername();
         String replyEmail = authenticatedAccount.getPerson().getEmail();
-        EmailStrategy strategy = new RequestToJoinLanguageEmailStrategy(
+        VelocityEmailStrategy strategy = new RequestToJoinLanguageEmailStrategy(
                 fromLoginName, fromName, replyEmail,
                 locale.getLocaleId().getId(), locale.retrieveNativeName(),
                 message, requestAsTranslator, requestAsReviewer,
