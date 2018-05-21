@@ -26,7 +26,7 @@ import javaslang.collection.Map;
 
 /**
  * Strategy class for EmailBuilder to customise the content and recipients
- * of an email.
+ * of an email, generated from a Velocity template.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public abstract class VelocityEmailStrategy extends AbstractEmailStrategy {

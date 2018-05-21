@@ -396,6 +396,9 @@ public class ProjectVersionService implements ProjectVersionResource {
             @PathParam("versionSlug") String versionSlug,
             VersionTMMerge mergeRequest) {
         int percent = mergeRequest.getThresholdPercent();
+        // NB If changing these numbers, see also #percentDropdown in
+        // zanata-frontend/src/app/containers/ProjectVersion/TMMergeModal.js
+        // TODO pass the minimum threshold from server to frontend, eg via REST
         if (percent < 75 || percent > 100) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"error\":\"percentThreshold must be between 75 and 100\"}")

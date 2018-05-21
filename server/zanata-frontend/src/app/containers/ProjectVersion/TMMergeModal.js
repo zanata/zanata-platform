@@ -129,6 +129,8 @@ const MergeOptions = (
       <Col xs={12} className='versionMergeRow'>
         <p className="lead">For every potential translation:</p>
         <div className="VersionMergeTitle u-textNewBlue">
+          {/* NB If changing 'values' below, note that they should fit with
+          the expected thresholds in ProjectVersionService.prefillWithTM */}
           If text is less than
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
             id="percentDropdown" className='versionMergeDropdown'

@@ -32,7 +32,6 @@ import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.security.annotations.Authenticated;
 import org.apache.commons.lang3.StringUtils;
 import org.zanata.exception.RequestExistsException;
@@ -41,6 +40,7 @@ import org.zanata.model.type.RequestState;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.email.RequestToJoinLanguageEmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
