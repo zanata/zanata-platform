@@ -479,7 +479,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
                 List<TransUnitUpdateRequest> updateRequests = Lists.newLinkedList();
                 for (HTextFlow hTextFlow : textFlows) {
-@Nullable           HTextFlowTarget hTextFlowTarget =
+                    @Nullable HTextFlowTarget hTextFlowTarget =
                             hTextFlow.getTargets().get(targetLocale.getId());
                     Optional<TransMemoryResultItem> tmResult =
                             translationMemoryServiceImpl.searchBestMatchTransMemory(
