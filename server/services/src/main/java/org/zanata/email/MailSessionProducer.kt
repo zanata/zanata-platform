@@ -11,11 +11,7 @@ import javax.mail.Session
  */
 @ApplicationScoped
 internal class MailSessionProducer {
-    companion object {
-        private const val MAIL_SESSION_JNDI = "mail/Default"
-    }
-
-    @field:Resource(lookup = MAIL_SESSION_JNDI)
+    @field:Resource(lookup = "java:jboss/mail/Default")
     private lateinit var session: Session
 
     @Produces
