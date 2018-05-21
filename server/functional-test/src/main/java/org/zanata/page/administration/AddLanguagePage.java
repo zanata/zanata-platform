@@ -42,6 +42,7 @@ public class AddLanguagePage extends BasePage {
     private By languageOption = By.name("new-language-displayName");
     private By newLanguageName = By.id("displayName");
     private By newLanguageNativeName = By.id("nativeName");
+    private By pluralForms = By.id("pluralForms");
 
     public AddLanguagePage(final WebDriver driver) {
         super(driver);
@@ -55,6 +56,45 @@ public class AddLanguagePage extends BasePage {
     public AddLanguagePage enterSearchLanguage(String language) {
         log.info("Enter language {}", language);
         enterText(localeId, language);
+        // Pause for a moment, as quick actions can break here
+        slightPause();
+        return new AddLanguagePage(getDriver());
+    }
+
+    /**
+     * Enter a string into the language search field
+     * @param language string to enter
+     * @return new AddLanguagePage
+     */
+    public AddLanguagePage enterLanguageName(String language) {
+        log.info("Enter language name {}", language);
+        enterText(newLanguageName, language);
+        // Pause for a moment, as quick actions can break here
+        slightPause();
+        return new AddLanguagePage(getDriver());
+    }
+
+    /**
+     * Enter a string into the language search field
+     * @param language string to enter
+     * @return new AddLanguagePage
+     */
+    public AddLanguagePage enterLanguageNativeName(String language) {
+        log.info("Enter language native name {}", language);
+        enterText(newLanguageNativeName, language);
+        // Pause for a moment, as quick actions can break here
+        slightPause();
+        return new AddLanguagePage(getDriver());
+    }
+
+    /**
+     * Enter a string into the language search field
+     * @param language string to enter
+     * @return new AddLanguagePage
+     */
+    public AddLanguagePage enterLanguagePlurals(String language) {
+        log.info("Enter plurals {}", language);
+        enterText(pluralForms, language);
         // Pause for a moment, as quick actions can break here
         slightPause();
         return new AddLanguagePage(getDriver());
@@ -102,8 +142,8 @@ public class AddLanguagePage extends BasePage {
      */
     public AddLanguagePage enableLanguageByDefault() {
         log.info("Click Enable by default");
-        if (!readyElement(enabledByDefaultCheckbox).isSelected()) {
-            clickElement(enabledByDefaultCheckbox);
+        if (!existingElement(enabledByDefaultCheckbox).isSelected()) {
+            getDriver().findElement(enabledByDefaultCheckbox).click();
         }
         return new AddLanguagePage(getDriver());
     }
@@ -114,8 +154,9 @@ public class AddLanguagePage extends BasePage {
      */
     public AddLanguagePage disableLanguageByDefault() {
         log.info("Click Disable by default");
-        if (readyElement(enabledByDefaultCheckbox).isSelected()) {
-            clickElement(enabledByDefaultCheckbox);
+        if (existingElement(enabledByDefaultCheckbox).isSelected()) {
+            getDriver().findElement(enabledByDefaultCheckbox).click();
+//            clickElement(enabledByDefaultCheckbox);
         }
         return new AddLanguagePage(getDriver());
     }

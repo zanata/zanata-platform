@@ -67,6 +67,9 @@ public class AddLanguageTest extends ZanataTestCase {
         languagesPage = languagesPage
                 .clickAddNewLanguage()
                 .enterSearchLanguage(language)
+                .enterLanguageName("Goa'uld")
+                .enterLanguageNativeName("Kek mattet")
+                .enterLanguagePlurals("nplurals=2; plural=(n != 1)")
                 .expectPluralsWarning()
                 .saveLanguage();
 
@@ -110,6 +113,9 @@ public class AddLanguageTest extends ZanataTestCase {
                 .clickAddNewLanguage()
                 .enterSearchLanguage(language)
                 .expectPluralsWarning()
+                .enterLanguageName("ta' Hol")
+                .enterLanguageNativeName("tlhIngan")
+                .enterLanguagePlurals("nplurals=2; plural=(n != 1)")
                 .disableLanguageByDefault()
                 .saveLanguage();
 
