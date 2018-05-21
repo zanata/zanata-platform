@@ -33,13 +33,17 @@ import com.google.common.base.Optional;
 public abstract class AbstractEmailStrategy {
 
     /**
-     * For absent, use the default From address configured by the server
-     * @return
+     * Returns the From address to be used for this email.
+     * If absent, use the default From address configured by the server
      */
     public Optional<InternetAddress> getFromAddress() {
         return Optional.absent();
     }
 
+    /**
+     * Returns the Reply-To address to be used for this email, if any.
+     * If absent, the Reply-To address will be omitted.
+     */
     public Optional<InternetAddress[]> getReplyToAddress(){
         return Optional.absent();
     }
