@@ -78,8 +78,9 @@ class TMBandDefsProducer {
      */
     @Produces
     @Dependent
-    fun produce(@TMFuzzyBandsConfig config: String): TMBandDefs {
-        val fuzzyBands = parseBands(config)
+    fun produce(@TMFuzzyBandsConfig config: String?): TMBandDefs {
+        // try to keep the default here in sync with jsf.config.tmfuzzybands.placeholder in messages.properties
+        val fuzzyBands = parseBands(config ?: "80 90")
         return TMBandDefs(createTMBands(fuzzyBands))
     }
 }
