@@ -1,6 +1,6 @@
 import React from "react";
 import Tooltip from "antd/lib/tooltip";
-import 'antd/lib/tooltip/style/css';
+import "antd/lib/tooltip/style/css";
 import {Icon} from "../../components";
 import {EntityStatus, isEntityStatusReadOnly} from "../../utils/EnumValueUtils";
 import {entityStatusPropType} from "../../utils/prop-types-util";
