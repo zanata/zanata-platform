@@ -205,6 +205,10 @@ public class UserAccountServiceImpl implements UserAccountService {
         session.createQuery("delete from HProjectMember pm where pm.person = :person")
                 .setParameter("person", person)
                 .executeUpdate();
+        // remove project locale membership link
+        session.createQuery("delete from HProjectLocaleMember plm where plm.person = :person")
+                .setParameter("person", person)
+                .executeUpdate();
 
         deleteRawDocuments(originalUsername);
 

@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -31,12 +32,20 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.file.DocumentStorage;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountResetPasswordKey;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectLocaleMember;
+import org.zanata.model.HProjectMember;
+import org.zanata.model.LocaleRole;
+import org.zanata.model.ProjectRole;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.model.validator.UniqueValidator;
@@ -202,6 +211,25 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
 
         account.getCredentials().add(fedoraCreds);
 
+        // set up a project and project membership
+        HProject project = new HProject();
+        project.setSlug("test-slug");
+        project.setStatus(EntityStatus.ACTIVE);
+        project.setName("test project");
+        getEm().persist(project);
+
+        HLocale locale = new HLocale(LocaleId.DE);
+        getEm().persist(locale);
+        HProjectLocaleMember localeMember =
+                new HProjectLocaleMember(project, locale, account.getPerson(),
+                        LocaleRole.Coordinator);
+
+        HProjectMember projectMember =
+                new HProjectMember(project, account.getPerson(),
+                        ProjectRole.Maintainer);
+        getEm().persist(localeMember);
+        getEm().persist(projectMember);
+
         getEm().flush();
 
         userAccountService.eraseUserData(account);
@@ -218,5 +246,11 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(account.getAccountActivationKey()).isNull();
         assertThat(account.getAccountResetPasswordKey()).isNull();
         assertThat(account.getCredentials()).isEmpty();
+
+        assertThat(getEm().createQuery("from HProjectMember", HProjectMember.class)
+                .getResultList()).isEmpty();
+
+        assertThat(getEm().createQuery("from HProjectLocaleMember", HProjectLocaleMember.class).getResultList()).isEmpty();
+
     }
 }
