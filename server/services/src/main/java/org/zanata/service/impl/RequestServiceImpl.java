@@ -29,7 +29,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LanguageRequestDAO;
 import org.zanata.dao.RequestDAO;
 import org.zanata.email.DeclineLanguageRequestEmailStrategy;
-import org.zanata.email.EmailStrategy;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.events.RequestUpdatedEvent;
 import org.zanata.exception.RequestExistsException;
 import org.zanata.i18n.Messages;
@@ -152,7 +152,7 @@ public class RequestServiceImpl implements RequestService {
                             + languageRequest.getLocale().getLocaleId();
             HAccount requester = languageRequest.getRequest().getRequester();
             String message = languageRequest.getRequest().getComment();
-            EmailStrategy strategy = new DeclineLanguageRequestEmailStrategy(
+            VelocityEmailStrategy strategy = new DeclineLanguageRequestEmailStrategy(
                     requester.getUsername(), getRequestRoles(languageRequest),
                     contactCoordinatorLink,
                     languageRequest.getLocale().retrieveDisplayName(),

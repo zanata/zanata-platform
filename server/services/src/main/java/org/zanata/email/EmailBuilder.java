@@ -84,7 +84,7 @@ public class EmailBuilder implements Serializable {
      * @param strategy
      * @throws javax.mail.MessagingException
      */
-    public void sendMessage(EmailStrategy strategy,
+    public void sendMessage(VelocityEmailStrategy strategy,
             List<String> receivedReasons, InternetAddress toAddress) {
         sendMessage(strategy, receivedReasons,
                 new InternetAddress[] { toAddress });
@@ -97,7 +97,7 @@ public class EmailBuilder implements Serializable {
      * @param strategy
      * @throws javax.mail.MessagingException
      */
-    public void sendMessage(EmailStrategy strategy,
+    public void sendMessage(VelocityEmailStrategy strategy,
             List<String> receivedReasons, InternetAddress[] toAddresses) {
         try {
             MimeMessage email = new MimeMessage(mailSession);
@@ -146,7 +146,7 @@ public class EmailBuilder implements Serializable {
      * @throws javax.mail.MessagingException
      */
     @VisibleForTesting
-    MimeMessage buildMessage(MimeMessage msg, EmailStrategy strategy,
+    MimeMessage buildMessage(MimeMessage msg, VelocityEmailStrategy strategy,
             InternetAddress[] toAddresses, List<String> receivedReasons)
             throws MessagingException {
         // TODO remember users' locales, and customise for each recipient

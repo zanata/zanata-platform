@@ -28,10 +28,10 @@ import org.zanata.i18n.Messages;
 
 /**
  * Strategy class for EmailBuilder to customise the content and recipients
- * of an email.
+ * of an email, generated from a Velocity template.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class EmailStrategy {
+public abstract class VelocityEmailStrategy {
 
     /**
      * For absent, use the default From address configured by the server

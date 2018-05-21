@@ -26,7 +26,7 @@ import org.zanata.i18n.Messages;
 import com.google.common.base.Optional;
 import org.zanata.util.HtmlUtil;
 
-public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
+public class ContactAdminAnonymousEmailStrategy extends VelocityEmailStrategy {
     private final String ipAddress;
     private final String userSubject;
     private final String htmlMessage;

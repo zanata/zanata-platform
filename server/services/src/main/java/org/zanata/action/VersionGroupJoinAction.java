@@ -40,7 +40,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
-import org.zanata.email.EmailStrategy;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.email.RequestToJoinVersionGroupEmailStrategy;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
@@ -161,7 +161,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
                             selectedVersion.getProjectType()));
                 }
             }
-            EmailStrategy strategy = new RequestToJoinVersionGroupEmailStrategy(
+            VelocityEmailStrategy strategy = new RequestToJoinVersionGroupEmailStrategy(
                     fromLoginName, fromName, replyEmail, getGroupName(),
                     getSlug(), projectVersionIds, message);
             try {
