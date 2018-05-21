@@ -141,6 +141,7 @@ public abstract class ZanataJpaTest extends ZanataTest {
         purgeLuceneIndexes(em);
     }
 
+    // see also org.zanata.util.SampleDataProfile.purgeLuceneIndexes
     public static void purgeLuceneIndexes(EntityManager em) {
         FullTextEntityManager ftem = Search.getFullTextEntityManager(em);
         ftem.purgeAll(Object.class);
