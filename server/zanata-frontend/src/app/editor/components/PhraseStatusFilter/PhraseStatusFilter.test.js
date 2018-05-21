@@ -6,7 +6,8 @@ import * as TestUtils from 'react-dom/test-utils'
 import { PhraseStatusFilter } from '.'
 import FilterToggle from '../FilterToggle'
 import { Icon } from '../../../components'
-import { Row } from 'react-bootstrap'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
 
 const callback = () => {}

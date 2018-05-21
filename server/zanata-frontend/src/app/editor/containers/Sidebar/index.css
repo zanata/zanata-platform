@@ -513,7 +513,7 @@ img.ActivityAvatar {
   width: 1.2rem;
 }
 
-.RevisionBox .well {
+.RevisionBox .card {
   background-color: var(--Sidebar-well);
   margin-left: 0.75rem;
   padding: 0.75rem;
@@ -535,7 +535,7 @@ img.ActivityAvatar {
   border-left: solid 5px var(--Editor-color-approved);
 }
 
-.RevisionBox .well-sm {
+.RevisionBox .ant-card {
   background-color: rgba(255, 255, 255, 0.35) !important;
 }
 

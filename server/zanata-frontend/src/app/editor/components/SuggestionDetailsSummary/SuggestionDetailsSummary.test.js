@@ -2,7 +2,7 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Icon } from '../../../components'
-import { Row } from 'react-bootstrap'
+
 import SuggestionDetailsSummary from '.'
 
 describe('SuggestionDetailsSummaryTest', () => {
@@ -25,9 +25,7 @@ describe('SuggestionDetailsSummaryTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
-            <Row>
-              <Icon name="import" className="n1"/> {'champagne'}
-            </Row>
+            <Icon name="import" className="n1"/> {'champagne'}
           </li>
         </ul>
       </div>
@@ -56,20 +54,14 @@ describe('SuggestionDetailsSummaryTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li title="sausages">
-            <Row>
-              <Icon name="project" className="n1"/> {'Sausages'}
-            </Row>
+            <Icon name="project" className="n1"/> {'Sausages'}
           </li>
           <li>
-            <Row>
-              <Icon name="version" className="n1"/> {'the-wurst-version'}
-            </Row>
+            <Icon name="version" className="n1"/> {'the-wurst-version'}
           </li>
           <li className="DocName" title="what-a-brat/i-rote-this.txt">
-            <Row>
-              <Icon name="document" className="n1"/>
-              <span className="ellipsis">{'i-rote-this.txt'}</span>
-            </Row>
+            <Icon name="document" className="n1"/>
+            <span className="ellipsis">{'i-rote-this.txt'}</span>
           </li>
         </ul>
       </div>

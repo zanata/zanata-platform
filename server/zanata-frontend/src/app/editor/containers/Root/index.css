@@ -20,6 +20,10 @@
   --Editor-border-radius: 0.25rem;
 }
 
+a {
+  color: var(--Editor-color-bright);
+}
+
 input, textarea, select, button  {
   font-size: 1rem;
 }

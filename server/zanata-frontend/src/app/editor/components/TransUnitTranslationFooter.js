@@ -25,7 +25,6 @@ import cx from 'classnames'
 import Button from './Button'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
-import { Row } from 'react-bootstrap'
 import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
@@ -130,12 +129,12 @@ class TransUnitTranslationFooter extends React.Component {
             { 'is-active': active })}
           title=" Suggestions available"
           onClick={onClick}>
-          <Row>
+          <span>
             <Icon name={iconName} className="s1" />
             <span className="u-textMini">
               {count}
             </span>
-          </Row>
+          </span>
         </Button>
       </li>
     )
