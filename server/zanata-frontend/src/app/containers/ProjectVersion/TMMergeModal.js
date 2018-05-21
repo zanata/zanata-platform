@@ -413,7 +413,7 @@ class TMMergeModal extends Component {
       fetchingLocale,
       processStatus
     } = this.props
-    const modalBody = processStatus
+    const modalBodyInner = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
         processStatus={processStatus} buttonLabel="Cancel TM Merge"
@@ -443,6 +443,11 @@ class TMMergeModal extends Component {
           removeProjectVersion={this.removeProjectVersion}
         />
         )
+    const modalBody =
+      <div>
+        {modalBodyInner}
+        <p>Note: Zanata will send you a TM Merge Report by email when processing is complete.</p>
+      </div>
     const hasTMSource = this.state.fromAllProjects ||
       this.state.fromImportedTM || this.state.selectedVersions.length > 0
     const modalFooter = processStatus
