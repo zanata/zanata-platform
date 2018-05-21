@@ -12,10 +12,6 @@ interface TranslationCounter {
      * @param messages number of messages copied. Must be >= 1.
      */
     fun count(state: ContentState, score: Int, chars: Long, words: Long, messages: Long = 1)
-
-    object NOOP : TranslationCounter {
-        override fun count(state: ContentState, score: Int, chars: Long, words: Long, messages: Long) {}
-    }
 }
 
 interface TextFlowCounter {

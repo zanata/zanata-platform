@@ -32,7 +32,6 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
@@ -76,6 +75,7 @@ import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationCounter;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
+import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.service.VersionStateCache;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.transaction.TransactionUtil;
@@ -189,10 +189,10 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      */
     @Override
     @Transactional
-    public List<TranslationService.TranslationResult> executeMerge(
+    public List<TranslationResult> executeMerge(
             TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle) {
-        List<TranslationService.TranslationResult> finalResult = Lists.newLinkedList();
+        List<TranslationResult> finalResult = Lists.newLinkedList();
         final WorkspaceId workspaceId =
                 new WorkspaceId(request.projectIterationId, request.localeId);
 
@@ -241,10 +241,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                          request.localeId,
                                          request.editorClientId,
                                          TransUnitUpdated.UpdateType.NonEditorSave));
-                List<TranslationService.TranslationResult> batchResult =
+                List<TranslationResult> batchResult =
                         translateInBatch(request, textFlowsBatch, targetLocale,
-                                request.getInternalTMSource(), callback,
-                                TranslationCounter.NOOP.INSTANCE);
+                                request.getInternalTMSource(), callback);
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
@@ -276,9 +275,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     @Async
     @Override
     @Transactional
-    public Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
+    public Future<List<TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle) {
-        List<TranslationService.TranslationResult> translationResults =
+        List<TranslationResult> translationResults =
                 executeMerge(request, asyncTaskHandle);
         return AsyncTaskResult.completed(translationResults);
     }
@@ -369,12 +368,22 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                     .map(Pair::component1)
                     .collect(Collectors.toList());
 
-            List<TranslationService.TranslationResult> batchResults =
+            List<TranslationResult> batchResults =
                 translateInBatch(mergeRequest, translatableTextFlows,
-                    targetLocale, internalTMSource, NOOP, mergeResult);
-
-            // FIXME don't count copies which failed because of validation or concurrent edits
-
+                    targetLocale, internalTMSource, NOOP);
+            for (TranslationResult result : batchResults) {
+                // we don't count copies which failed because of validation or concurrent edits
+                if (result.isTranslationSuccessful()) {
+                    HTextFlow hTextFlow =
+                            result.getTranslatedTextFlowTarget().getTextFlow();
+                    long charCount = codePoints(hTextFlow);
+                    long wordCount = hTextFlow.getWordCount();
+                    // round down (assuming non-negative)
+                    int similarity = (int) result.getSimilarityPercent();
+                    mergeResult.count(result.getNewContentState(), similarity,
+                            charCount, wordCount, 1);
+                }
+            }
             taskHandleOpt.ifPresent(
                     mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
                             .increaseProgress(textFlowsIds.size()));
@@ -454,16 +463,13 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      * @param callbackOnUpdate
      *            a callback to call when we have a
      *            TransUnitUpdateRequest ready
-     * @param translationCounter
-     *            an object which can count copies made during TM merge
      * @return translation results
      */
-    private List<TranslationService.TranslationResult> translateInBatch(
+    private List<TranslationResult> translateInBatch(
             HasTMMergeCriteria request, List<HTextFlow> textFlows,
             HLocale targetLocale,
             InternalTMSource internalTMSource,
-            Consumer<TransUnitUpdateRequest> callbackOnUpdate,
-            @Nonnull TranslationCounter translationCounter) {
+            Consumer<TransUnitUpdateRequest> callbackOnUpdate) {
 
         if (textFlows.isEmpty()) {
             return Collections.emptyList();
@@ -496,12 +502,6 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                         if (updateRequest != null) {
                             updateRequests.add(updateRequest);
                             callbackOnUpdate.accept(updateRequest);
-                            long charCount = codePoints(hTextFlow);
-                            long wordCount = hTextFlow.getWordCount();
-                            // round down (assuming non-negative)
-                            int similarity = (int) updateRequest.getSimilarityPercent();
-                            ContentState contentState = updateRequest.getNewContentState();
-                            translationCounter.count(contentState, similarity, charCount, wordCount, 1);
                         }
                     }
                 }

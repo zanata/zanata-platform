@@ -165,9 +165,13 @@ public interface TranslationService extends Serializable {
 
         /**
          * Previous state of the target TextFlowTarget
-         * @return
          */
         ContentState getBaseContentState();
+
+        /**
+         * New state of the target TextFlowTarget
+         */
+        ContentState getNewContentState();
 
         String getErrorMessage();
 
