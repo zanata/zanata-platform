@@ -31,6 +31,7 @@ class NewlineLeadTrailValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public locale: string
 
   public _sourceExample: string
   public get sourceExample() {
@@ -47,8 +48,8 @@ class NewlineLeadTrailValidation extends AbstractValidationAction {
   private leadRegExp = new RegExp(this.leadNewlineRegex);
   private endRegExp = new RegExp(this.endNewlineRegex);
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages) {
-    super(id, description, messages)
+  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+    super(id, description, messages, locale)
   }
 
   public doValidate(source: string, target: string): string[] {

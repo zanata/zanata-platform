@@ -4,15 +4,16 @@
 
 import HtmlXmlTagValidation from './HtmlXmlTagValidation'
 import ValidationId from '../ValidationId'
-// import ValidationMessages from '../ValidationMessages'
 // TODO: Consume as react-intl JSON messages file
+import MessageFormat from 'intl-messageformat'
 import Messages from '../messages'
+const locale = 'en-US'
 
 const id = ValidationId.HTML_XML
 const description = ''
-const messageData = Messages['en-US']
 
-const HtmlXmlTagValidator = new HtmlXmlTagValidation(id, description, messageData)
+const HtmlXmlTagValidator =
+  new HtmlXmlTagValidation(id, description, Messages[locale], locale)
 
 const noErrors = []
 
@@ -33,28 +34,41 @@ describe('HtmlXmlTagValidation', () => {
     const source = '<group><users><user>1</user></users></group>'
     const target = '<group><users><user>1</user></users><foo></group>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
+    const errorMessages =
+      new MessageFormat(HtmlXmlTagValidator.messages.tagsAdded, locale)
+        .format({ added: '<foo>' })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
   it('addedTagsError', () => {
     const source = '<group><users><user>1</user></users></group>'
     const target = '<foo><group><users><bar><user>1</user></users></group><moo>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
-    expect(errorList.length).toEqual(3)
+    const errorMessages =
+      new MessageFormat(HtmlXmlTagValidator.messages.tagsAdded, locale)
+        .format({ added: '<foo>,<bar>,<moo>' })
+    expect(errorList).toEqual([errorMessages])
+    expect(errorList.length).toEqual(1)
   })
   it('missingTagError', () => {
     const source = '<html><title>HTML TAG Test</title><foo><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>'
     const target = '<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.tagsMissing(asList("<foo>")))
+    const errorMessages =
+      new MessageFormat(HtmlXmlTagValidator.messages.tagsMissing, locale)
+        .format({ missing: '<foo>' })
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
   it('missingTagsError', () => {
     const source = '<html><title>HTML TAG Test</title><p><table><tr><td>column 1 row 1</td></tr></table></html>'
     const target = '<title>HTML TAG Test</title><table><tr><td>column 1 row 1</td></tr></table>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.tagsMissing(asList(
-    //   "<html>", "<p>", "</html>")));
-    expect(errorList.length).toEqual(3)
+    const errorMessages =
+      new MessageFormat(HtmlXmlTagValidator.messages.tagsMissing, locale)
+        .format({ missing: '<html>,<p>,</html>' })
+    expect(errorList).toEqual([errorMessages])
+    expect(errorList.length).toEqual(1)
   })
   it('orderOnlyValidatedWithSameTags', () => {
     const source = '<one><two><three></four></five>'
@@ -62,6 +76,13 @@ describe('HtmlXmlTagValidation', () => {
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     // assertThat(errorList).contains(messages.tagsMissing(asList("<one>")));
     // assertThat(errorList).contains(messages.tagsAdded(asList("<six>")));
+    const msg1 =
+      new MessageFormat(HtmlXmlTagValidator.messages.tagsMissing, locale)
+        .format({ missing: '<one>' })
+    const msg2 =
+      new MessageFormat(HtmlXmlTagValidator.messages.tagsAdded, locale)
+        .format({ added: '<six>' })
+    expect(errorList).toEqual([msg1, msg2])
     expect(errorList.length).toEqual(2)
   })
   // FIXME: orderValidation method not discovering violations

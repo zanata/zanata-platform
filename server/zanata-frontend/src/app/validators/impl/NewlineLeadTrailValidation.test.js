@@ -30,28 +30,32 @@ describe('NewlineLeadTrailValidation', () => {
     const source = '\nTesting string with leading new line'
     const target = 'Different string with the newline removed'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.leadingNewlineMissing())
+    const errorMessages = messageData.leadingNewlineMissing
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
   it('addedLeadingNewline', () => {
     const source = 'Testing string without a leading new line'
     const target = '\nDifferent string with a leading newline added'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.leadingNewlineAdded())
+    const errorMessages = messageData.leadingNewlineAdded
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
   it('missingTrailingNewline', () => {
     const source = 'Testing string with trailing new line\n'
     const target = 'Different string with the newline removed'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.trailingNewlineMissing())
+    const errorMessages = messageData.trailingNewlineMissing
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
   it('addedTrailingNewline', () => {
     const source = 'Testing string without a trailing new line'
     const target = 'Different string with a trailing newline added\n'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.trailingNewlineAdded())
+    const errorMessages = messageData.trailingNewlineAdded
+    expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
 
@@ -59,8 +63,8 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'Testing string with no newlines'
     const target = '\nDifferent string with both added\n'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.leadingNewlineAdded(),
-      // messages.trailingNewlineAdded())
+    const errorMessages = [messageData.leadingNewlineAdded, messageData.trailingNewlineAdded]
+    expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
 
@@ -68,8 +72,8 @@ describe('NewlineLeadTrailValidation', () => {
     const source = '\nString with both newlines\n'
     const target = 'Other string with no newlines'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.leadingNewlineMissing(),
-      // messages.trailingNewlineMissing())
+    const errorMessages = [messageData.leadingNewlineMissing, messageData.trailingNewlineMissing]
+    expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
 
@@ -77,8 +81,8 @@ describe('NewlineLeadTrailValidation', () => {
     const source = '\nString with only leading newline'
     const target = 'Other string with newline trailing\n'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.leadingNewlineMissing(),
-      // messages.trailingNewlineAdded())
+    const errorMessages = [messageData.leadingNewlineMissing, messageData.trailingNewlineAdded]
+    expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
 
@@ -86,8 +90,8 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'String with trailing newline\n'
     const target = '\nOther string with newline leading'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.leadingNewlineAdded(),
-      // messages.trailingNewlineMissing())
+    const errorMessages = [messageData.leadingNewlineAdded, messageData.trailingNewlineMissing]
+    expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
 })

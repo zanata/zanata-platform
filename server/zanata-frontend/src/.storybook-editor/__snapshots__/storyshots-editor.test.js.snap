@@ -7555,3 +7555,52 @@ exports[`Editor Storyshots TextDiff default 1`] = `
   </span>
 </div>
 `;
+
+exports[`Editor Storyshots Validation TabValidation 1`] = `
+<div>
+  <h2>
+    Validation Messages for TabValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="with two		tabs"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="with one	tab"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          Warnings: 0, Errors: 0
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

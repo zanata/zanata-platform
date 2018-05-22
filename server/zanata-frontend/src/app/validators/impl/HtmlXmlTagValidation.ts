@@ -25,6 +25,8 @@ import AbstractValidationAction from '../AbstractValidationAction'
 import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
+import MessageFormat from 'intl-messageformat'
+
 /**
  *
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
@@ -33,6 +35,7 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public locale: string
 
   public _sourceExample: string
   public get sourceExample() {
@@ -45,19 +48,23 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
 
   private tagRegex = "<[^>]+>"
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages) {
-    super(id, description, messages)
+  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+    super(id, description, messages, locale)
   }
 
   public doValidate(source: string, target: string): string[] {
     let errors: string[] = []
     let foundErrors: string[] = this.listMissing(source, target)
-    if (foundErrors) {
-      errors = errors.concat(this.listMissing(source, target))
+    if (foundErrors.length > 0) {
+      const tagsMissing = new MessageFormat(this.messages.tagsMissing, this.locale)
+        .format({ missing: foundErrors })
+      errors.push(tagsMissing)
     }
     foundErrors = this.listMissing(target, source)
-    if (foundErrors) {
-      errors = errors.concat(this.listMissing(target, source))
+    if (foundErrors.length > 0) {
+      const tagsAdded = new MessageFormat(this.messages.tagsAdded, this.locale)
+        .format({ added: foundErrors })
+      errors.push(tagsAdded)
     }
     if (!errors) {
       const sourceTags = this.getTagList(source)

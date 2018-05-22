@@ -25,6 +25,8 @@ import AbstractValidationAction from '../AbstractValidationAction'
 import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
+import MessageFormat from 'intl-messageformat'
+
  /**
   * Checks for consistent java-style variables between two strings.
   *
@@ -39,6 +41,7 @@ class JavaVariablesValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public locale: string
 
   public _sourceExample: string
   public get sourceExample() {
@@ -49,8 +52,8 @@ class JavaVariablesValidation extends AbstractValidationAction {
     return "value must be between {0} and <span class='js-example__target txt--warning'>{2}</span>"
   }
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages) {
-    super(id, description, messages)
+  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+    super(id, description, messages, locale)
   }
 
   public doValidate(source: string, target: string): string[] {
@@ -72,17 +75,17 @@ class JavaVariablesValidation extends AbstractValidationAction {
       const removed = targetInfo.varCounts.delete(key)
       const targetCount = removed ? value : null
       if (targetCount === null) {
-        const quotedCount = targetInfo.quotedVarCounts!![key]
+        const quotedCount = targetInfo.quotedVarCounts[key]
         if (quotedCount !== null && quotedCount > 0) {
-          missingQuoted.push(`"{${key}}"`)
+          missingQuoted.push(`{${key}}`)
         } else {
-          missing.push(`"{${key}}"`)
+          missing.push(`{${key}}`)
         }
       } else if (value !== targetCount) {
         if (targetInfo.quotedVars.some((k) => k === key)) {
-          missingQuoted.push(`"{${key}}"`)
+          missingQuoted.push(`{${key}}`)
         } else {
-          different.push(`"{${key}}"`)
+          different.push(`{${key}}`)
         }
       }
     }
@@ -91,9 +94,9 @@ class JavaVariablesValidation extends AbstractValidationAction {
     for (const entry of Array.from(targetInfo.varCounts.entries())) {
       const key = entry[0]
       if (sourceInfo.quotedVarCounts.has(key)) {
-        addedQuoted.push(`"{${key}}"`)
+        addedQuoted.push(`{${key}}`)
       } else {
-        added.push(`"{${key}}"`)
+        added.push(`{${key}}`)
       }
     }
 
@@ -108,7 +111,9 @@ class JavaVariablesValidation extends AbstractValidationAction {
     const looksLikeMessageFormatString: boolean = !sourceInfo.varCounts
 
     if (missing.length > 0) {
-      errors.push(this.messages.varsMissing + missing)
+      const varsMissing = new MessageFormat(this.messages.varsMissing, this.locale)
+        .format({ missing })
+      errors.push(varsMissing)
     }
     if (looksLikeMessageFormatString && sourceInfo.singleApostrophes !== targetInfo.singleApostrophes) {
       // different number of apos.
@@ -120,16 +125,24 @@ class JavaVariablesValidation extends AbstractValidationAction {
       errors.push(this.messages.quotedCharsAdded)
     }
     if (missingQuoted.length > 0) {
-      errors.push(this.messages.varsMissingQuoted + missingQuoted)
+      const varsMissingQuoted = new MessageFormat(this.messages.varsMissingQuoted, this.locale)
+        .format({ missing: missingQuoted })
+      errors.push(varsMissingQuoted)
     }
     if (added.length > 0) {
-      errors.push(this.messages.varsAdded + added)
+      const varsAdded = new MessageFormat(this.messages.varsAdded, this.locale)
+        .format({ added })
+      errors.push(varsAdded)
     }
     if (addedQuoted.length > 0) {
-      errors.push(this.messages.varsAddedQuoted + addedQuoted)
+      const varsAddedQuoted = new MessageFormat(this.messages.varsAddedQuoted, this.locale)
+        .format({ added: addedQuoted })
+      errors.push(varsAddedQuoted)
     }
     if (different.length > 0) {
-      errors.push(this.messages.differentVarCount + different)
+      const differentVarCount = new MessageFormat(this.messages.differentVarCount, this.locale)
+        .format({ different })
+      errors.push(differentVarCount)
     }
 
     // TODO check if indices are used with the same format types
