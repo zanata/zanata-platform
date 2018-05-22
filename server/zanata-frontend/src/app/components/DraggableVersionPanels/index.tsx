@@ -9,8 +9,6 @@ import {
   SortableElement,
   SortableHandle,
 } from "react-sortable-hoc";
-import Button from "antd/lib/button";
-import "antd/lib/button/style/css";
 import Tooltip from "antd/lib/tooltip";
 import "antd/lib/tooltip/style/css";
 import Layout from "antd/lib/layout";
@@ -80,9 +78,9 @@ class Items extends Component<ItemsProps, {}> {
         (best first)
         </span>
         <Tooltip placement="top" title={tooltipSort} trigger="hover">
-          <Button className="btn-xs btn-link">
+          <a className="btn-xs btn-link">
             <Icon name="info" className="s0" />
-          </Button>
+          </a>
         </Tooltip>
         {sortableItems}
         </Layout>
