@@ -48,8 +48,10 @@ import org.zanata.config.AllowPublicRegistration;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
+import org.zanata.config.ServerFromEmail;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.config.TMFuzzyBandsConfig;
 import org.zanata.events.ConfigurationChanged;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.PostAuthenticateEvent;
@@ -289,10 +291,12 @@ public class ApplicationConfiguration implements Serializable {
         return new ArrayList<>(Arrays.asList(ss));
     }
 
+    @Produces
+    @Dependent
+    @ServerFromEmail
     public String getFromEmailAddr() {
-        String emailAddr = null;
         // Look in the database first
-        emailAddr = databaseBackedConfig.getFromEmailAddress();
+        String emailAddr = databaseBackedConfig.getFromEmailAddress();
         // Look in the properties file next
         if (emailAddr == null
                 && sysPropConfigStore.getDefaultFromEmailAddress() != null) {
@@ -423,6 +427,12 @@ public class ApplicationConfiguration implements Serializable {
         return parseIntegerOrDefault(
                 databaseBackedConfig.getMaxFilesPerUpload(),
                 defaultMaxFilesPerUpload);
+    }
+
+    @Produces
+    @TMFuzzyBandsConfig
+    public String getTMFuzzyBands() {
+        return databaseBackedConfig.getTMFuzzyBands();
     }
 
     private int parseIntegerOrDefault(String value, int defaultValue) {

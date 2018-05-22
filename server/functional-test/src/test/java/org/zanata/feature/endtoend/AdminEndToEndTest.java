@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.endtoend;
 
+import java.util.List;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -106,10 +108,13 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .enterEmail(EMAIL)
                 .clickRole("user")
                 .saveUser();
+        // TODO should we? manageUserPage.removeNotifications();
         manageUserPage.waitForNotificationsGone();
         manageUserPage.reload();
         assertThat(manageUserPage.getUserList()).contains(USERNAME);
-        WiserMessage email = hasEmailRule.getMessages().get(0);
+        List<WiserMessage> messages = hasEmailRule.getMessages();
+        assertThat(messages).as("one message").hasSize(1);
+        WiserMessage email = messages.get(0);
         assertThat(email.getEnvelopeReceiver()).contains(EMAIL);
         return manageUserPage;
     }

@@ -44,6 +44,8 @@
 
     <!-- Do not run checkstyle (eslint is used instead for this module) -->
     <checkstyle.skip>true</checkstyle.skip>
+
+    <detekt.skip>true</detekt.skip>
   </properties>
 
   <dependencies>

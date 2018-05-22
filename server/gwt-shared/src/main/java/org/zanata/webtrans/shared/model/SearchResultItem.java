@@ -16,10 +16,16 @@ public abstract class SearchResultItem implements IsSerializable {
         this.similarityPercent = similarityPercent;
     }
 
+    /**
+     * The query relevance score for the source language string corresponding to this match.
+     */
     public double getRelevanceScore() {
         return relevanceScore;
     }
 
+    /**
+     * The similarity percentage for the source language string corresponding to this match.
+     */
     public double getSimilarityPercent() {
         return similarityPercent;
     }

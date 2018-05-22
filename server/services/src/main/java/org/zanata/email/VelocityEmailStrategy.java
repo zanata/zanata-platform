@@ -22,30 +22,14 @@ package org.zanata.email;
 
 import javax.mail.internet.InternetAddress;
 
-import com.google.common.base.Optional;
 import javaslang.collection.Map;
-import org.zanata.i18n.Messages;
 
 /**
  * Strategy class for EmailBuilder to customise the content and recipients
  * of an email, generated from a Velocity template.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class VelocityEmailStrategy {
-
-    /**
-     * For absent, use the default From address configured by the server
-     * @return
-     */
-    public Optional<InternetAddress> getFromAddress() {
-        return Optional.absent();
-    }
-
-    public Optional<InternetAddress[]> getReplyToAddress(){
-        return Optional.absent();
-    }
-
-    public abstract String getSubject(Messages msgs);
+public abstract class VelocityEmailStrategy extends AbstractEmailStrategy {
 
     /**
      * The classpath resource name of the Velocity template which

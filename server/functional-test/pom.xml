@@ -351,7 +351,7 @@
 
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jre8</artifactId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -1086,11 +1086,13 @@
             <type>installed</type>
             <home>${appserver.home}</home>
 
+            <!-- These can be used in standalone*.xml with syntax like ${smtp.port} -->
             <systemProperties>
               <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
               <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
               <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
               <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
+              <smtp.port>${smtp.port}</smtp.port>
             </systemProperties>
 
             <timeout>120000</timeout>
@@ -1118,12 +1120,11 @@
               <cargo.jboss.configuration>standalone-full-ha</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
-              <!-- These properties will be interpolated by Cargo into the configfiles above -->
+              <!-- These ds/jdbc properties will be interpolated by Cargo into the configfile above -->
               <ds.connection.url>${ds.connection.url}</ds.connection.url>
               <ds.username>${ds.username}</ds.username>
               <ds.password>${ds.password}</ds.password>
               <jdbc.artifactId>${jdbc.artifactId}</jdbc.artifactId>
-              <smtp.port>${smtp.port}</smtp.port>
             </properties>
           </configuration>
         </configuration>

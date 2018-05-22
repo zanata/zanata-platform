@@ -61,8 +61,8 @@ public class AddLanguageTest extends ZanataTestCase {
             .goToLanguages();
 
         assertThat(languagesPage.getLanguageLocales())
-                .doesNotContain(language)
-                .as("The language is not listed");
+                .as("The language is not listed")
+                .doesNotContain(language);
 
         languagesPage = languagesPage
                 .clickAddNewLanguage()
@@ -74,12 +74,12 @@ public class AddLanguageTest extends ZanataTestCase {
                 .saveLanguage();
 
         assertThat(languagesPage.getLanguageLocales())
-                .contains(language)
-                .as("The language is listed");
+                .as("The language is listed")
+                .contains(language);
 
         assertThat(languagesPage.languageIsEnabledByDefault(language))
-                .isTrue()
-                .as("The language is enabled by default");
+                .as("The language is enabled by default")
+                .isTrue();
 
         languagesPage.closeNotification();
 
@@ -92,8 +92,8 @@ public class AddLanguageTest extends ZanataTestCase {
                 .getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .contains(language)
-                .as("The language is enabled by default");
+                .as("The language is enabled by default")
+                .contains(language);
     }
 
     @Trace(summary = "The administrator can add a disabled language to Zanata")

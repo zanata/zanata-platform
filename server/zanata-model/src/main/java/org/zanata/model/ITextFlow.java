@@ -47,8 +47,7 @@ public interface ITextFlow extends HasContents {
      * @param localeId
      * @return
      */
-    public @Nullable
-    ITextFlowTarget getTargetContents(@Nonnull LocaleId localeId);
+    public @Nullable ITextFlowTarget getTargetContents(@Nonnull LocaleId localeId);
 
     /**
      * Gets the associated TargetContents for all available locales for this

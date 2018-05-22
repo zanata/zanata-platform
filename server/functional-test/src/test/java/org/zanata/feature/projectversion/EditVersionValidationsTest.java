@@ -43,8 +43,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .as("Admin is logged in")
+                .isEqualTo("admin");
     }
 
     @Trace(summary = "The administrator can set validation options for " +
@@ -59,8 +59,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
 
         assertThat(versionTranslationTab
                 .isValidationLevel("Tab characters (\\t)", "Warning"))
-                .isTrue()
-                .as("The level is currently Warning");
+                .as("The level is currently Warning")
+                .isTrue();
 
         versionTranslationTab = versionTranslationTab
                 .setValidationLevel("Tab characters (\\t)", "Error");
@@ -75,7 +75,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
 
         assertThat(versionTranslationTab
                 .isValidationLevel("Tab characters (\\t)", "Error"))
-                .as("The changes were saved");
+                .as("The changes were saved")
+                .isTrue();
     }
 
     @Trace(summary = "The system recognises validation errors options in " +
@@ -95,22 +96,22 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .translate("fr", "About_Fedora");
 
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0))
-                .isEqualTo("")
-                .as("The text in the translation target is blank");
+                .as("The text in the translation target is blank")
+                .isEqualTo("");
 
         editorPage.pasteIntoRowAtIndex(0, "\t").saveAsFuzzyAtRow(0);
         editorPage.expectValidationErrorsVisible();
 
         assertThat(editorPage.getValidationMessageCurrentTarget())
-                .isEqualTo("Warning: none, Errors: 1")
-                .as("The notification area shows there's an error");
+                .as("The notification area shows there's an error")
+                .isEqualTo("Warning: none, Errors: 1");
 
         editorPage = editorPage.openValidationBox();
 
         assertThat(editorPage.getValidationMessageCurrentTarget())
+                .as("The correct error is shown for the validation")
                 .contains("Target has more tabs (\\t) than source "
-                        + "(source: 0, target: 1)")
-                .as("The correct error is shown for the validation");
+                        + "(source: 0, target: 1)");
     }
 
     @Trace(summary = "The user cannot disable enforced validations")
@@ -199,8 +200,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .saveAsFuzzyAtRow(0);
 
         assertThat(editorPage.isValidationMessageCurrentTargetVisible())
-                .isFalse()
-                .as("The validation errors are not shown");
+                .as("The validation errors are not shown")
+                .isFalse();
 
         editorPage = editorPage
                 .openValidationOptions()
@@ -208,8 +209,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
         editorPage.expectValidationErrorsVisible();
 
         assertThat(editorPage.isValidationMessageCurrentTargetVisible())
-                .isTrue()
-                .as("The validation errors are shown");
+                .as("The validation errors are shown")
+                .isTrue();
     }
 
 }

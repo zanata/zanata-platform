@@ -190,7 +190,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
         MergeTranslationsTaskHandle handle = getHandle();
         if (handle != null) {
             return msgs.format("jsf.iteration.mergeTrans.progress.message",
-                    handle.getCurrentProgress(), handle.getTotalTranslations());
+                    handle.getCurrentProgress(), handle.getTotalTextFlows());
         }
         return "";
     }

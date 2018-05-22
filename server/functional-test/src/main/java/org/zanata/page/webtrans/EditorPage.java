@@ -344,7 +344,8 @@ public class EditorPage extends BasePage {
         log.info("Wait for validation message panel displayed");
         waitForPageSilence();
         assertThat(isValidationMessageCurrentTargetVisible())
-                .as("validation message panel displayed").isTrue();
+                .as("validation message panel displayed")
+                .isTrue();
     }
 
     /**

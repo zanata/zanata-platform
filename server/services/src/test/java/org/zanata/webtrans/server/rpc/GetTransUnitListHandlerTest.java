@@ -25,6 +25,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
@@ -66,7 +67,7 @@ import javax.persistence.EntityManager;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ TranslationStateCacheImpl.class,
         TextFlowSearchServiceImpl.class, ValidationServiceImpl.class,
-        CurrentUserImpl.class })
+        CurrentUserImpl.class, LocaleDAO.class })
 public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(GetTransUnitListHandlerTest.class);

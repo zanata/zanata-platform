@@ -20,12 +20,13 @@
  */
 package org.zanata.i18n;
 
-import org.zanata.util.DefaultLocale;
+import java.io.Serializable;
+import java.util.Locale;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.Locale;
+
+import org.zanata.util.DefaultLocale;
 
 /**
  * Factory bean to return an instance of Messages, based on a parameter, or for
@@ -39,11 +40,6 @@ import java.util.Locale;
 public class MessagesFactory implements Serializable {
 
     private static final long serialVersionUID = 4503539056097043809L;
-    /**
-     * Returns an instance of Messages for the server's default locale.
-     */
-    private final Messages defaultLocaleMessages =
-            getMessages(Locale.getDefault());
 
     /**
      * Returns an instance of Messages for the specified locale.
@@ -52,17 +48,14 @@ public class MessagesFactory implements Serializable {
         return new Messages(locale);
     }
 
+    /**
+     * Returns an instance of Messages for the server's default locale.
+     * Also serves as a CDI Producer for @DefaultLocale Messages.
+     */
     @Produces
     @DefaultLocale
     @ApplicationScoped
-    public Messages getApplicationMessages() {
-        return defaultLocaleMessages;
-    }
-
-    /**
-     * Returns an instance of Messages for the server's default locale.
-     */
     public Messages getDefaultLocaleMessages() {
-        return this.defaultLocaleMessages;
+        return getMessages(Locale.getDefault());
     }
 }
