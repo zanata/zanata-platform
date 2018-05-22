@@ -249,7 +249,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
 
         // then
 
-        checkMergeResults(threshold, ContentState.NeedReview);
+        checkMergeResults(threshold, ContentState.NeedReview, numOfTextFlows);
     }
 
     @Test
@@ -269,7 +269,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
                 em.merge(targetDoc);
             });
 
-            // template content for HTextFlow in source and target versions
+            // template content for HTextFlow in source version
             IntStream.rangeClosed(1, numOfTextFlows).forEach(i -> {
                 HTextFlow sourceTextFlow = sourceDoc.getAllTextFlows().get("resId" + i);
                 HTextFlowTarget sourceTFTarget =
@@ -298,12 +298,45 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
         // then
 
 
-        checkMergeResults(threshold, ContentState.Translated);
+        checkMergeResults(threshold, ContentState.Translated, numOfTextFlows);
     }
+
+    @Test
+    @InRequestScope
+    public void mergeVersionWithNoMatches() throws Exception {
+        // given
+
+        doInTransaction(em -> {
+            targetDoc = em.find(HDocument.class, targetDoc.getId());
+            // template content for HTextFlow in target version
+            String content = "OTHER DIFFERENT TEXT TO FIND";
+            IntStream.rangeClosed(1, numOfTextFlows).forEach(i -> {
+                makeTextFlow(targetDoc, i, content);
+                em.merge(targetDoc);
+            });
+        });
+
+        int threshold = 80;
+
+        // when
+
+        service.startMergeTranslations(
+                targetVersion.getId(),
+                new VersionTMMerge(targetLocale.getLocaleId(), threshold,
+                        MergeRule.FUZZY, MergeRule.REJECT, MergeRule.REJECT,
+                        MergeRule.FUZZY, InternalTMSource.SELECT_ALL),
+                mergeHandle).get();
+
+        // then
+
+        checkMergeResults(threshold, ContentState.Translated, 0);
+    }
+
 
     private void checkMergeResults(
             int threshold,
-            ContentState expectedCopyState) {
+            ContentState expectedCopyState,
+            int expectedCopies) {
         assertThat(mergeHandle.getTotalTextFlows()).isEqualTo(numOfTextFlows);
         assertThat(mergeHandle.getMaxProgress()).isEqualTo(numOfTextFlows);
         assertThat(mergeHandle.getCurrentProgress()).isEqualTo(numOfTextFlows);
@@ -325,7 +358,7 @@ public class TransMemoryMergeServiceImplJpaTest extends ZanataJpaTest {
                 expectedCopyState,
                         new IntRange(100, 100));
 
-        assertThat(textFlowCounter.getMessages()).isEqualTo(numOfTextFlows);
+        assertThat(textFlowCounter.getMessages()).isEqualTo(expectedCopies);
     }
 
     private void makeTextFlow(HDocument doc, int index, String content) {

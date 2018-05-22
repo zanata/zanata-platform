@@ -173,8 +173,10 @@ private fun tmMergeEmailBodyProducer(
             style = "display:none;"
         }
 
+        var someResults = false
         for (state in mergeResult.contentStates) {
             if (mergeResult.noMessagesCounted(state)) continue
+            someResults = true
             h2 {
                 style = s.h2 + s.lowWeight + state.style
                 +msgs.format("email.templates.tm_merge.CopiedAs", state.niceName)
@@ -211,6 +213,11 @@ private fun tmMergeEmailBodyProducer(
             // hr is useful for the plain text version generated from this HTML
             hr {
                 style = "display:none;"
+            }
+        }
+        if (!someResults) {
+            p {
+                + msgs["email.templates.tm_merge.NothingCopied"]!!
             }
         }
     }
