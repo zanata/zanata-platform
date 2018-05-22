@@ -132,6 +132,7 @@ public class UsernameValidationTest {
         Set<ConstraintViolation<RegisterAction>> constraintViolations =
                 validator.validateProperty(registerAction, "username");
 
+        // May cause multiple violations
         assertThat(constraintViolations.size())
                 .as("The username failed validation")
                 .isGreaterThanOrEqualTo(1);
