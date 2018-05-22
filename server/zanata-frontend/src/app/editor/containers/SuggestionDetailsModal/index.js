@@ -6,13 +6,14 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'
 import ImportedTMDetailPanel from './ImportedTMDetailPanel'
 import PlainSuggestionContents from './PlainSuggestionContents'
 import { matchType } from '../../utils/suggestion-util'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 
 class SuggestionDetailsModal extends Component {
   static propTypes = {
@@ -67,9 +68,9 @@ class SuggestionDetailsModal extends Component {
           matchType={activeMatchType}
           directionClassSource={directionClassSource}
           directionClassTarget={directionClassTarget} displayHeader />
-        <PanelGroup>
+        <Card>
           {detailPanels}
-        </PanelGroup>
+        </Card>
       </Modal>
     )
   }

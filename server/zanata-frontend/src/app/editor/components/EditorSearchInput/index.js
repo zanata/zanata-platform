@@ -25,10 +25,10 @@ import { connect } from 'react-redux'
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import { map } from 'lodash'
 import {
   toggleAdvanced,
@@ -198,10 +198,11 @@ export class EditorSearchInput extends Component {
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           <span className="EditorInputGroup-addon btn-xs btn-link n1"
             onClick={this.toggleAdvanced}>
-            {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
+            {showAdvanced ? 'Hide advanced' : 'Advanced'}
+          </span>
         </div>
-        <Collapse accordion={showAdvanced} showArrow>
-          <Panel>
+        <Collapse>
+          <Panel accordion expanded={showAdvanced}>
             {advancedFields}
             <Button size="small" className="AdvSearch-clear btn-link"
               onClick={this.clearAllAdvancedFields}>
