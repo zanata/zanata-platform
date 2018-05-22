@@ -9,6 +9,8 @@ import {
   SortableElement,
   SortableHandle,
 } from "react-sortable-hoc";
+import Button from "antd/lib/button";
+import "antd/lib/button/style/css";
 import Tooltip from "antd/lib/tooltip";
 import "antd/lib/tooltip/style/css";
 import Layout from "antd/lib/layout";
