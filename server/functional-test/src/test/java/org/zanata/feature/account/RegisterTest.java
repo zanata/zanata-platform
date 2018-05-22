@@ -82,8 +82,8 @@ public class RegisterTest extends ZanataTestCase {
         SignInPage signInPage = registerPage.register();
 
         assertThat(signInPage.getNotificationMessage())
-                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
-                .as("Sign up is successful");
+                .as("Sign up is successful")
+                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE);
     }
 
     @Trace(summary = "The user must enter a username of between 3 and " +
@@ -98,22 +98,22 @@ public class RegisterTest extends ZanataTestCase {
         registerPage = registerPage.setFields(fields);
 
         assertThat(containsUsernameError(registerPage.getErrors()))
-                .isTrue()
-                .as("Size errors are shown for string too short");
+                .as("Size errors are shown for string too short")
+                .isTrue();
 
         fields.put("username", "testusername");
         registerPage = registerPage.setFields(fields);
 
         assertThat(containsUsernameError(registerPage.getErrors()))
-                .isFalse()
-                .as("Size errors are not shown");
+                .as("Size errors are not shown")
+                .isFalse();
 
         fields.put("username", "12345678901234567890a");
         registerPage = registerPage.setFields(fields);
 
         assertThat(containsUsernameError(registerPage.getErrors()))
-                .isTrue()
-                .as("Size errors are shown for string too long");
+                .as("Size errors are shown for string too long")
+                .isTrue();
     }
 
     @Trace(summary = "The user must enter a unique username to register",
@@ -126,8 +126,8 @@ public class RegisterTest extends ZanataTestCase {
         registerPage.defocus(registerPage.usernameField);
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
-                .as("Username not available message is shown");
+                .as("Username not available message is shown")
+                .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR);
     }
 
     /*

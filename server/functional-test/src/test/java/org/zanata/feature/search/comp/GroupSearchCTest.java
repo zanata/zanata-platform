@@ -44,8 +44,8 @@ public class GroupSearchCTest extends ZanataTestCase {
         String groupID = "basic-group";
         String groupName = "A Basic Group";
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .as("Admin is logged in")
+                .isEqualTo("admin");
 
         new BasicWorkFlow().goToHome()
                 .goToMyDashboard()
@@ -63,10 +63,11 @@ public class GroupSearchCTest extends ZanataTestCase {
                 .expectGroupListContains(groupName);
 
         assertThat(explorePage.getGroupSearchResults())
-                .contains(groupName)
-                .as("Normal user can see the group listed");
+                .as("Normal user can see the group listed")
+                .contains(groupName);
 
-        VersionGroupPage versionGroupPage = explorePage.clickGroupSearchEntry(groupName);
+        VersionGroupPage versionGroupPage =
+                explorePage.clickGroupSearchEntry(groupName);
 
         assertThat(versionGroupPage.getGroupName().trim())
                 .isEqualTo(groupName);
@@ -80,7 +81,7 @@ public class GroupSearchCTest extends ZanataTestCase {
                 .enterSearch("groop");
 
         assertThat(explorePage.getGroupSearchResults().isEmpty())
-                .isTrue()
-                .as("The group is not displayed");
+                .as("The group is not displayed")
+                .isTrue();
     }
 }

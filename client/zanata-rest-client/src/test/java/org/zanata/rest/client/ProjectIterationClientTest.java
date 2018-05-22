@@ -53,7 +53,9 @@ public class ProjectIterationClientTest {
     @Test
     public void testPut() throws Exception {
         Response response = client.put(new ProjectIteration("1.1"));
-        assertThat(response.getStatus()).isEqualTo(201).as("server returns successful status code");
+        assertThat(response.getStatus())
+                .as("server returns successful status code")
+                .isEqualTo(201);
     }
 
     @Test

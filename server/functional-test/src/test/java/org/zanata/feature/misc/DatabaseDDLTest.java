@@ -106,14 +106,16 @@ public class DatabaseDDLTest {
                 getForeignKeysForDatabase("test", em2);
         log.debug("foreign keys from hibernate:{}", fkFromHibernate);
 
-        assertThat(fkFromLiquibase).isEqualTo(fkFromHibernate)
-                .as("Liquibase foreign keys should equate to hibernate mapping");
+        assertThat(fkFromLiquibase)
+                .as("Liquibase foreign keys should equate to hibernate mapping")
+                .isEqualTo(fkFromHibernate);
 
         List<UniqueKey> ukFromLiquibase = getUniqueKeysForDatabase(dbName, em1);
         List<UniqueKey> ukFromHibernate = getUniqueKeysForDatabase("test", em2);
 
-        assertThat(ukFromLiquibase).isEqualTo(ukFromHibernate)
-                .as("Liquibase unique keys should equate to hibernate mapping");
+        assertThat(ukFromLiquibase)
+                .as("Liquibase unique keys should equate to hibernate mapping")
+                .isEqualTo(ukFromHibernate);
     }
 
     private List<UniqueKey> getUniqueKeysForDatabase(String dbName,
