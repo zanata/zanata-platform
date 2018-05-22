@@ -11,6 +11,8 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
 import Col from 'antd/lib/col'
@@ -41,7 +43,6 @@ import {
 import TMMergeProjectSources from './TMMergeProjectSources'
 import TMMergeImportedTM from './TMMergeImportedTM'
 
-const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
 const DO_NOT_RENDER = undefined
 const docLink =
@@ -139,7 +140,7 @@ const MergeOptions = (
       </Col>
       <Col>
         <p className="b f4">For every potential translation:</p>
-        <div className="di text-newblue">
+        {/* <div className="di text-newblue">
           If text is less than
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
             id="percentDropdown" className='versionMergeDropdown'
@@ -147,6 +148,17 @@ const MergeOptions = (
             selectedValue={mergeOptions.matchPercentage}
             valueToDisplay={percentValueToDisplay}
             values={[75, 80, 90, 100]} /> similar, don't use it.
+        </div> */}
+        <div className="di u-textNewBlue">
+          If text is less than <Select
+            value={mergeOptions.matchPercentage}
+            style={{ width: '5rem' }}
+            onChange={onPercentSelection}>
+            <Option value={75} key={0}>%75</Option>
+            <Option value={80} key={1}>%80</Option>
+            <Option value={90} key={2}>%90</Option>
+            <Option value={100} key={3}>%100</Option>
+          </Select> similar, don't use it.
         </div>
       </Col>
       <Col>
