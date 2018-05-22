@@ -114,6 +114,9 @@ site: http://www.fsf.org.
           <li data-key="jsf.upload.TooManyFiles">
             #{msgs['jsf.upload.TooManyFiles']}
           </li>
+          <li data-key="jsf.upload.FilenameIsTooLarge">
+            #{msgs['jsf.upload.FilenameIsTooLarge']}
+          </li>
           <li data-key="jsf.upload.SessionTimedOut">
             #{msgs['jsf.upload.SessionTimedOut']}
           </li>
@@ -216,7 +219,7 @@ site: http://www.fsf.org.
               <div id="#{cc.clientId}-fileupload-advanced"
                 class="l--pad-all-half bg--pop-higher is-hidden">
                 <label for="#filepath">#{msgs['jsf.upload.FilePath']}</label>
-                <input type="text" id="filepath" name="filepath"/>
+                <input type="text" id="filepath" maxlength="4095" name="filepath"/>
                 <!-- Source language is currently ignored by the server.
                 <label for="filelang">Source Language</label>
                 <select name="filelang" id="filelang">
