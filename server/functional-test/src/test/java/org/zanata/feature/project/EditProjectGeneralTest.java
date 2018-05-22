@@ -84,6 +84,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoExplore()
                 .enterSearch("about fedora")
                 .expectProjectListContains("about fedora"))
+                // FIXME shouldn't this be asserting something about a lock? (expectProjectListContains has an assertion)
                 .as("The project is locked");
 
         ExplorePage explorePage = new BasicWorkFlow()

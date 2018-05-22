@@ -101,7 +101,8 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .clickResendActivationEmail();
 
         assertThat(homePage.expectNotification(HomePage.SIGNUP_SUCCESS_MESSAGE))
-                .as("The message sent notification is displayed");
+                .as("The message sent notification is displayed")
+                .isTrue();
         assertThat(hasEmailRule.getMessages().size()).isEqualTo(2)
                 .as("A second email was sent");
 

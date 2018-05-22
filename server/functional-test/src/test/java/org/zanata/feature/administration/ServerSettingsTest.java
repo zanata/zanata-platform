@@ -72,7 +72,8 @@ public class ServerSettingsTest extends ZanataTestCase {
 
         assertThat(serverConfigurationPage.expectFieldValue(
                 ServerConfigurationPage.registerUrlField, url))
-                        .as("The expected url was displayed");
+                // FIXME add assertion? this will never be false (timeout exception if missing)
+                .as("The expected url was displayed");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)

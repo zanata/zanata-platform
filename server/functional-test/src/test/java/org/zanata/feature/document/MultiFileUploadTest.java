@@ -86,6 +86,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
                         .clickUploadDone()
                         .gotoDocumentTab();
         assertThat(versionDocumentsPage.expectSourceDocsContains(testFileName))
+                // FIXME should there be another assertion here? (expectSourceDocsContains has one)
                 .as("Document shows in table");
     }
 
