@@ -25,12 +25,16 @@ import { connect } from 'react-redux'
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { Panel, Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
 import { map } from 'lodash'
 import {
   toggleAdvanced,
   updatePhraseFilter
 } from '../../actions/phrases-filter-actions'
+const Panel = Collapse.Panel
 
 const fields = {
   resId: {
@@ -196,13 +200,15 @@ export class EditorSearchInput extends Component {
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={showAdvanced}>
-          {advancedFields}
-          <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
-            onClick={this.clearAllAdvancedFields}>
-            Clear all
-          </Button>
-        </Panel>
+        <Collapse accordion={showAdvanced} showArrow>
+          <Panel>
+            {advancedFields}
+            <Button size="small" className="AdvSearch-clear btn-link"
+              onClick={this.clearAllAdvancedFields}>
+              Clear all
+            </Button>
+          </Panel>
+        </Collapse>
       </div>
     )
   }

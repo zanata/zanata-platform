@@ -1,7 +1,10 @@
 import cx from 'classnames'
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Button, ButtonGroup } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 
 /**
  * Dropdown with both an action button and a toggle button.
@@ -36,13 +39,13 @@ class SplitDropdown extends React.Component {
     if (this.props.toggleButton) {
       toggleButtonItem = (
         <div className="ButtonGroup-item">
-          <ButtonGroup>
+          <Row>
             <Button className="EditorDropdown-toggle"
               aria-haspopup
               aria-expanded={this.props.isOpen}
               {...buttonClick}>
             {this.props.toggleButton}</Button>
-          </ButtonGroup>
+          </Row>
         </div>
       )
     }
@@ -50,12 +53,12 @@ class SplitDropdown extends React.Component {
     return (
       /* eslint-disable max-len */
       <div className={className}>
-        <ButtonGroup className="ButtonGroup--hz ButtonGroup--borderCollapse u-rounded">
+        <Row className="ButtonGroup--hz ButtonGroup--borderCollapse u-rounded">
           <Button className="ButtonGroup-item">
             {this.props.actionButton}
           </Button>
           {toggleButtonItem}
-        </ButtonGroup>
+        </Row>
         {this.props.content}
       </div>
       /* eslint-enable max-len */

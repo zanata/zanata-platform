@@ -4,7 +4,10 @@
 
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
@@ -33,21 +36,21 @@ class GlossaryTerm extends React.Component {
   render () {
     const {index, term, directionClassSource, directionClassTarget} = this.props
     const sourceTip = (
-      <Tooltip id={'glossarytermsource-' + index}>
+      <span id={'glossarytermsource-' + index}>
         {term.source}
-      </Tooltip>
+      </span>
     )
     const targetTip = (
-      <Tooltip id={'glossarytermtarget-' + index}>
+      <span id={'glossarytermtarget-' + index}>
         {term.target}
-      </Tooltip>
+      </span>
     )
 
     return (
       <tr key={index}>
         <td data-filetype="text" className="GlossaryText StringLong">
-          <OverlayTrigger placement="top" overlay={sourceTip}>
-            <Button bsStyle="link">
+          <Tooltip placement="top" title={sourceTip}>
+            <Button className="btn-link">
               <span>
                 <span className="hide-mdplus u-textMeta">
                   Source
@@ -55,11 +58,11 @@ class GlossaryTerm extends React.Component {
                 <span className={directionClassSource}>{term.source}</span>
               </span>
             </Button>
-          </OverlayTrigger>
+          </Tooltip>
         </td>
         <td data-filetype="text" className="GlossaryText StringLong">
-          <OverlayTrigger placement="top" overlay={targetTip}>
-            <Button bsStyle="link">
+          <Tooltip placement="top" title={targetTip}>
+            <Button className="btn-link">
               <span className={
                 cx({'u-textMuted': isEmpty(term.target)})}>
                 <span className="hide-mdplus u-textMeta">
@@ -70,13 +73,13 @@ class GlossaryTerm extends React.Component {
                 </span>
               </span>
             </Button>
-          </OverlayTrigger>
+          </Tooltip>
         </td>
         <td
           title={isEmpty(term.target)
             ? 'No translation to copy.'
             : 'Insert translated term at the cursor position.'}>
-          <Button
+          <Button type="primary"
             onClick={this.copy}
             disabled={isEmpty(term.target)}
             className="EditorButton Button--small u-rounded Button--primary">

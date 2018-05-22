@@ -22,7 +22,8 @@
 import cx from 'classnames'
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Icon from '../../../components/Icon'
 
 class SelectButton extends React.Component {
@@ -42,7 +43,7 @@ class SelectButton extends React.Component {
 
   render () {
     return (
-      <Button onClick={this.selectItem}
+      <Button size='small' onClick={this.selectItem}
         className={cx('Button Button--small u-rounded',
           this.props.className, {
             'is-active': this.props.selected

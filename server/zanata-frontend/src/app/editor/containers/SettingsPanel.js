@@ -7,7 +7,8 @@ import {
   updateSetting,
   updateValidationSetting
 } from '../actions/settings-actions'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Icon from '../../components/Icon'
 import SettingsOptions from '../components/SettingsOptions'
 import {
@@ -113,7 +114,7 @@ export const SettingsPanel = ({
       <h1 className="SidebarEditor-heading">
         <Icon name="settings" className="s1" /> Settings
         <span className="s1 u-pullRight">
-          <Button bsStyle="link" onClick={hideSettings}>
+          <Button className="btn-link" onClick={hideSettings}>
             <Icon name="cross" />
           </Button>
         </span>
