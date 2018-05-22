@@ -28,7 +28,7 @@ import javax.mail.internet.InternetAddress;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class EmailValidationEmailStrategy extends EmailStrategy {
+public class EmailValidationEmailStrategy extends VelocityEmailStrategy {
     private final String key;
 
     @Override

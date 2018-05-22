@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.service.impl;
+package org.zanata.service.tm.merge;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.zanata.service.impl.TransMemoryMergeServiceImpl.BATCH_SIZE;
+import static org.zanata.service.tm.merge.TransMemoryMergeServiceImpl.BATCH_SIZE;
 import static org.zanata.test.EntityTestData.makeApprovedHTextFlow;
 import static org.zanata.test.EntityTestData.makeHTextFlow;
 import static org.zanata.test.EntityTestData.makeTransMemoryUnit;
@@ -35,6 +35,7 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.inject.Produces;
@@ -55,6 +56,8 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
+import org.zanata.email.HtmlEmailSender;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -67,6 +70,7 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.VersionStateCache;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.transaction.TransactionUtilForUnitTest;
@@ -88,6 +92,7 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.collect.Lists;
 
+import kotlin.ranges.IntRange;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
@@ -98,7 +103,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 public class TransMemoryMergeServiceImplTest {
 
     @Inject
-    TransMemoryMergeServiceImpl transMemoryMergeService;
+    private TransMemoryMergeServiceImpl transMemoryMergeService;
 
     @Produces @Mock
     private SecurityService securityService;
@@ -118,12 +123,12 @@ public class TransMemoryMergeServiceImplTest {
     @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
     @Produces @Authenticated @Mock
-    private HAccount authenticated = new HAccount();
+    private HAccount authenticated;
     @Captor
-    ArgumentCaptor<List<TransUnitUpdateRequest>> updateRequestCaptor;
+    private ArgumentCaptor<List<TransUnitUpdateRequest>> updateRequestCaptor;
 
     @Produces
-    TransactionUtil transactionUtil = new TransactionUtilForUnitTest(null);
+    private TransactionUtil transactionUtil = new TransactionUtilForUnitTest(null);
 
     @Produces @Mock
     private VersionStateCache versionStateCacheImpl;
@@ -131,6 +136,15 @@ public class TransMemoryMergeServiceImplTest {
     private ZanataIdentity identity;
     @Produces @Mock
     private ProjectIterationDAO projectIterationDAO;
+    @Produces
+    @ServerPath
+    private String serverPath = "http://example.com/";
+    @Produces
+    private TMBandDefs bands = new TMBandDefsProducer().produce("80 90");
+    @Produces @Mock
+    private HtmlEmailSender emailSender;
+    @Produces @Mock
+    private Messages messages;
 
     private String projectSlug = "projectSlug";
     private String versionSlug = "versionSlug";
@@ -217,7 +231,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void willTranslateIfMatches() throws ActionException {
+    public void mergeDocWillTranslateIfMatches() throws ActionException {
         // Given:
         // an action with threshold 80% and trans unit id is 1
         final long transUnitId = 1L;
@@ -284,7 +298,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void willNotTranslateIfNoMatches() throws ActionException {
+    public void mergeDocWillNotTranslateIfNoMatches() throws ActionException {
         final long transUnitId = 1L;
         TransMemoryMergeRequest action = prepareAction(80);
 
@@ -318,7 +332,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void canHandleMultipleTextFlows() throws ActionException {
+    public void mergeDocCanHandleMultipleTextFlows() throws ActionException {
         // Given: an action with threshold 90% and trans unit id is 1, 2, 3, 4
         final long idWith100MatchTM = 1L;
         final long idWithoutTM = 2L;
@@ -429,7 +443,7 @@ public class TransMemoryMergeServiceImplTest {
 
     @Test
     @InRequestScope
-    public void canAutoTranslateImportedTMResults() throws Exception {
+    public void mergeDocCanAutoTranslateImportedTMResults() throws Exception {
         // Given:
         // an action with threshold 80% and trans unit id
         final long transUnitId = 1L;
