@@ -87,7 +87,7 @@
         value="${env.hibernate.hbm2ddl.auto}" />
 
       <!-- Logging -->
-      <property name="hibernate.show_sql" value="${env.hibernate.show_sql}" />
+      <property name="hibernate.show_sql" value="${env.hibernate_show_sql}" />
       <property name="hibernate.use_sql_comments" value="true" />
       <property name="hibernate.format_sql"
         value="${env.hibernate.format_sql}" />

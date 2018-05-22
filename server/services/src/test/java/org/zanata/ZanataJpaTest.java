@@ -5,7 +5,9 @@ import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 
@@ -18,6 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.Zanata;
 import org.zanata.util.ZanataEntities;
 
 // single threaded because of ehcache (perhaps other reasons too)
