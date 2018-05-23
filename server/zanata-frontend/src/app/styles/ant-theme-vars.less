@@ -10,18 +10,62 @@
 @highlight-color: @info-color;
 @warning-color: #ffa800;
 @normal-color: #d9d9d9;
+@neutral-color: #BDD4DC;
+@muted-color: #A2B3BE;
 
 @layout-body-background: #fff;
 
 @btn-primary-bg: @primary-color;
 
-// pagination alignment on Explore page
+// antd component overrides - tachyons not used because these apply globally to
+// the antd components
+
 .teaserHeader .ant-layout {
   display: flex;
   flex-direction: row;
   align-items: baseline;
 }
 
+.teaser-inner div a.text-muted-bold {
+  vertical-align: sub;
+}
+
+.ant-tag {
+  vertical-align: middle;
+}
+
+.ant-card {
+  color: @primary-color;
+}
+
+.ant-collapse-content > .ant-collapse-content-box {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header {
+  padding-right: 12px;
+}
+
+.ant-input-search {
+  height: 2rem;
+  line-height: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox, .checkbox svg {
+  vertical-align: sub;
+}
+
+.list-group-item {
+  position: relative;
+  display: block;
+  margin-bottom: 0;
+  padding: 0.62rem 1rem;
+  border: 1px solid @neutral-color;
+  background-color: @layout-body-background;
+}
 // Utility classes not included in Tachiyons
 //  https://github.com/tachyons-css/tachyons/blob/master/css/tachyons.css
 
@@ -37,6 +81,10 @@
   color: @warning-color;
 }
 
+.txt-newblue {
+  color: @processing-color;
+}
+
 .txt-error {
   color: @error-color;
 }
@@ -50,11 +98,11 @@
 }
 
 .txt-muted {
-  color: #A2B3BE
+  color: @muted-color;
 }
 
 .txt-neutral {
-  color: #BDD4DC;
+  color: @neutral-color;
 }
 
 .bg-primary {
@@ -85,3 +133,6 @@
   background-color: #BDD4DC;
 }
 
+.d-inh {
+  display: inherit;
+}

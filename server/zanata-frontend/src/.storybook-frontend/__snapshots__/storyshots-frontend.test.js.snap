@@ -1215,8 +1215,9 @@ exports[`Frontend Storyshots EditableText not editing 1`] = `
      EditableText - disabled
   </h2>
   <div
-    className="textInput textState text row"
+    className="ant-row textInput textState text"
     onClick={[Function]}
+    style={undefined}
     title={undefined}
   >
     Test text

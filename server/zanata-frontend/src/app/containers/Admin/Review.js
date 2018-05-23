@@ -5,13 +5,19 @@ import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
-import {Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+import Breadcrumb from 'antd/lib/breadcrumb'
+import 'antd/lib/breadcrumb/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
@@ -54,19 +60,20 @@ class AdminReview extends Component {
       onSave={editEntry} description={c.description}
       priority={c.priority} />)
     const newEntryForm = this.state.showNewEntryForm ? (
-      <Panel header='Add new entry'>
-        <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
-          criteriaPlaceholder='fill in criteria'
-          onSave={this.saveNewEntry} />
-      </Panel>) : DO_NOT_RENDER
+      <span className='mb2'>
+        <Card title='Add new entry'>
+          <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
+            criteriaPlaceholder='fill in criteria'
+            onSave={this.saveNewEntry} />
+        </Card></span>) : DO_NOT_RENDER
 
     const notificationBar = notification &&
       <Alert bsStyle='danger'>{notification}</Alert>
     return <div className='container centerWrapper' id='admin-review'>
       <Layout>
         <Breadcrumb>
-          <Breadcrumb.Item href='home'>
-            Administration
+          <Breadcrumb.Item>
+            <a href='home'>Administration</a>
           </Breadcrumb.Item>
         </Breadcrumb>
         {notificationBar}
@@ -74,27 +81,30 @@ class AdminReview extends Component {
         <p className='lead'>Set the translation rejection criteria to be used
           in the editor. Start by adding your first 'new rejection criteria
         entry' and add as many criteria as you require.</p>
-        <Well bsSize='lg'><h2>Example criteria</h2>
-          <hr />
-          <ul>
-            <li><strong>Translation Errors</strong>: terminology, mistranslated,
-            addition, omission, un-localized, do not translate, etc</li>
-            <li><strong>Language Quality</strong>: grammar, spelling,
-              punctuation, typo, ambiguous wording, product name,
-              sentence structuring, readability, word choice, not natural,
-            too literal, style and tone, etc</li>
-            <li><strong>Style Guide and Glossary Violations</strong></li>
-            <li><strong>Consistency</strong>: inconsistent style or vocabulary,
-            brand inconsistency, etc.</li>
-            <li><strong>Format</strong>: mismatches, white-spaces, tag error
-              or missing, special character, numeric format, truncated,
-            etc.</li>
-          </ul>
-        </Well>
+        <span className='mb2'>
+          <Card type='inner' title='Example criteria'>
+            <hr />
+            <ul>
+              <li><strong>Translation Errors</strong>: terminology, mistranslated,
+              addition, omission, un-localized, do not translate, etc</li>
+              <li><strong>Language Quality</strong>: grammar, spelling,
+                punctuation, typo, ambiguous wording, product name,
+                sentence structuring, readability, word choice, not natural,
+              too literal, style and tone, etc</li>
+              <li><strong>Style Guide and Glossary Violations</strong></li>
+              <li><strong>Consistency</strong>: inconsistent style or vocabulary,
+              brand inconsistency, etc.</li>
+              <li><strong>Format</strong>: mismatches, white-spaces, tag error
+                or missing, special character, numeric format, truncated,
+              etc.</li>
+            </ul>
+          </Card>
+        </span>
         {criteriaList}
         {newEntryForm}
-        <div className='rejection-btns'>
-          <Button type='primary' icon='plus' aria-label='button'
+        <div className='mb3'>
+          <Button type="primary" icon="plus"
+            aria-label="button"
             onClick={this.showAddNewEntryForm()}>
           New review criteria entry</Button>
         </div>

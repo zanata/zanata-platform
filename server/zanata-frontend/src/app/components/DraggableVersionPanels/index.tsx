@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import React from "react";
 import { Component } from "react";
-import {LockIcon} from "../../components";
+import {LockIcon, Icon} from "../../components";
 import { FromProjectVersion, FromProjectVersionType
 } from "../../utils/prop-types-util";
 import {
@@ -9,20 +9,17 @@ import {
   SortableElement,
   SortableHandle,
 } from "react-sortable-hoc";
-import {
-  ListGroup,
-  ListGroupItem,
-} from "react-bootstrap";
 import Button from "antd/lib/button";
-import Icon from "antd/lib/icon";
+import 'antd/lib/button/style/css';
 import Tooltip from "antd/lib/tooltip";
-import "antd/lib/tooltip/style/";
+import 'antd/lib/tooltip/style/css';
 import Layout from "antd/lib/layout";
+import 'antd/lib/layout/style/css';
 
 export const tooltipSort = <span>Best match</span>;
 
 export const DragHandle = SortableHandle(() =>
-  <Icon type="bars" className="n1 drag" title="click to drag" />);
+  <Icon name="menu" className="n1 drag" title="click to drag" />);
 
 interface ItemProps {
   dispatch: (action: any) => void
@@ -39,14 +36,14 @@ export class Item extends Component<ItemProps, {}> {
   // styling for panel appears in TMMergeModal (ProjectVersion/index.less) css
   public render () {
     const { value: { version, projectSlug } } = this.props
-    return <ListGroupItem className="v" >
+    return <li className="v list-group-item" >
       <DragHandle />
       {version.id} <span className="u-textMuted"> {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
-      <Button className="close rm-version-btn btn-xs" aria-label="button"
+      <Button className="close btn-xs" aria-label="button"
         onClick={this.removeVersion} icon="close" />
-    </ListGroupItem>
+    </li>;
   }
 
   private removeVersion = () => {
@@ -76,16 +73,15 @@ class Items extends Component<ItemsProps, {}> {
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
-        <Layout>
-        <span className="versionMergeTitle-adjusted VersionMergeTitle">
+        <Layout className="d-inh">
         Adjust priority of selected versions
-        </span><br />
-        <span className="u-textMuted versionMergeTitle-sub">
+        <br />
+        <span className="u-textMuted">
         (best first)
         </span>
         <Tooltip placement="top" title={tooltipSort} trigger="hover">
-          <Button className="btn-xs btn-link iconInfoVersionMerge">
-            <Icon type="info-circle-o" className="s0" />
+          <Button className="btn-xs btn-link">
+            <Icon name="info" className="s0" />
           </Button>
         </Tooltip>
         {sortableItems}
@@ -116,17 +112,17 @@ class DraggableVersionPanels extends Component<{
       return (
         <span className="no-v text-muted">
           Please select versions to sort<br />
-          <Icon type="api" className="s8" />
+          <Icon name="version" className="s8" />
         </span>
       )
     }
     return (
-      <ListGroup>
+      <span>
         <SortableList items={this.props.selectedVersions}
           onSortEnd={this.props.onDraggableMoveEnd} useDragHandle
           removeVersion={this.props.removeVersion}
           helperClass="sortable-helper" />
-      </ListGroup>
+      </span>
     )
   }
 }

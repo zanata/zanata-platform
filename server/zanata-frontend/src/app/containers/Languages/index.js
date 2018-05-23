@@ -5,7 +5,7 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {
   InputGroup, FormGroup, FormControl,
-  Badge, Pagination
+  Pagination
 } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import { debounce, find, isEmpty } from 'lodash'
@@ -13,8 +13,13 @@ import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
 import {Notification, LoaderText} from '../../components'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
 import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
 
 import {
   initialLoad,
@@ -123,7 +128,8 @@ class Languages extends Component {
               id='languages-form'>
               <h1>
                 Languages {!loading &&
-                  <Badge className='default'>{totalCount}</Badge>}
+                  <Tag color='blue'>{totalCount}</Tag>
+                }
               </h1>
               {permission.canAddLocale &&
                 <div>

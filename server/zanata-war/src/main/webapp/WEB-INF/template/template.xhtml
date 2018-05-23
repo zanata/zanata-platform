@@ -14,6 +14,31 @@
   <!--[if gt IE 8]><!-->
   <html class="no-js new-zanata template">
   <!--<![endif]-->
+  <!-- Provided by Copyright (c) 2015 Silktide Ltd under the MIT license -->
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+  <script>
+    window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#eaf7f7",
+          "text": "#546677",
+        },
+        "button": {
+          "background": "transparent",
+          "text": "#03A6D7",
+          "border": "#546677"
+        }
+      },
+      "content": {
+        "message": "The Zanata web application uses cookies to operate. For more information, please refer to",
+        "link": "our privacy policy",
+        "href": "http://docs.zanata.org/en/release/"
+      }
+    })});
+  </script>
+
   <h:head>
     <ui:remove>
       <!-- This needs to appear before all other JavaScript, for accurate testing -->

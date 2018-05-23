@@ -3,10 +3,10 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import DraggableVersionPanels, {Item, DragHandle, tooltipSort} from '.'
-import {ListGroup, ListGroupItem, OverlayTrigger} from 'react-bootstrap'
-import {LockIcon} from '../../components'
+import {LockIcon, Icon} from '../../components'
 import Button from 'antd/lib/button'
-import Icon from 'antd/lib/icon'
+import Tooltip from 'antd/lib/tooltip'
+import Layout from 'antd/lib/layout'
 
 const callback = function (_e) {}
 
@@ -25,14 +25,16 @@ describe('DraggableVersionPanels', () => {
         value={version} removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <ListGroupItem className='v' >
+      <li className="v list-group-item" >
         <DragHandle />
         {'ver1'} <span className='u-textMuted'> {'meikai1'}
         </span> <LockIcon status={'ACTIVE'} />
         {" "}
-        <Button className='close rm-version-btn btn-xs' aria-label='button'
+        <Button
+          className='close btn-xs'
+          aria-label='button'
           onClick={callback} icon='close' />
-      </ListGroupItem>
+      </li>
     )
     expect(actual).toEqual(expected)
   })
@@ -59,29 +61,28 @@ describe('DraggableVersionPanels', () => {
         removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <ListGroup>
+      <span>
         <div>
-          <div className='ant-layout'>
-            <span className="versionMergeTitle-adjusted VersionMergeTitle">
-            Adjust priority of selected versions
-            </span><br />
-            <span className="u-textMuted versionMergeTitle-sub">(best first)</span>
-            <OverlayTrigger placement='top' overlay={tooltipSort}>
-              <Button className="btn-xs btn-link iconInfoVersionMerge">
-                <Icon type="info-circle-o" className="s0" />
-              </Button>
-            </OverlayTrigger>
-            <Item
-              // @ts-ignore
-              key={'meikai1:ver1'} index={0}
-              value={someVersions[0]} removeVersion={callback} />
-            <Item
-              // @ts-ignore
-              key={'meikai2:ver2'} index={1}
-              value={someVersions[1]} removeVersion={callback} />
-          </div>
-        </div>
-      </ListGroup>
+        <Layout className="d-inh">
+        Adjust priority of selected versions
+        <br />
+        <span className="u-textMuted">(best first)</span>
+        <Tooltip placement='top' title={tooltipSort}>
+          <Button className="btn-xs btn-link">
+            <Icon name="info" className="s0" />
+          </Button>
+        </Tooltip>
+        <Item
+          // @ts-ignore
+          key={'meikai1:ver1'} index={0}
+          value={someVersions[0]} removeVersion={callback} />
+        <Item
+          // @ts-ignore
+          key={'meikai2:ver2'} index={1}
+          value={someVersions[1]} removeVersion={callback} />
+        </Layout>
+      </div>
+      </span>
     )
     expect(actual).toEqual(expected)
   })
@@ -95,7 +96,7 @@ describe('DraggableVersionPanels', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <span className="no-v text-muted">
         Please select versions to sort<br />
-        <Icon type="api" className="s8" />
+        <Icon name="version" className="s8" />
       </span>
     )
     expect(actual).toEqual(expected)

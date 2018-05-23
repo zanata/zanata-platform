@@ -5,9 +5,18 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, Col, Accordion} from 'react-bootstrap'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown, Link} from '../../components'
+  Icon, LoaderText, SelectableDropdown, Link} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
@@ -37,6 +46,7 @@ const localeToDisplay = l => l.displayName
 const DO_NOT_RENDER = undefined
 const docLink =
   'http://docs.zanata.org/en/release/user-guide/versions/version-tm-merge/'
+const Panel = Collapse.Panel
 
 /*
  * Component to display TM merge options
@@ -69,7 +79,8 @@ const MergeOptions = (
     : (
     <span>
       <SelectableDropdown
-        id="languageDropdown" className='versionMergeDropdown'
+        id='vmergeDropdown'
+        className='versionMergeDropdown'
         onSelectDropdownItem={onLanguageSelection}
         selectedValue={mergeOptions.selectedLanguage}
         valueToDisplay={localeToDisplay}
@@ -80,7 +91,7 @@ const MergeOptions = (
     )
   return (
     <div>
-      <p className="intro">
+      <p className="intro mb2">
         Copy existing <strong>translations</strong> from similar documents
         in other projects and versions into this project version.
         <Link useHref link={docLink} target="_blank">
@@ -90,7 +101,7 @@ const MergeOptions = (
           </span>
         </Link>
       </p>
-      <Accordion>
+      <Collapse className="mb2">
         <Panel header={
           <span>
             Matching phrases are found in the selected projects and
@@ -102,8 +113,8 @@ const MergeOptions = (
           <p><img src="https://i.imgur.com/ezA992G.png"
             alt="Version TM Merge workflow" /></p>
         </Panel>
-      </Accordion>
-      <Col xs={12} className='versionMergeContainer'>
+      </Collapse>
+      <Col>
         <Panel>
           <div className='versionMergeTarget'>
             <div className='VersionMergeTitle'>
@@ -126,9 +137,9 @@ const MergeOptions = (
           </div>
         </Panel>
       </Col>
-      <Col xs={12} className='versionMergeRow'>
-        <p className="lead">For every potential translation:</p>
-        <div className="VersionMergeTitle u-textNewBlue">
+      <Col>
+        <p className="b f4">For every potential translation:</p>
+        <div className="di text-newblue">
           {/* NB If changing 'values' below, note that they should fit with
           the expected thresholds in ProjectVersionService.prefillWithTM */}
           If text is less than
@@ -140,7 +151,7 @@ const MergeOptions = (
             values={[75, 80, 90, 100]} /> similar, don't use it.
         </div>
       </Col>
-      <Col xs={12} className='versionMergeContainer'>
+      <Col>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
           flushProjectSearch, onAllVersionCheckboxChange,
@@ -455,11 +466,11 @@ class TMMergeModal extends Component {
     : (
       <span>
         <Row>
-          <Button bsStyle='link' className='link-danger'
+          <Button className='btn-link link-danger'
             onClick={toggleTMMergeModal}>
             Close
           </Button>
-          <Button bsStyle='primary' onClick={this.submitForm}
+          <Button type='primary' onClick={this.submitForm}
             disabled={(triggered || !hasTMSource)}>
             Merge translations
           </Button>
@@ -467,15 +478,17 @@ class TMMergeModal extends Component {
       </span>
     )
     return (
-      <Modal id="tmMergeModal" show={showTMMergeModal}
-        onHide={toggleTMMergeModal} keyboard backdrop>
-        <Modal.Header>
-          <Modal.Title>Version TM Merge</Modal.Title>
+      <Modal
+        title='Version TM Merge'
+        visible={showTMMergeModal}
+        onCancel={toggleTMMergeModal}
+        footer={modalFooter}
+        width={'48rem'}>
+        <span>
           <p className="u-textDanger modalText-danger">
             {notification && notification.message}</p>
-        </Modal.Header>
-        <Modal.Body>{modalBody}</Modal.Body>
-        <Modal.Footer>{modalFooter}</Modal.Footer>
+          {modalBody}
+        </span>
       </Modal>
     )
   }

@@ -7,7 +7,6 @@ import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
 import { Icon, LoaderText, Select, Notification } from '../../components/'
-import { Row } from 'react-bootstrap'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -26,7 +25,13 @@ import {
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 
 /**
  * Root component for Glossary page
@@ -217,15 +222,16 @@ class Glossary extends Component {
               <Row>
                 {termCount > 0 &&
                   <Row>
-                    <span className='hidden-lesm glossaryRow'>Show</span>
-                    <Select options={pageSizeOption}
-                      placeholder='Terms per page'
-                      value={intPageSize}
-                      name='glossary-page'
-                      className='glossarySelect'
-                      searchable={false}
-                      clearable={false}
-                      onChange={handlePageSizeChange} />
+                    <Col span={2} offset={1}>
+                      <Select options={pageSizeOption}
+                        placeholder='Terms per page'
+                        value={intPageSize}
+                        name='glossary-page'
+                        className='glossarySelect'
+                        searchable={false}
+                        clearable={false}
+                        onChange={handlePageSizeChange} />
+                    </Col>
                   </Row>
                 }
                 {displayPaging &&

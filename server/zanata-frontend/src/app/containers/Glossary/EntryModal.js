@@ -5,6 +5,7 @@ import * as PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { EditableText, Icon, LoaderText, Modal } from '../../components'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /**
  * Popup windows to display a glossary entry
