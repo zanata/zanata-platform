@@ -74,25 +74,30 @@ const MergeOptions = (
     onDragMoveEnd,
     removeProjectVersion
   }) => {
-  const localesSelection = fetchingLocale
-    ? <LoaderText loading={fetchingLocale}
-      loadingText={'Fetching Locales'} />
-    : (
-    <span>
-      <Select
-        value={mergeOptions.selectedLanguage.localeId}
-        style={{ width: '15rem' }}
-        onChange={onLanguageSelection}>
-        {locales.map((locale) => {
-          return (
-            <Select.Option value={locale.localeId} >
-              {locale.displayName}
-            </Select.Option>
-          )
-        })}
-      </Select>
-    </span>
+    //  We set these fields to undefined when closing the modal
+    //  Ensure they exist before attempting to render
+  const localesSelection =
+    locales.length > 0 &&
+    mergeOptions.selectedLanguage &&
+    !fetchingLocale
+    ? (
+      <span>
+        <Select
+          value={mergeOptions.selectedLanguage.localeId}
+          style={{ width: '15rem' }}
+          onChange={onLanguageSelection}>
+          {locales.map((locale) => {
+            return (
+              <Select.Option value={locale.localeId} >
+                {locale.displayName}
+              </Select.Option>
+            )
+          })}
+        </Select>
+      </span>
     )
+    : <LoaderText loading={fetchingLocale}
+      loadingText={'Fetching Locales'} />
   return (
     <Row>
       <Col>
