@@ -119,7 +119,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     // private static final float BOOST_PROJITERSLUG = SysProperties.getFloat(
     // SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
     private static final double MINIMUM_SIMILARITY = 1.0;
-    private static final String LUCENE_KEY_WORDS = "(\\s*)(AND|OR|NOT)(\\s+)";
+    private static final String LUCENE_KEY_WORDS = "(^|\\s+)(AND|OR|NOT)(\\s+|$)";
     private static final long serialVersionUID = -570503476695179297L;
 
     // sort desc by lastChanged of HTextFlowTarget
