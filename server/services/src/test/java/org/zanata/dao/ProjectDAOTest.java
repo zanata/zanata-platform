@@ -14,6 +14,7 @@ import org.zanata.security.ZanataIdentity;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.test.model.ProjectsDataKt.*;
 
 public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
@@ -45,17 +46,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     // NB note that these tests all use the projects defined by ProjectsData.dbunit.xml
 
-    private static final int ACTIVE_PUBLIC_PROJECTS = 3;
-    private static final int READONLY_PUBLIC_PROJECTS = 1;
-    private static final int OBSOLETE_PUBLIC_PROJECTS = 1;
-    private static final int PROJECTS_FOR_PERSON_4 = 1;
 
-    private static final int ACTIVE_ITERS_IN_CURRENT_PROJ = 1;
-    private static final int READONLY_ITERS_IN_CURRENT_PROJ = 1;
-    private static final int OBSOLETE_ITERS_IN_CURRENT_PROJ = 1;
-
-    private static final long PROJECT_ID_1 = 1L;
-    private static final long PERSON_ID_4 = 4L;
 
     @Test
     public void getValidProjectBySlug() {

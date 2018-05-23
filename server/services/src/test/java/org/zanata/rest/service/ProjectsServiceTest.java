@@ -26,6 +26,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.test.model.ProjectsDataKt.ACTIVE_PUBLIC_PROJECTS;
+import static org.zanata.test.model.ProjectsDataKt.READONLY_PUBLIC_PROJECTS;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -82,6 +84,6 @@ public class ProjectsServiceTest extends ZanataDbunitJpaTest {
                 .isEqualTo(Response.Status.OK.getStatusCode());
         @SuppressWarnings("unchecked")
         List<Project> projects = (List<Project>) response.getEntity();
-        assertThat(projects).hasSize(4);
+        assertThat(projects).hasSize(ACTIVE_PUBLIC_PROJECTS + READONLY_PUBLIC_PROJECTS);
     }
 }
