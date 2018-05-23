@@ -80,9 +80,9 @@ class Items extends Component<ItemsProps, {}> {
         (best first)
         </span>
         <Tooltip placement="top" title={tooltipSort} trigger="hover">
-          <Button className="btn-xs btn-link">
+          <a className="btn-xs btn-link">
             <Icon name="info" className="s0" />
-          </Button>
+          </a>
         </Tooltip>
         {sortableItems}
         </Layout>

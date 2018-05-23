@@ -2,8 +2,6 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 import Radio from 'antd/lib/radio'
 import 'antd/lib/radio/style/css'
 import Card from 'antd/lib/card'
@@ -147,9 +145,9 @@ class TMMergeProjectSources extends Component {
             <span className="panel-name">Project Source</span>
             <Tooltip placement='right'
               title={fromProjectSourceTooltip}>
-              <Button className="btn-link tooltip-btn" aria-label="button">
+              <a className="btn-link tooltip-btn" aria-label="button">
                 <Icon name="info" className="s0" />
-              </Button>
+              </a>
             </Tooltip>
           </Col>
         </Row>
