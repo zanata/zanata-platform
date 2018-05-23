@@ -32,6 +32,7 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
@@ -284,16 +285,12 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
     /**
      * TM Merge for an entire project version
-     * @param targetVersionId
-     * @param mergeRequest
-     * @param handle
-     * @return
      */
     @Async
     @Override
     public Future<Void> startMergeTranslations(Long targetVersionId,
             VersionTMMerge mergeRequest,
-            MergeTranslationsTaskHandle handle) {
+            @Nonnull MergeTranslationsTaskHandle taskHandle) {
         InternalTMSource internalTMSource = mergeRequest.getInternalTMSource();
         List<Long> fromVersionIds = internalTMSource.getFilteredProjectVersionIds();
         if (internalTMSource.getChoice() == SelectSome
@@ -335,22 +332,18 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             return AsyncTaskResult.completed();
         }
 
+        taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
+        taskHandle.setMaxProgress((int) activeTextFlows);
+        taskHandle.setTotalTextFlows(activeTextFlows);
 
-        Optional<MergeTranslationsTaskHandle>
-                taskHandleOpt = Optional.ofNullable(handle);
-        if (taskHandleOpt.isPresent()) {
-            MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
-            handle1.setTriggeredBy(authenticatedAccount.getUsername());
-            handle1.setMaxProgress((int) activeTextFlows);
-            handle1.setTotalTextFlows(activeTextFlows);
-        }
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         log.info("merge translations from TM start: from {} to {}",
                 mergeRequest.getInternalTMSource(),
                 targetVersionStr);
         int textFlowIndex = 0;
+        boolean cancelled = false;
 
-        while (textFlowIndex < activeTextFlows) {
+        while (textFlowIndex < activeTextFlows && !(cancelled = taskHandle.isCancelled())) {
             // Get the next batch of text flows. They may or may not need
             // translation, but they won't change during the TM merge
             // (unless someone uploads a source document). We will be
@@ -384,13 +377,12 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                             charCount, wordCount, 1);
                 }
             }
-            taskHandleOpt.ifPresent(
-                    mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
-                            .increaseProgress(textFlowsIds.size()));
+            taskHandle.increaseProgress(textFlowsIds.size());
             textFlowIndex += BATCH_SIZE;
         }
         versionStateCacheImpl.clearVersionStatsCache(targetVersionId);
-        log.info("merge translation from TM end: from {} to {}, {}",
+        log.info("{} merge translations from TM: from {} to {}, {}",
+                cancelled ? "CANCELLED" : "COMPLETED",
                 mergeRequest.getInternalTMSource(),
                 targetVersionStr, overallStopwatch);
 
