@@ -1,4 +1,12 @@
 <?xml version="1.0"?>
+
+<!--
+Please try to avoid adding more test data to this file, since it may affect a
+large number of tests. Try to use separate test data for new tests.
+But if you do change this data, please update the numbers in ProjectsData.kt,
+especially when adding projects or iterations.
+-->
+
 <dataset>
   <HProject defaultProjectType="Gettext"
     id="1"

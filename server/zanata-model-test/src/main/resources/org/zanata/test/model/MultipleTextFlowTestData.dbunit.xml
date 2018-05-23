@@ -4,6 +4,11 @@
   <!-- HDocument
          Multiple Text Flow and Various Translation States -->
 
+  <!--
+   Guide for reading the HTextFlowTarget.state column:
+   New=0, NeedReview=1, Translated=2, Approved=3, Rejected=4
+   -->
+
   <HDocument
       id="5"
       versionNum="1"
