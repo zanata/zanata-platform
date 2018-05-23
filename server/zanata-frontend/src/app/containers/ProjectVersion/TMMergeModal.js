@@ -18,7 +18,7 @@ import 'antd/lib/row/style/css'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 import {
-  Icon, LoaderText, SelectableDropdown, Link} from '../../components'
+  Icon, LoaderText, Link} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
@@ -43,7 +43,6 @@ import {
 import TMMergeProjectSources from './TMMergeProjectSources'
 import TMMergeImportedTM from './TMMergeImportedTM'
 
-const localeToDisplay = l => l.displayName
 const DO_NOT_RENDER = undefined
 const docLink =
   'http://docs.zanata.org/en/release/user-guide/versions/version-tm-merge/'
@@ -76,88 +75,83 @@ const MergeOptions = (
     removeProjectVersion
   }) => {
   const localesSelection = fetchingLocale
-    ? DO_NOT_RENDER
+    ? <LoaderText loading={fetchingLocale}
+      loadingText={'Fetching Locales'} />
     : (
     <span>
-      <SelectableDropdown
-        id='vmergeDropdown'
-        className='versionMergeDropdown'
-        onSelectDropdownItem={onLanguageSelection}
-        selectedValue={mergeOptions.selectedLanguage}
-        valueToDisplay={localeToDisplay}
-        values={locales} />
-      <LoaderText loading={fetchingLocale}
-        loadingText={'Fetching Locales'} />
+      <Select
+        value={mergeOptions.selectedLanguage.localeId}
+        style={{ width: '15rem' }}
+        onChange={onLanguageSelection}>
+        {locales.map((locale) => {
+          return (
+            <Select.Option value={locale.localeId} >
+              {locale.displayName}
+            </Select.Option>
+          )
+        })}
+      </Select>
     </span>
     )
   return (
-    <div>
-      <p className="intro mb2">
-        Copy existing <strong>translations</strong> from similar documents
-        in other projects and versions into this project version.
-        <Link useHref link={docLink} target="_blank">
-          <span title='help'>
-            <Icon name='help' className='s0' parentClassName='iconHelp' />
-            &nbsp;Need help?
-          </span>
-        </Link>
-      </p>
-      <Collapse className="mb2">
-        <Panel header={
-          <span>
-            Matching phrases are found in the selected projects and
-            imported TM, filtered using the active
-            conditions, then the best matching translation is copied to
-            the target project-version.&nbsp;[more..]
-          </span>
-          } eventKey="1">
-          <p><img src="https://i.imgur.com/ezA992G.png"
-            alt="Version TM Merge workflow" /></p>
-        </Panel>
-      </Collapse>
+    <Row>
       <Col>
-        <Panel>
-          <div className='versionMergeTarget'>
-            <div className='VersionMergeTitle'>
-              <span>To</span>
-              <span className="panel-name">Target</span>
-            </div>
-            <ul>
-              <li className='list-group-item to' title='target project version'>
-                <ProjectVersionHorizontal projectSlug={projectSlug}
-                  versionSlug={versionSlug} />
-                <span className='item' id="languageDropdown">
-                  <Icon name="language" className="s1"
-                    parentClassName="iconTMX" />
-                  <span className="languageDropdown-field">
-                    {localesSelection}
-                  </span>
-                </span>
-              </li>
-            </ul>
+        <p className="intro mb2">
+          Copy existing <strong>translations</strong> from similar documents
+          in other projects and versions into this project version.
+          <Link useHref link={docLink} target="_blank">
+            <span title='help'>
+              <Icon name='help' className='s0' parentClassName='iconHelp' />
+              &nbsp;Need help?
+            </span>
+          </Link>
+        </p>
+        <Collapse className="mb2">
+          <Panel header={
+            <span>
+              Matching phrases are found in the selected projects and
+              imported TM, filtered using the active
+              conditions, then the best matching translation is copied to
+              the target project-version.&nbsp;[more..]
+            </span>
+            } eventKey="1">
+            <p><img src="https://i.imgur.com/ezA992G.png"
+              alt="Version TM Merge workflow" /></p>
+          </Panel>
+        </Collapse>
+      </Col>
+      <Col>
+        <div className='versionMergeTarget'>
+          <div className='VersionMergeTitle'>
+            <span>To</span>
+            <span className="panel-name">Target</span>
           </div>
-        </Panel>
+          <ul>
+            <li className='list-group-item to' title='target project version'>
+              <ProjectVersionHorizontal projectSlug={projectSlug}
+                versionSlug={versionSlug} />
+              <span className='item' id="languageDropdown">
+                <Icon name="language" className="s1"
+                  parentClassName="iconTMX" />
+                <span className="languageDropdown-field">
+                  {localesSelection}
+                </span>
+              </span>
+            </li>
+          </ul>
+        </div>
       </Col>
       <Col>
         <p className="b f4">For every potential translation:</p>
-        {/* <div className="di text-newblue">
-          If text is less than
-          <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
-            id="percentDropdown" className='versionMergeDropdown'
-            onSelectDropdownItem={onPercentSelection}
-            selectedValue={mergeOptions.matchPercentage}
-            valueToDisplay={percentValueToDisplay}
-            values={[75, 80, 90, 100]} /> similar, don't use it.
-        </div> */}
         <div className="di u-textNewBlue">
           If text is less than <Select
             value={mergeOptions.matchPercentage}
             style={{ width: '5rem' }}
             onChange={onPercentSelection}>
-            <Option value={75} key={0}>%75</Option>
-            <Option value={80} key={1}>%80</Option>
-            <Option value={90} key={2}>%90</Option>
-            <Option value={100} key={3}>%100</Option>
+            <Select.Option value={75}>%75</Select.Option>
+            <Select.Option value={80}>%80</Select.Option>
+            <Select.Option value={90}>%90</Select.Option>
+            <Select.Option value={100}>%100</Select.Option>
           </Select> similar, don't use it.
         </div>
       </Col>
@@ -174,7 +168,7 @@ const MergeOptions = (
       </Col>
       <TMMergeImportedTM fromImportedTM={mergeOptions.fromImportedTM}
         onImportedTMChange={onImportedTMChange} />
-    </div>
+    </Row>
   )
 }
 MergeOptions.propTypes = {
@@ -312,8 +306,11 @@ class TMMergeModal extends Component {
     })
   }
   onLanguageSelection = (language) => {
-    this.setState({
-      selectedLanguage: language
+    this.setState((prevState, props) => {
+      return {
+        selectedLanguage: this.props.locales.find(
+          locale => locale.localeId === language)
+      }
     })
   }
   onProjectSearchChange = (textEntered) => {
@@ -485,6 +482,7 @@ class TMMergeModal extends Component {
     return (
       <Modal
         title='Version TM Merge'
+        maskClosable={false}
         visible={showTMMergeModal}
         onCancel={toggleTMMergeModal}
         footer={modalFooter}
