@@ -128,8 +128,8 @@ const MergeOptions = (
       <Col className='mt2'>
         <div className='versionMergeTarget'>
           <div className='VersionMergeTitle'>
-            <span>To</span>
-            <span className="panel-name">Target</span>
+            <span className='f4'>To</span>&nbsp;
+            <span className="f4 b">Target</span>
           </div>
           <ul className='mt1 mb2'>
             <li className='list-group-item to' title='target project version'>
@@ -148,15 +148,15 @@ const MergeOptions = (
       </Col>
       <Col>
         <p className="b f4">For every potential translation:</p>
-        <div className="di u-textNewBlue">
+        <div className="di u-textNewBlue mb3">
           If text is less than <Select
             value={mergeOptions.matchPercentage}
             style={{ width: '5rem' }}
             onChange={onPercentSelection}>
-            <Select.Option value={75}>%75</Select.Option>
-            <Select.Option value={80}>%80</Select.Option>
-            <Select.Option value={90}>%90</Select.Option>
-            <Select.Option value={100}>%100</Select.Option>
+            <Select.Option value={75}>75%</Select.Option>
+            <Select.Option value={80}>80%</Select.Option>
+            <Select.Option value={90}>90%</Select.Option>
+            <Select.Option value={100}>100%</Select.Option>
           </Select> similar, don't use it.
         </div>
       </Col>
