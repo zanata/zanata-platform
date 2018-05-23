@@ -43,6 +43,20 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
         personDAO = new PersonDAO((Session) getEm().getDelegate());
     }
 
+    // NB note that these tests all use the projects defined by ProjectsData.dbunit.xml
+
+    private static final int ACTIVE_PUBLIC_PROJECTS = 3;
+    private static final int READONLY_PUBLIC_PROJECTS = 1;
+    private static final int OBSOLETE_PUBLIC_PROJECTS = 1;
+    private static final int PROJECTS_FOR_PERSON_4 = 1;
+
+    private static final int ACTIVE_ITERS_IN_CURRENT_PROJ = 1;
+    private static final int READONLY_ITERS_IN_CURRENT_PROJ = 1;
+    private static final int OBSOLETE_ITERS_IN_CURRENT_PROJ = 1;
+
+    private static final long PROJECT_ID_1 = 1L;
+    private static final long PERSON_ID_4 = 4L;
+
     @Test
     public void getValidProjectBySlug() {
         HProject project = dao.getBySlug("sample-project");
@@ -52,76 +66,98 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     @Test
     public void getValidProjectById() {
-        HProject project = dao.findById(1l, false);
+        // project 1 in ProjectsData.dbunit.xml is sample-project
+        HProject project = dao.findById(PROJECT_ID_1, false);
         assertThat(project).isNotNull();
         assertThat(project.getName()).isEqualTo("Sample Project");
     }
 
     @Test
-    public void getActiveIterations() {
-        assertThat(dao.getActiveIterations("current-project").size()).isEqualTo(1);
+    public void activeIterationsInCurrentProject() {
+        assertThat(dao.getActiveIterations("current-project").size())
+                .isEqualTo(ACTIVE_ITERS_IN_CURRENT_PROJ);
     }
 
     @Test
-    public void getReadOnlyIterations() {
-        assertThat(dao.getReadOnlyIterations("current-project").size()).isEqualTo(1);
+    public void readOnlyIterationsInCurrentProject() {
+        assertThat(dao.getReadOnlyIterations("current-project").size())
+                .isEqualTo(READONLY_ITERS_IN_CURRENT_PROJ);
     }
 
     @Test
-    public void getObsoleteIterations() {
-        assertThat(dao.getObsoleteIterations("current-project").size()).isEqualTo(1);
+    public void obsoleteIterationsInCurrentProject() {
+        assertThat(dao.getObsoleteIterations("current-project").size())
+                .isEqualTo(OBSOLETE_ITERS_IN_CURRENT_PROJ);
+    }
+
+    // NB For the following getFilterProjectSize tests, note that the boolean
+    // parameters have these names in this order:
+    //     filterOutActive, filterOutReadonly, filterOutObsolete
+    //
+    // A project status can only be active, read-only or obsolete, so
+    // filtering out active and read-only will leave only obsolete projects
+    // (for example).
+
+    @Test
+    public void getFilterProjectSizeAllExceptPrivate() {
+        assertThat(dao.getFilterProjectSize(false, false, false))
+                .isEqualTo(ACTIVE_PUBLIC_PROJECTS + READONLY_PUBLIC_PROJECTS + OBSOLETE_PUBLIC_PROJECTS);
     }
 
     @Test
-    public void getFilterProjectSizeAll() {
-        assertThat(dao.getFilterProjectSize(false, false, false)).isEqualTo(5);
+    public void getFilterProjectSizeOnlyActiveButNotPrivate() {
+        assertThat(dao.getFilterProjectSize(false, true, true))
+                .isEqualTo(ACTIVE_PUBLIC_PROJECTS);
     }
 
     @Test
-    public void getFilterProjectSizeOnlyActive() {
-        assertThat(dao.getFilterProjectSize(false, true, true)).isEqualTo(3);
+    public void getFilterProjectSizeOnlyReadOnlyButNotPrivate() {
+        // ie non-active/non-obsolete projects
+        assertThat(dao.getFilterProjectSize(true, false, true))
+                .isEqualTo(READONLY_PUBLIC_PROJECTS);
     }
 
     @Test
-    public void getFilterProjectSizeOnlyReadOnly() {
-        assertThat(dao.getFilterProjectSize(true, false, true)).isEqualTo(1);
+    public void getFilterProjectSizeOnlyObsoleteButNotPrivate() {
+        // ie non-readonly/non-active projects
+        assertThat(dao.getFilterProjectSize(true, true, false)).isEqualTo(OBSOLETE_PUBLIC_PROJECTS);
     }
 
     @Test
-    public void getFilterProjectSizeOnlyObsolete() {
-        assertThat(dao.getFilterProjectSize(true, true, false)).isEqualTo(1);
+    public void getFilterProjectSizeOnlyActiveAndReadOnlyButNotPrivate() {
+        // ie non-obsolete projects
+        assertThat(dao.getFilterProjectSize(false, false, true)).isEqualTo(ACTIVE_PUBLIC_PROJECTS + READONLY_PUBLIC_PROJECTS);
     }
 
     @Test
-    public void getFilterProjectSizeOnlyActiveAndReadOnly() {
-        assertThat(dao.getFilterProjectSize(false, false, true)).isEqualTo(4);
+    public void getFilterProjectSizeOnlyActiveAndObsoleteButNotPrivate() {
+        // ie non-readonly projects
+        assertThat(dao.getFilterProjectSize(false, true, false)).isEqualTo(ACTIVE_PUBLIC_PROJECTS + OBSOLETE_PUBLIC_PROJECTS);
     }
 
     @Test
-    public void getFilterProjectSizeOnlyActiveAndObsolete() {
-        assertThat(dao.getFilterProjectSize(false, true, false)).isEqualTo(4);
+    public void getFilterProjectSizeOnlyObsoleteAndReadOnlyButNotPrivate() {
+        // ie inactive projects
+        assertThat(dao.getFilterProjectSize(true, false, false)).isEqualTo(OBSOLETE_PUBLIC_PROJECTS + READONLY_PUBLIC_PROJECTS);
     }
 
     @Test
-    public void getFilterProjectSizeOnlyObsoleteAndReadOnly() {
-        assertThat(dao.getFilterProjectSize(true, false, false)).isEqualTo(2);
-    }
-
-    @Test
-    public void getOffsetList() {
+    public void getOffsetListForAllProjectsButNotPrivate() {
         List<HProject> projects =
                 dao.getOffsetList(-1, -1, false, false, false);
-        assertThat(projects.size()).isEqualTo(5);
+        // all projects in ProjectsData.dbunit.xml, except the private project
+        assertThat(projects.size()).isEqualTo(ACTIVE_PUBLIC_PROJECTS + OBSOLETE_PUBLIC_PROJECTS + READONLY_PUBLIC_PROJECTS);
         int size = dao.getFilterProjectSize(false, false, false);
         assertThat(projects.size()).isEqualTo(size);
     }
 
     @Test
-    public void getOffsetListPrivateProject() {
-        HPerson person = personDAO.findById(4L);
+    public void getOffsetListForAllProjectsIncludingPrivate() {
+        HPerson person = personDAO.findById(PERSON_ID_4);
         currentUser.account = person.getAccount();
         List<HProject> projects = dao.getOffsetList(-1, -1, false, false, false);
-        assertThat(projects).hasSize(6);
+        // all projects in ProjectsData.dbunit.xml, including the private project
+        assertThat(projects).hasSize(ACTIVE_PUBLIC_PROJECTS + OBSOLETE_PUBLIC_PROJECTS + READONLY_PUBLIC_PROJECTS + PROJECTS_FOR_PERSON_4);
         int size = dao.getFilterProjectSize(false, false, false);
         assertThat(projects.size()).isEqualTo(size);
     }

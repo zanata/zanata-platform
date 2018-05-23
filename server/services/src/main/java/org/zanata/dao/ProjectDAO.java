@@ -129,6 +129,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * If all filters are false, return all projects accessible to logged-in
+     * user.
+     */
     public int getFilterProjectSize(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete) {
         HPerson person = currentUser.isLoggedIn() ?
@@ -151,8 +155,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     /**
-     * IMPORTANT: This method will potentially returns duplicate results.
-     * Caller are required to use 'distinct' to filter out duplication
+     * May return private projects only if person is non-null and is one of
+     * the project members
+     * IMPORTANT: This method potentially returns duplicate results.
+     * Callers must use 'distinct' to filter out duplication
      */
     private String constructFilterCondition(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete,
