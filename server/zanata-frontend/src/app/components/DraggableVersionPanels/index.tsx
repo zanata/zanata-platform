@@ -110,10 +110,10 @@ class DraggableVersionPanels extends Component<{
   public render () {
     if (this.props.selectedVersions.length === 0) {
       return (
-        <span className="no-v text-muted">
+        <p className="no-v tc txt-muted">
           Please select versions to sort<br />
           <Icon name="version" className="s8" />
-        </span>
+        </p>
       )
     }
     return (

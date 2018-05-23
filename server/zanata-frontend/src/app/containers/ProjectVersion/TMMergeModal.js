@@ -125,13 +125,13 @@ const MergeOptions = (
           </Panel>
         </Collapse>
       </Col>
-      <Col>
+      <Col className='mt2'>
         <div className='versionMergeTarget'>
           <div className='VersionMergeTitle'>
             <span>To</span>
             <span className="panel-name">Target</span>
           </div>
-          <ul>
+          <ul className='mt1 mb2'>
             <li className='list-group-item to' title='target project version'>
               <ProjectVersionHorizontal projectSlug={projectSlug}
                 versionSlug={versionSlug} />
