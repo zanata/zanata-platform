@@ -2,22 +2,29 @@ package org.zanata;
 
 import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.stat.Statistics;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.Zanata;
 import org.zanata.util.ZanataEntities;
 
 // single threaded because of ehcache (perhaps other reasons too)
@@ -124,8 +131,35 @@ public abstract class ZanataJpaTest extends ZanataTest {
         }
     }
 
+    /**
+     * Misnomer: deletes all table data, but not the tables themselves
+     */
     protected void deleteAllTables() {
-        deleteAll(getEm(), ZanataEntities.entitiesForRemoval());
+        doInTransaction((em) -> {
+            deleteAll(em, ZanataEntities.entitiesForRemoval());
+        });
+    }
+
+    protected void purgeLuceneIndexes() {
+        purgeLuceneIndexes(em);
+    }
+
+    // see also org.zanata.util.SampleDataProfile.purgeLuceneIndexes
+    public static void purgeLuceneIndexes(EntityManager em) {
+        FullTextEntityManager ftem = Search.getFullTextEntityManager(em);
+        ftem.purgeAll(Object.class);
+        ftem.flushToIndexes();
+
+        Statistics stats = ftem.getSearchFactory().getStatistics();
+        stats.getIndexedClassNames().forEach(clazz  -> {
+            int entities = stats.getNumberOfIndexedEntities(clazz);
+            if (entities != 0) {
+                String msg = "Purge failed to remove " + entities +
+                        " entities from Lucene index for " + clazz +
+                        ". This may affect later tests.";
+                throw new RuntimeException(msg);
+            }
+        });
     }
 
     protected void doInTransaction(Consumer<EntityManager> function) {

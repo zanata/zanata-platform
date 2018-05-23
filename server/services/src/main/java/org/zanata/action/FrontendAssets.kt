@@ -62,10 +62,13 @@ class FrontendAssets @Inject constructor(@DeltaSpike private val servletContext:
         val MANIFEST_PATH: String = "META-INF/resources/manifest.json"
         private val log: Logger = LoggerFactory.getLogger(FrontendAssets::class.java)
         private fun readManifest(): FrontendManifest {
-            val manifestResource: InputStream? = Thread.currentThread().contextClassLoader.getResourceAsStream(MANIFEST_PATH)
+            val manifestResource: InputStream? =
+                    Thread.currentThread().contextClassLoader.getResourceAsStream(MANIFEST_PATH)
             return manifestResource?.use {
                 ObjectMapper().readValue(manifestResource, FrontendManifest::class.java)
-            } ?: throw IllegalStateException("can not load manifest.json from $MANIFEST_PATH. Did you forget to build and include zanata frontend?")
+            } ?: throw IllegalStateException(
+                    "Cannot load manifest.json from $MANIFEST_PATH. " +
+                            "Did you forget to build and include zanata-frontend?")
         }
     }
 }

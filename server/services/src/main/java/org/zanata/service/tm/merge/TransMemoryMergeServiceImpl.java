@@ -18,20 +18,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service.impl;
+package org.zanata.service.tm.merge;
 
+import static java.util.Collections.singletonList;
 import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectSome;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
@@ -41,14 +46,22 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
+import org.zanata.common.HasContents;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
+import org.zanata.email.Addresses;
+import org.zanata.email.HtmlEmailSender;
+import org.zanata.email.TMMergeEmailContext;
+import org.zanata.email.ProjectInfo;
+import org.zanata.email.TMMergeEmailStrategy;
+import org.zanata.email.VersionInfo;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.events.TransMemoryMergeEvent;
 import org.zanata.events.TransMemoryMergeProgressEvent;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -59,9 +72,12 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TransMemoryMergeService;
+import org.zanata.service.TranslationCounter;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
+import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.service.VersionStateCache;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.TransMemoryMergeStatusResolver;
 import org.zanata.util.TranslationUtil;
@@ -81,6 +97,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import kotlin.Pair;
+import kotlin.ranges.IntRange;
 
 /**
  * @author Sean Flanigan
@@ -89,6 +107,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 @RequestScoped
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
+    private static final Consumer<TransUnitUpdateRequest> NOOP = it -> {};
+
     private static final Logger log = LoggerFactory
             .getLogger(TransMemoryMergeServiceImpl.class);
     private static final String commentPrefix =
@@ -118,6 +138,11 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private VersionStateCache versionStateCacheImpl;
 
     private HAccount authenticatedAccount;
+    private String serverPath;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Serializable collection (plus TransMemoryMergeServiceImpl needn't be Serializable)")
+    private Map<ContentState, List<IntRange>> tmBands;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxy")
+    private HtmlEmailSender emailSender;
 
     @Inject
     public TransMemoryMergeServiceImpl(
@@ -131,7 +156,10 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             TransactionUtil transactionUtil,
             ProjectIterationDAO projectIterationDAO,
             VersionStateCache versionStateCacheImpl,
-            @Authenticated HAccount authenticatedAccount) {
+            @Authenticated HAccount authenticatedAccount,
+            @ServerPath String serverPath,
+            TMBandDefs tmBands,
+            HtmlEmailSender emailSender) {
         this.localeServiceImpl = localeServiceImpl;
         this.textFlowDAO = textFlowDAO;
         this.transMemoryUnitDAO = transMemoryUnitDAO;
@@ -145,17 +173,26 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         this.projectIterationDAO = projectIterationDAO;
         this.versionStateCacheImpl = versionStateCacheImpl;
         this.authenticatedAccount = authenticatedAccount;
+        this.serverPath = serverPath;
+        this.tmBands = tmBands.getMap();
+        this.emailSender = emailSender;
     }
 
     public TransMemoryMergeServiceImpl() {
     }
 
+    /**
+     * TM Merge for an individual document
+     * @param request
+     * @param asyncTaskHandle
+     * @return
+     */
     @Override
     @Transactional
-    public List<TranslationService.TranslationResult> executeMerge(
+    public List<TranslationResult> executeMerge(
             TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle) {
-        List<TranslationService.TranslationResult> finalResult = Lists.newLinkedList();
+        List<TranslationResult> finalResult = Lists.newLinkedList();
         final WorkspaceId workspaceId =
                 new WorkspaceId(request.projectIterationId, request.localeId);
 
@@ -204,9 +241,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                          request.localeId,
                                          request.editorClientId,
                                          TransUnitUpdated.UpdateType.NonEditorSave));
-                List<TranslationService.TranslationResult> batchResult =
+                List<TranslationResult> batchResult =
                         translateInBatch(request, textFlowsBatch, targetLocale,
-                                request.getInternalTMSource(), Optional.of(callback));
+                                request.getInternalTMSource(), callback);
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
@@ -229,16 +266,29 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         return finalResult;
     }
 
+    /**
+     * Async TM Merge for an individual document
+     * @param request
+     * @param asyncTaskHandle
+     * @return
+     */
     @Async
     @Override
     @Transactional
-    public Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
+    public Future<List<TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle) {
-        List<TranslationService.TranslationResult> translationResults =
+        List<TranslationResult> translationResults =
                 executeMerge(request, asyncTaskHandle);
         return AsyncTaskResult.completed(translationResults);
     }
 
+    /**
+     * TM Merge for an entire project version
+     * @param targetVersionId
+     * @param mergeRequest
+     * @param handle
+     * @return
+     */
     @Async
     @Override
     public Future<Void> startMergeTranslations(Long targetVersionId,
@@ -252,6 +302,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                     "selected internal TM versions list has nothing to copy from");
             return AsyncTaskResult.completed();
         }
+        TMMergeResult mergeResult = new TMMergeResult(tmBands);
         // we need a separate read only transaction to load all the entities and close
         // it so that the following batch job can take as long as it can and no
         // transaction reaper will kick in.
@@ -265,8 +316,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                         localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
                 neededEntities.localesInTargetVersion = localeServiceImpl
                         .getSupportedLanguageByProjectIteration(neededEntities.targetVersion);
-                neededEntities.mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
-                        targetVersionId, neededEntities.targetLocale);
+                neededEntities.activeTextFlows = textFlowDAO.countActiveTextFlowsInProjectIteration(
+                        targetVersionId);
                 return neededEntities;
             });
         } catch (Exception e) {
@@ -274,7 +325,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             return AsyncTaskResult.completed();
         }
 
-        long mergeTargetCount = neededEntities.mergeTargetCount;
+        long activeTextFlows = neededEntities.activeTextFlows;
         HLocale targetLocale = neededEntities.targetLocale;
         String targetVersionStr = neededEntities.targetVersion.userFriendlyToString();
 
@@ -290,33 +341,112 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         if (taskHandleOpt.isPresent()) {
             MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
             handle1.setTriggeredBy(authenticatedAccount.getUsername());
-            handle1.setMaxProgress((int) mergeTargetCount);
-            handle1.setTotalTranslations(mergeTargetCount);
+            handle1.setMaxProgress((int) activeTextFlows);
+            handle1.setTotalTextFlows(activeTextFlows);
         }
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         log.info("merge translations from TM start: from {} to {}",
                 mergeRequest.getInternalTMSource(),
                 targetVersionStr);
-        int startCount = 0;
+        int textFlowIndex = 0;
 
-        while (startCount < mergeTargetCount) {
-            List<HTextFlow> batch = textFlowDAO
-                    .getUntranslatedOrFuzzyTextFlowsInVersion(
-                            targetVersionId, targetLocale, startCount,
-                            BATCH_SIZE);
-            translateInBatch(mergeRequest, batch,
-                    targetLocale, internalTMSource, Optional.empty());
+        while (textFlowIndex < activeTextFlows) {
+            // Get the next batch of text flows. They may or may not need
+            // translation, but they won't change during the TM merge
+            // (unless someone uploads a source document). We will be
+            // creating/modifying TFTs, so the offset queries shouldn't use them.
+            List<Long> textFlowsIds =
+                    textFlowDAO.getTextFlowsIdsInVersion(
+                            targetVersionId, textFlowIndex, BATCH_SIZE);
+            // Look up each text flow and it's translation state (if any)
+            // This might be more efficient if the HQL query were to check the
+            // translation state directly.
+            List<HTextFlow> translatableTextFlows = textFlowDAO
+                    .getTextFlowAndMaybeTargetState(
+                            textFlowsIds, targetLocale.getId())
+                    .filter(pair -> shouldTranslate(pair.component2()))
+                    .map(Pair::component1)
+                    .collect(Collectors.toList());
 
+            List<TranslationResult> batchResults =
+                translateInBatch(mergeRequest, translatableTextFlows,
+                    targetLocale, internalTMSource, NOOP);
+            for (TranslationResult result : batchResults) {
+                // we don't count copies which failed because of validation or concurrent edits
+                if (result.isTranslationSuccessful()) {
+                    HTextFlow hTextFlow =
+                            result.getTranslatedTextFlowTarget().getTextFlow();
+                    long charCount = codePoints(hTextFlow);
+                    long wordCount = hTextFlow.getWordCount();
+                    // round down (assuming non-negative)
+                    int similarity = (int) result.getSimilarityPercent();
+                    mergeResult.count(result.getNewContentState(), similarity,
+                            charCount, wordCount, 1);
+                }
+            }
             taskHandleOpt.ifPresent(
                     mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
-                            .increaseProgress(batch.size()));
-            startCount += BATCH_SIZE;
+                            .increaseProgress(textFlowsIds.size()));
+            textFlowIndex += BATCH_SIZE;
         }
         versionStateCacheImpl.clearVersionStatsCache(targetVersionId);
         log.info("merge translation from TM end: from {} to {}, {}",
                 mergeRequest.getInternalTMSource(),
                 targetVersionStr, overallStopwatch);
+
+        // send email to requester using mergeResult
+        sendTMMergeEmail(mergeRequest, mergeResult, neededEntities);
+
         return AsyncTaskResult.completed();
+    }
+
+    private boolean shouldTranslate(@Nullable ContentState state) {
+        if (state == null) return true;
+        switch (state) {
+            case New:
+            case NeedReview:
+            case Rejected:
+                return true;
+            case Translated:
+            case Approved:
+                return false;
+            default:
+                log.warn("unexpected state {}", state);
+                return false;
+        }
+    }
+
+    private void sendTMMergeEmail(VersionTMMerge mergeRequest,
+            TMMergeResult mergeResult,
+            NeededEntities neededEntities) {
+        HProjectIteration projVersion = neededEntities.targetVersion;
+        HProject proj = projVersion.getProject();
+        String verSlug = projVersion.getSlug();
+        String projSlug = proj.getSlug();
+        String verUrl = serverPath + "/iteration/view/" + projSlug + "/" + verSlug;
+        String projUrl = serverPath + "/project/view/" + proj.getSlug();
+        List<? extends InternetAddress> toAddresses = singletonList(
+                Addresses.getAddress(authenticatedAccount.getPerson()));
+        TMMergeEmailContext settings = new TMMergeEmailContext(
+                toAddresses,
+                new ProjectInfo(proj.getName(), projUrl),
+                new VersionInfo(projVersion.getSlug(), verUrl),
+                new IntRange(mergeRequest.getThresholdPercent(), 100));
+        TMMergeEmailStrategy strategy = new TMMergeEmailStrategy(
+                settings, mergeResult);
+        emailSender.sendMessage(strategy);
+    }
+
+    /**
+     * Counts the Unicode code points in *all* the contents
+     * @param text
+     * @return
+     */
+    private static long codePoints(HasContents text) {
+        return text.getContents()
+                .stream()
+                .mapToLong(s -> (long) s.codePointCount(0, s.length()))
+                .sum();
     }
 
     /**
@@ -331,15 +461,15 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      * @param internalTMSource
      *            source versions from internal TM
      * @param callbackOnUpdate
-     *            an optional callback to call when we have a
+     *            a callback to call when we have a
      *            TransUnitUpdateRequest ready
      * @return translation results
      */
-    private List<TranslationService.TranslationResult> translateInBatch(
+    private List<TranslationResult> translateInBatch(
             HasTMMergeCriteria request, List<HTextFlow> textFlows,
             HLocale targetLocale,
             InternalTMSource internalTMSource,
-            Optional<Consumer<TransUnitUpdateRequest>> callbackOnUpdate) {
+            Consumer<TransUnitUpdateRequest> callbackOnUpdate) {
 
         if (textFlows.isEmpty()) {
             return Collections.emptyList();
@@ -355,7 +485,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
                 List<TransUnitUpdateRequest> updateRequests = Lists.newLinkedList();
                 for (HTextFlow hTextFlow : textFlows) {
-                    HTextFlowTarget hTextFlowTarget =
+                    @Nullable HTextFlowTarget hTextFlowTarget =
                             hTextFlow.getTargets().get(targetLocale.getId());
                     Optional<TransMemoryResultItem> tmResult =
                             translationMemoryServiceImpl.searchBestMatchTransMemory(
@@ -371,7 +501,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
                         if (updateRequest != null) {
                             updateRequests.add(updateRequest);
-                            callbackOnUpdate.ifPresent(c -> c.accept(updateRequest));
+                            callbackOnUpdate.accept(updateRequest);
                         }
                     }
                 }
@@ -387,43 +517,50 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private TransUnitUpdateRequest createRequest(HasTMMergeCriteria action,
             HLocale hLocale,
             HTextFlow hTextFlowToBeFilled, TransMemoryResultItem tmResult,
-            HTextFlowTarget oldTarget) {
+            @Nullable HTextFlowTarget oldTarget) {
         Long tmSourceId = tmResult.getSourceIdList().get(0);
         ContentState statusToSet;
         String comment;
         String revisionComment;
         String entityType;
         Long entityId;
-        if (tmResult
-                .getMatchType() == TransMemoryResultItem.MatchType.Imported) {
-            TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
-            statusToSet = TransMemoryMergeStatusResolver.newInstance()
-                    .decideStatus(action, tmResult, oldTarget);
-            comment = buildTargetComment(tu);
-            revisionComment = TranslationUtil.getTMMergeMessage(tu);
-            entityId = tu.getId();
-            entityType = EntityType.TMX.getAbbr();
-        } else {
-            HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
-            TransMemoryDetails tmDetail = translationMemoryServiceImpl
-                    .getTransMemoryDetail(hLocale, tmSource);
-            statusToSet = TransMemoryMergeStatusResolver.newInstance()
-                    .decideStatus(action, hTextFlowToBeFilled, tmDetail,
-                            tmResult, oldTarget);
-            comment = buildTargetComment(tmDetail);
-            revisionComment = TranslationUtil.getTMMergeMessage(tmDetail);
-            HTextFlowTarget target = tmSource.getTargets().get(hLocale.getId());
-            entityId = TranslationUtil.getCopiedEntityId(target);
-            entityType = TranslationUtil.getCopiedEntityType(target).getAbbr();
+        switch (tmResult.getMatchType()) {
+            case Imported:
+                TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
+                statusToSet = TransMemoryMergeStatusResolver.newInstance()
+                        .decideStatus(action, tmResult, oldTarget);
+                comment = buildTargetComment(tu);
+                revisionComment = TranslationUtil.getTMMergeMessage(tu);
+                entityId = tu.getId();
+                entityType = EntityType.TMX.getAbbr();
+                break;
+            case TranslatedInternal:
+            case ApprovedInternal:
+                HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
+                TransMemoryDetails tmDetail = translationMemoryServiceImpl
+                        .getTransMemoryDetail(hLocale, tmSource);
+                statusToSet = TransMemoryMergeStatusResolver.newInstance()
+                        .decideStatus(action, hTextFlowToBeFilled, tmDetail,
+                                tmResult, oldTarget);
+                comment = buildTargetComment(tmDetail);
+                revisionComment = TranslationUtil.getTMMergeMessage(tmDetail);
+                // TODO use a more efficient way to get the HTextFlowTarget directly
+                HTextFlowTarget target = tmSource.getTargets().get(hLocale.getId());
+                entityId = TranslationUtil.getCopiedEntityId(target);
+                entityType = TranslationUtil.getCopiedEntityType(target).getAbbr();
+                break;
+            default:
+                throw new RuntimeException("unhandled match type: " + tmResult.getMatchType());
         }
         if (statusToSet != null) {
-
             TransUnitUpdateRequest request =
-                    new TransUnitUpdateRequest(new TransUnitId(hTextFlowToBeFilled.getId()),
-                            tmResult.getTargetContents(), statusToSet,
-                            oldTarget == null ? 0 : oldTarget.getVersionNum(),
-                            revisionComment, entityId, entityType,
-                            TranslationSourceType.TM_MERGE.getAbbr());
+                new TransUnitUpdateRequest(
+                    new TransUnitId(hTextFlowToBeFilled.getId()),
+                    tmResult.getTargetContents(), statusToSet,
+                    oldTarget == null ? 0 : oldTarget.getVersionNum(),
+                    revisionComment, entityId, entityType,
+                    TranslationSourceType.TM_MERGE.getAbbr(),
+                    tmResult.getSimilarityPercent());
             request.addTargetComment(comment);
             log.debug("auto translate from translation memory {}", request);
             return request;
@@ -432,23 +569,23 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     }
 
     private static String buildTargetComment(TransMemoryDetails tmDetail) {
-        return new StringBuilder(commentPrefix).append(" project: ")
-                .append(tmDetail.getProjectName()).append(", version: ")
-                .append(tmDetail.getIterationName()).append(", DocId: ")
-                .append(tmDetail.getDocId()).toString();
+        return commentPrefix + " project: " +
+                tmDetail.getProjectName() + ", version: " +
+                tmDetail.getIterationName() + ", DocId: " +
+                tmDetail.getDocId();
     }
 
     private static String buildTargetComment(TransMemoryUnit tu) {
-        return new StringBuilder(commentPrefix).append(" translation memory: ")
-                .append(tu.getTranslationMemory().getSlug())
-                .append(", unique id: ").append(tu.getUniqueId()).toString();
+        return commentPrefix + " translation memory: " +
+                tu.getTranslationMemory().getSlug() +
+                ", unique id: " + tu.getUniqueId();
     }
 
     private static class NeededEntities {
         private HProjectIteration targetVersion;
         private HLocale targetLocale;
         private List<HLocale> localesInTargetVersion;
-        private long mergeTargetCount;
+        private long activeTextFlows;
 
         boolean isTargetLocaleEnabledInVersion() {
             return localesInTargetVersion.contains(targetLocale);

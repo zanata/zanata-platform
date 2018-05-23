@@ -86,20 +86,20 @@ public class ContactAdminTest extends ZanataTestCase {
    private String verifySentEmail(MorePage morePage) {
        assertThat(morePage.expectNotification("Your message has " +
                "been sent to the administrator"))
-               .isTrue()
-               .as("An email sent notification shows");
+               .as("An email sent notification shows")
+               .isTrue();
 
        List<WiserMessage> messages = emailRule.getMessages();
 
-       assertThat(messages.size())
-               .isGreaterThanOrEqualTo(1)
-               .as("One email was sent");
+       assertThat(messages)
+               .as("One email was sent")
+               .hasSize(1);
 
        WiserMessage wiserMessage = messages.get(0);
 
        assertThat(wiserMessage.getEnvelopeReceiver())
-               .isEqualTo("admin@example.com")
-               .as("The email recipient is the administrator");
+               .as("The email recipient is the administrator")
+               .isEqualTo("admin@example.com");
 
        return HasEmailRule.getEmailContent(wiserMessage);
    }

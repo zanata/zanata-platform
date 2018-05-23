@@ -21,6 +21,7 @@
 package org.zanata.rest.editor.service;
 
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -91,21 +92,13 @@ public class TranslationService implements TranslationResource {
                     .build();
         }
         HLocale locale = localeServiceImpl.getByLocaleId(localeId);
-        List<Object[]> results =
-                textFlowDAO.getTextFlowAndTarget(idList, locale.getId());
-        for (Object[] result : results) {
-            HTextFlow hTextFlow = (HTextFlow) result[0];
-            TransUnit tu;
-            if (result.length < 2 || result[1] == null) {
-                tu = transUnitUtils.buildTargetTransUnit(hTextFlow, null,
-                        locale.getLocaleId());
-            } else {
-                HTextFlowTarget hTarget = (HTextFlowTarget) result[1];
-                tu = transUnitUtils.buildTargetTransUnit(hTextFlow, hTarget,
-                        locale.getLocaleId());
-            }
+        textFlowDAO.getTextFlowAndMaybeTarget(idList, locale.getId()).forEach(p -> {
+            HTextFlow hTextFlow = p.component1();
+            @Nullable HTextFlowTarget hTarget = p.component2();
+            TransUnit tu = transUnitUtils.buildTargetTransUnit(hTextFlow,
+                    hTarget, locale.getLocaleId());
             transUnits.put(hTextFlow.getId().toString(), tu);
-        }
+        });
         return Response.ok(transUnits).build();
     }
 

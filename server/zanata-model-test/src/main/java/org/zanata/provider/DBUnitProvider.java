@@ -30,6 +30,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
@@ -46,7 +47,10 @@ import org.dbunit.operation.DatabaseOperation;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class DBUnitProvider {
+public class DBUnitProvider {
+    private static final H2DataTypeFactory H2_DATA_TYPE_FACTORY =
+            new H2DataTypeFactory();
+    private final Callable<IDatabaseConnection> connectionSupplier;
     protected String binaryDir;
     protected boolean replaceNull = true;
     protected List<DataSetOperation> beforeTestOperations =
@@ -55,6 +59,10 @@ public abstract class DBUnitProvider {
             new ArrayList<DataSetOperation>();
 
     private boolean prepared = false;
+
+    public DBUnitProvider(Callable<IDatabaseConnection> connectionSupplier) {
+        this.connectionSupplier = connectionSupplier;
+    }
 
     public void setBinaryDir(String binaryDir) {
         if (binaryDir == null)
@@ -110,7 +118,7 @@ public abstract class DBUnitProvider {
          */
     }
 
-    protected void executeOperations(List<DataSetOperation> list) {
+    public void executeOperations(List<DataSetOperation> list) {
         IDatabaseConnection con = getConnection();
         try {
             editConfig(con.getConfig());
@@ -132,6 +140,7 @@ public abstract class DBUnitProvider {
         }
     }
 
+    // TODO combine both classes called DataSetOperation into one!
     public static class DataSetOperation {
 
         String dataSetLocation;
@@ -254,21 +263,22 @@ public abstract class DBUnitProvider {
     }
 
     /**
-     * Override this method to provide your own DBUnit
-     * <tt>IDatabaseConnection</tt> instance.
-     * <p/>
-     *
      * @return a DBUnit database connection (wrapped)
      */
-    // TODO This is hibernate specific
-    protected abstract IDatabaseConnection getConnection();
+    protected IDatabaseConnection getConnection() {
+        try {
+            return connectionSupplier.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Execute whatever statement is necessary to either defer or disable
      * foreign key constraint checking on the given database connection, which
      * is used by DBUnit to import datasets.
      *
-     * @param con
+     * @param conn
      *            A DBUnit connection wrapper, which is used afterwards for
      *            dataset operations
      */
@@ -285,7 +295,7 @@ public abstract class DBUnitProvider {
      * Execute whatever statement is necessary to enable integrity constraint
      * checks after dataset operations.
      *
-     * @param con
+     * @param conn
      *            A DBUnit connection wrapper, before it is used by the
      *            application again
      */
@@ -310,8 +320,9 @@ public abstract class DBUnitProvider {
      *            A DBUnit <tt>DatabaseConfig</tt> object for setting properties
      *            and features
      */
-    protected void editConfig(DatabaseConfig config) {
-        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+    public static void editConfig(DatabaseConfig config) {
+        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
+                H2_DATA_TYPE_FACTORY);
     }
 
     /**

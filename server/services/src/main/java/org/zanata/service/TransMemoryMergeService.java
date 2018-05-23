@@ -35,6 +35,12 @@ public interface TransMemoryMergeService extends Serializable {
     @VisibleForTesting
     int BATCH_SIZE = 50;
 
+    /**
+     * TM merge for a single document
+     * @param request
+     * @param asyncTaskHandle
+     * @return
+     */
     List<TranslationService.TranslationResult> executeMerge(
             TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle);

@@ -86,6 +86,7 @@ import javax.transaction.UserTransaction;
 @RunWith(CdiUnitRunner.class)
 @SupportDeltaspikeCore
 @AdditionalClasses({
+        LocaleDAO.class,
         VersionStateCacheImpl.class,
         // needed by service locator
         TransactionUtilImpl.class
