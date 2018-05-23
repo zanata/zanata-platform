@@ -55,8 +55,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .send(HomePage.class);
         String emailContent =
                 HasEmailRule.getEmailContent(hasEmailRule.getMessages().get(0));
-        assertThat(emailContent).contains("http://myserver.com/zanata")
-                .as("The email indicates the expected server url");
+        assertThat(emailContent)
+                .as("The email indicates the expected server url")
+                .contains("http://myserver.com/zanata");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -92,7 +93,8 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .send(HomePage.class);
 
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeReceiver())
-                .contains("lara@example.com").as("The recipient admin was set");
+                .as("The recipient admin was set")
+                .contains("lara@example.com");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -115,8 +117,8 @@ public class ServerSettingsTest extends ZanataTestCase {
                 "test1@test.com");
 
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeSender())
-                .contains("lara@example.com")
-                .as("The server email sender was set");
+                .as("The server email sender was set")
+                .contains("lara@example.com");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -128,8 +130,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .gotoMorePage();
 
-        assertThat(morePage.getHelpURL()).isEqualTo("http://www.test.com/")
-                .as("The help URL was set correctly");
+        assertThat(morePage.getHelpURL())
+                .as("The help URL was set correctly")
+                .isEqualTo("http://www.test.com/");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -145,8 +148,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .logout()
                 .goToRegistration();
 
-        assertThat(registerPage.termsOfUseUrlVisible()).isFalse()
-                .as("The Terms of Use URL is not visible");
+        assertThat(registerPage.termsOfUseUrlVisible())
+                .as("The Terms of Use URL is not visible")
+                .isFalse();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -159,8 +163,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .logout()
                 .goToRegistration();
 
-        assertThat(registerPage.getTermsUrl()).isEqualTo("http://www.test.com/")
-                .as("The Terms of Use URL was set correctly");
+        assertThat(registerPage.getTermsUrl())
+                .as("The Terms of Use URL was set correctly")
+                .isEqualTo("http://www.test.com/");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -176,9 +181,11 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage();
 
         assertThat(serverConfigurationPage.selectedLoggingLevel())
-                .isEqualTo("Error").as("Level is correct");
+                .as("Level is correct")
+                .isEqualTo("Error");
         assertThat(serverConfigurationPage.getLogEmailTarget())
-                .isEqualTo("lara@example.com").as("Recipient is correct");
+                .as("Recipient is correct")
+                .isEqualTo("lara@example.com");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -193,9 +200,10 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage();
 
         assertThat(serverConfigurationPage.getPiwikUrl())
-                .isEqualTo("http://example.com/piwik")
-                .as("Piwik url is correct is correct");
-        assertThat(serverConfigurationPage.getPiwikID()).isEqualTo("12345")
-                .as("Piwik ID is correct");
+                .as("Piwik url is correct is correct")
+                .isEqualTo("http://example.com/piwik");
+        assertThat(serverConfigurationPage.getPiwikID())
+                .as("Piwik ID is correct")
+                .isEqualTo("12345");
     }
 }
