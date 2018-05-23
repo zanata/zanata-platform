@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.rest.dto.VersionTMMerge;
@@ -56,12 +58,8 @@ public interface TransMemoryMergeService extends Serializable {
 
     /**
      * TM merge for a project version
-     * @param versionId
-     * @param mergeRequest
-     * @param handle
-     * @return
      */
     Future<Void> startMergeTranslations(Long versionId,
             VersionTMMerge mergeRequest,
-            MergeTranslationsTaskHandle handle);
+            @Nonnull MergeTranslationsTaskHandle asyncTaskHandle);
 }
