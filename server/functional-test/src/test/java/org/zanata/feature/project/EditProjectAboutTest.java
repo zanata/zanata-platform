@@ -52,8 +52,8 @@ public class EditProjectAboutTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .as("Admin is logged in")
+                .isEqualTo("admin");
 
         ProjectAboutTab projectAboutTab = new ProjectWorkFlow()
                 .goToProjectByName("aboutpagetest")
@@ -73,7 +73,7 @@ public class EditProjectAboutTest extends ZanataTestCase {
         ProjectAboutPage projectAboutPage = projectAboutTab.gotoAboutTab();
 
         assertThat(projectAboutPage.getAboutText())
-                .isEqualTo(aboutText)
-                .as("The text in the About tab is correct");
+                .as("The text in the About tab is correct")
+                .isEqualTo(aboutText);
     }
 }

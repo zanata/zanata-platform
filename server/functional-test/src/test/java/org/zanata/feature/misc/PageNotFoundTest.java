@@ -37,14 +37,14 @@ public class PageNotFoundTest extends ZanataTestCase {
                 .goToPage("notAPage", Error404Page.class);
 
         assertThat(error404Page.isItA404())
-                .isTrue()
-                .as("Standard page shows a 404 error");
+                .as("Standard page shows a 404 error")
+                .isTrue();
 
         error404Page = new BasicWorkFlow()
                 .goToPage("projects/view/NotAProject", Error404Page.class);
 
         assertThat(error404Page.isItA404())
-                .isTrue()
-                .as("Seam 'entity not found' page shows a 404 error");
+                .as("Seam 'entity not found' page shows a 404 error")
+                .isTrue();
     }
 }

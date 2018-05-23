@@ -58,8 +58,8 @@ public class EditVersionSlugTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin user has logged in");
+                .as("Admin user has logged in")
+                .isEqualTo("admin");
 
         VersionLanguagesPage versionLanguagesPage = new ProjectWorkFlow()
                 .goToProjectByName("change-version-slug")
@@ -76,7 +76,7 @@ public class EditVersionSlugTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsGeneral();
         assertThat(versionGeneralTab.getVersionID())
-                .isEqualTo("newSlug")
-                .as("The version slug has been changed");
+                .as("The version slug has been changed")
+                .isEqualTo("newSlug");
     }
 }
