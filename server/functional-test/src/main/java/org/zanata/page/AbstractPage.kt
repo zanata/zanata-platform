@@ -42,6 +42,10 @@ import org.zanata.util.until
 /**
  * The base class for the page driver. Contains functionality not generally of a
  * user visible nature.
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 abstract class AbstractPage(val driver: WebDriver) {
 
@@ -326,6 +330,7 @@ abstract class AbstractPage(val driver: WebDriver) {
     fun clickElement(element: WebElement) {
         removeNotifications()
         waitForNotificationsGone()
+        dismissCookieConsent()
         scrollIntoView(element)
         waitForAMoment()
                 .withMessage("element clickable: $element")
@@ -360,6 +365,7 @@ abstract class AbstractPage(val driver: WebDriver) {
             clear: Boolean = true, inject: Boolean = false, check: Boolean = true) {
         removeNotifications()
         waitForNotificationsGone()
+        dismissCookieConsent()
         scrollIntoView(element)
         triggerScreenshot("_pretext")
         waitForAMoment()
@@ -547,6 +553,20 @@ abstract class AbstractPage(val driver: WebDriver) {
         executor.executeScript("arguments[0].blur()", element)
         waitForPageSilence()
     }
+
+    /**
+     * Dismiss the Cookie Consent
+     */
+    fun dismissCookieConsent() {
+        val consentButton = By.className("cc-dismiss")
+        if (driver.findElements(consentButton).size > 0 &&
+                driver.findElement(consentButton).isDisplayed) {
+            log.info("Closing Cookie Consent popup")
+            existingElement(By.className("cc-dismiss")).click();
+        }
+        waitForPageSilence();
+    }
+
     /*
      * The system sometimes moves too fast for the Ajax pages, so provide a
      * pause
