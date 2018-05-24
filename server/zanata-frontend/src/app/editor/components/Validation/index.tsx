@@ -105,8 +105,10 @@ const Validation: React.SFC<ValidationProps> = ({ source, target, localeId, vali
 
   const WarningMessageList = messageList(warningMessages)
   const ErrorMessageList = messageList(errorMessages)
-  return (
-    <div className='TextflowValidation'>
+
+  // Only render if warnings or errors found
+  return (warningMessages.length > 0 || errorMessages.length > 0)
+    ? <div className='TextflowValidation'>
       <Collapse>
         <Panel
           key='1'
@@ -116,7 +118,7 @@ const Validation: React.SFC<ValidationProps> = ({ source, target, localeId, vali
         </Panel>
       </Collapse>
     </div>
-  )
+    : <span></span>
 }
 
 interface ValidationProps {

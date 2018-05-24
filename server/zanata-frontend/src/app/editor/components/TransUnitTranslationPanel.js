@@ -11,10 +11,58 @@ import { phraseTextSelectionRange } from '../actions/phrases-actions'
 import { getSyntaxHighlighting } from '../reducers'
 import SyntaxHighlighter, { registerLanguage }
   from 'react-syntax-highlighter/light'
+import Validation from './Validation/index.tsx'
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
 registerLanguage('xml', xml)
+
+// TODO: Retrieve from redux store
+const validations =
+  [
+    {
+      id: 'HTML_XML',
+      label: 'HTML/XML tags',
+      active: true,
+      disabled: true
+    },
+    {
+      id: 'JAVA_VARIABLES',
+      label: 'Java variables',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'NEW_LINE',
+      label: 'Leading/trailing newline',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'PRINTF_XSI_EXTENSION',
+      label: 'Positional printf (XSI extension)',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'PRINTF_VARIABLES',
+      label: 'Printf variables',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'TAB',
+      label: 'Tab characters',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'XML_ENTITY',
+      label: 'XML entity reference',
+      active: true,
+      disabled: false
+    }
+  ]
 
 /**
  * Panel to display and edit translations of a phrase.
@@ -209,7 +257,8 @@ export class TranslationItem extends React.Component {
     isPlural: PropTypes.bool.isRequired,
     onSelectionChange: PropTypes.func.isRequired,
     phrase: PropTypes.shape({
-      id: PropTypes.any.isRequired
+      id: PropTypes.any.isRequired,
+      sources: PropTypes.any.isRequired
     }).isRequired,
     selected: PropTypes.bool.isRequired,
     selectedPluralIndex: PropTypes.number.isRequired,
@@ -252,7 +301,8 @@ export class TranslationItem extends React.Component {
       selectedPluralIndex,
       translation,
       directionClass,
-      permissions
+      permissions,
+      phrase
     } = this.props
 
     // TODO make this translatable
@@ -303,6 +353,11 @@ export class TranslationItem extends React.Component {
           onChange={this._onChange}
           onSelect={onSelectionChange} />
         {syntaxHighlighter}
+        <Validation
+          source={phrase.sources[0]}
+          target={translation}
+          localeId={'en-US'} // TODO: retrieve from Redux Store
+          validationOptions={validations} />
       </div>
     )
   }
