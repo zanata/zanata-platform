@@ -100,18 +100,18 @@ const MergeOptions = (
       loadingText={'Fetching Locales'} />
   return (
     <Row>
-      <Col>
-        <p className="intro mb2">
+      <Col className='mb4'>
+        <p className='intro mb3'>
           Copy existing <strong>translations</strong> from similar documents
           in other projects and versions into this project version.
-          <Link useHref link={docLink} target="_blank">
+          <Link useHref link={docLink} target='_blank'>
             <span title='help'>
               <Icon name='help' className='s0' parentClassName='iconHelp' />
               &nbsp;Need help?
             </span>
           </Link>
         </p>
-        <Collapse className="mb2">
+        <Collapse>
           <Panel header={
             <span>
               Matching phrases are found in the selected projects and
@@ -119,26 +119,26 @@ const MergeOptions = (
               conditions, then the best matching translation is copied to
               the target project-version.&nbsp;[more..]
             </span>
-            } eventKey="1">
-            <p><img src="https://i.imgur.com/ezA992G.png"
-              alt="Version TM Merge workflow" /></p>
+            } eventKey='1'>
+            <p><img src='https://i.imgur.com/ezA992G.png'
+              alt='Version TM Merge workflow' /></p>
           </Panel>
         </Collapse>
       </Col>
       <Col className='mt2'>
-        <div className='versionMergeTarget'>
+        <div className='versionMergeTarget mb4'>
           <div className='VersionMergeTitle'>
             <span className='f4'>To</span>&nbsp;
-            <span className="f4 b">Target</span>
+            <span className='f4 b'>Target</span>
           </div>
-          <ul className='mt1 mb2'>
+          <ul className='mt1'>
             <li className='list-group-item to' title='target project version'>
               <ProjectVersionHorizontal projectSlug={projectSlug}
                 versionSlug={versionSlug} />
-              <span className='item' id="languageDropdown">
-                <Icon name="language" className="s1"
-                  parentClassName="iconTMX" />
-                <span className="languageDropdown-field">
+              <span className='item' id='languageDropdown'>
+                <Icon name='language' className='s1 v-mid mr1'
+                  parentClassName='iconTMX' />
+                <span className='languageDropdown-field'>
                   {localesSelection}
                 </span>
               </span>
@@ -146,9 +146,9 @@ const MergeOptions = (
           </ul>
         </div>
       </Col>
-      <Col>
-        <p className="b f4">For every potential translation:</p>
-        <div className="di u-textNewBlue mb3">
+      <Col className='mb4'>
+        <p className='b f4'>For every potential translation:</p>
+        <div className='di u-textNewBlue'>
           If text is less than <Select
             value={mergeOptions.matchPercentage}
             style={{ width: '5rem' }}
@@ -439,7 +439,7 @@ class TMMergeModal extends Component {
     const modalBody = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
-        processStatus={processStatus} buttonLabel="Cancel TM Merge"
+        processStatus={processStatus} buttonLabel='Cancel TM Merge'
         queryProgress={this.queryTMMergeProgress} />
       )
       : locales.length === 0
@@ -473,11 +473,12 @@ class TMMergeModal extends Component {
     : (
       <span>
         <Row>
-          <Button className='btn-link link-danger'
+          <Button type='danger' className='btn-link link-danger'
             onClick={toggleTMMergeModal}>
             Close
           </Button>
-          <Button type='primary' onClick={this.submitForm}
+          <Button type='primary' className='btn-primary'
+            onClick={this.submitForm}
             disabled={(triggered || !hasTMSource)}>
             Merge translations
           </Button>
@@ -493,7 +494,7 @@ class TMMergeModal extends Component {
         footer={modalFooter}
         width={'48rem'}>
         <span>
-          <p className="u-textDanger modalText-danger">
+          <p className='u-textDanger modalText-danger'>
             {notification && notification.message}</p>
           {modalBody}
         </span>

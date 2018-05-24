@@ -43,18 +43,18 @@ class TMMergeImportedTM extends Component {
     const disabled = !this.state.enabled
     return (
       <span>
-        <div>
+        <div className='mb2'>
           <span>
             <Switch defaultChecked
               onChange={this.toggleChange} />
           </span>
-          <span>From </span>
-          <span className="panel-name">TM Source</span>
+          <span className="ml2 f5">From </span>
+          <span className="b f5">TM Source</span>
         </div>
         <div>
           No project, document or context for TMX<br />
           <Row>
-            <Col span={12}>
+            <Col span={12} className='mt3 mb3'>
               <Radio checked={fromImportedTM === IGNORE_CHECK} disabled={disabled}
                 onChange={onImportedTMChange(IGNORE_CHECK)}>
                 <span>I don't mind at all</span><br />
