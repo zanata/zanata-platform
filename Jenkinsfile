@@ -28,10 +28,13 @@ milestone()
 
 PullRequests.ensureJobDescription(env, manager, steps)
 
+// Test whether env works here
+echo "DEFAULT_NODE = ${env.DEFAULT_NODE}"
+
 // initialiser must be run separately (bindings not available during compilation phase)
 // we can't set these values yet, because we need a node to look at the environment
 @Field
-def defaultNodeLabel
+def defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
 
 // Define project properties: general properties for the Pipeline-defined jobs.
 // 1. discard old artifacts and build logs
@@ -41,7 +44,7 @@ def defaultNodeLabel
 // we need a node to access env.DEFAULT_NODE.
 node {
   echo "running on node ${env.NODE_NAME}"
-  defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
+  // defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
   // eg github-zanata-org/zanata-platform/update-Jenkinsfile
   def projectProperties = [
     [
@@ -80,8 +83,6 @@ node {
   properties(projectProperties)
 }
 
-// Test whether env works here
-echo "DEFAULT_NODE = ${env.DEFAULT_NODE}"
 
 String getLabel() {
   def labelParam = null
@@ -167,19 +168,25 @@ String getLockName() {
 
 // use timestamps for Jenkins logs
 timestamps {
+  // Init the notifier
+  def pipelineLibraryScmGit
+
+  def mainScmGit
+
+  def notify
+
   // allocate a node for build+unit tests
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
     currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
-
     // Init the notifier
-    def pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
+    pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
     pipelineLibraryScmGit.init(PIPELINE_LIBRARY_BRANCH)
 
-    def mainScmGit = new ScmGit(env, steps, PROJ_URL)
+    mainScmGit = new ScmGit(env, steps, PROJ_URL)
     mainScmGit.init(env.BRANCH_NAME)
 
-    def notify = new Notifier(env, steps, currentBuild,
+    notify = new Notifier(env, steps, currentBuild,
         pipelineLibraryScmGit, mainScmGit, (env.GITHUB_COMMIT_CONTEXT) ?: 'Jenkinsfile',
     )
 
