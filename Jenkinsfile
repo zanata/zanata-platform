@@ -80,9 +80,6 @@ node {
   properties(projectProperties)
 }
 
-// Test whether env works here
-echo "DEFAULT_NODE = ${env.DEFAULT_NODE}"
-
 String getLabel() {
   def labelParam = null
   try {
@@ -137,6 +134,9 @@ boolean resolveAllFuncTests() {
 
 @Field
 def mainlineBranches = ['master', 'release', 'legacy']
+
+// Seems it does not require to be in node{} to get env
+// But need to be run after node
 @Field
 def gwtOpts = '-Dchromefirefox'
 if (env.BRANCH_NAME in mainlineBranches) {
@@ -167,19 +167,25 @@ String getLockName() {
 
 // use timestamps for Jenkins logs
 timestamps {
+  // Init the notifier
+  def pipelineLibraryScmGit
+
+  def mainScmGit
+
+  def notify
+
   // allocate a node for build+unit tests
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
     currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
-
     // Init the notifier
-    def pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
+    pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
     pipelineLibraryScmGit.init(PIPELINE_LIBRARY_BRANCH)
 
-    def mainScmGit = new ScmGit(env, steps, PROJ_URL)
+    mainScmGit = new ScmGit(env, steps, PROJ_URL)
     mainScmGit.init(env.BRANCH_NAME)
 
-    def notify = new Notifier(env, steps, currentBuild,
+    notify = new Notifier(env, steps, currentBuild,
         pipelineLibraryScmGit, mainScmGit, (env.GITHUB_COMMIT_CONTEXT) ?: 'Jenkinsfile',
     )
 
