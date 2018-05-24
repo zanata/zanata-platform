@@ -51,8 +51,8 @@ object ArquillianRest {
 //                "org.hibernate:hibernate-core",
                 "org.reflections:reflections",
                 "org.jetbrains.kotlin:kotlin-stdlib",
-                "org.jetbrains.kotlin:kotlin-stdlib-jre7",
-                "org.jetbrains.kotlin:kotlin-stdlib-jre8")
+                "org.jetbrains.kotlin:kotlin-stdlib-jdk7",
+                "org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     }
 
     @JvmOverloads
@@ -63,8 +63,8 @@ object ArquillianRest {
                 .resolve(jarDependenciesForRest() + moreDependencies)
                 .withTransitivity()
                 .asFile()
-        if (log.isInfoEnabled) {
-            log.info("Found {} libs: {}", libs.size, listOf<File>(*libs))
+        if (log.isDebugEnabled) {
+            log.debug("Found {} libs: {}", libs.size, listOf<File>(*libs))
         }
         return libs
     }

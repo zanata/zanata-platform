@@ -62,12 +62,12 @@ public class RegisterCTest extends ZanataTestCase {
                 .setFields(fields)
                 .registerFailure();
 
-        assertThat(registerPage.getErrors(4)).containsExactly(
-                RegisterPage.USERDISPLAYNAME_LENGTH_ERROR,
-                RegisterPage.USERNAME_LENGTH_ERROR,
-                RegisterPage.REQUIRED_FIELD_ERROR,
-                RegisterPage.REQUIRED_FIELD_ERROR)
-                .as("Size indication or 'May not be empty' shows for all fields");
+        assertThat(registerPage.getErrors(4))
+                .as("Size indication or 'May not be empty' shows for all fields")
+                .containsExactly(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR,
+                        RegisterPage.USERNAME_LENGTH_ERROR,
+                        RegisterPage.REQUIRED_FIELD_ERROR,
+                        RegisterPage.REQUIRED_FIELD_ERROR);
     }
 
     @Trace(summary = "The user can navigate to Login from Sign up, or to "
@@ -79,14 +79,14 @@ public class RegisterCTest extends ZanataTestCase {
                 .goToRegister();
 
         assertThat(registerPage.getPageTitle())
-                .isEqualTo("Sign up with Zanata")
-                .as("The user is sent to the register page");
+                .as("The user is sent to the register page")
+                .isEqualTo("Sign up with Zanata");
 
         SignInPage signInPage = registerPage.goToSignIn();
 
         assertThat(signInPage.getPageTitle())
-                .isEqualTo("Log in with your username")
-                .as("The user is sent to the log in page");
+                .as("The user is sent to the log in page")
+                .isEqualTo("Log in with your username");
     }
 
     @Trace(summary = "The user can show or hide the registration password content",
@@ -98,23 +98,23 @@ public class RegisterCTest extends ZanataTestCase {
                 .enterPassword("mypassword");
 
         assertThat(registerPage.getPasswordFieldType())
-                .isEqualTo("password")
-                .as("The password field starts as masked");
+                .as("The password field starts as masked")
+                .isEqualTo("password");
 
         registerPage = registerPage.clickPasswordShowToggle();
 
         assertThat(registerPage.getPasswordFieldType())
-                .isEqualTo("text")
-                .as("The password field is now not masked");
+                .as("The password field is now not masked")
+                .isEqualTo("text");
 
         registerPage = registerPage.clickPasswordShowToggle();
 
         assertThat(registerPage.getPasswordFieldType())
-                .isEqualTo("password")
-                .as("The password field is again masked");
+                .as("The password field is again masked")
+                .isEqualTo("password");
         assertThat(registerPage.getPassword())
-                .isEqualTo("mypassword")
-                .as("The password field did not lose the entered text");
+                .as("The password field did not lose the entered text")
+                .isEqualTo("mypassword");
     }
 
     @Trace(summary = "The user must provide a password to register via internal authentication",
@@ -133,14 +133,14 @@ public class RegisterCTest extends ZanataTestCase {
                 .registerFailure();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.PASSWORD_LENGTH_ERROR)
-                .as("Password requires at least 6 characters");
+                .as("Password requires at least 6 characters")
+                .contains(RegisterPage.PASSWORD_LENGTH_ERROR);
 
         registerPage = registerPage.enterPassword(longPass).registerFailure();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.PASSWORD_LENGTH_ERROR)
-                .as("The user must enter a password of at most 1024 characters");
+                .as("The user must enter a password of at most 1024 characters")
+                .contains(RegisterPage.PASSWORD_LENGTH_ERROR);
     }
 
     @Trace(summary = "The user must provide a name to register",
@@ -159,14 +159,14 @@ public class RegisterCTest extends ZanataTestCase {
                 .registerFailure();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR)
-                .as("A name greater than 1 character must be specified");
+                .as("A name greater than 1 character must be specified")
+                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR);
 
         registerPage = registerPage.enterName(longName).registerFailure();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR)
-                .as("A name shorter than 81 characters is specified");
+                .as("A name shorter than 81 characters is specified")
+                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR);
     }
 
     @Trace(summary = "The user must provide a username to register",
@@ -181,8 +181,8 @@ public class RegisterCTest extends ZanataTestCase {
                 .registerFailure();
 
         assertThat(containsUsernameError(registerPage.getErrors()))
-                .isTrue()
-                .as("A username must be specified");
+                .as("A username must be specified")
+                .isTrue();
     }
 
     @Trace(summary = "A username cannot be all underscores (RHBZ-981498)")
@@ -200,8 +200,8 @@ public class RegisterCTest extends ZanataTestCase {
         registerPage.defocus();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
-                .as("A username of all underscores is not valid");
+                .as("A username of all underscores is not valid")
+                .contains(RegisterPage.USERNAME_VALIDATION_ERROR);
     }
 
     /*

@@ -113,7 +113,7 @@ public class TransMemoryMergeStatusResolver {
      *         we want to reject the auto translation via TM merge
      */
     public ContentState decideStatus(HasTMMergeCriteria action,
-            TransMemoryResultItem tmResult, HTextFlowTarget oldTarget) {
+            TransMemoryResultItem tmResult, @Nullable HTextFlowTarget oldTarget) {
 
         if ((int) tmResult.getSimilarityPercent() != 100) {
             needReview = true;

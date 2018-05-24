@@ -20,6 +20,9 @@
  */
 package org.zanata.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -29,16 +32,29 @@ import org.hibernate.Session;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.exception.NoSuchUserException;
+import org.zanata.file.DocumentStorage;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
+import org.zanata.model.HIterationGroup;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectMember;
+import org.zanata.model.HRawDocument;
 import org.zanata.model.HRoleAssignmentRule;
 import org.zanata.model.security.HCredentials;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.UserAccountService;
 import org.zanata.util.HashUtil;
+import com.google.common.collect.Lists;
 
 /**
  * @author Carlos Munoz
@@ -49,6 +65,8 @@ import org.zanata.util.HashUtil;
 @Transactional
 public class UserAccountServiceImpl implements UserAccountService {
     private static final long serialVersionUID = -6318120298386269907L;
+    private static final Logger log =
+            LoggerFactory.getLogger(UserAccountServiceImpl.class);
 
     @Inject
     private Session session;
@@ -58,6 +76,12 @@ public class UserAccountServiceImpl implements UserAccountService {
     private AccountResetPasswordKeyDAO accountResetPasswordKeyDAO;
     @Inject
     private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
+    @Inject
+    @Authenticated
+    private HAccount authenticatedUser;
+    @Inject
+    @DocumentStorage
+    private File documentStorageFolder;
 
     @Override
     public void clearPasswordResetRequests(HAccount account) {
@@ -161,5 +185,132 @@ public class UserAccountServiceImpl implements UserAccountService {
                 .setComment("UserAccountServiceImpl.isUsernameUsed")
                 .uniqueResult();
         return usernameCount != 0;
+    }
+
+    @Override
+    public void eraseUserData(@Nonnull HAccount account) {
+        String originalUsername = account.getUsername();
+        HPerson person = account.getPerson();
+        person.erase(authenticatedUser);
+        deleteReviewComments(person);
+        // remove from language team
+        person.getLanguageTeamMemberships()
+                .forEach(membership -> session.delete(membership));
+        removeFromVersionGroupAndPurgeGroupifSoleMaintainer(person);
+        List<HProject> soleMaintainedProjects = removeSolelyMaintainedProjectMembership(person);
+        // soft delete the project and its versions
+        softDeleteProjects(soleMaintainedProjects);
+
+        // remove rest of the project membership link for this user
+        session.createQuery("delete from HProjectMember pm where pm.person = :person")
+                .setParameter("person", person)
+                .executeUpdate();
+        // remove project locale membership link
+        session.createQuery("delete from HProjectLocaleMember plm where plm.person = :person")
+                .setParameter("person", person)
+                .executeUpdate();
+
+        deleteRawDocuments(originalUsername);
+
+        deleteAccountObjects(account);
+    }
+
+    /**
+     * mark HRawDocument as deleted and delete raw document files on disk
+     * @param originalUsername
+     */
+    private void deleteRawDocuments(String originalUsername) {
+        List<HRawDocument> rawDocs = session.createQuery(
+                "from HRawDocument doc where doc.uploadedBy = :username")
+                .setParameter("username", originalUsername)
+                .list();
+        rawDocs.forEach(doc -> {
+            File fileOnDisk = new File(documentStorageFolder, doc.getFileId());
+            try {
+                Files.deleteIfExists(fileOnDisk.toPath());
+            } catch (IOException e) {
+                log.warn("unable to delete {}", fileOnDisk);
+            }
+            doc.getDocument().setRawDocument(null);
+            session.update(doc.getDocument());
+            session.delete(doc);
+        });
+        session.flush();
+    }
+
+    private void softDeleteProjects(List<HProject> soleMaintainedProjects) {
+        soleMaintainedProjects.forEach(p -> {
+            p.setStatus(EntityStatus.OBSOLETE);
+            p.setSlug(p.changeToDeletedSlug());
+            p.getProjectIterations().forEach(v -> {
+                v.setStatus(EntityStatus.OBSOLETE);
+                v.setSlug(v.changeToDeletedSlug());
+            });
+        });
+        session.flush();
+    }
+
+    @NotNull
+    private List<HProject> removeSolelyMaintainedProjectMembership(HPerson person) {
+        List<HProjectMember> soleMaintainerProjects = session.createQuery(
+                "from HProjectMember pm where pm.person = :person and 1 = (select count(*) as n from HProjectMember pm1 where pm1.project = pm.project)")
+                .setParameter("person", person)
+                .list();
+
+        List<HProject> projectsToDelete = Lists.newLinkedList();
+        soleMaintainerProjects.forEach(pm -> {
+            projectsToDelete.add(pm.getProject());
+            session.delete(pm);
+        });
+        return projectsToDelete;
+    }
+
+    private void removeFromVersionGroupAndPurgeGroupifSoleMaintainer(
+            HPerson person) {
+        List<HIterationGroup> soleMaintainerGroups = Lists.newLinkedList();
+        person.getMaintainerVersionGroups().forEach(group -> {
+            if (group.getMaintainers().size() == 1) {
+                soleMaintainerGroups.add(group);
+            }
+            group.getMaintainers().remove(person);
+        });
+        session.flush();
+        soleMaintainerGroups.forEach(group -> {
+            // for some reason below doesn't work!!! even though it triggers preRemove callback
+//            session.delete(group);
+            session.createQuery("delete from HIterationGroup g where g.id = :id")
+                    .setParameter("id", group.getId())
+                    .executeUpdate();
+
+        });
+        session.flush();
+    }
+
+    /**
+     * remove all review comment.
+     */
+    private void deleteReviewComments(HPerson person) {
+        session.createQuery("delete from HTextFlowTargetReviewComment c where c.commenter = :commenter")
+                .setParameter("commenter", person)
+                .executeUpdate();
+    }
+
+    private void deleteAccountObjects(@Nonnull HAccount account) {
+        account.erase(authenticatedUser);
+        if (account.getAccountActivationKey() != null) {
+            session.delete(account.getAccountActivationKey());
+            account.setAccountActivationKey(null);
+        }
+        if (account.getAccountResetPasswordKey() != null) {
+            session.delete(account.getAccountResetPasswordKey());
+            account.setAccountResetPasswordKey(null);
+        }
+        if (account.getEditorOptions() != null && !account.getEditorOptions().isEmpty()) {
+            account.getEditorOptions().clear();
+            session.merge(account);
+        }
+        account.getCredentials().forEach(c -> session.delete(c));
+        account.getCredentials().clear();
+        session.flush();
     }
 }

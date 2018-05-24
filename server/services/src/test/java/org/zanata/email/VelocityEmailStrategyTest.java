@@ -20,31 +20,26 @@
  */
 package org.zanata.email;
 
-import static javax.mail.Message.RecipientType.BCC;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Properties;
-
-import javax.mail.BodyPart;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ProjectType;
 import org.zanata.i18n.Messages;
 import org.zanata.i18n.MessagesFactory;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+
+import static javax.mail.Message.RecipientType.BCC;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -121,31 +116,6 @@ public class VelocityEmailStrategyTest {
         message = new MimeMessage(session);
     }
 
-    private String extractHtmlPart(MimeMessage message)
-            throws IOException, MessagingException {
-        if (DEBUG) {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            message.writeTo(os);
-            System.err.println(os.toString("UTF-8"));
-        }
-
-        Multipart multipart = (Multipart) message.getContent();
-        // one for html, one for text
-        assertThat(multipart.getCount()).isEqualTo(2);
-
-        // Text should appear first (because HTML is the preferred format)
-        BodyPart textPart = multipart.getBodyPart(0);
-        assertThat(textPart.getDataHandler().getContentType()).isEqualTo(
-                "text/plain; charset=UTF-8");
-
-        BodyPart htmlPart = multipart.getBodyPart(1);
-        assertThat(htmlPart.getDataHandler().getContentType()).isEqualTo(
-                "text/html; charset=UTF-8");
-        String htmlContent = (String) htmlPart.getContent();
-
-        return htmlContent;
-    }
-
     private void checkFromAndTo(MimeMessage message) throws MessagingException {
         assertThat(message.getFrom()).extracting("address").contains(
                 fromAddress);
@@ -161,6 +131,7 @@ public class VelocityEmailStrategyTest {
         // a message from the generic email template:
         assertThat(html).contains(msgs.get(
                 "jsf.email.GeneratedFromZanataServerAt"));
+        assertThat(html).contains(testServerPath);
     }
 
     @Test
@@ -182,6 +153,10 @@ public class VelocityEmailStrategyTest {
                 "jsf.email.activation.ClickLinkToActivateAccount"));
         assertThat(html).contains(
                 testServerPath + "/account/activate/123456");
+    }
+
+    private String extractHtmlPart(MimeMessage message) {
+        return MultipartKt.extractMultipart(message).getHtml();
     }
 
     @Test
