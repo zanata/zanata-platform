@@ -423,6 +423,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 toAddresses,
                 new ProjectInfo(proj.getName(), projUrl),
                 new VersionInfo(projVersion.getSlug(), verUrl),
+                mergeRequest.getLocaleId(),
                 new IntRange(mergeRequest.getThresholdPercent(), 100));
         TMMergeEmailStrategy strategy = new TMMergeEmailStrategy(
                 settings, mergeResult);

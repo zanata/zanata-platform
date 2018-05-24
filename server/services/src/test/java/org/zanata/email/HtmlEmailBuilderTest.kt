@@ -30,6 +30,7 @@ import org.jvnet.mock_javamail.Mailbox
 import org.zanata.common.ContentState.Approved
 import org.zanata.common.ContentState.NeedReview
 import org.zanata.common.ContentState.Translated
+import org.zanata.common.LocaleId
 import org.zanata.i18n.Messages
 import org.zanata.i18n.MessagesFactory
 import org.zanata.service.tm.merge.TMMergeResult
@@ -71,6 +72,7 @@ class HtmlEmailBuilderTest {
             listOf(Addresses.getAddress(toAddress, toName)),
             ProjectInfo("Test Project", "$serverURL/project/view/test-project"),
             VersionInfo("master", "$serverURL/iteration/view/test-project/master"),
+            LocaleId.DE,
             IntRange(50, 100))
 
     private val msgsFactory = object : MessagesFactory() {
@@ -135,6 +137,7 @@ class HtmlEmailBuilderTest {
         val html = parts.html
         assertThat(html).`as`("project url").contains(mergeContext.project.url)
         assertThat(html).`as`("version url").contains(mergeContext.version.url)
+        assertThat(html).`as`("locale code").contains(mergeContext.locale.id)
         assertThat(html).`as`("Approved 100% matches").contains("233", "98", "12")
         assertThat(html).`as`("Translated 100% matches").contains("505", "203", "33")
         assertThat(html).`as`("80-89% Fuzzy matches").contains("998", "193", "37")
@@ -162,6 +165,7 @@ class HtmlEmailBuilderTest {
         val html = parts.html
         assertThat(html).`as`("project url").contains(mergeContext.project.url)
         assertThat(html).`as`("version url").contains(mergeContext.version.url)
+        assertThat(html).`as`("locale code").contains(mergeContext.locale.id)
         assertThat(html).contains(msgs["email.templates.tm_merge.NothingCopied"])
         checkGenericFooter(html, msgs["email.templates.tm_merge.TriggeredByYou"]!!)
     }

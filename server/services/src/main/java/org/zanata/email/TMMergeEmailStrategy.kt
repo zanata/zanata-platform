@@ -5,6 +5,7 @@ import org.zanata.common.ContentState
 import org.zanata.common.ContentState.Approved
 import org.zanata.common.ContentState.NeedReview
 import org.zanata.common.ContentState.Translated
+import org.zanata.common.LocaleId
 import org.zanata.i18n.Messages
 import org.zanata.service.tm.merge.TMMergeResult
 import javax.mail.internet.InternetAddress
@@ -35,6 +36,7 @@ data class TMMergeEmailContext(
         val toAddresses: List<InternetAddress>,
         val project: ProjectInfo,
         val version: VersionInfo,
+        val locale: LocaleId,
         val matchRange: IntRange)
 
 /**
@@ -148,11 +150,19 @@ private fun tmMergeEmailBodyProducer(
                 }
             }
             li {
-                style = s.dark + s.marginLeft0
+                style = s.dark + s.marginLeft0 + s.padRight20
                 +"${msgs["jsf.Version"]}: "
                 a(href = context.version.url) {
                     style = s.dark
                     +context.version.slug
+                }
+            }
+            li {
+                style = s.dark + s.marginLeft0
+                +"${msgs["jsf.Locale"]}: "
+                a {
+                    style = s.dark
+                    +context.locale.id
                 }
             }
         }
