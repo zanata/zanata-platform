@@ -90,7 +90,6 @@ describe('TabValidation', () => {
     const source = "Testing string with variable {0}"
     const target = "Testing string with no variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.varsMissing(Arrays.asList("{0}")))
     const errorMessages =
       new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
         .format({ missing: '{0}' })
@@ -171,7 +170,6 @@ describe('TabValidation', () => {
     const source = "This string does not contain \\'{0}\\' style variables"
     const target = "This string does not contain java style variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
-    // assertThat(errorList).contains(messages.varsMissing(Arrays.asList("{0}")))
     const errorMessages =
       new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
         .format({ missing: '{0}' })

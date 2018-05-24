@@ -5,43 +5,47 @@ import 'antd/lib/collapse/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
 import './index.css'
-import * as Validators from '../../../validators'
+import {
+  Messages,
+  ValidationId,
+  HtmlXmlTagValidation,
+  JavaVariablesValidation,
+  NewlineLeadTrailValidation,
+  PrintfVariablesValidation,
+  PrintfXSIExtensionValidation,
+  TabValidation,
+  XmlEntityValidation
+} from '../../../validators'
 
 const Panel = Collapse.Panel
 
-/**
- * Validation Messages presentational component
- */
-const Validation: React.SFC<ValidationProps> = ({ source, target, localeId, validationOptions }) => {
-  const {
-    Messages,
-    ValidationId,
-    // HtmlXmlTagValidation,
-    // JavaVariablesValidation,
-    // NewlineLeadTrailValidation,
-    // PrintfVariablesValidation,
-    // PrintfXSIExtensionValidation,
-    TabValidation,
-    // XmlEntityValidation
-  } = Validators
-  const locale = localeId ? localeId : 'en-US'
-  const TabValidator =
-    new TabValidation(ValidationId.TAB, '', Messages[locale], locale)
-  const messages: Message[] = TabValidator.doValidate(source, target).map(message => {
-    return {
-      id: ValidationId.TAB,
-      label: OptionLabels[ValidationId.TAB],
-      description: '',
-      defaultMessage: message
-    }
-  })
+// TODO: only instantiate enabled validators (warning/error)
+function validatorFactory(_validationOptions: ValidationOption[], locale: string): any {
+  const validators = []
+  validators.push(
+    new HtmlXmlTagValidation(ValidationId.HTML_XML, '', Messages[locale], locale))
+  validators.push(
+    new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, '', Messages[locale], locale))
+  validators.push(
+    new NewlineLeadTrailValidation(ValidationId.NEW_LINE, '', Messages[locale], locale))
+  validators.push(
+    new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, '', Messages[locale], locale))
+  validators.push(
+    new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, '', Messages[locale]))
+  validators.push(
+    new TabValidation(ValidationId.TAB, '', Messages[locale], locale))
+  validators.push(
+    new XmlEntityValidation(ValidationId.XML_ENTITY, '', Messages[locale], locale))
+  return validators
+}
 
-  const MessageList = messages.map((m, index) => {
+const messageList = (messages) => {
+  return messages.map((m, index) => {
     // If description exists, display in Tooltip
     const messageBody = m.description
       ? <Tooltip placement='topRight' title={m.description}>
-          {m.defaultMessage}
-        </Tooltip>
+        {m.defaultMessage}
+      </Tooltip>
       : m.defaultMessage
     return (
       <div key={index}>
@@ -49,42 +53,70 @@ const Validation: React.SFC<ValidationProps> = ({ source, target, localeId, vali
       </div>
     )
   })
+}
 
+/**
+ * Validation Messages presentational component
+ */
+const Validation: React.SFC<ValidationProps> = ({ source, target, localeId, validationOptions }) => {
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
-  function getWarnings(total, m) {
-    return warningValidators.find((v) => v.id === m.id)
-      ? ++total
-      : total
-  }
-  function getErrors(total, m) {
-    return errorValidators.find((v) => v.id === m.id)
-      ? ++total
-      : total
-  }
-  const errorCount = messages.reduce(getErrors, 0)
-  const warningCount = messages.reduce(getWarnings, 0)
+  const locale = localeId ? localeId : 'en-US'
+
+  const validators = validatorFactory(validationOptions, locale)
+
+  const warningProducers = warningValidators.map((warningOpt) => {
+    return validators.find((validator) => {
+      return validator.id === ValidationId[warningOpt.id]
+    })
+  })
+
+  const errorProducers = errorValidators.map((warningOpt) => {
+    return validators.find((validator) => {
+      return validator.id === ValidationId[warningOpt.id]
+    })
+  })
+
+  let warningMessages: Message[] = []
+  warningProducers.forEach(validator => {
+    const msgs = validator.doValidate(source, target).map(message => {
+      return {
+        id: validator.id,
+        label: validator.id,
+        description: '',
+        defaultMessage: message
+      }
+    })
+    warningMessages = warningMessages.concat(msgs)
+  })
+
+  let errorMessages: Message[] = []
+  errorProducers.forEach(validator => {
+    const msgs = (validator.doValidate(source, target).map(message => {
+      return {
+        id: validator.id,
+        label: validator.id,
+        description: '',
+        defaultMessage: message
+      }
+    }))
+    errorMessages = errorMessages.concat(msgs)
+  })
+
+  const WarningMessageList = messageList(warningMessages)
+  const ErrorMessageList = messageList(errorMessages)
   return (
     <div className='TextflowValidation'>
       <Collapse>
         <Panel
           key='1'
-          header={`Warnings: ${warningCount}, Errors: ${errorCount}`} >
-          {MessageList}
+          header={`Warnings: ${warningMessages.length}, Errors: ${errorMessages.length}`} >
+          {ErrorMessageList}
+          {WarningMessageList}
         </Panel>
       </Collapse>
     </div>
   )
-}
-
-enum OptionLabels {
-  'html-xml-tags' = 'HTML/XML tags',
-  'java-variables' = 'Java variables',
-  'leading-trailing-newline' = 'Leading/trailing newline',
-  'positional-printf' = 'Positional printf (XSI extension)',
-  'printf-variables' = 'Printf variables',
-  'tab-characters' = 'Tab characters',
-  'xml-entity-reference' = 'XML entity reference',
 }
 
 interface ValidationProps {
@@ -102,7 +134,7 @@ interface Message {
 }
 
 interface ValidationOption {
-  id: string,
+  id: ValidationId,
   label: string,
   active: boolean,
   disabled: boolean
