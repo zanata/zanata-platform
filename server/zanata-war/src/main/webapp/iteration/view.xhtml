@@ -39,9 +39,9 @@
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/languages/:lang::?query:',
       function (pre, projectSlug, versionSlug, lang, query) {
         zanata.tabs.activate(jQuery('#languages_tab'));
-        var clickEle = jQuery('a.' + lang);
+        var clickEle = jQuery('a.locale-' + lang);
         if (lang && clickEle.length != 0) {
-          updateActiveRow(jQuery('a.' + lang));
+          updateActiveRow(jQuery('a.locale-' + lang));
           toggleColumn('languages');
           reloadLocale(lang)
         }
