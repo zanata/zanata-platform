@@ -113,7 +113,7 @@ public class EntityTestData {
     }
 
     @Nonnull
-    private static HTextFlowTarget makeTextFlowTarget(HTextFlow hTextFlow,
+    public static HTextFlowTarget makeTextFlowTarget(HTextFlow hTextFlow,
             HLocale targetLocale,
             ContentState contentState) {
         HTextFlowTarget target = new HTextFlowTarget(hTextFlow, targetLocale);

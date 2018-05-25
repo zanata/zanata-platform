@@ -46,8 +46,8 @@ public class LanguageSearchCTest extends ZanataTestCase {
                 .expectLanguageTeamListContains("English (United States)");
 
         assertThat(explorePage.getLanguageSearchResults())
-                .contains("English (United States)")
-                .as("Normal user can see the languages listed");
+                .as("Normal user can see the languages listed")
+                .contains("English (United States)");
     }
 
     @Test(timeout = MAX_SHORT_TEST_DURATION)
@@ -58,7 +58,7 @@ public class LanguageSearchCTest extends ZanataTestCase {
                 .enterSearch("abc");
 
         assertThat(explorePage.getLanguageSearchResults().isEmpty())
-                .isTrue()
-                .as("The Language is not displayed");
+                .as("The Language is not displayed")
+                .isTrue();
     }
 }

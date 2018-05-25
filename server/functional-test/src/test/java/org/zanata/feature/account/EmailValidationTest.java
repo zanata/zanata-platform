@@ -71,16 +71,16 @@ public class EmailValidationTest extends ZanataTestCase {
         registerPage = registerPage.enterEmail("notproper@").registerFailure();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
-                .as("The email formation error is displayed");
+                .as("The email formation error is displayed")
+                .contains(RegisterPage.MALFORMED_EMAIL_ERROR);
 
         registerPage = registerPage.clearFields()
                 .enterEmail("admin@example.com")
                 .registerFailure();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.EMAIL_TAKEN)
-                .as("The user needs to provide a unique email address");
+                .as("The user needs to provide a unique email address")
+                .contains(RegisterPage.EMAIL_TAKEN);
     }
 
     @Trace(summary = "The user must provide a unique email address to " +
@@ -92,7 +92,7 @@ public class EmailValidationTest extends ZanataTestCase {
                 .registerFailure();
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.EMAIL_TAKEN)
-                .as("The user needs to provide a unique email address");
+                .as("The user needs to provide a unique email address")
+                .contains(RegisterPage.EMAIL_TAKEN);
     }
 }

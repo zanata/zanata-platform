@@ -39,13 +39,14 @@
 
         <h1 class="l--push-all-0">#{msgs['jsf.RoleDetails']}</h1>
 
-        <h:form>
+        <h:form id="roleForm">
           <div class="form__item l--push-top-1">
             <h:outputLabel for="role">#{msgs['jsf.Role']}</h:outputLabel>
             <zanata:decorate id="role" componentId="roleField">
               <h:inputText id="role" value="#{zanataRoleAction.role}"
-                readonly="#{identityManager.userExists(zanataRoleAction.role)}"
-                required="true">
+                readonly="#{identityManager.roleExists(zanataRoleAction.role)}"
+                required="true" maxlength="255"
+                valueChangeListener="#{zanataRoleAction.validateRoleName}">
                 <a4j:ajax event="blur" render="roleField" execute="@this" bypassUpdates="true"/>
               </h:inputText>
             </zanata:decorate>
@@ -62,7 +63,7 @@
             </zanata:decorate>
           </div>
 
-          <h:commandButton value="#{msgs['jsf.Save']}"
+          <h:commandButton value="#{msgs['jsf.Save']}" id="roleDetailSave"
             action="#{zanataRoleAction.save}" styleClass="button button--primary"/>
 
           <h:button id="cancel" styleClass="button button--link l--push-left-half"

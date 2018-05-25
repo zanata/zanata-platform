@@ -12,7 +12,7 @@
 @import "../components/TriCheckbox/index.less";
 @import "../components/RejectionsForm/index.less";
 @import "legacy.less";
-@import "antd.less";
+@import "./antd.less";
 // jsf and gwt overrides
 @import "./bstrap-styleguide.less";
 /* Class wrapper for bootstrap css. Used in:
@@ -25,7 +25,15 @@
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.cc-link {
+  color: @color-light !important;
+  font-weight: 600;
+}
+
 .bstrapReact {
+  .drag {
+    padding-right: @spacing-rh;
+  }
   .container {
     margin-right: auto;
     margin-left: auto;
@@ -302,46 +310,6 @@
     width: 100%;
     margin-left: @spacing-rh;
     vertical-align: middle;
-  }
-  /* React autosuggest */
-  .react-autosuggest__container {
-    position: relative;
-  }
-  .react-autosuggest__input {
-    border: 0;
-    width: 100%;
-  }
-  .react-autosuggest__input:focus {
-    outline: 0;
-  }
-  .react-autosuggest__container--open .react-autosuggest__input {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .react-autosuggest__suggestions-container {
-    display: none;
-  }
-  .react-autosuggest__container--open .react-autosuggest__suggestions-container {
-    display: block;
-    position: absolute;
-    border: 1px solid @color-muted;
-    background-color: #fff;
-    border-bottom-left-radius: @border-radius-base;
-    border-bottom-right-radius: @border-radius-base;
-    z-index: 2;
-    margin-top: 0.2rem;
-  }
-  .react-autosuggest__suggestions-list {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-  }
-  .react-autosuggest__suggestion {
-    cursor: pointer;
-    padding: 0.4rem 0.5rem;
-  }
-  .react-autosuggest__suggestion--highlighted {
-    background-color: @color-neutral;
   }
 
   // Toolbars

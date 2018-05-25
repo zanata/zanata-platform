@@ -51,8 +51,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .as("Admin is logged in")
+                .isEqualTo("admin");
     }
 
     @Trace(summary = "The administrator can create a new translation " +
@@ -68,16 +68,16 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
 
         assertThat(translationMemoryPage
                 .expectNotification("Successfully created"))
-                .isTrue()
-                .as("The success message is displayed");
+                .as("The success message is displayed")
+                .isTrue();
 
         assertThat(translationMemoryPage.getListedTranslationMemorys())
-                .contains(newTMId)
-                .as("The new Translation Memory is listed");
+                .as("The new Translation Memory is listed")
+                .contains(newTMId);
 
         assertThat(translationMemoryPage.getDescription(newTMId))
-                .isEqualTo(tmDescription)
-                .as("The description is displayed correctly");
+                .as("The description is displayed correctly")
+                .isEqualTo(tmDescription);
     }
 
     @Trace(summary = "The administrator must use a unique identifier to " +
@@ -90,8 +90,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .createTranslationMemory(nonUniqueTMId);
 
         assertThat(tmMemoryPage.getListedTranslationMemorys())
-                .contains(nonUniqueTMId)
-                .as("The new Translation Memory is listed");
+                .as("The new Translation Memory is listed")
+                .contains(nonUniqueTMId);
 
         TranslationMemoryEditPage translationMemoryEditPage = tmMemoryPage
                 .clickCreateNew()
@@ -100,8 +100,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .clickSaveAndExpectFailure();
 
         assertThat(translationMemoryEditPage.getErrors())
-                .contains(TranslationMemoryPage.ID_UNAVAILABLE)
-                .as("The Id Is Not Available error is displayed");
+                .as("The Id Is Not Available error is displayed")
+                .contains(TranslationMemoryPage.ID_UNAVAILABLE);
 
         translationMemoryEditPage = translationMemoryEditPage
                 .clickSaveAndExpectFailure();
@@ -110,8 +110,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         translationMemoryEditPage.assertNoCriticalErrors();
 
         assertThat(translationMemoryEditPage.getErrors())
-                .contains(TranslationMemoryPage.ID_UNAVAILABLE)
-                .as("The Id Is Not Available error is displayed");
+                .as("The Id Is Not Available error is displayed")
+                .contains(TranslationMemoryPage.ID_UNAVAILABLE);
     }
 
     @Trace(summary = "The administrator can import data from a tmx data " +
@@ -129,8 +129,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .clickUploadButtonAndAcknowledge();
 
         assertThat(tmMemoryPage.getNumberOfEntries(importTMId))
-                .isEqualTo("1")
-                .as("The Translation Memory has one entry");
+                .as("The Translation Memory has one entry")
+                .isEqualTo("1");
     }
 
     /**
@@ -158,15 +158,15 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .createTranslationMemory(deleteTMId);
 
         assertThat(tmMemoryPage.getListedTranslationMemorys())
-                .contains(deleteTMId)
-                .as("The new Translation Memory is listed");
+                .as("The new Translation Memory is listed")
+                .contains(deleteTMId);
 
         tmMemoryPage = tmMemoryPage.clickOptions(deleteTMId)
                 .clickDeleteTmAndAccept(deleteTMId);
 
         assertThat(tmMemoryPage.getListedTranslationMemorys())
-                .doesNotContain(deleteTMId)
-                .as("The new Translation Memory is no longer listed");
+                .as("The new Translation Memory is no longer listed")
+                .doesNotContain(deleteTMId);
     }
 
     @Trace(summary = "The administrator can cancel the delete of a " +
@@ -179,15 +179,15 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .createTranslationMemory(dontDeleteTMId);
 
         assertThat(tmMemoryPage.getListedTranslationMemorys())
-                .contains(dontDeleteTMId)
-                .as("The new Translation Memory is listed");
+                .as("The new Translation Memory is listed")
+                .contains(dontDeleteTMId);
 
         tmMemoryPage = tmMemoryPage.clickOptions(dontDeleteTMId)
                 .clickDeleteTmAndCancel(dontDeleteTMId);
 
         assertThat(tmMemoryPage.getListedTranslationMemorys())
-                .contains(dontDeleteTMId)
-                .as("The new Translation Memory is still listed");
+                .as("The new Translation Memory is still listed")
+                .contains(dontDeleteTMId);
     }
 
     @Trace(summary = "The administrator can clear the content of a " +
@@ -205,8 +205,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .clickUploadButtonAndAcknowledge();
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .isEqualTo("1")
-                .as("The TM has one item");
+                .as("The TM has one item")
+                .isEqualTo("1");
 
         tmMemoryPage = tmMemoryPage.clickOptions(clearTMId)
                 .clickClearTMAndAccept(clearTMId);
@@ -216,8 +216,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         tmMemoryPage.expectNumberOfEntries(0, clearTMId);
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .isEqualTo("0")
-                .as("The translation memory entries is empty");
+                .as("The translation memory entries is empty")
+                .isEqualTo("0");
     }
 
     @Trace(summary = "The administrator can cancel clearing the content " +
@@ -235,15 +235,15 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .clickUploadButtonAndAcknowledge();
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .isEqualTo("1")
-                .as("The TM has one item");
+                .as("The TM has one item")
+                .isEqualTo("1");
 
         tmMemoryPage = tmMemoryPage.clickOptions(clearTMId)
                 .clickClearTMAndCancel(clearTMId);
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .isEqualTo("1")
-                .as("The translation memory entries count is the same");
+                .as("The translation memory entries count is the same")
+                .isEqualTo("1");
     }
 
     @Trace(summary = "The administrator must clear a translation memory " +
@@ -261,11 +261,11 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .clickUploadButtonAndAcknowledge();
 
         assertThat(tmMemoryPage.getNumberOfEntries(forceClear))
-                .isEqualTo("1")
-                .as("The TM has one item");
+                .as("The TM has one item")
+                .isEqualTo("1");
         assertThat(tmMemoryPage.clickOptions(forceClear).canDelete(forceClear))
-                .isFalse()
-                .as("The item cannot yet be deleted");
+                .as("The item cannot yet be deleted")
+                .isFalse();
 
         tmMemoryPage = tmMemoryPage.clickClearTMAndAccept(forceClear);
 
@@ -274,14 +274,14 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         tmMemoryPage.expectNumberOfEntries(0, forceClear);
 
         assertThat(tmMemoryPage.clickOptions(forceClear).canDelete(forceClear))
-                .isTrue()
-                .as("The item can be deleted");
+                .as("The item can be deleted")
+                .isTrue();
 
         tmMemoryPage = tmMemoryPage.clickDeleteTmAndAccept(forceClear);
 
         assertThat(tmMemoryPage.getListedTranslationMemorys())
-                .doesNotContain(forceClear)
-                .as("The item is deleted");
+                .as("The item is deleted")
+                .doesNotContain(forceClear);
     }
 
 }

@@ -46,8 +46,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .as("Admin is logged in")
+                .isEqualTo("admin");
     }
 
     @Trace(summary = "The administrator can edit the project languages")
@@ -63,13 +63,13 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .contains("fr", "hi", "pl")
-                .as("The enabled list contains three languages");
+                .as("The enabled list contains three languages")
+                .contains("fr", "hi", "pl");
 
         assertThat(enabledLocaleList)
-                .doesNotContain("en-US")
                 .as("The enabled list does not contain " +
-                        "'English (United States)[en-US]'");
+                        "'English (United States)[en-US]'")
+                .doesNotContain("en-US");
 
         projectLanguagesTab = projectLanguagesTab
                 .gotoSettingsTab()
@@ -98,9 +98,9 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
         enabledLocaleList = projectLanguagesTab
                 .getEnabledLocaleList();
 
-        Assertions.assertThat(enabledLocaleList)
-                .contains("en-US", "fr", "hi")
-                .as("The enabled language list contains en-US, fr and hi");
+        assertThat(enabledLocaleList)
+                .as("The enabled language list contains en-US, fr and hi")
+                .contains("en-US", "fr", "hi");
         projectLanguagesTab.filterEnabledLanguages("en-US")
                 .expectEnabledLocaleListCount(1);
     }
@@ -121,8 +121,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .saveLocaleAlias("pl");
 
         assertThat(projectLanguagesTab.getAlias("pl"))
-                .isEqualTo("pl-PL")
-                .as("The alias was set");
+                .as("The alias was set")
+                .isEqualTo("pl-PL");
     }
 
     @Trace(summary = "The administrator can remove an alias for a project " +
@@ -139,8 +139,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .saveLocaleAlias("pl");
 
         assertThat(projectLanguagesTab.getAlias("pl"))
-                .isEqualTo("pl-PL")
-                .as("The alias was set");
+                .as("The alias was set")
+                .isEqualTo("pl-PL");
 
         projectLanguagesTab = projectLanguagesTab
                 .clickLanguageActionsDropdown("pl")
@@ -165,8 +165,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .saveLocaleAlias(locale);
 
         assertThat(projectLanguagesTab.getAlias(locale))
-                .isEqualTo("pl-PL")
-                .as("The alias was set");
+                .as("The alias was set")
+                .isEqualTo("pl-PL");
 
         projectLanguagesTab = projectLanguagesTab
                 .clickLanguageActionsDropdown(locale)

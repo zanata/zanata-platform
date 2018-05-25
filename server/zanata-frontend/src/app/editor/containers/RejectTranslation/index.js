@@ -48,9 +48,8 @@ export class RejectTranslation extends Component {
     super(props)
     this.state = this.defaultState
   }
-  onPriorityChange = (event) => {
-    const selectedPriority = event.target.innerText
-    const priorityIdIndex = priorities.indexOf(event.target.innerText)
+  onPriorityChange = (selectedPriority) => {
+    const priorityIdIndex = priorities.indexOf(selectedPriority)
     this.setState(prevState => ({
       review: update(prevState.review, {
         selectedPriority: {$set: selectedPriority},
@@ -58,9 +57,7 @@ export class RejectTranslation extends Component {
       })
     }))
   }
-  onCriteriaChange = (event) => {
-    const selectedCriteria = this.props.criteriaList.find(
-      x => x.description === event.target.innerText)
+  onCriteriaChange = (selectedCriteria) => {
     this.setState(prevState => ({
       review: update(prevState.review, {
         criteriaDescription: {$set: selectedCriteria.description},

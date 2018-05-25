@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2018, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -19,20 +19,22 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.service.impl;
+package org.zanata.exception.handler;
 
-import org.junit.Test;
+import javax.faces.application.FacesMessage;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
+import org.apache.deltaspike.core.api.exception.control.Handles;
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
+import org.zanata.exception.DeleteUserConstraintException;
 
-public class TranslationMemoryServiceImplUnitTest {
-    @Test
-    public void escapeText() throws Exception {
-        String escapedText = TranslationMemoryServiceImpl.escape(
-                "AND one to two or three OR - (must) + be - true");
-        assertThat(escapedText).isEqualTo(
-                "\"AND\" one to two or three \"OR\" \\- \\(must\\) \\+ be \\- true");
-
+/**
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+@ExceptionHandler
+public class DeleteUserConstraintExceptionHandler extends AbstractExceptionHandler {
+    public void handleException(@Handles ExceptionEvent<DeleteUserConstraintException> event) {
+        handle(event, LogLevel.Warn, FacesMessage.SEVERITY_WARN,
+                "jsf.UserManager.delete.constraintViolation.error");
     }
-
 }

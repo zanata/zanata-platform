@@ -1,7 +1,18 @@
 #!/bin/bash
-
-# convenience script to run liquibase with suitable Zanata settings
-# see http://liquibase.org/manual/command_line
+### USAGE
+###     liquibase [liquibase options] <command>
+###
+### EXAMPLE
+###     bash liquibase --logLevel=debug update --
+###
+### ENVIRONMENT
+###     LIQUIBASE_JVM_OPTS:
+###         To pass options to JVM, e.g. -Dzanata.file.directory=/var/lib/zanata/files
+###
+### DESCRIPTION
+###     This is a convenience script to run liquibase with suitable
+###     Zanata settings
+###     see http://liquibase.org/manual/command_line
 
 # If you need mysql/slf4j jars: yum install mysql-connector-java slf4j
 
@@ -26,7 +37,7 @@ else
   defs=--defaultsFile=$HOME/.config/liquibase.properties
 fi
 
-java \
+java $LIQUIBASE_JVM_OPTS \
 -jar $war/WEB-INF/lib/liquibase-core*.jar \
 --classpath $classpath \
 --changeLogFile db/db.changelog.xml \

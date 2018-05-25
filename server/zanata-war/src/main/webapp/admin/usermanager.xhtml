@@ -22,10 +22,19 @@
       title="#{msgs['jsf.user.delete.title']}"
       message="#{msgs['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}"
       onresponse="onDeleteUserResponse" />
+    <zanata:confirm-modal id="eraseUserModal"
+      title="#{msgs['jsf.user.erase.title']}"
+      message="#{msgs['jsf.AreYouSureYouWishToEraseThisUserThisActionCannotBeUndone']}"
+      onresponse="onEraseUserResponse" />
 
     <h:form>
       <a4j:jsFunction name="deleteUser"
         action="#{userAction.deleteUser(username)}" render="usermanagerForm,
+      userSearch-pager, userSearch-page-info, userSearchBottom-pager, userSearchBottom-page-info">
+        <a4j:param name="val1" assignTo="#{username}"/>
+      </a4j:jsFunction>
+      <a4j:jsFunction name="eraseUser"
+        action="#{userAction.eraseUser(username)}" render="usermanagerForm,
       userSearch-pager, userSearch-page-info, userSearchBottom-pager, userSearchBottom-page-info">
         <a4j:param name="val1" assignTo="#{username}"/>
       </a4j:jsFunction>
@@ -43,6 +52,14 @@
           selectedUser = null;
         }
         zanata.modal.hide('#deleteUserModal');
+      }
+      function onEraseUserResponse(del) {
+        if (del) {
+          eraseUser(selectedUser);
+        } else {
+          selectedUser = null;
+        }
+        zanata.modal.hide('#eraseUserModal');
       }
     </script>
 
@@ -115,6 +132,16 @@
                             <a href="#" class="i__item--right txt--danger" onclick="setSelectedUser('#{user}')"
                               data-toggle="modal" data-target="#deleteUserModal">
                               #{msgs['jsf.Delete']}
+                              <i class="i i--cancel i__item__icon"></i>
+                            </a>
+                          </li>
+                        </ui:fragment>
+                        <ui:fragment
+                          rendered="#{identity.hasPermission('seam.user', 'delete')}">
+                          <li>
+                            <a href="#" class="i__item--right txt--danger" onclick="setSelectedUser('#{user}')"
+                              data-toggle="modal" data-target="#eraseUserModal">
+                              #{msgs['jsf.user.erase.title']}
                               <i class="i i--cancel i__item__icon"></i>
                             </a>
                           </li>

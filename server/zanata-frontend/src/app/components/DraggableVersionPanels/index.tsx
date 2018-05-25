@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import React from "react";
 import { Component } from "react";
-import {Icon, LockIcon} from "../../components";
+import {LockIcon} from "../../components";
 import { FromProjectVersion, FromProjectVersionType
 } from "../../utils/prop-types-util";
 import {
@@ -12,20 +12,17 @@ import {
 import {
   ListGroup,
   ListGroupItem,
-  Tooltip,
-  OverlayTrigger
 } from "react-bootstrap";
-import { Button } from "antd";
+import Button from "antd/lib/button";
+import Icon from "antd/lib/icon";
+import Tooltip from "antd/lib/tooltip";
+import "antd/lib/tooltip/style/";
+import Layout from "antd/lib/layout";
 
-export const tooltipSort = (
-  <Tooltip id="tooltipsort">Best match will be chosen based on the priority of
-    selected projects. Exact matches take precendence.
-  </Tooltip>
-)
+export const tooltipSort = <span>Best match</span>;
 
 export const DragHandle = SortableHandle(() =>
-  <Icon name="menu" className="n1" parentClassName="drag-handle"
-    title="click to drag" />);
+  <Icon type="bars" className="n1 drag" title="click to drag" />);
 
 interface ItemProps {
   dispatch: (action: any) => void
@@ -47,7 +44,7 @@ export class Item extends Component<ItemProps, {}> {
       {version.id} <span className="u-textMuted"> {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
-      <Button className="close rm-version-btn btn-xs"
+      <Button className="close rm-version-btn btn-xs" aria-label="button"
         onClick={this.removeVersion} icon="close" />
     </ListGroupItem>
   }
@@ -79,17 +76,20 @@ class Items extends Component<ItemsProps, {}> {
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
+        <Layout>
         <span className="versionMergeTitle-adjusted VersionMergeTitle">
         Adjust priority of selected versions
         </span><br />
         <span className="u-textMuted versionMergeTitle-sub">
         (best first)
         </span>
-        <OverlayTrigger placement="top" overlay={tooltipSort}>
-          <Icon name="info" className="s0"
-            parentClassName="iconInfoVersionMerge" />
-        </OverlayTrigger>
+        <Tooltip placement="top" title={tooltipSort} trigger="hover">
+          <Button className="btn-xs btn-link iconInfoVersionMerge">
+            <Icon type="info-circle-o" className="s0" />
+          </Button>
+        </Tooltip>
         {sortableItems}
+        </Layout>
       </div>
     )
   }
@@ -116,7 +116,7 @@ class DraggableVersionPanels extends Component<{
       return (
         <span className="no-v text-muted">
           Please select versions to sort<br />
-          <Icon name="version" className="s8" />
+          <Icon type="api" className="s8" />
         </span>
       )
     }

@@ -1,15 +1,8 @@
 package org.zanata.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.zanata.test.EntityTestData.makeApprovedHTextFlow;
-import static org.zanata.test.rule.FunctionalTestRule.reentrant;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -22,6 +15,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -31,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.zanata.ZanataJpaTest;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -45,6 +40,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.SearchIndexManager;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.test.CdiUnitRunnerWithParameters;
 import org.zanata.test.DBUnitDataSetRunner;
@@ -58,8 +54,13 @@ import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
-
 import com.google.common.collect.Lists;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.zanata.test.EntityTestData.makeApprovedHTextFlow;
+import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -85,6 +86,9 @@ public class TranslationMemoryServiceImplTest {
         TextFlowDAO textFlowDAO;
         @Inject
         LocaleDAO localeDAO;
+        @Inject
+        SearchIndexManager searchIndexManager;
+
         @Produces
         @Mock
         private UrlUtil urlUtil;
@@ -115,9 +119,6 @@ public class TranslationMemoryServiceImplTest {
             return jpaRule.getSession();
         }
 
-        @Inject
-        private IndexingServiceImpl indexingService;
-
         @Before
         @InRequestScope
         public void prepareDBUnitOperations() throws Exception {
@@ -134,11 +135,15 @@ public class TranslationMemoryServiceImplTest {
                                     DatabaseOperation.CLEAN_INSERT));
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
             targetLocale = localeDAO.findByLocaleId(LocaleId.DE);
-            indexingService.reindexHTextFlowTargetsForProject(
-                    getEntityManager().find(HProject.class, 100L),
-                    new AsyncTaskHandle<>());
+            searchIndexManager.reindex(true, true, false);
+
             when(identity.hasPermission(any(HProjectIteration.class),
                     ArgumentMatchers.matches("read"))).thenReturn(true);
+        }
+
+        @After
+        public void after() {
+            ZanataJpaTest.purgeLuceneIndexes(getEntityManager());
         }
 
         @Test

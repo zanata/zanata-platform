@@ -37,6 +37,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.zanata.common.GlossarySortField;
@@ -315,7 +316,11 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
                         HGlossaryTerm.class);
         ftQuery.enableFullTextFilter("glossaryLocaleFilter").setParameter(
                 "locale", srcLocale);
-        ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+        ftQuery.setProjection(
+                ProjectionConstants.SCORE,
+                ProjectionConstants.THIS,
+                ProjectionConstants.OBJECT_CLASS,
+                ProjectionConstants.ID);
         @SuppressWarnings("unchecked")
         List<Object[]> matches =
                 ftQuery.setMaxResults(maxResult).getResultList();

@@ -10,7 +10,8 @@ import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
-import { Button, Layout } from 'antd'
+import Button from 'antd/lib/button'
+import Layout from 'antd/lib/layout'
 
 const DO_NOT_RENDER = undefined
 /* eslint-enable max-len */
@@ -93,7 +94,7 @@ class AdminReview extends Component {
         {criteriaList}
         {newEntryForm}
         <div className='rejection-btns'>
-          <Button type="primary" icon="plus"
+          <Button type='primary' icon='plus' aria-label='button'
             onClick={this.showAddNewEntryForm()}>
           New review criteria entry</Button>
         </div>

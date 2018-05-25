@@ -1,8 +1,10 @@
 import React from 'react'
 import { Component } from 'react'
-import { Button, DropdownButton, MenuItem, ProgressBar,
+import { DropdownButton, MenuItem, ProgressBar,
   Nav, NavItem, Well } from 'react-bootstrap'
 import { Icon } from '../../components'
+import Button from 'antd/lib/button'
+
 /**
  * Root component for Sidebar
  */

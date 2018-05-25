@@ -115,11 +115,15 @@
 
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
-        value="org.hibernate.search.store.impl.FSDirectoryProvider" />
-      <property name="hibernate.search.default.locking_strategy"
-        value="native" />
-      <property name="hibernate.search.default.indexBase"
-        value="./target/zanatasearchindex" />
+          value="org.hibernate.search.store.impl.RAMDirectoryProvider" />
+
+      <!--<property name="hibernate.search.default.directory_provider"-->
+        <!--value="org.hibernate.search.store.impl.FSDirectoryProvider" />-->
+      <!--<property name="hibernate.search.default.locking_strategy"-->
+        <!--value="native" />-->
+      <!--<property name="hibernate.search.default.indexBase"-->
+        <!--value="./target/zanatasearchindex" />-->
+
       <property name="hibernate.search.lucene_version" value="LUCENE_5_3_1" />
       <property name="hibernate.search.worker.batch_size" value="50" />
     </properties>
