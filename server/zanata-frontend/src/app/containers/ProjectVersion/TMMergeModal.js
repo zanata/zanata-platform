@@ -117,7 +117,7 @@ const MergeOptions = (
               Matching phrases are found in the selected projects and
               imported TM, filtered using the active
               conditions, then the best matching translation is copied to
-              the target project-version.&nbsp;[more..]
+              the target project-version.
             </span>
             } eventKey='1'>
             <p><img src='https://i.imgur.com/ezA992G.png'
@@ -473,7 +473,7 @@ class TMMergeModal extends Component {
     : (
       <span>
         <Row>
-          <Button type='danger' className='btn-link link-danger'
+          <Button className='btn-link link-danger'
             onClick={toggleTMMergeModal}>
             Close
           </Button>
