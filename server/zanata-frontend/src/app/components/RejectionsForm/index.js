@@ -21,8 +21,6 @@ import 'antd/lib/row/style/css'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 
-const Option = Select.Option
-
 /**
  * Reject Translations Administration panel
  */
@@ -171,19 +169,20 @@ class RejectionsForm extends Component {
           <Col span={4}>
             <Form.Item label='Priority'>
               <Select
+                key={key}
                 defaultValue={this.state.priority}
                 disabled={priorityDisabled}
                 onChange={this.onPriorityChange}
                 label={this.state.priority} >
-                <Option key={0} value={MINOR}>
+                <Select.Option key={0} value={MINOR}>
                   {priorityToDisplay(MINOR)}
-                </Option>
-                <Option key={1} value={MAJOR}>
+                </Select.Option>
+                <Select.Option key={1} value={MAJOR}>
                   {priorityToDisplay(MAJOR)}
-                </Option>
-                <Option key={2} value={CRITICAL}>
+                </Select.Option>
+                <Select.Option key={2} value={CRITICAL}>
                   {priorityToDisplay(CRITICAL)}
-                </Option>
+                </Select.Option>
               </Select>
             </Form.Item>
           </Col>
