@@ -86,6 +86,12 @@ public class ApplicationConfigurationTest implements Serializable {
     }
 
     @Test
+    public void testTMFuzzyBand() {
+        when(databaseBackedConfig.getTMFuzzyBands()).thenReturn("80 90");
+        assertThat(applicationConfiguration.getTMFuzzyBands()).isEqualTo("80 90");
+    }
+
+    @Test
     public void canApplyLoggingConfiguration() {
         when(databaseBackedConfig.getFromEmailAddress())
                 .thenReturn("from@example.com");

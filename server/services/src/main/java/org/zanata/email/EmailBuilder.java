@@ -5,18 +5,16 @@ import static javax.mail.Message.RecipientType.BCC;
 
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.net.ConnectException;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import com.google.common.base.Throwables;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javaslang.collection.HashMap;
 import javaslang.collection.Map;
@@ -37,7 +35,7 @@ import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.HtmlUtil;
 
 /**
- * Uses an instance of EmailBuilderStrategy to build an email from a Velocity
+ * Uses a VelocityEmailStrategy to build an email from a Velocity
  * template and send it via the default JavaMail Transport.
  */
 @Named("emailBuilder")
@@ -79,60 +77,17 @@ public class EmailBuilder implements Serializable {
     }
 
     /**
-     * Build message using 'strategy' and send it via Transport to 'toAddress'.
-     *
-     * @param strategy
-     * @throws javax.mail.MessagingException
-     */
-    public void sendMessage(VelocityEmailStrategy strategy,
-            List<String> receivedReasons, InternetAddress toAddress) {
-        sendMessage(strategy, receivedReasons,
-                new InternetAddress[] { toAddress });
-    }
-
-    /**
      * Build message using 'strategy' and send it via Transport to
      * 'toAddresses'.
      *
      * @param strategy
-     * @throws javax.mail.MessagingException
      */
     public void sendMessage(VelocityEmailStrategy strategy,
-            List<String> receivedReasons, InternetAddress[] toAddresses) {
-        try {
+            List<String> receivedReasons, InternetAddress... toAddresses) {
+        SendEmailKt.sendEmail(() -> {
             MimeMessage email = new MimeMessage(mailSession);
-            buildMessage(email, strategy, toAddresses, receivedReasons);
-            logMessage(email);
-            Transport.send(email);
-        } catch (MessagingException e) {
-            Throwable rootCause = Throwables.getRootCause(e);
-            if (rootCause.getClass().equals(ConnectException.class)
-                    && rootCause.getMessage().equals("Connection refused")) {
-                throw new RuntimeException(
-                        "The system failed to connect to mail service. Please contact the administrator!",
-                        e);
-            }
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void logMessage(MimeMessage msg) {
-        try {
-            // NB the body may contain more sensitive information
-            if (log.isInfoEnabled()) {
-                log.info(
-                        "Sending message with Subject \"{}\" to Recipients {} From {} Reply-To {}",
-                        msg.getSubject(), msg.getAllRecipients(), msg.getFrom(),
-                        msg.getReplyTo());
-            }
-            // The stderr log is perhaps less likely to be distributed widely
-            // than normal logging
-            if (LOG_FULL_MESSAGES) {
-                msg.writeTo(System.err);
-            }
-        } catch (Exception e) {
-            log.warn("Unable to log MimeMessage", e);
-        }
+            return buildMessage(email, strategy, toAddresses, receivedReasons);
+        });
     }
 
     /**

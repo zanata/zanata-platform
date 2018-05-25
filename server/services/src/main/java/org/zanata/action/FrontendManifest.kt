@@ -30,7 +30,8 @@ data class FrontendManifest(
         @JsonProperty("frontend.css") val frontendCss: String,
         @JsonProperty("frontend.js") val frontendJs: String,
         @JsonProperty("frontend.legacy.js") val legacyJs: String,
-        // this js module is referenced in zanata-frontend/src/frontend/app/editor/index.js as npm module 'intl-polyfill'.
+        // This js module is referenced in zanata-frontend/src/frontend/app/editor/index.js
+        // as npm module 'intl-polyfill'.
         // It appears to work properly despite the hashed name.
         @JsonProperty("intl-polyfill.js") val intlPolyFillJs: String,
         @JsonProperty("runtime.js") val runtime: String

@@ -48,6 +48,7 @@ public class TransUnitUpdateRequest implements IsSerializable {
     private String copiedEntityType;
     //abbreviation
     private String sourceType;
+    private double similarityPercent;
 
     // required for GWT rpc serialization
     @SuppressWarnings("unused")
@@ -72,6 +73,15 @@ public class TransUnitUpdateRequest implements IsSerializable {
         this.revisionComment = revisionComment;
         this.copiedEntityId = copiedEntityId;
         this.copiedEntityType = copiedEntityType;
+    }
+
+    public TransUnitUpdateRequest(TransUnitId transUnitId,
+        List<String> newContents, ContentState newContentState,
+        int baseTranslationVersion, String revisionComment, Long copiedEntityId,
+        String copiedEntityType, String sourceType, double similarityPercent) {
+        this(transUnitId, newContents, newContentState, baseTranslationVersion,
+            revisionComment, copiedEntityId, copiedEntityType, sourceType);
+        this.similarityPercent = similarityPercent;
     }
 
     public TransUnitUpdateRequest addTargetComment(String comment) {
@@ -124,6 +134,10 @@ public class TransUnitUpdateRequest implements IsSerializable {
         return targetComment;
     }
 
+    public double getSimilarityPercent() {
+        return similarityPercent;
+    }
+
     @Override
     public String toString() {
         // @formatter:off
@@ -137,6 +151,7 @@ public class TransUnitUpdateRequest implements IsSerializable {
             add("copiedEntityId", copiedEntityId).
             add("copiedEntityType", copiedEntityType).
             add("sourceType", sourceType).
+            add("similarityPercent", similarityPercent).
             toString();
       // @formatter:on
     }

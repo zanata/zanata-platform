@@ -59,8 +59,8 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin user has logged in");
+                .as("Admin user has logged in")
+                .isEqualTo("admin");
 
         VersionLanguagesTab versionLanguagesTab = new ProjectWorkFlow()
                 .goToProjectByName("langoverride")
@@ -73,8 +73,8 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
                 .getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .contains("fr", "hi", "pl")
-                .as("The enabled list contains no languages");
+                .as("The enabled list contains no languages")
+                .contains("fr", "hi", "pl");
 
         versionLanguagesTab = versionLanguagesTab
                 .gotoSettingsTab()
@@ -92,8 +92,8 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         enabledLocaleList = versionLanguagesTab.getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .contains("en-US", "fr", "hi", "pl")
-                .as("The languages are available to translate");
+                .as("The languages are available to translate")
+                .contains("en-US", "fr", "hi", "pl");
         versionLanguagesTab.filterEnabledLanguages("en-US")
                 .expectEnabledLocaleListCount(1);
     }

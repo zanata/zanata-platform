@@ -73,9 +73,11 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     }
 
     private HPerson makePerson(String username) {
+        HAccount hAccount = new HAccount();
+        hAccount.setUsername(username);
+        getEm().persist(hAccount);
         return EntityMakerBuilder.builder()
-                .addFieldOrPropertyMaker(HAccount.class, "username",
-                        FixedValueMaker.fix(username))
+                .reuseEntity(hAccount)
                 .includeOptionalOneToOne().build()
                 .makeAndPersist(getEm(), HPerson.class);
     }
