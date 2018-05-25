@@ -38,7 +38,7 @@ export class Item extends Component<ItemProps, {}> {
     const { value: { version, projectSlug } } = this.props
     return <li className="v list-group-item" >
       <DragHandle />
-      {version.id} <span className="u-textMuted"> {projectSlug}
+      {version.id} <span className="txt-muted"> {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
       <Button className="close btn-xs" aria-label="button"
@@ -76,7 +76,7 @@ class Items extends Component<ItemsProps, {}> {
         <Layout className="d-inh">
         Adjust priority of selected versions
         <br />
-        <span className="u-textMuted">
+        <span className="txt-muted">
         (best first)
         </span>
         <Tooltip placement="top" title={tooltipSort} trigger="hover">

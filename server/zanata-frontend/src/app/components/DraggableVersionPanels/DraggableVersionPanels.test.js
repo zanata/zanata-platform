@@ -27,7 +27,7 @@ describe('DraggableVersionPanels', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <li className="v list-group-item" >
         <DragHandle />
-        {'ver1'} <span className='u-textMuted'> {'meikai1'}
+        {'ver1'} <span className='txt-muted'> {'meikai1'}
         </span> <LockIcon status={'ACTIVE'} />
         {" "}
         <Button
@@ -66,11 +66,11 @@ describe('DraggableVersionPanels', () => {
         <Layout className="d-inh">
         Adjust priority of selected versions
         <br />
-        <span className="u-textMuted">(best first)</span>
+        <span className="txt-muted">(best first)</span>
         <Tooltip placement='top' title={tooltipSort}>
-          <Button className="btn-xs btn-link">
+          <a className="btn-xs btn-link">
             <Icon name="info" className="s0" />
-          </Button>
+          </a>
         </Tooltip>
         <Item
           // @ts-ignore
@@ -94,10 +94,10 @@ describe('DraggableVersionPanels', () => {
         removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <span className="no-v text-muted">
+      <p className="no-v tc txt-muted">
         Please select versions to sort<br />
         <Icon name="version" className="s8" />
-      </span>
+      </p>
     )
     expect(actual).toEqual(expected)
   })
