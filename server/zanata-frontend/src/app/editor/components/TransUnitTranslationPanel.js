@@ -8,7 +8,16 @@ import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { LoaderText } from '../../components'
 import { pick } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
-import { getSyntaxHighlighting } from '../reducers'
+import {
+  getSyntaxHighlighting,
+  getValidateHtmlXml,
+  getValidateNewLine,
+  getValidateTab,
+  getValidateJavaVariables,
+  getValidateXmlEntity,
+  getValidatePrintfVariables,
+  getValidatePrintfXsi
+} from '../reducers'
 import SyntaxHighlighter, { registerLanguage }
   from 'react-syntax-highlighter/light'
 import Validation from './Validation/index.tsx'
@@ -16,53 +25,6 @@ import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
 registerLanguage('xml', xml)
-
-// TODO: Retrieve from redux store
-const validations =
-  [
-    {
-      id: 'HTML_XML',
-      label: 'HTML/XML tags',
-      active: true,
-      disabled: true
-    },
-    {
-      id: 'JAVA_VARIABLES',
-      label: 'Java variables',
-      active: true,
-      disabled: false
-    },
-    {
-      id: 'NEW_LINE',
-      label: 'Leading/trailing newline',
-      active: true,
-      disabled: false
-    },
-    {
-      id: 'PRINTF_XSI_EXTENSION',
-      label: 'Positional printf (XSI extension)',
-      active: true,
-      disabled: false
-    },
-    {
-      id: 'PRINTF_VARIABLES',
-      label: 'Printf variables',
-      active: true,
-      disabled: false
-    },
-    {
-      id: 'TAB',
-      label: 'Tab characters',
-      active: true,
-      disabled: false
-    },
-    {
-      id: 'XML_ENTITY',
-      label: 'XML entity reference',
-      active: true,
-      disabled: false
-    }
-  ]
 
 /**
  * Panel to display and edit translations of a phrase.
@@ -98,6 +60,7 @@ class TransUnitTranslationPanel extends React.Component {
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
     isRTL: PropTypes.bool.isRequired,
     syntaxOn: PropTypes.bool.isRequired,
+    validationOptions: PropTypes.any,
     permissions: PropTypes.shape({
       reviewer: PropTypes.bool.isRequired,
       translator: PropTypes.bool.isRequired
@@ -200,7 +163,8 @@ class TransUnitTranslationPanel extends React.Component {
       saveAsMode,
       saveDropdownKey,
       textChanged,
-      permissions } = this.props
+      permissions,
+      validationOptions } = this.props
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
 
     // TODO use dedicated phrase.isLoading variable when available
@@ -235,6 +199,7 @@ class TransUnitTranslationPanel extends React.Component {
               translation={translation}
               directionClass={directionClass}
               syntaxOn={syntaxOn}
+              validationOptions={validationOptions}
               permissions={permissions} />
           )
         })
@@ -269,6 +234,7 @@ export class TranslationItem extends React.Component {
     setTextArea: PropTypes.func.isRequired,
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string,
+    validationOptions: PropTypes.any.isRequired,
     directionClass: PropTypes.string,
     syntaxOn: PropTypes.bool.isRequired,
     permissions: PropTypes.shape({
@@ -302,7 +268,8 @@ export class TranslationItem extends React.Component {
       translation,
       directionClass,
       permissions,
-      phrase
+      phrase,
+      validationOptions
     } = this.props
 
     // TODO make this translatable
@@ -357,7 +324,7 @@ export class TranslationItem extends React.Component {
           source={phrase.sources[0]}
           target={translation}
           localeId={'en-US'} // TODO: retrieve from Redux Store
-          validationOptions={validations} />
+          validationOptions={validationOptions} />
       </div>
     )
   }
@@ -368,6 +335,50 @@ function mapStateToProps (state) {
   const targetLocaleDetails = ui.uiLocales[context.lang]
   return {
     syntaxOn: getSyntaxHighlighting(state),
+    validationOptions: [
+      {
+        id: 'HTML_XML',
+        label: 'HTML/XML tags',
+        active: getValidateHtmlXml(state) === 'Warning',
+        disabled: getValidateHtmlXml(state) === 'Error'
+      },
+      {
+        id: 'NEW_LINE',
+        label: 'Leading/trailing newline',
+        active: getValidateNewLine(state) === 'Warning',
+        disabled: getValidateNewLine(state) === 'Error'
+      },
+      {
+        id: 'TAB',
+        label: 'Tab characters',
+        active: getValidateTab(state) === 'Warning',
+        disabled: getValidateTab(state) === 'Error'
+      },
+      {
+        id: 'JAVA_VARIABLES',
+        label: 'Java variables',
+        active: getValidateJavaVariables(state) === 'Warning',
+        disabled: getValidateJavaVariables(state) === 'Error'
+      },
+      {
+        id: 'XML_ENTITY',
+        label: 'XML entity reference',
+        active: getValidateXmlEntity(state) === 'Warning',
+        disabled: getValidateXmlEntity(state) === 'Error'
+      },
+      {
+        id: 'PRINTF_VARIABLES',
+        label: 'Printf variables',
+        active: getValidatePrintfVariables(state) === 'Warning',
+        disabled: getValidatePrintfVariables(state) === 'Error'
+      },
+      {
+        id: 'PRINTF_XSI_EXTENSION',
+        label: 'Positional printf (XSI extension)',
+        active: getValidatePrintfXsi(state) === 'Warning',
+        disabled: getValidatePrintfXsi(state) === 'Error'
+      }
+    ],
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false,
     permissions: headerData.permissions

@@ -6,4 +6,4 @@
 /**
  * Toggles the Validation Options feature in the Settings Panel.
  */
-export const showValidationOptions = () => false;
+export const showValidationOptions = () => true;

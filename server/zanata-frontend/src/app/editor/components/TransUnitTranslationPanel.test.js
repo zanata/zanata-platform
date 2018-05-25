@@ -83,6 +83,7 @@ describe('TransUnitTranslationPanel', () => {
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
+        validationOptions={validations}
         directionClass={''}
         syntaxOn
         permissions={permissions} />
@@ -137,6 +138,7 @@ describe('TransUnitTranslationPanel', () => {
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
+        validationOptions={validations}
         directionClass={''}
         syntaxOn
         permissions={permissions} />
@@ -177,6 +179,7 @@ describe('TransUnitTranslationPanel', () => {
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
+        validationOptions={validations}
         directionClass={''}
         syntaxOn
         permissions={permissions} />
