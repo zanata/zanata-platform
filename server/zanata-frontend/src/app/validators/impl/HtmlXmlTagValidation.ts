@@ -66,10 +66,13 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
         .format({ added: foundErrors })
       errors.push(tagsAdded)
     }
-    if (!errors) {
+    if (errors.length <= 0) {
       const sourceTags = this.getTagList(source)
       const targetTags = this.getTagList(target)
-      errors = errors.concat(this.orderValidation(sourceTags, targetTags))
+      // const outOfOrder = this.orderValidation(sourceTags, targetTags)
+      if (sourceTags && targetTags) {
+        errors = errors.concat(this.orderValidation(sourceTags, targetTags))
+      }
     }
     return errors
   }
@@ -87,35 +90,44 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
       const token = src[i]
       let srcIndex = i
       const trgIndex = trgTags.indexOf(token)
+
       if (trgIndex > -1) {
-        currentRun = currentRun.concat(token)
+        currentRun = []
+        currentRun.push(token)
+
         let j = trgIndex + 1
+
         while (j < trg.length && srcIndex < src.length - 1) {
           const nextIndexInSrc = this.findInTail(trg[j], src, srcIndex + 1)
           if (nextIndexInSrc > -1) {
             srcIndex = nextIndexInSrc
-            currentRun = currentRun.concat(src[srcIndex])
+            currentRun.push(src[srcIndex])
           }
           j++
         }
+
         if (currentRun.length === srcTags.length) {
           // must all match
           return errors
         }
+
         if (longestRun === null || longestRun.length < currentRun.length) {
           longestRun = currentRun
         }
       }
     }
+
     if (longestRun !== null && longestRun.length > 0) {
       let outOfOrder: string[] = []
-      for (const aSrc in src) {
-        if (!longestRun.indexOf(aSrc)) {
+      for (const aSrc of src) {
+        if (!longestRun.find((s) => s === aSrc)) {
           outOfOrder = outOfOrder.concat(aSrc)
         }
       }
       if (outOfOrder) {
-        errors = errors.concat(this.messages.tagsWrongOrder + outOfOrder)
+        const tagsOutOfOrder = new MessageFormat(this.messages.tagsWrongOrder, this.locale)
+          .format({ unordered: outOfOrder })
+        errors = errors.concat(tagsOutOfOrder)
       }
     }
     return errors
@@ -132,15 +144,7 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
 
   private getTagList(src: string): string[] {
     const regExp = new RegExp(this.tagRegex, 'g')
-    let list: string[] = []
-    // let result = src.match(regExp)
-    let result = src.match(regExp)
-    while (result) {
-      const node = result[0]
-      list = list.concat(node)
-      result = src.match(regExp)
-    }
-    return list
+    return src.match(regExp)
   }
 
   private listMissing(compareFrom: string, compareTo: string): string[] {

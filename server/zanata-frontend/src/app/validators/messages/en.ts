@@ -30,7 +30,7 @@ const en = {
   xmlHtmlValidatorDesc: "Check that XML/HTML tags are consistent.",
   tagsAdded: "Unexpected tags: {added}",
   tagsMissing: "Missing tags: {missing}",
-  tagsWrongOrder: "Tags in unexpected position: {unorded}",
+  tagsWrongOrder: "Tags in unexpected position: {unordered}",
   xmlEntityValidatorDesc: "Check that XML entity are complete.",
   invalidXMLEntity: "Invalid XML entity: {entity}"
   // invalidXMLEntity: "Invalid XML {COUNT, plural, =0 {entity: } =1 {entity: } other {entities: } } {ENTITY}",
