@@ -37,7 +37,7 @@ public class RegisterPage extends CorePage {
             org.slf4j.LoggerFactory.getLogger(RegisterPage.class);
 
     public static final String USERNAME_VALIDATION_ERROR =
-            "Between 3 and 20 lowercase letters, numbers and underscores only";
+            "Username must be between 3 and 20 characters, start with a letter or number and contain only lowercase letters, numbers and underscores";
     public static final String USERNAME_LENGTH_ERROR =
             "size must be between 3 and 20";
     public static final String USERNAME_UNAVAILABLE_ERROR =

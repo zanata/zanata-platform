@@ -2,8 +2,8 @@ import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import CriteriaDropdown from './CriteriaDropdown'
 import { MINOR, MAJOR, CRITICAL } from '../../utils/reject-trans-util'
-import { Icon } from '../../../components'
-import Dropdown from '../../components/Dropdown'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
 
 const defaultClick = () => {}
 const criteriaList = [{
@@ -40,23 +40,12 @@ describe('CriteriaDropdown', () => {
       />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <Dropdown enabled isOpen={false}
-        onToggle={defaultClick}
-        className='dropdown-menu Criteria'>
-        <Dropdown.Button>
-          <a className='EditorDropdown-item ellipsis'>
-            {'One'}
-            <span className='arrow'>
-              <Icon className='n1' name='chevron-down' />
-            </span>
-          </a>
-        </Dropdown.Button>
-        <Dropdown.Content>
-          <ul>
-            {options}
-          </ul>
-        </Dropdown.Content>
-      </Dropdown>
+      <Select
+        defaultValue={'One'}
+        style={{ width: '95%' }}
+        onChange={defaultClick}>
+        {options}
+      </Select>
     )
     expect(actual).toEqual(expected)
   })

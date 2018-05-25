@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -359,7 +361,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     }
 
     @Override
-    public ITextFlowTarget getTargetContents(LocaleId localeId) {
+    public @Nullable ITextFlowTarget getTargetContents(@Nonnull LocaleId localeId) {
         // TODO performance: need efficient way to look up a target by LocaleId
         return getTargets().values().stream()
                 .filter(tft -> tft.getLocaleId().equals(localeId)).findFirst()

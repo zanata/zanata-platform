@@ -16080,35 +16080,7 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
 </span>
 `;
 
-exports[`Frontend Storyshots Modal TMX export - file prep finished 1`] = `
-<div
-  className="static-modal"
-/>
-`;
-
-exports[`Frontend Storyshots Modal TMX export - multiple languages 1`] = `
-<div
-  className="static-modal"
-/>
-`;
-
-exports[`Frontend Storyshots Modal TMX export - one language 1`] = `
-<div
-  className="static-modal"
-/>
-`;
-
-exports[`Frontend Storyshots Modal TMX export - preparing files 1`] = `
-<div
-  className="static-modal"
-/>
-`;
-
-exports[`Frontend Storyshots Modal default 1`] = `
-<div
-  className="static-modal"
-/>
-`;
+exports[`Frontend Storyshots Modal default 1`] = `undefined`;
 
 exports[`Frontend Storyshots Notification Error 1`] = `undefined`;
 

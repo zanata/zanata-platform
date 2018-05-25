@@ -54,14 +54,11 @@ public class ValidateAccountPasswords implements CustomTaskChange {
     public void execute(Database database) throws CustomChangeException {
         JdbcConnection conn = (JdbcConnection) database.getConnection();
 
-        ResultSet rset = null;
         try (Statement stmt =
                 conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                         ResultSet.CONCUR_UPDATABLE)) {
-            try {
-                rset =
-                        stmt.executeQuery("select id, username, passwordHash from HAccount");
-
+            try (ResultSet rset = stmt.executeQuery(
+                    "select id, username, passwordHash from HAccount")) {
                 while (rset.next()) {
                     String username = rset.getString("username");
                     String passwordHash = rset.getString("passwordHash");
@@ -76,8 +73,6 @@ public class ValidateAccountPasswords implements CustomTaskChange {
                         rset.updateRow();
                     }
                 }
-            } finally {
-                rset.close();
             }
         } catch (SQLException | DatabaseException e) {
             throw new CustomChangeException(e);

@@ -5,6 +5,7 @@ import { Icon } from '../../../components'
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Row } from 'react-bootstrap'
+import { serverUrl } from '../../../config'
 
 /**
  * Dropdown to select the current language to translate to.
@@ -36,8 +37,8 @@ class LanguagesDropdown extends React.Component {
     const version = projectVersion.version
     // FIXME this URL is too much information to keep in this component.
     // FIXME loses any other query parameters
-    return '/project/translate/' + project + '/v/' + version + '/' + docId +
-      '?lang=' + locale.id
+    return serverUrl + '/project/translate/' + project + '/v/' + version +
+      '/' + docId + '?lang=' + locale.id
   }
 
   render () {

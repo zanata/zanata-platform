@@ -82,7 +82,11 @@ public class InternalTMSource implements Serializable, IsSerializable {
     }
 
     public enum InternalTMChoice {
-        SelectNone, SelectAny, SelectSome
-
+        /** Don't use any project translations - no internal TM (just TMX) */
+        SelectNone,
+        /** Use translations from any project/version */
+        SelectAny,
+        /** Use translations from specified project versions */
+        SelectSome
     }
 }

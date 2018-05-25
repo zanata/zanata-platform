@@ -4,18 +4,18 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Modal, Icon } from '../../components'
+import { Icon } from '../../components'
 import Autosuggest from 'react-autosuggest'
-
-import {
-  FormGroup,
-  FormControl,
-  ControlLabel,
-  Checkbox,
-  Row
-} from 'react-bootstrap'
-
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/index.less'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/index.less'
+import Checkbox from 'antd/lib/checkbox'
+import 'antd/lib/checkbox/style/index.less'
+import Form from 'antd/lib/form'
+import 'antd/lib/form/style/'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/'
 
 import {
   handleNewLanguageDisplay,
@@ -30,7 +30,8 @@ class NewLanguageModal extends Component {
     searchResults: PropTypes.array,
     handleOnClose: PropTypes.func,
     handleOnSave: PropTypes.func,
-    loadSuggestion: PropTypes.func
+    loadSuggestion: PropTypes.func,
+    form: PropTypes.any
   }
 
   constructor (props) {
@@ -70,10 +71,14 @@ class NewLanguageModal extends Component {
   }
 
   updateField = (field, e) => {
+    const value = e.target.value
+    this.props.form.setFieldsValue({
+      [field]: value
+    })
     this.setState(prevState => ({
       details: {
         ...prevState.details,
-        [field]: e.target.value
+        [field]: value
       }
     }))
   }
@@ -122,16 +127,19 @@ class NewLanguageModal extends Component {
       <span name='new-language-displayName'>
         <span className='u-textLight'>
           {suggestion.displayName}
-        </span>
-        <span className='u-textSuggestion'>
+        </span> <span className='u-textSuggestion'>
           {suggestion.localeId}
         </span>
       </span>
     )
   }
 
-  onSuggestionSelected = (event,
-    { suggestion, suggestionValue, sectionIndex, method }) => {
+  onSuggestionSelected = (event, {
+     suggestion, suggestionValue, sectionIndex, method }) => {
+    // eslint-disable-next-line
+    const { enabled, enabledByDefault, rtl, localeId, ...fieldValues } =
+      suggestion
+    this.props.form.setFieldsValue({ ...fieldValues })
     this.setState({
       details: {
         ...suggestion,
@@ -144,8 +152,8 @@ class NewLanguageModal extends Component {
   /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
   render () {
     const {show, saving, loadSuggestion, searchResults} = this.props
-    const { details, query, validFields } = this.state
-
+    const { details, query } = this.state
+    const { getFieldDecorator } = this.props.form
     const inputProps = {
       placeholder: 'Search for languages',
       maxLength: 256,
@@ -157,52 +165,75 @@ class NewLanguageModal extends Component {
 
     return (
       <Modal
+        width={'48rem'}
+        title={'Add a new language'}
         id='newLang'
-        show={show}
-        onHide={() => this.handleCancel()}>
-        <Modal.Header>
-          <Modal.Title>Add a new language</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className='bootstrap'>
-            <FormGroup validationState={!validFields ? 'error' : undefined}>
-              <ControlLabel>Language Code</ControlLabel>
-              <span className='form-control'>
-                <Autosuggest
-                  name='new-language-code'
-                  suggestions={searchResults}
-                  onSuggestionSelected={this.onSuggestionSelected}
-                  getSuggestionValue={this.getSuggestionValue}
-                  onSuggestionsFetchRequested={loadSuggestion}
-                  onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                  renderSuggestion={this.renderSuggestion}
-                  inputProps={inputProps}
-                />
-              </span>
-            </FormGroup>
-            <FormGroup validationState={!validFields ? 'error' : undefined}>
-              <ControlLabel>Name</ControlLabel>
-              <FormControl type='text'
+        visible={show}
+        onCancel={this.handleCancel}
+        footer={[
+          <Button
+            key='back'
+            aria-label='button'
+            id='btn-new-language-cancel'
+            disabled={saving}
+            onClick={this.handleCancel}>
+            Close
+          </Button>,
+          <Button
+            key='ok'
+            aria-label='button'
+            loading={saving}
+            disabled={(isEmpty(query) || isEmpty(details.nativeName) ||
+              isEmpty(details.displayName || isEmpty(details.pluralForms)))}
+            id='btn-new-language-save'
+            type='primary'
+            onClick={this.validateDetails}>
+            Save
+          </Button>
+        ]}>
+        <Form layout='vertical'>
+          <Form.Item label={'Language Code'} title={'Language Code'}>
+            <Autosuggest
+              name='new-language-code'
+              suggestions={searchResults}
+              onSuggestionSelected={this.onSuggestionSelected}
+              getSuggestionValue={this.getSuggestionValue}
+              onSuggestionsFetchRequested={loadSuggestion}
+              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+              renderSuggestion={this.renderSuggestion}
+              inputProps={inputProps}
+            />
+          </Form.Item>
+          <Form.Item label={'Name'} title={'Name'}>
+            {getFieldDecorator('displayName', {
+              setFieldsInitialValue: details.displayName,
+              rules: [{required: true,
+                message: 'Please input a Language Display Name'}]
+            })(
+              <Input
+                // id='displayName' set by getFieldDecorator
                 maxLength={100}
-                id='new-language-name'
                 onChange={(e) => this.updateField('displayName', e)}
-                placeholder='Display name'
-                value={details.displayName} />
-              <FormControl.Feedback />
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>Native Name</ControlLabel>
-              <FormControl type='text'
-                id='new-language-nativeName'
+                placeholder='Display name' />
+            )}
+          </Form.Item>
+          <Form.Item label={'Native Name'} title={'Native Name'}>
+            {getFieldDecorator('nativeName', {
+              setFieldsInitialValue: details.nativeName,
+              rules: [{required: true,
+                message: 'Please input a Language Native Name'}]
+            })(
+              <Input
+                // id='nativeName' set by getFieldDecorator
                 maxLength={100}
                 onChange={(e) => this.updateField('nativeName', e)}
-                placeholder='Native name'
-                value={details.nativeName} />
-            </FormGroup>
-            <FormGroup validationState={showPluralFormsWarning
-              ? 'warning' : undefined}>
-              <ControlLabel>
-                Plural forms
+                placeholder='Native name' />
+            )}
+          </Form.Item>
+          <Form.Item
+            title={'Plural Forms'}
+            label={
+              <span>Plural forms {' '}
                 <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
                   target='_blank'>
                   <Icon name='info' className='s0' parentClassName='iconInfo'
@@ -213,50 +244,33 @@ class NewLanguageModal extends Component {
                     id='new-language-pluralforms-warning'>
                     No plural information available. Assuming no plurals.
                   </div>
-                }
-              </ControlLabel>
-              <FormControl
-                type='text'
-                maxLength={255}
-                onChange={(e) => this.updateField('pluralForms', e)}
-                placeholder='Plural forms'
-                value={details.pluralForms} />
-            </FormGroup>
-            <FormGroup>
-              <Checkbox
-                id='chk-new-language-enabled'
-                onChange={() => this.updateCheckbox('enabledByDefault')}
-                checked={details.enabledByDefault}>
-                Enabled by default
-              </Checkbox>
-              <Checkbox
-                onChange={() => this.updateCheckbox('enabled')}
-                checked={details.enabled}>
-                Enabled language
-              </Checkbox>
-            </FormGroup>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <span className='bootstrap u-pullRight'>
-            <Row>
-              <Button className='btn-link' aria-label='button'
-                id='btn-new-language-cancel'
-                disabled={saving}
-                onClick={this.handleCancel}>
-                Close
-              </Button>
-              <Button aria-label='button'
-                disabled={saving ||
-                  (isEmpty(details.localeId) && isEmpty(query))}
-                id='btn-new-language-save'
-                className='btn-primary' type='primary'
-                onClick={this.validateDetails}>
-                Save
-              </Button>
-            </Row>
-          </span>
-        </Modal.Footer>
+                }</span>
+              }>
+              {getFieldDecorator('pluralForms', {
+                setFieldsInitialValue: details.pluralForms,
+                rules: [{required: true,
+                  message: 'Please input the languages Plural Forms'}]
+              })(
+                <Input
+                  maxLength={255}
+                  onChange={(e) => this.updateField('pluralForms', e)}
+                  placeholder='Plural forms' />
+              )}
+          </Form.Item>
+          <Form.Item>
+            <Checkbox
+              id='chk-new-language-enabled'
+              onChange={() => this.updateCheckbox('enabledByDefault')}
+              checked={details.enabledByDefault}>
+              Enabled by default
+            </Checkbox>
+            <Checkbox
+              onChange={() => this.updateCheckbox('enabled')}
+              checked={details.enabled}>
+              Enabled language
+            </Checkbox>
+          </Form.Item>
+        </Form>
       </Modal>
     )
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
@@ -293,4 +307,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewLanguageModal)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  Form.create()(NewLanguageModal))

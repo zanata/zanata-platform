@@ -79,7 +79,10 @@ open class SamlAttributes @Inject constructor(@DeltaSpike private val session: H
     }
 
     companion object {
-        private fun getValueFromSessionAttribute(map: Map<String, List<String>?>, key: String, defaultVal: String = "") =
+        private fun getValueFromSessionAttribute(
+                map: Map<String, List<String>?>,
+                key: String,
+                defaultVal: String = "") =
                 map[key]?.elementAtOrNull(0) ?: defaultVal
 
     }

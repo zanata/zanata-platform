@@ -8,7 +8,7 @@ import javax.mail.internet.InternetAddress;
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-public class DeclineLanguageRequestEmailStrategy extends EmailStrategy {
+public class DeclineLanguageRequestEmailStrategy extends VelocityEmailStrategy {
     private final String toName;
     private final String roles;
     private final String contactCoordinatorLink;

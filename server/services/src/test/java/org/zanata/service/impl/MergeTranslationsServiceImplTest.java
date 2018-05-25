@@ -196,7 +196,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         // wait for the async process to finish...
         future.get();
         // No translations were performed
-        assertThat(handle.getTotalTranslations()).isEqualTo(0);
+        assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         // wait for the async process to finish...
         future.get();
         // No translations were performed
-        assertThat(handle.getTotalTranslations()).isEqualTo(0);
+        assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
 
     @Test
