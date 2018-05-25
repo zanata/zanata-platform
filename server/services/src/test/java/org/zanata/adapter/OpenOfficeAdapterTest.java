@@ -75,16 +75,20 @@ public class OpenOfficeAdapterTest extends AbstractAdapterTest<OpenOfficeAdapter
         // TODO test IDs
 
         assertThat(resource.getTextFlows().get(0).getContents().get(0))
-                .isEqualTo("TestODS")
-                .as("Item 1 shows TestODS (the sheet name)");
+                .as("Item 1 shows TestODS (the sheet name)")
+                .isEqualTo("TestODS");
         assertThat(resource.getTextFlows().get(1).getContents().get(0))
-                .isEqualTo("First").as("Item 2 shows First (the page name)");
+                .as("Item 2 shows First (the page name)")
+                .isEqualTo("First");
         assertThat(resource.getTextFlows().get(2).getContents().get(0))
-                .isEqualTo("Line One").as("Item 3 shows Line One");
+                .as("Item 3 shows Line One")
+                .isEqualTo("Line One");
         assertThat(resource.getTextFlows().get(3).getContents().get(0))
-                .isEqualTo("Line Two").as("Item 4 shows Line Two");
+                .as("Item 4 shows Line Two")
+                .isEqualTo("Line Two");
         assertThat(resource.getTextFlows().get(4).getContents().get(0))
-                .isEqualTo("Line Three").as("Item 5 shows Line Three");
+                .as("Item 5 shows Line Three")
+                .isEqualTo("Line Three");
     }
 
     private void check3TextFlows(Resource resource, boolean checkSize) {
@@ -92,11 +96,14 @@ public class OpenOfficeAdapterTest extends AbstractAdapterTest<OpenOfficeAdapter
         // TODO test IDs
 
         assertThat(resource.getTextFlows().get(0).getContents().get(0))
-                .isEqualTo("Line One").as("Item 0 shows Line One");
+                .as("Item 0 shows Line One")
+                .isEqualTo("Line One");
         assertThat(resource.getTextFlows().get(1).getContents().get(0))
-                .isEqualTo("Line Two").as("Item 1 shows Line Two");
+                .as("Item 1 shows Line Two")
+                .isEqualTo("Line Two");
         assertThat(resource.getTextFlows().get(2).getContents().get(0))
-                .isEqualTo("Line Three").as("Item 2 shows Line Three");
+                .as("Item 2 shows Line Three")
+                .isEqualTo("Line Three");
     }
 
 }

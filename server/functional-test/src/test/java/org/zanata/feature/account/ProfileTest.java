@@ -55,20 +55,21 @@ public class ProfileTest extends ZanataTestCase {
                 .goToSettingsTab()
                 .goToSettingsClientTab();
 
-        assertThat(dashboardClientTab.getApiKey()).isEqualTo(adminsApiKey)
-                .as("The correct api key is present");
+        assertThat(dashboardClientTab.getApiKey())
+                .as("The correct api key is present")
+                .isEqualTo(adminsApiKey);
 
         assertThat(dashboardClientTab.getConfigurationDetails())
-                .contains("localhost.url=" + serverUrl)
-                .as("The configuration url is correct");
+                .as("The configuration url is correct")
+                .contains("localhost.url=" + serverUrl);
 
         assertThat(dashboardClientTab.getConfigurationDetails())
-                .contains("localhost.username=admin")
-                .as("The configuration username is correct");
+                .as("The configuration username is correct")
+                .contains("localhost.username=admin");
 
         assertThat(dashboardClientTab.getConfigurationDetails())
-                .contains("localhost.key=".concat(adminsApiKey))
-                .as("The configuration api key is correct");
+                .as("The configuration api key is correct")
+                .contains("localhost.key=".concat(adminsApiKey));
     }
 
     @Trace(summary = "The user can change their API key")
@@ -85,16 +86,18 @@ public class ProfileTest extends ZanataTestCase {
         dashboardClientTab = dashboardClientTab.pressApiKeyGenerateButton();
         dashboardClientTab.expectApiKeyChanged(currentApiKey);
 
-        assertThat(dashboardClientTab.getApiKey()).isNotEqualTo(currentApiKey)
-                .as("The user's api key is different");
+        assertThat(dashboardClientTab.getApiKey())
+                .as("The user's api key is different")
+                .isNotEqualTo(currentApiKey);
 
-        assertThat(dashboardClientTab.getApiKey()).isNotEmpty()
-                .as("The user's api key is not empty");
+        assertThat(dashboardClientTab.getApiKey())
+                .as("The user's api key is not empty")
+                .isNotEmpty();
 
         assertThat(dashboardClientTab.getConfigurationDetails())
+                .as("The configuration api key matches the label")
                 .contains("localhost.key="
-                        .concat(dashboardClientTab.getApiKey()))
-                .as("The configuration api key matches the label");
+                        .concat(dashboardClientTab.getApiKey()));
     }
 
     @Trace(summary = "The user can change their display name")
@@ -109,8 +112,9 @@ public class ProfileTest extends ZanataTestCase {
 
         dashboardProfileTab.expectUsernameChanged("translator");
 
-        assertThat(dashboardProfileTab.getUserFullName()).isEqualTo("Tranny")
-                .as("The user's name has been changed");
+        assertThat(dashboardProfileTab.getUserFullName())
+                .as("The user's name has been changed")
+                .isEqualTo("Tranny");
     }
 
     @Trace(summary = "The user's email address change is validated")
@@ -124,8 +128,8 @@ public class ProfileTest extends ZanataTestCase {
                 .clickUpdateEmailButton();
 
         assertThat(dashboardAccountTab.getErrors())
-                .contains(DashboardAccountTab.EMAIL_TAKEN_ERROR)
-                .as("The email is rejected, being already taken");
+                .as("The email is rejected, being already taken")
+                .contains(DashboardAccountTab.EMAIL_TAKEN_ERROR);
 
         dashboardAccountTab = dashboardAccountTab
                 .goToMyDashboard()
@@ -135,7 +139,7 @@ public class ProfileTest extends ZanataTestCase {
                 .clickUpdateEmailButton();
 
         assertThat(dashboardAccountTab.getErrors())
-                .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
-                .as("The email is rejected, being of invalid format");
+                .as("The email is rejected, being of invalid format")
+                .contains(RegisterPage.MALFORMED_EMAIL_ERROR);
     }
 }

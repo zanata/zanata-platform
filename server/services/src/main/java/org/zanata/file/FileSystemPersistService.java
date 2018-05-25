@@ -28,7 +28,10 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
@@ -85,6 +88,12 @@ public class FileSystemPersistService implements FilePersistService {
         File docsPath = ensureDocsDirectory();
         File newFile = new File(docsPath, fileName);
         return newFile;
+    }
+
+    @Produces
+    @DocumentStorage
+    protected File documentFilesStorageDirectory() {
+        return new File(appConfig.getDocumentFileStorageLocation(), RAW_DOCUMENTS_SUBDIRECTORY);
     }
 
     private File ensureDocsDirectory() {

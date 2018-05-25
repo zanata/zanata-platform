@@ -24,8 +24,6 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.test.GWTTestData;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -138,7 +136,7 @@ public class GlossarySearchServiceImplTest extends ZanataTest {
         HGlossaryTerm transTerm1 = new HGlossaryTerm("content1Trans");
         sourceTerm1.setGlossaryEntry(entry);
 
-        globalMatches.add(new Object[]{new Float("100.00"), sourceTerm1});
+        globalMatches.add(new Object[]{new Float("100.00"), sourceTerm1, HGlossaryTerm.class, 1});
 
         when(glossaryDAO.getSearchResult(searchText, searchType, srcLocale,
                 maxResults, GlossaryUtil.GLOBAL_QUALIFIED_NAME))

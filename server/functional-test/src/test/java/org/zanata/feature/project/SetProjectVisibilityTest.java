@@ -28,8 +28,8 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
                 .gotoExplore();
 
         assertThat(explore.getProjectSearchResults())
-                .doesNotContain("about fedora")
-                .as("The project is not displayed");
+                .as("The project is not displayed")
+                .doesNotContain("about fedora");
     }
 
 }

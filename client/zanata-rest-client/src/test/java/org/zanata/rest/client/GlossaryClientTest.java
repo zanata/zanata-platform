@@ -53,8 +53,9 @@ public class GlossaryClientTest {
         List<GlossaryEntry> glossaryEntries = new ArrayList<>();
         Response response = client.post(glossaryEntries, LocaleId.DE,
                 GlossaryResource.GLOBAL_QUALIFIED_NAME);
-        assertThat(response.getStatus()).isEqualTo(200)
-                .as("server returns successful status code");
+        assertThat(response.getStatus())
+                .as("server returns successful status code")
+                .isEqualTo(200);
     }
 }
 

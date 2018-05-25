@@ -22,8 +22,11 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -33,22 +36,26 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.rest.dto.Person;
+
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
  * @see Person
  */
 @Entity
 @Cacheable
-public class HPerson extends ModelEntityBase implements Serializable {
+public class HPerson extends ModelEntityBase implements Serializable, Eraseable {
     private static final long serialVersionUID = 1L;
     private String name;
     private HAccount account;
@@ -58,6 +65,10 @@ public class HPerson extends ModelEntityBase implements Serializable {
     private Set<HIterationGroup> maintainerVersionGroups;
     private Set<HLocaleMember> languageTeamMemberships;
     private Set<HProjectMember> projectMemberships;
+
+    private boolean erased;
+    private Date erasureDate;
+    private HAccount erasedBy;
 
     public HPerson() {
     }
@@ -114,7 +125,7 @@ public class HPerson extends ModelEntityBase implements Serializable {
     }
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person", orphanRemoval = true)
-    protected Set<HLocaleMember> getLanguageTeamMemberships() {
+    public Set<HLocaleMember> getLanguageTeamMemberships() {
         if (this.languageTeamMemberships == null) {
             this.languageTeamMemberships = new HashSet<>();
         }
@@ -127,6 +138,43 @@ public class HPerson extends ModelEntityBase implements Serializable {
             projectMemberships = Sets.newHashSet();
         }
         return projectMemberships;
+    }
+
+    public boolean isErased() {
+        return erased;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getErasureDate() {
+        return erasureDate == null ? null : new Date(erasureDate.getTime());
+    }
+
+    @OneToOne(optional = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "erasedBy")
+    @Override
+    public HAccount getErasedBy() {
+        return this.erasedBy;
+    }
+
+    public void setErasedBy(HAccount erasedBy) {
+        this.erasedBy = erasedBy;
+    }
+
+    public void setErased(boolean erased) {
+        this.erased = erased;
+    }
+
+    public void setErasureDate(Date erasureDate) {
+        this.erasureDate =
+                erasureDate == null ? null : new Date(erasureDate.getTime());
+    }
+
+    public void erase(HAccount erasedBy) {
+        this.name = "Erased User";
+        this.email = "erased-" + UUID.randomUUID() + "@example.com";
+        this.erasureDate = new Date();
+        this.erased = true;
+        setErasedBy(erasedBy);
     }
 
     @Transient
