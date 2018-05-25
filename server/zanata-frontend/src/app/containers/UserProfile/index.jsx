@@ -107,11 +107,11 @@ class UserProfile extends Component {
                 {email}
               </li>)}
               {languageTeams &&
-              (<li id='profileLanguages'>
+              (<ul id='profileLanguages'>
                 <Icon name='language' className='s0' title='Spoken languages'
                   parentClassName='iconLanguage u-pullLeft' />
-                {languageTeams}
-              </li>)}
+                <li>{languageTeams}</li>
+              </ul>)}
               {roles && isLoggedIn &&
               (<li className='u-flexCenter' id='profileRoles' title='Roles'>
                 <Icon name='users' className='s0' />
