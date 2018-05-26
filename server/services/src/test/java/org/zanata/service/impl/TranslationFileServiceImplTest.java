@@ -28,10 +28,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.DocumentType;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -46,6 +49,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 @RunWith(CdiUnitRunner.class)
@@ -94,6 +98,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         hProject.setDefaultProjectType(ProjectType.File);
         HProjectIteration hProjectIteration = new HProjectIteration();
         hProjectIteration.setProject(hProject);
+        hProjectIteration.setProjectType(ProjectType.File);
         HDocument hDocument = new HDocument();
 
         when(projectIterationDAO.getBySlug(project, version))
@@ -106,6 +111,62 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 "ru", project, version, docId, Optional.absent());
         assertThat(translationsResource.getTextFlowTargets().get(0)
                 .getContents().get(0)).isEqualTo("1 aoeuaouaou");
+    }
+
+    @Test
+    @InRequestScope
+    public void parseAdapterFileInFileProject() throws Exception {
+        String project = "test";
+        String version = "master";
+        String docId = "test.properties";
+        String plaintextContent = "first: test message";
+        File tempFile = File.createTempFile("test", ".properties");
+        Files.write(tempFile.toPath(), plaintextContent.getBytes());
+        InputStream stream = new FileInputStream(tempFile);
+
+        HProject hProject = new HProject();
+        hProject.setDefaultProjectType(ProjectType.File);
+        HProjectIteration hProjectIteration = new HProjectIteration();
+        hProjectIteration.setProject(hProject);
+        hProjectIteration.setProjectType(ProjectType.File);
+        HDocument hDocument = new HDocument();
+        hDocument.setLocale(new HLocale(new LocaleId("en")));
+
+        when(projectIterationDAO.getBySlug(project, version))
+                .thenReturn(hProjectIteration);
+        when(documentDAO.getByDocIdAndIteration(hProjectIteration, docId))
+                .thenReturn(hDocument);
+        when(documentDAO.getByProjectIterationAndDocId(project, version, docId))
+                .thenReturn(hDocument);
+
+        TranslationsResource translationsResource = transFileService
+                .parseTranslationFile(stream, tempFile.getName(),
+                        "ru", project, version, docId, Optional.absent());
+        assertThat(translationsResource.getTextFlowTargets().get(0)
+                .getContents().get(0)).isEqualTo("test message");
+    }
+
+    @Test
+    @InRequestScope
+    public void rejectNonPoInGettextProject() throws Exception {
+        String project = "test";
+        String version = "master";
+        String docId = "test.pot";
+        File tempFile = File.createTempFile("test", ".ts");
+        InputStream stream = new FileInputStream(tempFile);
+        HProject hProject = new HProject();
+        hProject.setDefaultProjectType(ProjectType.Gettext);
+        HProjectIteration hProjectIteration = new HProjectIteration();
+        when(projectIterationDAO.getBySlug(project, version))
+                .thenReturn(hProjectIteration);
+
+        try {
+            transFileService.parseTranslationFile(stream, tempFile.getName(),
+                    "ru", project, version, docId, Optional.absent());
+            fail("Expected a ZanataServiceException");
+        } catch (ZanataServiceException zse) {
+            assertThat(zse.getMessage()).contains("Unsupported Translation file");
+        }
     }
 
 }
