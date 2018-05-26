@@ -37,7 +37,6 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
-import org.zanata.common.MinContentState;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.rest.StringSet;
@@ -125,26 +124,7 @@ public class PullCommandTest {
         opts.setPullType("trans");
         opts.setMinDocPercent(0);
 
-        pullCommand = new PullCommand(opts, restClientFactory) {
-            @Override
-            protected List<String>
-                    getQualifiedDocNamesForCurrentModuleFromServer() {
-                return Lists.newArrayList("file1");
-            }
-
-            @Override
-            protected void pullDocForLocale(PullStrategy strat, Resource doc,
-                    String localDocName, String docUri,
-                    boolean createSkeletons,
-                    LocaleMapping locMapping, MinContentState minContentState,
-                                            File transFile)
-                    throws IOException {
-                // pretend we are pulling
-                transClient.getTranslations(docUri,
-                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, minContentState, null);
-            }
-        };
+        pullCommand = getPullCommand();
 
         // When:
         pullCommand.run();
@@ -152,10 +132,10 @@ public class PullCommandTest {
         // Then:
         verifyZeroInteractions(statsClient);
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false, MinContentState.Translated
+                EXTENSIONS, false, "Translated"
                 , null);
         verify(transClient).getTranslations("file1", new LocaleId("de"),
-                EXTENSIONS, false, MinContentState.Translated
+                EXTENSIONS, false, "Translated"
                 , null);
     }
 
@@ -190,26 +170,7 @@ public class PullCommandTest {
                 .getStatistics(projectSlug, versionSlug, true, false, new String[] {"zh", "de"}))
                 .thenReturn(statistics);
 
-        pullCommand = new PullCommand(opts, restClientFactory) {
-            @Override
-            protected List<String>
-                    getQualifiedDocNamesForCurrentModuleFromServer() {
-                return Lists.newArrayList("file1");
-            }
-
-            @Override
-            protected void pullDocForLocale(PullStrategy strat, Resource doc,
-                    String localDocName, String docUri,
-                    boolean createSkeletons,
-                    LocaleMapping locMapping, MinContentState minContentState,
-                                            File transFile)
-                    throws IOException {
-                // pretend we are pulling
-                transClient.getTranslations(docUri,
-                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, minContentState, null);
-            }
-        };
+        pullCommand = getPullCommand();
 
         // When:
         pullCommand.run();
@@ -219,7 +180,7 @@ public class PullCommandTest {
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
                 EXTENSIONS, false,
-                MinContentState.Translated, null);
+                "Translated", null);
         verifyNoMoreInteractions(transClient);
     }
 
@@ -254,26 +215,7 @@ public class PullCommandTest {
                 .getStatistics(projectSlug, versionSlug, true, false, new String[] {"zh", "de"}))
                 .thenReturn(statistics);
 
-        pullCommand = new PullCommand(opts, restClientFactory) {
-            @Override
-            protected List<String>
-            getQualifiedDocNamesForCurrentModuleFromServer() {
-                return Lists.newArrayList("file1");
-            }
-
-            @Override
-            protected void pullDocForLocale(PullStrategy strat, Resource doc,
-                    String localDocName, String docUri,
-                    boolean createSkeletons,
-                    LocaleMapping locMapping, MinContentState minContentState,
-                                            File transFile)
-                    throws IOException {
-                // pretend we are pulling
-                transClient.getTranslations(docUri,
-                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, minContentState, null);
-            }
-        };
+        pullCommand = getPullCommand();
 
         // When:
         pullCommand.run();
@@ -283,8 +225,31 @@ public class PullCommandTest {
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
                 EXTENSIONS, false,
-                MinContentState.Translated, null);
+                "Translated", null);
         verifyNoMoreInteractions(transClient);
+    }
+
+    private PullCommand getPullCommand() {
+        return new PullCommand(opts, restClientFactory) {
+            @Override
+            protected List<String>
+            getQualifiedDocNamesForCurrentModuleFromServer() {
+                return Lists.newArrayList("file1");
+            }
+
+            @Override
+            protected void pullDocForLocale(PullStrategy strat, Resource doc,
+                                            String localDocName, String docUri,
+                                            boolean createSkeletons,
+                                            LocaleMapping locMapping, String minContentState,
+                                            File transFile)
+                    throws IOException {
+                // pretend we are pulling
+                transClient.getTranslations(docUri,
+                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
+                        createSkeletons, minContentState, null);
+            }
+        };
     }
 
 }

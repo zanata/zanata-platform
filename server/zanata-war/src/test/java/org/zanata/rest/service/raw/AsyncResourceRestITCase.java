@@ -1,30 +1,13 @@
 package org.zanata.rest.service.raw;
 
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
-import static com.jayway.awaitility.Awaitility.waitAtMost;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
-import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
-import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
-import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
-import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.jayway.awaitility.Duration;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
-import org.zanata.common.ContentState;
+import org.zanata.rest.ResourceRequestEnvironment;
+import org.zanata.rest.service.ContentStateName;
 import org.zanata.common.LocaleId;
-import org.zanata.common.MinContentState;
 import org.zanata.provider.DBUnitProvider.DataSetOperation;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.StringSet;
@@ -34,7 +17,22 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.test.TranslationsResourceTestData;
-import com.jayway.awaitility.Duration;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.jayway.awaitility.Awaitility.waitAtMost;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
+import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
+import static org.zanata.util.RawRestTestUtils.*;
 
 /**
  * @Auther pahuang
@@ -50,7 +48,7 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
                     ProcessStatus.ProcessStatusCode.Finished,
                     ProcessStatus.ProcessStatusCode.NotAccepted);
 
-    StringSet extGettextComment = new StringSet("gettext;comment");
+    private StringSet extGettextComment = new StringSet("gettext;comment");
 
     private static final String DOCUMENTS_DATA_DBUNIT_XML =
             "org/zanata/test/model/DocumentsData.dbunit.xml";
@@ -126,7 +124,7 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
         waitUntilFinished(status);
 
         Response getResponse = getTransResource()
-                .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, MinContentState.Translated, null);
+                .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, ContentStateName.Translated.toString(), null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
@@ -145,7 +143,7 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
         waitUntilFinished(status);
 
         Response getResponse = getTransResource()
-                        .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, MinContentState.Translated, null);
+                        .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, ContentStateName.Translated.toString(), null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
@@ -189,9 +187,9 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
 
         @Override
         public ProcessStatus startSourceDocCreationOrUpdate(String idNoSlash, String projectSlug, String iterationSlug, Resource resource, Set<String> extensions, boolean copytrans) {
-            Response response = new ResourceRequest(
+            Response response = new PutResourceRequest(
                     getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/r/" + idNoSlash),
-                    "PUT", getAuthorizedEnvironment()) {
+                    "PUT", getAuthorizedEnvironment(), resource) {
                 @Override
                 protected Invocation.Builder prepareRequest(
                         ResteasyWebTarget webTarget) {
@@ -200,19 +198,6 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
                             .queryParam("copyTrans", copytrans)
                             .request(MediaType.APPLICATION_XML_TYPE);
                 }
-
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    Entity<String> entity = Entity
-                            .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
-
-                    return builder.buildPut(entity).invoke();
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                }
             }.runWithResult();
 
             return getProcessStatusFromResponse(response);
@@ -220,9 +205,9 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
 
         @Override
         public ProcessStatus startSourceDocCreationOrUpdateWithDocId(String projectSlug, String iterationSlug, Resource resource, Set<String> extensions, String docId) {
-            Response response = new ResourceRequest(
+            Response response = new PutResourceRequest(
                     getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/resource"),
-                    "PUT", getAuthorizedEnvironment()) {
+                    "PUT", getAuthorizedEnvironment(), resource) {
                 @Override
                 protected Invocation.Builder prepareRequest(
                         ResteasyWebTarget webTarget) {
@@ -230,19 +215,6 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
                             .queryParam("docId", docId)
                             .queryParam("ext", extensions.toArray())
                             .request(MediaType.APPLICATION_XML_TYPE);
-                }
-
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    Entity<String> entity = Entity
-                            .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
-
-                    return builder.buildPut(entity).invoke();
-                }
-
-                @Override
-                protected void onResponse(Response response) {
                 }
             }.runWithResult();
 
@@ -251,9 +223,9 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
 
         @Override
         public ProcessStatus startTranslatedDocCreationOrUpdate(String idNoSlash, String projectSlug, String iterationSlug, LocaleId locale, TranslationsResource translatedDoc, Set<String> extensions, String merge, boolean assignCreditToUploader) {
-            Response response = new ResourceRequest(
+            Response response = new PutTranslationsResourceRequest(
                     getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/r/" + idNoSlash + "/translations/" + locale.toString()),
-                    "PUT", getAuthorizedEnvironment()) {
+                    "PUT", getAuthorizedEnvironment(), translatedDoc) {
                 @Override
                 protected Invocation.Builder prepareRequest(
                         ResteasyWebTarget webTarget) {
@@ -263,25 +235,15 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
                             .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
                             .request(MediaType.APPLICATION_XML_TYPE);
                 }
-
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    return builder.buildPut(Entity.xml(translatedDoc)).invoke();
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                }
             }.runWithResult();
 
             return getProcessStatusFromResponse(response);        }
 
         @Override
         public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(String projectSlug, String iterationSlug, LocaleId locale, TranslationsResource translatedDoc, String docId, Set<String> extensions, String merge, boolean assignCreditToUploader) {
-            Response response = new ResourceRequest(
+            Response response = new PutTranslationsResourceRequest(
                     getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/resource/translations/" + locale.toString()),
-                    "PUT", getAuthorizedEnvironment()) {
+                    "PUT", getAuthorizedEnvironment(), translatedDoc) {
                 @Override
                 protected Invocation.Builder prepareRequest(
                         ResteasyWebTarget webTarget) {
@@ -291,16 +253,6 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
                             .queryParam("merge", merge)
                             .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
                             .request(MediaType.APPLICATION_XML_TYPE);
-                }
-
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    return builder.buildPut(Entity.xml(translatedDoc)).invoke();
-                }
-
-                @Override
-                protected void onResponse(Response response) {
                 }
             }.runWithResult();
 
@@ -338,4 +290,63 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
         }
     }
 
+    private abstract class PutResourceRequest extends ResourceRequest {
+        private final Resource resource ;
+
+        public PutResourceRequest(String resourceUrl, String method, Resource resource) {
+            super(resourceUrl, method);
+
+            this.resource = resource;
+        }
+
+        protected PutResourceRequest(String resourceUrl, String method,
+                                     ResourceRequestEnvironment environment, Resource resource) {
+            super(resourceUrl, method, environment);
+
+            this.resource = resource;
+        }
+        @Override
+        public Response invokeWithResponse(
+                Invocation.Builder builder) {
+            Entity<String> entity = Entity
+                    .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
+
+            return builder.buildPut(entity).invoke();
+        }
+
+        @Override
+        protected void onResponse(Response response) {
+            // No processing required when putting a translations resource
+        }
+    }
+
+    private abstract class PutTranslationsResourceRequest extends ResourceRequest {
+        private final TranslationsResource resource ;
+
+        public PutTranslationsResourceRequest(String resourceUrl, String method, TranslationsResource resource) {
+            super(resourceUrl, method);
+
+            this.resource = resource;
+        }
+
+        protected PutTranslationsResourceRequest(String resourceUrl, String method,
+                                     ResourceRequestEnvironment environment, TranslationsResource resource) {
+            super(resourceUrl, method, environment);
+
+            this.resource = resource;
+        }
+        @Override
+        public Response invokeWithResponse(
+                Invocation.Builder builder) {
+            Entity<String> entity = Entity
+                    .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
+
+            return builder.buildPut(entity).invoke();
+        }
+
+        @Override
+        protected void onResponse(Response response) {
+            // No processing required when putting a translations resource
+        }
+    }
 }

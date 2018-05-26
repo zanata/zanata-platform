@@ -22,13 +22,7 @@ package org.zanata.rest.service;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -257,7 +251,7 @@ public interface FileResource {
                     @PathParam("locale") String locale,
                     @PathParam("fileType") String fileExtension,
                     @QueryParam("docId") String docId,
-                    @QueryParam("minContentState") String minContentState);
+                    @DefaultValue("Translated") @QueryParam("minContentState") String minContentState);
 
     /**
      * Downloads a previously generated file.

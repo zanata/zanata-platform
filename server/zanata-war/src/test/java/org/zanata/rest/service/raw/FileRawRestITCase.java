@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.service.FileResource;
 
@@ -57,7 +58,7 @@ public class FileRawRestITCase extends RestTest {
 
     private FileClient fileResource;
 
-    private final Annotation[] multipartFormAnnotations =
+    private static final Annotation[] multipartFormAnnotations =
             { new MultipartFormLiteral() };
 
     @Override
@@ -130,7 +131,7 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getBakedGetText_whenNoTranslations() throws Exception {
+    public void getBakedGetTextNoTranslations() throws Exception {
         uploadSourceFile("test-gettext.pot", "GETTEXT");
 
         String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
@@ -144,7 +145,7 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getBakedGetTextTranslated_whenImportAsTranslated() throws Exception {
+    public void getBakedGetTextTranslatedImportAsTranslated() throws Exception {
         uploadSourceFile("test-gettext.pot", "GETTEXT");
 
         uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
@@ -160,7 +161,7 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getBakedGetTextApproved_whenImportAsTranslated() throws Exception {
+    public void getBakedGetTextApprovedImportAsTranslated() throws Exception {
         uploadSourceFile("test-gettext.pot", "GETTEXT");
 
         uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
@@ -176,7 +177,7 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getBakedGetTextTranslated_whenImportAsApproved() throws Exception {
+    public void getBakedGetTextTranslatedImportAsApproved() throws Exception {
         uploadSourceFile("test-gettext.pot", "GETTEXT");
 
         uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
@@ -193,7 +194,7 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getBakedGetTextApproved_whenImportAsApproved() throws Exception {
+    public void getBakedGetTextApprovedImportAsApproved() throws Exception {
         uploadSourceFile("test-gettext.pot", "GETTEXT");
 
         uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
@@ -256,7 +257,7 @@ public class FileRawRestITCase extends RestTest {
 
         String hash = calculateFileHash(file);
 
-        return generateUploadForm(true, true, fileType, hash, file.length(), fileInputStream);
+        return generateUniqueUploadForm(fileType, hash, file.length(), fileInputStream);
     }
 
     private String getInputStreamAsStringFromResponse(Response response) {
@@ -296,12 +297,11 @@ public class FileRawRestITCase extends RestTest {
         }
     }
 
-    private DocumentFileUploadForm generateUploadForm(boolean isFirst,
-                                                      boolean isLast, String fileType, String md5hash, long streamSize,
-                                                      InputStream fileStream) {
+    private DocumentFileUploadForm generateUniqueUploadForm(String fileType, String md5hash, long streamSize,
+                                                            InputStream fileStream) {
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        uploadForm.setFirst(isFirst);
-        uploadForm.setLast(isLast);
+        uploadForm.setFirst(true);
+        uploadForm.setLast(true);
         uploadForm.setFileType(fileType);
         uploadForm.setHash(md5hash);
         uploadForm.setSize(streamSize);
@@ -310,8 +310,7 @@ public class FileRawRestITCase extends RestTest {
     }
 
     private static void assertPoFile(String poFileContents) {
-        MessageStreamParser messageParser =
-                new MessageStreamParser(new StringReader(poFileContents));
+        new MessageStreamParser(new StringReader(poFileContents));
     }
 
     private static void assertPoFileCorrect(String poFileContents) {
@@ -421,6 +420,7 @@ public class FileRawRestITCase extends RestTest {
 
                 @Override
                 protected void onResponse(Response response) {
+                    // No response processing needed when retrieving the source file extensions supported
                 }
             }.runWithResult();
         }
@@ -440,6 +440,7 @@ public class FileRawRestITCase extends RestTest {
 
                 @Override
                 protected void onResponse(Response response) {
+                    // No response processing needed when retrieving the list of document types supported (old deprecated method)
                 }
             }.runWithResult();
         }
@@ -459,15 +460,16 @@ public class FileRawRestITCase extends RestTest {
 
                 @Override
                 protected void onResponse(Response response) {
+                    // No response processing needed when retrieving the list of document types supported
                 }
             }.runWithResult();
         }
 
         @Override
         public Response uploadSourceFile(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm) {
-            return new ResourceRequest(
+            return new UploadResourceRequest(
                     getRestEndpointUrl("/file/source/" + projectSlug + "/" + iterationSlug + "/"),
-                    "POST", getAuthorizedEnvironment()) {
+                    "POST", getAuthorizedEnvironment(), uploadForm) {
                 @Override
                 protected Invocation.Builder prepareRequest(
                         ResteasyWebTarget webTarget) {
@@ -475,26 +477,14 @@ public class FileRawRestITCase extends RestTest {
                             .queryParam("docId", docId)
                             .request(MediaType.APPLICATION_XML_TYPE);
                 }
-
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    Entity<DocumentFileUploadForm> entity = Entity.entity(uploadForm, MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations);
-
-                    return builder.buildPost(entity).invoke();
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                }
             }.runWithResult();
         }
 
         @Override
         public Response uploadTranslationFile(String projectSlug, String iterationSlug, String localeId, String docId, String merge, DocumentFileUploadForm uploadForm) {
-            return new ResourceRequest(
+            return new UploadResourceRequest(
                     getRestEndpointUrl("/file/translation/" + projectSlug + "/" + iterationSlug + "/" + localeId),
-                    "POST", getAuthorizedEnvironment()) {
+                    "POST", getAuthorizedEnvironment(), uploadForm) {
                 @Override
                 protected Invocation.Builder prepareRequest(
                         ResteasyWebTarget webTarget) {
@@ -503,24 +493,12 @@ public class FileRawRestITCase extends RestTest {
                             .queryParam("merge", merge)
                             .request(MediaType.APPLICATION_XML_TYPE);
                 }
-
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    Entity<DocumentFileUploadForm> entity = Entity.entity(uploadForm, MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations);
-
-                    return builder.buildPost(entity).invoke();
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                }
             }.runWithResult();
         }
 
         @Override
         public Response downloadSourceFile(String projectSlug, String iterationSlug, String fileType, String docId) {
-            return new ResourceRequest(
+            return new DownloadResourceRequest(
                     getRestEndpointUrl("/file/source/" + projectSlug + "/" + iterationSlug + "/" + fileType),
                     "GET", getAuthorizedEnvironment()) {
                 @Override
@@ -528,22 +506,12 @@ public class FileRawRestITCase extends RestTest {
                         ResteasyWebTarget webTarget) {
                     return webTarget.queryParam("docId", docId).request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
                 }
-
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    return builder.get();
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                }
             }.runWithResult();
         }
 
         @Override
         public Response downloadTranslationFile(String projectSlug, String iterationSlug, String locale, String fileExtension, String docId, String minContentState) {
-            return new ResourceRequest(
+            return new DownloadResourceRequest(
                     getRestEndpointUrl("/file/translation/" + projectSlug + "/" + iterationSlug + "/" + locale + "/" + fileExtension),
                     "GET", getAuthorizedEnvironment()) {
                 @Override
@@ -558,15 +526,7 @@ public class FileRawRestITCase extends RestTest {
                     return target.request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
                 }
 
-                @Override
-                public Response invokeWithResponse(
-                        Invocation.Builder builder) {
-                    return builder.get();
-                }
 
-                @Override
-                protected void onResponse(Response response) {
-                }
             }.runWithResult();
         }
 
@@ -585,8 +545,61 @@ public class FileRawRestITCase extends RestTest {
 
                 @Override
                 protected void onResponse(Response response) {
+                    // No response processing needed when downloading the previously generated file
                 }
             }.runWithResult();
+        }
+    }
+
+    private static abstract class DownloadResourceRequest extends ResourceRequest {
+        public DownloadResourceRequest(String resourceUrl, String method) {
+            super(resourceUrl, method);
+        }
+
+        protected DownloadResourceRequest(String resourceUrl, String method,
+                                        ResourceRequestEnvironment environment) {
+            super(resourceUrl, method, environment);
+        }
+
+        @Override
+        public Response invokeWithResponse(
+                Invocation.Builder builder) {
+            return builder.get();
+        }
+
+        @Override
+        protected void onResponse(Response response) {
+            // No response processing needed when downloading a file
+        }
+    }
+
+    private static abstract class UploadResourceRequest extends ResourceRequest {
+        private final DocumentFileUploadForm uploadForm;
+
+        public UploadResourceRequest(String resourceUrl, String method, DocumentFileUploadForm uploadForm) {
+            super(resourceUrl, method);
+
+            this.uploadForm = uploadForm;
+        }
+
+        protected UploadResourceRequest(String resourceUrl, String method,
+                                        ResourceRequestEnvironment environment, DocumentFileUploadForm uploadForm) {
+            super(resourceUrl, method, environment);
+
+            this.uploadForm = uploadForm;
+        }
+
+        @Override
+        public Response invokeWithResponse(
+                Invocation.Builder builder) {
+            Entity<DocumentFileUploadForm> entity = Entity.entity(uploadForm, MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations);
+
+            return builder.buildPost(entity).invoke();
+        }
+
+        @Override
+        protected void onResponse(Response response) {
+            // No response processing needed when uploading a file
         }
     }
 

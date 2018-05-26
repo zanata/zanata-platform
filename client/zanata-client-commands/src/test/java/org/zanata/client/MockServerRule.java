@@ -56,7 +56,6 @@ import org.zanata.client.config.LocaleList;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
-import org.zanata.common.MinContentState;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.client.AsyncProcessClient;
 import org.zanata.rest.client.CopyTransClient;
@@ -269,7 +268,7 @@ public class MockServerRule extends ExternalResource {
         when(
                 transDocClient.getTranslations(anyString(),
                         any(LocaleId.class), anySetOf(String.class),
-                        eq(getPullOpts().getCreateSkeletons()), any(MinContentState.class), anyString()))
+                        eq(getPullOpts().getCreateSkeletons()), any(String.class), anyString()))
                 .thenReturn(transResourceResponse);
         when(transResourceResponse.getStatus()).thenReturn(200);
 

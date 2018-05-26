@@ -26,7 +26,6 @@ import java.io.File;
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.*;
 import com.google.common.base.Preconditions;
-import org.zanata.common.MinContentState;
 
 /**
  * @author Sean Flanigan <a
@@ -155,8 +154,8 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     }
 
     @Override
-    public MinContentState getMinContentState() {
-        return MinContentState.fromString(minContentState);
+    public String getMinContentState() {
+        return minContentState;
     }
 
     @Option(
@@ -224,10 +223,9 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
             metaVar = "TYPE",
             required = false,
             usage = "Minimum content state to pull:\n"
-                    + "  \"translated\" (default) fetches approved or translated only.\n"
-                    + "  \"approved\" fetches approved only.\n")
-    public
-    void setMinContentState(String minContentState) {
+                    + "  \"Translated\" (default) fetches approved or translated only.\n"
+                    + "  \"Approved\" fetches approved only.\n")
+    public void setMinContentState(String minContentState) {
         this.minContentState = minContentState;
     }
 }
