@@ -399,8 +399,9 @@
                         <li>
                           <a href="#" class="i__item--right"
                             data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
-                            data-target="#uploadTranslationDialog">
-                            #{msgs['jsf.Upload.Label']}
+                            data-target="#uploadTranslationDialog"
+                            title="#{versionHomeAction.isPoDocument(document.docId) ? msgs['jsf.Upload.Description'] : msgs['jsf.Upload.DescriptionFile']}">
+                            #{msgs.format('jsf.Upload.Label', (versionHomeAction.isPoDocument(document.docId) ? ' ' : ', '.concat(versionHomeAction.translationExtensionOf(document.path, document.name)).concat('*')))}
                             <i class="i i--import i__item__icon"></i>
                           </a>
                         </li>
