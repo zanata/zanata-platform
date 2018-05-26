@@ -24,10 +24,8 @@ class MockTranslationMergeApproved implements TranslationMergeService {
                          HTextFlowTarget hTarget, Set<String> extensions) {
         boolean targetChanged = original.merge(incomingTarget, hTarget, extensions);
 
-        if (targetChanged && hTarget != null) {
-            if (hTarget.getState().isTranslated()) {
-                hTarget.setState(ContentState.Approved);
-            }
+        if (targetChanged && hTarget != null && hTarget.getState().isTranslated()) {
+            hTarget.setState(ContentState.Approved);
         }
 
         return targetChanged;

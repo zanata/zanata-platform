@@ -34,7 +34,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -45,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.common.MinContentState;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -125,14 +123,14 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
-                                    Set<String> extensions, boolean skeletons, MinContentState minContentState, String eTag) {
+                                    Set<String> extensions, boolean skeletons, String minContentState, String eTag) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return getTranslationsWithDocId(locale, id, extensions, skeletons, minContentState, eTag);
     }
 
     @Override
     public Response getTranslationsWithDocId(LocaleId locale, String docId,
-            Set<String> extensions, boolean createSkeletons, MinContentState minContentState, String eTag) {
+                                             Set<String> extensions, boolean createSkeletons, String minContentState, String eTag) {
         log.debug("start to get translation");
         if (StringUtils.isBlank(docId)) {
             // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
@@ -169,7 +167,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 textFlowTargetDAO.findTranslations(document, hLocale);
         Optional<String> apiVersion = Optional.<String>absent();
 
-        if (MinContentState.Approved.equals(minContentState)) {
+        ContentStateName minContentStateObject = ContentStateName.Translated;
+
+        if (minContentState != null) {
+            minContentStateObject = ContentStateName.fromString(minContentState);
+        }
+
+        if (ContentStateName.Approved.equals(minContentStateObject)) {
             apiVersion = Optional.of("StatusApproved");
         }
 

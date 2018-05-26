@@ -237,12 +237,6 @@ public class FileService implements FileResource {
         if (document == null) {
             response = Response.status(Status.NOT_FOUND).build();
         } else {
-            MinContentState minContentStateObject = MinContentState.Translated;
-
-            if (minContentState != null) {
-                minContentStateObject = MinContentState.fromString(minContentState);
-            }
-
             if ("po".equals(fileType)
                     || FILE_TYPE_OFFLINE_PO.equals(fileType)) {
                 // Note: could return 404 or Unsupported media type for "po" in
@@ -258,7 +252,7 @@ public class FileService implements FileResource {
                 TranslationsResource transRes =
                         (TranslationsResource) this.translatedDocResourceService
                                 .getTranslationsWithDocId(new LocaleId(locale), convertedId,
-                                        extensions, true, minContentStateObject, null)
+                                        extensions, true, minContentState, null)
                                 .getEntity();
                 Resource res = this.resourceUtils.buildResource(document);
                 StreamingOutput output = new POStreamingOutput(res, transRes,
@@ -280,7 +274,7 @@ public class FileService implements FileResource {
                 TranslationsResource transRes =
                         (TranslationsResource) this.translatedDocResourceService
                                 .getTranslationsWithDocId(new LocaleId(locale), convertedId,
-                                        extensions, true, minContentStateObject, null)
+                                        extensions, true, minContentState, null)
                                 .getEntity();
                 // Filter to only provide translated targets. "Preview" downloads
                 // include fuzzy.

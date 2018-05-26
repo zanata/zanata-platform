@@ -17,7 +17,6 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.common.MinContentState;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.config.LocaleList;
@@ -119,7 +118,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         logger.info("Locales to pull: {}", opts.getLocaleMapList());
         logger.info("Encode tab as \\t: {}", opts.getEncodeTabs());
         logger.info("Current directory: {}", System.getProperty("user.dir"));
-        logger.info("Minimum content state: {}", opts.getMinContentState().toString());
+        logger.info("Minimum content state: {}", opts.getMinContentState());
         if (opts.getPullType() == PushPullType.Source) {
             logger.info("Pulling source documents only");
             logger.info("Source-language directory (originals): {}",
@@ -196,7 +195,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                         || pullType == PushPullType.Source;
         boolean pullTarget =
                 pullType == PushPullType.Both || pullType == PushPullType.Trans;
-        MinContentState minContentState = getOpts().getMinContentState();
+        String minContentState = getOpts().getMinContentState();
 
         if (pullSrc && strat.isTransOnly()) {
             log.warn("Source is not available for this project type. Source will not be pulled.\n");
@@ -289,7 +288,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     @VisibleForTesting
     protected void pullDocForLocale(PullStrategy strat, Resource doc,
             String localDocName, String docId, boolean createSkeletons,
-            LocaleMapping locMapping, MinContentState minContentState,
+            LocaleMapping locMapping, String minContentState,
             File transFile) throws IOException {
         LocaleId locale = new LocaleId(locMapping.getLocale());
         String eTag = null;

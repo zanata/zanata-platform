@@ -23,7 +23,6 @@ package org.zanata.client.commands.pull;
 
 import java.io.File;
 
-import org.zanata.common.MinContentState;
 import org.zanata.client.commands.PushPullOptions;
 import org.zanata.client.commands.PushPullType;
 
@@ -51,5 +50,5 @@ public interface PullOptions extends PushPullOptions {
 
     File getCacheDir();
 
-    MinContentState getMinContentState();
+    String getMinContentState();
 }

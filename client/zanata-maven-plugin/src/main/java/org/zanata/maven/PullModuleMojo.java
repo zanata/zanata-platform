@@ -22,7 +22,6 @@
 package org.zanata.maven;
 
 import org.apache.maven.plugins.annotations.Mojo;
-import org.zanata.common.MinContentState;
 
 /**
  * Pulls translated text from Zanata.
@@ -36,7 +35,7 @@ public class PullModuleMojo extends AbstractPullMojo {
     }
 
     @Override
-    public MinContentState getMinContentState() {
-        return MinContentState.Translated;
+    public String getMinContentState() {
+        return "Translated";
     }
 }

@@ -18,29 +18,29 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.common;
+package org.zanata.rest.service;
 
 /**
  * @author Dragos Varovici <a
  *         href="mailto:dvarovici.work@gmail.com">dvarovici.work@gmail.com</a>
  */
-public enum MinContentState {
+public enum ContentStateName {
     /** Approved only */
     Approved,
     /** Approved and Translated documents only */
     Translated;
 
     /**
-     * Parse a MinContentState value from a string case-insensitively, and
+     * Parse a ContentStateName value from a string case-insensitively, and
      * disregarding leading and trailing spaces.
      *
      * @param str
      *            The string to parse.
-     * @return The parsed MinContentState enum value, or null if the string did not
+     * @return The parsed ContentStateName enum value, or null if the string did not
      *         match a value.
      */
-    public static MinContentState fromString(String str) {
-        MinContentState enumVal = null;
+    public static ContentStateName fromString(String str) {
+        ContentStateName enumVal = null;
 
         if (str != null) {
             if (Approved.toString().equalsIgnoreCase(str.trim())) {
