@@ -29,30 +29,33 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.DocumentType;
-import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.common.LocaleId;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HLocale;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.util.HashUtil;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+
+import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(CdiUnitRunner.class)
 public class TranslationFileServiceImplTest extends ZanataTest {
@@ -82,7 +85,6 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String project = "test";
         String version = "master";
         String docId = "test.pot";
-        String poName = "test.po";
         String poContent = "msgid \"\"\n" +
                 "msgstr \"\"\n" +
                 "\"Project-Id-Version: test-master\\n\"\n" +
@@ -93,14 +95,14 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 "msgstr[0] \"1 aoeuaouaou\"\n" +
                 "msgstr[1] \"%d aoeuaouao\"\n" +
                 "msgstr[2] \"\"";
-        InputStream stream = new ByteArrayInputStream(
-                poContent.getBytes(StandardCharsets.UTF_8));
+        File tempFile = File.createTempFile("test", ".po");
+        Files.write(tempFile.toPath(), poContent.getBytes());
+        InputStream stream = new FileInputStream(tempFile);
 
         HProject hProject = new HProject();
         hProject.setDefaultProjectType(ProjectType.File);
         HProjectIteration hProjectIteration = new HProjectIteration();
         hProjectIteration.setProject(hProject);
-        hProjectIteration.setProjectType(ProjectType.File);
         HDocument hDocument = new HDocument();
 
         when(projectIterationDAO.getBySlug(project, version))
@@ -109,12 +111,10 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 .thenReturn(hDocument);
 
         TranslationsResource translationsResource = transFileService
-                .parseTranslationFile(stream, poName,
+                .parseTranslationFile(stream, tempFile.getName(),
                 "ru", project, version, docId, Optional.absent());
-
-        TextFlowTarget target = translationsResource.getTextFlowTargets().get(0);
-        assertThat(target.getContents().get(0)).isEqualTo("1 aoeuaouaou");
-        assertThat(target.getResId()).isEqualTo(HashUtil.sourceHash("Thing 1"));
+        assertThat(translationsResource.getTextFlowTargets().get(0)
+                .getContents().get(0)).isEqualTo("1 aoeuaouaou");
     }
 
     @Test
