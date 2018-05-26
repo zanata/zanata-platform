@@ -29,10 +29,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.DocumentType;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -54,6 +57,7 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -103,6 +107,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         hProject.setDefaultProjectType(ProjectType.File);
         HProjectIteration hProjectIteration = new HProjectIteration();
         hProjectIteration.setProject(hProject);
+        hProjectIteration.setProjectType(ProjectType.File);
         HDocument hDocument = new HDocument();
 
         when(projectIterationDAO.getBySlug(project, version))
