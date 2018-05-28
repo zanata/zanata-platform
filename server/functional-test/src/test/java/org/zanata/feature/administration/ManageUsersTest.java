@@ -67,8 +67,8 @@ public class ManageUsersTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("translator", "newpassword");
 
         assertThat(dashboardPage.loggedInAs())
-                .isEqualTo("translator")
-                .as("User logged in with new password");
+                .as("User logged in with new password")
+                .isEqualTo("translator");
     }
 
     @Trace(summary = "The administrator must enter the new user password " +
@@ -83,8 +83,8 @@ public class ManageUsersTest extends ZanataTestCase {
                 .saveUserExpectFailure();
 
         assertThat(manageUserAccountPage.getErrors())
-                .contains(ManageUserAccountPage.PASSWORD_ERROR)
-                .as("The password failure error is displayed");
+                .as("The password failure error is displayed")
+                .contains(ManageUserAccountPage.PASSWORD_ERROR);
     }
 
     @Trace(summary = "The administrator can disable an account")
@@ -104,8 +104,8 @@ public class ManageUsersTest extends ZanataTestCase {
                 .enterPassword("translator")
                 .clickSignInExpectError();
         assertThat(signInPage.getErrors())
-                .contains(SignInPage.LOGIN_FAILED_ERROR)
-                .as("The user's account cannot be logged in");
+                .as("The user's account cannot be logged in")
+                .contains(SignInPage.LOGIN_FAILED_ERROR);
     }
 
     @Trace(summary = "The administrator can change a user account's roles")
@@ -122,8 +122,8 @@ public class ManageUsersTest extends ZanataTestCase {
                 .signIn("translator", "translator");
 
         assertThat(dashboardBasePage.goToAdministration().getTitle())
-                .isEqualTo("Zanata: Administration")
-                .as("The user can access the administration panel");
+                .as("The user can access the administration panel")
+                .isEqualTo("Zanata: Administration");
     }
 
     @Trace(summary = "The administrator can change a user account's name")

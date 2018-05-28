@@ -18,6 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
+@file:Suppress("TooManyFunctions")
 package org.zanata.dao
 
 import com.google.common.base.Joiner
@@ -203,20 +204,21 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
     }
 
     class LocalesAndDocCountTransformer : ResultTransformer {
+        private companion object {
+            const val LOCALE_COL = "locale"
+            const val COUNT_COL = "count"
+        }
         override fun transformTuple(tuple: Array<Any>,
                                     aliases: Array<String>): Map.Entry<HLocale, Int> {
-            val LOCALE = "locale"
-            val COUNT = "count"
-
             var hLocale: HLocale? = null
             var count: Int? = null
             var i = 0
             val aliasesLength = aliases.size
             while (i < aliasesLength) {
                 val columnName = aliases[i]
-                if (columnName == LOCALE) {
+                if (columnName == LOCALE_COL) {
                     hLocale = tuple[i] as HLocale
-                } else if (columnName == COUNT) {
+                } else if (columnName == COUNT_COL) {
                     count = Math.toIntExact(tuple[i] as Long)
                 }
                 i++

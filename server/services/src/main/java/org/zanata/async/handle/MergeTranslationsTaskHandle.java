@@ -33,7 +33,8 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implement
         UserTriggeredTaskHandle {
 
     private static final long serialVersionUID = -8026264371441200919L;
-    private long totalTranslations;
+    private long totalTextFlows;
+    // username
     private String triggeredBy;
 
     public MergeTranslationsTaskHandle(
@@ -41,12 +42,12 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implement
         setKeyId(key.id());
     }
 
-    public long getTotalTranslations() {
-        return this.totalTranslations;
+    public long getTotalTextFlows() {
+        return this.totalTextFlows;
     }
 
-    public void setTotalTranslations(final long totalTranslations) {
-        this.totalTranslations = totalTranslations;
+    public void setTotalTextFlows(final long totalTextFlows) {
+        this.totalTextFlows = totalTextFlows;
     }
 
     @Override

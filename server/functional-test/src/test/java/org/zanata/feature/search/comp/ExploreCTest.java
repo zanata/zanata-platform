@@ -45,8 +45,8 @@ public class ExploreCTest extends ZanataTestCase {
                 .gotoExplore()
                 .enterSearch("abcde");
         assertThat(explorePage.isCancelButtonEnabled())
-                .isTrue()
-                .as("Cancel button is enabled after search");
+                .as("Cancel button is enabled after search")
+                .isTrue();
     }
 
     @Test(timeout = MAX_SHORT_TEST_DURATION)
@@ -57,7 +57,7 @@ public class ExploreCTest extends ZanataTestCase {
                 .enterSearch("abcde")
                 .clearSearch();
         assertThat(explorePage.isSearchFieldCleared())
-                .isTrue()
-                .as("Able clear the search field");
+                .as("Able clear the search field")
+                .isTrue();
     }
 }

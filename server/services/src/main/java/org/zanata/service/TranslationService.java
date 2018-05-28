@@ -163,8 +163,18 @@ public interface TranslationService extends Serializable {
 
         int getBaseVersionNum();
 
+        /**
+         * Previous state of the target TextFlowTarget
+         */
         ContentState getBaseContentState();
 
+        /**
+         * New state of the target TextFlowTarget
+         */
+        ContentState getNewContentState();
+
         String getErrorMessage();
+
+        double getSimilarityPercent();
     }
 }

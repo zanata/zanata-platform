@@ -73,12 +73,16 @@ public class CreateProjectPage extends BasePage {
     }
 
     public ProjectVersionsPage pressCreateProject() {
+        // sometimes the project is created with a partial projectName
+        // waitForPageSilence should help ensure projectName has been processed
+        waitForPageSilence();
         log.info("Click Create");
         clickAndCheckErrors(readyElement(createButton));
         return new ProjectVersionsPage(getDriver());
     }
 
     public CreateProjectPage pressCreateProjectAndExpectFailure() {
+        waitForPageSilence();
         log.info("Click Create");
         clickAndExpectErrors(readyElement(createButton));
         return new CreateProjectPage(getDriver());

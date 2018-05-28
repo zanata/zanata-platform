@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.5.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -20,9 +20,10 @@
 
   <properties>
     <byteman.version>2.1.2</byteman.version>
+    <detekt.skip>false</detekt.skip>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.2.30</kotlin.version>
+    <kotlin.version>1.2.41</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 <!-- We can use these if we don't want the lang/API version set by the compiler version:
@@ -341,12 +342,12 @@
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib-jre7</artifactId>
+        <artifactId>kotlin-stdlib-jdk7</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib-jre8</artifactId>
+        <artifactId>kotlin-stdlib-jdk8</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
@@ -354,6 +355,12 @@
         <artifactId>kotlin-test-junit</artifactId>
         <version>${kotlin.version}</version>
         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jetbrains.kotlinx</groupId>
+        <artifactId>kotlinx-html-jvm</artifactId>
+        <version>0.6.9</version>
       </dependency>
 
       <dependency>
@@ -1876,6 +1883,12 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <!-- for kotlinx.html -->
+    <repository>
+      <id>jcenter</id>
+      <name>jcenter</name>
+      <url>https://jcenter.bintray.com</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -2110,6 +2123,7 @@
                 <allowedRepository>jboss-public-repository-group</allowedRepository>
                 <allowedRepository>okapi-cloudbees-release</allowedRepository>
                 <allowedRepository>google-maven-snapshot-repository</allowedRepository>
+                <allowedRepository>jcenter</allowedRepository>
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
@@ -2142,21 +2156,31 @@
             </configuration>
           </execution>
           <execution>
-            <!-- This can be run separately with mvn antrun:run@detekt -->
+            <!-- This can be run separately with mvn antrun:run@detekt -pl '!:zanata-frontend' -->
             <id>detekt</id>
             <!-- Profiles should use 'test' to activate this -->
             <phase>none</phase>
             <goals><goal>run</goal></goals>
             <configuration>
+              <skip>${detekt.skip}</skip>
               <target name="detekt">
-                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
-                    classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                <java taskname="detekt" dir="${basedir}"
+                    fork="true"
+                    failonerror="true"
+                    classname="io.gitlab.arturbosch.detekt.cli.Main"
+                    classpathref="maven.plugin.classpath">
                   <arg value="--config-resource"/>
                   <arg value="zanata-build-tools/detekt.yml"/>
-                  <arg value="--project"/>
-                  <arg value="${basedir}/src"/>
+                  <arg value="--input"/>
+                  <arg value="${basedir}/src/main"/>
                   <arg value="--filters"/>
                   <arg value=".*test.*"/>
+                  <arg value="--output"/>
+                  <arg value="${basedir}/target/reports"/>
+                  <!--<arg value="&#45;&#45;outputname"/>-->
+                  <!--<arg value="detekt-report"/>-->
+                  <arg value="--baseline"/>
+                  <arg value="${basedir}/reports/baseline.xml"/>
                 </java>
               </target>
             </configuration>
@@ -2171,12 +2195,12 @@
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M11</version>
+            <version>1.0.0.RC7</version>
           </dependency>
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M11</version>
+            <version>1.0.0.RC7</version>
           </dependency>
         </dependencies>
       </plugin>
