@@ -25,6 +25,8 @@ import PrintfVariablesValidation from './PrintfVariablesValidation'
 import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
+import MessageFormat from 'intl-messageformat'
+
 /**
  *
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
@@ -33,6 +35,7 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public locale: string
 
   public _sourceExample: string
   public get sourceExample() {
@@ -45,8 +48,8 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
 
   private POSITIONAL_REG_EXP = new RegExp("%(\\d+\\$).+")
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages) {
-    super(id, description, messages)
+  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+    super(id, description, messages, locale)
   }
 
   public doValidate(source: string, target: string): string[] {
@@ -65,7 +68,7 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
     if (message) {
       errors.push(message)
     }
-    message = this.findAddedVariables(sourceVars, targetVars)
+    message = this.findAddedVariables(appendedSourceVars, targetVars)
     if (message) {
       errors.push(message)
     }
@@ -75,7 +78,7 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
   private checkPosition(variables: string[], size: number): string[] {
     interface PosVar {
       position: number,
-      testVar: string
+      testVars: string[]
     }
     const errors: string[] = []
     const posToVars: PosVar[] = []
@@ -85,21 +88,35 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
         const positionAndDollar = result[1]
         const position = this.extractPositionIndex(positionAndDollar)
         if (position >= 0 && position < size) {
-          posToVars.push({position, testVar})
+          const existing = posToVars.find((pos) => pos.position === position)
+          if (existing) {
+            existing.testVars.push(testVar)
+          } else {
+            const testVars = [testVar]
+            posToVars.push({ position, testVars })
+          }
         } else {
-          errors.push(this.messages.varPositionOutOfRange + testVar)
+          const outofrange = new MessageFormat(this.messages.varPositionOutOfRange, this.locale)
+            .format({ outofrange: testVar })
+          errors.push(outofrange)
         }
       } else {
         errors.push(this.messages.mixVarFormats)
       }
     }
-    // FIXME: duplicate position check false positive
-    if (posToVars.length !== variables.length) {
+
+    if (posToVars.keys.length !== variables.length) {
       // has some duplicate positions
+      const samePosErrors = []
       for (const entry of posToVars) {
-        if (entry.testVar.length > 1) {
-          errors.push(this.messages.varPositionDuplicated + entry.testVar)
+        if (entry.testVars.length > 1) {
+          samePosErrors.push(entry.testVars)
         }
+      }
+      if (samePosErrors.length > 0) {
+        const samepos = new MessageFormat(this.messages.varPositionDuplicated, this.locale)
+          .format({ samepos: samePosErrors })
+        errors.push(samepos)
       }
     }
     return errors

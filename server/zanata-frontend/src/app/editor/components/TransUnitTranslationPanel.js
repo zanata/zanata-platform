@@ -333,7 +333,6 @@ export class TranslationItem extends React.Component {
 function mapStateToProps (state) {
   const {ui, context, headerData} = state
   const targetLocaleDetails = ui.uiLocales[context.lang]
-  console.log(state.settings)
   return {
     syntaxOn: getSyntaxHighlighting(state),
     validationOptions: [
