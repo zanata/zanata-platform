@@ -13,6 +13,7 @@
   <name>functional-test</name>
 
   <properties>
+    <server.dir>${basedir}/..</server.dir>
     <allow.deploy.skip>true</allow.deploy.skip>
     <selenium.version>3.8.1</selenium.version>
 
@@ -27,7 +28,7 @@
     <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-    <!-- This can be empty (root context) or a value with a trailing slash -->
+    <!-- This should be empty (root context) or a value with a trailing slash, eg "zanata/" -->
     <context.path></context.path>
 
     <!-- this may be changed by the MYSQL_PORT profile -->
@@ -717,6 +718,31 @@
               </execution>
             </executions>
           </plugin>
+
+          <!-- NB this must run after jcabi/sql and before cargo -->
+          <plugin>
+            <artifactId>exec-maven-plugin</artifactId>
+            <groupId>org.codehaus.mojo</groupId>
+            <executions>
+              <execution>
+                <id>liquibase</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>/bin/sh</executable>
+                  <!-- NB this assumes zanata-test-war has been built locally and recently -->
+                  <arguments>
+                    <argument>${server.dir}/zanata-test-war/target/zanata-test-war-${project.version}/WEB-INF/liquibase</argument>
+                    <argument>update</argument>
+                  </arguments>
+                  <workingDirectory>${basedir}/target/test-classes</workingDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
