@@ -20,6 +20,7 @@ import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
+const Option = Select.Option
 
 /**
  * Reject Translations Administration panel
@@ -28,20 +29,6 @@ export const MINOR = 'Minor'
 export const MAJOR = 'Major'
 export const CRITICAL = 'Critical'
 const DO_NOT_RENDER = undefined
-
-function priorityToTextState (priority) {
-  switch (priority) {
-    case CRITICAL:
-      return 'u-textDanger'
-    case MAJOR:
-      return 'u-textWarning'
-    case MINOR:
-      return 'u-textInfo'
-  }
-}
-
-const priorityToDisplay =
-  p => <span className={priorityToTextState(p)}>{p}</span>
 
 class RejectionsForm extends Component {
   static propTypes = {
@@ -83,8 +70,7 @@ class RejectionsForm extends Component {
     }
   }
 
-  onEditableChange = e => {
-    const checked = e.target.checked
+  onEditableChange = checked => {
     this.setState(_prevState => ({
       isCommentRequired: checked
     }))
@@ -97,7 +83,7 @@ class RejectionsForm extends Component {
   }
   onPriorityChange = p => {
     this.setState(_prevState => ({
-      priority: p
+      priority: p.key
     }))
   }
   onSave = () => {
@@ -152,10 +138,9 @@ class RejectionsForm extends Component {
     ) : DO_NOT_RENDER
     return (
       <Form key={key} layout='inline'>
-        <Row className='pb4'>
+        <Row className='pb4' gutter={16}>
           <Col span={12}>
             <Form.Item label='Criteria' className='w-100'>
-              { /* TODO: Fix layout style={{ width: '500px' }} */ }
               <Input.TextArea
                 disabled={!isAdminMode}
                 maxLength={255}
@@ -170,19 +155,19 @@ class RejectionsForm extends Component {
             <Form.Item label='Priority'>
               <Select
                 key={key}
-                defaultValue={this.state.priority}
+                labelInValue
+                value={{ key: this.state.priority }}
                 disabled={priorityDisabled}
-                onChange={this.onPriorityChange}
-                label={this.state.priority} >
-                <Select.Option key={0} value={MINOR}>
-                  {priorityToDisplay(MINOR)}
-                </Select.Option>
-                <Select.Option key={1} value={MAJOR}>
-                  {priorityToDisplay(MAJOR)}
-                </Select.Option>
-                <Select.Option key={2} value={CRITICAL}>
-                  {priorityToDisplay(CRITICAL)}
-                </Select.Option>
+                onChange={this.onPriorityChange}>
+                <Option key={MINOR} value={MINOR}>
+                  <span className='u-textInfo'>{MINOR}</span>
+                </Option>
+                <Option key={MAJOR} value={MAJOR}>
+                  <span className='u-textWarning'>{MAJOR}</span>
+                </Option>
+                <Option key={CRITICAL} value={CRITICAL}>
+                  <span className='u-textDanger'>{CRITICAL}</span>
+                </Option>
               </Select>
             </Form.Item>
           </Col>
