@@ -31,6 +31,7 @@
     <!-- This should be empty (root context) or a value with a trailing slash, eg "zanata/" -->
     <context.path></context.path>
 
+    <liquibase.exec.skip>false</liquibase.exec.skip>
     <!-- this may be changed by the MYSQL_PORT profile -->
     <mysql.port>13306</mysql.port>
 
@@ -737,6 +738,7 @@
                     <argument>${server.dir}/zanata-test-war/target/zanata-test-war-${project.version}/WEB-INF/liquibase</argument>
                     <argument>update</argument>
                   </arguments>
+                  <skip>${liquibase.exec.skip}</skip>
                   <workingDirectory>${basedir}/target/test-classes</workingDirectory>
                 </configuration>
               </execution>
