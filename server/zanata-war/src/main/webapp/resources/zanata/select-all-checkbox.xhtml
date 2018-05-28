@@ -30,12 +30,12 @@
     }
   </h:outputScript>
   <div class="form__checkbox js-form__checkbox #{cc.attrs.styleClass}">
-    <input type="checkbox" id="form-checkbox-1"
+    <input type="checkbox" id="form-checkbox-#{cc.attrs.id}"
       class="form__checkbox__input js-form__checkbox__input"
       data-list-selector="#{cc.attrs.listSelector}"
       name="form-checkbox"
       onchange="#{cc.attrs.id}Selected($(this))"/>
-    <label for="form-checkbox-1"
+    <label for="form-checkbox-#{cc.attrs.id}"
       class="form__checkbox__label">#{cc.attrs.label}</label>
   </div>
 </composite:implementation>
