@@ -1,6 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import IconButton from './IconButton'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
 
@@ -26,8 +27,8 @@ class TransUnitTranslationHeader extends React.Component {
   closeButtonElement = () => {
     return (
       <li className="u-sm-hidden">
-        <IconButton
-          icon="cross"
+        <Button
+          icon="close"
           className={this.buttonClass}
           title="Cancel edit"
           onClick={this.props.cancelEdit} />
@@ -38,8 +39,8 @@ class TransUnitTranslationHeader extends React.Component {
   undoButtonElement = () => {
     return (
       <li>
-        <IconButton
-          icon="undo"
+        <Button
+          icon="rollback"
           className={this.buttonClass}
           title="Undo edit"
           onClick={this.props.undoEdit} />

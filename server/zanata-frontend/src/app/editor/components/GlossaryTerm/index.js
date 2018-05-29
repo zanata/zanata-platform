@@ -8,7 +8,6 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
-import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
 
@@ -87,8 +86,8 @@ class GlossaryTerm extends React.Component {
           </Button>
         </td>
         <td className="info-icon">
-          <IconButton
-            icon="info"
+          <Button
+            icon="info-circle-o"
             title="Details"
             className="Button--link s1"
             onClick={this.showDetails}

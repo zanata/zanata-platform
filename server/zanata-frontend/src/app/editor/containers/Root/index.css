@@ -1156,3 +1156,7 @@ label span.n1 {
     display: table-row !important;
   }
 }
+
+.ant-btn:* {
+  border-color: transparent !important
+}
