@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
@@ -165,18 +166,11 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         // TODO avoid queries for better cacheability
         List<HTextFlowTarget> hTargets =
                 textFlowTargetDAO.findTranslations(document, hLocale);
-        Optional<String> apiVersion = Optional.<String>absent();
-
-        ContentStateName minContentStateObject = ContentStateName.Translated;
-
-        if (minContentState != null) {
-            minContentStateObject = ContentStateName.fromString(minContentState);
-        }
-
-        if (ContentStateName.Approved.equals(minContentStateObject)) {
-            apiVersion = Optional.of("StatusApproved");
-        }
-
+        ContentState minState = minContentState != null ?
+                ContentState.valueOfIgnoreCase(minContentState) :
+                ContentState.Translated;
+        Optional<String> apiVersion = ContentState.Approved == minState ?
+                Optional.of("StatusApproved") : Optional.absent();
         boolean foundData = resourceUtils.transferToTranslationsResource(
                 translationResource, document, hLocale, extensions, hTargets,
                 apiVersion);

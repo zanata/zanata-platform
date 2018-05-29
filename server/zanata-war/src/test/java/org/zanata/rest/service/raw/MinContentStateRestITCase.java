@@ -5,7 +5,6 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.service.ContentStateName;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -36,7 +35,7 @@ public class MinContentStateRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testTranslated() {
         Response getResponse = getTransResource()
-                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, ContentStateName.Translated.toString(), null);
+                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, ContentState.Translated.toString(), null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
@@ -49,7 +48,7 @@ public class MinContentStateRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testApproved() {
         Response getResponse = getTransResource()
-                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, ContentStateName.Approved.toString(), null);
+                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, ContentState.Approved.toString(), null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);

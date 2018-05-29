@@ -5,8 +5,8 @@ import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
+import org.zanata.common.ContentState;
 import org.zanata.rest.ResourceRequestEnvironment;
-import org.zanata.rest.service.ContentStateName;
 import org.zanata.common.LocaleId;
 import org.zanata.provider.DBUnitProvider.DataSetOperation;
 import org.zanata.rest.ResourceRequest;
@@ -124,7 +124,7 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
         waitUntilFinished(status);
 
         Response getResponse = getTransResource()
-                .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, ContentStateName.Translated.toString(), null);
+                .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, ContentState.Translated.toString(), null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
@@ -143,7 +143,7 @@ public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBas
         waitUntilFinished(status);
 
         Response getResponse = getTransResource()
-                        .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, ContentStateName.Translated.toString(), null);
+                        .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, ContentState.Translated.toString(), null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
