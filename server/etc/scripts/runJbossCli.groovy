@@ -77,6 +77,7 @@ println "Executing $scriptName"
 
 // 'as String[]' coerces any GStrings and Files to Strings
 def processBuilder = new ProcessBuilder(args as String[])
+processBuilder.directory(project.basedir)
 processBuilder.environment().put('JBOSS_HOME', appServerHome)
 def resultCode = processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start().waitFor()
 if (resultCode) {

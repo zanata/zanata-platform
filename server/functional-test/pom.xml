@@ -739,6 +739,10 @@
                     <argument>${server.dir}/zanata-test-war/target/zanata-test-war-${project.version}/WEB-INF/liquibase</argument>
                     <argument>update</argument>
                   </arguments>
+                  <environmentVariables>
+                    <!-- see also opts.fileDir in configure-app-server.js -->
+                    <LIQUIBASE_JVM_OPTS>-Dzanata.file.directory=${basedir}/target/documents</LIQUIBASE_JVM_OPTS>
+                  </environmentVariables>
                   <skip>${liquibase.exec.skip}</skip>
                   <workingDirectory>${basedir}/target/test-classes</workingDirectory>
                 </configuration>
