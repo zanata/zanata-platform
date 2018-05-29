@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh -e
 ### USAGE
 ###     liquibase [liquibase options] <command>
 ###
@@ -37,7 +37,7 @@ else
   defs=--defaultsFile=$HOME/.config/liquibase.properties
 fi
 
-java $LIQUIBASE_JVM_OPTS \
+exec java $LIQUIBASE_JVM_OPTS \
 -jar $war/WEB-INF/lib/liquibase-core*.jar \
 --classpath $classpath \
 --changeLogFile db/db.changelog.xml \

@@ -735,6 +735,7 @@
                   <executable>/bin/sh</executable>
                   <!-- NB this assumes zanata-test-war has been built locally and recently -->
                   <arguments>
+                    <argument>-e</argument>
                     <argument>${server.dir}/zanata-test-war/target/zanata-test-war-${project.version}/WEB-INF/liquibase</argument>
                     <argument>update</argument>
                   </arguments>
