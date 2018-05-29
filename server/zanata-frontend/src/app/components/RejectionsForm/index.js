@@ -83,7 +83,7 @@ class RejectionsForm extends Component {
   }
   onPriorityChange = p => {
     this.setState(_prevState => ({
-      priority: p.key
+      priority: p
     }))
   }
   onSave = () => {
@@ -109,9 +109,11 @@ class RejectionsForm extends Component {
     const deleteBtn = displayDelete
       ? (
       <Tooltip title='Delete criteria'>
-        <Button type='danger' className='btn-danger' onClick={this.onDelete}>
-          <Icon name='trash' className='s0 iconEdit' />
-        </Button>
+        <span>
+          <Button type='danger' className='btn-danger' onClick={this.onDelete}>
+            <Icon name='trash' className='s0 iconEdit' />
+          </Button>
+        </span>
       </Tooltip>
       ) : DO_NOT_RENDER
     const commentToggle = isAdminMode ? (
@@ -126,11 +128,13 @@ class RejectionsForm extends Component {
       <Form.Item>
         <span className='pr3'>
           <Tooltip title='Save criteria'>
-            <Button type='primary'
-              onClick={this.onSave}
-              disabled={error}>
-              <Icon name='tick' className='s0 iconEdit' />
-            </Button>
+            <span>
+              <Button type='primary'
+                onClick={this.onSave}
+                disabled={error}>
+                <Icon name='tick' className='s0 iconEdit' />
+              </Button>
+            </span>
           </Tooltip>
         </span>
         {deleteBtn}
@@ -155,17 +159,16 @@ class RejectionsForm extends Component {
             <Form.Item label='Priority'>
               <Select
                 key={key}
-                labelInValue
-                value={{ key: this.state.priority }}
+                value={this.state.priority}
                 disabled={priorityDisabled}
                 onChange={this.onPriorityChange}>
-                <Option key={MINOR} value={MINOR}>
+                <Option title={MINOR} key={MINOR} value={MINOR}>
                   <span className='u-textInfo'>{MINOR}</span>
                 </Option>
-                <Option key={MAJOR} value={MAJOR}>
+                <Option title={MAJOR} key={MAJOR} value={MAJOR}>
                   <span className='u-textWarning'>{MAJOR}</span>
                 </Option>
-                <Option key={CRITICAL} value={CRITICAL}>
+                <Option title={CRITICAL} key={CRITICAL} value={CRITICAL}>
                   <span className='u-textDanger'>{CRITICAL}</span>
                 </Option>
               </Select>
