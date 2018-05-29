@@ -57,9 +57,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     public void createEmptyResource() {
         Resource sr = createSourceResource("my.txt");
 
-        Response response =
-                getSourceDocResource().post(sr, null, true);
-        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
+        postResource(sr);
         doGetandAssertThatResourceListContainsNItems(1);
     }
 
@@ -71,18 +69,11 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
         sr.getTextFlows().add(stf);
 
-        Response postResponse =
-                getSourceDocResource().post(sr, null, true);
-        assertThat(postResponse.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
-        postResponse = getSourceDocResource().post(sr, null, true);
+        postResource(sr);
+        Resource gotSr = getResource("my.txt");
 
-        Response resourceGetResponse =
-                getSourceDocResource().getResourceWithDocId("my.txt", null);
-        assertResponseStatusEqualOK(resourceGetResponse);
-        Resource gotSr = getResourceFromResponse(resourceGetResponse);
         assertThat(gotSr.getTextFlows().size()).isEqualTo(1);
         assertThat(gotSr.getTextFlows().get(0).getContents()).isEqualTo(asList("tf1"));
-
     }
 
     @Test
@@ -93,18 +84,19 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
         sr.getTextFlows().add(stf);
 
+        putResourceWithDocId(sr);
+
+        Resource gotSr = getResource("my.txt");
+        assertThat(gotSr.getTextFlows().size()).isEqualTo(1);
+        assertThat(gotSr.getTextFlows().get(0).getContents()).isEqualTo(asList("tf1"));
+
+    }
+
+    private void putResourceWithDocId(Resource sr) {
         Response response =
                 getSourceDocResource()
                         .putResourceWithDocId(sr, "my.txt", null, false);
         assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
-
-        Response resourceGetResponse =
-                getSourceDocResource().getResourceWithDocId("my.txt", null);
-        assertResponseStatusEqualOK(resourceGetResponse);
-        Resource gotSr = getResourceFromResponse(resourceGetResponse);
-        assertThat(gotSr.getTextFlows().size()).isEqualTo(1);
-        assertThat(gotSr.getTextFlows().get(0).getContents()).isEqualTo(asList("tf1"));
-
     }
 
     @Test
@@ -126,17 +118,10 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         */
         // @formatter:on
 
-        Response postResponse =
-                getSourceDocResource().post(sr, null, true);
-        // new StringSet(PoHeader.ID));
-        assertThat(postResponse.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
+        postResource(sr);
         doGetandAssertThatResourceListContainsNItems(1);
 
-        Response resourceGetResponse =
-                getSourceDocResource().getResourceWithDocId(docName, null);
-        // , new StringSet(PoHeader.ID));
-        assertResponseStatusEqualOK(resourceGetResponse);
-        Resource gotSr = getResourceFromResponse(resourceGetResponse);
+        Resource gotSr = getResource(docName);
         assertThat(gotSr.getTextFlows().size()).isEqualTo(1);
         assertThat(gotSr.getTextFlows().get(0).getContents()).isEqualTo(asList("tf1"));
 
@@ -151,6 +136,13 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         assertThat(poHeaderExt.getEntries(), is(gotPoHeader.getEntries()));
         */
         // @formatter:on
+    }
+
+    private void postResource(Resource sr) {
+        Response postResponse =
+                getSourceDocResource().post(sr, null, true);
+        // new StringSet(PoHeader.ID));
+        assertThat(postResponse.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
     }
 
     // NB this test breaks in Maven if the dev profile is active (because of the
@@ -170,13 +162,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertResponseStatusEqualOK(response);
 
-        Response getResponse =
-                getTransResource()
-                        .getTranslationsWithDocId(de_DE, "my.txt", null, false, ContentStateName.Translated.toString(),
-                        null);
-        assertResponseStatusEqualOK(getResponse);
-        TranslationsResource entity2 =
-                getTranslationsResourceFromResponse(getResponse);
+        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", ContentStateName.Translated);
+        Response getResponse;
         assertThat(entity2.getTextFlowTargets().size()).isEqualTo(entity
                 .getTextFlowTargets().size());
 
@@ -208,10 +195,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         TextFlow stf2 = new TextFlow("tf2", LocaleId.EN, "tf2");
         sr.getTextFlows().add(stf2);
 
-        Response response =
-                getSourceDocResource()
-                        .putResourceWithDocId(sr, "my.txt", null, false);
-        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
+        putResourceWithDocId(sr);
     }
 
     @Test
@@ -230,13 +214,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertResponseStatusEqualOK(response);
 
-        Response getResponse =
-                getTransResource()
-                        .getTranslationsWithDocId(de_DE, "my.txt", null, false, ContentStateName.Approved.toString(),
-                                null);
-        assertResponseStatusEqualOK(getResponse);
-        TranslationsResource entity2 =
-                getTranslationsResourceFromResponse(getResponse);
+        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", ContentStateName.Approved);
         assertThat(entity2.getTextFlowTargets().size()).isEqualTo(1);
     }
 
@@ -266,13 +244,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertResponseStatusEqualOK(response);
 
-        Response getResponse =
-                getTransResource()
-                        .getTranslationsWithDocId(de_DE, "my.txt", null, false, ContentStateName.Approved.toString(),
-                                null);
-        assertResponseStatusEqualOK(getResponse);
-        TranslationsResource entity2 =
-                getTranslationsResourceFromResponse(getResponse);
+        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", ContentStateName.Approved);
+        Response getResponse;
         assertThat(entity2.getTextFlowTargets().size()).isEqualTo(entity
                 .getTextFlowTargets().size());
 
@@ -289,6 +262,15 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         .getTranslationsWithDocId(de_DE, "my.txt", null, false, ContentStateName.Approved.toString(),
                                 null);
         assertResponseStatusEqualOK(getResponse);
+    }
+
+    private TranslationsResource getTranslationsResource(LocaleId de_DE, String s, ContentStateName approved) {
+        Response getResponse =
+                getTransResource()
+                        .getTranslationsWithDocId(de_DE, s, null, false, approved.toString(),
+                                null);
+        assertResponseStatusEqualOK(getResponse);
+        return getTranslationsResourceFromResponse(getResponse);
     }
 
     @Test
@@ -343,23 +325,11 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         "auto");
 
         {
-            Response response =
-                    getSourceDocResource().getResourceWithDocId(docName, null);
-            assertResponseStatusEqualOK(response);
-
-            Resource doc = getResourceFromResponse(response);
+            Resource doc = getResource(docName);
             assertThat(doc.getTextFlows().size()).isEqualTo(1);
         }
 
-        Response response =
-                getTransResource()
-                        .getTranslationsWithDocId(nbLocale, docName, null,
-                                false, ContentStateName.Translated.toString(),
-                                null);
-        assertResponseStatusEqualOK(response);
-
-        TranslationsResource doc =
-                getTranslationsResourceFromResponse(response);
+        TranslationsResource doc = getTranslationsResource(nbLocale, docName, ContentStateName.Translated);
         assertThat(doc.getTextFlowTargets().size())
                 .as("should have one textFlow")
                 .isEqualTo(1);
@@ -376,6 +346,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         assertThat(tft.getContents())
                 .as("expected translation for de")
                 .isEqualTo(asList("hei verden"));
+    }
+
+    private Resource getResource(String docName) {
+        Response response =
+                getSourceDocResource().getResourceWithDocId(docName, null);
+        assertResponseStatusEqualOK(response);
+
+        return getResourceFromResponse(response);
     }
 
     @Test

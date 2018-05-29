@@ -407,61 +407,22 @@ public class FileRawRestITCase extends RestTest {
     public class FileClient implements FileResource {
         @Override
         public Response acceptedFileTypes() {
-            return new ResourceRequest(
-                    getRestEndpointUrl(""),
-                    "GET", getAuthorizedEnvironment()) {
-                @Override
-                protected Invocation.Builder prepareRequest(
-                        ResteasyWebTarget webTarget) {
-                    return webTarget
-                            .request().header(HttpHeaders.ACCEPT,
-                                    MediaType.APPLICATION_XML_TYPE);
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                    // No response processing needed when retrieving the source file extensions supported
-                }
+            return new GetResourceRequest(
+                    getRestEndpointUrl(FileResource.ACCEPTED_TYPES_RESOURCE), getAuthorizedEnvironment()) {
             }.runWithResult();
         }
 
         @Override
         public Response acceptedFileTypeList() {
-            return new ResourceRequest(
-                    getRestEndpointUrl(""),
-                    "GET", getAuthorizedEnvironment()) {
-                @Override
-                protected Invocation.Builder prepareRequest(
-                        ResteasyWebTarget webTarget) {
-                    return webTarget
-                            .request().header(HttpHeaders.ACCEPT,
-                                    MediaType.APPLICATION_XML_TYPE);
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                    // No response processing needed when retrieving the list of document types supported (old deprecated method)
-                }
+            return new GetResourceRequest(
+                    getRestEndpointUrl(FileResource.ACCEPTED_TYPE_LIST_RESOURCE), getAuthorizedEnvironment()) {
             }.runWithResult();
         }
 
         @Override
         public Response fileTypeInfoList() {
-            return new ResourceRequest(
-                    getRestEndpointUrl(""),
-                    "GET", getAuthorizedEnvironment()) {
-                @Override
-                protected Invocation.Builder prepareRequest(
-                        ResteasyWebTarget webTarget) {
-                    return webTarget
-                            .request().header(HttpHeaders.ACCEPT,
-                                    MediaType.APPLICATION_XML_TYPE);
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                    // No response processing needed when retrieving the list of document types supported
-                }
+            return new GetResourceRequest(
+                    getRestEndpointUrl(FileResource.FILE_TYPE_INFO_RESOURCE), getAuthorizedEnvironment()) {
             }.runWithResult();
         }
 
@@ -525,28 +486,14 @@ public class FileRawRestITCase extends RestTest {
 
                     return target.request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
                 }
-
-
             }.runWithResult();
         }
 
         @Override
         public Response download(String downloadId) {
-            return new ResourceRequest(
-                    getRestEndpointUrl(""),
-                    "GET", getAuthorizedEnvironment()) {
-                @Override
-                protected Invocation.Builder prepareRequest(
-                        ResteasyWebTarget webTarget) {
-                    return webTarget
-                            .request().header(HttpHeaders.ACCEPT,
-                                    MediaType.APPLICATION_XML_TYPE);
-                }
-
-                @Override
-                protected void onResponse(Response response) {
-                    // No response processing needed when downloading the previously generated file
-                }
+            return new GetResourceRequest(
+                    getRestEndpointUrl("/download/" + downloadId),
+                     getAuthorizedEnvironment()) {
             }.runWithResult();
         }
     }
@@ -600,6 +547,29 @@ public class FileRawRestITCase extends RestTest {
         @Override
         protected void onResponse(Response response) {
             // No response processing needed when uploading a file
+        }
+    }
+
+    private static abstract class GetResourceRequest extends ResourceRequest {
+        public GetResourceRequest(String resourceUrl) {
+            super(resourceUrl, "GET");
+        }
+
+        protected GetResourceRequest(String resourceUrl, ResourceRequestEnvironment environment) {
+            super(resourceUrl, "GET", environment);
+        }
+
+        @Override
+        protected Invocation.Builder prepareRequest(
+                ResteasyWebTarget webTarget) {
+            return webTarget
+                    .request().header(HttpHeaders.ACCEPT,
+                            MediaType.APPLICATION_XML_TYPE);
+        }
+
+        @Override
+        protected void onResponse(Response response) {
+            // No response processing needed when getting the resource
         }
     }
 
