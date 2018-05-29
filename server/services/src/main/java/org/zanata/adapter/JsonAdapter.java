@@ -34,7 +34,7 @@ import net.sf.okapi.filters.json.Parameters;
 public class JsonAdapter extends OkapiFilterAdapter {
 
     public JsonAdapter() {
-        super(prepareFilter(), IdSource.contentHash, true, true);
+        super(prepareFilter(), IdSource.textUnitName, true, true);
     }
 
     private static JSONFilter prepareFilter() {
@@ -44,14 +44,7 @@ public class JsonAdapter extends OkapiFilterAdapter {
     @Override
     protected void updateParamsWithDefaults(IParameters params) {
         Parameters p = (Parameters) params;
-        p.fromString("extractIsolatedStrings.b=true");
+        p.fromString("extractIsolatedStrings.b=false\nuseFullKeyPath.b=true");
     }
 
-    /*
-     * TODO Get a global ID for the JSON fragment ZNTA-1731
-    @Override
-    protected String getIdFor(TextUnit tu, String content, String subDocName) {
-        return HashUtil.generateHash(tu.getName().concat(content));
-    }
-    */
 }
