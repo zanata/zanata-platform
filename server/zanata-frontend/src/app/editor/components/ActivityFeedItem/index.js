@@ -37,7 +37,7 @@ const statusToWellClass = {
   approved: 'well-approved',
   rejected: 'well-rejected',
   translated: 'well-translated',
-  fuzzy: 'well-fuzzy',
+  needswork: 'well-fuzzy',
   // FIXME class does not exist, create it
   untranslated: 'well-untranslated'
 }

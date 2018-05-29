@@ -33,7 +33,7 @@ class TransUnitSourceHeader extends React.Component {
       ? undefined
       : (
       <li>
-        <Button icon="copy"
+        <Button size="large" icon="copy"
           title={'Copy ' + this.props.sourceLocale.name +
             ' (' + this.props.sourceLocale.id + ')'}
           onClick={this.copyFromSource}

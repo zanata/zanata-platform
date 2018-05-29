@@ -1160,3 +1160,7 @@ label span.n1 {
 .ant-btn {
   border-color: transparent !important
 }
+
+.ant-btn-lg {
+  font-size: 1.4rem;
+}
