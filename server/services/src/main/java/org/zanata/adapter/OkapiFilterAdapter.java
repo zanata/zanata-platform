@@ -344,7 +344,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     @Override
     public void writeTranslatedFile(OutputStream output, URI originalFile,
             Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params)
+            String locale, Optional<String> params, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
 
         Map<String, TextFlowTarget> translations =

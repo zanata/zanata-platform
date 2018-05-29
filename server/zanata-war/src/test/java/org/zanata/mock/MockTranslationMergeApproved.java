@@ -8,7 +8,8 @@ import org.zanata.service.TranslationMergeService;
 import java.util.Set;
 
 /**
- * This strategy is used when HTextFlowTarget already exists and sets the State to Approved if it is Translated
+ * This strategy is used when HTextFlowTarget already exists and sets the
+ * ContentState to Approved if it is Translated (but only if the text has changed).
  * @author Dragos Varovici <a
  *         href="mailto:dvarovici.work@gmail.com">dvarovici.work@gmail.com</a>
  */

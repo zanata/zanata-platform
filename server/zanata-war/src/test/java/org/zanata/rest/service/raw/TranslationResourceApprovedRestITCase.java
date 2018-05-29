@@ -5,18 +5,22 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.service.ContentStateName;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.rest.service.raw.MinContentStateDataKt.*;
 
-public class MinContentStateRestITCase extends SourceAndTranslationResourceRestBase {
+public class TranslationResourceApprovedRestITCase extends SourceAndTranslationResourceRestBase {
+
+    // MinContentStateRest data
+    private static final int APPROVED_TFTS = 1;
+    private static final int TRANSLATED_TFTS = 1;
+    private static final int ALL_TFTS =  5;
+
     private static final String MULTIPLE_TEXT_FLOW_DATA_DB_UNIT_XML =
-            "org/zanata/test/model/MinContentStateRestITCase.dbunit.xml";
+            "org/zanata/test/model/TranslationResourceApprovedRestITCase.dbunit.xml";
 
     private static final String DOCUMENTS_DATA_DBUNIT_XML =
             "org/zanata/test/model/DocumentsData.dbunit.xml";
@@ -36,7 +40,7 @@ public class MinContentStateRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testTranslated() {
         Response getResponse = getTransResource()
-                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, ContentStateName.Translated.toString(), null);
+                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, true, null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
@@ -49,7 +53,7 @@ public class MinContentStateRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testApproved() {
         Response getResponse = getTransResource()
-                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, ContentStateName.Approved.toString(), null);
+                .getTranslationsWithDocId(LocaleId.DE, "my/path/document-5.txt", null, false, false, null);
 
         assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);

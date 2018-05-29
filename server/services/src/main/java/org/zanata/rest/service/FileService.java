@@ -87,8 +87,9 @@ public class FileService implements FileResource {
     private static final Logger log =
             LoggerFactory.getLogger(FileService.class);
 
-    private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
-    private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
+    // not sure what the use case is here:
+    private static final String FILETYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
+
     @Inject
     private DocumentDAO documentDAO;
     @Inject
@@ -205,14 +206,14 @@ public class FileService implements FileResource {
             return Response.ok().header("Content-Disposition",
                     "attachment; filename=\"" + document.getName() + "\"")
                     .entity(output).build();
-        } else if ("pot".equals(fileType)
-                || FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType)) {
+        } else if (FILETYPE_GETTEXT_TEMPLATE.equals(fileType)
+                || FILETYPE_OFFLINE_PO_TEMPLATE.equals(fileType)) {
             // Note: could give 404 or unsupported media type for "pot" in
             // non-po projects,
             // and suggest using offlinepo
             Resource res = resourceUtils.buildResource(document);
             StreamingOutput output = new POTStreamingOutput(res,
-                    FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType));
+                    FILETYPE_OFFLINE_PO_TEMPLATE.equals(fileType));
             return Response.ok()
                     .header("Content-Disposition",
                             "attachment; filename=\"" + document.getName()
@@ -227,7 +228,7 @@ public class FileService implements FileResource {
     @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
     public Response downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileType,
-            String docId, String minContentState) {
+            String docId, boolean approvedOnly) {
         GlobalDocumentId id =
                 new GlobalDocumentId(projectSlug, iterationSlug, docId);
         // TODO scan (again) for virus
@@ -237,8 +238,8 @@ public class FileService implements FileResource {
         if (document == null) {
             response = Response.status(Status.NOT_FOUND).build();
         } else {
-            if ("po".equals(fileType)
-                    || FILE_TYPE_OFFLINE_PO.equals(fileType)) {
+            if (FILETYPE_GETTEXT.equals(fileType)
+                    || FILETYPE_OFFLINE_PO.equals(fileType)) {
                 // Note: could return 404 or Unsupported media type for "po" in
                 // non-po projects,
                 // and suggest to use offlinepo
@@ -252,11 +253,11 @@ public class FileService implements FileResource {
                 TranslationsResource transRes =
                         (TranslationsResource) this.translatedDocResourceService
                                 .getTranslationsWithDocId(new LocaleId(locale), convertedId,
-                                        extensions, true, minContentState, null)
+                                        extensions, true, false, null)
                                 .getEntity();
                 Resource res = this.resourceUtils.buildResource(document);
                 StreamingOutput output = new POStreamingOutput(res, transRes,
-                        FILE_TYPE_OFFLINE_PO.equals(fileType));
+                        FILETYPE_OFFLINE_PO.equals(fileType), approvedOnly);
                 response = Response.ok()
                         .header("Content-Disposition",
                                 "attachment; filename=\"" + document.getName()
@@ -274,7 +275,7 @@ public class FileService implements FileResource {
                 TranslationsResource transRes =
                         (TranslationsResource) this.translatedDocResourceService
                                 .getTranslationsWithDocId(new LocaleId(locale), convertedId,
-                                        extensions, true, minContentState, null)
+                                        extensions, true, false, null)
                                 .getEntity();
                 // Filter to only provide translated targets. "Preview" downloads
                 // include fuzzy.
@@ -288,8 +289,10 @@ public class FileService implements FileResource {
                     // review content state to old state. For now this is
                     // acceptable. Once we have new REST options, we should review
                     // this
-                    if (target.getState() == ContentState.Approved || (useFuzzy
-                            && target.getState() == ContentState.NeedReview)) {
+                    ContentState state = target.getState();
+                    if (state.isApproved() ||
+                            (useFuzzy && state.isRejectedOrFuzzy()) ||
+                            (!approvedOnly && state.isTranslated())) {
                         filteredTranslations.add(target);
                     }
                 }
@@ -319,7 +322,7 @@ public class FileService implements FileResource {
                 Optional<String> params = Optional
                         .<String> fromNullable(Strings.emptyToNull(rawParamString));
                 StreamingOutput output = new FormatAdapterStreamingOutput(uri, res,
-                        transRes, locale, adapter, params);
+                        transRes, locale, adapter, params, approvedOnly);
                 String translationFilename =
                         adapter.generateTranslationFilename(document, locale);
                 response = Response.ok()
@@ -331,6 +334,7 @@ public class FileService implements FileResource {
                 // Note: may not be necessary when file storage is on disk.
                 tempFile.deleteOnExit();
             } else {
+                // TODO wrong code: fileType is not a mime media type
                 response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
             }
         }
@@ -378,23 +382,29 @@ public class FileService implements FileResource {
         private Resource resource;
         private TranslationsResource transRes;
         private boolean offlinePo;
+        private boolean approvedOnly;
 
         /**
          * @param offlinePo
          *            true if text flow id should be inserted into msgctxt to
          *            allow reverse mapping.
+         * @param approvedOnly
          */
         public POStreamingOutput(Resource resource,
-                TranslationsResource transRes, boolean offlinePo) {
+                TranslationsResource transRes, boolean offlinePo,
+                boolean approvedOnly) {
             this.resource = resource;
             this.transRes = transRes;
             this.offlinePo = offlinePo;
+            this.approvedOnly = approvedOnly;
         }
 
         @Override
         public void write(OutputStream output)
                 throws IOException, WebApplicationException {
-            PoWriter2 writer = new PoWriter2(false, offlinePo);
+            PoWriter2 writer =
+                    new PoWriter2.Builder().mapIdToMsgctxt(offlinePo)
+                            .approvedOnly(approvedOnly).create();
             writer.writePo(output, "UTF-8", this.resource, this.transRes);
         }
     }
@@ -416,7 +426,9 @@ public class FileService implements FileResource {
         @Override
         public void write(OutputStream output)
                 throws IOException, WebApplicationException {
-            PoWriter2 writer = new PoWriter2(false, offlinePot);
+            PoWriter2 writer =
+                    new PoWriter2.Builder().mapIdToMsgctxt(offlinePot)
+                            .create();
             writer.writePot(output, "UTF-8", resource);
         }
     }
@@ -446,16 +458,19 @@ public class FileService implements FileResource {
         private URI original;
         private FileFormatAdapter adapter;
         private Optional<String> params;
+        private final boolean approvedOnly;
 
         public FormatAdapterStreamingOutput(URI originalDoc, Resource resource,
                 TranslationsResource translationsResource, String locale,
-                FileFormatAdapter adapter, Optional<String> params) {
+                FileFormatAdapter adapter, Optional<String> params,
+                boolean approvedOnly) {
             this.resource = resource;
             this.translationsResource = translationsResource;
             this.locale = locale;
             this.original = originalDoc;
             this.adapter = adapter;
             this.params = params;
+            this.approvedOnly = approvedOnly;
         }
 
         @Override
@@ -463,7 +478,7 @@ public class FileService implements FileResource {
                 throws IOException, WebApplicationException {
             // FIXME should the generated file be virus scanned?
             adapter.writeTranslatedFile(output, original, resource,
-                    translationsResource, locale, params);
+                    translationsResource, locale, params, approvedOnly);
         }
     }
     /*

@@ -33,9 +33,4 @@ public class PullModuleMojo extends AbstractPullMojo {
     public boolean getEnableModules() {
         return true;
     }
-
-    @Override
-    public String getMinContentState() {
-        return "Translated";
-    }
 }

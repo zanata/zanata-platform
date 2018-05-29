@@ -70,7 +70,8 @@ public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(output, testFile.toURI(),
-                resource, translationsResource, "dv-DL", Optional.absent());
+                resource, translationsResource, "dv-DL", Optional.absent(),
+                false);
 
         assertThat(output.toString()).isEqualTo(
                 "<!ENTITY firstField \"Dakta Amna\">\n" +

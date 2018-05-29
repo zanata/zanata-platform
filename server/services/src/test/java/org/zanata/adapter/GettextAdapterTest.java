@@ -110,7 +110,7 @@ public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
 
         OutputStream outputStream = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(outputStream, null, resource,
-                transResource, "es", Optional.absent());
+                transResource, "es", Optional.absent(), false);
         assertThat(outputStream.toString()).contains("msgid \"Parent Folder\"\n" +
                 "msgstr \"Carpeta padre\"");
         assertThat(outputStream.toString()).contains("msgid \"Subject:\"\n" +

@@ -41,7 +41,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private static final boolean DEFAULT_USE_CACHE = true;
     private static final boolean DEFAULT_PURGE_CACHE = false;
     private static final boolean DEFAULT_CONTINUE_AFTER_ERROR = false;
-    private static final String DEFAULT_MIN_CONTENT_STATE = "Translated";
+    private static final boolean DEFAULT_APPROVED_ONLY = false;
 
     private String pullType = DEFAULT_PULL_TYPE;
 
@@ -51,7 +51,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private boolean useCache = DEFAULT_USE_CACHE;
     private boolean purgeCache = DEFAULT_PURGE_CACHE;
     private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
-    private String minContentState = DEFAULT_MIN_CONTENT_STATE;
+    private boolean approvedOnly = DEFAULT_APPROVED_ONLY;
     private int minDocPercent = 0;
     private File cacheDir = new File(".");
 
@@ -114,6 +114,18 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     }
 
     @Override
+    public boolean getApprovedOnly() {
+        return approvedOnly;
+    }
+
+    @Option(
+            name = "--approved-only",
+            usage = "Only include Approved translations (not Translated, Fuzzy or New)")
+    public void setApprovedOnly(boolean approved) {
+        this.approvedOnly = approved;
+    }
+
+    @Override
     public boolean getEncodeTabs() {
         return this.encodeTabs;
     }
@@ -151,11 +163,6 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     @Override
     public boolean getUseCache() {
         return useCache;
-    }
-
-    @Override
-    public String getMinContentState() {
-        return minContentState;
     }
 
     @Option(
@@ -218,14 +225,4 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
         return this.cacheDir;
     }
 
-    @Option(
-            name = "--min-content-state",
-            metaVar = "TYPE",
-            required = false,
-            usage = "Minimum content state to pull:\n"
-                    + "  \"Translated\" (default) fetches approved or translated only.\n"
-                    + "  \"Approved\" fetches approved only.\n")
-    public void setMinContentState(String minContentState) {
-        this.minContentState = minContentState;
-    }
 }

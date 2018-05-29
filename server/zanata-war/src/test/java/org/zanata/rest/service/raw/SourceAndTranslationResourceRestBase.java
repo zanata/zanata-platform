@@ -438,8 +438,8 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         @Deprecated
         @Override
         public Response getTranslations(String idNoSlash, LocaleId locale,
-                final Set<String> extensions, final boolean createSkeletons, final String minContentState,
-                String eTag) {
+                final Set<String> extensions, final boolean createSkeletons,
+                final boolean markTranslatedAsApproved, String eTag) {
             return new ResourceRequest(
                     getRestEndpointUrl(DEPRECATED_BASE_PATH + idNoSlash + "/translations/" + locale),
                     "GET", getAuthorizedEnvironment()) {
@@ -449,7 +449,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                     return addExtensionToRequest(extensions, webTarget)
                             .queryParam("skeletons",
                                     String.valueOf(createSkeletons))
-                            .queryParam("minContentState", minContentState)
+                            .queryParam("markTranslatedAsApproved", markTranslatedAsApproved)
                             .request().header(HttpHeaders.ACCEPT,
                                     MediaType.APPLICATION_XML_TYPE);
                 }
@@ -463,8 +463,8 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
         @Override
         public Response getTranslationsWithDocId(LocaleId locale,
                 String docId,
-                Set<String> extensions, boolean createSkeletons, String minContentState,
-                String eTag) {
+                Set<String> extensions, boolean createSkeletons,
+                boolean markTranslatedAsApproved, String eTag) {
             return new ResourceRequest(
                     getRestEndpointUrl(BASE_PATH + "/translations/" + locale),
                     "GET", getAuthorizedEnvironment()) {
@@ -475,7 +475,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             .queryParam("docId", docId)
                             .queryParam("skeletons",
                                     String.valueOf(createSkeletons))
-                            .queryParam("minContentState", minContentState)
+                            .queryParam("markTranslatedAsApproved", markTranslatedAsApproved)
                             .request().header(HttpHeaders.ACCEPT,
                                     MediaType.APPLICATION_XML_TYPE);
                 }

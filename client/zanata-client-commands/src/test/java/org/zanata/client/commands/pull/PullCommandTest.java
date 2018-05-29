@@ -132,11 +132,9 @@ public class PullCommandTest {
         // Then:
         verifyZeroInteractions(statsClient);
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false, "Translated"
-                , null);
+                EXTENSIONS, false, null);
         verify(transClient).getTranslations("file1", new LocaleId("de"),
-                EXTENSIONS, false, "Translated"
-                , null);
+                EXTENSIONS, false, null);
     }
 
     @Test
@@ -179,8 +177,7 @@ public class PullCommandTest {
         verify(statsClient).getStatistics(projectSlug, versionSlug, true,
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false,
-                "Translated", null);
+                EXTENSIONS, false, null);
         verifyNoMoreInteractions(transClient);
     }
 
@@ -224,8 +221,7 @@ public class PullCommandTest {
         verify(statsClient).getStatistics(projectSlug, versionSlug, true,
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false,
-                "Translated", null);
+                EXTENSIONS, false, null);
         verifyNoMoreInteractions(transClient);
     }
 
@@ -241,13 +237,13 @@ public class PullCommandTest {
             protected void pullDocForLocale(PullStrategy strat, Resource doc,
                                             String localDocName, String docUri,
                                             boolean createSkeletons,
-                                            LocaleMapping locMapping, String minContentState,
+                                            LocaleMapping locMapping,
                                             File transFile)
                     throws IOException {
                 // pretend we are pulling
                 transClient.getTranslations(docUri,
                         new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, minContentState, null);
+                        createSkeletons, null);
             }
         };
     }

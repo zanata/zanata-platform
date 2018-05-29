@@ -15,7 +15,6 @@ import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.*;
-import org.zanata.rest.service.ContentStateName;
 import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.util.UrlUtil;
@@ -162,7 +161,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertResponseStatusEqualOK(response);
 
-        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", ContentStateName.Translated);
+        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", true);
         Response getResponse;
         assertThat(entity2.getTextFlowTargets().size()).isEqualTo(entity
                 .getTextFlowTargets().size());
@@ -177,7 +176,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         getResponse =
                 getTransResource()
-                        .getTranslationsWithDocId(de_DE, "my.txt", null, false, ContentStateName.Translated.toString(),
+                        .getTranslationsWithDocId(de_DE, "my.txt", null, false, true,
                                 null);
         assertResponseStatusEqualOK(getResponse);
     }
@@ -214,7 +213,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertResponseStatusEqualOK(response);
 
-        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", ContentStateName.Approved);
+        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", false);
         assertThat(entity2.getTextFlowTargets().size()).isEqualTo(1);
     }
 
@@ -244,7 +243,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertResponseStatusEqualOK(response);
 
-        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", ContentStateName.Approved);
+        TranslationsResource entity2 = getTranslationsResource(de_DE, "my.txt", false);
         Response getResponse;
         assertThat(entity2.getTextFlowTargets().size()).isEqualTo(entity
                 .getTextFlowTargets().size());
@@ -259,15 +258,15 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         getResponse =
                 getTransResource()
-                        .getTranslationsWithDocId(de_DE, "my.txt", null, false, ContentStateName.Approved.toString(),
+                        .getTranslationsWithDocId(de_DE, "my.txt", null, false, false,
                                 null);
         assertResponseStatusEqualOK(getResponse);
     }
 
-    private TranslationsResource getTranslationsResource(LocaleId de_DE, String s, ContentStateName approved) {
+    private TranslationsResource getTranslationsResource(LocaleId de_DE, String s, boolean markTranslatedAsApproved) {
         Response getResponse =
                 getTransResource()
-                        .getTranslationsWithDocId(de_DE, s, null, false, approved.toString(),
+                        .getTranslationsWithDocId(de_DE, s, null, false, markTranslatedAsApproved,
                                 null);
         assertResponseStatusEqualOK(getResponse);
         return getTranslationsResourceFromResponse(getResponse);
@@ -329,7 +328,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
             assertThat(doc.getTextFlows().size()).isEqualTo(1);
         }
 
-        TranslationsResource doc = getTranslationsResource(nbLocale, docName, ContentStateName.Translated);
+        TranslationsResource doc = getTranslationsResource(nbLocale, docName, true);
         assertThat(doc.getTextFlowTargets().size())
                 .as("should have one textFlow")
                 .isEqualTo(1);
@@ -714,7 +713,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getTransResource()
                         .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
-                                "gettext"), true, ContentStateName.Translated.toString(), null);
+                                "gettext"), true, true, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
         assertThat(translations.getExtensions().size()).isGreaterThan(0);
@@ -773,7 +772,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getTransResource()
                         .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
-                                "gettext"), true, ContentStateName.Translated.toString(), null);
+                                "gettext"), true, true, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
         // Expecting no translations
@@ -841,7 +840,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response transResponse =
                 getTransResource()
                         .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
-                                "gettext"), false, ContentStateName.Translated.toString(), null);
+                                "gettext"), false, true, null);
         TranslationsResource translations = getTranslationsResourceFromResponse(transResponse);
 
         // Make sure the headers are populated
@@ -890,7 +889,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getTransResource()
                         .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
-                                "gettext"), false, ContentStateName.Translated.toString(), null);
+                                "gettext"), false, true, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
         assertThat(translations.getTextFlowTargets().size()).isGreaterThan(0);
@@ -911,7 +910,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         response =
                 getTransResource()
                         .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
-                                "gettext"), false, ContentStateName.Translated.toString(), null);
+                                "gettext"), false, true, null);
 
         translations = getTranslationsResourceFromResponse(response);
         assertThat(translations.getTextFlowTargets().size()).isGreaterThan(0);
@@ -997,7 +996,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     private void dontExpectTarget(String id, LocaleId locale) {
         Response response =
                 getTransResource()
-                        .getTranslationsWithDocId(locale, id, null, false, ContentStateName.Translated.toString(),
+                        .getTranslationsWithDocId(locale, id, null, false, true,
                                 null);
         assertThat(response.getStatus()).isEqualTo(404);
     }
@@ -1007,7 +1006,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getTransResource()
                         .getTranslationsWithDocId(locale, id, extGettextComment,
-                                false, ContentStateName.Translated.toString(), null);
+                                false, true, null);
         assertThat(response.getStatus()).isEqualTo(200);
         TranslationsResource actualDoc = getTranslationsResourceFromResponse(response);
         actualDoc.getLinks(true).clear();

@@ -1,0 +1,14 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "msgid1	ONE"
+msgstr "Translation 1	ONE"
+
+#, fuzzy
+msgid "msgid2	TWO"
+msgstr "Translation 2	TWO"
+

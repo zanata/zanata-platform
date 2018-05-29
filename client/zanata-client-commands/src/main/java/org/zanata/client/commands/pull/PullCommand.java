@@ -84,6 +84,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         logOptions(log, getOpts());
         log.info("Create skeletons for untranslated messages/files: {}",
                 getOpts().getCreateSkeletons());
+        log.info("Approved translations only: {}", getOpts().getApprovedOnly());
         if (getOpts().getFromDoc() != null) {
             log.info("From document: {}", getOpts().getFromDoc());
         }
@@ -96,7 +97,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
      * @param logger
      * @param opts
      */
-    public static void logOptions(Logger logger, PullOptions opts) {
+    static void logOptions(Logger logger, PullOptions opts) {
         logger.info("Server: {}", opts.getUrl());
         logger.info("Project: {}", opts.getProj());
         logger.info("Version: {}", opts.getProjectVersion());
@@ -118,7 +119,6 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         logger.info("Locales to pull: {}", opts.getLocaleMapList());
         logger.info("Encode tab as \\t: {}", opts.getEncodeTabs());
         logger.info("Current directory: {}", System.getProperty("user.dir"));
-        logger.info("Minimum content state: {}", opts.getMinContentState());
         if (opts.getPullType() == PushPullType.Source) {
             logger.info("Pulling source documents only");
             logger.info("Source-language directory (originals): {}",
@@ -158,6 +158,15 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             return;
         }
 
+        if (getOpts().getApprovedOnly()) {
+            if (getOpts().getIncludeFuzzy() || getOpts().getCreateSkeletons()) {
+                String msg =
+                        "You can't use the option --approved together with --create-skeletons or --include-fuzzy";
+                log.error(msg);
+                throw new ConfigException(msg);
+            }
+        }
+
         List<String> unsortedDocNamesForModule =
                 getQualifiedDocNamesForCurrentModuleFromServer();
         SortedSet<String> docNamesForModule =
@@ -195,7 +204,6 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                         || pullType == PushPullType.Source;
         boolean pullTarget =
                 pullType == PushPullType.Both || pullType == PushPullType.Trans;
-        String minContentState = getOpts().getMinContentState();
 
         if (pullSrc && strat.isTransOnly()) {
             log.warn("Source is not available for this project type. Source will not be pulled.\n");
@@ -245,7 +253,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
                         if (shouldPullThisLocale(optionalStats, localDocName, locale)) {
                             pullDocForLocale(strat, doc, localDocName, qualifiedDocName,
-                                    createSkeletons, locMapping, minContentState, transFile);
+                                    createSkeletons, locMapping, transFile);
                         } else {
                             skippedLocales.add(locale);
                         }
@@ -288,8 +296,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     @VisibleForTesting
     protected void pullDocForLocale(PullStrategy strat, Resource doc,
             String localDocName, String docId, boolean createSkeletons,
-            LocaleMapping locMapping, String minContentState,
-            File transFile) throws IOException {
+            LocaleMapping locMapping, File transFile) throws IOException {
         LocaleId locale = new LocaleId(locMapping.getLocale());
         String eTag = null;
         ETagCacheEntry eTagCacheEntry =
@@ -312,7 +319,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         try {
             transResponse = transDocResourceClient.getTranslations(docId,
                     locale, strat.getExtensions(),
-                    createSkeletons, minContentState, eTag);
+                    createSkeletons, eTag);
         } catch (ResponseProcessingException e) {
             // ignore 404 (no translation yet for specified
             // document)
@@ -351,7 +358,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                         transDocResourceClient.getTranslations(
                                 docId, locale,
                                 strat.getExtensions(),
-                                createSkeletons, minContentState, null);
+                                createSkeletons, null);
                 // rewrite the target document
                 writeTargetDoc(strat, localDocName, locMapping,
                         doc, transResponse.readEntity(TranslationsResource.class),

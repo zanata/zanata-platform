@@ -113,7 +113,7 @@ public interface TranslatedDocResource {
             @PathParam("locale") LocaleId locale,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("skeletons") boolean skeletons,
-            @DefaultValue("Translated") @QueryParam("minContentState") String minContentState,
+            @DefaultValue("true") @QueryParam("markTranslatedAsApproved") boolean markTranslatedAsApproved,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**
@@ -151,7 +151,7 @@ public interface TranslatedDocResource {
             @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("skeletons") boolean createSkeletons,
-            @DefaultValue("Translated") @QueryParam("minContentState") String minContentState,
+            @DefaultValue("true") @QueryParam("markTranslatedAsApproved") boolean markTranslatedAsApproved,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**

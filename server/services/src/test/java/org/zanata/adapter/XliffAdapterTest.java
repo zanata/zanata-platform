@@ -110,7 +110,8 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
         File outputFile = File.createTempFile("test-xliff-translated", ".xlf");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(output, null,
-                resource, translationsResource, "dv-DL", Optional.absent());
+                resource, translationsResource, "dv-DL", Optional.absent(),
+                false);
         output.writeTo(new FileOutputStream(outputFile));
 
         assertThat(output.toString()).contains(

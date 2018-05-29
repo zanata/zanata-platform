@@ -20,10 +20,11 @@
  */
 package org.zanata.adapter;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.io.OutputStream;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,16 +63,17 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
 
         Resource resource = parseTestFile("test-properties-utf8.properties");
         File originalFile = new File(resourcePath.concat("test-properties-utf8.properties"));
-        OutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         adapter.writeTranslatedFile(outputStream,
                 originalFile.toURI(),
                 resource,
                 tResource,
                 "ru",
-                Optional.absent());
+                Optional.absent(),
+                false);
 
-        assertThat(outputStream.toString()).isEqualTo(
+        assertThat(outputStream.toString(UTF_8)).isEqualTo(
                 "line1=¥Foun’dé metalkcta\n" +
                 "line2=¥Tba’dé metalkcta\n" +
                 "line3=\n");

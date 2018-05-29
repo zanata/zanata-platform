@@ -50,9 +50,4 @@ public class PullSimpleMojo extends AbstractPullMojo implements PullOptions {
     public boolean getEnableModules() {
         return false;
     }
-
-    @Override
-    public String getMinContentState() {
-        return "Translated";
-    }
 }

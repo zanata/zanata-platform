@@ -18,6 +18,8 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
           <context context-type="sourcefile">/test/file2</context>
         </context-group>
       </trans-unit>
+      <!-- NB trans-unit inside group is not supported by Zanata's XLIFF 1.1 support -->
+      <!--
       <group>
         <context-group name="ctx">
           <context context-type="sourcefile">/test/file3</context>
@@ -26,6 +28,7 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
           <source>Line Three</source>
         </trans-unit>
       </group>
+      -->
     </body>
   </file>
 </xliff>

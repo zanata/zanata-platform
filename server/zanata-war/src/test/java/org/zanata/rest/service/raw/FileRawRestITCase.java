@@ -52,10 +52,33 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
+import static org.zanata.rest.service.FileResource.FILETYPE_GETTEXT;
+import static org.zanata.rest.service.FileResource.FILETYPE_RAW_SOURCE_DOCUMENT;
+import static org.zanata.rest.service.FileResource.FILETYPE_TRANSLATED_APPROVED;
 import static org.zanata.util.RawRestTestUtils.assertHeaderValue;
 
 public class FileRawRestITCase extends RestTest {
 
+    private static final String DOCTYPE_XLIFF = "XLIFF";
+    private static final String DOCTYPE_GETTEXT = "GETTEXT";
+    // from test-gettext.pot:
+    private static final String[] BLANK_TRANSLATIONS = {
+            "Parent Folder", "",
+            "Subject:", "",
+            "Connect", "" };
+    // from test-gettext-translated.po:
+    private static final String[] FIRST_TRANSLATIONS = {
+            "Parent Folder", "Carpeta padre",
+            "Subject:", "Asunto:",
+            "Connect", "Conectar" };
+    private static final String[] SECOND_TRANSLATIONS = {
+            "Parent Folder", "Carpeta principal",
+            "Subject:", "Tema:",
+            "Connect", "Conectar" };
+    private static final String[] SECOND_TRANSLATIONS_EXCLUDING_UNCHANGED = {
+            "Parent Folder", "Carpeta principal",
+            "Subject:", "Tema:",
+            "Connect", "" };
     private FileClient fileResource;
 
     private static final Annotation[] multipartFormAnnotations =
@@ -82,9 +105,10 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getPo() {
+    public void downloadAsGettext1() {
+        // uses data from TextFlowTestData.dbunit.xml
         final Response response = getFileResource()
-                .downloadTranslationFile("sample-project", "1.0", "en-US", "po", "my/path/document.txt", "");
+                .downloadTranslationFile("sample-project", "1.0", "en-US", FILETYPE_GETTEXT, "my/path/document.txt", false);
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertHeaderValue(response, "Content-Disposition",
@@ -100,9 +124,10 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getPo2() {
+    public void downloadAsGettext2() {
+        // uses data from TextFlowTestData.dbunit.xml
         Response response = getFileResource()
-                .downloadTranslationFile("sample-project", "1.0", "en-US", "po", "my/path/document-2.txt", "");
+                .downloadTranslationFile("sample-project", "1.0", "en-US", FILETYPE_GETTEXT, "my/path/document-2.txt", false);
 
         // Ok
         assertThat(response.getStatus()).isEqualTo(200);
@@ -121,97 +146,121 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void getBakedXliff() throws Exception {
-        uploadSourceFile("test-xliff.xlf", "XLIFF");
-        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
-                "test-xliff.xlf", "", "test-xliff.xlf");
+    public void downloadXliff11Source() throws Exception {
+        String filename = "test-xliff.xlf";
+        File testFile = getTestFile(filename);
+        uploadSourceFile(filename, DOCTYPE_XLIFF);
+        String downloadedXliffContent = downloadSourceFile(FILETYPE_RAW_SOURCE_DOCUMENT,
+                filename, filename);
 
-        assertThat(entityOctetStreamAsString).isNotEmpty();
+        assertThat(downloadedXliffContent).isNotEmpty();
+        assertThat(downloadedXliffContent).isXmlEqualToContentOf(testFile);
     }
 
     @Test
     @RunAsClient
-    public void getBakedGetTextNoTranslations() throws Exception {
-        uploadSourceFile("test-gettext.pot", "GETTEXT");
+    public void downloadXliff11Translation() throws Exception {
+        String filename = "test-xliff.xlf";
+        uploadSourceFile(filename, DOCTYPE_XLIFF);
+        String downloadedXliffContent = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+                filename, false, filename);
 
-        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
-                "test-gettext.pot", "", "test-gettext.po");
-
-        assertThat(entityOctetStreamAsString).isNotEmpty();
-        assertPoFile(entityOctetStreamAsString);
-        assertPoFileContainsTranslations(
-                entityOctetStreamAsString, "Parent Folder", "", "Subject:", "", "Connect", "");
+        assertThat(downloadedXliffContent).isNotEmpty();
+        // TODO check contents
     }
 
     @Test
     @RunAsClient
-    public void getBakedGetTextTranslatedImportAsTranslated() throws Exception {
-        uploadSourceFile("test-gettext.pot", "GETTEXT");
+    public void downloadGettextWithNoTranslations() throws Exception {
+        uploadSourceFile("test-gettext.pot", DOCTYPE_GETTEXT);
 
-        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
+        String downloadedPoContents = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+                "test-gettext.pot", false, "test-gettext.po");
 
-        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
-                "test-gettext.pot", "Translated", "test-gettext.po");
-
-        assertThat(entityOctetStreamAsString).isNotEmpty();
-        assertPoFile(entityOctetStreamAsString);
-        assertPoFileContainsTranslations(
-                entityOctetStreamAsString, "Parent Folder", "Carpeta padre", "Subject:", "Asunto:", "Connect", "Conectar");
+        assertThat(downloadedPoContents).isNotEmpty();
+        assertPoFile(downloadedPoContents);
+        assertPoFileContainsTranslations(downloadedPoContents,
+                BLANK_TRANSLATIONS);
     }
 
     @Test
     @RunAsClient
-    public void getBakedGetTextApprovedImportAsTranslated() throws Exception {
-        uploadSourceFile("test-gettext.pot", "GETTEXT");
+    public void downloadGettextWhichIsTranslatedIncludingTranslatedAndApproved() throws Exception {
+        uploadSourceFile("test-gettext.pot", DOCTYPE_GETTEXT);
 
-        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot",
+                DOCTYPE_GETTEXT, "es");
 
-        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
-                "test-gettext.pot", "Approved", "test-gettext.po");
+        String downloadedPoContents = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+                "test-gettext.pot", false, "test-gettext.po");
 
-        assertThat(entityOctetStreamAsString).isNotEmpty();
-        assertPoFile(entityOctetStreamAsString);
-        assertPoFileContainsTranslations(
-                entityOctetStreamAsString, "Parent Folder", "", "Subject:", "", "Connect", "");
+        assertThat(downloadedPoContents).isNotEmpty();
+        assertPoFile(downloadedPoContents);
+        assertPoFileContainsTranslations(downloadedPoContents,
+                FIRST_TRANSLATIONS);
     }
 
     @Test
     @RunAsClient
-    public void getBakedGetTextTranslatedImportAsApproved() throws Exception {
-        uploadSourceFile("test-gettext.pot", "GETTEXT");
+    public void downloadGettextWhichIsTranslatedIncludingApprovedOnly() throws Exception {
+        uploadSourceFile("test-gettext.pot", DOCTYPE_GETTEXT);
 
-        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
-        uploadTranslationFile("test-gettext-translated-updated.po", "test-gettext.pot", "GETTEXT", "es");
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot",
+                DOCTYPE_GETTEXT, "es");
 
-        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
-                "test-gettext.pot", "Translated", "test-gettext.po");
+        String downloadedPoContents = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+                "test-gettext.pot", true, "test-gettext.po");
 
-        assertThat(entityOctetStreamAsString).isNotEmpty();
-        assertPoFile(entityOctetStreamAsString);
-        assertPoFileContainsTranslations(
-                entityOctetStreamAsString, "Parent Folder", "Carpeta principal", "Subject:", "Tema:", "Connect", "Conectar");
+        assertThat(downloadedPoContents).isNotEmpty();
+        assertPoFile(downloadedPoContents);
+
+        assertPoFileContainsTranslations(downloadedPoContents,
+                BLANK_TRANSLATIONS);
     }
 
     @Test
     @RunAsClient
-    public void getBakedGetTextApprovedImportAsApproved() throws Exception {
-        uploadSourceFile("test-gettext.pot", "GETTEXT");
+    public void downloadGettextWhichIsMostlyApprovedIncludingTranslatedAndApproved() throws Exception {
+        uploadSourceFile("test-gettext.pot", DOCTYPE_GETTEXT);
 
-        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot", "GETTEXT", "es");
-        uploadTranslationFile("test-gettext-translated-updated.po", "test-gettext.pot", "GETTEXT", "es");
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot",
+                DOCTYPE_GETTEXT, "es");
+        // trigger MockTranslationMergeApproved to approve two of the translations:
+        uploadTranslationFile("test-gettext-translated-updated.po", "test-gettext.pot",
+                DOCTYPE_GETTEXT, "es");
 
-        String entityOctetStreamAsString = downloadTranslationFile("es", "baked",
-                "test-gettext.pot", "Approved", "test-gettext.po");
+        String downloadedPoContents = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+                "test-gettext.pot", false, "test-gettext.po");
 
-        assertThat(entityOctetStreamAsString).isNotEmpty();
-        assertPoFile(entityOctetStreamAsString);
-        assertPoFileContainsTranslations(
-                entityOctetStreamAsString, "Parent Folder", "Carpeta principal", "Subject:", "Tema:", "Connect", "");
+        assertThat(downloadedPoContents).isNotEmpty();
+        assertPoFile(downloadedPoContents);
+        assertPoFileContainsTranslations(downloadedPoContents,
+                SECOND_TRANSLATIONS);
     }
 
-    private String downloadTranslationFile(String locale, String fileExtension, String docId, String minContentState, String expectedFileName) {
+    @Test
+    @RunAsClient
+    public void downloadGettextWhichIsMostlyApprovedIncludingApprovedOnly() throws Exception {
+        uploadSourceFile("test-gettext.pot", DOCTYPE_GETTEXT);
+
+        uploadTranslationFile("test-gettext-translated.po", "test-gettext.pot",
+                DOCTYPE_GETTEXT, "es");
+        // trigger MockTranslationMergeApproved to approve two of the translations:
+        uploadTranslationFile("test-gettext-translated-updated.po", "test-gettext.pot",
+                DOCTYPE_GETTEXT, "es");
+
+        String downloadedPoContents = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+                "test-gettext.pot", true, "test-gettext.po");
+
+        assertThat(downloadedPoContents).isNotEmpty();
+        assertPoFile(downloadedPoContents);
+        assertPoFileContainsTranslations(downloadedPoContents,
+                SECOND_TRANSLATIONS_EXCLUDING_UNCHANGED);
+    }
+
+    private String downloadSourceFile(String fileType, String docId, String expectedFileName) {
         Response response = getFileResource()
-                .downloadTranslationFile("file-project", "1.0", locale, fileExtension, docId, minContentState);
+                .downloadSourceFile("file-project", "1.0", fileType, docId);
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertHeaderValue(response, "Content-Disposition",
@@ -223,24 +272,42 @@ public class FileRawRestITCase extends RestTest {
         return getInputStreamAsStringFromResponse(response);
     }
 
-    private void uploadSourceFile(String fileName, String fileType) throws FileNotFoundException {
-        DocumentFileUploadForm fileUploadForm = getDocumentFileUploadForm(fileName, fileType);
-
-        Response response = getFileResource().uploadSourceFile("file-project", "1.0", fileName, fileUploadForm);
+    private String downloadTranslationFile(String locale, String fileType, String docId, boolean approvedOnly, String expectedFileName) {
+        Response response = getFileResource()
+                .downloadTranslationFile("file-project", "1.0", locale, fileType, docId, approvedOnly);
 
         assertThat(response.getStatus()).isEqualTo(200);
+        assertHeaderValue(response, "Content-Disposition",
+                "attachment; filename=\"" + expectedFileName + "\"");
 
-        ChunkUploadResponse chunkUploadResponseFromResponse = getChunkUploadResponseFromResponse(response);
+        assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
+                MediaType.APPLICATION_OCTET_STREAM);
 
-        assertThat(chunkUploadResponseFromResponse.getErrorMessage()).isNullOrEmpty();
+        return getInputStreamAsStringFromResponse(response);
     }
 
-    private void uploadTranslationFile(String fileName, String docId, String fileType, String locale) throws FileNotFoundException {
-        uploadTranslationFile(fileName, docId, fileType, locale, "import");
+    private void uploadSourceFile(String fileName, String docType) throws IOException {
+        DocumentFileUploadForm fileUploadForm = getDocumentFileUploadForm(fileName, docType);
+        try {
+            Response response = getFileResource()
+                    .uploadSourceFile("file-project", "1.0", fileName,
+                            fileUploadForm);
+            assertThat(response.getStatus()).isEqualTo(200);
+
+            ChunkUploadResponse chunkUploadResponseFromResponse = getChunkUploadResponseFromResponse(response);
+
+            assertThat(chunkUploadResponseFromResponse.getErrorMessage()).isNullOrEmpty();
+        } finally {
+            fileUploadForm.getFileStream().close();
+        }
     }
 
-    private void uploadTranslationFile(String fileName, String docId, String fileType, String locale, String merge) throws FileNotFoundException {
-        DocumentFileUploadForm fileUploadForm = getDocumentFileUploadForm(fileName, fileType);
+    private void uploadTranslationFile(String fileName, String docId, String docType, String locale) throws FileNotFoundException {
+        uploadTranslationFile(fileName, docId, docType, locale, "import");
+    }
+
+    private void uploadTranslationFile(String fileName, String docId, String docType, String locale, String merge) throws FileNotFoundException {
+        DocumentFileUploadForm fileUploadForm = getDocumentFileUploadForm(fileName, docType);
 
         Response response = getFileResource().uploadTranslationFile("file-project", "1.0", locale, docId, merge, fileUploadForm);
 
@@ -251,13 +318,18 @@ public class FileRawRestITCase extends RestTest {
         assertThat(chunkUploadResponseFromResponse.getErrorMessage()).isNullOrEmpty();
     }
 
-    private DocumentFileUploadForm getDocumentFileUploadForm(String fileName, String fileType) throws FileNotFoundException {
-        File file = new File("src/test/resources/org/zanata/" + fileName);
+    private File getTestFile(String name) {
+        return new File("src/test/resources/org/zanata/" + name);
+    }
+
+    private DocumentFileUploadForm getDocumentFileUploadForm(String fileName, String docType) throws FileNotFoundException {
+        // TODO this doesn't close the stream if there's an exception
+        File file = getTestFile(fileName);
         FileInputStream fileInputStream = new FileInputStream(file);
 
         String hash = calculateFileHash(file);
 
-        return generateUniqueUploadForm(fileType, hash, file.length(), fileInputStream);
+        return generateUniqueUploadForm(docType, hash, file.length(), fileInputStream);
     }
 
     private String getInputStreamAsStringFromResponse(Response response) {
@@ -277,6 +349,7 @@ public class FileRawRestITCase extends RestTest {
 
     private String calculateFileHash(File srcFile) {
         try {
+//            return Files.asByteSource(srcFile).hash(Hashing.md5()).toString();
             MessageDigest md = MessageDigest.getInstance("MD5");
             InputStream fileStream = new FileInputStream(srcFile);
             try {
@@ -297,12 +370,12 @@ public class FileRawRestITCase extends RestTest {
         }
     }
 
-    private DocumentFileUploadForm generateUniqueUploadForm(String fileType, String md5hash, long streamSize,
+    private DocumentFileUploadForm generateUniqueUploadForm(String docType, String md5hash, long streamSize,
                                                             InputStream fileStream) {
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
-        uploadForm.setFileType(fileType);
+        uploadForm.setFileType(docType);
         uploadForm.setHash(md5hash);
         uploadForm.setSize(streamSize);
         uploadForm.setFileStream(fileStream);
@@ -338,8 +411,8 @@ public class FileRawRestITCase extends RestTest {
      * @param poFileContents
      *            The contents of the PO file as a string
      * @param translations
-     *            The translations in (msgid, msgstr) pairs. E.g. mssgid1,
-     *            trans1, mssgid2, trans2, ... etc.
+     *            The translations in (msgid, msgstr) pairs. E.g. msgid1,
+     *            trans1, msgid2, trans2, ... etc.
      */
     private static void assertPoFileContainsTranslations(String poFileContents,
                                                          String... translations) {
@@ -368,7 +441,7 @@ public class FileRawRestITCase extends RestTest {
                         if (!message.getMsgstr().equals(
                                 translations[foundAt + 1])) {
                             throw new AssertionError(
-                                    "Expected translation for mssgid '"
+                                    "Expected translation for msgid '"
                                             + message.getMsgid() + "' "
                                             + "is: '"
                                             + translations[foundAt + 1] + "'. "
@@ -386,7 +459,7 @@ public class FileRawRestITCase extends RestTest {
         if (found.size() < translations.length / 2) {
             StringBuilder assertionError =
                     new StringBuilder(
-                            "The following mssgids were expected yet not found: ");
+                            "The following msgids were expected yet not found: ");
             for (int i = 0; i < translations.length; i += 2) {
                 if (!found.contains(translations[i])) {
                     assertionError.append(translations[i] + " | ");
@@ -471,20 +544,17 @@ public class FileRawRestITCase extends RestTest {
         }
 
         @Override
-        public Response downloadTranslationFile(String projectSlug, String iterationSlug, String locale, String fileExtension, String docId, String minContentState) {
+        public Response downloadTranslationFile(String projectSlug, String iterationSlug, String locale, String fileType, String docId, boolean approvedOnly) {
             return new DownloadResourceRequest(
-                    getRestEndpointUrl("/file/translation/" + projectSlug + "/" + iterationSlug + "/" + locale + "/" + fileExtension),
+                    getRestEndpointUrl("/file/translation/" + projectSlug + "/" + iterationSlug + "/" + locale + "/" + fileType),
                     "GET", getAuthorizedEnvironment()) {
                 @Override
                 protected Invocation.Builder prepareRequest(
                         ResteasyWebTarget webTarget) {
-                    ResteasyWebTarget target = webTarget.queryParam("docId", docId);
-
-                    if (!Strings.isNullOrEmpty(minContentState)) {
-                        target = target.queryParam("minContentState", minContentState);
-                    }
-
-                    return target.request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                    return webTarget
+                            .queryParam("docId", docId)
+                            .queryParam("approvedOnly", approvedOnly)
+                            .request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
                 }
             }.runWithResult();
         }

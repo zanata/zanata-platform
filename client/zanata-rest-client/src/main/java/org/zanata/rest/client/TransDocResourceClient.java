@@ -55,7 +55,7 @@ public class TransDocResourceClient {
 
     public Response getTranslations(String docId, LocaleId locale,
                                     Set<String> extensions, boolean createSkeletons,
-                                    String minContentState, String eTag) {
+                                    String eTag) {
         Client client = factory.getClient();
         try {
             return getBaseServiceResource(client)
@@ -65,7 +65,7 @@ public class TransDocResourceClient {
                     .queryParam("docId", docId)
                     .queryParam("ext", extensions.toArray())
                     .queryParam("skeletons", String.valueOf(createSkeletons))
-                    .queryParam("minContentState", minContentState)
+                    .queryParam("markTranslatedAsApproved", false)
                     .request(MediaType.APPLICATION_XML_TYPE)
                     .header(HttpHeaders.IF_NONE_MATCH, eTag)
                     .get();

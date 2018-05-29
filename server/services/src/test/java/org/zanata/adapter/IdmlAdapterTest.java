@@ -74,7 +74,8 @@ public class IdmlAdapterTest extends AbstractAdapterTest<IDMLAdapter> {
         File outputFile = File.createTempFile("test-idml-translated", ".idml");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(output, originalFile.toURI(),
-                resource, translationsResource, "dv-DL", Optional.absent());
+                resource, translationsResource, "dv-DL", Optional.absent(),
+                false);
         output.writeTo(new FileOutputStream(outputFile));
 
         Resource translatedResource = adapter.parseDocumentFile(

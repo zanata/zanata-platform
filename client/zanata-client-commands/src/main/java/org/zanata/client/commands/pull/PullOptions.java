@@ -50,5 +50,5 @@ public interface PullOptions extends PushPullOptions {
 
     File getCacheDir();
 
-    String getMinContentState();
+    boolean getApprovedOnly();
 }

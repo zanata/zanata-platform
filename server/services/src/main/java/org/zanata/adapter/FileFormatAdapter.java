@@ -112,7 +112,7 @@ public interface FileFormatAdapter {
      */
     void writeTranslatedFile(OutputStream output, URI originalFile,
             Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params)
+            String locale, Optional<String> params, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException;
 
 

@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
@@ -123,14 +124,16 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
-                                    Set<String> extensions, boolean skeletons, String minContentState, String eTag) {
+            Set<String> extensions, boolean skeletons,
+            boolean markTranslatedAsApproved, String eTag) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
-        return getTranslationsWithDocId(locale, id, extensions, skeletons, minContentState, eTag);
+        return getTranslationsWithDocId(locale, id, extensions, skeletons, markTranslatedAsApproved, eTag);
     }
 
     @Override
     public Response getTranslationsWithDocId(LocaleId locale, String docId,
-                                             Set<String> extensions, boolean createSkeletons, String minContentState, String eTag) {
+            Set<String> extensions, boolean createSkeletons,
+            boolean markTranslatedAsApproved, String eTag) {
         log.debug("start to get translation");
         if (StringUtils.isBlank(docId)) {
             // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
@@ -165,21 +168,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         // TODO avoid queries for better cacheability
         List<HTextFlowTarget> hTargets =
                 textFlowTargetDAO.findTranslations(document, hLocale);
-        Optional<String> apiVersion = Optional.<String>absent();
-
-        ContentStateName minContentStateObject = ContentStateName.Translated;
-
-        if (minContentState != null) {
-            minContentStateObject = ContentStateName.fromString(minContentState);
-        }
-
-        if (ContentStateName.Approved.equals(minContentStateObject)) {
-            apiVersion = Optional.of("StatusApproved");
-        }
-
         boolean foundData = resourceUtils.transferToTranslationsResource(
                 translationResource, document, hLocale, extensions, hTargets,
-                apiVersion);
+                markTranslatedAsApproved);
         if (!foundData && !createSkeletons) {
             return Response.status(Status.NOT_FOUND).build();
         }
