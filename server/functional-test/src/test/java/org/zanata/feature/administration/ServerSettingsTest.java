@@ -71,10 +71,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .goToServerConfigPage();
 
-        assertThat(serverConfigurationPage.expectFieldValue(
-                ServerConfigurationPage.registerUrlField, url))
-                // FIXME add assertion? this will never be false (timeout exception if missing)
-                .as("The expected url was displayed");
+        // check that expected url was displayed
+        serverConfigurationPage.expectFieldValue(
+                ServerConfigurationPage.registerUrlField, url);
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -109,8 +108,8 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .goToServerConfigPage();
 
-        assertThat(serverConfigurationPage.expectFieldValue(
-                ServerConfigurationPage.fromEmailField, email));
+        serverConfigurationPage.expectFieldValue(
+                ServerConfigurationPage.fromEmailField, email);
 
         serverConfigurationPage.goToHomePage().logout();
         new RegisterWorkFlow().registerInternal("test1", "test1", "test123",

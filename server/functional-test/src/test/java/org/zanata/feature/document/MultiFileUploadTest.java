@@ -85,9 +85,8 @@ public class MultiFileUploadTest extends ZanataTestCase {
                         .submitUpload()
                         .clickUploadDone()
                         .gotoDocumentTab();
-        assertThat(versionDocumentsPage.expectSourceDocsContains(testFileName))
-                // FIXME should there be another assertion here? (expectSourceDocsContains has one)
-                .as("Document shows in table");
+        // check that document shows in table
+        versionDocumentsPage.expectSourceDocsContains(testFileName);
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
