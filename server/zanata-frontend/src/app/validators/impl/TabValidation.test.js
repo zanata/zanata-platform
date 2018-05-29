@@ -2,7 +2,6 @@
 
 import TabValidation from './TabValidation'
 import ValidationId from '../ValidationId'
-// TODO: Consume as JSON messages file
 import MessageFormat from 'intl-messageformat'
 import Messages from '../messages'
 const locale = 'en-US'

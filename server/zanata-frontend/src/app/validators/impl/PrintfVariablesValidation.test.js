@@ -2,7 +2,6 @@
 
 import PrintfVariablesValidation from './PrintfVariablesValidation'
 import ValidationId from '../ValidationId'
-// TODO: Consume as react-intl JSON messages file
 import Messages from '../messages'
 import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'

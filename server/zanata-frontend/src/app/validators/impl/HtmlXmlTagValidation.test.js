@@ -4,7 +4,6 @@
 
 import HtmlXmlTagValidation from './HtmlXmlTagValidation'
 import ValidationId from '../ValidationId'
-// TODO: Consume as react-intl JSON messages file
 import MessageFormat from 'intl-messageformat'
 import Messages from '../messages'
 const locale = 'en-US'

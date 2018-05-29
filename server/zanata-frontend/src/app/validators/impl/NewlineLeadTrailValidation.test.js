@@ -2,7 +2,6 @@
 
 import NewlineLeadTrailValidation from './NewlineLeadTrailValidation'
 import ValidationId from '../ValidationId'
-// TODO: Consume as react-intl JSON messages file
 import Messages from '../messages'
 
 const id = ValidationId.XML_ENTITY
