@@ -1157,6 +1157,6 @@ label span.n1 {
   }
 }
 
-.ant-btn:* {
+.ant-btn {
   border-color: transparent !important
 }
