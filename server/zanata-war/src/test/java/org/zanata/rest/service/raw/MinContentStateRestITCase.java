@@ -11,9 +11,14 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.rest.service.raw.MinContentStateDataKt.*;
 
 public class MinContentStateRestITCase extends SourceAndTranslationResourceRestBase {
+
+    // MinContentStateRest data
+    private static final int APPROVED_TFTS = 1;
+    private static final int TRANSLATED_TFTS = 1;
+    private static final int ALL_TFTS =  5;
+
     private static final String MULTIPLE_TEXT_FLOW_DATA_DB_UNIT_XML =
             "org/zanata/test/model/MinContentStateRestITCase.dbunit.xml";
 
