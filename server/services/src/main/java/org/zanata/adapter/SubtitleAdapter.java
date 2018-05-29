@@ -69,4 +69,9 @@ public class SubtitleAdapter extends OkapiFilterAdapter {
     protected void updateParamsWithDefaults(IParameters params) {
         params.fromString(defaultConfig);
     }
+
+    @Override
+    public boolean rawTranslationUploadAvailable() {
+        return true;
+    }
 }

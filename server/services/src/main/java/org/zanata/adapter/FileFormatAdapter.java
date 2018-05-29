@@ -139,4 +139,13 @@ public interface FileFormatAdapter {
                 .getName()) + "." + transExt;
     }
 
+    /**
+     * Indicate whether the original file format can be used to provide
+     * translations
+     * @return
+     */
+    default boolean rawTranslationUploadAvailable() {
+        return false;
+    }
+
 }

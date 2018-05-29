@@ -33,4 +33,9 @@ public class DTDAdapter extends OkapiFilterAdapter {
     public DTDAdapter() {
         super(new DTDFilter(), IdSource.textUnitName);
     }
+
+    @Override
+    public boolean rawTranslationUploadAvailable() {
+        return true;
+    }
 }

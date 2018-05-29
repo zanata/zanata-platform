@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1325,6 +1326,32 @@ public class VersionHomeAction extends AbstractSortAction
 
     public HDocument getSelectedDocument() {
         return this.selectedDocument;
+    }
+
+    /**
+     * Can a raw file translation document be uploaded for the source.
+     * The document needs to be on the filesystem, and requires an adaptor that
+     * can process an uploaded raw document.
+     * @return boolean can upload raw document
+     */
+    public boolean canUploadRawFileTranslation(final String docPath,
+                                               final String docName) {
+        boolean canUpload = false;
+        if (!hasOriginal(docPath, docName)) {
+            return false;
+        }
+        Iterator<DocumentType> types = DocumentType.fromTranslationExtension(
+                FilenameUtils.getExtension(docName)).iterator();
+        while (types.hasNext()) {
+            DocumentType type = types.next();
+            if (translationFileServiceImpl.hasAdapterFor(type) &&
+                    translationFileServiceImpl.getAdapterFor(type)
+                            .rawTranslationUploadAvailable()) {
+                canUpload = true;
+                break;
+            }
+        }
+        return canUpload;
     }
 
     public SourceFileUploadHelper getSourceFileUpload() {
