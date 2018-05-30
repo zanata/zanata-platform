@@ -16,7 +16,7 @@
           <span class="is-invisible">#{msgs['jsf.dashboard.projects.newProject.label']}</span>
         </a>
       </h:panelGroup>
-      <h2 class="panel__heading">#{msgs['jsf.dashboard.projects.maintainedProjects.label']}</h2>
+      <h2 class="panel__heading">#{msgs['jsf.dashboard.projects.title']}</h2>
     </div>
 
     <div class="panel__sub-header js-reveal">
@@ -33,7 +33,7 @@
     </a4j:status>
 
     <h:form id="projectListForm" class="l--push-bottom-1">
-      <ul id="maintainedProjects" class="list--stats">
+      <ul id="membersOfProjects" class="list--stats">
         <ui:repeat value="#{dashboardAction.projectList.currentPage}" var="project">
           <li class="list__item--actionable">
             <div class="list__item__action">
@@ -69,9 +69,16 @@
             <h:link outcome="/project/project.xhtml">
               <f:param name="slug" value="#{project.slug}"/>
               <div class="list__item__content">
-                <div class="list__item__info">
-                  <h3 class="list__title bx--inline-block">#{project.name}</h3>
-                  <p class="list__item__meta">#{project.description}</p>
+                <div class="list__item__info g g--tighter">
+                  <div class="g__item w--6-12">
+                    <h3 class="list__title bx--inline-block">#{project.name}</h3>
+                    <p class="list__item__meta">#{project.description}</p>
+                  </div>
+                  <div class="g__item w--6-12">
+                    <ui:repeat value="#{dashboardAction.getUserProjectRoles(project)}" var="role">
+                      <div class="list__item__meta">#{role}</div>
+                    </ui:repeat>
+                  </div>
                 </div>
                 <div class="list__item__stats">
                   <span class="stats--mini" title="#{dashboardAction.getShortTime(project.lastChanged)}">
@@ -79,6 +86,7 @@
                     <span class="stats__unit">#{dashboardAction.getLastTranslatorMessage(project)}</span>
                   </span>
                 </div>
+
               </div>
             </h:link>
           </li>

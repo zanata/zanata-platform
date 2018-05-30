@@ -125,4 +125,20 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
         int size = dao.getFilterProjectSize(false, false, false);
         assertThat(projects.size()).isEqualTo(size);
     }
+
+    @Test
+    public void getProjectsForMember() {
+        HPerson person = personDAO.findById(4L);
+        List<HProject> projects =
+                dao.getProjectsForMember(person, null, 0, 10);
+        assertThat(projects).hasSize(1);
+
+    }
+
+    @Test
+    public void getProjectsForMemberCount() {
+        HPerson person = personDAO.findById(4L);
+        int count = dao.getProjectsForMemberCount(person, null);
+        assertThat(count).isEqualTo(1);
+    }
 }
