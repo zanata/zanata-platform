@@ -4,7 +4,6 @@
  */
 
 var webpack = require('webpack')
-var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -31,17 +30,7 @@ var postCssLoader = {
       require('postcss-import')(),
       require('postcss-url')(),
       require('postcss-cssnext')(),
-      require('postcss-reporter')(),
-      autoprefixer({
-        browsers: [
-          'Explorer >= 9',
-          'last 2 Chrome versions',
-          'last 2 Firefox versions',
-          'last 2 Safari versions',
-          'last 2 iOS versions',
-          'Android 4'
-        ]
-      })
+      require('postcss-reporter')()
     ]
   }
 }
@@ -111,6 +100,9 @@ module.exports = function (env, isEditor, devServerPort) {
   }
 
   return dropUndef({
+    // Built in Webpack mode definition
+    mode: dev ? 'development' : 'production',
+
     entry: storybook ? undefined : dropUndef({
       'frontend': './app/entrypoint/index',
       'editor': './app/editor/entrypoint/index.js',
@@ -258,15 +250,6 @@ module.exports = function (env, isEditor, devServerPort) {
         // storybook should use the fallback: style-loader
         disable: storybook || dev
       }),
-      new webpack.NoEmitOnErrorsPlugin(),
-
-      prod
-        ? new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
-        : undefined,
-      prod
-        // Workaround to switch old loaders to minimize mode
-        ? new webpack.LoaderOptionsPlugin({ minimize: true })
-        : undefined,
 
       new webpack.DefinePlugin({
         'process.env': {
@@ -276,10 +259,6 @@ module.exports = function (env, isEditor, devServerPort) {
       }),
 
       fullBuild ? new webpack.HashedModuleIdsPlugin() : undefined,
-
-      storybook || dev ? undefined : new webpack.optimize.CommonsChunkPlugin({
-        name: 'runtime'
-      }),
 
       // Convert source (en) and translated strings to the format the app
       // can consume, in the dist directory.
@@ -300,6 +279,16 @@ module.exports = function (env, isEditor, devServerPort) {
 
       new ManifestPlugin()
     ]),
+    // Suppress warnings about assets and entrypoint size
+    performance: { hints: false },
+    optimization: {
+      // namedModules: true, // NamedModulesPlugin()
+      splitChunks: { // CommonsChunkPlugin()
+        name: 'runtime'
+      },
+      noEmitOnErrors: true // NoEmitOnErrorsPlugin
+      // concatenateModules: true // ModuleConcatenationPlugin
+    },
 
     resolve: {
       /* Subdirectories to check while searching up tree for module

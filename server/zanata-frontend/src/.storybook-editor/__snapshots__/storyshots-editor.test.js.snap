@@ -1073,7 +1073,6 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                     "backgroundColor": "#fff",
                     "border": "1px solid #eee",
                     "borderRadius": "2px",
-                    "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
                     "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
@@ -1152,179 +1151,193 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
                     Story Source
                   </h1>
                   <pre
-                    style={
-                      Object {
-                        "backgroundColor": "#fafafa",
-                        "fontFamily": "Menlo, Monaco, \\"Courier New\\", monospace",
-                        "fontSize": ".88em",
-                        "lineHeight": 1.5,
-                        "overflowX": "scroll",
-                        "padding": ".5rem",
-                      }
-                    }
+                    className="css-4akams"
                   >
                     <div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
+                      <div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          &lt;
-                          Button
-                        </span>
-                        <span>
-                          <span>
-                            <span>
-                              <br />
-                                
-                            </span>
-                            <span
-                              style={Object {}}
-                            >
-                              title
-                            </span>
-                            <span>
-                              =
-                              <span
-                                style={Object {}}
-                              >
-                                <span
-                                  style={
-                                    Object {
-                                      "color": "#22a",
-                                      "wordBreak": "break-word",
-                                    }
-                                  }
-                                >
-                                  "
-                                  Click Me
-                                  "
-                                </span>
-                              </span>
-                            </span>
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            &lt;
+                            Button
                           </span>
                           <span>
                             <span>
-                              <br />
-                                
-                            </span>
-                            <span
-                              style={Object {}}
-                            >
-                              onClick
-                            </span>
-                            <span>
-                              =
+                              <span>
+                                <br />
+                                  
+                              </span>
                               <span
                                 style={Object {}}
                               >
-                                <span>
-                                  {
+                                title
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  "
                                   <span
                                     style={
                                       Object {
-                                        "color": "#170",
+                                        "color": "#22a",
+                                        "wordBreak": "break-word",
                                       }
                                     }
                                   >
-                                    onClick()
+                                    Click Me
                                   </span>
-                                  }
+                                  "
                                 </span>
                               </span>
                             </span>
-                          </span>
-                          <span>
                             <span>
-                              <br />
-                                
-                            </span>
-                            <span
-                              style={Object {}}
-                            >
-                              className
-                            </span>
-                            <span>
-                              =
+                              <span>
+                                <br />
+                                  
+                              </span>
                               <span
                                 style={Object {}}
                               >
+                                onClick
+                              </span>
+                              <span>
+                                =
                                 <span
-                                  style={
-                                    Object {
-                                      "color": "#22a",
-                                      "wordBreak": "break-word",
-                                    }
-                                  }
+                                  style={Object {}}
                                 >
-                                  "
-                                  Button Button--default
-                                  "
+                                  <span>
+                                    {
+                                    <span
+                                      style={
+                                        Object {
+                                          "color": "#170",
+                                        }
+                                      }
+                                    >
+                                      onClick()
+                                    </span>
+                                    }
+                                  </span>
                                 </span>
                               </span>
                             </span>
-                            <br />
+                            <span>
+                              <span>
+                                <br />
+                                  
+                              </span>
+                              <span
+                                style={Object {}}
+                              >
+                                className
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  "
+                                  <span
+                                    style={
+                                      Object {
+                                        "color": "#22a",
+                                        "wordBreak": "break-word",
+                                      }
+                                    }
+                                  >
+                                    Button Button--default
+                                  </span>
+                                  "
+                                </span>
+                              </span>
+                              <br />
+                            </span>
                           </span>
-                        </span>
-                        <span
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            &gt;
+                          </span>
+                        </div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 33,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          &gt;
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 33,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            Click Me
+                          </span>
+                        </div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          Click Me
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
                             }
-                          }
-                        >
-                          &lt;/
-                          Button
-                          &gt;
-                        </span>
+                          >
+                            &lt;/
+                            Button
+                            &gt;
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <button
+                      className="css-gydez8"
+                      onClick={[Function]}
+                    >
+                      <div
+                        className="css-kv47nt"
+                      >
+                        <div
+                          style={
+                            Object {
+                              "marginBottom": 6,
+                            }
+                          }
+                        >
+                          Copied!
+                        </div>
+                        <div>
+                          Copy
+                        </div>
+                      </div>
+                    </button>
                   </pre>
                 </div>
                 <div>
@@ -1907,7 +1920,6 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                     "backgroundColor": "#fff",
                     "border": "1px solid #eee",
                     "borderRadius": "2px",
-                    "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
                     "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
@@ -1967,77 +1979,39 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                     Story Source
                   </h1>
                   <pre
-                    style={
-                      Object {
-                        "backgroundColor": "#fafafa",
-                        "fontFamily": "Menlo, Monaco, \\"Courier New\\", monospace",
-                        "fontSize": ".88em",
-                        "lineHeight": 1.5,
-                        "overflowX": "scroll",
-                        "padding": ".5rem",
-                      }
-                    }
+                    className="css-4akams"
                   >
                     <div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
+                      <div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          &lt;
-                          ul
-                        </span>
-                        <span>
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            &lt;
+                            ul
+                          </span>
                           <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              data-radium
+                            <span>
+                               
+                              <span
+                                style={Object {}}
+                              >
+                                data-radium
+                              </span>
+                              
                             </span>
-                            
                           </span>
-                        </span>
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
-                            }
-                          }
-                        >
-                          &gt;
-                        </span>
-                      </div>
-                      <div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 33,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &lt;
-                            li
-                          </span>
-                          <span />
                           <span
                             style={
                               Object {
@@ -2052,7 +2026,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2065,93 +2039,9 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;
-                              Button
+                              li
                             </span>
-                            <span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  title
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      Click should trigger onClick action
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  onClick
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span>
-                                      {
-                                      <span
-                                        style={
-                                          Object {
-                                            "color": "#170",
-                                          }
-                                        }
-                                      >
-                                        onClick()
-                                      </span>
-                                      }
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  className
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      EditorButton Button--primary
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                                
-                              </span>
-                            </span>
+                            <span />
                             <span
                               style={
                                 Object {
@@ -2162,28 +2052,163 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               &gt;
                             </span>
                           </div>
-                          <div
-                            style={
-                              Object {
-                                "paddingLeft": 63,
-                                "paddingRight": 3,
-                              }
-                            }
-                          >
-                            <span
+                          <div>
+                            <div
                               style={
                                 Object {
-                                  "color": "#777",
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
                                 }
                               }
                             >
-                              Button Button--primary
-                            </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;
+                                Button
+                              </span>
+                              <span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    title
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        Click should trigger onClick action
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    onClick
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      <span>
+                                        {
+                                        <span
+                                          style={
+                                            Object {
+                                              "color": "#170",
+                                            }
+                                          }
+                                        >
+                                          onClick()
+                                        </span>
+                                        }
+                                      </span>
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    className
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        EditorButton Button--primary
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                  
+                                </span>
+                              </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &gt;
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 63,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                Button Button--primary
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;/
+                                Button
+                                &gt;
+                              </span>
+                            </div>
                           </div>
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2196,67 +2221,16 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;/
-                              Button
+                              li
                               &gt;
                             </span>
                           </div>
-                        </div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 33,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &lt;/
-                            li
-                            &gt;
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 33,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &lt;
-                            li
-                          </span>
-                          <span />
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &gt;
-                          </span>
                         </div>
                         <div>
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2269,93 +2243,9 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;
-                              Button
+                              li
                             </span>
-                            <span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  title
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      Click should trigger onClick action
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  onClick
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span>
-                                      {
-                                      <span
-                                        style={
-                                          Object {
-                                            "color": "#170",
-                                          }
-                                        }
-                                      >
-                                        onClick()
-                                      </span>
-                                      }
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  className
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      EditorButton Button--success
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                                
-                              </span>
-                            </span>
+                            <span />
                             <span
                               style={
                                 Object {
@@ -2366,28 +2256,163 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               &gt;
                             </span>
                           </div>
-                          <div
-                            style={
-                              Object {
-                                "paddingLeft": 63,
-                                "paddingRight": 3,
-                              }
-                            }
-                          >
-                            <span
+                          <div>
+                            <div
                               style={
                                 Object {
-                                  "color": "#777",
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
                                 }
                               }
                             >
-                              Button Button--success
-                            </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;
+                                Button
+                              </span>
+                              <span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    title
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        Click should trigger onClick action
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    onClick
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      <span>
+                                        {
+                                        <span
+                                          style={
+                                            Object {
+                                              "color": "#170",
+                                            }
+                                          }
+                                        >
+                                          onClick()
+                                        </span>
+                                        }
+                                      </span>
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    className
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        EditorButton Button--success
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                  
+                                </span>
+                              </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &gt;
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 63,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                Button Button--success
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;/
+                                Button
+                                &gt;
+                              </span>
+                            </div>
                           </div>
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2400,67 +2425,16 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;/
-                              Button
+                              li
                               &gt;
                             </span>
                           </div>
-                        </div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 33,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &lt;/
-                            li
-                            &gt;
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 33,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &lt;
-                            li
-                          </span>
-                          <span />
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &gt;
-                          </span>
                         </div>
                         <div>
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2473,93 +2447,9 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;
-                              Button
+                              li
                             </span>
-                            <span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  title
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      Click should trigger onClick action
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  onClick
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span>
-                                      {
-                                      <span
-                                        style={
-                                          Object {
-                                            "color": "#170",
-                                          }
-                                        }
-                                      >
-                                        onClick()
-                                      </span>
-                                      }
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  className
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      EditorButton Button--unsure
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                                
-                              </span>
-                            </span>
+                            <span />
                             <span
                               style={
                                 Object {
@@ -2570,28 +2460,163 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               &gt;
                             </span>
                           </div>
-                          <div
-                            style={
-                              Object {
-                                "paddingLeft": 63,
-                                "paddingRight": 3,
-                              }
-                            }
-                          >
-                            <span
+                          <div>
+                            <div
                               style={
                                 Object {
-                                  "color": "#777",
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
                                 }
                               }
                             >
-                              Button Button--unsure
-                            </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;
+                                Button
+                              </span>
+                              <span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    title
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        Click should trigger onClick action
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    onClick
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      <span>
+                                        {
+                                        <span
+                                          style={
+                                            Object {
+                                              "color": "#170",
+                                            }
+                                          }
+                                        >
+                                          onClick()
+                                        </span>
+                                        }
+                                      </span>
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    className
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        EditorButton Button--unsure
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                  
+                                </span>
+                              </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &gt;
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 63,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                Button Button--unsure
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;/
+                                Button
+                                &gt;
+                              </span>
+                            </div>
                           </div>
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2604,67 +2629,16 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;/
-                              Button
+                              li
                               &gt;
                             </span>
                           </div>
-                        </div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 33,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &lt;/
-                            li
-                            &gt;
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 33,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &lt;
-                            li
-                          </span>
-                          <span />
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            &gt;
-                          </span>
                         </div>
                         <div>
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2677,93 +2651,9 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;
-                              Button
+                              li
                             </span>
-                            <span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  title
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      Click should trigger onClick action
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  onClick
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span>
-                                      {
-                                      <span
-                                        style={
-                                          Object {
-                                            "color": "#170",
-                                          }
-                                        }
-                                      >
-                                        onClick()
-                                      </span>
-                                      }
-                                    </span>
-                                  </span>
-                                </span>
-                              </span>
-                              <span>
-                                 
-                                <span
-                                  style={Object {}}
-                                >
-                                  className
-                                </span>
-                                <span>
-                                  =
-                                  <span
-                                    style={Object {}}
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "color": "#22a",
-                                          "wordBreak": "break-word",
-                                        }
-                                      }
-                                    >
-                                      "
-                                      EditorButton Button--neutral
-                                      "
-                                    </span>
-                                  </span>
-                                </span>
-                                
-                              </span>
-                            </span>
+                            <span />
                             <span
                               style={
                                 Object {
@@ -2774,28 +2664,163 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               &gt;
                             </span>
                           </div>
-                          <div
-                            style={
-                              Object {
-                                "paddingLeft": 63,
-                                "paddingRight": 3,
-                              }
-                            }
-                          >
-                            <span
+                          <div>
+                            <div
                               style={
                                 Object {
-                                  "color": "#777",
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
                                 }
                               }
                             >
-                              Button Button--neutral
-                            </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;
+                                Button
+                              </span>
+                              <span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    title
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        Click should trigger onClick action
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    onClick
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      <span>
+                                        {
+                                        <span
+                                          style={
+                                            Object {
+                                              "color": "#170",
+                                            }
+                                          }
+                                        >
+                                          onClick()
+                                        </span>
+                                        }
+                                      </span>
+                                    </span>
+                                  </span>
+                                </span>
+                                <span>
+                                   
+                                  <span
+                                    style={Object {}}
+                                  >
+                                    className
+                                  </span>
+                                  <span>
+                                    =
+                                    <span
+                                      style={Object {}}
+                                    >
+                                      "
+                                      <span
+                                        style={
+                                          Object {
+                                            "color": "#22a",
+                                            "wordBreak": "break-word",
+                                          }
+                                        }
+                                      >
+                                        EditorButton Button--neutral
+                                      </span>
+                                      "
+                                    </span>
+                                  </span>
+                                  
+                                </span>
+                              </span>
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &gt;
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 63,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                Button Button--neutral
+                              </span>
+                            </div>
+                            <div
+                              style={
+                                Object {
+                                  "paddingLeft": 48,
+                                  "paddingRight": 3,
+                                }
+                              }
+                            >
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#777",
+                                  }
+                                }
+                              >
+                                &lt;/
+                                Button
+                                &gt;
+                              </span>
+                            </div>
                           </div>
                           <div
                             style={
                               Object {
-                                "paddingLeft": 48,
+                                "paddingLeft": 33,
                                 "paddingRight": 3,
                               }
                             }
@@ -2808,7 +2833,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                               }
                             >
                               &lt;/
-                              Button
+                              li
                               &gt;
                             </span>
                           </div>
@@ -2816,7 +2841,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                         <div
                           style={
                             Object {
-                              "paddingLeft": 33,
+                              "paddingLeft": 18,
                               "paddingRight": 3,
                             }
                           }
@@ -2829,32 +2854,33 @@ exports[`Editor Storyshots Button colour styles 1`] = `
                             }
                           >
                             &lt;/
-                            li
+                            ul
                             &gt;
                           </span>
                         </div>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
-                            }
-                          }
-                        >
-                          &lt;/
-                          ul
-                          &gt;
-                        </span>
                       </div>
                     </div>
+                    <button
+                      className="css-gydez8"
+                      onClick={[Function]}
+                    >
+                      <div
+                        className="css-kv47nt"
+                      >
+                        <div
+                          style={
+                            Object {
+                              "marginBottom": 6,
+                            }
+                          }
+                        >
+                          Copied!
+                        </div>
+                        <div>
+                          Copy
+                        </div>
+                      </div>
+                    </button>
                   </pre>
                 </div>
                 <div>
@@ -3405,7 +3431,6 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                     "backgroundColor": "#fff",
                     "border": "1px solid #eee",
                     "borderRadius": "2px",
-                    "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
                     "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
@@ -3465,135 +3490,14 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                     Story Source
                   </h1>
                   <pre
-                    style={
-                      Object {
-                        "backgroundColor": "#fafafa",
-                        "fontFamily": "Menlo, Monaco, \\"Courier New\\", monospace",
-                        "fontSize": ".88em",
-                        "lineHeight": 1.5,
-                        "overflowX": "scroll",
-                        "padding": ".5rem",
-                      }
-                    }
+                    className="css-4akams"
                   >
                     <div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
-                            }
-                          }
-                        >
-                          &lt;
-                          Button
-                        </span>
-                        <span>
-                          <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              title
-                            </span>
-                            <span>
-                              =
-                              <span
-                                style={Object {}}
-                              >
-                                <span
-                                  style={
-                                    Object {
-                                      "color": "#22a",
-                                      "wordBreak": "break-word",
-                                    }
-                                  }
-                                >
-                                  "
-                                  Should not dispatch onClick action
-                                  "
-                                </span>
-                              </span>
-                            </span>
-                          </span>
-                          <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              onClick
-                            </span>
-                            <span>
-                              =
-                              <span
-                                style={Object {}}
-                              >
-                                <span>
-                                  {
-                                  <span
-                                    style={
-                                      Object {
-                                        "color": "#170",
-                                      }
-                                    }
-                                  >
-                                    onClick()
-                                  </span>
-                                  }
-                                </span>
-                              </span>
-                            </span>
-                          </span>
-                          <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              disabled
-                            </span>
-                            
-                          </span>
-                        </span>
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
-                            }
-                          }
-                        >
-                          &gt;
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 33,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
-                            }
-                          }
-                        >
-                          Plain disabled button. Click event should 
-                        </span>
-                      </div>
                       <div>
                         <div
                           style={
                             Object {
-                              "paddingLeft": 33,
+                              "paddingLeft": 18,
                               "paddingRight": 3,
                             }
                           }
@@ -3606,9 +3510,74 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             }
                           >
                             &lt;
-                            strong
+                            Button
                           </span>
-                          <span />
+                          <span>
+                            <span>
+                               
+                              <span
+                                style={Object {}}
+                              >
+                                title
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  "
+                                  <span
+                                    style={
+                                      Object {
+                                        "color": "#22a",
+                                        "wordBreak": "break-word",
+                                      }
+                                    }
+                                  >
+                                    Should not dispatch onClick action
+                                  </span>
+                                  "
+                                </span>
+                              </span>
+                            </span>
+                            <span>
+                               
+                              <span
+                                style={Object {}}
+                              >
+                                onClick
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  <span>
+                                    {
+                                    <span
+                                      style={
+                                        Object {
+                                          "color": "#170",
+                                        }
+                                      }
+                                    >
+                                      onClick()
+                                    </span>
+                                    }
+                                  </span>
+                                </span>
+                              </span>
+                            </span>
+                            <span>
+                               
+                              <span
+                                style={Object {}}
+                              >
+                                disabled
+                              </span>
+                              
+                            </span>
+                          </span>
                           <span
                             style={
                               Object {
@@ -3617,24 +3586,6 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                             }
                           >
                             &gt;
-                          </span>
-                        </div>
-                        <div
-                          style={
-                            Object {
-                              "paddingLeft": 48,
-                              "paddingRight": 3,
-                            }
-                          }
-                        >
-                          <span
-                            style={
-                              Object {
-                                "color": "#777",
-                              }
-                            }
-                          >
-                            not
                           </span>
                         </div>
                         <div
@@ -3652,51 +3603,139 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
                               }
                             }
                           >
+                            Plain disabled button. Click event should 
+                          </span>
+                        </div>
+                        <div>
+                          <div
+                            style={
+                              Object {
+                                "paddingLeft": 33,
+                                "paddingRight": 3,
+                              }
+                            }
+                          >
+                            <span
+                              style={
+                                Object {
+                                  "color": "#777",
+                                }
+                              }
+                            >
+                              &lt;
+                              strong
+                            </span>
+                            <span />
+                            <span
+                              style={
+                                Object {
+                                  "color": "#777",
+                                }
+                              }
+                            >
+                              &gt;
+                            </span>
+                          </div>
+                          <div
+                            style={
+                              Object {
+                                "paddingLeft": 48,
+                                "paddingRight": 3,
+                              }
+                            }
+                          >
+                            <span
+                              style={
+                                Object {
+                                  "color": "#777",
+                                }
+                              }
+                            >
+                              not
+                            </span>
+                          </div>
+                          <div
+                            style={
+                              Object {
+                                "paddingLeft": 33,
+                                "paddingRight": 3,
+                              }
+                            }
+                          >
+                            <span
+                              style={
+                                Object {
+                                  "color": "#777",
+                                }
+                              }
+                            >
+                              &lt;/
+                              strong
+                              &gt;
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          style={
+                            Object {
+                              "paddingLeft": 33,
+                              "paddingRight": 3,
+                            }
+                          }
+                        >
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                             be fired.
+                          </span>
+                        </div>
+                        <div
+                          style={
+                            Object {
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
+                            }
+                          }
+                        >
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
                             &lt;/
-                            strong
+                            Button
                             &gt;
                           </span>
                         </div>
                       </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 33,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
-                            }
-                          }
-                        >
-                           be fired.
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
-                            }
-                          }
-                        >
-                          &lt;/
-                          Button
-                          &gt;
-                        </span>
-                      </div>
                     </div>
+                    <button
+                      className="css-gydez8"
+                      onClick={[Function]}
+                    >
+                      <div
+                        className="css-kv47nt"
+                      >
+                        <div
+                          style={
+                            Object {
+                              "marginBottom": 6,
+                            }
+                          }
+                        >
+                          Copied!
+                        </div>
+                        <div>
+                          Copy
+                        </div>
+                      </div>
+                    </button>
                   </pre>
                 </div>
                 <div>
@@ -4243,7 +4282,6 @@ exports[`Editor Storyshots Button plain 1`] = `
                     "backgroundColor": "#fff",
                     "border": "1px solid #eee",
                     "borderRadius": "2px",
-                    "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
                     "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
@@ -4303,143 +4341,157 @@ exports[`Editor Storyshots Button plain 1`] = `
                     Story Source
                   </h1>
                   <pre
-                    style={
-                      Object {
-                        "backgroundColor": "#fafafa",
-                        "fontFamily": "Menlo, Monaco, \\"Courier New\\", monospace",
-                        "fontSize": ".88em",
-                        "lineHeight": 1.5,
-                        "overflowX": "scroll",
-                        "padding": ".5rem",
-                      }
-                    }
+                    className="css-4akams"
                   >
                     <div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
+                      <div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          &lt;
-                          Button
-                        </span>
-                        <span>
-                          <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              title
-                            </span>
-                            <span>
-                              =
-                              <span
-                                style={Object {}}
-                              >
-                                <span
-                                  style={
-                                    Object {
-                                      "color": "#22a",
-                                      "wordBreak": "break-word",
-                                    }
-                                  }
-                                >
-                                  "
-                                  Click should trigger onClick action
-                                  "
-                                </span>
-                              </span>
-                            </span>
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            &lt;
+                            Button
                           </span>
                           <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              onClick
-                            </span>
                             <span>
-                              =
+                               
                               <span
                                 style={Object {}}
                               >
-                                <span>
-                                  {
+                                title
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  "
                                   <span
                                     style={
                                       Object {
-                                        "color": "#170",
+                                        "color": "#22a",
+                                        "wordBreak": "break-word",
                                       }
                                     }
                                   >
-                                    onClick()
+                                    Click should trigger onClick action
                                   </span>
-                                  }
+                                  "
                                 </span>
                               </span>
                             </span>
-                            
+                            <span>
+                               
+                              <span
+                                style={Object {}}
+                              >
+                                onClick
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  <span>
+                                    {
+                                    <span
+                                      style={
+                                        Object {
+                                          "color": "#170",
+                                        }
+                                      }
+                                    >
+                                      onClick()
+                                    </span>
+                                    }
+                                  </span>
+                                </span>
+                              </span>
+                              
+                            </span>
                           </span>
-                        </span>
-                        <span
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            &gt;
+                          </span>
+                        </div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 33,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          &gt;
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 33,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            Unstyled button. Pretty plain. Should be used with some styles.
+                          </span>
+                        </div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          Unstyled button. Pretty plain. Should be used with some styles.
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
                             }
-                          }
-                        >
-                          &lt;/
-                          Button
-                          &gt;
-                        </span>
+                          >
+                            &lt;/
+                            Button
+                            &gt;
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <button
+                      className="css-gydez8"
+                      onClick={[Function]}
+                    >
+                      <div
+                        className="css-kv47nt"
+                      >
+                        <div
+                          style={
+                            Object {
+                              "marginBottom": 6,
+                            }
+                          }
+                        >
+                          Copied!
+                        </div>
+                        <div>
+                          Copy
+                        </div>
+                      </div>
+                    </button>
                   </pre>
                 </div>
                 <div>
@@ -4986,7 +5038,6 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                     "backgroundColor": "#fff",
                     "border": "1px solid #eee",
                     "borderRadius": "2px",
-                    "boxShadow": "0px 2px 3px rgba(0, 0, 0, 0.05)",
                     "color": "#444",
                     "fontFamily": "-apple-system, \\".SFNSText-Regular\\", \\"San Francisco\\", BlinkMacSystemFont, \\"Segoe UI\\", \\"Roboto\\", \\"Oxygen\\", \\"Ubuntu\\", \\"Cantarell\\", \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", \\"Lucida Grande\\", \\"Arial\\", sans-serif",
                     "fontSize": "15px",
@@ -5046,170 +5097,184 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
                     Story Source
                   </h1>
                   <pre
-                    style={
-                      Object {
-                        "backgroundColor": "#fafafa",
-                        "fontFamily": "Menlo, Monaco, \\"Courier New\\", monospace",
-                        "fontSize": ".88em",
-                        "lineHeight": 1.5,
-                        "overflowX": "scroll",
-                        "padding": ".5rem",
-                      }
-                    }
+                    className="css-4akams"
                   >
                     <div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
+                      <div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          &lt;
-                          Button
-                        </span>
-                        <span>
-                          <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              title
-                            </span>
-                            <span>
-                              =
-                              <span
-                                style={Object {}}
-                              >
-                                <span
-                                  style={
-                                    Object {
-                                      "color": "#22a",
-                                      "wordBreak": "break-word",
-                                    }
-                                  }
-                                >
-                                  "
-                                  Styles from suggestion panel button
-                                  "
-                                </span>
-                              </span>
-                            </span>
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            &lt;
+                            Button
                           </span>
                           <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              onClick
-                            </span>
                             <span>
-                              =
+                               
                               <span
                                 style={Object {}}
                               >
-                                <span>
-                                  {
+                                title
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  "
                                   <span
                                     style={
                                       Object {
-                                        "color": "#170",
+                                        "color": "#22a",
+                                        "wordBreak": "break-word",
                                       }
                                     }
                                   >
-                                    onClick()
+                                    Styles from suggestion panel button
                                   </span>
-                                  }
+                                  "
                                 </span>
                               </span>
                             </span>
-                          </span>
-                          <span>
-                             
-                            <span
-                              style={Object {}}
-                            >
-                              className
-                            </span>
                             <span>
-                              =
+                               
                               <span
                                 style={Object {}}
                               >
+                                onClick
+                              </span>
+                              <span>
+                                =
                                 <span
-                                  style={
-                                    Object {
-                                      "color": "#22a",
-                                      "wordBreak": "break-word",
-                                    }
-                                  }
+                                  style={Object {}}
                                 >
-                                  "
-                                  EditorButton Button--small u-rounded Button--prima…
-                                  "
+                                  <span>
+                                    {
+                                    <span
+                                      style={
+                                        Object {
+                                          "color": "#170",
+                                        }
+                                      }
+                                    >
+                                      onClick()
+                                    </span>
+                                    }
+                                  </span>
                                 </span>
                               </span>
                             </span>
-                            
+                            <span>
+                               
+                              <span
+                                style={Object {}}
+                              >
+                                className
+                              </span>
+                              <span>
+                                =
+                                <span
+                                  style={Object {}}
+                                >
+                                  "
+                                  <span
+                                    style={
+                                      Object {
+                                        "color": "#22a",
+                                        "wordBreak": "break-word",
+                                      }
+                                    }
+                                  >
+                                    EditorButton Button--small u-rounded Button--prima…
+                                  </span>
+                                  "
+                                </span>
+                              </span>
+                              
+                            </span>
                           </span>
-                        </span>
-                        <span
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            &gt;
+                          </span>
+                        </div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 33,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          &gt;
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 33,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
+                            }
+                          >
+                            Button Button--small u-rounded Button--primary
+                          </span>
+                        </div>
+                        <div
                           style={
                             Object {
-                              "color": "#777",
+                              "paddingLeft": 18,
+                              "paddingRight": 3,
                             }
                           }
                         >
-                          Button Button--small u-rounded Button--primary
-                        </span>
-                      </div>
-                      <div
-                        style={
-                          Object {
-                            "paddingLeft": 18,
-                            "paddingRight": 3,
-                          }
-                        }
-                      >
-                        <span
-                          style={
-                            Object {
-                              "color": "#777",
+                          <span
+                            style={
+                              Object {
+                                "color": "#777",
+                              }
                             }
-                          }
-                        >
-                          &lt;/
-                          Button
-                          &gt;
-                        </span>
+                          >
+                            &lt;/
+                            Button
+                            &gt;
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <button
+                      className="css-gydez8"
+                      onClick={[Function]}
+                    >
+                      <div
+                        className="css-kv47nt"
+                      >
+                        <div
+                          style={
+                            Object {
+                              "marginBottom": 6,
+                            }
+                          }
+                        >
+                          Copied!
+                        </div>
+                        <div>
+                          Copy
+                        </div>
+                      </div>
+                    </button>
                   </pre>
                 </div>
                 <div>
