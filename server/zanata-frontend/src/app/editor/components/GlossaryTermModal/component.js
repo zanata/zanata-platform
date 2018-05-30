@@ -1,7 +1,10 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Panel, Row, Table } from 'react-bootstrap'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { Icon, LoaderText } from '../../../components'
 import { isEmpty } from 'lodash'
@@ -97,20 +100,20 @@ class GlossaryTermModal extends React.Component {
         id='GlossaryTermModal'
         width={'90%'}
         footer={null}>
-        <Panel className={directionClassSource + ' split-panel'}>
+        <Card className={directionClassSource + ' split-panel'}>
           <h3>Source Term : {sourceLocale}</h3>
           <span className="modal-term">{term.source}</span>
-        </Panel>
-        <Panel className={directionClassTarget + ' split-panel'}>
+        </Card>
+        <Card className={directionClassTarget + ' split-panel'}>
           <h3>Translation : {targetLocale}</h3>
           <span className={
             cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
               {isEmpty(term.target) ? '-none-' : term.target}
           </span>
-        </Panel>
+        </Card>
         <br />
-        <Panel className="gloss-details-panel">
-          <Table className={directionClassTarget + ' GlossaryDetails-table'}>
+        <Card className="gloss-details-panel">
+          <table className={directionClassTarget + ' GlossaryDetails-table'}>
             <thead>
               <tr>
                 <th>Description</th>
@@ -121,8 +124,8 @@ class GlossaryTermModal extends React.Component {
             <tbody>
               {detailsDisplay}
             </tbody>
-          </Table>
-        </Panel>
+          </table>
+        </Card>
         <span className="u-pullRight u-textMeta">
         {lastModifiedRow}
         </span>

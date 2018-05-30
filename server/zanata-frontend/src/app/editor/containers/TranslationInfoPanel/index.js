@@ -4,8 +4,6 @@ import { setSidebarVisibility } from '../../actions'
 import { toggleGlossary, toggleActivity } from '../../actions/header-actions'
 import { getGlossaryVisible, getActivityVisible } from '../../reducers'
 import { postReviewComment } from '../../actions/review-trans-actions'
-import { Tabs, FormGroup, InputGroup, InputGroupAddon,
-  FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
 import { FormattedMessage } from 'react-intl'
@@ -13,10 +11,17 @@ import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 import DetailsPane from './DetailsPane'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+import Tabs from 'antd/lib/tabs'
+import 'antd/lib/tabs/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /* React Bootstrap Tab keys for tracking active Tab */
 const activityTabKey = 1
 const glossaryTabKey = 2
+const { TextArea } = Input
 
 const historyShape = PropTypes.shape({
   contents: PropTypes.arrayOf(PropTypes.string),
@@ -101,15 +106,15 @@ class TranslationInfoPanel extends React.Component {
   /* URL of the selected phrase, with copy button. */
   phraseLink = () => {
     return (
-      <FormGroup className="trans-link">
-        <InputGroup>
-          <InputGroupAddon>
+      <span className="trans-link">
+        <span>
+          <Input addonAfter={
             <Icon name="copy"
-              className="s1" />
-          </InputGroupAddon>
-          <FormControl type="text" />
-        </InputGroup>
-      </FormGroup>
+              className="s1" />}
+          />
+          <TextArea />
+        </span>
+      </span>
     )
   }
   render () {
@@ -128,6 +133,7 @@ class TranslationInfoPanel extends React.Component {
         </span>{glossaryCountDisplay}
       </span>
     )
+    const TabPane = Tabs.TabPane
     // Use this when activity tab is activated
     const activityTitle = (
       <span>
@@ -155,9 +161,8 @@ class TranslationInfoPanel extends React.Component {
               defaultMessage='Details' />
           </span>
           <span className="s1 u-pullRight">
-            <Button bsStyle="link" onClick={this.props.close}>
-              <Icon name="cross" />
-            </Button>
+            <Button className="btn-link"
+              icon='close' onClick={this.props.close} />
           </span>
         </h1>
         <div className="SidebarEditor-wrapper">
@@ -168,22 +173,23 @@ class TranslationInfoPanel extends React.Component {
             isRTL={this.props.isRTL} />
         </div>
         <Tabs activeKey={activePanelKey}
-          onSelect={this.handleSelectTab}
-          id="SidebarEditor-tabsPane1">
-          <Tab eventKey={activityTabKey} title={activityTitle}>
-            <ActivityTab
-              // @ts-ignore
-              activeKey={this.state.key}
-              transHistory={this.props.transHistory}
-              selectedActivites={this.state.selectedActivites}
-              selectActivityTypeFilter={this.selectActivityTypeFilter}
-              postComment={this.postComment} />
-          </Tab>
-          <Tab eventKey={glossaryTabKey} title={glossaryTitle}>
-            <GlossaryTab
-              // @ts-ignore
-              activeKey={this.state.key} />
-          </Tab>
+          onTabClick={this.handleSelectTab}>
+          <span id="SidebarEditor-tabsPane1">
+            <TabPane key={activityTabKey} tab={activityTitle}>
+              <ActivityTab
+                // @ts-ignore
+                activeKey={this.state.key}
+                transHistory={this.props.transHistory}
+                selectedActivites={this.state.selectedActivites}
+                selectActivityTypeFilter={this.selectActivityTypeFilter}
+                postComment={this.postComment} />
+            </TabPane>
+            <TabPane key={glossaryTabKey} tab={glossaryTitle}>
+              <GlossaryTab
+                // @ts-ignore
+                activeKey={this.state.key} />
+            </TabPane>
+          </span>
         </Tabs>
       </div>
     )
