@@ -43,36 +43,41 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     </span>
   </p>
   <div
-    className="well-approved well"
+    className="ant-card well-approved"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -142,36 +147,41 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     </span>
   </p>
   <div
-    className="well"
+    className="ant-card"
   >
-    What in the world does this mean?
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      What in the world does this mean?
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -248,36 +258,41 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     </span>
   </p>
   <div
-    className="well"
+    className="ant-card well-fuzzy"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -356,16 +371,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -375,42 +433,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -489,16 +514,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -508,42 +576,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -622,16 +657,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -641,42 +719,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -753,36 +798,41 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     </span>
   </p>
   <div
-    className="well-translated well"
+    className="ant-card well-translated"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
