@@ -28,7 +28,7 @@ import javax.mail.internet.InternetAddress;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-public class ActivationEmailStrategy extends EmailStrategy {
+public class ActivationEmailStrategy extends VelocityEmailStrategy {
     private final String key;
     private final String resetPasswordKey;
 

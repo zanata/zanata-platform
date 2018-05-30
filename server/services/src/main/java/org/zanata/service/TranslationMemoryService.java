@@ -64,6 +64,13 @@ public interface TranslationMemoryService extends TranslationFinder,
             boolean checkDocument, boolean checkProject, int thresholdPercent,
             InternalTMSource internalTMSource);
 
+    /**
+     * Returns a list sorted by similarity etc
+     * @param targetLocaleId
+     * @param sourceLocaleId
+     * @param transMemoryQuery
+     * @return
+     */
     List<TransMemoryResultItem> searchTransMemory(LocaleId targetLocaleId,
             LocaleId sourceLocaleId, TransMemoryQuery transMemoryQuery);
 

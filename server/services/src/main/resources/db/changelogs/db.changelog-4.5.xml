@@ -50,4 +50,28 @@
         newDataType="varchar(500)"/>
   </changeSet>
 
+  <changeSet id="1" author="pahuang@redhat.com">
+    <comment>add columns to indicate a deleted person</comment>
+    <addColumn tableName="HPerson">
+      <column name="erased" type="boolean" defaultValueBoolean="false" />
+      <column name="erasureDate" type="datetime" />
+      <column name="erasedBy" type="bigint" />
+    </addColumn>
+    <addForeignKeyConstraint baseTableName="HPerson" baseColumnNames="erasedBy"
+      constraintName="FK_HPerson_erasedby" referencedTableName="HAccount"
+      referencedColumnNames="id" />
+  </changeSet>
+
+  <changeSet id="2" author="pahuang@redhat.com">
+    <comment>add columns to indicate a deleted account</comment>
+    <addColumn tableName="HAccount">
+      <column name="erased" type="boolean" defaultValueBoolean="false" />
+      <column name="erasureDate" type="datetime" />
+      <column name="erasedBy" type="bigint" />
+    </addColumn>
+    <addForeignKeyConstraint baseTableName="HAccount" baseColumnNames="erasedBy"
+      constraintName="FK_HAccount_erasedby" referencedTableName="HAccount"
+      referencedColumnNames="id" />
+  </changeSet>
+
 </databaseChangeLog>

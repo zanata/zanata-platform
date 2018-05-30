@@ -21,6 +21,8 @@
 package org.zanata.feature.security;
 
 
+import java.util.List;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -58,8 +60,8 @@ public class SecurityTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .loggedInAs())
-                .isEqualTo("admin")
-                .as("User can log in");
+                .as("User can log in")
+                .isEqualTo("admin");
     }
 
     @Trace(summary = "The user must enter a correct username and " +
@@ -70,8 +72,8 @@ public class SecurityTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signInFailure("nosuchuser", "password")
                 .expectError("Login failed"))
-                .contains("Login failed")
-                .as("Log in error message is shown");
+                .as("Log in error message is shown")
+                .contains("Login failed");
     }
 
     @Trace(summary = "The user may reset their password via email",
@@ -89,16 +91,18 @@ public class SecurityTest extends ZanataTestCase {
                 .isEqualTo("You will soon receive an email with a link to " +
                         "reset your password.");
 
-        WiserMessage message = hasEmailRule.getMessages().get(0);
+        List<WiserMessage> messages = hasEmailRule.getMessages();
+        assertThat(messages).hasSize(1);
+        WiserMessage message = messages.get(0);
         String emailContent = HasEmailRule.getEmailContent(message);
 
         assertThat(message.getEnvelopeReceiver())
-                .isEqualTo("admin@example.com")
-                .as("Zanata has sent an email to the user");
+                .as("Zanata has sent an email to the user")
+                .isEqualTo("admin@example.com");
         assertThat(emailContent)
+                .as("The system has sent a reset password email to the user")
                 .contains("Please follow the link below to reset the " +
-                        "password for your account.")
-                .as("The system has sent a reset password email to the user");
+                        "password for your account.");
         assertThat(EmailQuery.hasLink(message, PASSWORD_RESET)).isTrue();
 
         String resetLink = EmailQuery.getLink(message, PASSWORD_RESET);
@@ -111,8 +115,8 @@ public class SecurityTest extends ZanataTestCase {
                 .enterPassword("newpassword").clickSignIn();
 
         assertThat(dashboardBasePage.loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin has signed in with the new password");
+                .as("Admin has signed in with the new password")
+                .isEqualTo("admin");
     }
 
     @Trace(summary = "The user must enter a known account or email " +
@@ -127,9 +131,9 @@ public class SecurityTest extends ZanataTestCase {
                 .resetFailure();
 
         assertThat(resetPasswordPage.getNotificationMessage(By
-                        .id("passwordResetRequestForm:messages")))
-                .isEqualTo("No account found.")
-                .as("A no such account message is displayed");
+                .id("passwordResetRequestForm:messages")))
+                .as("A no such account message is displayed")
+                .isEqualTo("No account found.");
     }
 
     @Trace(summary = "Username or email field must not empty")
@@ -143,8 +147,8 @@ public class SecurityTest extends ZanataTestCase {
                 .resetFailure();
 
         assertThat(resetPasswordPage.getErrors())
-                .contains("value is required")
-                .as("value is required error is displayed");
+                .as("value is required error is displayed")
+                .contains("value is required");
     }
 
 }

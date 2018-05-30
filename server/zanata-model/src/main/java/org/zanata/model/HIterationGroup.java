@@ -140,6 +140,7 @@ public class HIterationGroup extends SlugEntityBase
         return this.activeLocales;
     }
 
+    @Override
     public EntityStatus getStatus() {
         return this.status;
     }

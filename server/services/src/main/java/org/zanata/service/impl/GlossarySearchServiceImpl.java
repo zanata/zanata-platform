@@ -157,7 +157,11 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
                                String qualifiedName) {
         for (Object[] match : matches) {
             HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
+            Class entityClass = (Class) match[2];
+            Object entityID = match[3];
             if (sourceTerm == null) {
+                log.warn(
+                        "Missing entity ({} with ID {}). You may need to re-index.", entityClass.getSimpleName(), entityID);
                 continue;
             }
             HGlossaryTerm targetTerm = glossaryDAO.getTermByEntryAndLocale(

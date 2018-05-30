@@ -211,7 +211,7 @@ class NewLanguageModal extends Component {
                 message: 'Please input a Language Display Name'}]
             })(
               <Input
-                id='new-language-name'
+                // id='displayName' set by getFieldDecorator
                 maxLength={100}
                 onChange={(e) => this.updateField('displayName', e)}
                 placeholder='Display name' />
@@ -224,7 +224,7 @@ class NewLanguageModal extends Component {
                 message: 'Please input a Language Native Name'}]
             })(
               <Input
-                id='new-language-nativeName'
+                // id='nativeName' set by getFieldDecorator
                 maxLength={100}
                 onChange={(e) => this.updateField('nativeName', e)}
                 placeholder='Native name' />

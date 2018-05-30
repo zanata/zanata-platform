@@ -129,13 +129,15 @@ const MergeOptions = (
       <Col xs={12} className='versionMergeRow'>
         <p className="lead">For every potential translation:</p>
         <div className="VersionMergeTitle u-textNewBlue">
+          {/* NB If changing 'values' below, note that they should fit with
+          the expected thresholds in ProjectVersionService.prefillWithTM */}
           If text is less than
           <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
             id="percentDropdown" className='versionMergeDropdown'
             onSelectDropdownItem={onPercentSelection}
             selectedValue={mergeOptions.matchPercentage}
             valueToDisplay={percentValueToDisplay}
-            values={[80, 90, 100]} /> similar, don't use it.
+            values={[75, 80, 90, 100]} /> similar, don't use it.
         </div>
       </Col>
       <Col xs={12} className='versionMergeContainer'>
@@ -411,7 +413,7 @@ class TMMergeModal extends Component {
       fetchingLocale,
       processStatus
     } = this.props
-    const modalBody = processStatus
+    const modalBodyInner = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
         processStatus={processStatus} buttonLabel="Cancel TM Merge"
@@ -441,6 +443,11 @@ class TMMergeModal extends Component {
           removeProjectVersion={this.removeProjectVersion}
         />
         )
+    const modalBody =
+      <div>
+        {modalBodyInner}
+        <p>Note: Zanata will send you a TM Merge Report by email when processing is complete.</p>
+      </div>
     const hasTMSource = this.state.fromAllProjects ||
       this.state.fromImportedTM || this.state.selectedVersions.length > 0
     const modalFooter = processStatus

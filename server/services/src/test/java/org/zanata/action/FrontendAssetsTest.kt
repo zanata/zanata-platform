@@ -69,6 +69,8 @@ class FrontendAssetsTest {
     fun willThrowExceptionIfManifestFileIsNotFound() {
         assertThatThrownBy { FrontendAssets(servletContext) }
                 .isInstanceOf(IllegalStateException::class.java)
-                .hasMessage("can not load manifest.json from META-INF/resources/manifest.json. Did you forget to build and include zanata frontend?")
+                // "Cannot load manifest.json from META-INF/resources/manifest.json.
+                // Did you forget to build and include zanata-frontend?"
+                .hasMessageContaining("manifest.json")
     }
 }

@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -34,6 +35,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
+import org.zanata.util.Zanata;
 
 /**
  * Unique validator implementation. NB: <b>Requires CDI and Hibernate</b>.
@@ -45,11 +47,11 @@ import org.hibernate.metadata.ClassMetadata;
 public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     private Unique parameters;
 
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Inject
-    public UniqueValidator(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public UniqueValidator(@Zanata EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
@@ -61,38 +63,46 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     }
 
     private int countRows(Object value) {
-        // we need to use entityManager.unwrap because  injected session will
+        // we need to use entityManagerFactory.unwrap because  injected session will
         // be a weld proxy and criteria.getExecutableCriteria method will try
         // to cast it to SessionImplementor (ClassCastException)
-        Session session = entityManager.unwrap(Session.class);
-        ClassMetadata metadata =
-                session.getSessionFactory().getClassMetadata(value.getClass());
-        String idName = metadata.getIdentifierPropertyName();
-        // FIXME was EntityMode.POJO
-        Serializable id = metadata.getIdentifier(value, null);
-
-        DetachedCriteria criteria = DetachedCriteria.forClass(value.getClass());
-        for (String property : parameters.properties()) {
+        EntityManager entityManager =
+                entityManagerFactory.createEntityManager();
+        try {
+            Session session = entityManager.unwrap(Session.class);
+            ClassMetadata metadata =
+                    session.getSessionFactory()
+                            .getClassMetadata(value.getClass());
+            String idName = metadata.getIdentifierPropertyName();
             // FIXME was EntityMode.POJO
-            criteria.add(Restrictions.eq(property,
-                    metadata.getPropertyValue(value, property)));
-        }
+            Serializable id = metadata.getIdentifier(value, null);
 
-        // Id property
-        if (id != null) {
-            criteria.add(Restrictions.ne(idName, id));
-        }
-        criteria.setProjection(Projections.rowCount());
+            DetachedCriteria criteria =
+                    DetachedCriteria.forClass(value.getClass());
+            for (String property : parameters.properties()) {
+                // FIXME was EntityMode.POJO
+                criteria.add(Restrictions.eq(property,
+                        metadata.getPropertyValue(value, property)));
+            }
 
-        // change the flush mode temporarily to perform the query or else
-        // incomplete entities will try to get flushed
-        // After the query, go back to the original mode
-        FlushMode flushMode = session.getFlushMode();
-        session.setFlushMode(FlushMode.MANUAL);
-        List<?> results = criteria.getExecutableCriteria(session).list();
-        Number count = (Number) results.iterator().next();
-        session.setFlushMode(flushMode);
-        return count.intValue();
+            // Id property
+            if (id != null) {
+                criteria.add(Restrictions.ne(idName, id));
+            }
+            criteria.setProjection(Projections.rowCount());
+
+            // change the flush mode temporarily to perform the query or else
+            // incomplete entities will try to get flushed
+            // After the query, go back to the original mode
+            FlushMode flushMode = session.getFlushMode();
+            session.setFlushMode(FlushMode.MANUAL);
+            List<?> results = criteria.getExecutableCriteria(session).list();
+            Number count = (Number) results.iterator().next();
+            session.setFlushMode(flushMode);
+            return count.intValue();
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override

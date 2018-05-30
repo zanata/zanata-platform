@@ -151,7 +151,7 @@ public class HTextFlowTarget extends ModelEntityBase
     @JoinColumn(name = "locale", nullable = false, updatable = false)
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = LocaleIdBridge.class)
-    @Nonnull
+    @NotNull
     public HLocale getLocale() {
         return locale;
     }
