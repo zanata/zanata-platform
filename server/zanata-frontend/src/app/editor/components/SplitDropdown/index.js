@@ -1,8 +1,6 @@
 import cx from 'classnames'
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
 
@@ -40,11 +38,11 @@ class SplitDropdown extends React.Component {
       toggleButtonItem = (
         <div className="ButtonGroup-item">
           <Row>
-            <Button className="EditorDropdown-toggle"
+            <span className="EditorDropdown-toggle"
               aria-haspopup
               aria-expanded={this.props.isOpen}
               {...buttonClick}>
-            {this.props.toggleButton}</Button>
+            {this.props.toggleButton}</span>
           </Row>
         </div>
       )
@@ -54,9 +52,9 @@ class SplitDropdown extends React.Component {
       /* eslint-disable max-len */
       <div className={className}>
         <Row className="ButtonGroup--hz ButtonGroup--borderCollapse u-rounded">
-          <Button className="ButtonGroup-item">
+          <span className="ButtonGroup-item">
             {this.props.actionButton}
-          </Button>
+          </span>
           {toggleButtonItem}
         </Row>
         {this.props.content}
