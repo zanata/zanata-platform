@@ -20,13 +20,15 @@
  */
 
 import { isEmpty } from 'lodash'
-import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
 import Icon from '../../../components/Icon'
 import * as React from 'react'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 interface Props {
-  postComment: (text: string) => void,
-  maxLength?: number
+  postComment: (text: string) => void
 }
 
 interface State {
@@ -44,20 +46,17 @@ class CommentBox extends React.Component<Props, State> {
   }
 
   public render () {
+    const { TextArea } = Input
     return (
       <div className='TransUnit-commentBox'>
-        <FormGroup controlId='formControlsTextarea'>
-          <ControlLabel>
+          <span>
             <Icon name='comment' className='s0' /> Post a comment
-          </ControlLabel><br />
-          <FormControl
-            componentClass='textarea'
+          </span><br />
+          <TextArea autosize={{ minRows: 2, maxRows: 6 }}
             value={this.state.commentText}
             placeholder='...'
-            onChange={this.setCommentText}
-            maxLength={this.props.maxLength}
+            onPressEnter={this.setCommentText}
           />
-        </FormGroup>
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
           className='EditorButton Button--small u-rounded Button--primary u-pullRight'>

@@ -1162,7 +1162,7 @@ label span.n1 {
 }
 
 .ant-btn-lg {
-  font-size: 1.4rem;
+  font-size: 1.4rem !important;
 }
 
 .TransUnit-panelFooter ul.EditorDropdown-content {

@@ -1,14 +1,15 @@
 // @ts-nocheck
-/**
- * A react-bootstrap Panel that displays details for a LOCAL_PROJECT suggestion
- * match.
- */
 
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../../components'
-import { Panel, Label, Row } from 'react-bootstrap'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 import { matchType, MATCH_TYPE } from '../../utils/suggestion-util'
 
@@ -37,9 +38,9 @@ class LocalProjectDetailPanel extends Component {
   stateLabel (matchDetail) {
     switch (matchType(matchDetail)) {
       case MATCH_TYPE.TRANSLATED:
-        return <Label bsStyle="success">Translated</Label>
+        return <Tag color="green">Translated</Tag>
       case MATCH_TYPE.APPROVED:
-        return <Label bsStyle="info">Approved</Label>
+        return <Tag color="gray">Approved</Tag>
       default:
         console.error('unrecognised match type')
     }
@@ -126,10 +127,9 @@ class LocalProjectDetailPanel extends Component {
     const currentMatchType = matchType(matchDetail)
 
     return (
-      <Panel
-        header={this.matchHeader(matchDetail)}
+      <Card
+        title={this.matchHeader(matchDetail)}
         {...props}
-        bsStyle="info"
       >
         {this.matchProperties(matchDetail)}
         <SuggestionUpdateMessage
@@ -138,7 +138,7 @@ class LocalProjectDetailPanel extends Component {
           matchType={currentMatchType}
             />
         {this.buildCommentBox(matchDetail)}
-      </Panel>
+      </Card>
     )
   }
 }
