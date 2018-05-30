@@ -8,7 +8,6 @@
     slug="group1"
     description="Group1 description"
     name="Group1"
-    status="A"
     />
 
   <HIterationGroup_Maintainer
@@ -52,7 +51,6 @@
     slug="group2"
     description="Group2 description"
     name="Group2"
-    status="A"
     />
 
   <HIterationGroup_ProjectIteration
@@ -96,7 +94,6 @@
     slug="group3"
     description="Group3 description"
     name="Group3"
-    status="O"
     />
 
   <HIterationGroup_Maintainer
