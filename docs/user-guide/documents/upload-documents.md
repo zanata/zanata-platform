@@ -55,7 +55,6 @@ You will need to [Create a project](/user-guide/projects/create-project) and [Cr
 #### Translation document formats
 Translation files, typically of the Gettext .po format, can be uploaded for a document in the selected language.
 There is a limited set of document formats that support upload of a translated raw document. These are:
- * Properties (.properties)
  * DTD (.dtd)
  * Qt Linguist (.ts)
  * Subtitle (.srt, .sbt, .sub, .vtt)

@@ -46,6 +46,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,7 +122,8 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String docId = "test.properties";
         String plaintextContent = "first: test message";
         File tempFile = File.createTempFile("test", ".properties");
-        Files.write(tempFile.toPath(), plaintextContent.getBytes());
+        Files.write(tempFile.toPath(),
+                plaintextContent.getBytes(StandardCharsets.UTF_8));
         InputStream stream = new FileInputStream(tempFile);
 
         HProject hProject = new HProject();
@@ -142,6 +144,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         TranslationsResource translationsResource = transFileService
                 .parseTranslationFile(stream, tempFile.getName(),
                         "ru", project, version, docId, Optional.absent());
+        stream.close();
         assertThat(translationsResource.getTextFlowTargets().get(0)
                 .getContents().get(0)).isEqualTo("test message");
     }
