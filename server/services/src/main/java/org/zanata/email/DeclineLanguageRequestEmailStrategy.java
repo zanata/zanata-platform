@@ -4,7 +4,7 @@ import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import javax.mail.internet.InternetAddress;
 
-import static org.zanata.util.HtmlUtil.SANITIZER;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
@@ -35,7 +35,7 @@ public class DeclineLanguageRequestEmailStrategy extends VelocityEmailStrategy {
         return context.put("toName", toName).put("roles", roles)
                 .put("localeDisplayName", localeDisplayName)
                 .put("contactCoordinatorLink", contactCoordinatorLink)
-                .put("safeHtmlMessage", SANITIZER.sanitize(userMessage));
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "toName", "roles",
