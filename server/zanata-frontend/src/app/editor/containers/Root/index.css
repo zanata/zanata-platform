@@ -1164,3 +1164,7 @@ label span.n1 {
 .ant-btn-lg {
   font-size: 1.4rem;
 }
+
+.TransUnit-panelFooter ul.EditorDropdown-content {
+  background-color: transparent !important;
+}
