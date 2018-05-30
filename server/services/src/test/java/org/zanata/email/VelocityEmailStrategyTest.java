@@ -70,7 +70,6 @@ public class VelocityEmailStrategyTest {
     String testServerPath = "https://zanata.example.com";
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
-    private String expectedUserMessage = "some &lt;b&gt;HTML&lt;/b&gt;";
 
     private MessagesFactory msgsFactory = new MessagesFactory() {
         private static final long serialVersionUID = 1L;
@@ -106,6 +105,7 @@ public class VelocityEmailStrategyTest {
     String localeId = "LOCALE_ID";
     String localeNativeName = "LOCALE_NAME[测试]";
     private String userMessage = "some <b>HTML</b>";
+    private String expectedUserMessage = "some &lt;b&gt;HTML&lt;/b&gt;";
 
     public VelocityEmailStrategyTest() throws UnsupportedEncodingException {
         toAddr = Addresses.getAddress(toAddress, toName);
@@ -247,7 +247,7 @@ public class VelocityEmailStrategyTest {
 
         assertThat(html).contains(msgs.format(
             "jsf.email.languageteam.request.reject.message", roles, localeDisplayName));
-        assertThat(html).contains(userMessage);
+        assertThat(html).contains(expectedUserMessage);
     }
 
     @Test
@@ -365,7 +365,7 @@ public class VelocityEmailStrategyTest {
         String html = extractHtmlPart(message);
         checkGenericTemplate(html);
 
-        assertThat(html).contains(userMessage);
+        assertThat(html).contains(expectedUserMessage);
         assertThat(html).contains(contactAdminLink);
     }
 
