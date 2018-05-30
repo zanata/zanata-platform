@@ -1,4 +1,3 @@
-/* global jest */
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Sidebar from '.'
@@ -12,8 +11,6 @@ const aboutText = 'This is one rocking project version. This is the best' +
     ' project version ever.'
 const url = 'https://www.google.com'
 const linkname = 'Our awesome webpage'
-
-jest.mock('antd/lib/button', () => 'Button')
 
 storiesOf('Sidebar', module)
     .add('default', () => (

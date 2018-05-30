@@ -1,12 +1,9 @@
-/* global jest */
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Well } from 'react-bootstrap'
 import { Button, Tooltip, Layout } from 'antd'
 
 const tooltip = <span id='tooltip'><strong>Tooltip ahoy!</strong></span>;
-
-jest.mock('antd/lib/button', () => 'Button')
 
 storiesOf('Tooltip', module)
     .add('default', () => (
