@@ -48,10 +48,8 @@ import javax.inject.Inject;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -127,7 +125,6 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String version = "master";
         String docId = "test.properties";
         String plaintextContent = "first: test message";
-        File tempFile = File.createTempFile("test", ".properties");
         InputStream stream = new ByteArrayInputStream(
                 plaintextContent.getBytes(StandardCharsets.UTF_8));
 
@@ -147,7 +144,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 .thenReturn(hDocument);
 
         TranslationsResource translationsResource = transFileService
-                .parseTranslationFile(stream, tempFile.getName(),
+                .parseTranslationFile(stream, docId,
                         "ru", project, version, docId, Optional.absent());
         TextFlowTarget target = translationsResource.getTextFlowTargets().get(0);
         assertThat(target.getContents().get(0)).isEqualTo("test message");
@@ -160,7 +157,6 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String project = "test";
         String version = "master";
         String docId = "test.pot";
-        File tempFile = File.createTempFile("test", ".ts");
         InputStream stream = new NullInputStream(0);
         HProject hProject = new HProject();
         hProject.setDefaultProjectType(ProjectType.Gettext);
@@ -169,7 +165,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 .thenReturn(hProjectIteration);
 
         try {
-            transFileService.parseTranslationFile(stream, tempFile.getName(),
+            transFileService.parseTranslationFile(stream, docId,
                     "ru", project, version, docId, Optional.absent());
             fail("Expected a ZanataServiceException");
         } catch (ZanataServiceException zse) {
