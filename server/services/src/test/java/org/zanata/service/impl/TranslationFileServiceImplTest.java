@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import com.google.common.base.Optional;
+import org.apache.commons.io.input.NullInputStream;
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
@@ -37,12 +38,15 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.HashUtil;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -92,8 +96,8 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 "msgstr[1] \"%d aoeuaouao\"\n" +
                 "msgstr[2] \"\"";
         File tempFile = File.createTempFile("test", ".po");
-        Files.write(tempFile.toPath(), poContent.getBytes());
-        InputStream stream = new FileInputStream(tempFile);
+        InputStream stream = new ByteArrayInputStream(
+                poContent.getBytes(StandardCharsets.UTF_8));
 
         HProject hProject = new HProject();
         hProject.setDefaultProjectType(ProjectType.File);
@@ -110,8 +114,10 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         TranslationsResource translationsResource = transFileService
                 .parseTranslationFile(stream, tempFile.getName(),
                 "ru", project, version, docId, Optional.absent());
-        assertThat(translationsResource.getTextFlowTargets().get(0)
-                .getContents().get(0)).isEqualTo("1 aoeuaouaou");
+
+        TextFlowTarget target = translationsResource.getTextFlowTargets().get(0);
+        assertThat(target.getContents().get(0)).isEqualTo("1 aoeuaouaou");
+        assertThat(target.getResId()).isEqualTo(HashUtil.sourceHash("Thing 1"));
     }
 
     @Test
@@ -122,9 +128,8 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String docId = "test.properties";
         String plaintextContent = "first: test message";
         File tempFile = File.createTempFile("test", ".properties");
-        Files.write(tempFile.toPath(),
+        InputStream stream = new ByteArrayInputStream(
                 plaintextContent.getBytes(StandardCharsets.UTF_8));
-        InputStream stream = new FileInputStream(tempFile);
 
         HProject hProject = new HProject();
         hProject.setDefaultProjectType(ProjectType.File);
@@ -144,9 +149,9 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         TranslationsResource translationsResource = transFileService
                 .parseTranslationFile(stream, tempFile.getName(),
                         "ru", project, version, docId, Optional.absent());
-        stream.close();
-        assertThat(translationsResource.getTextFlowTargets().get(0)
-                .getContents().get(0)).isEqualTo("test message");
+        TextFlowTarget target = translationsResource.getTextFlowTargets().get(0);
+        assertThat(target.getContents().get(0)).isEqualTo("test message");
+        assertThat(target.getResId()).isEqualTo("first");
     }
 
     @Test
@@ -156,7 +161,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String version = "master";
         String docId = "test.pot";
         File tempFile = File.createTempFile("test", ".ts");
-        InputStream stream = new FileInputStream(tempFile);
+        InputStream stream = new NullInputStream(0);
         HProject hProject = new HProject();
         hProject.setDefaultProjectType(ProjectType.Gettext);
         HProjectIteration hProjectIteration = new HProjectIteration();
