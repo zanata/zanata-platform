@@ -7,7 +7,7 @@
   --Modal-dialog-border-bottom-width: 2px;
   --Modal-dialog-color-bg: color(#f0f2f4 tint(60%));
   --Modal-header-color-bg: #fff;
-  --Modal-title-font-size: calc(22/16 * 1rem);
+  --Modal-title-font-size: calc(22 /16 * 1rem);
   --Modal-close-transition: all .25s ease-out;
   --Modal-close-color-bg-hover: color(#416988 alpha(5%));
   --Modal-close-color-bg-active: color(#416988 alpha(10%));
@@ -37,7 +37,6 @@ not conflict with the other frontend code
   transition: var(--Modal-transition);
   opacity: 0;
   background-color: var(--Modal-color-bg);
-
   backface-visibility: hidden;
   perspective: calc(var(--Modal-rhythm) * 50);
   -webkit-overflow-scrolling: touch;
