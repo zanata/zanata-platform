@@ -4,8 +4,16 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
-import { EditableText, LoaderText, Modal } from '../../components'
-import { Button } from 'react-bootstrap'
+import { LoaderText } from '../../components'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/index.less'
+import Form from 'antd/lib/form'
+import 'antd/lib/form/style/'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/index.less'
+
 import {
   glossaryToggleNewEntryModal,
   glossaryCreateNewEntry
@@ -81,71 +89,55 @@ class NewEntryModal extends Component {
     /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
     return (
       <Modal
-        show={show}
-        onHide={() => { this.handleCancel(); handleNewEntryDisplay(false) }}
-        rootClose>
-        <Modal.Header>
-          <Modal.Title>New Term</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className='u-textLeft'>
-          <div className='modal-section'>
-            <label className='text-bold'>Term</label>
-            <EditableText
-              className='editable textState'
-              editable
-              editing
+        title={'New Term'}
+        visible={show}
+        onCancel={() => { this.handleCancel(); handleNewEntryDisplay(false) }}
+        footer={[
+          <Button
+            key='back'
+            aria-label='button'
+            disabled={isSaving}
+            onClick={() => this.handleCancel()}>
+            Cancel
+          </Button>,
+          <Button
+            key='ok'
+            aria-label='button'
+            type='primary'
+            disabled={!isAllowSave || isSaving}
+            onClick={
+              () => {
+                handleNewEntryCreate(this.state.entry); this.resetFields()
+              }
+            }>
+            <LoaderText loading={isSaving} loadingText='Saving'>
+              Save
+            </LoaderText>
+          </Button>
+        ]}>
+        <Form layout='vertical'>
+          <Form.Item label={'Term'} title={'Term'}>
+            <Input
+              maxLength={500}
+              onChange={this.handleContentChanged.bind(this)}
               placeholder='The new term'
-              maxLength={500}
-              onChange={this.handleContentChanged.bind(this)}>
-              {this.state.entry.srcTerm.content}
-            </EditableText>
-          </div>
-          <div className='modal-section'>
-            <label className='text-bold'>Part of speech</label>
-            <EditableText
-              className='textInput modal-section'
-              editable
-              editing
-              placeholder='Noun, Verb, etc'
+              value={this.state.entry.srcTerm.content} />
+          </Form.Item>
+          <Form.Item label={'Part of speech'} title={'Part of speech'}>
+            <Input
               maxLength={255}
-              onChange={this.handlePosChanged.bind(this)}>
-              {this.state.entry.pos}
-            </EditableText>
-          </div>
-          <div className='modal-section'>
-            <label className='text-bold'>Description</label>
-            <EditableText
-              className='textInput'
-              editable
-              editing
-              placeholder='The definition of this term'
+              onChange={this.handlePosChanged.bind(this)}
+              placeholder='Noun, Verb, etc'
+              value={this.state.entry.pos} />
+          </Form.Item>
+          <Form.Item label={'Description'} title={'Description'}>
+            <Input
               maxLength={500}
-              onChange={this.handleDescChanged.bind(this)}>
-              {this.state.entry.description}
-            </EditableText>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className='u-pullRight'>
-            <Button bsStyle='link'
-              disabled={isSaving}
-              onClick={() => this.handleCancel()}>
-              Cancel
-            </Button>
-            <Button bsStyle='primary'
-              type='button'
-              disabled={!isAllowSave || isSaving}
-              onClick={
-                () => {
-                  handleNewEntryCreate(this.state.entry); this.resetFields()
-                }
-              }>
-              <LoaderText loading={isSaving} loadingText='Saving'>
-                Save
-              </LoaderText>
-            </Button>
-          </div>
-        </Modal.Footer>
+              onChange={this.handleDescChanged.bind(this)}
+              placeholder='The definition of this term'
+              value={this.state.entry.description} />
+          </Form.Item>
+        </Form>
       </Modal>)
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
   }

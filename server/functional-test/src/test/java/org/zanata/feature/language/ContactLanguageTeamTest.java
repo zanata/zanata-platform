@@ -59,23 +59,23 @@ public class ContactLanguageTeamTest extends ZanataTestCase {
         List<WiserMessage> messages = emailRule.getMessages();
 
         assertThat(messages.size())
-                .isGreaterThanOrEqualTo(1)
-                .as("One email was sent");
+                .as("One email was sent")
+                .isGreaterThanOrEqualTo(1);
 
         WiserMessage wiserMessage = messages.get(0);
 
         assertThat(wiserMessage.getEnvelopeReceiver())
-                .isEqualTo("admin@example.com")
-                .as("The email recipient is the administrator");
+                .as("The email recipient is the administrator")
+                .isEqualTo("admin@example.com");
 
         String content = HasEmailRule.getEmailContent(wiserMessage);
 
         assertThat(content)
                 .contains("Dear Administrator")
-                .contains("There is no coordinator for")
-                .as("The email is to the language team coordinator");
+                .as("The email is to the language team coordinator")
+                .contains("There is no coordinator for");
         assertThat(languagesPage.getNotificationMessage())
-                .contains("Your message has been sent to the administrator")
-                .as("The user is informed the message was sent");
+                .as("The user is informed the message was sent")
+                .contains("Your message has been sent to the administrator");
     }
 }

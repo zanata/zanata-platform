@@ -60,14 +60,20 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
 
     var supportedProjects: Set<HProject>? = null
         @ManyToMany
-        @JoinTable(name = "HProject_Locale", joinColumns = [JoinColumn(name = "localeId")], inverseJoinColumns = [JoinColumn(name = "projectId")])
+        @JoinTable(
+                name = "HProject_Locale",
+                joinColumns = [JoinColumn(name = "localeId")],
+                inverseJoinColumns = [JoinColumn(name = "projectId")])
         get() {
             if (field == null) field = HashSet()
             return field
         }
     var supportedIterations: Set<HProjectIteration>? = null
         @ManyToMany
-        @JoinTable(name = "HProjectIteration_Locale", joinColumns = [JoinColumn(name = "localeId")], inverseJoinColumns = [JoinColumn(name = "projectIterationId")])
+        @JoinTable(
+                name = "HProjectIteration_Locale",
+                joinColumns = [JoinColumn(name = "localeId")],
+                inverseJoinColumns = [JoinColumn(name = "projectIterationId")])
         get() {
             if (field == null) field = HashSet()
             return field
@@ -147,9 +153,7 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     }
 
     override fun hashCode(): Int {
-        val prime = 59
-        val result = prime + localeId.hashCode()
-        return result
+        return 59 + localeId.hashCode()
     }
 
     private fun canEqual(other: Any) = other is HLocale

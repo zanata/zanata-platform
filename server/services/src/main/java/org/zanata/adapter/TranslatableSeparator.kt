@@ -116,6 +116,7 @@ object TranslatableSeparator {
         }
     }
 
+    @Suppress("MagicNumber")
     internal fun stripWrappingTags(it: SplitString): SplitString {
         val wrappingTags = "(?ms)^(<([^/>]*)\\s*>)(.*)(</\\2\\s*>)$"
         val matcher = Pattern.compile(wrappingTags).matcher(it.str)
@@ -129,6 +130,7 @@ object TranslatableSeparator {
         }
     }
 
+    @Suppress("MagicNumber")
     internal fun stripLeadingEmptyPairedTags(it: SplitString): SplitString {
         val leadingPairedTags = "(?ms)^(<([^/>]*)\\s*>(.*)</\\2\\s*>)(.*)$"
         val matcher = Pattern.compile(leadingPairedTags).matcher(it.str)
@@ -148,6 +150,7 @@ object TranslatableSeparator {
         }
     }
 
+    @Suppress("MagicNumber")
     internal fun stripTrailingEmptyPairedTags(it: SplitString): SplitString {
         val trailingPairedTags = "(?ms)^(.*?)(<([^/>]*)\\s*>(.*)</\\3\\s*>)$"
         val matcher = Pattern.compile(trailingPairedTags).matcher(it.str)

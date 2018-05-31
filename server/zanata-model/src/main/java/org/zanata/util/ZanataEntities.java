@@ -54,7 +54,6 @@ import org.zanata.model.security.HCredentials;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
-
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -114,4 +113,5 @@ public class ZanataEntities {
         entitiesForDelete = builder.build();
         return entitiesForDelete;
     }
+
 }

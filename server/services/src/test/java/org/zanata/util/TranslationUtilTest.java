@@ -35,11 +35,6 @@ import static org.zanata.test.EntityTestData.setId;
 public class TranslationUtilTest {
 
     @Test
-    public void getEntityIdNullTarget() {
-        assertThat(TranslationUtil.getCopiedEntityId(null)).isNull();
-    }
-
-    @Test
     public void getEntityIdNullId() {
         Long id = 10L;
         Long entityId = null;
@@ -55,11 +50,6 @@ public class TranslationUtilTest {
 
         HTextFlowTarget target = generateTarget(id, entityId);
         assertThat(TranslationUtil.getCopiedEntityId(target)).isEqualTo(entityId);
-    }
-
-    @Test
-    public void getEntityTypeNullTarget() {
-        assertThat(TranslationUtil.getCopiedEntityType(null)).isNull();
     }
 
     @Test

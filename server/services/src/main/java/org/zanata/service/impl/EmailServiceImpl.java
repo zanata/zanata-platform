@@ -36,10 +36,10 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.email.ActivationEmailStrategy;
 import org.zanata.email.Addresses;
 import org.zanata.email.EmailBuilder;
-import org.zanata.email.EmailStrategy;
 import org.zanata.email.EmailValidationEmailStrategy;
 import org.zanata.email.PasswordResetEmailStrategy;
 import org.zanata.email.UsernameChangedEmailStrategy;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
@@ -160,7 +160,7 @@ public class EmailServiceImpl implements EmailService {
      *            group when there's no maintainer.
      */
     @Override
-    public String sendToAdmins(EmailStrategy strategy,
+    public String sendToAdmins(VelocityEmailStrategy strategy,
             @Nullable List<String> receivedReasons) {
         List<String> adminEmails = applicationConfiguration.getAdminEmail();
         receivedReasons = receivedReasons == null
@@ -179,7 +179,7 @@ public class EmailServiceImpl implements EmailService {
     /**
      * Emails admin users with given template
      */
-    private String sendToAdminUsers(EmailStrategy strategy,
+    private String sendToAdminUsers(VelocityEmailStrategy strategy,
             List<String> receivedReasons) {
         receivedReasons.add(msgs.get("jsf.email.admin.user.ReceivedReason"));
         emailBuilder.sendMessage(strategy, receivedReasons,
@@ -189,7 +189,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public String sendToLanguageCoordinators(LocaleId localeId,
-            EmailStrategy strategy) {
+            VelocityEmailStrategy strategy) {
         HLocale locale = localeDAO.findByLocaleId(localeId);
         if (locale != null) {
             List<HPerson> coordinators = getCoordinators(locale);
@@ -215,7 +215,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public String sendToVersionGroupMaintainers(List<HPerson> maintainers,
-            EmailStrategy strategy) {
+            VelocityEmailStrategy strategy) {
         if (!maintainers.isEmpty()) {
             String receivedReason =
                     msgs.format("jsf.email.group.maintainer.ReceivedReason",
@@ -244,7 +244,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendToLanguageRequester(EmailStrategy strategy,
+    public void sendToLanguageRequester(VelocityEmailStrategy strategy,
             HPerson person) {
         if (person != null) {
             InternetAddress to = Addresses.getAddress(person);
@@ -254,7 +254,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public String sendToLanguageTeamMembers(LocaleId localeId,
-            EmailStrategy strategy, List<HLocaleMember> members) {
+            VelocityEmailStrategy strategy, List<HLocaleMember> members) {
         if (!members.isEmpty()) {
             String receivedReason = msgs.format(
                     "jsf.email.language.members.ReceivedReason", localeId);

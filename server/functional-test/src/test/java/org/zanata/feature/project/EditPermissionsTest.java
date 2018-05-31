@@ -62,15 +62,15 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .gotoSettingsPermissionsTab();
 
         assertThat(projectPermissionsTab.getSettingsMaintainersList())
-                .contains("admin")
-                .as("The admin user is shown in the list");
+                .as("The admin user is shown in the list")
+                .contains("admin");
 
         ProjectPeoplePage projectPeoplePage = projectPermissionsTab
                 .gotoPeopleTab();
 
         assertThat(projectPeoplePage.getPeople())
-                .contains("Administrator @admin")
-                .as("The admin user is shown in the list");
+                .as("The admin user is shown in the list")
+                .contains("Administrator @admin");
     }
 
     @Trace(summary = "The administrator can add a maintainer to a project")
@@ -84,15 +84,15 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .gotoSettingsPermissionsTab();
 
         assertThat(projectPermissionsTab.getSettingsMaintainersList())
-                .doesNotContain("translator")
-                .as("The translator user is not a maintainer");
+                .as("The translator user is not a maintainer")
+                .doesNotContain("translator");
 
         projectPermissionsTab = new ProjectWorkFlow()
                 .addMaintainer("about fedora", "translator");
 
         assertThat(projectPermissionsTab.getSettingsMaintainersList())
-                .contains("translator")
-                .as("The translator user is a maintainer");
+                .as("The translator user is a maintainer")
+                .contains("translator");
 
         /* Workaround for ZNTA-666 */
         projectPermissionsTab.reload();
@@ -101,8 +101,8 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .gotoPeopleTab();
 
         assertThat(projectPeoplePage.getPeople())
-                .contains("translator|Maintainer;")
-                .as("The translator user is shown in the list");
+                .as("The translator user is shown in the list")
+                .contains("translator|Maintainer;");
 
         projectPeoplePage.logout();
 
@@ -111,8 +111,8 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .gotoExplore()
                 .searchAndGotoProjectByName("about fedora")
                 .settingsTabIsDisplayed())
-                .isTrue()
-                .as("The settings tab is now available to the user");
+                .as("The settings tab is now available to the user")
+                .isTrue();
     }
 
     @Trace(summary = "The maintainer can add a maintainer to a project")
@@ -125,8 +125,8 @@ public class EditPermissionsTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .loggedInAs())
-                .isEqualTo("translator")
-                .as("Translator has signed in");
+                .as("Translator has signed in")
+                .isEqualTo("translator");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
                 .goToProjectByName("addmaintainer")
@@ -138,8 +138,8 @@ public class EditPermissionsTest extends ZanataTestCase {
         projectPermissionsTab.expectMaintainersContains("glossarist");
 
         assertThat(projectPermissionsTab.getSettingsMaintainersList())
-                .contains("glossarist")
-                .as("The glossarist user was added as a maintainer");
+                .as("The glossarist user was added as a maintainer")
+                .contains("glossarist");
 
         /* Workaround for ZNTA-666 */
         projectPermissionsTab.reload();
@@ -148,8 +148,8 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .gotoPeopleTab();
 
         assertThat(projectPeoplePage.getPeople())
-                .contains("glossarist|Maintainer;")
-                .as("The glossarist user is shown in the list");
+                .as("The glossarist user is shown in the list")
+                .contains("glossarist|Maintainer;");
 
         projectPeoplePage.logout();
 
@@ -159,8 +159,8 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .searchAndGotoProjectByName("addmaintainer");
 
         assertThat(projectVersionsPage.settingsTabIsDisplayed())
-                .isTrue()
-                .as("The settings tab is now available to the glossarist");
+                .as("The settings tab is now available to the glossarist")
+                .isTrue();
     }
 
     @Trace(summary = "The maintainer can remove a maintainer from a project")
@@ -172,28 +172,28 @@ public class EditPermissionsTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .loggedInAs())
-                .isEqualTo("translator")
-                .as("Translator has signed in");
+                .as("Translator has signed in")
+                .isEqualTo("translator");
 
         assertThat(new ProjectWorkFlow()
                 .addMaintainer("removemaintainer", "glossarist")
                 .getSettingsMaintainersList())
-                .contains("glossarist")
-                .as("Glossarist maintainer is added");
+                .as("Glossarist maintainer is added")
+                .contains("glossarist");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
                 .removeMaintainer("removemaintainer", "glossarist");
 
         assertThat(projectPermissionsTab.getSettingsMaintainersList())
-                .doesNotContain("glossarist")
-                .as("Glossarist maintainer is removed");
+                .as("Glossarist maintainer is removed")
+                .doesNotContain("glossarist");
 
         ProjectPeoplePage projectPeoplePage = projectPermissionsTab
                 .gotoPeopleTab();
 
         assertThat(projectPeoplePage.getPeople())
-                .doesNotContain("Glossarist|Maintainer;")
-                .as("The glossarist user is not in the list");
+                .as("The glossarist user is not in the list")
+                .doesNotContain("Glossarist|Maintainer;");
     }
 
     @Trace(summary = "The maintainer can remove themselves as maintainer " +
@@ -208,15 +208,15 @@ public class EditPermissionsTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .loggedInAs())
-                .isEqualTo("translator")
-                .as("Translator has signed in");
+                .as("Translator has signed in")
+                .isEqualTo("translator");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
                 .addMaintainer("removemaintainer", "admin");
 
         assertThat(projectPermissionsTab.getSettingsMaintainersList())
-                .contains("admin")
-                .as("admin maintainer is added");
+                .as("admin maintainer is added")
+                .contains("admin");
 
         projectPermissionsTab.slightPause();
         ProjectBasePage projectBasePage = projectPermissionsTab
@@ -231,8 +231,8 @@ public class EditPermissionsTest extends ZanataTestCase {
 
 
         assertThat(projectVersionsPage.settingsTabIsDisplayed())
-                .isFalse()
-                .as("The translator user is no longer a maintainer");
+                .as("The translator user is no longer a maintainer")
+                .isFalse();
     }
 
 }

@@ -28,7 +28,7 @@ import javax.mail.internet.InternetAddress;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class UsernameChangedEmailStrategy extends EmailStrategy {
+public class UsernameChangedEmailStrategy extends VelocityEmailStrategy {
     private final String newUserName;
     private final boolean shouldResetPassword;
 

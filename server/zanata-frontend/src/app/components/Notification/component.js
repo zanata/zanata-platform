@@ -80,7 +80,7 @@ class Notification extends Component {
             <Row>
               <ButtonGroup className='u-pullRight'>
                 <Button className='btn-primary'
-                  id='btn-notification-close'
+                  id='btn-notification-close' aria-label="button"
                   onClick={this.clearMessage}>
                   Close
                 </Button>

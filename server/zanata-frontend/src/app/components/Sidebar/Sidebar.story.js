@@ -4,8 +4,8 @@ import Sidebar from '.'
 import AboutPage from '../../containers/ProjectVersion/AboutPage'
 import PeoplePage from '../../containers/ProjectVersion/PeoplePage'
 import GroupsPage from '../../containers/ProjectVersion/GroupsPage'
-import LanguagesPage from "../../containers/ProjectVersion/LanguagesPage";
-import DocumentsPage from "../../containers/ProjectVersion/DocumentsPage";
+import LanguagesPage from '../../containers/ProjectVersion/LanguagesPage'
+import DocumentsPage from '../../containers/ProjectVersion/DocumentsPage'
 
 const aboutText = 'This is one rocking project version. This is the best' +
     ' project version ever.'

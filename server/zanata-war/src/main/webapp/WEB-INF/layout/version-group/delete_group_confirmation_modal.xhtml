@@ -30,7 +30,9 @@
     role="dialog" >
     <div class="modal__dialog l--constrain-medium">
       <header class="modal__header">
-        <h2 class="modal__title">#{msgs.format('jsf.DeleteConfirmation', 'group', entityName)}</h2>
+        <h2 class="modal__title ellipsis">
+          #{msgs.format('jsf.DeleteConfirmation', 'group', entityName)}
+        </h2>
         <button class="modal__close button--link" data-dismiss="modal"><i
           class="i i--huge i--cancel"></i></button>
       </header>

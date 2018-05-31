@@ -25,7 +25,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.email.ContactLanguageTeamMembersEmailStrategy;
-import org.zanata.email.EmailStrategy;
+import org.zanata.email.VelocityEmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -92,7 +92,7 @@ public class ContactLanguageTeamMembersAction implements Serializable {
                             + localeId;
             String localeNativeName = getLocale().retrieveNativeName();
             LocaleId localeId = getLocale().getLocaleId();
-            EmailStrategy strategy =
+            VelocityEmailStrategy strategy =
                     new ContactLanguageTeamMembersEmailStrategy(fromLoginName,
                             getSubject(), localeId.getId(), localeNativeName,
                             message, contactCoordinatorLink);

@@ -42,6 +42,10 @@ import org.zanata.util.until
 /**
  * The base class for the page driver. Contains functionality not generally of a
  * user visible nature.
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 abstract class AbstractPage(val driver: WebDriver) {
 
@@ -169,6 +173,8 @@ abstract class AbstractPage(val driver: WebDriver) {
 
     /**
      * Wait for any AJAX/timeout requests to return.
+     * It should also wait for the JavaScript engine to finish its current
+     * execution, because executeScript uses the (single-threaded) JS engine.
      */
     fun waitForPageSilence() {
         // TODO wait for any short-lived timeouts to expire (eg less than 1000
@@ -236,7 +242,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @return target WebElement
      */
     fun readyElement(elementBy: By): WebElement {
-        val msg = "element ready " + elementBy
+        val msg = "element ready: $elementBy"
         logWaiting(msg)
         waitForPageSilence()
         val targetElement = existingElement(elementBy)
@@ -258,7 +264,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      */
     fun readyElement(parentElement: WebElement,
             elementBy: By): WebElement {
-        val msg = "element ready " + elementBy
+        val msg = "child ready: $elementBy"
         logWaiting(msg)
         waitForPageSilence()
         val targetElement = existingElement(parentElement, elementBy)
@@ -277,7 +283,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @return target WebElement
      */
     fun existingElement(elementBy: By): WebElement {
-        val msg = "element exists " + elementBy
+        val msg = "element exists: $elementBy"
         logWaiting(msg)
         waitForPageSilence()
         return waitForAMoment()
@@ -296,7 +302,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      */
     fun existingElement(parentElement: WebElement,
             elementBy: By): WebElement {
-        val msg = "element exists " + elementBy
+        val msg = "child exists: $elementBy"
         logWaiting(msg)
         waitForPageSilence()
         return waitForAMoment().withMessage(msg)
@@ -324,8 +330,10 @@ abstract class AbstractPage(val driver: WebDriver) {
     fun clickElement(element: WebElement) {
         removeNotifications()
         waitForNotificationsGone()
+        dismissCookieConsent()
         scrollIntoView(element)
-        waitForAMoment().withMessage("clickable: " + element.toString())
+        waitForAMoment()
+                .withMessage("element clickable: $element")
                 .until(ExpectedConditions.elementToBeClickable(element))
         element.click()
     }
@@ -357,9 +365,11 @@ abstract class AbstractPage(val driver: WebDriver) {
             clear: Boolean = true, inject: Boolean = false, check: Boolean = true) {
         removeNotifications()
         waitForNotificationsGone()
+        dismissCookieConsent()
         scrollIntoView(element)
         triggerScreenshot("_pretext")
-        waitForAMoment().withMessage("editable: " + element.toString())
+        waitForAMoment()
+                .withMessage("element editable: $element")
                 .until(ExpectedConditions.elementToBeClickable(element))
         if (inject) {
             if (clear) {
@@ -459,9 +469,10 @@ abstract class AbstractPage(val driver: WebDriver) {
         textField.clear()
     }
 
-    private fun waitForElementReady(element: WebElement) {
-        waitForAMoment().withMessage("Waiting for element to be ready")
-                .until({ _ -> element.isDisplayed && element.isEnabled })
+    private fun waitForElementReady(elem: WebElement) {
+        waitForAMoment()
+                .withMessage("element ready: $elem")
+                .until { _ -> elem.isDisplayed && elem.isEnabled }
     }
 
     /** Assert the element is available and visible */
@@ -501,7 +512,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      */
     fun waitForNotificationsGone() {
         val script = "return (typeof $ == \'undefined\') ?  [] : $(\'ul.message--global\').toArray()"
-        val message = "Waiting for notifications box to go"
+        val message = "notifications box not displayed"
         waitForAMoment().withMessage(message)
                 .until({ _ ->
                     val boxes = executor.executeScriptToElements(script)
@@ -542,12 +553,27 @@ abstract class AbstractPage(val driver: WebDriver) {
         executor.executeScript("arguments[0].blur()", element)
         waitForPageSilence()
     }
+
+    /**
+     * Dismiss the Cookie Consent
+     */
+    fun dismissCookieConsent() {
+        val consentButton = By.className("cc-dismiss")
+        if (driver.findElements(consentButton).size > 0 &&
+                driver.findElement(consentButton).isDisplayed) {
+            log.info("Closing Cookie Consent popup")
+            existingElement(By.className("cc-dismiss")).click();
+        }
+        waitForPageSilence();
+    }
+
     /*
      * The system sometimes moves too fast for the Ajax pages, so provide a
      * pause
      */
 
     fun slightPause() {
+        // TODO waitForPageSilence should work (better, hopefully)
         try {
             Thread.sleep(500)
         } catch (ie: InterruptedException) {

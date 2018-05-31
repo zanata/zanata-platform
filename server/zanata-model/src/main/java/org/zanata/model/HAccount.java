@@ -21,9 +21,12 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -37,9 +40,12 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
@@ -54,7 +60,7 @@ import org.zanata.rest.dto.Account;
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"),
         indexes = @Index(name = "Idx_enabled_username", columnList = "enabled, username"))
 public class HAccount extends ModelEntityBase
-        implements Serializable, HasUserFriendlyToString {
+        implements Serializable, HasUserFriendlyToString, Eraseable {
 
     private static final long serialVersionUID = 1L;
     private String username;
@@ -72,6 +78,9 @@ public class HAccount extends ModelEntityBase
     private HAccount mergedInto;
     private Map<String, HAccountOption> editorOptions;
     private Set<AllowedApp> allowedApps;
+    private boolean erased;
+    private Date erasureDate;
+    private HAccount erasedBy;
 
     @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
@@ -94,7 +103,7 @@ public class HAccount extends ModelEntityBase
     }
     // @UserPrincipal
 
-    @NaturalId
+    @NaturalId(mutable = true)
     public String getUsername() {
         return username;
     }
@@ -167,10 +176,49 @@ public class HAccount extends ModelEntityBase
         return allowedApps;
     }
 
+    public boolean isErased() {
+        return erased;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getErasureDate() {
+        return erasureDate == null ? null : new Date(erasureDate.getTime());
+    }
+
+    @OneToOne(optional = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "erasedBy")
+    @Override
+    public HAccount getErasedBy() {
+        return this.erasedBy;
+    }
+
+    public void setErasedBy(HAccount erasedBy) {
+        this.erasedBy = erasedBy;
+    }
+
+    public void setErased(boolean erased) {
+        this.erased = erased;
+    }
+
+    public void setErasureDate(Date erasureDate) {
+        this.erasureDate =
+                erasureDate == null ? null : new Date(erasureDate.getTime());
+    }
+
+    public void erase(HAccount erasedBy) {
+        this.username = "_deleted_" + UUID.randomUUID();
+        this.erasureDate = new Date();
+        this.erased = true;
+        this.passwordHash = null;
+        setEnabled(false);
+        setErasedBy(erasedBy);
+        this.apiKey = null;
+    }
+
     @Override
     public String userFriendlyToString() {
-        return String.format("Account(username=%s, enabled=%s, roles=%s)",
-                getUsername(), isEnabled(), getRoles());
+        return String.format("Account(username=%s, enabled=%s, erased=%s, roles=%s)",
+                getUsername(), isEnabled(), isErased(), getRoles());
     }
 
     public void setUsername(final String username) {

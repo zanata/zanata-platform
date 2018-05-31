@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.5.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -13,6 +13,7 @@
   <name>functional-test</name>
 
   <properties>
+    <server.dir>${basedir}/..</server.dir>
     <allow.deploy.skip>true</allow.deploy.skip>
     <selenium.version>3.8.1</selenium.version>
 
@@ -27,9 +28,10 @@
     <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-    <!-- This can be empty (root context) or a value with a trailing slash -->
+    <!-- This should be empty (root context) or a value with a trailing slash, eg "zanata/" -->
     <context.path></context.path>
 
+    <liquibase.exec.skip>false</liquibase.exec.skip>
     <!-- this may be changed by the MYSQL_PORT profile -->
     <mysql.port>13306</mysql.port>
 
@@ -351,7 +353,7 @@
 
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jre8</artifactId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -717,6 +719,32 @@
               </execution>
             </executions>
           </plugin>
+
+          <!-- NB this must run after jcabi/sql and before cargo -->
+          <plugin>
+            <artifactId>exec-maven-plugin</artifactId>
+            <groupId>org.codehaus.mojo</groupId>
+            <executions>
+              <execution>
+                <id>liquibase</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>/bin/sh</executable>
+                  <!-- NB this assumes zanata-test-war has been built locally and recently -->
+                  <arguments>
+                    <argument>${server.dir}/zanata-test-war/target/zanata-test-war-${project.version}/WEB-INF/liquibase</argument>
+                    <argument>update</argument>
+                  </arguments>
+                  <skip>${liquibase.exec.skip}</skip>
+                  <workingDirectory>${basedir}/target/test-classes</workingDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -1086,11 +1114,13 @@
             <type>installed</type>
             <home>${appserver.home}</home>
 
+            <!-- These can be used in standalone*.xml with syntax like ${smtp.port} -->
             <systemProperties>
               <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
               <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
               <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
               <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
+              <smtp.port>${smtp.port}</smtp.port>
             </systemProperties>
 
             <timeout>120000</timeout>
@@ -1118,12 +1148,11 @@
               <cargo.jboss.configuration>standalone-full-ha</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
-              <!-- These properties will be interpolated by Cargo into the configfiles above -->
+              <!-- These ds/jdbc properties will be interpolated by Cargo into the configfile above -->
               <ds.connection.url>${ds.connection.url}</ds.connection.url>
               <ds.username>${ds.username}</ds.username>
               <ds.password>${ds.password}</ds.password>
               <jdbc.artifactId>${jdbc.artifactId}</jdbc.artifactId>
-              <smtp.port>${smtp.port}</smtp.port>
             </properties>
           </configuration>
         </configuration>

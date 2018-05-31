@@ -5,8 +5,11 @@ import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
 import { DateRange } from 'react-date-range'
 import utilsDate from '../../utils/DateHelper'
-import { Button } from 'antd'
-import { Modal, TextInput } from '../../components'
+import { TextInput } from '../../components'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/index.less'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/index.less'
 
 const STATS_MAX_DAYS = 365
 
@@ -74,7 +77,7 @@ class RecentContributions extends React.Component {
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
           <div className='dateRange-container'>
-            <Button className='btn-link u-pullRight'
+            <Button className='btn-link u-pullRight' aria-label='button'
               onClick={() => this.onToggleShowDateRange()}>
               <span className='dateRange-textField'>
                 <TextInput editable={false} value={displayDateRange} />
@@ -82,34 +85,31 @@ class RecentContributions extends React.Component {
             </Button>
 
             {this.state.showDateRange &&
-              <Modal id='profile'
-                show={this.state.showDateRange}
-                onHide={() => this.onToggleShowDateRange()}>
-                <Modal.Header>
-                  <Modal.Title>Date range selection</Modal.Title>
-                  <span className='u-textMuted'>(Maximum 365 days)</span>
-                </Modal.Header>
-                <Modal.Body>
-                  <DateRange
-                    startDate={this.state.dateRange.startDate}
-                    endDate={this.state.dateRange.endDate}
-                    ranges={utilsDate.getDefaultDateRange()}
-                    className='dateRange-calendar'
-                    onChange={this.onDateRangeChanged} />
-                </Modal.Body>
-                <Modal.Footer>
-                  <span className='u-pullRight'>
-                    <Button className='btn-link'
-                      onClick={() => this.onToggleShowDateRange()}>
-                      Cancel
-                    </Button>
-                    <Button className='btn-primary'
-                      onClick={
-                      () => handleDateRangeChanged(this.state.dateRange)}>
-                      Apply
-                    </Button>
-                  </span>
-                </Modal.Footer>
+              <Modal
+                id='profile'
+                title={'Date range selection'}
+                width={'54rem'}
+                visible={this.state.showDateRange}
+                onCancel={() => this.onToggleShowDateRange()}
+                footer={[
+                  <Button key='back'
+                    aria-label='button'
+                    onClick={() => this.onToggleShowDateRange()}>
+                    Cancel
+                  </Button>,
+                  <Button key='ok' type='primary'
+                    aria-label='button'
+                    onClick={
+                    () => handleDateRangeChanged(this.state.dateRange)}>
+                    Apply
+                  </Button>]} >
+                <span className='u-textMuted'>(Maximum 365 days)</span>
+                <DateRange
+                  startDate={this.state.dateRange.startDate}
+                  endDate={this.state.dateRange.endDate}
+                  ranges={utilsDate.getDefaultDateRange()}
+                  className='dateRange-calendar'
+                  onChange={this.onDateRangeChanged} />
               </Modal>
             }
           </div>

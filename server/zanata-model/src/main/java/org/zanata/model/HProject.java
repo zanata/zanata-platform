@@ -389,6 +389,7 @@ public class HProject extends SlugEntityBase
         return this.projectIterations;
     }
 
+    @Override
     public EntityStatus getStatus() {
         return this.status;
     }

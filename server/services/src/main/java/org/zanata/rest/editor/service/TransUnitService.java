@@ -21,7 +21,9 @@
 package org.zanata.rest.editor.service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -38,6 +40,7 @@ import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.service.resource.TransUnitResource;
 import org.zanata.service.LocaleService;
+import kotlin.Pair;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -69,23 +72,13 @@ public class TransUnitService implements TransUnitResource {
 
         HLocale locale = localeServiceImpl.getByLocaleId(localeId);
 
-        List<Object[]> results =
-                textFlowDAO.getTextFlowAndTarget(idList, locale.getId());
-
-        for (Object[] result : results) {
-            HTextFlow textFlow = (HTextFlow) result[0];
-            TransUnit tu;
-
-            if (result.length < 2 || result[1] == null) {
-                tu = transUnitUtils.buildTransUnitFull(textFlow, null,
-                        locale.getLocaleId());
-            } else {
-                HTextFlowTarget textFlowTarget = (HTextFlowTarget) result[1];
-                tu = transUnitUtils.buildTransUnitFull(textFlow,
-                        textFlowTarget, locale.getLocaleId());
-            }
-            transUnits.put(textFlow.getId().toString(), tu);
-        }
+        textFlowDAO.getTextFlowAndMaybeTarget(idList, locale.getId())
+                .forEach(p -> {
+                    HTextFlow textFlow = p.component1();
+                    @Nullable HTextFlowTarget textFlowTarget = p.component2();
+                    TransUnit tu = transUnitUtils.buildTransUnitFull(textFlow, textFlowTarget, locale.getLocaleId());
+                    transUnits.put(textFlow.getId().toString(), tu);
+                });
 
         return Response.ok(transUnits).build();
     }
