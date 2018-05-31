@@ -53,7 +53,8 @@ not conflict with the other frontend code
   width: 90%;
   top: 50%;
   left: 50%;
-  max-height: 100%;
+  overflow: scroll;
+  max-height: 90%;
   min-width: 300px;
   max-width: calc(var(--Modal-rhythm) * 30);
   transition: var(--Modal-dialog-transition);
@@ -67,7 +68,7 @@ not conflict with the other frontend code
 }
 
 .Modal-header {
-  position: fixed;
+  position: static;
   top: calc(var(--Modal-rhythm) * -2);
   left: 0;
   right: 0;
