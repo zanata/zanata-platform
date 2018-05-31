@@ -136,16 +136,17 @@
     display: block;
   }
   .nav-link {
+    /* remove relative font scaling for nav so it
+     is consistent across all of frontend */
+    font-size: 11px !important;
     background-color: "";
     color: rgb(237, 242, 248) !important;
     flex-direction: column;
     -webkit-flex-direction: column;
     align-items: center;
     -webkit-align-items: center;
-    /* Safari 7.0+ */
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
-    font-size: 0.694rem !important;
     text-align: center;
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
