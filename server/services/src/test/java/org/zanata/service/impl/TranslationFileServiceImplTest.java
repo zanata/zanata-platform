@@ -47,7 +47,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -83,6 +82,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String project = "test";
         String version = "master";
         String docId = "test.pot";
+        String poName = "test.po";
         String poContent = "msgid \"\"\n" +
                 "msgstr \"\"\n" +
                 "\"Project-Id-Version: test-master\\n\"\n" +
@@ -93,7 +93,6 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 "msgstr[0] \"1 aoeuaouaou\"\n" +
                 "msgstr[1] \"%d aoeuaouao\"\n" +
                 "msgstr[2] \"\"";
-        File tempFile = File.createTempFile("test", ".po");
         InputStream stream = new ByteArrayInputStream(
                 poContent.getBytes(StandardCharsets.UTF_8));
 
@@ -110,7 +109,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 .thenReturn(hDocument);
 
         TranslationsResource translationsResource = transFileService
-                .parseTranslationFile(stream, tempFile.getName(),
+                .parseTranslationFile(stream, poName,
                 "ru", project, version, docId, Optional.absent());
 
         TextFlowTarget target = translationsResource.getTextFlowTargets().get(0);
