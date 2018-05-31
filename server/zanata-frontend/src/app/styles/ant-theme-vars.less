@@ -12,7 +12,7 @@
 @normal-color: #d9d9d9;
 @unsure-color: #E9DF1B;
 @layout-body-background: #fff;
-
+@label-color: @primary-color;
 @btn-primary-bg: @primary-color;
 
 // pagination alignment on Explore page
@@ -20,6 +20,15 @@
   display: flex;
   flex-direction: row;
   align-items: baseline;
+}
+
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
+  vertical-align: inherit;
+  width: inherit;
+}
+
+.ant-form-inline .ant-form-item {
+  display: flex;
 }
 
 // Utility classes not included in Tachiyons
